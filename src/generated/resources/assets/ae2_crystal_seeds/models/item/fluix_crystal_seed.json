@@ -1,0 +1,20 @@
+{
+  "parent": "minecraft:item/generated",
+  "overrides": [
+    {
+      "model": "ae2_crystal_seeds:item/fluix_crystal_seed_1",
+      "predicate": {
+        "ae2_crystal_seeds:age": 0.333
+      }
+    },
+    {
+      "model": "ae2_crystal_seeds:item/fluix_crystal_seed_2",
+      "predicate": {
+        "ae2_crystal_seeds:age": 0.666
+      }
+    }
+  ],
+  "textures": {
+    "layer0": "ae2_crystal_seeds:item/fluix_crystal_seed_0"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "itemGroup.ae2_crystal_seeds": "AE2：水晶种子",
+  
+  "block.ae2_crystal_seeds.crystal_growth_chamber": "晶体催生仓",
+  
+  "item.ae2_crystal_seeds.certus_quartz_seed": "赛特斯石英水晶种子",
+  "item.ae2_crystal_seeds.fluix_crystal_seed": "福鲁伊克斯种子",
+  "item.ae2_crystal_seeds.nether_quartz_seed": "下界石英种子",
+  "item.ae2_crystal_seeds.entro_crystal_seed": "恩特罗水晶种子",
+  
+  "item.ae2_crystal_seeds.purified_certus_quartz_crystal": "高纯赛特斯石英水晶",
+  "item.ae2_crystal_seeds.purified_fluix_crystal": "高纯福鲁伊克斯水晶",
+  "item.ae2_crystal_seeds.purified_nether_quartz_crystal": "高纯下界石英水晶",
+  "item.ae2_crystal_seeds.purified_entro_crystal": "高纯恩特罗水晶",
+  
+  "message.ae2_crystal_seeds.tooltip.seed_growth": "生长度：%1$s％",
+  
+  "ae2_crystal_seeds.configuration.title": "AE2 Crystal Seeds Configs",
+  "ae2_crystal_seeds.configuration.section.ae2_crystal_seeds.common.toml": "AE2 Crystal Seeds Configs",
+  "ae2_crystal_seeds.configuration.section.ae2_crystal_seeds.common.toml.title": "AE2 Crystal Seeds Configs",
+  "ae2_crystal_seeds.configuration.items": "Item List",
+  "ae2_crystal_seeds.configuration.logDirtBlock": "Log Dirt Block",
+  "ae2_crystal_seeds.configuration.magicNumberIntroduction": "Magic Number Text",
+  "ae2_crystal_seeds.configuration.magicNumber": "Magic Number"
+}
