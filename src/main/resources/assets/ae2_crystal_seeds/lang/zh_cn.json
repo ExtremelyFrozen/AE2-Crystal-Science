@@ -7,11 +7,25 @@
   "item.ae2_crystal_seeds.fluix_crystal_seed": "福鲁伊克斯种子",
   "item.ae2_crystal_seeds.nether_quartz_seed": "下界石英种子",
   "item.ae2_crystal_seeds.entro_crystal_seed": "恩特罗水晶种子",
+  "item.ae2_crystal_seeds.redstone_crystal_seed": "红石水晶种子",
+  "item.ae2_crystal_seeds.quantum_crystal_seed": "量子水晶种子",
+  "item.ae2_crystal_seeds.rose_quartz_seed": "玫瑰石英种子",
+  "item.ae2_crystal_seeds.ender_quartz_seed": "末影石英种子",
+  "item.ae2_crystal_seeds.resonating_seed": "谐振种子",
+  "item.ae2_crystal_seeds.meteor_seed": "陨石种子",
   
   "item.ae2_crystal_seeds.purified_certus_quartz_crystal": "高纯赛特斯石英水晶",
   "item.ae2_crystal_seeds.purified_fluix_crystal": "高纯福鲁伊克斯水晶",
   "item.ae2_crystal_seeds.purified_nether_quartz_crystal": "高纯下界石英水晶",
   "item.ae2_crystal_seeds.purified_entro_crystal": "高纯恩特罗水晶",
+  "item.ae2_crystal_seeds.purified_redstone_crystal": "高纯红石水晶",
+  "item.ae2_crystal_seeds.purified_quantum_crystal": "高纯量子水晶",
+  "item.ae2_crystal_seeds.purified_rose_quartz": "高纯玫瑰石英",
+  "item.ae2_crystal_seeds.purified_ender_quartz": "高纯末影石英",
+  "item.ae2_crystal_seeds.purified_resonating_crystal": "高纯谐振水晶",
+  "item.ae2_crystal_seeds.purified_meteor_crystal": "高纯陨石水晶",
+  
+  "item.ae2_crystal_seeds.crystal_growth_card": "晶体催生卡",
   
   "message.ae2_crystal_seeds.tooltip.seed_growth": "生长度：%1$s％",
   

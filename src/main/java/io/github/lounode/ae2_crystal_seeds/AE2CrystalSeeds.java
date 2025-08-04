@@ -54,14 +54,29 @@ public class AE2CrystalSeeds {
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == AE2_CRYSTAL_SEEDS_TAB_KEY) {
             event.accept(AE2CrystalSeedsBlocks.crystalGrowthChamber);
-            event.accept(certusQuartzSeed);
-            event.accept(fluixCrystalSeed);
-            event.accept(netherQuartzSeed);
-            event.accept(entroCrystalSeed);
-            event.accept(pureCertusQuartzCrystal);
-            event.accept(pureFluixCrystal);
-            event.accept(pureNetherQuartzCrystal);
-            event.accept(pureEntroCrystal);
+            event.accept(AE2CrystalSeedsItems.crystalGrowthCard);
+
+            event.accept(AE2CrystalSeedsItems.pureCertusQuartzCrystal);
+            event.accept(AE2CrystalSeedsItems.pureFluixCrystal);
+            event.accept(AE2CrystalSeedsItems.pureNetherQuartzCrystal);
+            event.accept(AE2CrystalSeedsItems.pureEntroCrystal);
+            event.accept(AE2CrystalSeedsItems.pureRedstoneCrystal);
+            event.accept(AE2CrystalSeedsItems.pureQuantumCrystal);
+            event.accept(AE2CrystalSeedsItems.pureRoseQuartz);
+            event.accept(AE2CrystalSeedsItems.pureEnderQuartz);
+            event.accept(AE2CrystalSeedsItems.pureResonatingCrystal);
+            event.accept(AE2CrystalSeedsItems.pureMeteorCrystal);
+
+            event.accept(AE2CrystalSeedsItems.certusQuartzSeed);
+            event.accept(AE2CrystalSeedsItems.fluixCrystalSeed);
+            event.accept(AE2CrystalSeedsItems.netherQuartzSeed);
+            event.accept(AE2CrystalSeedsItems.entroCrystalSeed);
+            event.accept(AE2CrystalSeedsItems.redstoneCrystalSeed);
+            event.accept(AE2CrystalSeedsItems.quantumCrystalSeed);
+            event.accept(AE2CrystalSeedsItems.roseQuartzSeed);
+            event.accept(AE2CrystalSeedsItems.enderQuartzSeed);
+            event.accept(AE2CrystalSeedsItems.resonatingSeed);
+            event.accept(AE2CrystalSeedsItems.meteorSeed);
         }
     }
 

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "ae2_crystal_seeds:item/redstone_crystal_seed_1"
+  }
+}

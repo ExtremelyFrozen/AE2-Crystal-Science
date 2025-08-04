@@ -47,17 +47,10 @@ public class AE2CrystalSeedsItemModelProvider extends ItemModelProvider {
     }
 
     private void registerItemOverrides(Set<Item> items) {
-        crystalSeedItem(certusQuartzSeed);
-        items.remove(certusQuartzSeed);
-
-        crystalSeedItem(fluixCrystalSeed);
-        items.remove(fluixCrystalSeed);
-
-        crystalSeedItem(netherQuartzSeed);
-        items.remove(netherQuartzSeed);
-
-        crystalSeedItem(entroCrystalSeed);
-        items.remove(entroCrystalSeed);
+        for (var item : CRYSTAL_SEEDS) {
+            crystalSeedItem(item);
+            items.remove(item);
+        }
     }
 
     public ItemModelBuilder crystalSeedItem(Item item) {

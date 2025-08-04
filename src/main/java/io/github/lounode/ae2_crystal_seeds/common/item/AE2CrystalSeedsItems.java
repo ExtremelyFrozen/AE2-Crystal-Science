@@ -16,12 +16,25 @@ public final class AE2CrystalSeedsItems {
     public static final Item pureFluixCrystal = make(prefix(ItemNames.PURE_FLUIX_CRYSTAL), new Item(defaultBuilder()));
     public static final Item pureNetherQuartzCrystal = make(prefix(ItemNames.PURE_NETHER_QUARTZ_CRYSTAL), new Item(defaultBuilder()));
     public static final Item pureEntroCrystal = make(prefix(ItemNames.PURE_ENTRO_CRYSTAL), new Item(defaultBuilder()));
+    public static final Item pureRedstoneCrystal = make(prefix(ItemNames.PURE_REDSTONE_CRYSTAL), new Item(defaultBuilder()));
+    public static final Item pureQuantumCrystal = make(prefix(ItemNames.PURE_QUANTUM_CRYSTAL), new Item(defaultBuilder()));
+    public static final Item pureRoseQuartz = make(prefix(ItemNames.PURE_ROSE_QUARTZ), new Item(defaultBuilder()));
+    public static final Item pureEnderQuartz = make(prefix(ItemNames.PURE_ENDER_QUARTZ), new Item(defaultBuilder()));
+    public static final Item pureResonatingCrystal = make(prefix(ItemNames.PURE_RESONATING_CRYSTAL), new Item(defaultBuilder()));
+    public static final Item pureMeteorCrystal = make(prefix(ItemNames.PURE_METEOR_CRYSTAL), new Item(defaultBuilder()));
 
     public static final CrystalSeedItem certusQuartzSeed = make(prefix(ItemNames.CERTUS_QUARTZ_SEED), new CrystalSeedItem(defaultBuilder(), pureCertusQuartzCrystal));
     public static final CrystalSeedItem fluixCrystalSeed = make(prefix(ItemNames.FLUIX_CRYSTAL_SEED), new CrystalSeedItem(defaultBuilder(), pureFluixCrystal));
     public static final CrystalSeedItem netherQuartzSeed = make(prefix(ItemNames.NETHER_QUARTZ_SEED), new CrystalSeedItem(defaultBuilder(), pureNetherQuartzCrystal));
     public static final CrystalSeedItem entroCrystalSeed = make(prefix(ItemNames.ENTRO_CRYSTAL_SEED), new CrystalSeedItem(defaultBuilder(), pureEntroCrystal));
+    public static final CrystalSeedItem redstoneCrystalSeed = make(prefix(ItemNames.REDSTONE_CRYSTAL_SEED), new CrystalSeedItem(defaultBuilder(), pureRedstoneCrystal));
+    public static final CrystalSeedItem quantumCrystalSeed = make(prefix(ItemNames.QUANTUM_CRYSTAL_SEED), new CrystalSeedItem(defaultBuilder(), pureQuantumCrystal));
+    public static final CrystalSeedItem roseQuartzSeed = make(prefix(ItemNames.ROSE_QUARTZ_SEED), new CrystalSeedItem(defaultBuilder(), pureRoseQuartz));
+    public static final CrystalSeedItem enderQuartzSeed = make(prefix(ItemNames.ENDER_QUARTZ_SEED), new CrystalSeedItem(defaultBuilder(), pureEnderQuartz));
+    public static final CrystalSeedItem resonatingSeed = make(prefix(ItemNames.RESONATING_SEED), new CrystalSeedItem(defaultBuilder(), pureResonatingCrystal));
+    public static final CrystalSeedItem meteorSeed = make(prefix(ItemNames.METEOR_SEED), new CrystalSeedItem(defaultBuilder(), pureMeteorCrystal));
 
+    public static final Item crystalGrowthCard = make(prefix(ItemNames.CRYSTAL_GROWTH_CARD), new Item(defaultBuilder()));
 
     public static Item.Properties defaultBuilder() {
         return new Item.Properties();
@@ -38,6 +51,17 @@ public final class AE2CrystalSeedsItems {
     private static Item.Properties unstackable() {
         return defaultBuilder().stacksTo(1);
     }
+
+    public static final Item[] CRYSTAL_SEEDS = new Item[] {
+            certusQuartzSeed, fluixCrystalSeed, netherQuartzSeed,
+            entroCrystalSeed,
+            redstoneCrystalSeed,
+            quantumCrystalSeed,
+            roseQuartzSeed,
+            enderQuartzSeed,
+            resonatingSeed,
+            meteorSeed
+    };
 
 
     private static <T extends Item> T make(ResourceLocation id, T item) {
