@@ -2,7 +2,7 @@
 @FieldsAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 
-package io.github.lounode.ae2cs.data;
+package io.github.lounode.ae2cs.datagen;
 
 import net.minecraft.FieldsAreNonnullByDefault;
 import net.minecraft.MethodsReturnNonnullByDefault;

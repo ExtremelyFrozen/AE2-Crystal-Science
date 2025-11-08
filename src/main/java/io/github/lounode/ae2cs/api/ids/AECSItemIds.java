@@ -1,6 +1,7 @@
-package io.github.lounode.ae2cs.common.util.resourcelocation;
+package io.github.lounode.ae2cs.api.ids;
 
-public final class ItemNames {
+public class AECSItemIds
+{
     public static final String CERTUS_QUARTZ_SEED = "certus_quartz_seed";
     public static final String FLUIX_CRYSTAL_SEED = "fluix_crystal_seed";
     public static final String NETHER_QUARTZ_SEED = "nether_quartz_seed";

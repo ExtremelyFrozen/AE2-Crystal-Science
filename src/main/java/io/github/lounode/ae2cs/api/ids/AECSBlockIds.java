@@ -1,6 +1,7 @@
-package io.github.lounode.ae2cs.common.util.resourcelocation;
+package io.github.lounode.ae2cs.api.ids;
 
-public final class BlockNames {
+public class AECSBlockIds
+{
     public static final String CRYSTAL_GROWTH_CHAMBER = "crystal_growth_chamber";
     public static final String CIRCUIT_ETCHER = "circuit_etcher";
     public static final String QUARTZ_GRINDSTONE = "quartz_grindstone";

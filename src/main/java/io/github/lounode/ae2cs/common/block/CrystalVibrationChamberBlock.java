@@ -21,35 +21,43 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
-public class CrystalVibrationChamberBlock extends AEBaseEntityBlock<CrystalVibrationChamberBlockEntity> {
+public class CrystalVibrationChamberBlock extends AEBaseEntityBlock<CrystalVibrationChamberBlockEntity>
+{
 
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
-    public CrystalVibrationChamberBlock() {
+    public CrystalVibrationChamberBlock()
+    {
         super(metalProps().strength(4.2F));
         this.registerDefaultState(this.defaultBlockState().setValue(ACTIVE, false));
     }
 
     @Override
-    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, CrystalVibrationChamberBlockEntity be) {
+    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, CrystalVibrationChamberBlockEntity be)
+    {
         return currentState.setValue(ACTIVE, be.isOn);
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
+    {
         super.createBlockStateDefinition(builder);
         builder.add(ACTIVE);
     }
 
     @Override
-    public IOrientationStrategy getOrientationStrategy() {
+    public IOrientationStrategy getOrientationStrategy()
+    {
         return OrientationStrategies.full();
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        if (level.getBlockEntity(pos) instanceof VibrationChamberBlockEntity be) {
-            if (!level.isClientSide) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult)
+    {
+        if (level.getBlockEntity(pos) instanceof VibrationChamberBlockEntity be)
+        {
+            if (!level.isClientSide)
+            {
                 MenuOpener.open(VibrationChamberMenu.TYPE, player, MenuLocators.forBlockEntity(be));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());
@@ -59,13 +67,16 @@ public class CrystalVibrationChamberBlock extends AEBaseEntityBlock<CrystalVibra
     }
 
     @Override
-    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource r) {
-        if (!AEConfig.instance().isEnableEffects()) {
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource r)
+    {
+        if (!AEConfig.instance().isEnableEffects())
+        {
             return;
         }
 
         var tc = this.getBlockEntity(level, pos);
-        if (tc != null && tc.isOn) {
+        if (tc != null && tc.isOn)
+        {
             double f1 = pos.getX() + 0.5F;
             double f2 = pos.getY() + 0.5F;
             double f3 = pos.getZ() + 0.5F;

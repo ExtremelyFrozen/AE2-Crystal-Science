@@ -1,30 +1,33 @@
-package io.github.lounode.ae2cs.data;
+package io.github.lounode.ae2cs.datagen;
 
 import appeng.block.misc.VibrationChamberBlock;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
 import appeng.datagen.providers.models.AE2BlockStateProvider;
-import io.github.lounode.ae2cs.api.AE2CrystalSeedsAPI;
-import io.github.lounode.ae2cs.common.block.AE2CrystalSeedsBlocks;
+import io.github.lounode.ae2cs.api.ids.AECSConstants;
+import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.models.blockstates.PropertyDispatch;
 import net.minecraft.data.models.blockstates.Variant;
 import net.minecraft.data.models.blockstates.VariantProperties;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.registries.DeferredBlock;
 
-import static io.github.lounode.ae2cs.common.util.resourcelocation.ResourceLocationUtil.prefix;
+import static io.github.lounode.ae2cs.AE2CrystalScience.makeId;
 
-public class AE2CrystalSeedsBlockStateProvider extends AE2BlockStateProvider {
-    public AE2CrystalSeedsBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
-        super(output, AE2CrystalSeedsAPI.MOD_ID, exFileHelper);
+public class AECSBlockStateProvider extends AE2BlockStateProvider
+{
+    public AECSBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper)
+    {
+        super(output, AECSConstants.MODID, exFileHelper);
     }
 
     @Override
-    protected void registerStatesAndModels() {
+    protected void registerStatesAndModels()
+    {
         /*
         Block chamber = AE2CrystalSeedsBlocks.crystalGrowthChamber;
         var key = BuiltInRegistries.BLOCK.getKey(chamber);
@@ -44,7 +47,7 @@ public class AE2CrystalSeedsBlockStateProvider extends AE2BlockStateProvider {
 
         //machine(AE2CrystalSeedsBlocks.circuitEtcher);
         //machine(AE2CrystalSeedsBlocks.crystalVibrationChamber);
-        machine(AE2CrystalSeedsBlocks.crystalGrowthChamber);
+        machine(AECSBlocks.crystalGrowthChamber.get());
         crystalVibrationChamber();
         //machine(AE2CrystalSeedsBlocks.quartzGrindstone);
         //machine(AE2CrystalSeedsBlocks.crusher);
@@ -77,7 +80,14 @@ public class AE2CrystalSeedsBlockStateProvider extends AE2BlockStateProvider {
          */
     }
 
-    private void crystalVibrationChamber() {
+    private void blockWithItem(DeferredBlock<? extends Block> deferredBlock)
+    {
+        simpleBlockWithItem(deferredBlock.get(), cubeAll(deferredBlock.get()));
+    }
+
+
+    private void crystalVibrationChamber()
+    {
         var offModel = models().cube(
                 modelPath(AEBlocks.VIBRATION_CHAMBER),
                 makeId("block/crystal_vibration_chamber_bottom"),
@@ -104,19 +114,18 @@ public class AE2CrystalSeedsBlockStateProvider extends AE2BlockStateProvider {
         itemModels().withExistingParent(modelPath(AEBlocks.VIBRATION_CHAMBER), offModel.getLocation());
     }
 
-    private ResourceLocation makeId(String id) {
-        return prefix(id);
-    }
-
-    private String modelPath(BlockDefinition<?> block) {
+    private String modelPath(BlockDefinition<?> block)
+    {
         return block.id().getPath();
     }
 
-    public void machine(Block block) {
+    public void machine(Block block)
+    {
         horizontalBlock(block, machine(BuiltInRegistries.BLOCK.getKey(block).getPath()));
     }
 
-    public ModelFile machine(String name) {
+    public ModelFile machine(String name)
+    {
         return models().cube(name,
                 modLoc("block/" + name + "_bottom"),
                 modLoc("block/" + name + "_top"),

@@ -36,7 +36,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class CrystalVibrationChamberBlockEntity extends AENetworkedInvBlockEntity implements IGridTickable, IUpgradeableObject {
+public class CrystalVibrationChamberBlockEntity extends AENetworkedInvBlockEntity implements IGridTickable, IUpgradeableObject
+{
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 1);
     private final InternalInventory invExt = new FilteredInternalInventory(this.inv, new FuelSlotFilter());
@@ -58,7 +59,8 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedInvBlockEntit
     private final double baseMaxEnergyRate;
     private final double initialEnergyRate;
 
-    public CrystalVibrationChamberBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+    public CrystalVibrationChamberBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState)
+    {
         super(blockEntityType, pos, blockState);
         this.getMainNode()
                 .setIdlePowerUsage(0)
@@ -81,12 +83,14 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedInvBlockEntit
     }
 
     @Override
-    public AECableType getCableConnectionType(Direction dir) {
+    public AECableType getCableConnectionType(Direction dir)
+    {
         return AECableType.COVERED;
     }
 
     @Override
-    protected boolean readFromStream(RegistryFriendlyByteBuf data) {
+    protected boolean readFromStream(RegistryFriendlyByteBuf data)
+    {
         final boolean c = super.readFromStream(data);
         final boolean wasOn = this.isOn;
 
@@ -96,14 +100,16 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedInvBlockEntit
     }
 
     @Override
-    protected void writeToStream(RegistryFriendlyByteBuf data) {
+    protected void writeToStream(RegistryFriendlyByteBuf data)
+    {
         super.writeToStream(data);
         this.isOn = this.getRemainingFuelTicks() > 0;
         data.writeBoolean(this.isOn);
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
+    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries)
+    {
         super.saveAdditional(data, registries);
         this.upgrades.writeToNBT(data, "upgrades", registries);
         data.putDouble("burnTime", this.getRemainingFuelTicks());
@@ -114,7 +120,8 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedInvBlockEntit
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
+    public void loadTag(CompoundTag data, HolderLookup.Provider registries)
+    {
         super.loadTag(data, registries);
         this.upgrades.readFromNBT(data, "upgrades", registries);
         this.setRemainingFuelTicks(data.getDouble("burnTime"));
@@ -123,31 +130,39 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedInvBlockEntit
     }
 
     @Override
-    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
+    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops)
+    {
         super.addAdditionalDrops(level, pos, drops);
 
-        for (var upgrade : upgrades) {
+        for (var upgrade : upgrades)
+        {
             drops.add(upgrade);
         }
     }
 
     @Override
-    public void clearContent() {
+    public void clearContent()
+    {
         super.clearContent();
         upgrades.clear();
     }
 
     @Override
-    public IUpgradeInventory getUpgrades() {
+    public IUpgradeInventory getUpgrades()
+    {
         return this.upgrades;
     }
 
     @Nullable
     @Override
-    public InternalInventory getSubInventory(ResourceLocation id) {
-        if (id.equals(ISegmentedInventory.STORAGE)) {
+    public InternalInventory getSubInventory(ResourceLocation id)
+    {
+        if (id.equals(ISegmentedInventory.STORAGE))
+        {
             return this.getInternalInventory();
-        } else if (id.equals(ISegmentedInventory.UPGRADES)) {
+        }
+        else if (id.equals(ISegmentedInventory.UPGRADES))
+        {
             return this.upgrades;
         }
 
@@ -155,29 +170,36 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedInvBlockEntit
     }
 
     @Override
-    protected InternalInventory getExposedInventoryForSide(Direction facing) {
+    protected InternalInventory getExposedInventoryForSide(Direction facing)
+    {
         return this.invExt;
     }
 
     @Override
-    public InternalInventory getInternalInventory() {
+    public InternalInventory getInternalInventory()
+    {
         return this.inv;
     }
 
     @Override
-    public void onChangeInventory(AppEngInternalInventory inv, int slot) {
-        if (this.getRemainingFuelTicks() <= 0 && this.canEatFuel()) {
+    public void onChangeInventory(AppEngInternalInventory inv, int slot)
+    {
+        if (this.getRemainingFuelTicks() <= 0 && this.canEatFuel())
+        {
             getMainNode().ifPresent((grid, node) -> {
                 grid.getTickManager().wakeDevice(node);
             });
         }
     }
 
-    private boolean canEatFuel() {
+    private boolean canEatFuel()
+    {
         final ItemStack is = this.inv.getStackInSlot(0);
-        if (!is.isEmpty()) {
+        if (!is.isEmpty())
+        {
             final int newBurnTime = getBurnTime(is);
-            if (newBurnTime > 0 && is.getCount() > 0) {
+            if (newBurnTime > 0 && is.getCount() > 0)
+            {
                 return true;
             }
         }
@@ -185,8 +207,10 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedInvBlockEntit
     }
 
     @Override
-    public TickingRequest getTickingRequest(IGridNode node) {
-        if (this.getRemainingFuelTicks() <= 0) {
+    public TickingRequest getTickingRequest(IGridNode node)
+    {
+        if (this.getRemainingFuelTicks() <= 0)
+        {
             this.eatFuel();
         }
 
@@ -194,17 +218,20 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedInvBlockEntit
     }
 
     @Override
-    public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
+    public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall)
+    {
 
         // Recalculate fuel tick rate min and max
         this.minFuelTicksPerTick = minEnergyRate / getEnergyPerFuelTick();
         this.maxFuelTicksPerTick = getMaxFuelTicksPerTick();
         this.initialFuelTicksPerTick = initialEnergyRate / getEnergyPerFuelTick();
 
-        if (this.getRemainingFuelTicks() <= 0) {
+        if (this.getRemainingFuelTicks() <= 0)
+        {
             this.eatFuel();
 
-            if (this.getRemainingFuelTicks() > 0) {
+            if (this.getRemainingFuelTicks() > 0)
+            {
                 return TickRateModulation.URGENT;
             }
 
@@ -214,7 +241,8 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedInvBlockEntit
 
         double fuelTicksConsumed = ticksSinceLastCall * currentFuelTicksPerTick;
         this.setRemainingFuelTicks(this.getRemainingFuelTicks() - fuelTicksConsumed);
-        if (this.getRemainingFuelTicks() < 0) {
+        if (this.getRemainingFuelTicks() < 0)
+        {
             fuelTicksConsumed += this.getRemainingFuelTicks();
             this.setRemainingFuelTicks(0);
         }
@@ -228,8 +256,10 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedInvBlockEntit
 
         // If our burn rate is zero, check if the network would now accept any power
         // And if it does, increase burn rate and tick faster
-        if (Math.abs(fuelTicksConsumed - 0) < 0.01) {
-            if (energy.injectPower(1, Actionable.SIMULATE) == 0) {
+        if (Math.abs(fuelTicksConsumed - 0) < 0.01)
+        {
+            if (energy.injectPower(1, Actionable.SIMULATE) == 0)
+            {
                 this.setCurrentFuelTicksPerTick(this.getCurrentFuelTicksPerTick() + speedStep);
                 return TickRateModulation.FASTER;
             }
@@ -240,29 +270,38 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedInvBlockEntit
         final double overFlow = energy.injectPower(newPower, Actionable.MODULATE);
 
         // Speed up or slow down the burn rate, the overflow is voided
-        if (overFlow > 0) {
+        if (overFlow > 0)
+        {
             this.setCurrentFuelTicksPerTick(this.getCurrentFuelTicksPerTick() - speedStep);
-        } else {
+        }
+        else
+        {
             this.setCurrentFuelTicksPerTick(this.getCurrentFuelTicksPerTick() + speedStep);
         }
 
         return overFlow > 0 ? TickRateModulation.SLOWER : TickRateModulation.FASTER;
     }
 
-    private void eatFuel() {
+    private void eatFuel()
+    {
         final ItemStack is = this.inv.getStackInSlot(0);
-        if (!is.isEmpty()) {
+        if (!is.isEmpty())
+        {
             final int newBurnTime = getBurnTime(is);
-            if (newBurnTime > 0 && is.getCount() > 0) {
+            if (newBurnTime > 0 && is.getCount() > 0)
+            {
                 this.setRemainingFuelTicks(this.getRemainingFuelTicks() + newBurnTime);
                 this.setFuelItemFuelTicks(this.getRemainingFuelTicks());
 
                 final Item fuelItem = is.getItem();
 
-                if (is.getCount() <= 1) {
+                if (is.getCount() <= 1)
+                {
                     // fuel was fully consumed. for items like lava-bucket, put the remainder in the slot
                     this.inv.setItemDirect(0, fuelItem.getCraftingRemainingItem(is));
-                } else {
+                }
+                else
+                {
                     is.shrink(1);
                     this.inv.setItemDirect(0, is);
                 }
@@ -270,60 +309,72 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedInvBlockEntit
             }
         }
 
-        if (this.getRemainingFuelTicks() > 0) {
+        if (this.getRemainingFuelTicks() > 0)
+        {
             getMainNode().ifPresent((grid, node) -> {
                 grid.getTickManager().wakeDevice(node);
             });
         }
 
         // state change
-        if (!this.isOn && this.getRemainingFuelTicks() > 0 || this.isOn && this.getRemainingFuelTicks() <= 0) {
+        if (!this.isOn && this.getRemainingFuelTicks() > 0 || this.isOn && this.getRemainingFuelTicks() <= 0)
+        {
             this.isOn = this.getRemainingFuelTicks() > 0;
             this.markForUpdate();
 
-            if (this.hasLevel()) {
+            if (this.hasLevel())
+            {
                 Platform.notifyBlocksOfNeighbors(this.level, this.worldPosition);
             }
         }
     }
 
-    public static int getBurnTime(ItemStack is) {
+    public static int getBurnTime(ItemStack is)
+    {
         return is.getBurnTime(null);
     }
 
-    public static boolean hasBurnTime(ItemStack is) {
+    public static boolean hasBurnTime(ItemStack is)
+    {
         return getBurnTime(is) > 0;
     }
 
-    public double getCurrentFuelTicksPerTick() {
+    public double getCurrentFuelTicksPerTick()
+    {
         return this.currentFuelTicksPerTick;
     }
 
-    private void setCurrentFuelTicksPerTick(double currentFuelTicksPerTick) {
+    private void setCurrentFuelTicksPerTick(double currentFuelTicksPerTick)
+    {
         this.currentFuelTicksPerTick = Mth.clamp(currentFuelTicksPerTick, this.minFuelTicksPerTick,
                 this.maxFuelTicksPerTick);
     }
 
-    public double getFuelItemFuelTicks() {
+    public double getFuelItemFuelTicks()
+    {
         return this.fuelItemFuelTicks;
     }
 
-    private void setFuelItemFuelTicks(double fuelItemFuelTicks) {
+    private void setFuelItemFuelTicks(double fuelItemFuelTicks)
+    {
         this.fuelItemFuelTicks = fuelItemFuelTicks;
     }
 
-    public double getRemainingFuelTicks() {
+    public double getRemainingFuelTicks()
+    {
         return this.remainingFuelTicks;
     }
 
-    private void setRemainingFuelTicks(double remainingFuelTicks) {
+    private void setRemainingFuelTicks(double remainingFuelTicks)
+    {
         this.remainingFuelTicks = remainingFuelTicks;
     }
 
     /**
      * AE Power generated per consumed fuel-tick.
      */
-    public double getEnergyPerFuelTick() {
+    public double getEnergyPerFuelTick()
+    {
         return AEConfig.instance().getVibrationChamberBaseEnergyPerFuelTick()
                 * (1 + this.upgrades.getInstalledUpgrades(AEItems.ENERGY_CARD) / 2.0f);
     }
@@ -331,29 +382,35 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedInvBlockEntit
     /**
      * Lowest fuel-ticks per game-tick when power is not being consumed fast enough.
      */
-    public double getMinFuelTicksPerTick() {
+    public double getMinFuelTicksPerTick()
+    {
         return this.minFuelTicksPerTick;
     }
 
     /**
      * Highest fuel-ticks per game-tick when all power is being consumed.
      */
-    public double getMaxFuelTicksPerTick() {
+    public double getMaxFuelTicksPerTick()
+    {
         return getMaxEnergyRate() / getEnergyPerFuelTick();
     }
 
-    public double getMaxEnergyRate() {
+    public double getMaxEnergyRate()
+    {
         return baseMaxEnergyRate + baseMaxEnergyRate * this.upgrades.getInstalledUpgrades(AEItems.SPEED_CARD) / 2.0f;
     }
 
-    private static class FuelSlotFilter implements IAEItemFilter {
+    private static class FuelSlotFilter implements IAEItemFilter
+    {
         @Override
-        public boolean allowExtract(InternalInventory inv, int slot, int amount) {
+        public boolean allowExtract(InternalInventory inv, int slot, int amount)
+        {
             return !hasBurnTime(inv.getStackInSlot(slot));
         }
 
         @Override
-        public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
+        public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack)
+        {
             return hasBurnTime(stack);
         }
     }
