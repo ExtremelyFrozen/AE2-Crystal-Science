@@ -1,0 +1,43 @@
+{
+  "itemGroup.ae2_crystal_seeds": "AE2: Crystal Seeds",
+  
+  "block.ae2_crystal_seeds.crystal_growth_chamber": "Crystal Growth Chamber",
+  "block.ae2_crystal_seeds.quartz_grindstone": "Quartz Grindstone",
+  "block.ae2_crystal_seeds.circuit_etcher": "Circuit Etcher",
+  "block.ae2_crystal_seeds.crystal_vibration_chamber": "Crystal Vibration Chamber",
+  "block.ae2_crystal_seeds.crusher": "Pulse Centrifuge",
+  
+  "item.ae2_crystal_seeds.certus_quartz_seed": "Certus Quartz Seed",
+  "item.ae2_crystal_seeds.fluix_crystal_seed": "Fluix Seed",
+  "item.ae2_crystal_seeds.nether_quartz_seed": "Nether Quartz Seed",
+  "item.ae2_crystal_seeds.entro_crystal_seed": "Entro Quartz Seed",
+  "item.ae2_crystal_seeds.redstone_crystal_seed": "Redstone Crystal Seed",
+  "item.ae2_crystal_seeds.quantum_crystal_seed": "Quantum Crystal Seed",
+  "item.ae2_crystal_seeds.rose_quartz_seed": "Rose Quartz Seed",
+  "item.ae2_crystal_seeds.ender_quartz_seed": "Ender Quartz Seed",
+  "item.ae2_crystal_seeds.resonating_seed": "Resonating Seed",
+  "item.ae2_crystal_seeds.meteor_seed": "Meteor Seed",
+  
+  "item.ae2_crystal_seeds.purified_certus_quartz_crystal": "Pure Certus Quartz Crystal",
+  "item.ae2_crystal_seeds.purified_fluix_crystal": "Pure Fluix Crystal",
+  "item.ae2_crystal_seeds.purified_nether_quartz_crystal": "Pure Nether Quartz Crystal",
+  "item.ae2_crystal_seeds.purified_entro_crystal": "Pure Entro Crystal",
+  "item.ae2_crystal_seeds.purified_redstone_crystal": "Pure Redstone Crystal",
+  "item.ae2_crystal_seeds.purified_quantum_crystal": "Pure Quantum Crystal",
+  "item.ae2_crystal_seeds.purified_rose_quartz": "Pure Rose Quartz",
+  "item.ae2_crystal_seeds.purified_ender_quartz": "Pure Ender Quartz",
+  "item.ae2_crystal_seeds.purified_resonating_crystal": "Pure Resonating Crystal",
+  "item.ae2_crystal_seeds.purified_meteor_crystal": "Pure Meteor Crystal",
+  
+  "item.ae2_crystal_seeds.crystal_growth_card": "Crystal Growth Card",
+  
+  "message.ae2_crystal_seeds.tooltip.seed_growth": "Growth: %1$s％",
+  
+  "ae2_crystal_seeds.configuration.title": "AE2 Crystal Seeds Configs",
+  "ae2_crystal_seeds.configuration.section.ae2_crystal_seeds.common.toml": "AE2 Crystal Seeds Configs",
+  "ae2_crystal_seeds.configuration.section.ae2_crystal_seeds.common.toml.title": "AE2 Crystal Seeds Configs",
+  "ae2_crystal_seeds.configuration.items": "Item List",
+  "ae2_crystal_seeds.configuration.logDirtBlock": "Log Dirt Block",
+  "ae2_crystal_seeds.configuration.magicNumberIntroduction": "Magic Number Text",
+  "ae2_crystal_seeds.configuration.magicNumber": "Magic Number"
+}
