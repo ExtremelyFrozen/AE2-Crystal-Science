@@ -1,5 +1,6 @@
 package io.github.lounode.ae2cs;
 
+import io.github.lounode.ae2cs.api.AE2CrystalSeedsAPI;
 import io.github.lounode.ae2cs.common.block.AE2CrystalSeedsBlocks;
 import io.github.lounode.ae2cs.common.block.entity.AE2CrystalSeedsBlockEntities;
 import io.github.lounode.ae2cs.common.item.AE2CrystalSeedsItems;
@@ -8,6 +9,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.registries.*;
 import org.slf4j.Logger;
 
@@ -26,7 +28,7 @@ import java.util.function.Consumer;
 import static io.github.lounode.ae2cs.AE2CSCreativeTabs.AE2_CRYSTAL_SEEDS_TAB_KEY;
 import static io.github.lounode.ae2cs.common.util.resourcelocation.ResourceLocationUtil.prefix;
 
-//@Mod(AE2CrystalSeedsAPI.MOD_ID)
+@Mod(AE2CrystalSeedsAPI.MOD_ID)
 public class AE2CrystalSeeds {
     private static final Logger LOGGER = LogUtils.getLogger();
 
