@@ -45,7 +45,7 @@ public class AECSItems
     public static final DeferredItem<Item> pureQuantumCrystal = registerPureCrystalItem(AECSItemIds.PURE_QUANTUM_CRYSTAL, () -> new Item(defaultBuilder()));
     public static final DeferredItem<Item> pureRoseQuartz = registerPureCrystalItem(AECSItemIds.PURE_ROSE_QUARTZ, () -> new Item(defaultBuilder()));
     public static final DeferredItem<Item> pureEnderQuartz = registerPureCrystalItem(AECSItemIds.PURE_ENDER_QUARTZ, () -> new Item(defaultBuilder()));
-    public static final DeferredItem<Item> pureResonatingCrystal = registerPureCrystalItem(AECSItemIds.RESONATING_SEED, () -> new Item(defaultBuilder()));
+    public static final DeferredItem<Item> pureResonatingCrystal = registerPureCrystalItem(AECSItemIds.PURE_RESONATING_CRYSTAL, () -> new Item(defaultBuilder()));
     public static final DeferredItem<Item> pureMeteorCrystal = registerPureCrystalItem(AECSItemIds.PURE_METEOR_CRYSTAL, () -> new Item(defaultBuilder()));
 
     public static final DeferredItem<CrystalSeedItem> certusQuartzSeed = registerCrystalSeedItem(AECSItemIds.CERTUS_QUARTZ_SEED, () -> new CrystalSeedItem(defaultBuilder(), pureCertusQuartzCrystal));

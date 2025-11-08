@@ -25,6 +25,6 @@ public class AECSFluidTagsProvider extends FluidTagsProvider
     @Override
     public @NotNull String getName()
     {
-        return "AE2OMNI CELLS Fluid Tags";
+        return "AECS Fluid Tags";
     }
 }
