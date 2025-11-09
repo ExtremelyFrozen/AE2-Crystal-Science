@@ -24,11 +24,11 @@ public class AE2CrystalScienceClient
     public AE2CrystalScienceClient(IEventBus modEventBus, ModContainer container)
     {
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
-
+        modEventBus.register(this);
     }
 
     @SubscribeEvent
-    static void onClientSetup(FMLClientSetupEvent event)
+    public void onClientSetup(FMLClientSetupEvent event)
     {
         event.enqueueWork(() -> {
             Set<CrystalSeedItem> seeds = BuiltInRegistries.ITEM.stream()

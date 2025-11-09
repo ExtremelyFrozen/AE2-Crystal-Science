@@ -19,11 +19,11 @@ public class AE2CrystalScience
     {
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
 
-        modEventBus.addListener(AECSItems::register);
-        modEventBus.addListener(AECSBlocks::register);
-        modEventBus.addListener(AECSBlockEntities::register);
-        modEventBus.addListener(AECSDataComponents::register);
-        modEventBus.addListener(AECSCreativeModeTabs::register);
+        AECSItems.register(modEventBus);
+        AECSBlocks.register(modEventBus);
+        AECSBlockEntities.register(modEventBus);
+        AECSDataComponents.register(modEventBus);
+        AECSCreativeModeTabs.register(modEventBus);
     }
 
     public static ResourceLocation makeId(String path)
