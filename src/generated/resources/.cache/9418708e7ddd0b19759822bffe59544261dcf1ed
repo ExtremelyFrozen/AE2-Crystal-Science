@@ -1,4 +1,4 @@
-// 1.21.1	2025-11-09T10:28:33.3381038	Item Models: ae2cs
+// 1.21.1	2025-11-17T16:40:27.2081754	Item Models: ae2cs
 b12dd22e280360c8a0e60dab4f633579f285ac71 assets/ae2cs/models/item/certus_quartz_seed.json
 9b0a0f5bbd61b4a4cf3d2083524df9fe42b70ac5 assets/ae2cs/models/item/certus_quartz_seed_1.json
 9359cf66e98b5af14ae724e4097a9a8916b30c0e assets/ae2cs/models/item/certus_quartz_seed_2.json
@@ -18,6 +18,16 @@ c05ada896deb1d0352469b064f81c74613c6d5a6 assets/ae2cs/models/item/meteor_seed_1.
 f27314f0837601f44a5dc3f59e0e2d4de63878a3 assets/ae2cs/models/item/nether_quartz_seed.json
 e1618e7acf41bf4384edd758e542283f11ad47de assets/ae2cs/models/item/nether_quartz_seed_1.json
 8d318277a399c6bfa9f9fc497a3a87ddb6c652a2 assets/ae2cs/models/item/nether_quartz_seed_2.json
+4f1abc4dfef9cf4d01a7da05660ece42fc4c4326 assets/ae2cs/models/item/purified_certus_quartz_crystal.json
+466e97868eab6e4952e9cf646b6089582ca46d0a assets/ae2cs/models/item/purified_ender_quartz.json
+987744301605f07d2cd6c14e17b22fa492041717 assets/ae2cs/models/item/purified_entro_crystal.json
+7875a7540cf56ba47264eb70962bab1c7b747e99 assets/ae2cs/models/item/purified_fluix_crystal.json
+35782645b711c98338e05c47c418e889b03eb16b assets/ae2cs/models/item/purified_meteor_crystal.json
+b3fdde1843e70bf1736a7c35a391891af7408558 assets/ae2cs/models/item/purified_nether_quartz_crystal.json
+f69b8ea71b94d78e30bae28dce0deff294ce782b assets/ae2cs/models/item/purified_quantum_crystal.json
+7f146388a5dcd312e973260252a0bb76d635c432 assets/ae2cs/models/item/purified_redstone_crystal.json
+f2f6e6d2ca8e2ea689d29aafdc7ea60c7fcdf8fe assets/ae2cs/models/item/purified_resonating_crystal.json
+175c67f4966fad233b3ea5fff24968f4093e6855 assets/ae2cs/models/item/purified_rose_quartz.json
 13a034d9a111034e99fe9bc17ef235538259a8b0 assets/ae2cs/models/item/quantum_crystal_seed.json
 89a2080303a320f95176f5c057a1e46a9bbca5b8 assets/ae2cs/models/item/quantum_crystal_seed_1.json
 e4b8a6a69bf42c179b44ddfe070889105ffc36f2 assets/ae2cs/models/item/quantum_crystal_seed_2.json

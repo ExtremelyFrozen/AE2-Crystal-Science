@@ -47,7 +47,7 @@ public class AECSBlockStateProvider extends AE2BlockStateProvider
 
         //machine(AE2CrystalSeedsBlocks.circuitEtcher);
         //machine(AE2CrystalSeedsBlocks.crystalVibrationChamber);
-        machine(AECSBlocks.crystalGrowthChamber.get());
+        machine(AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK.get());
         //crystalVibrationChamber();
         //machine(AE2CrystalSeedsBlocks.quartzGrindstone);
         //machine(AE2CrystalSeedsBlocks.crusher);

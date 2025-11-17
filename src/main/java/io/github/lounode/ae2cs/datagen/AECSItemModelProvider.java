@@ -32,6 +32,10 @@ public class AECSItemModelProvider extends ItemModelProvider
         {
             crystalSeedItem(item.get());
         }
+        for (DeferredItem<Item> item : AECSItems.getPureCrystal())
+        {
+            basicItem(item.get());
+        }
         for (DeferredItem<Item> item : AECSItems.getOthers())
         {
             basicItem(item.get());

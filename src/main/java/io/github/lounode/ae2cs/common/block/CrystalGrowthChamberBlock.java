@@ -1,15 +1,14 @@
 package io.github.lounode.ae2cs.common.block;
 
 import appeng.block.AEBaseEntityBlock;
-import com.mojang.serialization.MapCodec;
+import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuLocators;
 import io.github.lounode.ae2cs.common.block.entity.CrystalGrowthChamberBlockEntity;
+import io.github.lounode.ae2cs.common.init.AECSMenus;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
@@ -28,8 +27,6 @@ public class CrystalGrowthChamberBlock extends AEBaseEntityBlock<CrystalGrowthCh
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
 
-    public static final MapCodec<CrystalGrowthChamberBlock> CODEC = simpleCodec(CrystalGrowthChamberBlock::new);
-
     public CrystalGrowthChamberBlock(Properties properties)
     {
         super(properties);
@@ -40,12 +37,6 @@ public class CrystalGrowthChamberBlock extends AEBaseEntityBlock<CrystalGrowthCh
     protected RenderShape getRenderShape(BlockState state)
     {
         return RenderShape.MODEL;
-    }
-
-    @Override
-    public MapCodec<? extends CrystalGrowthChamberBlock> codec()
-    {
-        return CODEC;
     }
 
     @Override
@@ -65,43 +56,18 @@ public class CrystalGrowthChamberBlock extends AEBaseEntityBlock<CrystalGrowthCh
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult)
     {
-        if (level.isClientSide())
+        super.useWithoutItem(state, level, pos, player, hitResult);
+        if (!level.isClientSide() && !player.isShiftKeyDown())
         {
-            return InteractionResult.SUCCESS;
+            if (level.getBlockEntity(pos) instanceof CrystalGrowthChamberBlockEntity be)
+                MenuOpener.open(AECSMenus.CRYSTAL_GROWTH_CHAMBER_MENU.get(), player, MenuLocators.forBlockEntity(be));
         }
-        else
-        {
-            BlockEntity blockentity = level.getBlockEntity(pos);
-            if (blockentity instanceof CrystalGrowthChamberBlockEntity)
-            {
-                player.openMenu((MenuProvider) blockentity);
-            }
-            return InteractionResult.CONSUME;
-        }
+        return InteractionResult.SUCCESS_NO_ITEM_USED;
     }
 
     private void checkLitState(Level level, BlockPos pos, BlockState state)
     {
 
-    }
-
-    @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving)
-    {
-        Containers.dropContentsOnDestroy(state, newState, level, pos);
-        super.onRemove(state, level, pos, newState, isMoving);
-    }
-
-    @Override
-    public boolean hasAnalogOutputSignal(BlockState state)
-    {
-        return true;
-    }
-
-    @Override
-    public int getAnalogOutputSignal(BlockState blockState, Level level, BlockPos pos)
-    {
-        return AbstractContainerMenu.getRedstoneSignalFromBlockEntity(level.getBlockEntity(pos));
     }
 
     @Override

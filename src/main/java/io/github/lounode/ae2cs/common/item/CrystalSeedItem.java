@@ -12,20 +12,21 @@ import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.function.Supplier;
 
 public class CrystalSeedItem extends Item
 {
-    private static final int OVERGROW_TICK = 900;
+    private static final int DEFAULT_OVERGROW_TICK = 600;
 
     private final Supplier<Item> growTo;
     private final int overGrowTick;
 
     public CrystalSeedItem(Properties properties, Supplier<Item> growTo)
     {
-        this(properties, growTo, OVERGROW_TICK);
+        this(properties, growTo, DEFAULT_OVERGROW_TICK);
     }
 
     public CrystalSeedItem(Properties properties, Supplier<Item> growTo, int overGrowTick)
@@ -36,7 +37,10 @@ public class CrystalSeedItem extends Item
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
+    public void appendHoverText(@NotNull ItemStack stack,
+                                @NotNull TooltipContext context,
+                                @NotNull List<Component> tooltipComponents,
+                                @NotNull TooltipFlag tooltipFlag)
     {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
         tooltipComponents.add(
@@ -44,6 +48,9 @@ public class CrystalSeedItem extends Item
                         .withStyle(ChatFormatting.GRAY));
     }
 
+    /**
+     * 获取经过的生长刻
+     */
     public int getGrowTicks(ItemStack stack)
     {
         if (stack.getItem() instanceof CrystalSeedItem)
@@ -53,59 +60,72 @@ public class CrystalSeedItem extends Item
         return 0;
     }
 
+    /**
+     * 设置经过的生长刻
+     */
     public void setGrowTicks(ItemStack stack, int tick)
     {
         stack.set(AECSDataComponents.GROW_PROCESS, tick);
     }
 
+    /**
+     * 获取完全生长后的物品
+     */
     public Item getGrowTo()
     {
         return this.growTo.get();
     }
 
+    /**
+     * 获取生长所需刻数
+     */
     public int getOvergrowTick()
     {
         return this.overGrowTick;
     }
 
+    /**
+     * 获取百分比的生长进度
+     */
     public float getGrowProcess(ItemStack stack)
     {
         return Mth.clamp((float) getGrowTicks(stack) / getOvergrowTick(), 0F, 1.0F);
     }
 
+    /**
+     * 使目标生长一定刻，并返回结束后的物品堆
+     */
+    public static @NotNull ItemStack grow(@NotNull ItemStack stack, int ticks)
+    {
+        if (!(stack.getItem() instanceof CrystalSeedItem seedItem)) return stack;
+
+        int ticksExcited = seedItem.getGrowTicks(stack);
+        seedItem.setGrowTicks(stack, ticksExcited + ticks);
+
+        if (ticksExcited >= seedItem.getOvergrowTick())
+        {
+            ItemStack newStack = new ItemStack(seedItem.getGrowTo());
+            newStack.setCount(stack.getCount());
+            return newStack;
+        }
+        return stack;
+    }
+
     @EventBusSubscriber
     public static class EventHandler
     {
-
+        /**
+         * 处理水中生长的情况
+         */
         @SubscribeEvent
         public static void onItemEntityTick(EntityTickEvent.Post event)
         {
             Entity entity = event.getEntity();
-            if (!(entity instanceof ItemEntity itemEntity))
-            {
-                return;
-            }
-            if (!itemEntity.isInWater())
-            {
-                return;
-            }
-            ItemStack stack = itemEntity.getItem();
-            if (!(stack.getItem() instanceof CrystalSeedItem seedItem))
-            {
-                return;
-            }
+            if (!(entity instanceof ItemEntity itemEntity)) return;
+            if (!itemEntity.isInWater()) return;
 
-            int ticksExcited = seedItem.getGrowTicks(stack);
-            if (ticksExcited < seedItem.getOvergrowTick())
-            {
-                seedItem.setGrowTicks(stack, ++ticksExcited);
-            }
-            else
-            {
-                ItemStack newStack = new ItemStack(seedItem.getGrowTo());
-                newStack.setCount(stack.getCount());
-                itemEntity.setItem(newStack);
-            }
+            ItemStack stack = itemEntity.getItem();
+            itemEntity.setItem(grow(stack, 1));
         }
     }
 }

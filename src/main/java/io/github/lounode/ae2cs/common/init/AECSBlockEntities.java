@@ -39,7 +39,7 @@ public class AECSBlockEntities
             AECSBlockIds.CRYSTAL_GROWTH_CHAMBER,
             CrystalGrowthChamberBlockEntity.class,
             io.github.lounode.ae2cs.common.block.entity.CrystalGrowthChamberBlockEntity::new,
-            AECSBlocks.crystalGrowthChamber
+            AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK
     );
 
     /**

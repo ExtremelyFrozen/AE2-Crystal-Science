@@ -23,6 +23,10 @@ repositories {
         url = "https://cursemaven.com"
     }
     maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+    }
+    maven {
         name = "TerraformersMC"
         url = "https://maven.terraformersmc.com/"
         content {
@@ -133,6 +137,9 @@ dependencies {
     localRuntime "dev.emi:emi-neoforge:${emi_version}"
 
     localRuntime "curse.maven:nbtedit-reborn-678133:6125444"
+
+    // 把MEK加进来，方便我调试
+    localRuntime "maven.modrinth:mekanism:10.7.13.78"
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
