@@ -91,7 +91,7 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedPoweredBlockEnti
         }
     });
 
-    private int lastWorkTick = 0;
+    private int workTickCountDown = 10;
 
     public CrystalGrowthChamberBlockEntity(BlockPos pos, BlockState state)
     {
@@ -198,8 +198,8 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedPoweredBlockEnti
     {
         if (level == null || level.isClientSide) return;
 
-        ++lastWorkTick;
-        if (lastWorkTick < 10) return; // 每10tick工作一次
+        --workTickCountDown;
+        if(workTickCountDown > 0) return;
 
         tickEnergyWithME();
 
@@ -226,6 +226,8 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedPoweredBlockEnti
             extractAEPower(energyCost, Actionable.MODULATE);
 
         setChanged();
+
+        workTickCountDown = 10; // 重置倒计时
     }
 
     /**
