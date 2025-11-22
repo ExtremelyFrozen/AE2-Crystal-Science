@@ -1,0 +1,30 @@
+{
+  "$schema": "schema.json",
+  "includes": [
+    "common/common.json",
+    "common/player_inventory.json",
+    "common/toolbox.json"
+  ],
+  "background": {
+    "texture": "ae2cs:textures/gui/integrated_interface_menu.png",
+    "textureWidth": 256,
+    "textureHeight": 256,
+    "srcRect": [0, 0, 176, 213]
+  },
+  "slots": {
+    "CONFIG": { "left": 8, "top": 35, "grid": "BREAK_AFTER_9COLS" },
+    "STORAGE": { "left": 8, "top": 53, "grid": "BREAK_AFTER_9COLS" },
+    "ENCODED_PATTERN": { "left": 8, "top": 97, "grid": "BREAK_AFTER_9COLS" },
+    "UPGRADE": {
+      "right": 0,
+      "top": 0,
+      "grid": "VERTICAL"
+    }
+  },
+  "text": {
+    "title": {
+      "text": { "translate": "block.ae2_crystal_seeds.integrated_interface" },
+      "position": { "left": 8, "top": 6 }
+    }
+  }
+}

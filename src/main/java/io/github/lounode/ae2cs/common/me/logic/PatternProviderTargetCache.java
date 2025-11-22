@@ -1,4 +1,4 @@
-package io.github.lounode.ae2cs.common.block.entity;
+package io.github.lounode.ae2cs.common.me.logic;
 
 import appeng.api.AECapabilities;
 import appeng.api.behaviors.ExternalStorageStrategy;
@@ -20,13 +20,14 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class PatternProviderTargetCache_COPY
+// 复制自AE原版类
+public class PatternProviderTargetCache
 {
     private final BlockCapabilityCache<MEStorage, Direction> cache;
     private final IActionSource src;
     private final Map<AEKeyType, ExternalStorageStrategy> strategies;
 
-    PatternProviderTargetCache_COPY(ServerLevel l, BlockPos pos, Direction direction, IActionSource src)
+    PatternProviderTargetCache(ServerLevel l, BlockPos pos, Direction direction, IActionSource src)
     {
         this.cache = BlockCapabilityCache.create(AECapabilities.ME_STORAGE, l, pos, direction);
         this.src = src;

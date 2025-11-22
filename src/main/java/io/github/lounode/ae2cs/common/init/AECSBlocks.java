@@ -1,5 +1,6 @@
 package io.github.lounode.ae2cs.common.init;
 
+import appeng.block.AEBaseBlock;
 import io.github.lounode.ae2cs.api.ids.AECSBlockIds;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.block.CrystalGrowthChamberBlock;
@@ -36,7 +37,7 @@ public class AECSBlocks
     public static final DeferredBlock<CrystalGrowthChamberBlock> CRYSTAL_GROWTH_CHAMBER_BLOCK = registerOtherBlock(AECSBlockIds.CRYSTAL_GROWTH_CHAMBER, () -> new CrystalGrowthChamberBlock(copy(Blocks.IRON_BLOCK)));
 
     /** ME集成接口 */
-    public static final DeferredBlock<IntegratedInterfaceBlock> INTEGRATED_INTERFACE_BLOCK = registerOtherBlock(AECSBlockIds.INTEGRATED_INTERFACE, () -> new IntegratedInterfaceBlock(copy(Blocks.IRON_BLOCK)));
+    public static final DeferredBlock<IntegratedInterfaceBlock> INTEGRATED_INTERFACE_BLOCK = registerOtherBlock(AECSBlockIds.INTEGRATED_INTERFACE, () -> new IntegratedInterfaceBlock(AEBaseBlock.metalProps()));
 
     public static final DeferredBlock<Block> circuitEtcher = registerOtherBlock(AECSBlockIds.CIRCUIT_ETCHER, () -> new Block(copy(Blocks.IRON_BLOCK)));
     public static final DeferredBlock<Block> quartzGrindstone = registerOtherBlock(AECSBlockIds.QUARTZ_GRINDSTONE, () -> new Block(copy(Blocks.STONE)));

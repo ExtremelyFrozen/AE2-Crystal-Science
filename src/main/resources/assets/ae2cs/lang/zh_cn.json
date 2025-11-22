@@ -6,7 +6,8 @@
   "block.ae2_crystal_seeds.circuit_etcher": "电路板蚀刻器",
   "block.ae2_crystal_seeds.crystal_vibration_chamber": "水晶谐振仓",
   "block.ae2_crystal_seeds.crusher": "脉冲离心机",
-  
+  "block.ae2_crystal_seeds.integrated_interface": "ME集成接口",
+
   "item.ae2_crystal_seeds.certus_quartz_seed": "赛特斯石英水晶种子",
   "item.ae2_crystal_seeds.fluix_crystal_seed": "福鲁伊克斯种子",
   "item.ae2_crystal_seeds.nether_quartz_seed": "下界石英种子",
