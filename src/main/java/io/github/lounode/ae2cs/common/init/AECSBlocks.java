@@ -3,6 +3,7 @@ package io.github.lounode.ae2cs.common.init;
 import io.github.lounode.ae2cs.api.ids.AECSBlockIds;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.block.CrystalGrowthChamberBlock;
+import io.github.lounode.ae2cs.common.block.IntegratedInterfaceBlock;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -31,7 +32,12 @@ public class AECSBlocks
      */
     private static final List<DeferredBlock<? extends Block>> OTHERS = new ArrayList<>();
 
+    /** 水晶催生仓 */
     public static final DeferredBlock<CrystalGrowthChamberBlock> CRYSTAL_GROWTH_CHAMBER_BLOCK = registerOtherBlock(AECSBlockIds.CRYSTAL_GROWTH_CHAMBER, () -> new CrystalGrowthChamberBlock(copy(Blocks.IRON_BLOCK)));
+
+    /** ME集成接口 */
+    public static final DeferredBlock<IntegratedInterfaceBlock> INTEGRATED_INTERFACE_BLOCK = registerOtherBlock(AECSBlockIds.INTEGRATED_INTERFACE, () -> new IntegratedInterfaceBlock(copy(Blocks.IRON_BLOCK)));
+
     public static final DeferredBlock<Block> circuitEtcher = registerOtherBlock(AECSBlockIds.CIRCUIT_ETCHER, () -> new Block(copy(Blocks.IRON_BLOCK)));
     public static final DeferredBlock<Block> quartzGrindstone = registerOtherBlock(AECSBlockIds.QUARTZ_GRINDSTONE, () -> new Block(copy(Blocks.STONE)));
     public static final DeferredBlock<Block> crystalVibrationChamber = registerOtherBlock(AECSBlockIds.CRYSTAL_VIBRATION_CHAMBER, () -> new Block(copy(Blocks.IRON_BLOCK)));

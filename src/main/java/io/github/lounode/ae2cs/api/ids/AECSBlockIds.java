@@ -7,4 +7,5 @@ public class AECSBlockIds
     public static final String QUARTZ_GRINDSTONE = "quartz_grindstone";
     public static final String CRYSTAL_VIBRATION_CHAMBER = "crystal_vibration_chamber";
     public static final String CRUSHER = "crusher";
+    public static final String INTEGRATED_INTERFACE = "integrated_interface";
 }

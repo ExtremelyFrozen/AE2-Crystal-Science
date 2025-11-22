@@ -8,6 +8,7 @@ import com.google.common.base.Preconditions;
 import io.github.lounode.ae2cs.api.ids.AECSBlockIds;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.block.entity.CrystalGrowthChamberBlockEntity;
+import io.github.lounode.ae2cs.common.block.entity.IntegratedInterfaceBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
@@ -35,11 +36,20 @@ public class AECSBlockEntities
      */
     private static final List<DeferredBlockEntityType<?>> ALL = new ArrayList<>();
 
+    /** 水晶催生仓 */
     public static final DeferredBlockEntityType<CrystalGrowthChamberBlockEntity> CRYSTAL_GROWTH_CHAMBER = create(
             AECSBlockIds.CRYSTAL_GROWTH_CHAMBER,
             CrystalGrowthChamberBlockEntity.class,
-            io.github.lounode.ae2cs.common.block.entity.CrystalGrowthChamberBlockEntity::new,
+            CrystalGrowthChamberBlockEntity::new,
             AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK
+    );
+
+    /** 集成接口 */
+    public static final DeferredBlockEntityType<IntegratedInterfaceBlockEntity> INTEGRATED_INTERFACE_BLOCK_ENTITY = create(
+            AECSBlockIds.INTEGRATED_INTERFACE,
+            IntegratedInterfaceBlockEntity.class,
+            IntegratedInterfaceBlockEntity::new,
+            AECSBlocks.INTEGRATED_INTERFACE_BLOCK
     );
 
     /**
