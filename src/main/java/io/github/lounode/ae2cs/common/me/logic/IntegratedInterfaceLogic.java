@@ -1325,4 +1325,26 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
     {
         return mainNode.getGrid();
     }
+
+    public void addDrops(List<ItemStack> drops)
+    {
+        for (ItemStack stack : this.patternInventory)
+        {
+            drops.add(stack);
+        }
+
+        for (GenericStack stack : this.sendList)
+        {
+            stack.what().addDrops(stack.amount(), drops, this.host.getBlockEntity().getLevel(),
+                    this.host.getBlockEntity().getBlockPos());
+        }
+
+        for (GenericStack stack : this.getStorageInv().toList())
+        {
+            if(stack == null) continue;
+
+            stack.what().addDrops(stack.amount(), drops, this.host.getBlockEntity().getLevel(),
+                    this.host.getBlockEntity().getBlockPos());
+        }
+    }
 }

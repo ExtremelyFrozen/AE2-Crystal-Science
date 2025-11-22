@@ -20,11 +20,13 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -187,5 +189,12 @@ public class IntegratedInterfaceBlockEntity extends AENetworkedBlockEntity imple
     public void setPriority(int newValue)
     {
         this.priority = newValue;
+    }
+
+    @Override
+    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops)
+    {
+        super.addAdditionalDrops(level, pos, drops);
+        getLogic().addDrops(drops);
     }
 }

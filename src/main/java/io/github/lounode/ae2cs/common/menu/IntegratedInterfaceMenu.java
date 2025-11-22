@@ -56,6 +56,10 @@ public class IntegratedInterfaceMenu extends UpgradeableMenu<IntegratedInterface
     @Override
     protected void setupInventorySlots()
     {
+        for (int i = 0; i < getHost().getTerminalPatternInventory().size(); ++i)
+        {
+            this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.PROVIDER_PATTERN,getHost().getTerminalPatternInventory(), i), SlotSemantics.ENCODED_PATTERN);
+        }
         InternalInventory configWrap = getHost().getConfigInv().createMenuWrapper();
         for (int i = 0; i < getHost().getConfigInv().size(); ++i)
         {
@@ -65,10 +69,6 @@ public class IntegratedInterfaceMenu extends UpgradeableMenu<IntegratedInterface
         for (int i = 0; i < getHost().getStorageInv().size(); ++i)
         {
             this.addSlot(new AppEngSlot(storageWrap, i), SlotSemantics.STORAGE);
-        }
-        for (int i = 0; i < getHost().getTerminalPatternInventory().size(); ++i)
-        {
-            this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.PROVIDER_PATTERN,getHost().getTerminalPatternInventory(), i), SlotSemantics.ENCODED_PATTERN);
         }
     }
 

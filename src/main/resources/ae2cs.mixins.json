@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "io.github.lounode.ae2cs.mixin",
+  "mixins": [
+    "GrowthAcceleratorBlockEntityMixin"
+  ],
+  "client": [
+  ],
+  "server": [
+  ],
+  "compatibilityLevel": "JAVA_21",
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

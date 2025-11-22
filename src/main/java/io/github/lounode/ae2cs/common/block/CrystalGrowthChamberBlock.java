@@ -61,6 +61,14 @@ public class CrystalGrowthChamberBlock extends AEBaseEntityBlock<CrystalGrowthCh
         return InteractionResult.SUCCESS_NO_ITEM_USED;
     }
 
+    @Override
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston)
+    {
+        super.neighborChanged(state, level, pos, neighborBlock, neighborPos, movedByPiston);
+        if(!level.isClientSide() && level.getBlockEntity(pos) instanceof CrystalGrowthChamberBlockEntity be)
+            be.updateGrowthNum();
+    }
+
     private void checkLitState(Level level, BlockPos pos, BlockState state)
     {
 

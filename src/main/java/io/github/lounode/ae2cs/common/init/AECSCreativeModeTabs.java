@@ -22,7 +22,7 @@ public class AECSCreativeModeTabs
     public static final Supplier<CreativeModeTab> AE2_OMNI_CELLS_CREATIVE_TAB = CREATIVE_MODE_TAB.register(
             "ae2cs_creative_tab",
             () -> CreativeModeTab.builder()
-                    .icon(() -> new ItemStack(AECSItems.certusQuartzSeed.get()))
+                    .icon(() -> new ItemStack(AECSItems.pureCertusQuartzCrystal.get()))
                     .title(Component.translatable("creativetab.ae2cs.items"))
                     .displayItems((params, output) -> {
                         for (DeferredItem<? extends Item> ro : AECSItems.getALL())

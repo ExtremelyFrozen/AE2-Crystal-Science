@@ -16,6 +16,7 @@ import appeng.api.upgrades.UpgradeInventories;
 import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.blockentity.grid.AENetworkedPoweredBlockEntity;
 import appeng.blockentity.powersink.AEBasePoweredBlockEntity;
+import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
@@ -60,6 +61,9 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedPoweredBlockEnti
      * 每个工作消耗的AE能量，每张加速卡再额外增加一次该数值
      */
     private static final double energyPerGrowth = 100;
+
+    /** 周围六个方向晶体催生器的数量 */
+    private int growthNum = 0;
 
     // 升级卡仓 4卡槽 包含四个加速卡
     private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK, 4, this::onUpgradesChanged);
@@ -186,6 +190,7 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedPoweredBlockEnti
     {
         super.onLoad();
         onUpgradesChanged(); // 加载后刷新一次升级状态
+        updateGrowthNum();
     }
 
     private void onUpgradesChanged()
@@ -202,9 +207,6 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedPoweredBlockEnti
         if(workTickCountDown > 0) return;
 
         tickEnergyWithME();
-
-        // TODO 周围的催生器数量
-        int growthNum = 0;
 
         int speedCard = upgrades.getInstalledUpgrades(AEItems.SPEED_CARD);
         double energyCost = (1 + speedCard) * energyPerGrowth;
@@ -248,6 +250,22 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedPoweredBlockEnti
         double insertEnergy = Math.min(need, had);
 
         this.injectAEPower(insertEnergy, Actionable.MODULATE);
+    }
+
+    /**
+     * 设置周围晶体催生器的数量
+     */
+    public void updateGrowthNum()
+    {
+        if(level == null || level.isClientSide) return;
+
+        growthNum = 0;
+        for(Direction dir : Direction.values())
+        {
+            BlockState state = level.getBlockState(getBlockPos().relative(dir));
+            if(state.getBlock() == AEBlocks.GROWTH_ACCELERATOR.block())
+                growthNum++;
+        }
     }
 
 
