@@ -32,12 +32,10 @@ import appeng.core.definitions.AEItems;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.settings.TickRates;
 import appeng.crafting.pattern.EncodedPatternItem;
-import appeng.helpers.IPriorityHost;
 import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.helpers.patternprovider.PatternProviderTarget;
 import appeng.helpers.patternprovider.UnlockCraftingEvent;
 import appeng.me.helpers.MachineSource;
-import appeng.menu.ISubMenu;
 import appeng.util.ConfigInventory;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.PlayerInternalInventory;
@@ -242,6 +240,11 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         // 为GenericStackInv的单槽位容量使用AE默认注册容量
         this.configInv.useRegisteredCapacities();
         this.storage.useRegisteredCapacities();
+    }
+
+    public @Nullable GenericStack getUnlockStack()
+    {
+        return unlockStack;
     }
 
     // IConfigurableObject
@@ -1135,7 +1138,7 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
     }
 
     // 后续在能力暴露中使用即可
-    public MEStorage getExposedStorage(Direction side)
+    public MEStorage getExposedMEStorage(Direction side)
     {
         var grid = mainNode.getGrid();
         if (!hasConfig && grid != null)

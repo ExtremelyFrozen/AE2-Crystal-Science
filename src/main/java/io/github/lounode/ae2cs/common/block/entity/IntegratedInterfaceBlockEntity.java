@@ -1,5 +1,6 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
+import appeng.api.AECapabilities;
 import appeng.api.ids.AEComponents;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.orientation.BlockOrientation;
@@ -20,6 +21,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
@@ -36,6 +38,28 @@ public class IntegratedInterfaceBlockEntity extends AENetworkedBlockEntity imple
     public IntegratedInterfaceBlockEntity(BlockPos pos, BlockState blockState)
     {
         super(AECSBlockEntities.INTEGRATED_INTERFACE_BLOCK_ENTITY.get(), pos, blockState);
+    }
+
+    /**
+     * 注册AE节点和能量能力
+     */
+    public static void onRegisterCaps(RegisterCapabilitiesEvent event)
+    {
+        event.registerBlockEntity(
+                AECapabilities.IN_WORLD_GRID_NODE_HOST,
+                AECSBlockEntities.INTEGRATED_INTERFACE_BLOCK_ENTITY.get(),
+                (be, unused) -> be
+        );
+        event.registerBlockEntity(
+                AECapabilities.GENERIC_INTERNAL_INV,
+                AECSBlockEntities.INTEGRATED_INTERFACE_BLOCK_ENTITY.get(),
+                (be, direction) -> be.getLogic().getStorageInv()
+        );
+        event.registerBlockEntity(
+                AECapabilities.ME_STORAGE,
+                AECSBlockEntities.INTEGRATED_INTERFACE_BLOCK_ENTITY.get(),
+                (be, direction) -> be.getLogic().getExposedMEStorage(direction)
+        );
     }
 
     protected IntegratedInterfaceLogic createLogic()

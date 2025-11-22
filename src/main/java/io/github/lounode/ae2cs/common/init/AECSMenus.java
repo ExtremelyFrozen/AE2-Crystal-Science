@@ -7,6 +7,7 @@ import io.github.lounode.ae2cs.common.block.entity.CrystalGrowthChamberBlockEnti
 import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceHost;
 import io.github.lounode.ae2cs.common.menu.CrystalGrowthChamberMenu;
 import io.github.lounode.ae2cs.common.menu.IntegratedInterfaceMenu;
+import io.github.lounode.ae2cs.common.menu.IntegratedInterfaceSetStockAmountMenu;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.bus.api.IEventBus;
@@ -27,6 +28,11 @@ public class AECSMenus
     public static final Supplier<MenuType<IntegratedInterfaceMenu>> INTEGRATED_INTERFACE_MENU = MENU_TYPES.register("integrated_interface_menu",
             () -> MenuTypeBuilder.create(IntegratedInterfaceMenu::new, IntegratedInterfaceHost.class)
                     .build(AE2CrystalScience.makeId("integrated_interface_menu"))
+    );
+
+    public static final Supplier<MenuType<IntegratedInterfaceSetStockAmountMenu>> INTEGRATED_INTERFACE_SET_STOCK_AMOUNT_MENU = MENU_TYPES.register("integrated_interface_set_stock_amount_menu",
+            () -> MenuTypeBuilder.create(IntegratedInterfaceSetStockAmountMenu::new, IntegratedInterfaceHost.class)
+                    .build(AE2CrystalScience.makeId("integrated_interface_set_stock_amount_menu"))
     );
 
     public static void registerMenus(IEventBus eventBus)

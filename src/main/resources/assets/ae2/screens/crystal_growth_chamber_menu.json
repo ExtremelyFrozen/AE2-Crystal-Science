@@ -21,7 +21,7 @@
   },
   "text": {
     "title": {
-      "text": { "translate": "block.ae2_crystal_seeds.crystal_growth_chamber" },
+      "text": { "translate": "block.ae2cs.crystal_growth_chamber" },
       "position": { "left": 8, "top": 6 }
     }
   }
