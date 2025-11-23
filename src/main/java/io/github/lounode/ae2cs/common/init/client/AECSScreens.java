@@ -4,6 +4,7 @@ import appeng.client.gui.me.crafting.SetStockAmountScreen;
 import appeng.menu.implementations.SetStockAmountMenu;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.client.gui.CrystalGrowthChamberGUI;
+import io.github.lounode.ae2cs.client.gui.CrystalVibrationChamberGUI;
 import io.github.lounode.ae2cs.client.gui.IntegratedInterfaceGUI;
 import io.github.lounode.ae2cs.client.gui.IntegratedInterfaceSetStockAmountGUI;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
@@ -22,5 +23,6 @@ public class AECSScreens
         event.register(AECSMenus.CRYSTAL_GROWTH_CHAMBER_MENU.get(), CrystalGrowthChamberGUI::new);
         event.register(AECSMenus.INTEGRATED_INTERFACE_MENU.get(), IntegratedInterfaceGUI::new);
         event.register(AECSMenus.INTEGRATED_INTERFACE_SET_STOCK_AMOUNT_MENU.get(), IntegratedInterfaceSetStockAmountGUI::new);
+        event.register(AECSMenus.CRYSTAL_VIBRATION_CHAMBER_MENU.get(), CrystalVibrationChamberGUI::new);
     }
 }

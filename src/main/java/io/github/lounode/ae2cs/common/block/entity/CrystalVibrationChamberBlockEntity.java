@@ -1,85 +1,112 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
+import appeng.api.AECapabilities;
+import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
-import appeng.api.inventories.ISegmentedInventory;
-import appeng.api.inventories.InternalInventory;
-import appeng.api.networking.IGridNode;
+import appeng.api.config.PowerMultiplier;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.energy.IAEPowerStorage;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.ticking.IGridTickable;
-import appeng.api.networking.ticking.TickRateModulation;
-import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.stacks.GenericStack;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.AECableType;
-import appeng.blockentity.grid.AENetworkedInvBlockEntity;
-import appeng.core.AEConfig;
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
-import appeng.core.settings.TickRates;
-import appeng.util.Platform;
-import appeng.util.inv.AppEngInternalInventory;
-import appeng.util.inv.FilteredInternalInventory;
-import appeng.util.inv.filter.IAEItemFilter;
+import appeng.blockentity.ServerTickingBlockEntity;
+import appeng.blockentity.grid.AENetworkedBlockEntity;
+import appeng.blockentity.powersink.AEBasePoweredBlockEntity;
+import appeng.me.energy.StoredEnergyAmount;
+import appeng.util.ConfigInventory;
+import io.github.lounode.ae2cs.api.util.ForgeEnergyAdapterUpgrade;
+import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
+import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.item.CrystalSeedItem;
+import io.github.lounode.ae2cs.common.item.PureCrystalItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import java.util.List;
 
-public class CrystalVibrationChamberBlockEntity extends AENetworkedInvBlockEntity implements IGridTickable, IUpgradeableObject
+public class CrystalVibrationChamberBlockEntity extends AENetworkedBlockEntity implements IUpgradeableObject,
+        ServerTickingBlockEntity, IAEPowerStorage
 {
-
-    private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 1);
-    private final InternalInventory invExt = new FilteredInternalInventory(this.inv, new FuelSlotFilter());
+    private final ConfigInventory inv;
 
     private final IUpgradeInventory upgrades;
 
-    private double currentFuelTicksPerTick;
-    private double remainingFuelTicks = 0;
-    private double fuelItemFuelTicks = 0;
+    private final StoredEnergyAmount storedEnergy = new StoredEnergyAmount(0, 1000000, type -> saveChanges());
 
-    private double minFuelTicksPerTick;
-    private double maxFuelTicksPerTick;
-    private double initialFuelTicksPerTick;
+    private int maxBurnTime = 0;
+    private int remainingBurnTime = 0;
+    private double energyPerTick = 0;
 
     // client side.. (caches last sent state on server)
     public boolean isOn;
 
-    private final double minEnergyRate;
-    private final double baseMaxEnergyRate;
-    private final double initialEnergyRate;
-
-    public CrystalVibrationChamberBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState)
+    public CrystalVibrationChamberBlockEntity(BlockPos pos, BlockState blockState)
     {
-        super(blockEntityType, pos, blockState);
+        super(AECSBlockEntities.CRYSTAL_VIBRATION_CHAMBER_BLOCK_ENTITY.get(), pos, blockState);
         this.getMainNode()
                 .setIdlePowerUsage(0)
-                .setFlags()
-                .addService(IGridTickable.class, this);
+                .setFlags();
 
-        this.upgrades = UpgradeInventories.forMachine(AEBlocks.VIBRATION_CHAMBER, 3, this::saveChanges);
+        this.upgrades = UpgradeInventories.forMachine(AECSBlocks.CRYSTAL_VIBRATION_CHAMBER, 3, this::saveChanges);
 
-        minEnergyRate = AEConfig.instance().getVibrationChamberMinEnergyPerGameTick();
-        baseMaxEnergyRate = AEConfig.instance().getVibrationChamberMaxEnergyPerGameTick();
-        initialEnergyRate = Mth.clamp(
-                AEConfig.instance().getVibrationChamberBaseEnergyPerFuelTick(),
-                minEnergyRate,
-                baseMaxEnergyRate);
+        inv = ConfigInventory.storage(1)
+                .slotFilter(input -> input.getPrimaryKey() instanceof PureCrystalItem)
+                .changeListener(this::saveChanges)
+                .build();
+    }
 
-        minFuelTicksPerTick = minEnergyRate / getEnergyPerFuelTick();
-        maxFuelTicksPerTick = baseMaxEnergyRate / getEnergyPerFuelTick();
-        initialFuelTicksPerTick = initialEnergyRate / getEnergyPerFuelTick();
-        currentFuelTicksPerTick = initialFuelTicksPerTick;
+    /**
+     * 注册AE节点和能量能力
+     */
+    public static void onRegisterCaps(RegisterCapabilitiesEvent event)
+    {
+        event.registerBlockEntity(
+                AECapabilities.IN_WORLD_GRID_NODE_HOST,
+                AECSBlockEntities.CRYSTAL_VIBRATION_CHAMBER_BLOCK_ENTITY.get(),
+                (be, unused) -> be
+        );
+        event.registerBlockEntity(
+                Capabilities.EnergyStorage.BLOCK,
+                AECSBlockEntities.CRYSTAL_VIBRATION_CHAMBER_BLOCK_ENTITY.get(),
+                (be, direction) -> new ForgeEnergyAdapterUpgrade(be, AccessRestriction.READ)
+        );
+        event.registerBlockEntity(
+                AECapabilities.GENERIC_INTERNAL_INV,
+                AECSBlockEntities.CRYSTAL_VIBRATION_CHAMBER_BLOCK_ENTITY.get(),
+                (be, direction) -> be.inv
+        );
+    }
+
+    public ConfigInventory getInv()
+    {
+        return inv;
+    }
+
+    public int getMaxBurnTime()
+    {
+        return maxBurnTime;
+    }
+
+    public int getRemainingBurnTime()
+    {
+        return remainingBurnTime;
+    }
+
+    public double getEnergyPerTick()
+    {
+        return energyPerTick;
     }
 
     @Override
@@ -103,7 +130,7 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedInvBlockEntit
     protected void writeToStream(RegistryFriendlyByteBuf data)
     {
         super.writeToStream(data);
-        this.isOn = this.getRemainingFuelTicks() > 0;
+        this.isOn = this.remainingBurnTime > 0;
         data.writeBoolean(this.isOn);
     }
 
@@ -112,11 +139,11 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedInvBlockEntit
     {
         super.saveAdditional(data, registries);
         this.upgrades.writeToNBT(data, "upgrades", registries);
-        data.putDouble("burnTime", this.getRemainingFuelTicks());
-        data.putDouble("maxBurnTime", this.getFuelItemFuelTicks());
-        // Save as percentage of max-speed
-        var speed = (int) (currentFuelTicksPerTick * 100 / maxFuelTicksPerTick);
-        data.putInt("burnSpeed", speed);
+        this.inv.writeToChildTag(data, "inv", registries);
+        data.putDouble("current_energy", this.storedEnergy.getAmount());
+        data.putInt("max_burn_time", this.maxBurnTime);
+        data.putInt("burn_time", this.remainingBurnTime);
+        data.putDouble("energy_per_tick", this.energyPerTick);
     }
 
     @Override
@@ -124,9 +151,11 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedInvBlockEntit
     {
         super.loadTag(data, registries);
         this.upgrades.readFromNBT(data, "upgrades", registries);
-        this.setRemainingFuelTicks(data.getDouble("burnTime"));
-        this.setFuelItemFuelTicks(data.getDouble("maxBurnTime"));
-        this.setCurrentFuelTicksPerTick(data.getInt("burnSpeed") * maxFuelTicksPerTick / 100.0);
+        this.inv.readFromChildTag(data, "inv", registries);
+        this.storedEnergy.setStored(data.getDouble("current_energy"));
+        this.maxBurnTime = data.getInt("max_burn_time");
+        this.remainingBurnTime = data.getInt("burn_time");
+        this.energyPerTick = data.getDouble("energy_per_tick");
     }
 
     @Override
@@ -153,265 +182,100 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedInvBlockEntit
         return this.upgrades;
     }
 
-    @Nullable
     @Override
-    public InternalInventory getSubInventory(ResourceLocation id)
+    public void serverTick()
     {
-        if (id.equals(ISegmentedInventory.STORAGE))
+        // 每tick执行燃烧产能逻辑
+        // 分为三部分
+        // 1-查看当前槽位的物品，如果为合适物品就消耗掉1个，填充燃烧数据（如果正在燃烧则跳过此步）
+        // 2-尝试将目前能量注入ae网络
+        // 3-执行燃烧逻辑，产生固定数量能量，并减少tick，即使能量已满也继续燃烧
+
+        // 查看当前槽位的物品，如果为合适物品就消耗掉1个，填充燃烧数据（如果正在燃烧则跳过此步）
+        if(remainingBurnTime <= 0)
         {
-            return this.getInternalInventory();
-        }
-        else if (id.equals(ISegmentedInventory.UPGRADES))
-        {
-            return this.upgrades;
-        }
-
-        return super.getSubInventory(id);
-    }
-
-    @Override
-    protected InternalInventory getExposedInventoryForSide(Direction facing)
-    {
-        return this.invExt;
-    }
-
-    @Override
-    public InternalInventory getInternalInventory()
-    {
-        return this.inv;
-    }
-
-    @Override
-    public void onChangeInventory(AppEngInternalInventory inv, int slot)
-    {
-        if (this.getRemainingFuelTicks() <= 0 && this.canEatFuel())
-        {
-            getMainNode().ifPresent((grid, node) -> {
-                grid.getTickManager().wakeDevice(node);
-            });
-        }
-    }
-
-    private boolean canEatFuel()
-    {
-        final ItemStack is = this.inv.getStackInSlot(0);
-        if (!is.isEmpty())
-        {
-            final int newBurnTime = getBurnTime(is);
-            if (newBurnTime > 0 && is.getCount() > 0)
+            GenericStack fuel = inv.getStack(0);
+            if(fuel != null
+                    && fuel.what().getPrimaryKey() instanceof PureCrystalItem pureCrystalItem
+                    && fuel.amount() > 0)
             {
-                return true;
+                long extracted = inv.extract(0, fuel.what(), 1, Actionable.MODULATE);
+                if(extracted > 0)
+                {
+                    this.remainingBurnTime = pureCrystalItem.getBurnTime();
+                    this.maxBurnTime = pureCrystalItem.getBurnTime();
+                    this.energyPerTick = pureCrystalItem.getEnergyPerTick();
+                }
             }
         }
+
+        // 尝试将目前能量注入ae网络
+        IGrid grid = getMainNode().getGrid();
+        if(grid != null)
+        {
+            IEnergyService energyService = grid.getEnergyService();
+            if(energyService != null)
+            {
+                double remaining = energyService.injectPower(getAECurrentPower(), Actionable.MODULATE);
+                double needExtract = getAECurrentPower() - remaining;
+                extractAEPower(needExtract, Actionable.MODULATE, PowerMultiplier.ONE);
+            }
+        }
+
+        // 执行燃烧逻辑
+        if(remainingBurnTime > 0)
+        {
+            remainingBurnTime--;
+
+            injectAEPower(this.energyPerTick, Actionable.MODULATE);
+
+            if(remainingBurnTime <= 0)
+                clearBurnState();
+        }
+
+    }
+
+    private void clearBurnState()
+    {
+        this.remainingBurnTime = 0;
+        this.energyPerTick = 0;
+        this.maxBurnTime = 0;
+    }
+
+    @Override
+    public final double injectAEPower(double amt, Actionable mode) {
+        return amt - storedEnergy.insert(amt, mode == Actionable.MODULATE);
+    }
+
+    @Override
+    public final double getAEMaxPower() {
+        return this.storedEnergy.getMaximum();
+    }
+
+    @Override
+    public final double getAECurrentPower() {
+        return this.storedEnergy.getAmount();
+    }
+
+    @Override
+    public boolean isAEPublicPowerStorage()
+    {
         return false;
     }
 
     @Override
-    public TickingRequest getTickingRequest(IGridNode node)
+    public AccessRestriction getPowerFlow()
     {
-        if (this.getRemainingFuelTicks() <= 0)
-        {
-            this.eatFuel();
-        }
-
-        return new TickingRequest(TickRates.VibrationChamber, this.getRemainingFuelTicks() <= 0);
+        return AccessRestriction.READ;
     }
 
     @Override
-    public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall)
+    public final double extractAEPower(double amt, Actionable mode, PowerMultiplier multiplier)
     {
-
-        // Recalculate fuel tick rate min and max
-        this.minFuelTicksPerTick = minEnergyRate / getEnergyPerFuelTick();
-        this.maxFuelTicksPerTick = getMaxFuelTicksPerTick();
-        this.initialFuelTicksPerTick = initialEnergyRate / getEnergyPerFuelTick();
-
-        if (this.getRemainingFuelTicks() <= 0)
-        {
-            this.eatFuel();
-
-            if (this.getRemainingFuelTicks() > 0)
-            {
-                return TickRateModulation.URGENT;
-            }
-
-            this.setCurrentFuelTicksPerTick(this.initialFuelTicksPerTick);
-            return TickRateModulation.SLEEP;
-        }
-
-        double fuelTicksConsumed = ticksSinceLastCall * currentFuelTicksPerTick;
-        this.setRemainingFuelTicks(this.getRemainingFuelTicks() - fuelTicksConsumed);
-        if (this.getRemainingFuelTicks() < 0)
-        {
-            fuelTicksConsumed += this.getRemainingFuelTicks();
-            this.setRemainingFuelTicks(0);
-        }
-
-        // The full range should scale in 5 seconds (=100 ticks)
-        var speedScalingPerTick = (this.maxFuelTicksPerTick - this.minFuelTicksPerTick) / 100;
-        double speedStep = (double) ticksSinceLastCall * speedScalingPerTick;
-
-        var grid = node.getGrid();
-        var energy = grid.getEnergyService();
-
-        // If our burn rate is zero, check if the network would now accept any power
-        // And if it does, increase burn rate and tick faster
-        if (Math.abs(fuelTicksConsumed - 0) < 0.01)
-        {
-            if (energy.injectPower(1, Actionable.SIMULATE) == 0)
-            {
-                this.setCurrentFuelTicksPerTick(this.getCurrentFuelTicksPerTick() + speedStep);
-                return TickRateModulation.FASTER;
-            }
-            return TickRateModulation.IDLE;
-        }
-
-        final double newPower = fuelTicksConsumed * getEnergyPerFuelTick();
-        final double overFlow = energy.injectPower(newPower, Actionable.MODULATE);
-
-        // Speed up or slow down the burn rate, the overflow is voided
-        if (overFlow > 0)
-        {
-            this.setCurrentFuelTicksPerTick(this.getCurrentFuelTicksPerTick() - speedStep);
-        }
-        else
-        {
-            this.setCurrentFuelTicksPerTick(this.getCurrentFuelTicksPerTick() + speedStep);
-        }
-
-        return overFlow > 0 ? TickRateModulation.SLOWER : TickRateModulation.FASTER;
+        return multiplier.divide(this.extractAEPower(multiplier.multiply(amt), mode));
     }
 
-    private void eatFuel()
-    {
-        final ItemStack is = this.inv.getStackInSlot(0);
-        if (!is.isEmpty())
-        {
-            final int newBurnTime = getBurnTime(is);
-            if (newBurnTime > 0 && is.getCount() > 0)
-            {
-                this.setRemainingFuelTicks(this.getRemainingFuelTicks() + newBurnTime);
-                this.setFuelItemFuelTicks(this.getRemainingFuelTicks());
-
-                final Item fuelItem = is.getItem();
-
-                if (is.getCount() <= 1)
-                {
-                    // fuel was fully consumed. for items like lava-bucket, put the remainder in the slot
-                    this.inv.setItemDirect(0, fuelItem.getCraftingRemainingItem(is));
-                }
-                else
-                {
-                    is.shrink(1);
-                    this.inv.setItemDirect(0, is);
-                }
-                this.saveChanges();
-            }
-        }
-
-        if (this.getRemainingFuelTicks() > 0)
-        {
-            getMainNode().ifPresent((grid, node) -> {
-                grid.getTickManager().wakeDevice(node);
-            });
-        }
-
-        // state change
-        if (!this.isOn && this.getRemainingFuelTicks() > 0 || this.isOn && this.getRemainingFuelTicks() <= 0)
-        {
-            this.isOn = this.getRemainingFuelTicks() > 0;
-            this.markForUpdate();
-
-            if (this.hasLevel())
-            {
-                Platform.notifyBlocksOfNeighbors(this.level, this.worldPosition);
-            }
-        }
-    }
-
-    public static int getBurnTime(ItemStack is)
-    {
-        return is.getBurnTime(null);
-    }
-
-    public static boolean hasBurnTime(ItemStack is)
-    {
-        return getBurnTime(is) > 0;
-    }
-
-    public double getCurrentFuelTicksPerTick()
-    {
-        return this.currentFuelTicksPerTick;
-    }
-
-    private void setCurrentFuelTicksPerTick(double currentFuelTicksPerTick)
-    {
-        this.currentFuelTicksPerTick = Mth.clamp(currentFuelTicksPerTick, this.minFuelTicksPerTick,
-                this.maxFuelTicksPerTick);
-    }
-
-    public double getFuelItemFuelTicks()
-    {
-        return this.fuelItemFuelTicks;
-    }
-
-    private void setFuelItemFuelTicks(double fuelItemFuelTicks)
-    {
-        this.fuelItemFuelTicks = fuelItemFuelTicks;
-    }
-
-    public double getRemainingFuelTicks()
-    {
-        return this.remainingFuelTicks;
-    }
-
-    private void setRemainingFuelTicks(double remainingFuelTicks)
-    {
-        this.remainingFuelTicks = remainingFuelTicks;
-    }
-
-    /**
-     * AE Power generated per consumed fuel-tick.
-     */
-    public double getEnergyPerFuelTick()
-    {
-        return AEConfig.instance().getVibrationChamberBaseEnergyPerFuelTick()
-                * (1 + this.upgrades.getInstalledUpgrades(AEItems.ENERGY_CARD) / 2.0f);
-    }
-
-    /**
-     * Lowest fuel-ticks per game-tick when power is not being consumed fast enough.
-     */
-    public double getMinFuelTicksPerTick()
-    {
-        return this.minFuelTicksPerTick;
-    }
-
-    /**
-     * Highest fuel-ticks per game-tick when all power is being consumed.
-     */
-    public double getMaxFuelTicksPerTick()
-    {
-        return getMaxEnergyRate() / getEnergyPerFuelTick();
-    }
-
-    public double getMaxEnergyRate()
-    {
-        return baseMaxEnergyRate + baseMaxEnergyRate * this.upgrades.getInstalledUpgrades(AEItems.SPEED_CARD) / 2.0f;
-    }
-
-    private static class FuelSlotFilter implements IAEItemFilter
-    {
-        @Override
-        public boolean allowExtract(InternalInventory inv, int slot, int amount)
-        {
-            return !hasBurnTime(inv.getStackInSlot(slot));
-        }
-
-        @Override
-        public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack)
-        {
-            return hasBurnTime(stack);
-        }
+    protected double extractAEPower(double amt, Actionable mode) {
+        return this.storedEnergy.extract(amt, mode == Actionable.MODULATE);
     }
 }

@@ -4,7 +4,7 @@
   "block.ae2cs.crystal_growth_chamber": "晶体催生仓",
   "block.ae2cs.quartz_grindstone": "石英磨具",
   "block.ae2cs.circuit_etcher": "电路板蚀刻器",
-  "block.ae2cs.crystal_vibration_chamber": "水晶谐振仓",
+  "block.ae2cs.crystal_vibration_chamber": "晶能谐振仓",
   "block.ae2cs.crusher": "脉冲离心机",
   "block.ae2cs.integrated_interface": "ME集成接口",
 
@@ -33,7 +33,9 @@
   "item.ae2cs.crystal_growth_card": "晶体催生卡",
   
   "message.ae2_crystal_seeds.tooltip.seed_growth": "生长度：%1$s％",
-  
+  "message.ae2cs.tooltip.burn_time": "燃烧时间：%s刻",
+  "message.ae2cs.tooltip.energy": "能量密度：%sFE每刻",
+
   "ae2_crystal_seeds.configuration.title": "AE2 Crystal Seeds Configs",
   "ae2_crystal_seeds.configuration.section.ae2_crystal_seeds.common.toml": "AE2 Crystal Seeds Configs",
   "ae2_crystal_seeds.configuration.section.ae2_crystal_seeds.common.toml.title": "AE2 Crystal Seeds Configs",

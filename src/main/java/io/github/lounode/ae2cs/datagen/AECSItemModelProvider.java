@@ -3,6 +3,7 @@ package io.github.lounode.ae2cs.datagen;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.item.CrystalSeedItem;
+import io.github.lounode.ae2cs.common.item.PureCrystalItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -32,7 +33,7 @@ public class AECSItemModelProvider extends ItemModelProvider
         {
             crystalSeedItem(item.get());
         }
-        for (DeferredItem<Item> item : AECSItems.getPureCrystal())
+        for (DeferredItem<PureCrystalItem> item : AECSItems.getPureCrystal())
         {
             basicItem(item.get());
         }

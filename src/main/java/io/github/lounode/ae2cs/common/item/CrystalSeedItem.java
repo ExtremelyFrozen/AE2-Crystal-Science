@@ -21,15 +21,15 @@ public class CrystalSeedItem extends Item
 {
     private static final int DEFAULT_OVERGROW_TICK = 600;
 
-    private final Supplier<Item> growTo;
+    private final Supplier<? extends Item> growTo;
     private final int overGrowTick;
 
-    public CrystalSeedItem(Properties properties, Supplier<Item> growTo)
+    public CrystalSeedItem(Properties properties, Supplier<? extends Item> growTo)
     {
         this(properties, growTo, DEFAULT_OVERGROW_TICK);
     }
 
-    public CrystalSeedItem(Properties properties, Supplier<Item> growTo, int overGrowTick)
+    public CrystalSeedItem(Properties properties, Supplier<? extends Item> growTo, int overGrowTick)
     {
         super(properties.component(AECSDataComponents.GROW_PROCESS, 0));
         this.growTo = growTo;

@@ -8,6 +8,7 @@ import com.google.common.base.Preconditions;
 import io.github.lounode.ae2cs.api.ids.AECSBlockIds;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.block.entity.CrystalGrowthChamberBlockEntity;
+import io.github.lounode.ae2cs.common.block.entity.CrystalVibrationChamberBlockEntity;
 import io.github.lounode.ae2cs.common.block.entity.IntegratedInterfaceBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -50,6 +51,14 @@ public class AECSBlockEntities
             IntegratedInterfaceBlockEntity.class,
             IntegratedInterfaceBlockEntity::new,
             AECSBlocks.INTEGRATED_INTERFACE_BLOCK
+    );
+
+    /** 晶能谐振器 */
+    public static final DeferredBlockEntityType<CrystalVibrationChamberBlockEntity> CRYSTAL_VIBRATION_CHAMBER_BLOCK_ENTITY = create(
+            AECSBlockIds.CRYSTAL_VIBRATION_CHAMBER,
+            CrystalVibrationChamberBlockEntity.class,
+            CrystalVibrationChamberBlockEntity::new,
+            AECSBlocks.CRYSTAL_VIBRATION_CHAMBER
     );
 
     /**

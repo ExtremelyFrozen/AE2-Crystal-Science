@@ -8,7 +8,9 @@ import appeng.core.AEConfig;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.VibrationChamberMenu;
 import appeng.menu.locator.MenuLocators;
+import io.github.lounode.ae2cs.common.block.entity.CrystalGrowthChamberBlockEntity;
 import io.github.lounode.ae2cs.common.block.entity.CrystalVibrationChamberBlockEntity;
+import io.github.lounode.ae2cs.common.init.AECSMenus;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
@@ -26,9 +28,9 @@ public class CrystalVibrationChamberBlock extends AEBaseEntityBlock<CrystalVibra
 
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
-    public CrystalVibrationChamberBlock()
+    public CrystalVibrationChamberBlock(Properties properties)
     {
-        super(metalProps().strength(4.2F));
+        super(properties);
         this.registerDefaultState(this.defaultBlockState().setValue(ACTIVE, false));
     }
 
@@ -54,16 +56,13 @@ public class CrystalVibrationChamberBlock extends AEBaseEntityBlock<CrystalVibra
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult)
     {
-        if (level.getBlockEntity(pos) instanceof VibrationChamberBlockEntity be)
+        super.useWithoutItem(state, level, pos, player, hitResult);
+        if (!level.isClientSide() && !player.isShiftKeyDown())
         {
-            if (!level.isClientSide)
-            {
-                MenuOpener.open(VibrationChamberMenu.TYPE, player, MenuLocators.forBlockEntity(be));
-            }
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            if (level.getBlockEntity(pos) instanceof CrystalVibrationChamberBlockEntity be)
+                MenuOpener.open(AECSMenus.CRYSTAL_VIBRATION_CHAMBER_MENU.get(), player, MenuLocators.forBlockEntity(be));
         }
-
-        return super.useWithoutItem(state, level, pos, player, hitResult);
+        return InteractionResult.SUCCESS_NO_ITEM_USED;
     }
 
     @Override
