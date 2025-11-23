@@ -12,7 +12,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -20,7 +19,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class CrystalGrowthChamberBlock extends AEBaseEntityBlock<CrystalGrowthChamberBlockEntity>
 {
@@ -65,7 +63,7 @@ public class CrystalGrowthChamberBlock extends AEBaseEntityBlock<CrystalGrowthCh
     protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston)
     {
         super.neighborChanged(state, level, pos, neighborBlock, neighborPos, movedByPiston);
-        if(!level.isClientSide() && level.getBlockEntity(pos) instanceof CrystalGrowthChamberBlockEntity be)
+        if (!level.isClientSide() && level.getBlockEntity(pos) instanceof CrystalGrowthChamberBlockEntity be)
             be.updateGrowthNum();
     }
 

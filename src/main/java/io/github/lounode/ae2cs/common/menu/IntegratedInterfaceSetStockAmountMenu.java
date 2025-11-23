@@ -7,17 +7,14 @@ import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
-import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.locator.MenuHostLocator;
 import appeng.menu.slot.InaccessibleSlot;
 import appeng.util.inv.AppEngInternalInventory;
 import com.google.common.primitives.Ints;
-import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceHost;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
@@ -50,7 +47,8 @@ public class IntegratedInterfaceSetStockAmountMenu extends AEBaseMenu implements
 
     private final IntegratedInterfaceHost host;
 
-    public IntegratedInterfaceSetStockAmountMenu(int id, Inventory ip, IntegratedInterfaceHost host) {
+    public IntegratedInterfaceSetStockAmountMenu(int id, Inventory ip, IntegratedInterfaceHost host)
+    {
         super(AECSMenus.INTEGRATED_INTERFACE_SET_STOCK_AMOUNT_MENU.get(), id, ip, host);
         registerClientAction(ACTION_SET_STOCK_AMOUNT, Integer.class, this::confirm);
         this.host = host;
@@ -59,7 +57,8 @@ public class IntegratedInterfaceSetStockAmountMenu extends AEBaseMenu implements
     }
 
     @Override
-    public IntegratedInterfaceHost getHost() {
+    public IntegratedInterfaceHost getHost()
+    {
         return host;
     }
 
@@ -68,20 +67,24 @@ public class IntegratedInterfaceSetStockAmountMenu extends AEBaseMenu implements
      */
     public static void open(ServerPlayer player, MenuHostLocator locator,
                             int slot,
-                            AEKey whatToStock, int initialAmount) {
+                            AEKey whatToStock, int initialAmount)
+    {
         MenuOpener.open(AECSMenus.INTEGRATED_INTERFACE_SET_STOCK_AMOUNT_MENU.get(), player, locator);
 
-        if (player.containerMenu instanceof IntegratedInterfaceSetStockAmountMenu cca) {
+        if (player.containerMenu instanceof IntegratedInterfaceSetStockAmountMenu cca)
+        {
             cca.setWhatToStock(slot, whatToStock, initialAmount);
             cca.broadcastChanges();
         }
     }
 
-    public Level getLevel() {
+    public Level getLevel()
+    {
         return this.getPlayerInventory().player.level();
     }
 
-    private void setWhatToStock(int slot, AEKey whatToStock, int initialAmount) {
+    private void setWhatToStock(int slot, AEKey whatToStock, int initialAmount)
+    {
         this.slot = slot;
         this.whatToStock = Objects.requireNonNull(whatToStock, "whatToStock");
         this.initialAmount = initialAmount;
@@ -89,7 +92,8 @@ public class IntegratedInterfaceSetStockAmountMenu extends AEBaseMenu implements
         this.stockedItem.set(whatToStock.wrapForDisplayOrFilter());
     }
 
-    public int getMaxAmount() {
+    public int getMaxAmount()
+    {
         return maxAmount;
     }
 
@@ -98,8 +102,10 @@ public class IntegratedInterfaceSetStockAmountMenu extends AEBaseMenu implements
      *
      * @param amount The number of items to stock.
      */
-    public void confirm(int amount) {
-        if (isClientSide()) {
+    public void confirm(int amount)
+    {
+        if (isClientSide())
+        {
             sendClientAction(ACTION_SET_STOCK_AMOUNT, amount);
             return;
         }
@@ -107,27 +113,33 @@ public class IntegratedInterfaceSetStockAmountMenu extends AEBaseMenu implements
         var config = host.getConfigInv();
 
         // In case the config changed don't set anything
-        if (!Objects.equals(config.getKey(this.slot), whatToStock)) {
+        if (!Objects.equals(config.getKey(this.slot), whatToStock))
+        {
             host.returnToMainMenu(getPlayer(), this);
             return;
         }
 
         amount = (int) Math.min(amount, config.getMaxAmount(whatToStock));
 
-        if (amount <= 0) {
+        if (amount <= 0)
+        {
             config.setStack(slot, null);
-        } else {
+        }
+        else
+        {
             config.setStack(slot, new GenericStack(whatToStock, amount));
         }
         host.returnToMainMenu(getPlayer(), this);
     }
 
-    public int getInitialAmount() {
+    public int getInitialAmount()
+    {
         return initialAmount;
     }
 
     @Nullable
-    public AEKey getWhatToStock() {
+    public AEKey getWhatToStock()
+    {
         var stack = GenericStack.fromItemStack(stockedItem.getItem());
         return stack != null ? stack.what() : null;
     }

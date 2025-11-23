@@ -75,7 +75,9 @@ public class IntegratedInterfaceBlockEntity extends AENetworkedBlockEntity imple
         return logic;
     }
 
-    /** 获取接口对应的目标面 */
+    /**
+     * 获取接口对应的目标面
+     */
     @Override
     public EnumSet<Direction> getTargets()
     {
@@ -90,7 +92,9 @@ public class IntegratedInterfaceBlockEntity extends AENetworkedBlockEntity imple
         }
     }
 
-    /** 可以用线缆进行连接的面，即除了目标面之外的面 */
+    /**
+     * 可以用线缆进行连接的面，即除了目标面之外的面
+     */
     @Override
     public Set<Direction> getGridConnectableSides(BlockOrientation orientation)
     {

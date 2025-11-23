@@ -42,31 +42,43 @@ public interface IntegratedInterfaceHost extends IConfigurableObject, IPriorityH
      */
     BlockEntity getBlockEntity();
 
-    /** 样板供应的目标面 */
+    /**
+     * 样板供应的目标面
+     */
     EnumSet<Direction> getTargets();
 
-    /** 获取配置槽 */
+    /**
+     * 获取配置槽
+     */
     default ConfigInventory getConfigInv()
     {
         return getLogic().getConfigInv();
     }
 
-    /** 获取存储槽 */
+    /**
+     * 获取存储槽
+     */
     default ConfigInventory getStorageInv()
     {
         return getLogic().getStorageInv();
     }
 
-    /** 标脏 */
+    /**
+     * 标脏
+     */
     void saveChanges();
 
-    /** 打开集成接口界面 */
+    /**
+     * 打开集成接口界面
+     */
     default void openMenu(Player player, MenuHostLocator locator)
     {
         MenuOpener.open(AECSMenus.INTEGRATED_INTERFACE_MENU.get(), player, locator);
     }
 
-    /** 用于次级界面返回 */
+    /**
+     * 用于次级界面返回
+     */
     @Override
     default void returnToMainMenu(Player player, ISubMenu subMenu)
     {
@@ -74,7 +86,10 @@ public interface IntegratedInterfaceHost extends IConfigurableObject, IPriorityH
     }
 
     // IConfigurableObject
-    /** 配置管理者 */
+
+    /**
+     * 配置管理者
+     */
     @Override
     default IConfigManager getConfigManager()
     {
@@ -82,7 +97,10 @@ public interface IntegratedInterfaceHost extends IConfigurableObject, IPriorityH
     }
 
     // IUpgradeableObject
-    /** 获取升级槽 */
+
+    /**
+     * 获取升级槽
+     */
     @Override
     default IUpgradeInventory getUpgrades()
     {
@@ -90,31 +108,42 @@ public interface IntegratedInterfaceHost extends IConfigurableObject, IPriorityH
     }
 
     // PatternContainer
-    /** 获取当前连接的网络 */
+
+    /**
+     * 获取当前连接的网络
+     */
     @Override
     default @Nullable IGrid getGrid()
     {
         return getLogic().getGrid();
     }
 
-    /** 在样板管理器中显示的icon */
+    /**
+     * 在样板管理器中显示的icon
+     */
     AEItemKey getTerminalIcon();
 
-    /** 是否显示在样板管理器 */
+    /**
+     * 是否显示在样板管理器
+     */
     @Override
     default boolean isVisibleInTerminal()
     {
         return getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL) == YesNo.YES;
     }
 
-    /** 获取样板槽 */
+    /**
+     * 获取样板槽
+     */
     @Override
     default InternalInventory getTerminalPatternInventory()
     {
         return getLogic().getPatternInventory();
     }
 
-    /** 获取样板在终端中的显示顺序 */
+    /**
+     * 获取样板在终端中的显示顺序
+     */
     @Override
     default long getTerminalSortOrder()
     {
@@ -122,7 +151,9 @@ public interface IntegratedInterfaceHost extends IConfigurableObject, IPriorityH
         return (long) blockPos.getZ() << 24 ^ (long) blockPos.getX() << 8 ^ blockPos.getY();
     }
 
-    /** 获取样板在终端中分类的显示组 */
+    /**
+     * 获取样板在终端中分类的显示组
+     */
     @Override
     default PatternContainerGroup getTerminalGroup()
     {

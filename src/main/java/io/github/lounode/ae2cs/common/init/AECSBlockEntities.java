@@ -37,7 +37,9 @@ public class AECSBlockEntities
      */
     private static final List<DeferredBlockEntityType<?>> ALL = new ArrayList<>();
 
-    /** 水晶催生仓 */
+    /**
+     * 水晶催生仓
+     */
     public static final DeferredBlockEntityType<CrystalGrowthChamberBlockEntity> CRYSTAL_GROWTH_CHAMBER = create(
             AECSBlockIds.CRYSTAL_GROWTH_CHAMBER,
             CrystalGrowthChamberBlockEntity.class,
@@ -45,7 +47,9 @@ public class AECSBlockEntities
             AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK
     );
 
-    /** 集成接口 */
+    /**
+     * 集成接口
+     */
     public static final DeferredBlockEntityType<IntegratedInterfaceBlockEntity> INTEGRATED_INTERFACE_BLOCK_ENTITY = create(
             AECSBlockIds.INTEGRATED_INTERFACE,
             IntegratedInterfaceBlockEntity.class,
@@ -53,7 +57,9 @@ public class AECSBlockEntities
             AECSBlocks.INTEGRATED_INTERFACE_BLOCK
     );
 
-    /** 晶能谐振器 */
+    /**
+     * 晶能谐振器
+     */
     public static final DeferredBlockEntityType<CrystalVibrationChamberBlockEntity> CRYSTAL_VIBRATION_CHAMBER_BLOCK_ENTITY = create(
             AECSBlockIds.CRYSTAL_VIBRATION_CHAMBER,
             CrystalVibrationChamberBlockEntity.class,

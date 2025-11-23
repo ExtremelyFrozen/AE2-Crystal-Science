@@ -27,7 +27,8 @@ public abstract class GrowthAcceleratorBlockEntityMixin extends AENetworkedPower
     @Inject(method = "onTick(I)V", at = @At("TAIL"))
     private void ae2cs$onTick(int ticksSinceLastCall, CallbackInfo ci)
     {
-        if (this.level == null || this.level.isClientSide()) {
+        if (this.level == null || this.level.isClientSide())
+        {
             return;
         }
 

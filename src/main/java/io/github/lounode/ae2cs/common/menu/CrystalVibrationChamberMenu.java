@@ -53,7 +53,7 @@ public class CrystalVibrationChamberMenu extends UpgradeableMenu<CrystalVibratio
     @Override
     public void broadcastChanges()
     {
-        if(isServerSide())
+        if (isServerSide())
         {
             this.burnTime = getHost().getRemainingBurnTime();
             this.maxBurnTime = getHost().getMaxBurnTime();

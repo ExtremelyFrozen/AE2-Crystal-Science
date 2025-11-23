@@ -22,7 +22,7 @@ public class ForgeEnergyAdapterUpgrade implements IEnergyStorage
     @Override
     public int receiveEnergy(int amount, boolean simulate)
     {
-        if(!canReceive()) return 0;
+        if (!canReceive()) return 0;
 
         final Actionable mode = simulate ? Actionable.SIMULATE : Actionable.MODULATE;
         final double remaining = PowerUnit.AE.convertTo(PowerUnit.FE,
@@ -34,13 +34,13 @@ public class ForgeEnergyAdapterUpgrade implements IEnergyStorage
     @Override
     public int extractEnergy(int amount, boolean simulate)
     {
-        if(!canExtract()) return 0;
+        if (!canExtract()) return 0;
 
         final Actionable mode = simulate ? Actionable.SIMULATE : Actionable.MODULATE;
         final double extracted = PowerUnit.AE.convertTo(PowerUnit.FE,
                 this.aePowerStorage.extractAEPower(PowerUnit.FE.convertTo(PowerUnit.AE, amount), mode, PowerMultiplier.ONE));
 
-        return (int)extracted;
+        return (int) extracted;
     }
 
     @Override

@@ -62,7 +62,9 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedPoweredBlockEnti
      */
     private static final double energyPerGrowth = 100;
 
-    /** 周围六个方向晶体催生器的数量 */
+    /**
+     * 周围六个方向晶体催生器的数量
+     */
     private int growthNum = 0;
 
     // 升级卡仓 4卡槽 包含四个加速卡
@@ -204,7 +206,7 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedPoweredBlockEnti
         if (level == null || level.isClientSide) return;
 
         --workTickCountDown;
-        if(workTickCountDown > 0) return;
+        if (workTickCountDown > 0) return;
 
         tickEnergyWithME();
 
@@ -257,13 +259,13 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedPoweredBlockEnti
      */
     public void updateGrowthNum()
     {
-        if(level == null || level.isClientSide) return;
+        if (level == null || level.isClientSide) return;
 
         growthNum = 0;
-        for(Direction dir : Direction.values())
+        for (Direction dir : Direction.values())
         {
             BlockState state = level.getBlockState(getBlockPos().relative(dir));
-            if(state.getBlock() == AEBlocks.GROWTH_ACCELERATOR.block())
+            if (state.getBlock() == AEBlocks.GROWTH_ACCELERATOR.block())
                 growthNum++;
         }
     }

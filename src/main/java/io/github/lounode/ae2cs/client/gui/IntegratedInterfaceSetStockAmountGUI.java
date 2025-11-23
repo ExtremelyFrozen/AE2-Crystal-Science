@@ -3,11 +3,9 @@ package io.github.lounode.ae2cs.client.gui;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.implementations.AESubScreen;
-import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.StyleManager;
 import appeng.client.gui.widgets.NumberEntryWidget;
 import appeng.core.localization.GuiText;
-import appeng.menu.implementations.SetStockAmountMenu;
 import io.github.lounode.ae2cs.common.menu.IntegratedInterfaceSetStockAmountMenu;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -36,12 +34,15 @@ public class IntegratedInterfaceSetStockAmountGUI extends AEBaseScreen<Integrate
     }
 
     @Override
-    protected void updateBeforeRender() {
+    protected void updateBeforeRender()
+    {
         super.updateBeforeRender();
 
-        if (!this.amountInitialized) {
+        if (!this.amountInitialized)
+        {
             var whatToStock = menu.getWhatToStock();
-            if (whatToStock != null) {
+            if (whatToStock != null)
+            {
                 this.amount.setType(NumberEntryType.of(whatToStock));
                 this.amount.setLongValue(menu.getInitialAmount());
 
@@ -51,7 +52,8 @@ public class IntegratedInterfaceSetStockAmountGUI extends AEBaseScreen<Integrate
         }
     }
 
-    private void confirm() {
+    private void confirm()
+    {
         this.amount.getIntValue().ifPresent(menu::confirm);
     }
 }

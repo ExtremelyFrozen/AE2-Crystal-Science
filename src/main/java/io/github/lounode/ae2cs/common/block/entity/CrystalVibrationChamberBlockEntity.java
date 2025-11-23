@@ -7,7 +7,6 @@ import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.energy.IEnergyService;
-import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.stacks.GenericStack;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
@@ -15,13 +14,11 @@ import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.AECableType;
 import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.blockentity.grid.AENetworkedBlockEntity;
-import appeng.blockentity.powersink.AEBasePoweredBlockEntity;
 import appeng.me.energy.StoredEnergyAmount;
 import appeng.util.ConfigInventory;
 import io.github.lounode.ae2cs.api.util.ForgeEnergyAdapterUpgrade;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
-import io.github.lounode.ae2cs.common.item.CrystalSeedItem;
 import io.github.lounode.ae2cs.common.item.PureCrystalItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -192,15 +189,15 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedBlockEntity i
         // 3-执行燃烧逻辑，产生固定数量能量，并减少tick，即使能量已满也继续燃烧
 
         // 查看当前槽位的物品，如果为合适物品就消耗掉1个，填充燃烧数据（如果正在燃烧则跳过此步）
-        if(remainingBurnTime <= 0)
+        if (remainingBurnTime <= 0)
         {
             GenericStack fuel = inv.getStack(0);
-            if(fuel != null
+            if (fuel != null
                     && fuel.what().getPrimaryKey() instanceof PureCrystalItem pureCrystalItem
                     && fuel.amount() > 0)
             {
                 long extracted = inv.extract(0, fuel.what(), 1, Actionable.MODULATE);
-                if(extracted > 0)
+                if (extracted > 0)
                 {
                     this.remainingBurnTime = pureCrystalItem.getBurnTime();
                     this.maxBurnTime = pureCrystalItem.getBurnTime();
@@ -211,10 +208,10 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedBlockEntity i
 
         // 尝试将目前能量注入ae网络
         IGrid grid = getMainNode().getGrid();
-        if(grid != null)
+        if (grid != null)
         {
             IEnergyService energyService = grid.getEnergyService();
-            if(energyService != null)
+            if (energyService != null)
             {
                 double remaining = energyService.injectPower(getAECurrentPower(), Actionable.MODULATE);
                 double needExtract = getAECurrentPower() - remaining;
@@ -223,13 +220,13 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedBlockEntity i
         }
 
         // 执行燃烧逻辑
-        if(remainingBurnTime > 0)
+        if (remainingBurnTime > 0)
         {
             remainingBurnTime--;
 
             injectAEPower(this.energyPerTick, Actionable.MODULATE);
 
-            if(remainingBurnTime <= 0)
+            if (remainingBurnTime <= 0)
                 clearBurnState();
         }
 
@@ -243,17 +240,20 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedBlockEntity i
     }
 
     @Override
-    public final double injectAEPower(double amt, Actionable mode) {
+    public final double injectAEPower(double amt, Actionable mode)
+    {
         return amt - storedEnergy.insert(amt, mode == Actionable.MODULATE);
     }
 
     @Override
-    public final double getAEMaxPower() {
+    public final double getAEMaxPower()
+    {
         return this.storedEnergy.getMaximum();
     }
 
     @Override
-    public final double getAECurrentPower() {
+    public final double getAECurrentPower()
+    {
         return this.storedEnergy.getAmount();
     }
 
@@ -275,7 +275,8 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedBlockEntity i
         return multiplier.divide(this.extractAEPower(multiplier.multiply(amt), mode));
     }
 
-    protected double extractAEPower(double amt, Actionable mode) {
+    protected double extractAEPower(double amt, Actionable mode)
+    {
         return this.storedEnergy.extract(amt, mode == Actionable.MODULATE);
     }
 }

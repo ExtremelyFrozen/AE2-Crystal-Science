@@ -6,23 +6,18 @@ import appeng.api.config.YesNo;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.GenericStack;
 import appeng.api.util.IConfigManager;
-import appeng.helpers.InterfaceLogicHost;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
-import appeng.menu.implementations.MenuTypeBuilder;
-import appeng.menu.implementations.SetStockAmountMenu;
 import appeng.menu.implementations.UpgradeableMenu;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.RestrictedInputSlot;
-import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceHost;
 import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceLogic;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.MenuType;
 import org.jetbrains.annotations.NotNull;
 
 public class IntegratedInterfaceMenu extends UpgradeableMenu<IntegratedInterfaceHost>
@@ -58,7 +53,7 @@ public class IntegratedInterfaceMenu extends UpgradeableMenu<IntegratedInterface
     {
         for (int i = 0; i < getHost().getTerminalPatternInventory().size(); ++i)
         {
-            this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.PROVIDER_PATTERN,getHost().getTerminalPatternInventory(), i), SlotSemantics.ENCODED_PATTERN);
+            this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.PROVIDER_PATTERN, getHost().getTerminalPatternInventory(), i), SlotSemantics.ENCODED_PATTERN);
         }
         InternalInventory configWrap = getHost().getConfigInv().createMenuWrapper();
         for (int i = 0; i < getHost().getConfigInv().size(); ++i)
@@ -83,23 +78,28 @@ public class IntegratedInterfaceMenu extends UpgradeableMenu<IntegratedInterface
         unlockStack = logic.getUnlockStack();
     }
 
-    public YesNo getBlockingMode() {
+    public YesNo getBlockingMode()
+    {
         return blockingMode;
     }
 
-    public LockCraftingMode getLockCraftingMode() {
+    public LockCraftingMode getLockCraftingMode()
+    {
         return lockCraftingMode;
     }
 
-    public LockCraftingMode getCraftingLockedReason() {
+    public LockCraftingMode getCraftingLockedReason()
+    {
         return craftingLockedReason;
     }
 
-    public GenericStack getUnlockStack() {
+    public GenericStack getUnlockStack()
+    {
         return unlockStack;
     }
 
-    public YesNo getShowInAccessTerminal() {
+    public YesNo getShowInAccessTerminal()
+    {
         return showInAccessTerminal;
     }
 
@@ -110,11 +110,15 @@ public class IntegratedInterfaceMenu extends UpgradeableMenu<IntegratedInterface
      */
     public void openSetAmountMenu(int configSlot)
     {
-        if (isClientSide()) {
+        if (isClientSide())
+        {
             sendClientAction(ACTION_OPEN_SET_AMOUNT, configSlot);
-        } else {
+        }
+        else
+        {
             var stack = getHost().getConfigInv().getStack(configSlot);
-            if (stack != null) {
+            if (stack != null)
+            {
                 IntegratedInterfaceSetStockAmountMenu.open((ServerPlayer) getPlayer(), getLocator(), configSlot,
                         stack.what(), (int) stack.amount());
             }

@@ -285,7 +285,7 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         BlockEntity blockEntity = host.getBlockEntity();
         Level level = blockEntity.getLevel();
 
-        if(level == null) return false;
+        if (level == null) return false;
 
         if (getCraftingLockedReason() != LockCraftingMode.NONE) return false;
 
@@ -363,7 +363,9 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         return false;
     }
 
-    /** 重新解析样板信息，并通知ae网络获取 */
+    /**
+     * 重新解析样板信息，并通知ae网络获取
+     */
     public void updatePatterns()
     {
         patterns.clear();
@@ -427,7 +429,9 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         return LockCraftingMode.NONE;
     }
 
-    /** 当样板推送完成，刷新一次锁定状态 */
+    /**
+     * 当样板推送完成，刷新一次锁定状态
+     */
     private void onPushPatternSuccess(IPatternDetails pattern)
     {
         resetCraftingLock();
@@ -459,7 +463,9 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         }
     }
 
-    /** 将目标方向的MEStorage或者其他合适能力包装成PatternProviderTarget */
+    /**
+     * 将目标方向的MEStorage或者其他合适能力包装成PatternProviderTarget
+     */
     @Nullable
     private PatternProviderTarget findAdapter(Direction side)
     {
@@ -499,7 +505,9 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         return this.configManager.getSetting(Settings.BLOCKING_MODE) == YesNo.YES;
     }
 
-    /** 检查目标是否能接收此样板所有输入种类（不包含具体的数量验证） */
+    /**
+     * 检查目标是否能接收此样板所有输入种类（不包含具体的数量验证）
+     */
     private boolean adapterAcceptsAll(PatternProviderTarget target, KeyCounter[] inputHolder)
     {
         for (KeyCounter inputList : inputHolder)
@@ -516,7 +524,9 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         return true;
     }
 
-    /** 将物品加入待发送列表，然后加速接口运行 */
+    /**
+     * 将物品加入待发送列表，然后加速接口运行
+     */
     private void addToSendList(AEKey what, long amount)
     {
         if (amount > 0)
@@ -527,7 +537,9 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         }
     }
 
-    /** 尝试将sendList中的东西向外发送 */
+    /**
+     * 尝试将sendList中的东西向外发送
+     */
     private boolean sendStacksOut()
     {
         if (sendDirection == null)
@@ -580,7 +592,7 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         {
             BlockEntity be = this.host.getBlockEntity();
             Level level = be.getLevel();
-            if(level == null)
+            if (level == null)
             {
                 redstoneState = YesNo.UNDECIDED;
             }
@@ -604,7 +616,9 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         }
     }
 
-    /** 当前供应器是否繁忙 */
+    /**
+     * 当前供应器是否繁忙
+     */
     @Override
     public boolean isBusy()
     {
@@ -691,7 +705,7 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         this.hasConfig = !this.configInv.isEmpty();
         updatePlan();
 
-        if(level != null)
+        if (level != null)
             level.invalidateCapabilities(be.getBlockPos());
     }
 
@@ -820,7 +834,9 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         return changed;
     }
 
-    /** 根据配置plan拉取/退回资源 */
+    /**
+     * 根据配置plan拉取/退回资源
+     */
     private boolean tryUsePlan(int slot, AEKey what, int amount)
     {
         var grid = mainNode.getGrid();
@@ -1341,7 +1357,7 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
 
         for (GenericStack stack : this.getStorageInv().toList())
         {
-            if(stack == null) continue;
+            if (stack == null) continue;
 
             stack.what().addDrops(stack.amount(), drops, this.host.getBlockEntity().getLevel(),
                     this.host.getBlockEntity().getBlockPos());
