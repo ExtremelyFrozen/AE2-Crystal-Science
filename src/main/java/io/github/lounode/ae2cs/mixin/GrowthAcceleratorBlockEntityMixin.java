@@ -41,7 +41,7 @@ public abstract class GrowthAcceleratorBlockEntityMixin extends AENetworkedPower
 
         for (ItemEntity item : items)
         {
-            item.setItem(CrystalSeedItem.grow(item.getItem(), 1));
+            item.setItem(CrystalSeedItem.grow(item.getItem(), 1 * ticksSinceLastCall));
         }
     }
 
