@@ -283,5 +283,18 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedPoweredBlockEnti
             if (slotContent.isEmpty()) continue;
             drops.add(slotContent.copy());
         }
+
+        for(ItemStack stack : inventory)
+        {
+            drops.add(stack);
+        }
+    }
+
+    @Override
+    public void clearContent()
+    {
+        super.clearContent();
+        this.inventory.clear();
+        this.upgrades.clear();
     }
 }

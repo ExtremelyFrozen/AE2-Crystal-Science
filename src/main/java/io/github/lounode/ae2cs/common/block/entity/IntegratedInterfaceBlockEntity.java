@@ -30,7 +30,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 同时包含ME样板供应器与ME接口的能力。即旧版ME接口
+ * 同时包含ME样板供应器与ME接口的能力。即旧版ME接口。
+ * 接口形态见{@link io.github.lounode.ae2cs.common.me.part.IntegratedInterfacePart}
  */
 public class IntegratedInterfaceBlockEntity extends AENetworkedBlockEntity implements IntegratedInterfaceHost
 {
@@ -200,5 +201,12 @@ public class IntegratedInterfaceBlockEntity extends AENetworkedBlockEntity imple
     {
         super.addAdditionalDrops(level, pos, drops);
         getLogic().addDrops(drops);
+    }
+
+    @Override
+    public void clearContent()
+    {
+        super.clearContent();
+        getLogic().cleanContent();
     }
 }

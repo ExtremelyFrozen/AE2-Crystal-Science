@@ -3,6 +3,7 @@ package io.github.lounode.ae2cs.common.me;
 import appeng.api.upgrades.Upgrades;
 import appeng.core.definitions.AEItems;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.init.AECSParts;
 import net.neoforged.bus.api.IEventBus;
 
 public class AEPlugin
@@ -29,5 +30,8 @@ public class AEPlugin
     public static void onCommonSetup()
     {
         Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK, 4);
+
+        Upgrades.add(AEItems.CRAFTING_CARD, AECSBlocks.INTEGRATED_INTERFACE_BLOCK, 1);
+        Upgrades.add(AEItems.CRAFTING_CARD, AECSParts.INTEGRATE_INTERFACE_PART, 1);
     }
 }

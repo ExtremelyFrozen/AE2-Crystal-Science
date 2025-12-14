@@ -27,6 +27,7 @@ public class AE2CrystalScience
         NeoForge.EVENT_BUS.register(this);
 
         AECSItems.register(modEventBus);
+        AECSParts.register(modEventBus);
         AECSBlocks.register(modEventBus);
         AECSBlockEntities.register(modEventBus);
         AECSDataComponents.register(modEventBus);

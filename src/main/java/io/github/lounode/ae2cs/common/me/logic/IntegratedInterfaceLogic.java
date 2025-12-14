@@ -1349,6 +1349,11 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
             drops.add(stack);
         }
 
+        for(ItemStack stack : upgrades)
+        {
+            drops.add(stack);
+        }
+
         for (GenericStack stack : this.sendList)
         {
             stack.what().addDrops(stack.amount(), drops, this.host.getBlockEntity().getLevel(),
@@ -1362,5 +1367,13 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
             stack.what().addDrops(stack.amount(), drops, this.host.getBlockEntity().getLevel(),
                     this.host.getBlockEntity().getBlockPos());
         }
+    }
+
+    public void cleanContent()
+    {
+        this.patternInventory.clear();
+        this.upgrades.clear();
+        this.sendList.clear();
+        this.storage.clear();
     }
 }

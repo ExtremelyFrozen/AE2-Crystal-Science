@@ -164,6 +164,12 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedBlockEntity i
         {
             drops.add(upgrade);
         }
+
+        for (GenericStack stack : this.inv.toList())
+        {
+            if (stack == null) continue;
+            stack.what().addDrops(stack.amount(), drops, getLevel(), getBlockPos());
+        }
     }
 
     @Override
@@ -171,6 +177,7 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedBlockEntity i
     {
         super.clearContent();
         upgrades.clear();
+        inv.clear();
     }
 
     @Override

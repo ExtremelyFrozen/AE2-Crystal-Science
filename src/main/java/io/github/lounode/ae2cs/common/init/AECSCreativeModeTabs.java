@@ -19,13 +19,17 @@ public class AECSCreativeModeTabs
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TAB =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, AECSConstants.MODID);
 
-    public static final Supplier<CreativeModeTab> AE2_OMNI_CELLS_CREATIVE_TAB = CREATIVE_MODE_TAB.register(
+    public static final Supplier<CreativeModeTab> AE2CS_CREATIVE_TAB = CREATIVE_MODE_TAB.register(
             "ae2cs_creative_tab",
             () -> CreativeModeTab.builder()
                     .icon(() -> new ItemStack(AECSItems.pureCertusQuartzCrystal.get()))
                     .title(Component.translatable("creativetab.ae2cs.items"))
                     .displayItems((params, output) -> {
                         for (DeferredItem<? extends Item> ro : AECSItems.getALL())
+                        {
+                            output.accept(ro.get());
+                        }
+                        for(DeferredItem<? extends Item> ro : AECSParts.getAll())
                         {
                             output.accept(ro.get());
                         }
