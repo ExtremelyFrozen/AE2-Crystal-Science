@@ -21,6 +21,7 @@ import appeng.core.definitions.AEItems;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
+import io.github.lounode.ae2cs.api.util.ForgeEnergyAdapterUpgrade;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSTags;
@@ -39,7 +40,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.EnumSet;
 import java.util.List;
 
-public class CrystalGrowthChamberBlockEntity extends AENetworkedPoweredBlockEntity implements IUpgradeableObject,
+public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlockEntity implements IUpgradeableObject,
         ServerTickingBlockEntity
 {
     /**
@@ -101,7 +102,7 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedPoweredBlockEnti
 
     public CrystalGrowthChamberBlockEntity(BlockPos pos, BlockState state)
     {
-        super(AECSBlockEntities.CRYSTAL_GROWTH_CHAMBER.get(), pos, state);
+        super(AECSBlockEntities.CRYSTAL_GROWTH_CHAMBER.get(), pos, state, 40000);
 
         getMainNode().setIdlePowerUsage(0.0) // 0待机消耗，我们从能量管道中获取能量
                 .setFlags(GridFlags.CANNOT_CARRY) // 此节点不允许传输频道
@@ -116,10 +117,6 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedPoweredBlockEnti
                 return stack != null && !stack.isEmpty() && stack.is(AECSTags.CRYSTAL_SEEDS);
             }
         });
-
-        // 给予8wFE缓存（即4wAE），不允许对外输出能量，只准输入
-        setInternalMaxPower(40000);
-        setInternalPowerFlow(AccessRestriction.WRITE);
     }
 
     /**
@@ -135,7 +132,7 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedPoweredBlockEnti
         event.registerBlockEntity(
                 Capabilities.EnergyStorage.BLOCK,
                 AECSBlockEntities.CRYSTAL_GROWTH_CHAMBER.get(),
-                AEBasePoweredBlockEntity::getEnergyStorage
+                (be, direction) -> new ForgeEnergyAdapterUpgrade(be, AccessRestriction.WRITE)
         );
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
@@ -158,7 +155,6 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedPoweredBlockEnti
     /**
      * 存储槽
      */
-    @Override
     public InternalInventory getInternalInventory()
     {
         return this.inventory;
@@ -203,12 +199,12 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedPoweredBlockEnti
     @Override
     public void serverTick()
     {
+        super.serverTick();
+
         if (level == null || level.isClientSide) return;
 
         --workTickCountDown;
         if (workTickCountDown > 0) return;
-
-        tickEnergyWithME();
 
         int speedCard = upgrades.getInstalledUpgrades(AEItems.SPEED_CARD);
         double energyCost = (1 + speedCard) * energyPerGrowth;
@@ -232,26 +228,6 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedPoweredBlockEnti
         setChanged();
 
         workTickCountDown = 10; // 重置倒计时
-    }
-
-    /**
-     * 如果连接到ae，则每次工作前会尝试从ae补充电量
-     */
-    private void tickEnergyWithME()
-    {
-        final IGrid grid = this.getMainNode().getGrid();
-        if (grid == null) return;
-        final IEnergyService energy = grid.getEnergyService();
-        if (energy == null) return;
-
-        double need = Math.max(0, getAEMaxPower() - getAECurrentPower());
-        if (need <= 0) return;
-
-        double had = energy.extractAEPower(need, Actionable.MODULATE, PowerMultiplier.ONE);
-
-        double insertEnergy = Math.min(need, had);
-
-        this.injectAEPower(insertEnergy, Actionable.MODULATE);
     }
 
     /**
@@ -296,5 +272,17 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedPoweredBlockEnti
         super.clearContent();
         this.inventory.clear();
         this.upgrades.clear();
+    }
+
+    @Override
+    public boolean isAEPublicPowerStorage()
+    {
+        return false;
+    }
+
+    @Override
+    public AccessRestriction getPowerFlow()
+    {
+        return AccessRestriction.WRITE;
     }
 }

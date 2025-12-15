@@ -5,7 +5,6 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.stacks.GenericStack;
 import appeng.api.upgrades.IUpgradeInventory;
@@ -13,8 +12,6 @@ import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.AECableType;
 import appeng.blockentity.ServerTickingBlockEntity;
-import appeng.blockentity.grid.AENetworkedBlockEntity;
-import appeng.me.energy.StoredEnergyAmount;
 import appeng.util.ConfigInventory;
 import io.github.lounode.ae2cs.api.util.ForgeEnergyAdapterUpgrade;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
@@ -33,14 +30,12 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import java.util.List;
 
-public class CrystalVibrationChamberBlockEntity extends AENetworkedBlockEntity implements IUpgradeableObject,
-        ServerTickingBlockEntity, IAEPowerStorage
+public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBlockEntity implements IUpgradeableObject,
+        ServerTickingBlockEntity
 {
     private final ConfigInventory inv;
 
     private final IUpgradeInventory upgrades;
-
-    private final StoredEnergyAmount storedEnergy = new StoredEnergyAmount(0, 1000000, type -> saveChanges());
 
     private int maxBurnTime = 0;
     private int remainingBurnTime = 0;
@@ -51,7 +46,7 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedBlockEntity i
 
     public CrystalVibrationChamberBlockEntity(BlockPos pos, BlockState blockState)
     {
-        super(AECSBlockEntities.CRYSTAL_VIBRATION_CHAMBER_BLOCK_ENTITY.get(), pos, blockState);
+        super(AECSBlockEntities.CRYSTAL_VIBRATION_CHAMBER_BLOCK_ENTITY.get(), pos, blockState, 1000000);
         this.getMainNode()
                 .setIdlePowerUsage(0)
                 .setFlags();
@@ -137,7 +132,6 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedBlockEntity i
         super.saveAdditional(data, registries);
         this.upgrades.writeToNBT(data, "upgrades", registries);
         this.inv.writeToChildTag(data, "inv", registries);
-        data.putDouble("current_energy", this.storedEnergy.getAmount());
         data.putInt("max_burn_time", this.maxBurnTime);
         data.putInt("burn_time", this.remainingBurnTime);
         data.putDouble("energy_per_tick", this.energyPerTick);
@@ -149,7 +143,6 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedBlockEntity i
         super.loadTag(data, registries);
         this.upgrades.readFromNBT(data, "upgrades", registries);
         this.inv.readFromChildTag(data, "inv", registries);
-        this.storedEnergy.setStored(data.getDouble("current_energy"));
         this.maxBurnTime = data.getInt("max_burn_time");
         this.remainingBurnTime = data.getInt("burn_time");
         this.energyPerTick = data.getDouble("energy_per_tick");
@@ -194,6 +187,9 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedBlockEntity i
         // 1-查看当前槽位的物品，如果为合适物品就消耗掉1个，填充燃烧数据（如果正在燃烧则跳过此步）
         // 2-尝试将目前能量注入ae网络
         // 3-执行燃烧逻辑，产生固定数量能量，并减少tick，即使能量已满也继续燃烧
+        // 其中，父类已经包含了将能量注入的逻辑
+
+        super.serverTick();
 
         // 查看当前槽位的物品，如果为合适物品就消耗掉1个，填充燃烧数据（如果正在燃烧则跳过此步）
         if (remainingBurnTime <= 0)
@@ -210,19 +206,6 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedBlockEntity i
                     this.maxBurnTime = pureCrystalItem.getBurnTime();
                     this.energyPerTick = pureCrystalItem.getEnergyPerTick();
                 }
-            }
-        }
-
-        // 尝试将目前能量注入ae网络
-        IGrid grid = getMainNode().getGrid();
-        if (grid != null)
-        {
-            IEnergyService energyService = grid.getEnergyService();
-            if (energyService != null)
-            {
-                double remaining = energyService.injectPower(getAECurrentPower(), Actionable.MODULATE);
-                double needExtract = getAECurrentPower() - remaining;
-                extractAEPower(needExtract, Actionable.MODULATE, PowerMultiplier.ONE);
             }
         }
 
@@ -247,24 +230,6 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedBlockEntity i
     }
 
     @Override
-    public final double injectAEPower(double amt, Actionable mode)
-    {
-        return amt - storedEnergy.insert(amt, mode == Actionable.MODULATE);
-    }
-
-    @Override
-    public final double getAEMaxPower()
-    {
-        return this.storedEnergy.getMaximum();
-    }
-
-    @Override
-    public final double getAECurrentPower()
-    {
-        return this.storedEnergy.getAmount();
-    }
-
-    @Override
     public boolean isAEPublicPowerStorage()
     {
         return false;
@@ -274,16 +239,5 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedBlockEntity i
     public AccessRestriction getPowerFlow()
     {
         return AccessRestriction.READ;
-    }
-
-    @Override
-    public final double extractAEPower(double amt, Actionable mode, PowerMultiplier multiplier)
-    {
-        return multiplier.divide(this.extractAEPower(multiplier.multiply(amt), mode));
-    }
-
-    protected double extractAEPower(double amt, Actionable mode)
-    {
-        return this.storedEnergy.extract(amt, mode == Actionable.MODULATE);
     }
 }
