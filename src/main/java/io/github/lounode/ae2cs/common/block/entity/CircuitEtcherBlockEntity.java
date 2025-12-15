@@ -2,11 +2,12 @@ package io.github.lounode.ae2cs.common.block.entity;
 
 import appeng.api.AECapabilities;
 import appeng.api.config.AccessRestriction;
+import appeng.api.config.Actionable;
 import appeng.api.inventories.InternalInventory;
-import appeng.api.networking.GridFlags;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
+import appeng.core.definitions.AEItems;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
@@ -14,14 +15,30 @@ import appeng.util.inv.filter.IAEItemFilter;
 import io.github.lounode.ae2cs.api.util.ForgeEnergyAdapterUpgrade;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.init.AECSRecipeTypes;
+import io.github.lounode.ae2cs.common.recipe.circuit_etcher.CircuitEtcherRecipe;
+import io.github.lounode.ae2cs.common.recipe.circuit_etcher.CircuitEtcherRecipeInput;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity implements IUpgradeableObject
 {
+    /**
+     * 基础能量消耗，每tick 200AE，每多一个加速卡，则此数值翻倍，同时机器运行速率也翻倍。
+     * <p>
+     * 目前最大四张加速卡，则最大速率为16倍，同时最大每tick消耗也为16倍，即3200AE每tick
+     */
+    private static final double BASIC_ENERGY_COST_PER_TICK = 200;
+
     /**
      * 输入仓
      */
@@ -31,6 +48,7 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
         protected void onContentsChanged(int slot)
         {
             super.onContentsChanged(slot);
+            needRefreshRecipeState = true;
             setChanged();
         }
     };
@@ -83,19 +101,37 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
     private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(AECSBlocks.CIRCUIT_ETCHER_BLOCK,
             4, this::saveChanges);
 
-    /** 当前执行的配方信息 */
+    /**
+     * 当前执行的配方
+     */
+    @Nullable
+    private RecipeHolder<CircuitEtcherRecipe> activeRecipe;
+
+    /**
+     * activeRecipe 对应的槽位映射（required[i] 使用哪个输入槽 0/1/2）
+     */
+    private int @Nullable [] activeMatch;
+
+    /**
+     * 该配方需要的总时间（tick）
+     */
+    private int activeRecipeTime = 0;
 
     /**
      * 当前配方运行时间
      */
     private int recipeProgress = 0;
 
+    /**
+     * 是否需要更新配方状态
+     */
+    private boolean needRefreshRecipeState = true;
+
     public CircuitEtcherBlockEntity(BlockPos pos, BlockState blockState)
     {
-        super(AECSBlockEntities.CIRCUIT_ETCHER_BLOCK_ENTITY.get(), pos, blockState, 40000);
+        super(AECSBlockEntities.CIRCUIT_ETCHER_BLOCK_ENTITY.get(), pos, blockState, 80000);
 
-        getMainNode().setIdlePowerUsage(0)
-                .setFlags(GridFlags.CANNOT_CARRY);
+        getMainNode().setIdlePowerUsage(0);
     }
 
     /**
@@ -135,6 +171,11 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
         return recipeProgress;
     }
 
+    public int getActiveRecipeTime()
+    {
+        return activeRecipeTime;
+    }
+
     @Override
     public IUpgradeInventory getUpgrades()
     {
@@ -152,4 +193,180 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
     {
         return AccessRestriction.WRITE;
     }
+
+    @Override
+    public void serverTick()
+    {
+        super.serverTick();
+
+        if (getLevel() == null || getLevel().isClientSide()) return;
+
+        // 1) 更新/确认活动配方
+        if (needRefreshRecipeState)
+        {
+            updateActiveRecipe();
+            needRefreshRecipeState = false;
+        }
+        if (activeRecipe == null || activeMatch == null)
+        {
+            recipeProgress = 0;
+            return;
+        }
+
+        Level level = getLevel();
+        CircuitEtcherRecipe recipe = activeRecipe.value();
+
+        // 2) 若未完成：推进进度 + 扣能量
+        if (recipeProgress < activeRecipeTime)
+        {
+            int speed = getSpeedMultiplier();
+            double neededEnergy = getEnergyPerTick();
+
+            if (getAECurrentPower() < neededEnergy) return;
+            extractAEPower(neededEnergy, Actionable.MODULATE);
+
+            recipeProgress = Math.min(activeRecipeTime, recipeProgress + speed);
+            setChanged();
+        }
+
+        // 3) 已经完成：消耗资源并产出
+        if (recipeProgress >= activeRecipeTime)
+        {
+            CircuitEtcherRecipeInput input = CircuitEtcherRecipeInput.of(
+                    inputInv.getStackInSlot(0),
+                    inputInv.getStackInSlot(1),
+                    inputInv.getStackInSlot(2)
+            );
+            ItemStack result = recipe.assemble(input, level.registryAccess());
+            if (result.isEmpty()) // 如果我们拿不到输出，说明配方可能有问题，此时清空状态
+            {
+                recipeProgress = 0;
+                activeRecipe = null;
+                activeMatch = null;
+                activeRecipeTime = 0;
+                return;
+            }
+
+            // 如果输出放不下，则将recipeProgress钳制在最大配方时间
+            if (!outputInv.insertItem(0, result, true).isEmpty())
+            {
+                recipeProgress = activeRecipeTime;
+                return;
+            }
+
+            if (!consumeInputs(recipe, activeMatch))
+            {
+                // 输入不够：清缓存和状态，等待刷新
+                recipeProgress = 0;
+                activeRecipe = null;
+                activeMatch = null;
+                activeRecipeTime = 0;
+                return;
+            }
+
+            outputInv.insertItem(0, result, false);
+            recipeProgress = 0;
+            setChanged();
+        }
+    }
+
+    // 计算能量消耗
+    private int getSpeedMultiplier()
+    {
+        int c = Math.min(4, upgrades.getInstalledUpgrades(AEItems.SPEED_CARD));
+        return 1 << c;
+    }
+
+    private double getEnergyPerTick()
+    {
+        return BASIC_ENERGY_COST_PER_TICK * getSpeedMultiplier();
+    }
+
+    /**
+     * 更新配方状态
+     */
+    private void updateActiveRecipe()
+    {
+        if (getLevel() == null || getLevel().isClientSide()) return;
+
+        var level = getLevel();
+        var input = CircuitEtcherRecipeInput.of(
+                inputInv.getStackInSlot(0),
+                inputInv.getStackInSlot(1),
+                inputInv.getStackInSlot(2)
+        );
+
+        var opt = level.getRecipeManager().getRecipeFor(
+                AECSRecipeTypes.CIRCUIT_ETCHER.get(),
+                input,
+                level
+        );
+
+        // 没有任何匹配配方：清空状态
+        if (opt.isEmpty())
+        {
+            activeRecipe = null;
+            activeMatch = null;
+            activeRecipeTime = 0;
+            recipeProgress = 0;
+            return;
+        }
+
+        var holder = opt.get();
+        var recipe = holder.value();
+
+        int[] match = recipe.findMatch(input);
+        if (match == null)
+        {
+            // 理论上不该发生（因为 getRecipeFor 已经匹配过），但保底
+            activeRecipe = null;
+            activeMatch = null;
+            activeRecipeTime = 0;
+            recipeProgress = 0;
+            return;
+        }
+
+        // 配方未变：保持进度，仅刷新 match/time
+        if (activeRecipe != null && activeRecipe.id().equals(holder.id()))
+        {
+            activeMatch = match;
+            activeRecipeTime = recipe.time();
+            return;
+        }
+
+        // 配方变了：切换配方，重置进度
+        activeRecipe = holder;
+        activeMatch = match;
+        activeRecipeTime = recipe.time();
+        recipeProgress = 0;
+    }
+
+    /**
+     * 尝试从输入槽中按照match提供的索引表来抽取当前配方所需资源，如果都能成功则返回true
+     */
+    private boolean consumeInputs(CircuitEtcherRecipe recipe, int[] match)
+    {
+        List<SizedIngredient> required = recipe.required();
+        // 先进行模拟抽取
+        for (int i = 0; i < required.size(); i++)
+        {
+            int slot = match[i];
+            int amount = required.get(i).count();
+
+            ItemStack extracted = inputInv.extractItem(slot, amount, true);
+            if (extracted.isEmpty() || extracted.getCount() < amount) return false;
+        }
+
+        // 执行扣除
+        for (int i = 0; i < required.size(); i++)
+        {
+            int slot = match[i];
+            int amount = required.get(i).count();
+
+            inputInv.extractItem(slot, amount, false);
+        }
+        return true;
+    }
+
+
 }

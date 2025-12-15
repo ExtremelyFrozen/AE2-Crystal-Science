@@ -30,6 +30,7 @@ public class AEPlugin
     public static void onCommonSetup()
     {
         Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK, 4);
+        Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.CIRCUIT_ETCHER_BLOCK, 4);
 
         Upgrades.add(AEItems.CRAFTING_CARD, AECSBlocks.INTEGRATED_INTERFACE_BLOCK, 1);
         Upgrades.add(AEItems.CRAFTING_CARD, AECSParts.INTEGRATE_INTERFACE_PART, 1);

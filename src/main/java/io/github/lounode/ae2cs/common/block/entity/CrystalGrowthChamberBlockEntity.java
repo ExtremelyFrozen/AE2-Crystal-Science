@@ -4,7 +4,6 @@ import appeng.api.AECapabilities;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.inventories.InternalInventory;
-import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.MEStorage;
@@ -33,7 +32,6 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.EnumSet;
 import java.util.List;
 
 public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlockEntity implements IUpgradeableObject,
@@ -100,9 +98,7 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
     {
         super(AECSBlockEntities.CRYSTAL_GROWTH_CHAMBER.get(), pos, state, 40000);
 
-        getMainNode().setIdlePowerUsage(0.0) // 0待机消耗，我们从能量管道中获取能量
-                .setFlags(GridFlags.CANNOT_CARRY) // 此节点不允许传输频道
-                .setExposedOnSides(EnumSet.allOf(Direction.class)); // 可以用于连接的方向
+        getMainNode().setIdlePowerUsage(0.0);
 
         inventory.setFilter(new IAEItemFilter()
         {

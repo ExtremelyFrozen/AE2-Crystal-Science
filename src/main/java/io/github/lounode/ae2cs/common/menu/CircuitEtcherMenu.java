@@ -19,6 +19,12 @@ public class CircuitEtcherMenu extends UpgradeableMenu<CircuitEtcherBlockEntity>
     @GuiSync(11)
     public int recipeNeedTicks;
 
+    @GuiSync(12)
+    public double currentEnergy;
+
+    @GuiSync(13)
+    public double maxEnergy;
+
     public CircuitEtcherMenu(int id, Inventory ip, CircuitEtcherBlockEntity host)
     {
         super(AECSMenus.CIRCUIT_ETCHER_MENU.get(), id, ip, host);
@@ -48,6 +54,7 @@ public class CircuitEtcherMenu extends UpgradeableMenu<CircuitEtcherBlockEntity>
             };
             this.addSlot(outputSlot, SlotSemantics.MACHINE_OUTPUT);
         }
+
     }
 
     @Override
@@ -58,8 +65,10 @@ public class CircuitEtcherMenu extends UpgradeableMenu<CircuitEtcherBlockEntity>
     @Override
     public void broadcastChanges()
     {
-        recipeNeedTicks = 100;
+        recipeNeedTicks = getHost().getActiveRecipeTime();
         recipeProgress = getHost().getRecipeProgress();
+        maxEnergy = getHost().getAEMaxPower();
+        currentEnergy = getHost().getAECurrentPower();
 
         super.broadcastChanges();
     }

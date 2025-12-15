@@ -25,5 +25,25 @@
       "text": { "translate": "block.ae2cs.circuit_etcher" },
       "position": { "left": 8, "top": 6 }
     }
+  },
+  "images": {
+    "energyRateBar": {
+      "texture": "ae2cs:textures/gui/circuit_etcher_menu.png",
+      "srcRect": [176, 34, 6, 18]
+    },
+    "workingProgressBar": {
+      "texture": "ae2cs:textures/gui/circuit_etcher_menu.png",
+      "srcRect": [199, 0, 22, 33]
+    }
+  },
+  "widgets": {
+    "energyRateBar": {
+      "left": 132,
+      "top": 40
+    },
+    "workingProgressBar": {
+      "left": 77,
+      "top": 34
+    }
   }
 }

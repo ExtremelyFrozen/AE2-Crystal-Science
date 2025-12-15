@@ -6,6 +6,7 @@ import appeng.client.gui.widgets.CommonButtons;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.menu.interfaces.IProgressProvider;
 import appeng.util.Platform;
+import io.github.lounode.ae2cs.common.location.SimpleComponents;
 import io.github.lounode.ae2cs.common.menu.CrystalVibrationChamberMenu;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -28,7 +29,7 @@ public class CrystalVibrationChamberGUI extends UpgradeableScreen<CrystalVibrati
         widgets.add("generationRateBar", this.generationRateBar);
 
         this.burnProgressBar = new ProgressBar(new BurnProgress(this.getMenu()),
-                style.getImage("burnProgressBar"), ProgressBar.Direction.VERTICAL);
+                style.getImage("burnProgressBar"), ProgressBar.Direction.VERTICAL, SimpleComponents.BURNING_PROGRESS_BAR);
         widgets.add("burnProgressBar", this.burnProgressBar);
 
         addToLeftToolbar(CommonButtons.togglePowerUnit());

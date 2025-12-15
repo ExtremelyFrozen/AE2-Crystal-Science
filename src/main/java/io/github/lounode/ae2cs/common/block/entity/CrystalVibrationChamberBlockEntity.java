@@ -44,9 +44,7 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
     public CrystalVibrationChamberBlockEntity(BlockPos pos, BlockState blockState)
     {
         super(AECSBlockEntities.CRYSTAL_VIBRATION_CHAMBER_BLOCK_ENTITY.get(), pos, blockState, 1000000);
-        this.getMainNode()
-                .setIdlePowerUsage(0)
-                .setFlags();
+        this.getMainNode().setIdlePowerUsage(0);
 
         this.upgrades = UpgradeInventories.forMachine(AECSBlocks.CRYSTAL_VIBRATION_CHAMBER, 3, this::saveChanges);
 

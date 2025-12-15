@@ -33,6 +33,8 @@ public class AE2CrystalScience
         AECSDataComponents.register(modEventBus);
         AECSCreativeModeTabs.register(modEventBus);
         AECSMenus.registerMenus(modEventBus);
+        AECSRecipeTypes.register(modEventBus);
+        AECSRecipeSerializers.register(modEventBus);
 
         AEPlugin.onInit();
         AEPlugin.onRegister(modEventBus, NeoForge.EVENT_BUS);

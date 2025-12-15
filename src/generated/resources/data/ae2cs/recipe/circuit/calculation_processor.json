@@ -1,0 +1,20 @@
+{
+  "type": "ae2cs:circuit_etcher_recipe_serializer",
+  "input_a": {
+    "count": 64,
+    "item": "minecraft:redstone"
+  },
+  "input_b": {
+    "count": 64,
+    "item": "ae2:silicon"
+  },
+  "input_c": {
+    "count": 64,
+    "item": "ae2cs:purified_certus_quartz_crystal"
+  },
+  "result": {
+    "count": 64,
+    "id": "ae2:calculation_processor"
+  },
+  "time": 300
+}

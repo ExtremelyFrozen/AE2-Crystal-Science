@@ -36,6 +36,10 @@
   "message.ae2cs.tooltip.burn_time": "燃烧时间：%s刻",
   "message.ae2cs.tooltip.energy": "能量密度：%sFE每刻",
 
+  "ae2cs.simple_component.work_progress_bar": "进度：",
+  "ae2cs.simple_component.energy_progress_bar": "当前能量（AE）：",
+  "ae2cs.simple_component.burning_progress_bar": "燃烧时间：",
+
   "ae2_crystal_seeds.configuration.title": "AE2 Crystal Seeds Configs",
   "ae2_crystal_seeds.configuration.section.ae2_crystal_seeds.common.toml": "AE2 Crystal Seeds Configs",
   "ae2_crystal_seeds.configuration.section.ae2_crystal_seeds.common.toml.title": "AE2 Crystal Seeds Configs",
