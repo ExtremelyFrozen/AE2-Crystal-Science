@@ -49,12 +49,18 @@ public class IntegratedInterfacePart extends AEBasePart implements IntegratedInt
     }
 
     @Override
-    public IPartModel getStaticModels() {
-        if (this.isActive() && this.isPowered()) {
+    public IPartModel getStaticModels()
+    {
+        if (this.isActive() && this.isPowered())
+        {
             return MODELS_HAS_CHANNEL;
-        } else if (this.isPowered()) {
+        }
+        else if (this.isPowered())
+        {
             return MODELS_ON;
-        } else {
+        }
+        else
+        {
             return MODELS_OFF;
         }
     }
@@ -62,7 +68,8 @@ public class IntegratedInterfacePart extends AEBasePart implements IntegratedInt
     @Override
     public boolean onUseWithoutItem(Player player, Vec3 pos)
     {
-        if (!player.getCommandSenderWorld().isClientSide()) {
+        if (!player.getCommandSenderWorld().isClientSide())
+        {
             openMenu(player, MenuLocators.forPart(this));
         }
         return true;

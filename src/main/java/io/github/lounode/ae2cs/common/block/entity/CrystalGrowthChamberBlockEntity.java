@@ -3,19 +3,15 @@ package io.github.lounode.ae2cs.common.block.entity;
 import appeng.api.AECapabilities;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.MEStorage;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.blockentity.ServerTickingBlockEntity;
-import appeng.blockentity.grid.AENetworkedPoweredBlockEntity;
-import appeng.blockentity.powersink.AEBasePoweredBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.util.inv.AppEngInternalInventory;
@@ -260,7 +256,7 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
             drops.add(slotContent.copy());
         }
 
-        for(ItemStack stack : inventory)
+        for (ItemStack stack : inventory)
         {
             drops.add(stack);
         }

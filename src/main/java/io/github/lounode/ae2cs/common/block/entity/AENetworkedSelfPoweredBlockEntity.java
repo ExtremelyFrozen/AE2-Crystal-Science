@@ -53,27 +53,31 @@ public abstract class AENetworkedSelfPoweredBlockEntity extends AENetworkedBlock
     @Override
     public void serverTick()
     {
-        if(level == null || level.isClientSide) return;
+        if (level == null || level.isClientSide) return;
 
         // 公共储能设备不做主动交互
-        if(isAEPublicPowerStorage()) return;
+        if (isAEPublicPowerStorage()) return;
 
         IGrid grid = getMainNode().getGrid();
-        if(grid == null) return;
+        if (grid == null) return;
         IEnergyService energyService = grid.getEnergyService();
-        if(energyService == null) return;
+        if (energyService == null) return;
 
         AccessRestriction flowDirection = getPowerFlow();
         switch (flowDirection)
         {
-            case NO_ACCESS -> {}
-            case READ -> {
+            case NO_ACCESS ->
+            {
+            }
+            case READ ->
+            {
                 // 从自身提取，向AE网络输入
                 double remaining = energyService.injectPower(getAECurrentPower(), Actionable.MODULATE);
                 double needExtract = getAECurrentPower() - remaining;
                 extractAEPower(needExtract, Actionable.MODULATE, PowerMultiplier.ONE);
             }
-            case WRITE, READ_WRITE -> {
+            case WRITE, READ_WRITE ->
+            {
                 // 从AE网络提取，输入到自身
                 double needInsert = getAEMaxPower() - getAECurrentPower();
                 double actualCanInsert = energyService.extractAEPower(needInsert, Actionable.MODULATE, PowerMultiplier.ONE);

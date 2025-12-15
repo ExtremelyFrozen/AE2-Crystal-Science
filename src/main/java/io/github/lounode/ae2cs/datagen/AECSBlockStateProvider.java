@@ -4,10 +4,8 @@ import appeng.api.orientation.BlockOrientation;
 import appeng.api.orientation.IOrientationStrategy;
 import appeng.block.crafting.PatternProviderBlock;
 import appeng.block.misc.VibrationChamberBlock;
-import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
-import appeng.datagen.providers.models.AE2BlockStateProvider;
 import com.google.gson.JsonPrimitive;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
@@ -185,16 +183,19 @@ public class AECSBlockStateProvider extends BlockStateProvider
         return BuiltInRegistries.BLOCK.getKey(block);
     }
 
-    protected final MultiVariantGenerator multiVariantGenerator(Block block, Variant... variants) {
-        if (variants.length == 0) {
-            variants = new Variant[] { Variant.variant() };
+    protected final MultiVariantGenerator multiVariantGenerator(Block block, Variant... variants)
+    {
+        if (variants.length == 0)
+        {
+            variants = new Variant[]{Variant.variant()};
         }
         var builder = MultiVariantGenerator.multiVariant(block, variants);
         registeredBlocks.put(block, () -> builder.get().getAsJsonObject());
         return builder;
     }
 
-    protected static PropertyDispatch createFacingSpinDispatch(int baseRotX, int baseRotY) {
+    protected static PropertyDispatch createFacingSpinDispatch(int baseRotX, int baseRotY)
+    {
         return PropertyDispatch.properties(BlockStateProperties.FACING, IOrientationStrategy.SPIN)
                 .generate((facing, spin) -> {
                     var orientation = BlockOrientation.get(facing, spin);
@@ -206,29 +207,36 @@ public class AECSBlockStateProvider extends BlockStateProvider
                 });
     }
 
-    protected static Variant applyRotation(Variant variant, int angleX, int angleY, int angleZ) {
+    protected static Variant applyRotation(Variant variant, int angleX, int angleY, int angleZ)
+    {
         angleX = normalizeAngle(angleX);
         angleY = normalizeAngle(angleY);
         angleZ = normalizeAngle(angleZ);
 
-        if (angleX != 0) {
+        if (angleX != 0)
+        {
             variant = variant.with(VariantProperties.X_ROT, rotationByAngle(angleX));
         }
-        if (angleY != 0) {
+        if (angleY != 0)
+        {
             variant = variant.with(VariantProperties.Y_ROT, rotationByAngle(angleY));
         }
-        if (angleZ != 0) {
+        if (angleZ != 0)
+        {
             variant = variant.with(Z_ROT, rotationByAngle(angleZ));
         }
         return variant;
     }
 
-    private static int normalizeAngle(int angle) {
+    private static int normalizeAngle(int angle)
+    {
         return angle - (angle / 360) * 360;
     }
 
-    private static VariantProperties.Rotation rotationByAngle(int angle) {
-        return switch (angle) {
+    private static VariantProperties.Rotation rotationByAngle(int angle)
+    {
+        return switch (angle)
+        {
             case 0 -> VariantProperties.Rotation.R0;
             case 90 -> VariantProperties.Rotation.R90;
             case 180 -> VariantProperties.Rotation.R180;
@@ -237,7 +245,8 @@ public class AECSBlockStateProvider extends BlockStateProvider
         };
     }
 
-    protected static PropertyDispatch createFacingSpinDispatch() {
+    protected static PropertyDispatch createFacingSpinDispatch()
+    {
         return createFacingSpinDispatch(0, 0);
     }
 }

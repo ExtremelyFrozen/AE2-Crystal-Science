@@ -1349,7 +1349,7 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
             drops.add(stack);
         }
 
-        for(ItemStack stack : upgrades)
+        for (ItemStack stack : upgrades)
         {
             drops.add(stack);
         }

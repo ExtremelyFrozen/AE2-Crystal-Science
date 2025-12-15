@@ -29,7 +29,7 @@ public class AECSCreativeModeTabs
                         {
                             output.accept(ro.get());
                         }
-                        for(DeferredItem<? extends Item> ro : AECSParts.getAll())
+                        for (DeferredItem<? extends Item> ro : AECSParts.getAll())
                         {
                             output.accept(ro.get());
                         }

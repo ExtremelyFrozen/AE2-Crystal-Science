@@ -3,13 +3,11 @@ package io.github.lounode.ae2cs.common.init;
 import appeng.menu.implementations.MenuTypeBuilder;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
+import io.github.lounode.ae2cs.common.block.entity.CircuitEtcherBlockEntity;
 import io.github.lounode.ae2cs.common.block.entity.CrystalGrowthChamberBlockEntity;
 import io.github.lounode.ae2cs.common.block.entity.CrystalVibrationChamberBlockEntity;
 import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceHost;
-import io.github.lounode.ae2cs.common.menu.CrystalGrowthChamberMenu;
-import io.github.lounode.ae2cs.common.menu.CrystalVibrationChamberMenu;
-import io.github.lounode.ae2cs.common.menu.IntegratedInterfaceMenu;
-import io.github.lounode.ae2cs.common.menu.IntegratedInterfaceSetStockAmountMenu;
+import io.github.lounode.ae2cs.common.menu.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.bus.api.IEventBus;
@@ -40,6 +38,11 @@ public class AECSMenus
     public static final Supplier<MenuType<CrystalVibrationChamberMenu>> CRYSTAL_VIBRATION_CHAMBER_MENU = MENU_TYPES.register("crystal_vibration_chamber_menu",
             () -> MenuTypeBuilder.create(CrystalVibrationChamberMenu::new, CrystalVibrationChamberBlockEntity.class)
                     .build(AE2CrystalScience.makeId("crystal_vibration_chamber_menu"))
+    );
+
+    public static final Supplier<MenuType<CircuitEtcherMenu>> CIRCUIT_ETCHER_MENU = MENU_TYPES.register("circuit_etcher_menu",
+            () -> MenuTypeBuilder.create(CircuitEtcherMenu::new, CircuitEtcherBlockEntity.class)
+                    .build(AE2CrystalScience.makeId("circuit_etcher_menu"))
     );
 
     public static void registerMenus(IEventBus eventBus)

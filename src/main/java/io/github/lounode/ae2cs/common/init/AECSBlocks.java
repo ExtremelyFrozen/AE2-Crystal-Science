@@ -3,6 +3,7 @@ package io.github.lounode.ae2cs.common.init;
 import appeng.block.AEBaseBlock;
 import io.github.lounode.ae2cs.api.ids.AECSBlockIds;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
+import io.github.lounode.ae2cs.common.block.CircuitEtcherBlock;
 import io.github.lounode.ae2cs.common.block.CrystalGrowthChamberBlock;
 import io.github.lounode.ae2cs.common.block.CrystalVibrationChamberBlock;
 import io.github.lounode.ae2cs.common.block.IntegratedInterfaceBlock;
@@ -49,7 +50,12 @@ public class AECSBlocks
      */
     public static final DeferredBlock<CrystalVibrationChamberBlock> CRYSTAL_VIBRATION_CHAMBER = registerOtherBlock(AECSBlockIds.CRYSTAL_VIBRATION_CHAMBER, () -> new CrystalVibrationChamberBlock(AEBaseBlock.metalProps().strength(4.5f)));
 
-    public static final DeferredBlock<Block> circuitEtcher = registerOtherBlock(AECSBlockIds.CIRCUIT_ETCHER, () -> new Block(copy(Blocks.IRON_BLOCK)));
+    /**
+     * 电路蚀刻器
+     */
+    public static final DeferredBlock<CircuitEtcherBlock> CIRCUIT_ETCHER_BLOCK = registerOtherBlock(AECSBlockIds.CIRCUIT_ETCHER, () -> new CircuitEtcherBlock(copy(Blocks.IRON_BLOCK)));
+
+
     public static final DeferredBlock<Block> quartzGrindstone = registerOtherBlock(AECSBlockIds.QUARTZ_GRINDSTONE, () -> new Block(copy(Blocks.STONE)));
 
     public static final DeferredBlock<Block> crusher = registerOtherBlock(AECSBlockIds.CRUSHER, () -> new Block(copy(Blocks.IRON_BLOCK)));

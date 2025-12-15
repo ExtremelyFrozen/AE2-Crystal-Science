@@ -1,0 +1,29 @@
+{
+  "$schema": "schema.json",
+  "includes": [
+    "common/common.json",
+    "common/player_inventory.json",
+    "common/toolbox.json"
+  ],
+  "background": {
+    "texture": "ae2cs:textures/gui/circuit_etcher_menu.png",
+    "textureWidth": 256,
+    "textureHeight": 256,
+    "srcRect": [0, 0, 176, 178]
+  },
+  "slots": {
+    "MACHINE_INPUT": { "left": 53, "top": 22, "grid": "VERTICAL" },
+    "MACHINE_OUTPUT": { "left": 109, "top": 41, "grid": "VERTICAL" },
+    "UPGRADE": {
+      "right": 0,
+      "top": 0,
+      "grid": "VERTICAL"
+    }
+  },
+  "text": {
+    "title": {
+      "text": { "translate": "block.ae2cs.circuit_etcher" },
+      "position": { "left": 8, "top": 6 }
+    }
+  }
+}

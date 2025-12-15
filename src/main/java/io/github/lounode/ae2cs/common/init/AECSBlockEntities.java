@@ -7,6 +7,7 @@ import appeng.blockentity.ServerTickingBlockEntity;
 import com.google.common.base.Preconditions;
 import io.github.lounode.ae2cs.api.ids.AECSBlockIds;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
+import io.github.lounode.ae2cs.common.block.entity.CircuitEtcherBlockEntity;
 import io.github.lounode.ae2cs.common.block.entity.CrystalGrowthChamberBlockEntity;
 import io.github.lounode.ae2cs.common.block.entity.CrystalVibrationChamberBlockEntity;
 import io.github.lounode.ae2cs.common.block.entity.IntegratedInterfaceBlockEntity;
@@ -65,6 +66,16 @@ public class AECSBlockEntities
             CrystalVibrationChamberBlockEntity.class,
             CrystalVibrationChamberBlockEntity::new,
             AECSBlocks.CRYSTAL_VIBRATION_CHAMBER
+    );
+
+    /**
+     * 电路蚀刻器
+     */
+    public static final DeferredBlockEntityType<CircuitEtcherBlockEntity> CIRCUIT_ETCHER_BLOCK_ENTITY = create(
+            AECSBlockIds.CIRCUIT_ETCHER,
+            CircuitEtcherBlockEntity.class,
+            CircuitEtcherBlockEntity::new,
+            AECSBlocks.CIRCUIT_ETCHER_BLOCK
     );
 
     /**

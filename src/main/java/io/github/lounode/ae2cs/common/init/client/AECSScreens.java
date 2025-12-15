@@ -1,10 +1,7 @@
 package io.github.lounode.ae2cs.common.init.client;
 
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
-import io.github.lounode.ae2cs.client.gui.CrystalGrowthChamberGUI;
-import io.github.lounode.ae2cs.client.gui.CrystalVibrationChamberGUI;
-import io.github.lounode.ae2cs.client.gui.IntegratedInterfaceGUI;
-import io.github.lounode.ae2cs.client.gui.IntegratedInterfaceSetStockAmountGUI;
+import io.github.lounode.ae2cs.client.gui.*;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -21,5 +18,6 @@ public class AECSScreens
         event.register(AECSMenus.INTEGRATED_INTERFACE_MENU.get(), IntegratedInterfaceGUI::new);
         event.register(AECSMenus.INTEGRATED_INTERFACE_SET_STOCK_AMOUNT_MENU.get(), IntegratedInterfaceSetStockAmountGUI::new);
         event.register(AECSMenus.CRYSTAL_VIBRATION_CHAMBER_MENU.get(), CrystalVibrationChamberGUI::new);
+        event.register(AECSMenus.CIRCUIT_ETCHER_MENU.get(), CircuitEtcherGUI::new);
     }
 }
