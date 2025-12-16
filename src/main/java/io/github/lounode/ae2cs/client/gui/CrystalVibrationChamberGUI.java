@@ -3,9 +3,9 @@ package io.github.lounode.ae2cs.client.gui;
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.style.StyleManager;
 import appeng.client.gui.widgets.CommonButtons;
-import appeng.client.gui.widgets.ProgressBar;
 import appeng.menu.interfaces.IProgressProvider;
 import appeng.util.Platform;
+import io.github.lounode.ae2cs.client.gui.widgets.AdvancedProgressBar;
 import io.github.lounode.ae2cs.common.location.SimpleComponents;
 import io.github.lounode.ae2cs.common.menu.CrystalVibrationChamberMenu;
 import net.minecraft.network.chat.Component;
@@ -14,22 +14,22 @@ import net.minecraft.world.entity.player.Inventory;
 public class CrystalVibrationChamberGUI extends UpgradeableScreen<CrystalVibrationChamberMenu>
 {
     // 能量进度条
-    private final ProgressBar generationRateBar;
+    private final AdvancedProgressBar generationRateBar;
 
     // 燃烧进度条
-    private final ProgressBar burnProgressBar;
+    private final AdvancedProgressBar burnProgressBar;
 
     // 将使用样式 JSON，背景由样式管理
     public CrystalVibrationChamberGUI(CrystalVibrationChamberMenu menu, Inventory inv, Component title)
     {
         super(menu, inv, title, StyleManager.loadStyleDoc("/screens/crystal_vibration_chamber_menu.json"));
 
-        this.generationRateBar = new ProgressBar(new EnergyProgress(this.getMenu()),
-                style.getImage("generationRateBar"), ProgressBar.Direction.VERTICAL);
+        this.generationRateBar = new AdvancedProgressBar(new EnergyProgress(this.getMenu()),
+                style.getImage("generationRateBar"), AdvancedProgressBar.FillMode.BOTTOM_TO_TOP);
         widgets.add("generationRateBar", this.generationRateBar);
 
-        this.burnProgressBar = new ProgressBar(new BurnProgress(this.getMenu()),
-                style.getImage("burnProgressBar"), ProgressBar.Direction.VERTICAL, SimpleComponents.BURNING_PROGRESS_BAR);
+        this.burnProgressBar = new AdvancedProgressBar(new BurnProgress(this.getMenu()),
+                style.getImage("burnProgressBar"), AdvancedProgressBar.FillMode.BOTTOM_TO_TOP, SimpleComponents.BURNING_PROGRESS_BAR);
         widgets.add("burnProgressBar", this.burnProgressBar);
 
         addToLeftToolbar(CommonButtons.togglePowerUnit());
