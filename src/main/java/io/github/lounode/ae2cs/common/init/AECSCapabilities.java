@@ -1,10 +1,7 @@
 package io.github.lounode.ae2cs.common.init;
 
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
-import io.github.lounode.ae2cs.common.block.entity.CircuitEtcherBlockEntity;
-import io.github.lounode.ae2cs.common.block.entity.CrystalGrowthChamberBlockEntity;
-import io.github.lounode.ae2cs.common.block.entity.CrystalVibrationChamberBlockEntity;
-import io.github.lounode.ae2cs.common.block.entity.IntegratedInterfaceBlockEntity;
+import io.github.lounode.ae2cs.common.block.entity.*;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -19,5 +16,6 @@ public class AECSCapabilities
         IntegratedInterfaceBlockEntity.onRegisterCaps(event);
         CrystalVibrationChamberBlockEntity.onRegisterCaps(event);
         CircuitEtcherBlockEntity.onRegisterCaps(event);
+        CrystalPulverizerBlockEntity.onRegisterCaps(event);
     }
 }

@@ -3,13 +3,9 @@ package io.github.lounode.ae2cs.common.block;
 import appeng.block.AEBaseEntityBlock;
 import appeng.block.crafting.PatternProviderBlock;
 import appeng.block.crafting.PushDirection;
-import appeng.menu.MenuOpener;
-import appeng.menu.locator.MenuLocators;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
-import io.github.lounode.ae2cs.common.block.entity.CrystalVibrationChamberBlockEntity;
 import io.github.lounode.ae2cs.common.block.entity.MeteoriteCrafterBlockEntity;
-import io.github.lounode.ae2cs.common.init.AECSMenus;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -59,7 +55,7 @@ public class MeteoriteCrafterBlock extends AEBaseEntityBlock<MeteoriteCrafterBlo
         if (!level.isClientSide() && !player.isShiftKeyDown())
         {
             //if (level.getBlockEntity(pos) instanceof MeteoriteCrafterBlockEntity be)
-                //MenuOpener.open(AECSMenus..get(), player, MenuLocators.forBlockEntity(be));
+            //MenuOpener.open(AECSMenus..get(), player, MenuLocators.forBlockEntity(be));
         }
         return InteractionResult.SUCCESS_NO_ITEM_USED;
     }

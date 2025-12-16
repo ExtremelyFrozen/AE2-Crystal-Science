@@ -4,6 +4,7 @@ import appeng.core.definitions.AEItems;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CircuitEtcherRecipeBuilder;
+import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalPulverizerRecipeBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -31,6 +32,11 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
                 .require(AEItems.SILICON, 64)
                 .require(AECSItems.pureCertusQuartzCrystal, 64)
                 .save(recipeOutput, AE2CrystalScience.makeId("circuit/calculation_processor"));
+
+        // 用于测试晶能粉碎机的配方生成
+        CrystalPulverizerRecipeBuilder.pulverizing(AEItems.SILICON, 9, 300)
+                .require(Items.SAND, 1)
+                .save(recipeOutput, AE2CrystalScience.makeId("pulverizer/silicon"));
 
 
     }

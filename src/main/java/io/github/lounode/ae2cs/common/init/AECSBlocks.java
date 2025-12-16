@@ -52,8 +52,15 @@ public class AECSBlocks
      */
     public static final DeferredBlock<CircuitEtcherBlock> CIRCUIT_ETCHER_BLOCK = registerOtherBlock(AECSBlockIds.CIRCUIT_ETCHER, () -> new CircuitEtcherBlock(copy(Blocks.IRON_BLOCK)));
 
-    /** 陨石合成仓 */
+    /**
+     * 陨石合成仓
+     */
     public static final DeferredBlock<MeteoriteCrafterBlock> METEORITE_CRAFTER_BLOCK = registerOtherBlock(AECSBlockIds.METEORITE_CRAFTER, () -> new MeteoriteCrafterBlock(copy(Blocks.IRON_BLOCK)));
+
+    /**
+     * 晶能粉碎机
+     */
+    public static final DeferredBlock<CrystalPulverizerBlock> CRYSTAL_PULVERIZER_BLOCK = registerOtherBlock(AECSBlockIds.CRYSTAL_PULVERIZER, () -> new CrystalPulverizerBlock(copy(Blocks.IRON_BLOCK)));
 
 
     public static final DeferredBlock<Block> quartzGrindstone = registerOtherBlock(AECSBlockIds.QUARTZ_GRINDSTONE, () -> new Block(copy(Blocks.STONE)));

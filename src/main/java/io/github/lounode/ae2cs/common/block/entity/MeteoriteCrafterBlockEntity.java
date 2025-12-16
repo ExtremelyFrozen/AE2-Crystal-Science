@@ -3,7 +3,6 @@ package io.github.lounode.ae2cs.common.block.entity;
 import appeng.api.config.AccessRestriction;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class MeteoriteCrafterBlockEntity extends AENetworkedSelfPoweredBlockEntity

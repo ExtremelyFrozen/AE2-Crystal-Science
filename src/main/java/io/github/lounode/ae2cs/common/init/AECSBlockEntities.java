@@ -86,6 +86,16 @@ public class AECSBlockEntities
     );
 
     /**
+     * 晶能粉碎机
+     */
+    public static final DeferredBlockEntityType<CrystalPulverizerBlockEntity> CRYSTAL_PULVERIZER_BLOCK_ENTITY = create(
+            AECSBlockIds.CRYSTAL_PULVERIZER,
+            CrystalPulverizerBlockEntity.class,
+            CrystalPulverizerBlockEntity::new,
+            AECSBlocks.CRYSTAL_PULVERIZER_BLOCK
+    );
+
+    /**
      * 注册监听
      */
     public static void register(IEventBus eventBus)

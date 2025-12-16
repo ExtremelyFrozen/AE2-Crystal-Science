@@ -19,5 +19,6 @@ public class AECSScreens
         event.register(AECSMenus.INTEGRATED_INTERFACE_SET_STOCK_AMOUNT_MENU.get(), IntegratedInterfaceSetStockAmountGUI::new);
         event.register(AECSMenus.CRYSTAL_VIBRATION_CHAMBER_MENU.get(), CrystalVibrationChamberGUI::new);
         event.register(AECSMenus.CIRCUIT_ETCHER_MENU.get(), CircuitEtcherGUI::new);
+        event.register(AECSMenus.CRYSTAL_PULVERIZER_MENU.get(), CrystalPulverizerGUI::new);
     }
 }
