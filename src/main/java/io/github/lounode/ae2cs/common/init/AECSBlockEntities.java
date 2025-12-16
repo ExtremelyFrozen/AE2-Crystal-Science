@@ -7,10 +7,7 @@ import appeng.blockentity.ServerTickingBlockEntity;
 import com.google.common.base.Preconditions;
 import io.github.lounode.ae2cs.api.ids.AECSBlockIds;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
-import io.github.lounode.ae2cs.common.block.entity.CircuitEtcherBlockEntity;
-import io.github.lounode.ae2cs.common.block.entity.CrystalGrowthChamberBlockEntity;
-import io.github.lounode.ae2cs.common.block.entity.CrystalVibrationChamberBlockEntity;
-import io.github.lounode.ae2cs.common.block.entity.IntegratedInterfaceBlockEntity;
+import io.github.lounode.ae2cs.common.block.entity.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
@@ -76,6 +73,16 @@ public class AECSBlockEntities
             CircuitEtcherBlockEntity.class,
             CircuitEtcherBlockEntity::new,
             AECSBlocks.CIRCUIT_ETCHER_BLOCK
+    );
+
+    /**
+     * 陨石合成仓
+     */
+    public static final DeferredBlockEntityType<MeteoriteCrafterBlockEntity> METEORITE_CRAFTER_BLOCK_ENTITY = create(
+            AECSBlockIds.METEORITE_CRAFTER,
+            MeteoriteCrafterBlockEntity.class,
+            MeteoriteCrafterBlockEntity::new,
+            AECSBlocks.METEORITE_CRAFTER_BLOCK
     );
 
     /**

@@ -3,10 +3,7 @@ package io.github.lounode.ae2cs.common.init;
 import appeng.block.AEBaseBlock;
 import io.github.lounode.ae2cs.api.ids.AECSBlockIds;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
-import io.github.lounode.ae2cs.common.block.CircuitEtcherBlock;
-import io.github.lounode.ae2cs.common.block.CrystalGrowthChamberBlock;
-import io.github.lounode.ae2cs.common.block.CrystalVibrationChamberBlock;
-import io.github.lounode.ae2cs.common.block.IntegratedInterfaceBlock;
+import io.github.lounode.ae2cs.common.block.*;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -54,6 +51,9 @@ public class AECSBlocks
      * 电路蚀刻器
      */
     public static final DeferredBlock<CircuitEtcherBlock> CIRCUIT_ETCHER_BLOCK = registerOtherBlock(AECSBlockIds.CIRCUIT_ETCHER, () -> new CircuitEtcherBlock(copy(Blocks.IRON_BLOCK)));
+
+    /** 陨石合成仓 */
+    public static final DeferredBlock<MeteoriteCrafterBlock> METEORITE_CRAFTER_BLOCK = registerOtherBlock(AECSBlockIds.METEORITE_CRAFTER, () -> new MeteoriteCrafterBlock(copy(Blocks.IRON_BLOCK)));
 
 
     public static final DeferredBlock<Block> quartzGrindstone = registerOtherBlock(AECSBlockIds.QUARTZ_GRINDSTONE, () -> new Block(copy(Blocks.STONE)));
