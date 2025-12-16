@@ -5,37 +5,18 @@ import appeng.client.gui.style.StyleManager;
 import appeng.menu.interfaces.IProgressProvider;
 import io.github.lounode.ae2cs.client.gui.widgets.AdvancedProgressBar;
 import io.github.lounode.ae2cs.common.location.SimpleComponents;
-import io.github.lounode.ae2cs.common.menu.CrystalPulverizerMenu;
+import io.github.lounode.ae2cs.common.menu.QuartzGrindstoneMenu;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-public class CrystalPulverizerGUI extends UpgradeableScreen<CrystalPulverizerMenu>
+public class QuartzGrindstoneGUI extends UpgradeableScreen<QuartzGrindstoneMenu>
 {
-    // 能量进度条
-    private final AdvancedProgressBar energyRateBar;
-
-    // 工作进度条
+    // 燃烧进度条
     private final AdvancedProgressBar workingProgressBar;
 
-    public CrystalPulverizerGUI(CrystalPulverizerMenu menu, Inventory playerInventory, Component title)
+    public QuartzGrindstoneGUI(QuartzGrindstoneMenu menu, Inventory playerInventory, Component title)
     {
-        super(menu, playerInventory, title, StyleManager.loadStyleDoc("/screens/crystal_pulverizer_menu.json"));
-
-        this.energyRateBar = new AdvancedProgressBar(new IProgressProvider()
-        {
-            @Override
-            public int getCurrentProgress()
-            {
-                return (int) Math.ceil(getMenu().currentEnergy);
-            }
-
-            @Override
-            public int getMaxProgress()
-            {
-                return (int) Math.ceil(getMenu().maxEnergy);
-            }
-        }, style.getImage("energyRateBar"), AdvancedProgressBar.FillMode.BOTTOM_TO_TOP, SimpleComponents.ENERGY_PROGRESS_BAR);
-        widgets.add("energyRateBar", this.energyRateBar);
+        super(menu, playerInventory, title, StyleManager.loadStyleDoc("/screens/quartz_grindstone_menu.json"));
 
         this.workingProgressBar = new AdvancedProgressBar(new IProgressProvider()
         {

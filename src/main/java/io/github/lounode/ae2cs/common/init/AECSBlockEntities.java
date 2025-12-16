@@ -96,6 +96,16 @@ public class AECSBlockEntities
     );
 
     /**
+     * 石英磨具
+     */
+    public static final DeferredBlockEntityType<QuartzGrindstoneBlockEntity> QUARTZ_GRINDSTONE_BLOCK_ENTITY = create(
+            AECSBlockIds.QUARTZ_GRINDSTONE,
+            QuartzGrindstoneBlockEntity.class,
+            QuartzGrindstoneBlockEntity::new,
+            AECSBlocks.QUARTZ_GRINDSTONE_BLOCK
+    );
+
+    /**
      * 注册监听
      */
     public static void register(IEventBus eventBus)

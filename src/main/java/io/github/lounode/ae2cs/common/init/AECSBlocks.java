@@ -62,8 +62,10 @@ public class AECSBlocks
      */
     public static final DeferredBlock<CrystalPulverizerBlock> CRYSTAL_PULVERIZER_BLOCK = registerOtherBlock(AECSBlockIds.CRYSTAL_PULVERIZER, () -> new CrystalPulverizerBlock(copy(Blocks.IRON_BLOCK)));
 
-
-    public static final DeferredBlock<Block> quartzGrindstone = registerOtherBlock(AECSBlockIds.QUARTZ_GRINDSTONE, () -> new Block(copy(Blocks.STONE)));
+    /**
+     * 石英磨具
+     */
+    public static final DeferredBlock<QuartzGrindstoneBlock> QUARTZ_GRINDSTONE_BLOCK = registerOtherBlock(AECSBlockIds.QUARTZ_GRINDSTONE, () -> new QuartzGrindstoneBlock(copy(Blocks.STONE)));
 
     public static final DeferredBlock<Block> crusher = registerOtherBlock(AECSBlockIds.CRUSHER, () -> new Block(copy(Blocks.IRON_BLOCK)));
 

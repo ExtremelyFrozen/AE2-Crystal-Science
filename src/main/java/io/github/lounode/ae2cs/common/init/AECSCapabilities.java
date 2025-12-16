@@ -17,5 +17,6 @@ public class AECSCapabilities
         CrystalVibrationChamberBlockEntity.onRegisterCaps(event);
         CircuitEtcherBlockEntity.onRegisterCaps(event);
         CrystalPulverizerBlockEntity.onRegisterCaps(event);
+        QuartzGrindstoneBlockEntity.onRegisterCaps(event);
     }
 }

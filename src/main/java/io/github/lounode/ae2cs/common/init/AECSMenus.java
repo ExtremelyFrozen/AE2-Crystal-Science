@@ -3,10 +3,7 @@ package io.github.lounode.ae2cs.common.init;
 import appeng.menu.implementations.MenuTypeBuilder;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
-import io.github.lounode.ae2cs.common.block.entity.CircuitEtcherBlockEntity;
-import io.github.lounode.ae2cs.common.block.entity.CrystalGrowthChamberBlockEntity;
-import io.github.lounode.ae2cs.common.block.entity.CrystalPulverizerBlockEntity;
-import io.github.lounode.ae2cs.common.block.entity.CrystalVibrationChamberBlockEntity;
+import io.github.lounode.ae2cs.common.block.entity.*;
 import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceHost;
 import io.github.lounode.ae2cs.common.menu.*;
 import net.minecraft.core.registries.Registries;
@@ -49,6 +46,11 @@ public class AECSMenus
     public static final Supplier<MenuType<CrystalPulverizerMenu>> CRYSTAL_PULVERIZER_MENU = MENU_TYPES.register("crystal_pulverizer_menu",
             () -> MenuTypeBuilder.create(CrystalPulverizerMenu::new, CrystalPulverizerBlockEntity.class)
                     .build(AE2CrystalScience.makeId("crystal_pulverizer_menu"))
+    );
+
+    public static final Supplier<MenuType<QuartzGrindstoneMenu>> QUARTZ_GRINDSTONE_MENU = MENU_TYPES.register("quartz_grindstone_menu",
+            () -> MenuTypeBuilder.create(QuartzGrindstoneMenu::new, QuartzGrindstoneBlockEntity.class)
+                    .build(AE2CrystalScience.makeId("quartz_grindstone_menu"))
     );
 
     public static void registerMenus(IEventBus eventBus)

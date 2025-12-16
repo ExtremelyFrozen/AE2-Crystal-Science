@@ -14,7 +14,7 @@ public class CircuitEtcherGUI extends UpgradeableScreen<CircuitEtcherMenu>
     // 能量进度条
     private final AdvancedProgressBar energyRateBar;
 
-    // 燃烧进度条
+    // 工作进度条
     private final AdvancedProgressBar workingProgressBar;
 
     public CircuitEtcherGUI(CircuitEtcherMenu menu, Inventory playerInventory, Component title)
@@ -50,7 +50,7 @@ public class CircuitEtcherGUI extends UpgradeableScreen<CircuitEtcherMenu>
             {
                 return getMenu().recipeNeedTicks;
             }
-        }, style.getImage("workingProgressBar"), AdvancedProgressBar.FillMode.TOP_BOTTOM_TO_CENTER, SimpleComponents.WORKING_PROGRESS_BAR);
+        }, style.getImage("workingProgressBar"), AdvancedProgressBar.FillMode.LEFT_TO_RIGHT, SimpleComponents.WORKING_PROGRESS_BAR);
         widgets.add("workingProgressBar", this.workingProgressBar);
     }
 }

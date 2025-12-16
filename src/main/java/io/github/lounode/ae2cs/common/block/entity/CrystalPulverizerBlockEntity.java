@@ -20,6 +20,7 @@ import io.github.lounode.ae2cs.common.recipe.crystal_pulverizer.CrystalPulverize
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
@@ -31,6 +32,7 @@ import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEntity implements IUpgradeableObject
 {
@@ -108,6 +110,12 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
      */
     @Nullable
     private RecipeHolder<CrystalPulverizerRecipe> activeRecipe;
+
+    /**
+     * 当前执行配方的id，在重新加载时保证机器运行进展不会因为配方检查被刷新掉
+     */
+    @Nullable
+    private ResourceLocation activeRecipeId;
 
     /**
      * 该配方需要的总时间（tick）
@@ -349,6 +357,10 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
         outputInv.writeToNBT(data, "output_inv", registries);
         upgrades.writeToNBT(data, "upgrades", registries);
         data.putInt("recipe_progress", recipeProgress);
+        if (activeRecipe != null)
+        {
+            data.putString("active_recipe_id", activeRecipe.id().toString());
+        }
     }
 
     @Override
@@ -359,12 +371,21 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
         outputInv.readFromNBT(data, "output_inv", registries);
         upgrades.readFromNBT(data, "upgrades", registries);
         recipeProgress = data.getInt("recipe_progress");
+        if (data.contains("active_recipe_id"))
+        {
+            activeRecipeId = ResourceLocation.parse(data.getString("active_recipe_id"));
+        }
     }
 
     @Override
     public void onLoad()
     {
         super.onLoad();
+        if (activeRecipeId != null && level != null)
+        {
+            Optional<RecipeHolder<?>> opt = level.getRecipeManager().byKey(activeRecipeId);
+            opt.ifPresent(recipeHolder -> activeRecipe = (RecipeHolder<CrystalPulverizerRecipe>) recipeHolder);
+        }
         updateActiveRecipe();
     }
 
