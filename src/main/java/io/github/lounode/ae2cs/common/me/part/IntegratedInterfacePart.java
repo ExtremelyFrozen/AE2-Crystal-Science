@@ -13,12 +13,15 @@ import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceHost;
 import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceLogic;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
+import java.util.List;
 
 public class IntegratedInterfacePart extends AEBasePart implements IntegratedInterfaceHost
 {
@@ -109,6 +112,7 @@ public class IntegratedInterfacePart extends AEBasePart implements IntegratedInt
     public void setPriority(int newValue)
     {
         this.priority = newValue;
+        getHost().markForSave();
     }
 
     @Override
@@ -120,5 +124,33 @@ public class IntegratedInterfacePart extends AEBasePart implements IntegratedInt
     protected IntegratedInterfaceLogic createLogic()
     {
         return new IntegratedInterfaceLogic(this.getMainNode(), this, 9, 9);
+    }
+
+    @Override
+    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries)
+    {
+        super.writeToNBT(data, registries);
+        data.putInt("priority", this.priority);
+    }
+
+    @Override
+    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries)
+    {
+        super.readFromNBT(data, registries);
+        this.priority = data.getInt("priority");
+    }
+
+    @Override
+    public void addAdditionalDrops(List<ItemStack> drops, boolean wrenched)
+    {
+        super.addAdditionalDrops(drops, wrenched);
+        this.logic.addDrops(drops);
+    }
+
+    @Override
+    public void clearContent()
+    {
+        super.clearContent();
+        this.logic.cleanContent();
     }
 }

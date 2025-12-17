@@ -18,5 +18,6 @@ public class AECSCapabilities
         CircuitEtcherBlockEntity.onRegisterCaps(event);
         CrystalPulverizerBlockEntity.onRegisterCaps(event);
         QuartzGrindstoneBlockEntity.onRegisterCaps(event);
+        MeteoriteCrafterBlockEntity.onRegisterCaps(event);
     }
 }

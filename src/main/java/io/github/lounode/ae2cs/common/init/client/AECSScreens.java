@@ -21,5 +21,6 @@ public class AECSScreens
         event.register(AECSMenus.CIRCUIT_ETCHER_MENU.get(), CircuitEtcherGUI::new);
         event.register(AECSMenus.CRYSTAL_PULVERIZER_MENU.get(), CrystalPulverizerGUI::new);
         event.register(AECSMenus.QUARTZ_GRINDSTONE_MENU.get(), QuartzGrindstoneGUI::new);
+        event.register(AECSMenus.METEORITE_CRAFTER_MENU.get(), MeteoriteCrafterGUI::new);
     }
 }

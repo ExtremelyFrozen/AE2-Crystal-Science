@@ -1,0 +1,41 @@
+{
+  "$schema": "schema.json",
+  "includes": [
+    "common/common.json",
+    "common/player_inventory.json",
+    "common/toolbox.json"
+  ],
+  "background": {
+    "texture": "ae2cs:textures/gui/meteorite_crafter_menu.png",
+    "textureWidth": 512,
+    "textureHeight": 512,
+    "srcRect": [0, 0, 176, 294]
+  },
+  "slots": {
+    "STORAGE": { "left": 8, "top": 175, "grid": "BREAK_AFTER_9COLS" },
+    "ENCODED_PATTERN": { "left": 8, "top": 19, "grid": "BREAK_AFTER_9COLS" },
+    "UPGRADE": {
+      "right": 0,
+      "top": 0,
+      "grid": "VERTICAL"
+    }
+  },
+  "text": {
+    "title": {
+      "text": { "translate": "block.ae2cs.meteorite_crafter" },
+      "position": { "left": 8, "top": 6 }
+    },
+    "return_inv": {
+      "text": { "translate": "gui.ae2cs.return_inv" },
+      "position": { "left": 8, "bottom": 129 }
+    }
+  },
+  "widgets": {
+    "openPriority": {
+      "left": 152,
+      "top": -5,
+      "width": 20,
+      "height": 20
+    }
+  }
+}

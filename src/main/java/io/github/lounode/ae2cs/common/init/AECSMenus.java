@@ -53,6 +53,11 @@ public class AECSMenus
                     .build(AE2CrystalScience.makeId("quartz_grindstone_menu"))
     );
 
+    public static final Supplier<MenuType<MeteoriteCrafterMenu>> METEORITE_CRAFTER_MENU = MENU_TYPES.register("meteorite_crafter_menu",
+            () -> MenuTypeBuilder.create(MeteoriteCrafterMenu::new, MeteoriteCrafterBlockEntity.class)
+                    .build(AE2CrystalScience.makeId("meteorite_crafter_menu"))
+    );
+
     public static void registerMenus(IEventBus eventBus)
     {
         MENU_TYPES.register(eventBus);

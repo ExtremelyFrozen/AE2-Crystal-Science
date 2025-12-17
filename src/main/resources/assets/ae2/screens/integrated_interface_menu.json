@@ -25,6 +25,18 @@
     "title": {
       "text": { "translate": "block.ae2cs.integrated_interface" },
       "position": { "left": 8, "top": 6 }
+    },
+    "config_inv": {
+      "text": { "translate": "gui.ae2cs.config_inv" },
+      "position": { "left": 8, "top": 24 }
+    },
+    "storage_inv": {
+      "text": { "translate": "gui.ae2cs.storage_inv" },
+      "position": { "left": 8, "top": 72 }
+    },
+    "pattern_inv": {
+      "text": { "translate": "gui.ae2cs.pattern_inv" },
+      "position": { "left": 8, "top": 86 }
     }
   },
   "widgets": {

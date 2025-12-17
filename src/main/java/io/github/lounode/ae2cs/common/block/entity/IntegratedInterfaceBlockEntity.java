@@ -175,6 +175,7 @@ public class IntegratedInterfaceBlockEntity extends AENetworkedBlockEntity imple
     {
         super.saveAdditional(data, registries);
         this.logic.save(data, registries);
+        data.putInt("priority", this.priority);
     }
 
     @Override
@@ -182,6 +183,7 @@ public class IntegratedInterfaceBlockEntity extends AENetworkedBlockEntity imple
     {
         super.loadTag(data, registries);
         this.logic.load(data, registries);
+        this.priority = data.getInt("priority");
     }
 
     @Override
@@ -194,6 +196,7 @@ public class IntegratedInterfaceBlockEntity extends AENetworkedBlockEntity imple
     public void setPriority(int newValue)
     {
         this.priority = newValue;
+        setChanged();
     }
 
     @Override

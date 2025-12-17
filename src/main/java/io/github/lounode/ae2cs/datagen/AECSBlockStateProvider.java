@@ -56,7 +56,8 @@ public class AECSBlockStateProvider extends BlockStateProvider
 
         //machine(AE2CrystalSeedsBlocks.circuitEtcher);
         //machine(AE2CrystalSeedsBlocks.crystalVibrationChamber);
-        genIntegratedInterface();
+        genPatternProviderLike(AECSBlocks.INTEGRATED_INTERFACE_BLOCK.get(), "block/integrated_interface");
+        genPatternProviderLike(AECSBlocks.METEORITE_CRAFTER_BLOCK.get(), "block/meteorite_crafter");
         machine(AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK.get());
         //crystalVibrationChamber();
         //machine(AE2CrystalSeedsBlocks.quartzGrindstone);
@@ -124,14 +125,30 @@ public class AECSBlockStateProvider extends BlockStateProvider
         itemModels().withExistingParent(modelPath(AEBlocks.VIBRATION_CHAMBER), offModel.getLocation());
     }
 
-    private void genIntegratedInterface()
+    /**
+     * @param block    类似样板供应器的方块
+     * @param basePath 如：block/integrated_interface，随后你需要保证 block/integrated_interface/ 中包含其贴图
+     *                 （base、alternate、alternate_front、alternate_arrow）
+     */
+    private void genPatternProviderLike(Block block, String basePath)
     {
-        Block block = AECSBlocks.INTEGRATED_INTERFACE_BLOCK.get();
-        ModelFile normalModel = cubeAllWithTexture(block, AE2CrystalScience.makeId("block/integrated_interface/base"));
+        // 普通 cubeAll 模型（所有面同贴图）
+        ModelFile normalModel = cubeAllWithTexture(block, AE2CrystalScience.makeId(basePath + "/base"));
         simpleBlockItem(block, normalModel);
-        // oriented模型手写
-        ModelFile.ExistingModelFile orientedModel = models().getExistingFile(AE2CrystalScience.makeId("block/integrated_interface_oriented"));
-        multiVariantGenerator(AECSBlocks.INTEGRATED_INTERFACE_BLOCK.get(), Variant.variant())
+
+        // 自动生成 oriented 模型
+        ModelFile orientedModel = models()
+                .withExistingParent(basePath + "_oriented", mcLoc("block/cube"))
+                .texture("particle", AE2CrystalScience.makeId(basePath + "/base"))
+                .texture("down", AE2CrystalScience.makeId(basePath + "/alternate"))
+                .texture("up", AE2CrystalScience.makeId(basePath + "/alternate_front"))
+                .texture("north", AE2CrystalScience.makeId(basePath + "/alternate_arrow"))
+                .texture("south", AE2CrystalScience.makeId(basePath + "/alternate_arrow"))
+                .texture("east", AE2CrystalScience.makeId(basePath + "/alternate_arrow"))
+                .texture("west", AE2CrystalScience.makeId(basePath + "/alternate_arrow"));
+
+        // blockstate：根据 PUSH_DIRECTION 选择 normal / oriented，并对 oriented 做旋转
+        multiVariantGenerator(block, Variant.variant())
                 .with(PropertyDispatch.property(PatternProviderBlock.PUSH_DIRECTION).generate(pushDirection -> {
                     Direction forward = pushDirection.getDirection();
                     if (forward == null)
