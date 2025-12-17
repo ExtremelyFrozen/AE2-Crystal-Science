@@ -133,7 +133,7 @@ public class IntegratedInterfacePart extends AEBasePart implements IntegratedInt
     public void importSettings(SettingsFrom mode, DataComponentMap input, @Nullable Player player)
     {
         super.importSettings(mode, input, player);
-        if(mode == SettingsFrom.MEMORY_CARD)
+        if (mode == SettingsFrom.MEMORY_CARD)
         {
             logic.importSettings(input, player);
         }
@@ -143,7 +143,7 @@ public class IntegratedInterfacePart extends AEBasePart implements IntegratedInt
     public void exportSettings(SettingsFrom mode, DataComponentMap.Builder builder)
     {
         super.exportSettings(mode, builder);
-        if(mode == SettingsFrom.MEMORY_CARD)
+        if (mode == SettingsFrom.MEMORY_CARD)
         {
             logic.exportSettings(builder);
         }

@@ -2,7 +2,8 @@
   "required": true,
   "package": "io.github.lounode.ae2cs.mixin",
   "mixins": [
-    "GrowthAcceleratorBlockEntityMixin"
+    "GrowthAcceleratorBlockEntityMixin",
+    "PatternAccessTermMenuMixin"
   ],
   "client": [
   ],

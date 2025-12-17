@@ -362,7 +362,7 @@ public class MeteoriteCrafterBlockEntity extends AENetworkedSelfPoweredBlockEnti
     public void importSettings(SettingsFrom mode, DataComponentMap input, @Nullable Player player)
     {
         super.importSettings(mode, input, player);
-        if(mode == SettingsFrom.MEMORY_CARD && level != null)
+        if (mode == SettingsFrom.MEMORY_CARD && level != null)
         {
             ItemContainerContents patterns = input.getOrDefault(AEComponents.EXPORTED_PATTERNS, ItemContainerContents.EMPTY);
 
@@ -422,7 +422,7 @@ public class MeteoriteCrafterBlockEntity extends AENetworkedSelfPoweredBlockEnti
     public void exportSettings(SettingsFrom mode, DataComponentMap.Builder builder, @Nullable Player player)
     {
         super.exportSettings(mode, builder, player);
-        if(mode == SettingsFrom.MEMORY_CARD)
+        if (mode == SettingsFrom.MEMORY_CARD)
         {
             builder.set(AEComponents.EXPORTED_PATTERNS, patternInventory.toItemContainerContents());
         }

@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs;
 
 import com.mojang.logging.LogUtils;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
+import io.github.lounode.ae2cs.api.util.PatternAccessTermQuickMoveHelper;
 import io.github.lounode.ae2cs.common.init.*;
 import io.github.lounode.ae2cs.common.me.AEPlugin;
 import net.minecraft.resources.ResourceLocation;
@@ -43,6 +44,7 @@ public class AE2CrystalScience
     private void commonSetup(final FMLCommonSetupEvent event)
     {
         AEPlugin.onCommonSetup();
+        PatternAccessTermQuickMoveHelper.init();
     }
 
     @SubscribeEvent
