@@ -26,9 +26,6 @@ import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
 import appeng.core.AELog;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.PlayerMessages;
-import appeng.crafting.pattern.AECraftingPattern;
-import appeng.crafting.pattern.AESmithingTablePattern;
-import appeng.crafting.pattern.AEStonecuttingPattern;
 import appeng.crafting.pattern.EncodedPatternItem;
 import appeng.helpers.IPriorityHost;
 import appeng.helpers.patternprovider.PatternContainer;
@@ -59,7 +56,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -613,52 +609,55 @@ public class MeteoriteCrafterBlockEntity extends AENetworkedSelfPoweredBlockEnti
         if (extractAEPower(neededEnergy, Actionable.SIMULATE) < neededEnergy)
             return false;
 
-        // ME仓库
-        @Nullable MEStorage meInv = null;
-        IGrid grid = getMainNode().getGrid();
-        if (grid != null)
-        {
-            meInv = grid.getStorageService().getInventory();
-        }
+        // 很难说更改成sendList之后我们的模拟检查是否还有必要存在
+        // 毕竟，当一tick内合成128次，那么每一次的检查也只会检查当次，准确度极低
+        // 大可以省下这一堆性能
+//        // ME仓库
+//        @Nullable MEStorage meInv = null;
+//        IGrid grid = getMainNode().getGrid();
+//        if (grid != null)
+//        {
+//            meInv = grid.getStorageService().getInventory();
+//        }
+//
+//        // 相邻容器的 MEStorage 包装
+//        @Nullable MEStorage targetInv = null;
+//        Direction targetDir = getPushDirection().getDirection();
+//        if (targetDir != null)
+//        {
+//            BlockPos neighborPos = worldPosition.relative(targetDir);
+//            BlockEntity neighborBe = level.getBlockEntity(neighborPos);
+//            targetInv = GenericStackInvHelper.getAdjacentMeStorage(
+//                    level,
+//                    neighborPos,
+//                    neighborBe,
+//                    targetDir.getOpposite()
+//            );
+//        }
 
-        // 相邻容器的 MEStorage 包装
-        @Nullable MEStorage targetInv = null;
-        Direction targetDir = getPushDirection().getDirection();
-        if (targetDir != null)
-        {
-            BlockPos neighborPos = worldPosition.relative(targetDir);
-            BlockEntity neighborBe = level.getBlockEntity(neighborPos);
-            targetInv = GenericStackInvHelper.getAdjacentMeStorage(
-                    level,
-                    neighborPos,
-                    neighborBe,
-                    targetDir.getOpposite()
-            );
-        }
-
-        // 先模拟：确保产物可以完全接收
-        for (GenericStack result : patternDetails.getOutputs())
-        {
-            if (result == null || result.amount() <= 0) continue;
-
-            long remaining = result.amount();
-
-            if (targetInv != null)
-            {
-                remaining -= targetInv.insert(result.what(), remaining, Actionable.SIMULATE, this.actionSource);
-            }
-            if (meInv != null && remaining > 0)
-            {
-                remaining -= meInv.insert(result.what(), remaining, Actionable.SIMULATE, this.actionSource);
-            }
-            if (remaining > 0)
-            {
-                remaining -= returnInventory.insert(result.what(), remaining, Actionable.SIMULATE, this.actionSource);
-            }
-
-            // 三者都放不下，停止本次工作
-            if (remaining > 0) return false;
-        }
+//        // 先模拟：确保产物可以完全接收
+//        for (GenericStack result : patternDetails.getOutputs())
+//        {
+//            if (result == null || result.amount() <= 0) continue;
+//
+//            long remaining = result.amount();
+//
+//            if (targetInv != null)
+//            {
+//                remaining -= targetInv.insert(result.what(), remaining, Actionable.SIMULATE, this.actionSource);
+//            }
+//            if (meInv != null && remaining > 0)
+//            {
+//                remaining -= meInv.insert(result.what(), remaining, Actionable.SIMULATE, this.actionSource);
+//            }
+//            if (remaining > 0)
+//            {
+//                remaining -= returnInventory.insert(result.what(), remaining, Actionable.SIMULATE, this.actionSource);
+//            }
+//
+//            // 三者都放不下，停止本次工作
+//            if (remaining > 0) return false;
+//        }
 
         // 实际执行
         for (GenericStack result : patternDetails.getOutputs())
