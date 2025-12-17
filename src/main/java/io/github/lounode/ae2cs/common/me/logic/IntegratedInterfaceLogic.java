@@ -218,7 +218,7 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
                 .build();
         this.plannedWork = new GenericStack[storageSize];
 
-        this.patternInventory = new AppEngInternalInventory(patternSize)
+        this.patternInventory = new AppEngInternalInventory(null, patternSize, 1)
         {
             @Override
             public boolean isItemValid(int slot, ItemStack stack)

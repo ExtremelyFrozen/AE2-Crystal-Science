@@ -9,16 +9,19 @@ import appeng.items.parts.PartModels;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.AEBasePart;
 import appeng.parts.PartModel;
+import appeng.util.SettingsFrom;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceHost;
 import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceLogic;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -124,6 +127,26 @@ public class IntegratedInterfacePart extends AEBasePart implements IntegratedInt
     protected IntegratedInterfaceLogic createLogic()
     {
         return new IntegratedInterfaceLogic(this.getMainNode(), this, 9, 9);
+    }
+
+    @Override
+    public void importSettings(SettingsFrom mode, DataComponentMap input, @Nullable Player player)
+    {
+        super.importSettings(mode, input, player);
+        if(mode == SettingsFrom.MEMORY_CARD)
+        {
+            logic.importSettings(input, player);
+        }
+    }
+
+    @Override
+    public void exportSettings(SettingsFrom mode, DataComponentMap.Builder builder)
+    {
+        super.exportSettings(mode, builder);
+        if(mode == SettingsFrom.MEMORY_CARD)
+        {
+            logic.exportSettings(builder);
+        }
     }
 
     @Override

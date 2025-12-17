@@ -5,6 +5,7 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.PatternDetailsHelper;
+import appeng.api.ids.AEComponents;
 import appeng.api.implementations.blockentities.PatternContainerGroup;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
@@ -21,7 +22,10 @@ import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.block.crafting.PatternProviderBlock;
 import appeng.block.crafting.PushDirection;
+import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
+import appeng.core.AELog;
 import appeng.core.definitions.AEItems;
+import appeng.core.localization.PlayerMessages;
 import appeng.crafting.pattern.AECraftingPattern;
 import appeng.crafting.pattern.AESmithingTablePattern;
 import appeng.crafting.pattern.AEStonecuttingPattern;
@@ -31,7 +35,9 @@ import appeng.helpers.patternprovider.PatternContainer;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
 import appeng.util.ConfigInventory;
+import appeng.util.SettingsFrom;
 import appeng.util.inv.AppEngInternalInventory;
+import appeng.util.inv.PlayerInternalInventory;
 import io.github.lounode.ae2cs.api.util.AEKeyHelper;
 import io.github.lounode.ae2cs.api.util.ForgeEnergyAdapterUpgrade;
 import io.github.lounode.ae2cs.api.util.GenericStackInvHelper;
@@ -44,11 +50,14 @@ import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Nameable;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -310,9 +319,117 @@ public class MeteoriteCrafterBlockEntity extends AENetworkedSelfPoweredBlockEnti
     private boolean canAcceptPattern(@Nullable IPatternDetails details)
     {
         if (details == null) return false;
-        return details instanceof AECraftingPattern ||
-                details instanceof AESmithingTablePattern ||
-                details instanceof AEStonecuttingPattern;
+        return details instanceof IMolecularAssemblerSupportedPattern;
+    }
+
+    // 把所有样板转成空白样板并给玩家
+    private void clearPatternInventory(Player player)
+    {
+        if (player.getAbilities().instabuild)
+        {
+            for (int i = 0; i < patternInventory.size(); i++)
+            {
+                patternInventory.setItemDirect(i, ItemStack.EMPTY);
+            }
+            return;
+        }
+
+        Inventory playerInv = player.getInventory();
+
+        // 清空样板并给玩家
+        int blankPatternCount = 0;
+        for (int i = 0; i < patternInventory.size(); i++)
+        {
+            ItemStack pattern = patternInventory.getStackInSlot(i);
+            if (pattern.is(AEItems.CRAFTING_PATTERN.asItem())
+                    || pattern.is(AEItems.PROCESSING_PATTERN.asItem())
+                    || pattern.is(AEItems.SMITHING_TABLE_PATTERN.asItem())
+                    || pattern.is(AEItems.STONECUTTING_PATTERN.asItem())
+                    || pattern.is(AEItems.BLANK_PATTERN.asItem()))
+            {
+                blankPatternCount += pattern.getCount();
+            }
+            else
+            {
+                playerInv.placeItemBackInInventory(pattern);
+            }
+            patternInventory.setItemDirect(i, ItemStack.EMPTY);
+        }
+
+        if (blankPatternCount > 0)
+        {
+            playerInv.placeItemBackInInventory(AEItems.BLANK_PATTERN.stack(blankPatternCount), false);
+        }
+    }
+
+    @Override
+    public void importSettings(SettingsFrom mode, DataComponentMap input, @Nullable Player player)
+    {
+        super.importSettings(mode, input, player);
+        if(mode == SettingsFrom.MEMORY_CARD && level != null)
+        {
+            ItemContainerContents patterns = input.getOrDefault(AEComponents.EXPORTED_PATTERNS, ItemContainerContents.EMPTY);
+
+            if (player != null && !level.isClientSide)
+            {
+                clearPatternInventory(player);
+
+                AppEngInternalInventory desiredPatterns = new AppEngInternalInventory(patternInventory.size());
+                desiredPatterns.fromItemContainerContents(patterns);
+
+                // 从玩家背包将空白样板恢复出来
+                Inventory playerInv = player.getInventory();
+                int blankPatternsAvailable = player.getAbilities().instabuild ? Integer.MAX_VALUE
+                        : playerInv.countItem(AEItems.BLANK_PATTERN.asItem());
+                int blankPatternsUsed = 0;
+                for (int i = 0; i < desiredPatterns.size(); i++)
+                {
+                    if (desiredPatterns.getStackInSlot(i).isEmpty())
+                    {
+                        continue;
+                    }
+
+                    IPatternDetails pattern = PatternDetailsHelper.decodePattern(desiredPatterns.getStackInSlot(i), getLevel());
+                    if (pattern == null)
+                    {
+                        continue;
+                    }
+
+                    ++blankPatternsUsed;
+                    if (blankPatternsAvailable >= blankPatternsUsed)
+                    {
+                        if (!patternInventory.addItems(pattern.getDefinition().toStack()).isEmpty())
+                        {
+                            AELog.warn("Failed to add pattern to pattern provider");
+                            blankPatternsUsed--;
+                        }
+                    }
+                }
+
+                if (blankPatternsUsed > 0 && !player.getAbilities().instabuild)
+                {
+                    new PlayerInternalInventory(playerInv)
+                            .removeItems(blankPatternsUsed, AEItems.BLANK_PATTERN.stack(), null);
+                }
+
+                // 如果无法恢复所有样板，则发出警告
+                if (blankPatternsUsed > blankPatternsAvailable)
+                {
+                    player.sendSystemMessage(
+                            PlayerMessages.MissingBlankPatterns.text(blankPatternsUsed - blankPatternsAvailable));
+                }
+            }
+        }
+    }
+
+    @Override
+    public void exportSettings(SettingsFrom mode, DataComponentMap.Builder builder, @Nullable Player player)
+    {
+        super.exportSettings(mode, builder, player);
+        if(mode == SettingsFrom.MEMORY_CARD)
+        {
+            builder.set(AEComponents.EXPORTED_PATTERNS, patternInventory.toItemContainerContents());
+        }
     }
 
     @Override
