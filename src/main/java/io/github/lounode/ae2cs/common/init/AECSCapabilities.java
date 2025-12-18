@@ -19,5 +19,6 @@ public class AECSCapabilities
         CrystalPulverizerBlockEntity.onRegisterCaps(event);
         QuartzGrindstoneBlockEntity.onRegisterCaps(event);
         MeteoriteCrafterBlockEntity.onRegisterCaps(event);
+        SimplePatternProviderBlockEntity.onRegisterCaps(event);
     }
 }

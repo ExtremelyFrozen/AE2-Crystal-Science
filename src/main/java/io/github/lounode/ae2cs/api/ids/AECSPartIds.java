@@ -3,4 +3,5 @@ package io.github.lounode.ae2cs.api.ids;
 public class AECSPartIds
 {
     public static final String INTEGRATED_INTERFACE = "integrated_interface_part";
+    public static final String SIMPLE_PATTERN_PROVIDER = "simple_pattern_provider_part";
 }

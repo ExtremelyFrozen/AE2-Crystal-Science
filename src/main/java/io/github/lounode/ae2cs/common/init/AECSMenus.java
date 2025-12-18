@@ -1,6 +1,8 @@
 package io.github.lounode.ae2cs.common.init;
 
+import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.menu.implementations.MenuTypeBuilder;
+import appeng.menu.implementations.PatternProviderMenu;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.block.entity.*;
@@ -56,6 +58,11 @@ public class AECSMenus
     public static final Supplier<MenuType<MeteoriteCrafterMenu>> METEORITE_CRAFTER_MENU = MENU_TYPES.register("meteorite_crafter_menu",
             () -> MenuTypeBuilder.create(MeteoriteCrafterMenu::new, MeteoriteCrafterBlockEntity.class)
                     .build(AE2CrystalScience.makeId("meteorite_crafter_menu"))
+    );
+
+    public static final Supplier<MenuType<PatternProviderMenu>> SIMPLE_PATTERN_PROVIDER_MENU = MENU_TYPES.register("simple_pattern_provider_menu",
+            () -> MenuTypeBuilder.create(PatternProviderMenu::new, PatternProviderLogicHost.class)
+                    .build(AE2CrystalScience.makeId("simple_pattern_provider_menu"))
     );
 
     public static void registerMenus(IEventBus eventBus)

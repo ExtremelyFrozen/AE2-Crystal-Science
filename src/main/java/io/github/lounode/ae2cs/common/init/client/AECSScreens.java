@@ -1,5 +1,8 @@
 package io.github.lounode.ae2cs.common.init.client;
 
+import appeng.client.gui.implementations.PatternProviderScreen;
+import appeng.client.gui.style.StyleManager;
+import appeng.menu.implementations.PatternProviderMenu;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.client.gui.*;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
@@ -22,5 +25,7 @@ public class AECSScreens
         event.register(AECSMenus.CRYSTAL_PULVERIZER_MENU.get(), CrystalPulverizerGUI::new);
         event.register(AECSMenus.QUARTZ_GRINDSTONE_MENU.get(), QuartzGrindstoneGUI::new);
         event.register(AECSMenus.METEORITE_CRAFTER_MENU.get(), MeteoriteCrafterGUI::new);
+        event.<PatternProviderMenu, PatternProviderScreen<PatternProviderMenu>>register(AECSMenus.SIMPLE_PATTERN_PROVIDER_MENU.get(),
+                (menu, id, inv) -> new PatternProviderScreen<>(menu, id, inv, StyleManager.loadStyleDoc("/screens/simple_pattern_provider_menu.json")));
     }
 }

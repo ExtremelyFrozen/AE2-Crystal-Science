@@ -1,6 +1,7 @@
 package io.github.lounode.ae2cs.common.init;
 
 import appeng.block.AEBaseBlock;
+import appeng.block.crafting.PatternProviderBlock;
 import io.github.lounode.ae2cs.api.ids.AECSBlockIds;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.block.*;
@@ -66,6 +67,11 @@ public class AECSBlocks
      * 石英磨具
      */
     public static final DeferredBlock<QuartzGrindstoneBlock> QUARTZ_GRINDSTONE_BLOCK = registerOtherBlock(AECSBlockIds.QUARTZ_GRINDSTONE, () -> new QuartzGrindstoneBlock(copy(Blocks.STONE)));
+
+    /**
+     * 初级样板供应器
+     */
+    public static final DeferredBlock<PatternProviderBlock> SIMPLE_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.SIMPLE_PATTERN_PROVIDER, PatternProviderBlock::new);
 
     public static final DeferredBlock<Block> crusher = registerOtherBlock(AECSBlockIds.CRUSHER, () -> new Block(copy(Blocks.IRON_BLOCK)));
 

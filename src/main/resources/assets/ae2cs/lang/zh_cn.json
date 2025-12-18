@@ -9,6 +9,7 @@
   "block.ae2cs.integrated_interface": "ME集成接口",
   "block.ae2cs.crystal_pulverizer": "晶能粉碎机",
   "block.ae2cs.meteorite_crafter": "陨石合成仓",
+  "block.ae2cs.simple_pattern_provider": "初级样板供应器",
 
   "item.ae2cs.certus_quartz_seed": "赛特斯石英水晶种子",
   "item.ae2cs.fluix_crystal_seed": "福鲁伊克斯种子",
@@ -20,7 +21,10 @@
   "item.ae2cs.ender_quartz_seed": "末影石英种子",
   "item.ae2cs.resonating_seed": "谐振种子",
   "item.ae2cs.meteor_seed": "陨石种子",
-  
+
+  "item.ae2cs.integrated_interface_part": "ME集成接口",
+  "item.ae2cs.simple_pattern_provider_part": "初级样板供应器",
+
   "item.ae2cs.purified_certus_quartz_crystal": "高纯赛特斯石英水晶",
   "item.ae2cs.purified_fluix_crystal": "高纯福鲁伊克斯水晶",
   "item.ae2cs.purified_nether_quartz_crystal": "高纯下界石英水晶",

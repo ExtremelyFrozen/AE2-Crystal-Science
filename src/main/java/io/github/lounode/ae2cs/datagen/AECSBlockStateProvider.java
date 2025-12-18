@@ -58,6 +58,7 @@ public class AECSBlockStateProvider extends BlockStateProvider
         //machine(AE2CrystalSeedsBlocks.crystalVibrationChamber);
         genPatternProviderLike(AECSBlocks.INTEGRATED_INTERFACE_BLOCK.get(), "block/integrated_interface");
         genPatternProviderLike(AECSBlocks.METEORITE_CRAFTER_BLOCK.get(), "block/meteorite_crafter");
+        genPatternProviderLike(AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK.get(), "block/simple_pattern_provider");
         machine(AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK.get());
         //crystalVibrationChamber();
         //machine(AE2CrystalSeedsBlocks.quartzGrindstone);

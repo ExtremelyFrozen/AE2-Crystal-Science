@@ -12,16 +12,16 @@ public class PatternAccessTermQuickMoveHelper
 
     public static void init()
     {
-        add(AECSBlocks.METEORITE_CRAFTER_BLOCK.asItem());
+        add(AECSBlocks.METEORITE_CRAFTER_BLOCK);
     }
 
     public static void add(ItemLike item)
     {
-        allowedItems.add(item);
+        allowedItems.add(item.asItem());
     }
 
     public static boolean contains(ItemLike item)
     {
-        return allowedItems.contains(item);
+        return allowedItems.contains(item.asItem());
     }
 }

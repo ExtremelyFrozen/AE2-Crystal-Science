@@ -10,6 +10,7 @@ import appeng.items.parts.PartModelsHelper;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.ids.AECSPartIds;
 import io.github.lounode.ae2cs.common.me.part.IntegratedInterfacePart;
+import io.github.lounode.ae2cs.common.me.part.SimplePatternProviderPart;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -28,6 +29,12 @@ public class AECSParts
             AECSPartIds.INTEGRATED_INTERFACE,
             IntegratedInterfacePart.class,
             IntegratedInterfacePart::new
+    );
+
+    public static final DeferredItem<PartItem<SimplePatternProviderPart>> SIMPLE_PATTERN_PROVIDER_PART = registerPart(
+            AECSPartIds.SIMPLE_PATTERN_PROVIDER,
+            SimplePatternProviderPart.class,
+            SimplePatternProviderPart::new
     );
 
     public static List<DeferredItem<? extends PartItem<?>>> getAll()

@@ -42,6 +42,9 @@ public abstract class PatternAccessTermMenuMixin extends AEBaseMenu
         super(menuType, id, playerInventory, host);
     }
 
+    /**
+     * 使我们的陨石合成仓以及类似的方块也可以被作为Shift左键移动样板的目的地
+     */
     @Inject(method = "quickMovePattern", at = @At("HEAD"), cancellable = true)
     public void quickMovePattern(ServerPlayer player, int clickedSlot, List<Long> allowedPatternContainers, CallbackInfo ci)
     {

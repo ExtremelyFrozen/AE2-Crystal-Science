@@ -1,0 +1,6 @@
+{
+  "parent": "ae2:part/pattern_provider_base",
+  "textures": {
+    "front": "ae2cs:block/simple_pattern_provider/base"
+  }
+}

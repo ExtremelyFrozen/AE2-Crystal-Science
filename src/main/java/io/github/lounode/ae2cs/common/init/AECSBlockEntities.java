@@ -106,6 +106,16 @@ public class AECSBlockEntities
     );
 
     /**
+     * 初级样板供应器
+     */
+    public static final DeferredBlockEntityType<SimplePatternProviderBlockEntity> SIMPLE_PATTERN_PROVIDER_BLOCK_ENTITY = create(
+            AECSBlockIds.SIMPLE_PATTERN_PROVIDER,
+            SimplePatternProviderBlockEntity.class,
+            SimplePatternProviderBlockEntity::new,
+            AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK
+    );
+
+    /**
      * 注册监听
      */
     public static void register(IEventBus eventBus)
