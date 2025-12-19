@@ -16,14 +16,16 @@ import appeng.parts.crafting.PatternProviderPart;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 import io.github.lounode.ae2cs.common.init.AECSParts;
+import io.github.lounode.ae2cs.common.me.logic.MeteoritePatternProviderHost;
+import io.github.lounode.ae2cs.common.me.logic.MeteoritePatternProviderLogic;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-public class SimplePatternProviderPart extends PatternProviderPart
+public class MeteoritePatternProviderPart extends PatternProviderPart implements MeteoritePatternProviderHost
 {
     public static final ResourceLocation MODEL_BASE = AE2CrystalScience.makeId(
-            "part/simple_pattern_provider/base");
+            "part/meteorite_pattern_provider/base");
 
     @PartModels
     public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE,
@@ -37,7 +39,7 @@ public class SimplePatternProviderPart extends PatternProviderPart
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
             AppEng.makeId("part/interface_has_channel"));
 
-    public SimplePatternProviderPart(IPartItem<?> partItem)
+    public MeteoritePatternProviderPart(IPartItem<?> partItem)
     {
         super(partItem);
     }
@@ -50,7 +52,7 @@ public class SimplePatternProviderPart extends PatternProviderPart
         event.register(
                 AECapabilities.GENERIC_INTERNAL_INV,
                 (part, direction) -> part.getLogic().getReturnInv(),
-                SimplePatternProviderPart.class
+                MeteoritePatternProviderPart.class
         );
     }
 
@@ -74,30 +76,30 @@ public class SimplePatternProviderPart extends PatternProviderPart
     @Override
     protected PatternProviderLogic createLogic()
     {
-        return new PatternProviderLogic(getMainNode(), this, 5);
+        return new MeteoritePatternProviderLogic(getMainNode(), this, 72);
     }
 
     @Override
     public void openMenu(Player player, MenuHostLocator locator)
     {
-        MenuOpener.open(AECSMenus.SIMPLE_PATTERN_PROVIDER_MENU.get(), player, locator);
+        MenuOpener.open(AECSMenus.METEORITE_PATTERN_PROVIDER_MENU.get(), player, locator);
     }
 
     @Override
     public void returnToMainMenu(Player player, ISubMenu subMenu)
     {
-        MenuOpener.returnTo(AECSMenus.SIMPLE_PATTERN_PROVIDER_MENU.get(), player, subMenu.getLocator());
+        MenuOpener.returnTo(AECSMenus.METEORITE_PATTERN_PROVIDER_MENU.get(), player, subMenu.getLocator());
     }
 
     @Override
     public AEItemKey getTerminalIcon()
     {
-        return AEItemKey.of(AECSParts.SIMPLE_PATTERN_PROVIDER_PART);
+        return AEItemKey.of(AECSParts.METEORITE_PATTERN_PROVIDER_PART);
     }
 
     @Override
     public ItemStack getMainMenuIcon()
     {
-        return AECSParts.SIMPLE_PATTERN_PROVIDER_PART.toStack();
+        return AECSParts.METEORITE_PATTERN_PROVIDER_PART.toStack();
     }
 }

@@ -10,6 +10,7 @@ import appeng.items.parts.PartModelsHelper;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.ids.AECSPartIds;
 import io.github.lounode.ae2cs.common.me.part.IntegratedInterfacePart;
+import io.github.lounode.ae2cs.common.me.part.MeteoritePatternProviderPart;
 import io.github.lounode.ae2cs.common.me.part.SimplePatternProviderPart;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
@@ -35,6 +36,12 @@ public class AECSParts
             AECSPartIds.SIMPLE_PATTERN_PROVIDER,
             SimplePatternProviderPart.class,
             SimplePatternProviderPart::new
+    );
+
+    public static final DeferredItem<PartItem<MeteoritePatternProviderPart>> METEORITE_PATTERN_PROVIDER_PART = registerPart(
+            AECSPartIds.METEORITE_PATTERN_PROVIDER,
+            MeteoritePatternProviderPart.class,
+            MeteoritePatternProviderPart::new
     );
 
     public static List<DeferredItem<? extends PartItem<?>>> getAll()

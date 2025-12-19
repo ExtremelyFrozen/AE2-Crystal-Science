@@ -76,13 +76,13 @@ public class AECSBlockEntities
     );
 
     /**
-     * 陨石合成仓
+     * 陨石样板供应器
      */
-    public static final DeferredBlockEntityType<MeteoriteCrafterBlockEntity> METEORITE_CRAFTER_BLOCK_ENTITY = create(
-            AECSBlockIds.METEORITE_CRAFTER,
-            MeteoriteCrafterBlockEntity.class,
-            MeteoriteCrafterBlockEntity::new,
-            AECSBlocks.METEORITE_CRAFTER_BLOCK
+    public static final DeferredBlockEntityType<MeteoritePatternProviderBlockEntity> METEORITE_PATTERN_PROVIDER_BLOCK_ENTITY = create(
+            AECSBlockIds.METEORITE_PATTERN_PROVIDER,
+            MeteoritePatternProviderBlockEntity.class,
+            MeteoritePatternProviderBlockEntity::new,
+            AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK
     );
 
     /**

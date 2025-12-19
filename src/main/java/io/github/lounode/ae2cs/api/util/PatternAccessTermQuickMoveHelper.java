@@ -12,7 +12,7 @@ public class PatternAccessTermQuickMoveHelper
 
     public static void init()
     {
-        add(AECSBlocks.METEORITE_CRAFTER_BLOCK);
+        add(AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK);
     }
 
     public static void add(ItemLike item)

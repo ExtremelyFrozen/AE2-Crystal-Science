@@ -7,6 +7,7 @@ import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.block.entity.*;
 import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceHost;
+import io.github.lounode.ae2cs.common.me.logic.MeteoritePatternProviderHost;
 import io.github.lounode.ae2cs.common.menu.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
@@ -55,9 +56,9 @@ public class AECSMenus
                     .build(AE2CrystalScience.makeId("quartz_grindstone_menu"))
     );
 
-    public static final Supplier<MenuType<MeteoriteCrafterMenu>> METEORITE_CRAFTER_MENU = MENU_TYPES.register("meteorite_crafter_menu",
-            () -> MenuTypeBuilder.create(MeteoriteCrafterMenu::new, MeteoriteCrafterBlockEntity.class)
-                    .build(AE2CrystalScience.makeId("meteorite_crafter_menu"))
+    public static final Supplier<MenuType<MeteoritePatternProviderMenu>> METEORITE_PATTERN_PROVIDER_MENU = MENU_TYPES.register("meteorite_pattern_provider_menu",
+            () -> MenuTypeBuilder.create(MeteoritePatternProviderMenu::new, MeteoritePatternProviderHost.class)
+                    .build(AE2CrystalScience.makeId("meteorite_pattern_provider_menu"))
     );
 
     public static final Supplier<MenuType<PatternProviderMenu>> SIMPLE_PATTERN_PROVIDER_MENU = MENU_TYPES.register("simple_pattern_provider_menu",

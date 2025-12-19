@@ -1,8 +1,10 @@
 package io.github.lounode.ae2cs.common.me.part;
 
+import appeng.api.AECapabilities;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
+import appeng.api.parts.RegisterPartCapabilitiesEvent;
 import appeng.api.stacks.AEItemKey;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
@@ -46,6 +48,24 @@ public class IntegratedInterfacePart extends AEBasePart implements IntegratedInt
     {
         super(partItem);
     }
+
+    /**
+     * 注册能力
+     */
+    public static void onRegisterCaps(RegisterPartCapabilitiesEvent event)
+    {
+        event.register(
+                AECapabilities.GENERIC_INTERNAL_INV,
+                (part, direction) -> part.getLogic().getStorageInv(),
+                IntegratedInterfacePart.class
+        );
+        event.register(
+                AECapabilities.ME_STORAGE,
+                (part, direction) -> part.getLogic().getExposedMEStorage(direction),
+                IntegratedInterfacePart.class
+        );
+    }
+
 
     @Override
     public void getBoxes(IPartCollisionHelper bch)

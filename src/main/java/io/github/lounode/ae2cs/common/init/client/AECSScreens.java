@@ -6,6 +6,7 @@ import appeng.menu.implementations.PatternProviderMenu;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.client.gui.*;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
+import io.github.lounode.ae2cs.common.menu.MeteoritePatternProviderMenu;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -24,7 +25,8 @@ public class AECSScreens
         event.register(AECSMenus.CIRCUIT_ETCHER_MENU.get(), CircuitEtcherGUI::new);
         event.register(AECSMenus.CRYSTAL_PULVERIZER_MENU.get(), CrystalPulverizerGUI::new);
         event.register(AECSMenus.QUARTZ_GRINDSTONE_MENU.get(), QuartzGrindstoneGUI::new);
-        event.register(AECSMenus.METEORITE_CRAFTER_MENU.get(), MeteoriteCrafterGUI::new);
+        event.<MeteoritePatternProviderMenu, MeteoritePatternProviderGUI>register(AECSMenus.METEORITE_PATTERN_PROVIDER_MENU.get(),
+                (menu, id, inv) -> new MeteoritePatternProviderGUI(menu, id, inv, StyleManager.loadStyleDoc("/screens/meteorite_pattern_provider_menu.json")));
         event.<PatternProviderMenu, PatternProviderScreen<PatternProviderMenu>>register(AECSMenus.SIMPLE_PATTERN_PROVIDER_MENU.get(),
                 (menu, id, inv) -> new PatternProviderScreen<>(menu, id, inv, StyleManager.loadStyleDoc("/screens/simple_pattern_provider_menu.json")));
     }

@@ -54,9 +54,9 @@ public class AECSBlocks
     public static final DeferredBlock<CircuitEtcherBlock> CIRCUIT_ETCHER_BLOCK = registerOtherBlock(AECSBlockIds.CIRCUIT_ETCHER, () -> new CircuitEtcherBlock(copy(Blocks.IRON_BLOCK)));
 
     /**
-     * 陨石合成仓
+     * 陨石样板供应器
      */
-    public static final DeferredBlock<MeteoriteCrafterBlock> METEORITE_CRAFTER_BLOCK = registerOtherBlock(AECSBlockIds.METEORITE_CRAFTER, () -> new MeteoriteCrafterBlock(copy(Blocks.IRON_BLOCK)));
+    public static final DeferredBlock<PatternProviderBlock> METEORITE_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.METEORITE_PATTERN_PROVIDER, PatternProviderBlock::new);
 
     /**
      * 晶能粉碎机
