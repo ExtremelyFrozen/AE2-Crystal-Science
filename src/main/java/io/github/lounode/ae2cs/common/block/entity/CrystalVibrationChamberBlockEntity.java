@@ -12,13 +12,13 @@ import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.util.ConfigInventory;
 import io.github.lounode.ae2cs.api.util.ForgeEnergyAdapterUpgrade;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
+import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.item.PureCrystalItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -38,15 +38,12 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
     private int remainingBurnTime = 0;
     private double energyPerTick = 0;
 
-    // client side.. (caches last sent state on server)
-    public boolean isOn;
-
     public CrystalVibrationChamberBlockEntity(BlockPos pos, BlockState blockState)
     {
         super(AECSBlockEntities.CRYSTAL_VIBRATION_CHAMBER_BLOCK_ENTITY.get(), pos, blockState, 1000000);
         this.getMainNode().setIdlePowerUsage(0);
 
-        this.upgrades = UpgradeInventories.forMachine(AECSBlocks.CRYSTAL_VIBRATION_CHAMBER, 3, this::saveChanges);
+        this.upgrades = UpgradeInventories.forMachine(AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK, 3, this::saveChanges);
 
         inv = ConfigInventory.storage(1)
                 .slotFilter(input -> input.getPrimaryKey() instanceof PureCrystalItem)
@@ -96,29 +93,20 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
         return energyPerTick;
     }
 
+    public void checkActive(boolean active)
+    {
+        if (level == null || level.isClientSide()) return;
+        BlockState state = getBlockState();
+        if (state.hasProperty(AECSBlockProperties.ACTIVE) && state.getValue(AECSBlockProperties.ACTIVE) != active)
+        {
+            level.setBlock(worldPosition, getBlockState().setValue(AECSBlockProperties.ACTIVE, active), 2);
+        }
+    }
+
     @Override
     public AECableType getCableConnectionType(Direction dir)
     {
         return AECableType.COVERED;
-    }
-
-    @Override
-    protected boolean readFromStream(RegistryFriendlyByteBuf data)
-    {
-        final boolean c = super.readFromStream(data);
-        final boolean wasOn = this.isOn;
-
-        this.isOn = data.readBoolean();
-
-        return wasOn != this.isOn || c; // TESR doesn't need updates!
-    }
-
-    @Override
-    protected void writeToStream(RegistryFriendlyByteBuf data)
-    {
-        super.writeToStream(data);
-        this.isOn = this.remainingBurnTime > 0;
-        data.writeBoolean(this.isOn);
     }
 
     @Override
@@ -215,6 +203,8 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
                 clearBurnState();
         }
 
+        // 整备方块状态
+        checkActive(remainingBurnTime > 0);
     }
 
     private void clearBurnState()

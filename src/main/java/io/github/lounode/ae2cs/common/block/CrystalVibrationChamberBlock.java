@@ -9,6 +9,7 @@ import appeng.menu.locator.MenuLocators;
 import io.github.lounode.ae2cs.common.block.entity.CrystalVibrationChamberBlockEntity;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
@@ -17,29 +18,28 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
+
+import static io.github.lounode.ae2cs.common.init.AECSBlockProperties.ACTIVE;
 
 public class CrystalVibrationChamberBlock extends AEBaseEntityBlock<CrystalVibrationChamberBlockEntity>
 {
 
-    public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
-
     public CrystalVibrationChamberBlock(Properties properties)
     {
         super(properties);
-        this.registerDefaultState(this.defaultBlockState().setValue(ACTIVE, false));
-    }
-
-    @Override
-    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, CrystalVibrationChamberBlockEntity be)
-    {
-        return currentState.setValue(ACTIVE, be.isOn);
+        this.registerDefaultState(this.defaultBlockState()
+                .setValue(ACTIVE, false)
+                .setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
     {
+        // super中已经通过horizontalFacing的Orientation策略把HORIZONTAL_FACING面属性加上了
+        // 包括放置时候的面朝向，也已经在AEBaseBlock中做过处理了
         super.createBlockStateDefinition(builder);
         builder.add(ACTIVE);
     }
@@ -47,11 +47,11 @@ public class CrystalVibrationChamberBlock extends AEBaseEntityBlock<CrystalVibra
     @Override
     public IOrientationStrategy getOrientationStrategy()
     {
-        return OrientationStrategies.full();
+        return OrientationStrategies.horizontalFacing();
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult)
+    protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult)
     {
         super.useWithoutItem(state, level, pos, player, hitResult);
         if (!level.isClientSide() && !player.isShiftKeyDown())
@@ -62,8 +62,11 @@ public class CrystalVibrationChamberBlock extends AEBaseEntityBlock<CrystalVibra
         return InteractionResult.SUCCESS_NO_ITEM_USED;
     }
 
+    /**
+     * 在燃烧时添加一些烟雾和粒子特效
+     */
     @Override
-    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource r)
+    public void animateTick(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull RandomSource r)
     {
         if (!AEConfig.instance().isEnableEffects())
         {
@@ -71,7 +74,8 @@ public class CrystalVibrationChamberBlock extends AEBaseEntityBlock<CrystalVibra
         }
 
         var tc = this.getBlockEntity(level, pos);
-        if (tc != null && tc.isOn)
+        boolean isActive = state.getValue(ACTIVE);
+        if (tc != null && isActive)
         {
             double f1 = pos.getX() + 0.5F;
             double f2 = pos.getY() + 0.5F;
@@ -80,7 +84,6 @@ public class CrystalVibrationChamberBlock extends AEBaseEntityBlock<CrystalVibra
             var front = tc.getFront();
             var top = tc.getTop();
 
-            // Cross-Product of forward/up directional vector
             final int west_x = front.getStepY() * top.getStepZ() - front.getStepZ() * top.getStepY();
             final int west_y = front.getStepZ() * top.getStepX() - front.getStepX() * top.getStepZ();
             final int west_z = front.getStepX() * top.getStepY() - front.getStepY() * top.getStepX();

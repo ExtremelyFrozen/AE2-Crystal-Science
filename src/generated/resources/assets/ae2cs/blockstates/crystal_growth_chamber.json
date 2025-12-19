@@ -1,33 +1,33 @@
 {
   "variants": {
-    "facing=east,lit=false": {
-      "model": "ae2cs:block/crystal_growth_chamber",
+    "active=false,facing=east": {
+      "model": "ae2cs:block/crystal_growth_chamber/off",
       "y": 90
     },
-    "facing=east,lit=true": {
-      "model": "ae2cs:block/crystal_growth_chamber",
-      "y": 90
+    "active=false,facing=north": {
+      "model": "ae2cs:block/crystal_growth_chamber/off"
     },
-    "facing=north,lit=false": {
-      "model": "ae2cs:block/crystal_growth_chamber"
-    },
-    "facing=north,lit=true": {
-      "model": "ae2cs:block/crystal_growth_chamber"
-    },
-    "facing=south,lit=false": {
-      "model": "ae2cs:block/crystal_growth_chamber",
+    "active=false,facing=south": {
+      "model": "ae2cs:block/crystal_growth_chamber/off",
       "y": 180
     },
-    "facing=south,lit=true": {
-      "model": "ae2cs:block/crystal_growth_chamber",
-      "y": 180
-    },
-    "facing=west,lit=false": {
-      "model": "ae2cs:block/crystal_growth_chamber",
+    "active=false,facing=west": {
+      "model": "ae2cs:block/crystal_growth_chamber/off",
       "y": 270
     },
-    "facing=west,lit=true": {
-      "model": "ae2cs:block/crystal_growth_chamber",
+    "active=true,facing=east": {
+      "model": "ae2cs:block/crystal_growth_chamber/on",
+      "y": 90
+    },
+    "active=true,facing=north": {
+      "model": "ae2cs:block/crystal_growth_chamber/on"
+    },
+    "active=true,facing=south": {
+      "model": "ae2cs:block/crystal_growth_chamber/on",
+      "y": 180
+    },
+    "active=true,facing=west": {
+      "model": "ae2cs:block/crystal_growth_chamber/on",
       "y": 270
     }
   }

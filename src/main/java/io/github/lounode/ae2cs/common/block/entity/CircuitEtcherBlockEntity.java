@@ -14,6 +14,7 @@ import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 import io.github.lounode.ae2cs.api.util.ForgeEnergyAdapterUpgrade;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
+import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSRecipeTypes;
 import io.github.lounode.ae2cs.common.recipe.circuit_etcher.CircuitEtcherRecipe;
@@ -186,6 +187,16 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
         return activeRecipeTime;
     }
 
+    public void checkActive(boolean active)
+    {
+        if (level == null || level.isClientSide()) return;
+        BlockState state = getBlockState();
+        if (state.hasProperty(AECSBlockProperties.ACTIVE) && state.getValue(AECSBlockProperties.ACTIVE) != active)
+        {
+            level.setBlock(worldPosition, getBlockState().setValue(AECSBlockProperties.ACTIVE, active), 2);
+        }
+    }
+
     @Override
     public IUpgradeInventory getUpgrades()
     {
@@ -210,6 +221,8 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
         super.serverTick();
 
         if (getLevel() == null || getLevel().isClientSide()) return;
+
+        checkActive(getAECurrentPower() > 0);
 
         // 1) 更新/确认活动配方
         if (needRefreshRecipeState)

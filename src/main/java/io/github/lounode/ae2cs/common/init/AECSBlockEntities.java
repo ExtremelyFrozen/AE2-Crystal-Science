@@ -62,7 +62,7 @@ public class AECSBlockEntities
             AECSBlockIds.CRYSTAL_VIBRATION_CHAMBER,
             CrystalVibrationChamberBlockEntity.class,
             CrystalVibrationChamberBlockEntity::new,
-            AECSBlocks.CRYSTAL_VIBRATION_CHAMBER
+            AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK
     );
 
     /**

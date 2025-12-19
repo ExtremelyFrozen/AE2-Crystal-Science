@@ -18,6 +18,7 @@ import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 import io.github.lounode.ae2cs.api.util.ForgeEnergyAdapterUpgrade;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
+import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.common.item.CrystalSeedItem;
@@ -152,6 +153,16 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
         return this.inventory;
     }
 
+    public void checkActive(boolean active)
+    {
+        if (level == null || level.isClientSide()) return;
+        BlockState state = getBlockState();
+        if (state.hasProperty(AECSBlockProperties.ACTIVE) && state.getValue(AECSBlockProperties.ACTIVE) != active)
+        {
+            level.setBlock(worldPosition, getBlockState().setValue(AECSBlockProperties.ACTIVE, active), 2);
+        }
+    }
+
     /* 对外返回升级仓 */
     @Override
     public IUpgradeInventory getUpgrades()
@@ -197,6 +208,8 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
 
         --workTickCountDown;
         if (workTickCountDown > 0) return;
+
+        checkActive(getAECurrentPower() > 0);
 
         int speedCard = upgrades.getInstalledUpgrades(AEItems.SPEED_CARD);
         double energyCost = (1 + speedCard) * energyPerGrowth;
