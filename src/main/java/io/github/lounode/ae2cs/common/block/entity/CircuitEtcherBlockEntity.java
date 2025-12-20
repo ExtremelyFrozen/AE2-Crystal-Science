@@ -18,7 +18,7 @@ import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSRecipeTypes;
 import io.github.lounode.ae2cs.common.recipe.circuit_etcher.CircuitEtcherRecipe;
-import io.github.lounode.ae2cs.common.recipe.circuit_etcher.CircuitEtcherRecipeInput;
+import io.github.lounode.ae2cs.common.recipe.input.ThreeItemStackRecipeInput;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -255,7 +255,7 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
         // 3) 已经完成：消耗资源并产出
         if (recipeProgress >= activeRecipeTime)
         {
-            CircuitEtcherRecipeInput input = CircuitEtcherRecipeInput.of(
+            ThreeItemStackRecipeInput input = ThreeItemStackRecipeInput.of(
                     inputInv.getStackInSlot(0),
                     inputInv.getStackInSlot(1),
                     inputInv.getStackInSlot(2)
@@ -313,7 +313,7 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
         if (getLevel() == null || getLevel().isClientSide()) return;
 
         var level = getLevel();
-        var input = CircuitEtcherRecipeInput.of(
+        var input = ThreeItemStackRecipeInput.of(
                 inputInv.getStackInSlot(0),
                 inputInv.getStackInSlot(1),
                 inputInv.getStackInSlot(2)

@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs.common.recipe.circuit_etcher;
 
 import io.github.lounode.ae2cs.common.init.AECSRecipeSerializers;
 import io.github.lounode.ae2cs.common.init.AECSRecipeTypes;
+import io.github.lounode.ae2cs.common.recipe.input.ThreeItemStackRecipeInput;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
@@ -16,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CircuitEtcherRecipe implements Recipe<CircuitEtcherRecipeInput>
+public class CircuitEtcherRecipe implements Recipe<ThreeItemStackRecipeInput>
 {
     private final SizedIngredient inputA;
     private final SizedIngredient inputB;
@@ -82,7 +83,7 @@ public class CircuitEtcherRecipe implements Recipe<CircuitEtcherRecipeInput>
 
     // matches：只要 findMatch != null 就算匹配
     @Override
-    public boolean matches(@NotNull CircuitEtcherRecipeInput in, @NotNull Level level)
+    public boolean matches(@NotNull ThreeItemStackRecipeInput in, @NotNull Level level)
     {
         return findMatch(in) != null;
     }
@@ -96,7 +97,7 @@ public class CircuitEtcherRecipe implements Recipe<CircuitEtcherRecipeInput>
      * - 其它槽位可以是 ItemStack.EMPTY 或杂物，不影响匹配
      * - 不会跨槽位统一数量！
      */
-    public int[] findMatch(CircuitEtcherRecipeInput in)
+    public int[] findMatch(ThreeItemStackRecipeInput in)
     {
         ItemStack[] stacks = {
                 in.getInputA(),
@@ -155,7 +156,7 @@ public class CircuitEtcherRecipe implements Recipe<CircuitEtcherRecipeInput>
     }
 
     @Override
-    public @NotNull ItemStack assemble(@NotNull CircuitEtcherRecipeInput in, HolderLookup.@NotNull Provider registries)
+    public @NotNull ItemStack assemble(@NotNull ThreeItemStackRecipeInput in, HolderLookup.@NotNull Provider registries)
     {
         return result.copy();
     }
