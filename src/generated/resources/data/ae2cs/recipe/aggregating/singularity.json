@@ -1,0 +1,16 @@
+{
+  "type": "ae2cs:crystal_aggregator_recipe_serializer",
+  "input_a": {
+    "count": 64,
+    "item": "ae2:matter_ball"
+  },
+  "input_b": {
+    "count": 64,
+    "item": "ae2cs:purified_certus_quartz_crystal"
+  },
+  "result": {
+    "count": 64,
+    "id": "ae2:singularity"
+  },
+  "time": 300
+}

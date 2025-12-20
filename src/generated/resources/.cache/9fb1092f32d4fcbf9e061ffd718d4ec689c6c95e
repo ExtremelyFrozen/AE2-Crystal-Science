@@ -1,5 +1,7 @@
-// 1.21.1	2025-12-16T11:54:22.7838521	Recipes
+// 1.21.1	2025-12-20T13:06:29.3364639	Recipes
+c6301b6d6a62b853b7c5cb93b87f7c8b80b8a64a data/ae2cs/advancement/recipes/aggregating/singularity.json
 e6d07675f165eeb787552ea82bd72cde00c510a5 data/ae2cs/advancement/recipes/circuit/calculation_processor.json
 165dda9cbc7a3799f24a54b565e416653651d99a data/ae2cs/advancement/recipes/pulverizer/silicon.json
+2a3d96849758037fb34a2ec34bacec56489445d8 data/ae2cs/recipe/aggregating/singularity.json
 11e65fb1aef46b019d9f51edf6eeadd8ceee94fc data/ae2cs/recipe/circuit/calculation_processor.json
 80360763f7ca2841d212137535c34fdecf140fc2 data/ae2cs/recipe/pulverizer/silicon.json
