@@ -73,6 +73,11 @@ public class AECSBlocks
      */
     public static final DeferredBlock<PatternProviderBlock> SIMPLE_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.SIMPLE_PATTERN_PROVIDER, PatternProviderBlock::new);
 
+    /**
+     * 水晶聚合器
+     */
+    public static final DeferredBlock<CrystalAggregatorBlock> CRYSTAL_AGGREGATOR_BLOCK = registerOtherBlock(AECSBlockIds.CRYSTAL_AGGREGATOR, () -> new CrystalAggregatorBlock(AEBaseBlock.metalProps()));
+
 
     public static BlockBehaviour.Properties copy(BlockBehaviour behaviour)
     {

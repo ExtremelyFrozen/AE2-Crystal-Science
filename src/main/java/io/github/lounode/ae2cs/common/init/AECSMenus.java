@@ -66,6 +66,11 @@ public class AECSMenus
                     .build(AE2CrystalScience.makeId("simple_pattern_provider_menu"))
     );
 
+    public static final Supplier<MenuType<CrystalAggregatorMenu>> CRYSTAL_AGGREGATOR_MENU = MENU_TYPES.register("crystal_aggregator_menu",
+            () -> MenuTypeBuilder.create(CrystalAggregatorMenu::new, CrystalAggregatorBlockEntity.class)
+                    .build(AE2CrystalScience.makeId("crystal_aggregator_menu"))
+    );
+
     public static void registerMenus(IEventBus eventBus)
     {
         MENU_TYPES.register(eventBus);

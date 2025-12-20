@@ -47,6 +47,7 @@ public class AECSBlockStateProvider extends BlockStateProvider
         genSixFaceLike(AECSBlocks.QUARTZ_GRINDSTONE_BLOCK.get());
         genSixFaceLike(AECSBlocks.CIRCUIT_ETCHER_BLOCK.get());
         genSixFaceLike(AECSBlocks.CRYSTAL_PULVERIZER_BLOCK.get());
+        genSixFaceLike(AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK.get());
     }
 
     private void blockWithItem(DeferredBlock<? extends Block> deferredBlock)

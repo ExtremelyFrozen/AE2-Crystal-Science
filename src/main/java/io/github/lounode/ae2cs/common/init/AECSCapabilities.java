@@ -24,6 +24,7 @@ public class AECSCapabilities
         QuartzGrindstoneBlockEntity.onRegisterCaps(event);
         MeteoritePatternProviderBlockEntity.onRegisterCaps(event);
         SimplePatternProviderBlockEntity.onRegisterCaps(event);
+        CrystalAggregatorBlockEntity.onRegisterCaps(event);
     }
 
     @SubscribeEvent

@@ -116,6 +116,16 @@ public class AECSBlockEntities
     );
 
     /**
+     * 水晶聚合器
+     */
+    public static final DeferredBlockEntityType<CrystalAggregatorBlockEntity> CRYSTAL_AGGREGATOR_BLOCK_ENTITY = create(
+            AECSBlockIds.CRYSTAL_AGGREGATOR,
+            CrystalAggregatorBlockEntity.class,
+            CrystalAggregatorBlockEntity::new,
+            AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK
+    );
+
+    /**
      * 注册监听
      */
     public static void register(IEventBus eventBus)
