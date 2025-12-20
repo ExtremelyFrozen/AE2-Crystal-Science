@@ -17,10 +17,7 @@ import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 import io.github.lounode.ae2cs.api.util.ForgeEnergyAdapterUpgrade;
-import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
-import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
-import io.github.lounode.ae2cs.common.init.AECSBlocks;
-import io.github.lounode.ae2cs.common.init.AECSTags;
+import io.github.lounode.ae2cs.common.init.*;
 import io.github.lounode.ae2cs.common.item.CrystalSeedItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -247,7 +244,14 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
         {
             BlockState state = level.getBlockState(getBlockPos().relative(dir));
             if (state.getBlock() == AEBlocks.GROWTH_ACCELERATOR.block())
+            {
                 growthNum++;
+            }
+            else if (level.getBlockEntity(getBlockPos().relative(dir)) instanceof IUpgradeableObject upgradeableObject)
+            {
+                if (upgradeableObject.isUpgradedWith(AECSItems.crystalGrowthCard))
+                    growthNum++;
+            }
         }
     }
 

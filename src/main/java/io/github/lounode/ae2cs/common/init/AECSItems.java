@@ -1,5 +1,6 @@
 package io.github.lounode.ae2cs.common.init;
 
+import appeng.api.upgrades.Upgrades;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.ids.AECSItemIds;
 import io.github.lounode.ae2cs.common.item.CrystalSeedItem;
@@ -60,7 +61,7 @@ public class AECSItems
     public static final DeferredItem<CrystalSeedItem> resonatingSeed = registerCrystalSeedItem(AECSItemIds.RESONATING_SEED, () -> new CrystalSeedItem(defaultBuilder(), pureResonatingCrystal));
     public static final DeferredItem<CrystalSeedItem> meteorSeed = registerCrystalSeedItem(AECSItemIds.METEOR_SEED, () -> new CrystalSeedItem(defaultBuilder(), pureMeteorCrystal));
 
-    public static final DeferredItem<Item> crystalGrowthCard = registerOtherItem(AECSItemIds.CRYSTAL_GROWTH_CARD, () -> new Item(defaultBuilder()));
+    public static final DeferredItem<Item> crystalGrowthCard = registerOtherItem(AECSItemIds.CRYSTAL_GROWTH_CARD, () -> Upgrades.createUpgradeCardItem(new Item.Properties()));
 
     // 快速物品状态
     public static Item.Properties defaultBuilder()
