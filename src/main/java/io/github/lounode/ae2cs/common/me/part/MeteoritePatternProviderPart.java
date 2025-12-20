@@ -76,7 +76,7 @@ public class MeteoritePatternProviderPart extends PatternProviderPart implements
     @Override
     protected PatternProviderLogic createLogic()
     {
-        return new MeteoritePatternProviderLogic(getMainNode(), this, 72);
+        return new MeteoritePatternProviderLogic(getMainNode(), this, 63);
     }
 
     @Override

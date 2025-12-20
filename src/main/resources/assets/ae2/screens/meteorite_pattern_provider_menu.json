@@ -10,7 +10,7 @@
   "slots": {
     "ENCODED_PATTERN": {
       "left": 8,
-      "top": 19,
+      "top": 37,
       "grid": "BREAK_AFTER_9COLS"
     },
     "STORAGE": {
@@ -52,8 +52,8 @@
       "height": 20
     },
     "lockReason": {
-      "right": 90,
-      "top": 1
+      "left": 5,
+      "top": 15
     }
   }
 }

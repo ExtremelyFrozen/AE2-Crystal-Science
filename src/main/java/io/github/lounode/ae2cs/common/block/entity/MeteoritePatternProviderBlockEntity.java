@@ -30,7 +30,7 @@ public class MeteoritePatternProviderBlockEntity extends PatternProviderBlockEnt
     @Override
     protected PatternProviderLogic createLogic()
     {
-        return new MeteoritePatternProviderLogic(getMainNode(), this, 72);
+        return new MeteoritePatternProviderLogic(getMainNode(), this, 63);
     }
 
     /**
