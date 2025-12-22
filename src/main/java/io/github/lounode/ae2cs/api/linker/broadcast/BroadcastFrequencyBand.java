@@ -4,12 +4,13 @@ import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.pathing.ChannelMode;
 import appeng.api.networking.pathing.ControllerState;
-import appeng.me.Grid;
-import appeng.me.GridConnection;
+import appeng.core.AEConfig;
 import appeng.me.GridNode;
 import com.mojang.serialization.DataResult;
 import io.github.lounode.ae2cs.AE2CrystalScience;
+import io.github.lounode.ae2cs.api.CustomChannelProviderHost;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -23,17 +24,30 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * 用于末影广播装置的频段本体，其记录了以下信息
  * - 频段本身名称（作为唯一id）
  * - 频段的设置（例如：密码、白名单、是否为私人频段、是否允许内存卡复制链接）
  * - 其所链接到的所有广播装置，按发射端和接收端分隔（以带维度的pos记录）
+ * TODO 处理无限频道时，可用频道量计算的限制，防止溢出
  */
 public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
 {
     /** 每个接收者最多能分配到多少频段 */
-    private static final int MAX_RECEIVER_CHANNELS = 32;
+    private static final Supplier<Integer> MAX_RECEIVER_CHANNELS = () ->
+    {
+        ChannelMode mode = AEConfig.instance().getChannelMode();
+        if(mode == ChannelMode.INFINITE)
+        {
+            return Integer.MAX_VALUE;
+        }
+        else
+        {
+            return 32 * mode.getCableCapacityFactor();
+        }
+    };
 
     // 持久化数据
 
@@ -57,11 +71,11 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
 
     /** 所有发送者的坐标 */
     @NotNull
-    private final Set<GlobalPos> senderList = new LinkedHashSet<>();
+    private final Set<GlobalPos> senders = new LinkedHashSet<>();
 
     /** 所有接收者的坐标 */
     @NotNull
-    private final Set<GlobalPos> receiverList = new HashSet<>();
+    private final Set<GlobalPos> receivers = new HashSet<>();
 
     // 运行时数据
 
@@ -72,11 +86,13 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
     /** 可对外发送的频道总量 */
     private int usableChannel = 0;
 
+    /** 机器->可用频道的Map */
+    private final Object2IntOpenHashMap<GlobalPos> sender2UsableChannelMap = new Object2IntOpenHashMap<>();
+
     /** 已使用的频道总量 */
     private int usedChannel = 0;
 
-    private final Object2IntOpenHashMap<GlobalPos> sender2UsableChannelMap = new Object2IntOpenHashMap<>();
-
+    /** 接收端->已分配频道的Map */
     private final Object2IntOpenHashMap<GlobalPos> receiver2UsedChannelMap = new Object2IntOpenHashMap<>();
 
 
@@ -122,7 +138,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
             usableChannel -= sender2UsableChannelMap.removeInt(globalPos);
             usableChannel += newUsableChannel;
             sender2UsableChannelMap.put(globalPos, usableChannel);
-            senderList.add(globalPos);
+            senders.add(globalPos);
             return LinkState.SUCCESS;
         }
         return LinkState.NO_SUCCESS;
@@ -135,8 +151,8 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
     {
         GlobalPos globalPos = GlobalPos.of(level.dimension(), pos);
         usableChannel -= sender2UsableChannelMap.removeInt(globalPos);
-        senderList.remove(globalPos);
-        if(senderList.isEmpty())
+        senders.remove(globalPos);
+        if(senders.isEmpty())
             bindGrid = null;
     }
 
@@ -147,6 +163,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
     {
         IGridNode receiverNode = GridHelper.getExposedNode(level, pos, Direction.NORTH);
         if(receiverNode == null) return LinkState.NO_SUCCESS;
+        if(!(receiverNode.getOwner() instanceof CustomChannelProviderHost channelProvider)) return LinkState.NO_SUCCESS;
         IGrid grid = receiverNode.getGrid();
         if(grid == null) return LinkState.NO_SUCCESS;
 
@@ -160,12 +177,12 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         GlobalPos globalPos = GlobalPos.of(level.dimension(), pos);
 
         usableChannel -= receiver2UsedChannelMap.removeInt(globalPos);
-        int receiverAcceptChannel = Math.min(MAX_RECEIVER_CHANNELS, usableChannel - usedChannel);
+        int receiverAcceptChannel = Math.min(MAX_RECEIVER_CHANNELS.get(), usableChannel - usedChannel);
 
         usedChannel += receiverAcceptChannel;
         receiver2UsedChannelMap.put(globalPos, receiverAcceptChannel);
-        receiverList.add(globalPos);
-        // TODO 在建立连接之前，给接收者一个信号，使其能重设最大可用频道
+        receivers.add(globalPos);
+        channelProvider.setMaxChannelsWithConfig(receiverAcceptChannel);
         GridHelper.createConnection(grid.getPivot(), receiverNode);
         return LinkState.SUCCESS;
     }
@@ -177,6 +194,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
     {
         IGridNode receiverNode = GridHelper.getExposedNode(level, pos, Direction.NORTH);
         if(receiverNode == null) return;
+        if(!(receiverNode.getOwner() instanceof CustomChannelProviderHost channelProvider)) return;
         IGrid grid = receiverNode.getGrid();
         if(grid == null) return;
 
@@ -184,8 +202,9 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
 
         // 清除使用频段并断开全部连接以使其重新计算
         usableChannel -= receiver2UsedChannelMap.removeInt(globalPos);
-        receiverList.remove(globalPos);
+        receivers.remove(globalPos);
         receiverNode.getConnections().forEach(IGridConnection::destroy);
+        channelProvider.setMaxChannelsWithOutConfig(MAX_RECEIVER_CHANNELS.get());
     }
 
     @Override
@@ -204,7 +223,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         }
         tag.put("white_list", whiteListTag);
         ListTag senderListTag = new ListTag();
-        for (GlobalPos sender : senderList)
+        for (GlobalPos sender : senders)
         {
             if (sender == null) continue;
 
@@ -213,7 +232,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         }
         tag.put("sender_list", senderListTag);
         ListTag receiverListTag = new ListTag();
-        for (GlobalPos receiver : receiverList)
+        for (GlobalPos receiver : receivers)
         {
             if (receiver == null) continue;
 
@@ -232,8 +251,8 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         this.allowedMemoryCardCopy = compoundTag.getBoolean("allowed_memory_card_copy");
 
         this.whiteList.clear();
-        this.senderList.clear();
-        this.receiverList.clear();
+        this.senders.clear();
+        this.receivers.clear();
 
         ListTag whiteListTag = compoundTag.getList("white_list", 8);
         for (Tag t : whiteListTag)
@@ -257,7 +276,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         {
             DataResult<GlobalPos> parsed = GlobalPos.CODEC.parse(NbtOps.INSTANCE, t);
             parsed.result().ifPresentOrElse(
-                    this.senderList::add,
+                    this.senders::add,
                     () -> AE2CrystalScience.LOGGER.error("Failed to parse GlobalPos from sender_list entry: {}", t)
             );
         }
@@ -267,7 +286,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         {
             DataResult<GlobalPos> parsed = GlobalPos.CODEC.parse(NbtOps.INSTANCE, t);
             parsed.result().ifPresentOrElse(
-                    this.receiverList::add,
+                    this.receivers::add,
                     () -> AE2CrystalScience.LOGGER.error("Failed to parse GlobalPos from receiver_list entry: {}", t)
             );
         }
