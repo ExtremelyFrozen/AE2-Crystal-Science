@@ -143,6 +143,17 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         this.allowedMemoryCardCopy = allowedMemoryCardCopy;
 
         sender2UsableChannelMap.defaultReturnValue(0);
+        receiver2UsedChannelMap.defaultReturnValue(0);
+    }
+
+    public @NotNull String getName()
+    {
+        return name;
+    }
+
+    public @NotNull String getPassword()
+    {
+        return password;
     }
 
     /**
@@ -248,11 +259,17 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         GlobalPos globalPos = GlobalPos.of(level.dimension(), pos);
 
         // 清除使用频段并断开全部连接以使其重新计算
-        usableChannel -= receiver2UsedChannelMap.removeInt(globalPos);
+        usedChannel -= receiver2UsedChannelMap.removeInt(globalPos);
         receivers.remove(globalPos);
         IGridConnection connection = receiver2GridConnectionMap.remove(globalPos);
         if (connection != null) connection.destroy();
         channelProvider.setMaxChannelsWithOutConfig(MAX_RECEIVER_CHANNELS.get());
+    }
+
+    /** 重新分配频道，在接收者有变化后调用即可 */
+    public void reassignChannels()
+    {
+
     }
 
     @Override
@@ -287,6 +304,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
             DataResult<Tag> encoded = GlobalPos.CODEC.encodeStart(NbtOps.INSTANCE, receiver);
             encoded.result().ifPresent(receiverListTag::add);
         }
+        tag.put("receiver_list", receiverListTag);
         return tag;
     }
 

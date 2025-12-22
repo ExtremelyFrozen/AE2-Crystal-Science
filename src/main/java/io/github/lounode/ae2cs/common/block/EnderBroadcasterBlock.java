@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs.common.block;
 
 import appeng.block.AEBaseEntityBlock;
 import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastFrequencyBand;
+import io.github.lounode.ae2cs.api.linker.broadcast.FrequencyBandManager;
 import io.github.lounode.ae2cs.common.block.entity.EnderBroadcasterBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
@@ -37,16 +38,10 @@ public class EnderBroadcasterBlock extends AEBaseEntityBlock<EnderBroadcasterBlo
         super.useWithoutItem(state, level, pos, player, hitResult);
         if (!level.isClientSide())
         {
-            if (player.isShiftKeyDown())
-            {
-                BroadcastFrequencyBand.TEST_BAND.removeReceiver(level, pos);
-                BroadcastFrequencyBand.TEST_BAND.updateSender(level, pos);
-            }
-            else
-            {
-                BroadcastFrequencyBand.TEST_BAND.removeSender(level, pos);
-                BroadcastFrequencyBand.TEST_BAND.updateReceiver(level, pos);
-            }
+            if(!(level.getBlockEntity(pos) instanceof EnderBroadcasterBlockEntity be)) return InteractionResult.PASS;
+            BroadcastFrequencyBand band = FrequencyBandManager.tryCreateBand("test", "", true, true);
+            if(band == null) return InteractionResult.PASS;
+            be.connectToBand(band.getName(), player.isShiftKeyDown());
         }
         return InteractionResult.SUCCESS_NO_ITEM_USED;
     }
