@@ -11,7 +11,9 @@ import appeng.me.GridNode;
 import com.mojang.serialization.DataResult;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.CustomChannelProviderHost;
+import io.github.lounode.ae2cs.api.util.AECSGridHelper;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
@@ -23,7 +25,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 /**
@@ -32,14 +37,17 @@ import java.util.function.Supplier;
  * - 频段的设置（例如：密码、白名单、是否为私人频段、是否允许内存卡复制链接）
  * - 其所链接到的所有广播装置，按发射端和接收端分隔（以带维度的pos记录）
  * TODO 处理无限频道时，可用频道量计算的限制，防止溢出
+ * TODO 当发送者和接收者发生变化时，要更新网络的频道分配
  */
 public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
 {
-    /** 每个接收者最多能分配到多少频段 */
+    /**
+     * 每个接收者最多能分配到多少频段
+     */
     private static final Supplier<Integer> MAX_RECEIVER_CHANNELS = () ->
     {
         ChannelMode mode = AEConfig.instance().getChannelMode();
-        if(mode == ChannelMode.INFINITE)
+        if (mode == ChannelMode.INFINITE)
         {
             return Integer.MAX_VALUE;
         }
@@ -51,50 +59,81 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
 
     // 持久化数据
 
-    /** 名称（唯一id） */
+    /**
+     * 名称（唯一id）
+     */
     @NotNull
     private String name;
 
-    /** 密码 */
+    /**
+     * 密码
+     */
     @NotNull
     private String password;
 
-    /** 是否公开 */
+    /**
+     * 是否公开
+     */
     private boolean isPublic;
 
-    /** 是否允许内存卡复制使用了此频段的链接 */
+    /**
+     * 是否允许内存卡复制使用了此频段的链接
+     */
     private boolean allowedMemoryCardCopy;
 
-    /** 白名单（可见私人频道或无需密码链接） */
+    /**
+     * 白名单（可见私人频道或无需密码链接）
+     */
     @NotNull
     private final Set<UUID> whiteList = new HashSet<>();
 
-    /** 所有发送者的坐标 */
+    /**
+     * 所有发送者的坐标
+     */
     @NotNull
     private final Set<GlobalPos> senders = new LinkedHashSet<>();
 
-    /** 所有接收者的坐标 */
+    /**
+     * 所有接收者的坐标
+     */
     @NotNull
     private final Set<GlobalPos> receivers = new HashSet<>();
 
     // 运行时数据
 
-    /** 给接收端发送的网络 */
+    /**
+     * 给接收端发送的网络
+     */
     @Nullable
     private IGrid bindGrid;
 
-    /** 可对外发送的频道总量 */
+    /**
+     * 可对外发送的频道总量
+     */
     private int usableChannel = 0;
 
-    /** 机器->可用频道的Map */
+    /**
+     * 机器->可用频道的Map
+     */
     private final Object2IntOpenHashMap<GlobalPos> sender2UsableChannelMap = new Object2IntOpenHashMap<>();
 
-    /** 已使用的频道总量 */
+    /**
+     * 已使用的频道总量
+     */
     private int usedChannel = 0;
 
-    /** 接收端->已分配频道的Map */
+    /**
+     * 接收端->已分配频道的Map
+     */
     private final Object2IntOpenHashMap<GlobalPos> receiver2UsedChannelMap = new Object2IntOpenHashMap<>();
 
+    /**
+     * 接收端->接收端使用的链接，用于后续销毁
+     */
+    private final Object2ObjectOpenHashMap<GlobalPos, IGridConnection> receiver2GridConnectionMap = new Object2ObjectOpenHashMap<>();
+
+    // 测试用频道
+    public static final BroadcastFrequencyBand TEST_BAND = new BroadcastFrequencyBand("test", "", true, true);
 
     public BroadcastFrequencyBand(@NotNull String name, @NotNull String password, boolean isPublic, boolean allowedMemoryCardCopy)
     {
@@ -110,34 +149,36 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
      * 更新当前发送者状态，如果此前不存在于频道，则加入此发送者
      * <p>
      * 连接到频段的发射端必须与所有其他发射端位于同一个有控制器的网络
+     *
      * @return 返回当前设备是否成功连接，如果没有，则尽可能返回原因
      */
     public LinkState updateSender(Level level, BlockPos pos)
     {
         IGridNode iGridNode = GridHelper.getExposedNode(level, pos, Direction.NORTH);
-        if(iGridNode instanceof GridNode gridNode)
+        if (iGridNode instanceof GridNode gridNode)
         {
             IGrid grid = gridNode.getGrid();
-            if(grid == null) return LinkState.NO_SUCCESS;
+            if (grid == null) return LinkState.NO_SUCCESS;
 
-            if(grid.getPathingService().getControllerState() != ControllerState.CONTROLLER_ONLINE) return LinkState.NO_CONTROL;
+            if (grid.getPathingService().getControllerState() != ControllerState.CONTROLLER_ONLINE)
+                return LinkState.NO_CONTROL;
 
-            if(bindGrid == null)
+            if (bindGrid == null)
             {
                 bindGrid = grid;
             }
-            else if(bindGrid != grid)
+            else if (bindGrid != grid)
             {
                 return LinkState.GRID_CONFLICT;
             }
 
             GlobalPos globalPos = GlobalPos.of(level.dimension(), pos);
-            int newUsableChannel = gridNode.subtreeMaxChannels - gridNode.getUsedChannels();
+            int newUsableChannel = gridNode.getMaxChannels() - gridNode.getUsedChannels();
 
             // 重置状态并新增
             usableChannel -= sender2UsableChannelMap.removeInt(globalPos);
             usableChannel += newUsableChannel;
-            sender2UsableChannelMap.put(globalPos, usableChannel);
+            sender2UsableChannelMap.put(globalPos, newUsableChannel);
             senders.add(globalPos);
             return LinkState.SUCCESS;
         }
@@ -152,7 +193,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         GlobalPos globalPos = GlobalPos.of(level.dimension(), pos);
         usableChannel -= sender2UsableChannelMap.removeInt(globalPos);
         senders.remove(globalPos);
-        if(senders.isEmpty())
+        if (senders.isEmpty())
             bindGrid = null;
     }
 
@@ -162,13 +203,17 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
     public LinkState updateReceiver(Level level, BlockPos pos)
     {
         IGridNode receiverNode = GridHelper.getExposedNode(level, pos, Direction.NORTH);
-        if(receiverNode == null) return LinkState.NO_SUCCESS;
-        if(!(receiverNode.getOwner() instanceof CustomChannelProviderHost channelProvider)) return LinkState.NO_SUCCESS;
+        if (receiverNode == null) return LinkState.NO_SUCCESS;
+        if (!(receiverNode.getOwner() instanceof CustomChannelProviderHost channelProvider))
+            return LinkState.NO_SUCCESS;
         IGrid grid = receiverNode.getGrid();
-        if(grid == null) return LinkState.NO_SUCCESS;
+        if (grid == null) return LinkState.NO_SUCCESS;
+        if (bindGrid == null) return LinkState.NO_SENDER;
+        IGridNode controllerNode = AECSGridHelper.getControlNode(bindGrid);
+        if (controllerNode == null) return LinkState.NO_SENDER;
 
         // 如果接收者处于一个有控制网络，则必须与此网络为同一个，否则冲突
-        if(grid.getPathingService().getControllerState() == ControllerState.CONTROLLER_ONLINE
+        if (grid.getPathingService().getControllerState() == ControllerState.CONTROLLER_ONLINE
                 && grid != bindGrid)
         {
             return LinkState.GRID_CONFLICT;
@@ -176,14 +221,16 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
 
         GlobalPos globalPos = GlobalPos.of(level.dimension(), pos);
 
-        usableChannel -= receiver2UsedChannelMap.removeInt(globalPos);
+        usedChannel -= receiver2UsedChannelMap.removeInt(globalPos);
         int receiverAcceptChannel = Math.min(MAX_RECEIVER_CHANNELS.get(), usableChannel - usedChannel);
 
         usedChannel += receiverAcceptChannel;
         receiver2UsedChannelMap.put(globalPos, receiverAcceptChannel);
         receivers.add(globalPos);
         channelProvider.setMaxChannelsWithConfig(receiverAcceptChannel);
-        GridHelper.createConnection(grid.getPivot(), receiverNode);
+        IGridConnection oldConnection = receiver2GridConnectionMap.remove(globalPos);
+        if (oldConnection != null) oldConnection.destroy();
+        receiver2GridConnectionMap.put(globalPos, GridHelper.createConnection(controllerNode, receiverNode));
         return LinkState.SUCCESS;
     }
 
@@ -193,17 +240,18 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
     public void removeReceiver(Level level, BlockPos pos)
     {
         IGridNode receiverNode = GridHelper.getExposedNode(level, pos, Direction.NORTH);
-        if(receiverNode == null) return;
-        if(!(receiverNode.getOwner() instanceof CustomChannelProviderHost channelProvider)) return;
+        if (receiverNode == null) return;
+        if (!(receiverNode.getOwner() instanceof CustomChannelProviderHost channelProvider)) return;
         IGrid grid = receiverNode.getGrid();
-        if(grid == null) return;
+        if (grid == null) return;
 
         GlobalPos globalPos = GlobalPos.of(level.dimension(), pos);
 
         // 清除使用频段并断开全部连接以使其重新计算
         usableChannel -= receiver2UsedChannelMap.removeInt(globalPos);
         receivers.remove(globalPos);
-        receiverNode.getConnections().forEach(IGridConnection::destroy);
+        IGridConnection connection = receiver2GridConnectionMap.remove(globalPos);
+        if (connection != null) connection.destroy();
         channelProvider.setMaxChannelsWithOutConfig(MAX_RECEIVER_CHANNELS.get());
     }
 
@@ -297,6 +345,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         NO_CONTROL, // 发射器网络中无控制器
         GRID_CONFLICT, // 发射器来自不同的网络
         SUCCESS, // 成功连接
+        NO_SENDER, // 无广播端可用
         NO_SUCCESS // 未知错误，连接失败
     }
 }

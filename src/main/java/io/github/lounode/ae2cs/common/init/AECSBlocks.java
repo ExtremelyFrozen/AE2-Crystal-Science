@@ -78,6 +78,10 @@ public class AECSBlocks
      */
     public static final DeferredBlock<CrystalAggregatorBlock> CRYSTAL_AGGREGATOR_BLOCK = registerOtherBlock(AECSBlockIds.CRYSTAL_AGGREGATOR, () -> new CrystalAggregatorBlock(AEBaseBlock.metalProps()));
 
+    /**
+     * 末影广播装置
+     */
+    public static final DeferredBlock<EnderBroadcasterBlock> ENDER_BROADCASTER_BLOCK = registerOtherBlock(AECSBlockIds.ENDER_BROADCASTER, () -> new EnderBroadcasterBlock(AEBaseBlock.metalProps()));
 
     public static BlockBehaviour.Properties copy(BlockBehaviour behaviour)
     {

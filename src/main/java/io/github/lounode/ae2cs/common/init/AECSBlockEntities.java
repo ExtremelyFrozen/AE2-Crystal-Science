@@ -126,6 +126,16 @@ public class AECSBlockEntities
     );
 
     /**
+     * 末影广播装置
+     */
+    public static final DeferredBlockEntityType<EnderBroadcasterBlockEntity> ENDER_BROADCASTER_BLOCK_ENTITY = create(
+            AECSBlockIds.ENDER_BROADCASTER,
+            EnderBroadcasterBlockEntity.class,
+            EnderBroadcasterBlockEntity::new,
+            AECSBlocks.ENDER_BROADCASTER_BLOCK
+    );
+
+    /**
      * 注册监听
      */
     public static void register(IEventBus eventBus)

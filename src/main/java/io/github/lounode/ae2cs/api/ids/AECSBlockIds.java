@@ -11,4 +11,5 @@ public class AECSBlockIds
     public static final String CRYSTAL_PULVERIZER = "crystal_pulverizer";
     public static final String SIMPLE_PATTERN_PROVIDER = "simple_pattern_provider";
     public static final String CRYSTAL_AGGREGATOR = "crystal_aggregator";
+    public static final String ENDER_BROADCASTER = "ender_broadcaster";
 }

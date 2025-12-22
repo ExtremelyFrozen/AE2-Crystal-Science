@@ -25,6 +25,7 @@ public class AECSCapabilities
         MeteoritePatternProviderBlockEntity.onRegisterCaps(event);
         SimplePatternProviderBlockEntity.onRegisterCaps(event);
         CrystalAggregatorBlockEntity.onRegisterCaps(event);
+        EnderBroadcasterBlockEntity.onRegisterCaps(event);
     }
 
     @SubscribeEvent

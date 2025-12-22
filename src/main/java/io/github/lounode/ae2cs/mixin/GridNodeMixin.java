@@ -12,12 +12,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class GridNodeMixin
 {
 
-    @Shadow public abstract Object getOwner();
+    @Shadow
+    public abstract Object getOwner();
 
     @Inject(method = "getMaxChannels", at = @At("HEAD"), cancellable = true)
     public void ae2cs$getMaxChannels(CallbackInfoReturnable<Integer> cir)
     {
-        if(getOwner() instanceof CustomChannelProviderHost host)
+        if (getOwner() instanceof CustomChannelProviderHost host)
         {
             cir.setReturnValue(host.getMaxChannels());
         }
