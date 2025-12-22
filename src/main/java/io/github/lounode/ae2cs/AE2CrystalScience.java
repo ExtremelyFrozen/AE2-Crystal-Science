@@ -19,7 +19,7 @@ import org.slf4j.Logger;
 @Mod(AECSConstants.MODID)
 public class AE2CrystalScience
 {
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
 
     public AE2CrystalScience(IEventBus modEventBus, ModContainer modContainer)
     {
