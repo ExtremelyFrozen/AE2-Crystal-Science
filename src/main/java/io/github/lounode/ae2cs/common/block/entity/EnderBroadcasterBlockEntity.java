@@ -2,32 +2,77 @@ package io.github.lounode.ae2cs.common.block.entity;
 
 import appeng.api.AECapabilities;
 import appeng.api.config.AccessRestriction;
+import appeng.api.networking.*;
 import appeng.api.networking.pathing.ChannelMode;
+import appeng.api.stacks.AEItemKey;
+import appeng.core.AEConfig;
 import io.github.lounode.ae2cs.api.CustomChannelProviderHost;
 import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastFrequencyBand;
+import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastSenderHost;
 import io.github.lounode.ae2cs.api.linker.broadcast.FrequencyBandManager;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
-public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEntity implements CustomChannelProviderHost
+import java.util.ArrayList;
+import java.util.List;
+
+public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEntity
+        implements CustomChannelProviderHost, BroadcastSenderHost
 {
+    private static final int VIRTUAL_SENDER_NODE_HARD_CAP = 512;
+
+    private static final IGridNodeListener<EnderBroadcasterBlockEntity> VIRTUAL_NODE_LISTENER =
+            new IGridNodeListener<>()
+            {
+                @Override
+                public void onSaveChanges(EnderBroadcasterBlockEntity owner, IGridNode node)
+                {
+                    // 虚拟节点不持久化，不需要标脏 BE
+                }
+
+                @Override
+                public void onStateChanged(EnderBroadcasterBlockEntity owner, IGridNode node, State reason)
+                {
+                    // 当节点本身的频道分配完成/变化时，自动让频段再统计一次
+                    if (owner == null) return;
+                    if (owner.connectionType != ConnectionType.AS_SENDER) return;
+                    if (owner.bandId == null || owner.bandId.isEmpty()) return;
+
+                    if (reason == State.CHANNEL || reason == State.GRID_BOOT)
+                    {
+                        owner.markBandRuntimeDirtyThrottled();
+                    }
+                }
+            };
+
+    private long lastRuntimeDirtyMarkTick = Long.MIN_VALUE;
+
     private String bandId = "";
     private ConnectionType connectionType = ConnectionType.NO_CONNECTION;
 
-    private int maxAffordChannels;
+    // CustomChannelProviderHost 数据（接收端用）
+    private int customMaxChannels = 0;
+    private boolean enabledCustomChannel = false;
 
-    public EnderBroadcasterBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState)
+    // 发送端：虚拟节点池（每个虚拟节点吃 1 个频道）
+    private final List<IManagedGridNode> virtualSenderNodes = new ArrayList<>();
+    private int virtualSenderNodeTarget = 0;
+
+    public EnderBroadcasterBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
     {
-        super(blockEntityType, pos, blockState, 80000);
+        super(type, pos, state, 80000);
+        getMainNode().setFlags(GridFlags.DENSE_CAPACITY);
     }
 
     /**
-     * 注册AE节点和能量能力
+     * 注册 AE 节点能力
      */
     public static void onRegisterCaps(RegisterCapabilitiesEvent event)
     {
@@ -36,6 +81,459 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
                 AECSBlockEntities.ENDER_BROADCASTER_BLOCK_ENTITY.get(),
                 (be, unused) -> be
         );
+    }
+
+    // ---------------- BroadcastSenderHost ----------------
+
+    /**
+     * 发送端对外“可用频道数”：
+     * 统计虚拟节点中满足频道要求（拿到频道）的数量。
+     */
+    @Override
+    public int getCouldSendChannels()
+    {
+        if (level == null || level.isClientSide())
+        {
+            return 0;
+        }
+
+        if (connectionType != ConnectionType.AS_SENDER)
+        {
+            return 0;
+        }
+
+        ChannelMode mode = AEConfig.instance().getChannelMode();
+        if (mode == ChannelMode.INFINITE)
+        {
+            return Integer.MAX_VALUE;
+        }
+
+        ensureSenderVirtualNodes();
+
+        int count = 0;
+        for (var managed : virtualSenderNodes)
+        {
+            var node = managed.getNode();
+            if (node != null && node.meetsChannelRequirements())
+            {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    // ---------------- CustomChannelProviderHost（接收端用） ----------------
+
+    @Override
+    public int getMaxChannels()
+    {
+        // 只有作为“接收端”时才启用 custom；否则恢复原版上限
+        if (!enabledCustomChannel)
+        {
+            return getVanillaMaxChannels();
+        }
+        return Math.max(0, customMaxChannels);
+    }
+
+    @Override
+    public void setMaxChannels(int maxChannels)
+    {
+        this.customMaxChannels = Math.max(0, maxChannels);
+    }
+
+    @Override
+    public boolean isEnabledCustomChannel()
+    {
+        return enabledCustomChannel;
+    }
+
+    @Override
+    public void setEnabledCustomChannel(boolean enabled)
+    {
+        this.enabledCustomChannel = enabled;
+    }
+
+    private int getVanillaMaxChannels()
+    {
+        ChannelMode mode = AEConfig.instance().getChannelMode();
+        if (mode == ChannelMode.INFINITE)
+        {
+            return Integer.MAX_VALUE;
+        }
+        return 32 * mode.getCableCapacityFactor();
+    }
+
+    // ---------------- 发送端虚拟节点维护 ----------------
+
+    /**
+     * 获取我们当前应该创建的虚拟节点数，一般为32 * factor，512为硬上限
+     */
+    private int computeSenderVirtualNodeTarget()
+    {
+        ChannelMode mode = AEConfig.instance().getChannelMode();
+        if (mode == ChannelMode.INFINITE)
+        {
+            return 0;
+        }
+
+        int desired = Math.max(0, 32 * mode.getCableCapacityFactor());
+        return Math.min(desired, VIRTUAL_SENDER_NODE_HARD_CAP);
+    }
+
+    /**
+     * 确保be链接到了足够多的虚拟节点
+     */
+    private void ensureSenderVirtualNodes()
+    {
+        if (level == null || level.isClientSide())
+        {
+            return;
+        }
+
+        if (connectionType != ConnectionType.AS_SENDER)
+        {
+            destroySenderVirtualNodes();
+            return;
+        }
+
+        int target = computeSenderVirtualNodeTarget();
+        if (target <= 0)
+        {
+            destroySenderVirtualNodes();
+            return;
+        }
+
+        // 目标数量没变且节点都 ready：不动
+        if (target == virtualSenderNodeTarget && virtualSenderNodes.size() == target)
+        {
+            boolean allReady = true;
+            for (var managedNode : virtualSenderNodes)
+            {
+                if (!managedNode.isReady())
+                {
+                    allReady = false;
+                    break;
+                }
+            }
+            if (allReady)
+            {
+                return;
+            }
+        }
+
+        destroySenderVirtualNodes();
+        virtualSenderNodeTarget = target;
+
+        // 用本机的主节点作为锚点
+        IGridNode anchor = getMainNode().getNode();
+        if (anchor == null)
+        {
+            // 主节点还没准备好：等onReady或下一次getCouldSendChannels再试
+            return;
+        }
+
+        for (int i = 0; i < target; i++)
+        {
+            IManagedGridNode virtualManagedNode = GridHelper.createManagedNode(this, VIRTUAL_NODE_LISTENER)
+                    .setInWorldNode(false)
+                    .setIdlePowerUsage(10.0) // 这里可以消耗掉一些能量，模拟发送频道消耗能量
+                    .setVisualRepresentation((AEItemKey) null) // 也许以后可以做一个技术性物品代表这个虚拟节点
+                    .setTagName("sender_virtual_" + i)
+                    .setFlags(GridFlags.REQUIRE_CHANNEL);
+
+            virtualManagedNode.create(level, worldPosition);
+
+            IGridNode virtualNode = virtualManagedNode.getNode();
+            if (virtualNode != null)
+            {
+                // 把所有虚拟节点链接到我们的主节点上
+                GridHelper.createConnection(anchor, virtualNode);
+            }
+
+            virtualSenderNodes.add(virtualManagedNode);
+        }
+    }
+
+    /**
+     * 摧毁所有已建立的虚拟节点
+     */
+    private void destroySenderVirtualNodes()
+    {
+        if (!virtualSenderNodes.isEmpty())
+        {
+            for (var m : virtualSenderNodes)
+            {
+                try
+                {
+                    m.destroy();
+                }
+                catch (Throwable ignored)
+                {
+                }
+            }
+            virtualSenderNodes.clear();
+        }
+        virtualSenderNodeTarget = 0;
+    }
+
+    /**
+     * 将链接的频段标脏（内部带同tick限流，可以安全使用）
+     */
+    private void markBandRuntimeDirtyThrottled()
+    {
+        if (level == null || level.isClientSide()) return;
+        if (bandId.isEmpty()) return;
+
+        MinecraftServer server = level.getServer();
+        if (server == null) return;
+
+        // 统一使用主世界时间
+        long now = server.overworld().getGameTime();
+        if (lastRuntimeDirtyMarkTick == now) return;
+        lastRuntimeDirtyMarkTick = now;
+
+        FrequencyBandManager.markRuntimeDirty(server, bandId);
+    }
+
+    // ---------------- 连接逻辑（纯数据 declared + 运行时 online/offline） ----------------
+
+    /**
+     * 对外接口，使其永久链接到某个频段
+     */
+    public void connectToBand(String newBandId, boolean asSender)
+    {
+        if (level == null || level.isClientSide()) return;
+
+        MinecraftServer server = level.getServer();
+        if (server == null) return;
+
+        BroadcastFrequencyBand newBand = FrequencyBandManager.getBand(newBandId);
+        if (newBand == null) return;
+
+        GlobalPos globalPos = GlobalPos.of(level.dimension(), worldPosition);
+
+        // 先清空旧频段信号
+        if (!bandId.isEmpty())
+        {
+            BroadcastFrequencyBand oldBand = FrequencyBandManager.getBand(bandId);
+            if (oldBand != null)
+            {
+                if (connectionType == ConnectionType.AS_RECEIVER)
+                {
+                    oldBand.onReceiverOffline(server, globalPos);
+                }
+                else if (connectionType == ConnectionType.AS_SENDER)
+                {
+                    oldBand.onSenderOffline(server, globalPos);
+                }
+
+                if (oldBand != newBand)
+                {
+                    oldBand.undeclareSender(globalPos);
+                    oldBand.undeclareReceiver(globalPos);
+                }
+            }
+        }
+
+        // 根据不同端角色进行链接
+        if (asSender)
+        {
+            newBand.declareSender(globalPos);
+            newBand.undeclareReceiver(globalPos);
+
+            setEnabledCustomChannel(false);
+            this.connectionType = ConnectionType.AS_SENDER;
+
+            ensureSenderVirtualNodes();
+
+            IGridNode node = getMainNode().getNode();
+            if (node != null)
+            {
+                newBand.onSenderOnline(server, globalPos, node);
+            }
+        }
+        else
+        {
+            newBand.declareReceiver(globalPos);
+            newBand.undeclareSender(globalPos);
+
+            destroySenderVirtualNodes();
+            setEnabledCustomChannel(true);
+            setMaxChannels(0);
+
+            this.connectionType = ConnectionType.AS_RECEIVER;
+
+            IGridNode node = getMainNode().getNode();
+            if (node != null)
+            {
+                newBand.onReceiverOnline(server, globalPos, node, this);
+            }
+        }
+
+        this.bandId = newBand.getName();
+    }
+
+    /**
+     * 对外接口，让be永久断开频段链接
+     */
+    public void cleanConnectionPermanent()
+    {
+        if (level == null || level.isClientSide()) return;
+
+        // 无论如何先清掉 sender 虚拟节点
+        destroySenderVirtualNodes();
+
+        MinecraftServer server = level.getServer();
+        if (server == null) return;
+
+        if (bandId.isEmpty() || connectionType == ConnectionType.NO_CONNECTION)
+        {
+            setEnabledCustomChannel(false);
+            return;
+        }
+
+        BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
+        GlobalPos globalPos = GlobalPos.of(level.dimension(), worldPosition);
+
+        if (band != null)
+        {
+            if (connectionType == ConnectionType.AS_RECEIVER)
+            {
+                band.onReceiverOffline(server, globalPos);
+            }
+            else if (connectionType == ConnectionType.AS_SENDER)
+            {
+                band.onSenderOffline(server, globalPos);
+            }
+
+            band.undeclareSender(globalPos);
+            band.undeclareReceiver(globalPos);
+        }
+
+        bandId = "";
+        connectionType = ConnectionType.NO_CONNECTION;
+        setEnabledCustomChannel(false);
+    }
+
+    /**
+     * 区块卸载时，进行运行时下线，并销毁sender虚拟节点释放频道
+     */
+    @Override
+    public void onChunkUnloaded()
+    {
+        destroySenderVirtualNodes();
+
+        if (level != null && !level.isClientSide() && !bandId.isEmpty() && connectionType != ConnectionType.NO_CONNECTION)
+        {
+            MinecraftServer server = level.getServer();
+            if (server != null)
+            {
+                BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
+                if (band != null)
+                {
+                    GlobalPos gp = GlobalPos.of(level.dimension(), worldPosition);
+                    if (connectionType == ConnectionType.AS_RECEIVER)
+                    {
+                        band.onReceiverOffline(server, gp);
+                    }
+                    else if (connectionType == ConnectionType.AS_SENDER)
+                    {
+                        band.onSenderOffline(server, gp);
+                    }
+                }
+            }
+        }
+        super.onChunkUnloaded();
+    }
+
+    /**
+     * BE被移除
+     */
+    @Override
+    public void setRemoved()
+    {
+        // 先做清理，再让AE/父类销毁节点
+        cleanConnectionPermanent();
+        super.setRemoved();
+    }
+
+    /**
+     * 网络初始化完成，恢复declared并上线
+     */
+    @Override
+    public void onReady()
+    {
+        super.onReady();
+
+        if (level == null || level.isClientSide()) return;
+
+        if (bandId.isEmpty() || connectionType == ConnectionType.NO_CONNECTION)
+        {
+            setEnabledCustomChannel(false);
+            destroySenderVirtualNodes();
+            return;
+        }
+
+        MinecraftServer server = level.getServer();
+        if (server == null) return;
+
+        BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
+        if (band == null)
+        {
+            setEnabledCustomChannel(false);
+            destroySenderVirtualNodes();
+            return;
+        }
+
+        GlobalPos gp = GlobalPos.of(level.dimension(), worldPosition);
+        IGridNode node = getMainNode().getNode();
+        if (node == null) return;
+
+        if (connectionType == ConnectionType.AS_RECEIVER)
+        {
+            band.declareReceiver(gp);
+            band.undeclareSender(gp);
+
+            destroySenderVirtualNodes();
+            setEnabledCustomChannel(true);
+
+            band.onReceiverOnline(server, gp, node, this);
+        }
+        else if (connectionType == ConnectionType.AS_SENDER)
+        {
+            band.declareSender(gp);
+            band.undeclareReceiver(gp);
+
+            setEnabledCustomChannel(false);
+
+            ensureSenderVirtualNodes();
+            band.onSenderOnline(server, gp, node);
+        }
+    }
+
+    // ---------------- NBT ----------------
+
+    @Override
+    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries)
+    {
+        super.saveAdditional(data, registries);
+        data.putString("bandId", bandId);
+        data.putString("connectionType", connectionType.name());
+        data.putBoolean("enabledCustomChannel", enabledCustomChannel);
+        data.putInt("customMaxChannels", customMaxChannels);
+    }
+
+    @Override
+    public void loadTag(CompoundTag data, HolderLookup.Provider registries)
+    {
+        super.loadTag(data, registries);
+        bandId = data.getString("bandId");
+
+        String t = data.getString("connectionType");
+        connectionType = t.isEmpty() ? ConnectionType.NO_CONNECTION : ConnectionType.valueOf(t);
+
+        enabledCustomChannel = data.getBoolean("enabledCustomChannel");
+        customMaxChannels = data.getInt("customMaxChannels");
     }
 
     @Override
@@ -50,114 +548,7 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
         return AccessRestriction.WRITE;
     }
 
-    @Override
-    public int getMaxChannels()
-    {
-        return maxAffordChannels;
-    }
-
-    @Override
-    public void setMaxChannelsWithConfig(int maxChannels)
-    {
-        this.maxAffordChannels = maxChannels;
-    }
-
-    @Override
-    public void setMaxChannelsWithOutConfig(int maxChannels)
-    {
-        getMainNode().ifPresent((iGrid, iGridNode) -> {
-            ChannelMode mode = iGrid.getPathingService().getChannelMode();
-            if (mode == ChannelMode.INFINITE)
-            {
-                this.maxAffordChannels = Integer.MAX_VALUE;
-                return;
-            }
-            else
-            {
-                this.maxAffordChannels = maxChannels * mode.getCableCapacityFactor();
-            }
-        });
-    }
-
-    public void connectToBand(String bandId, boolean asSender)
-    {
-        if(level == null || level.isClientSide()) return;
-        BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
-        if(band == null) return;
-        if(asSender)
-        {
-            band.removeReceiver(level, worldPosition);
-            band.updateSender(level, worldPosition);
-            this.connectionType = ConnectionType.AS_SENDER;
-        }
-        else
-        {
-            band.removeSender(level, worldPosition);
-            band.updateReceiver(level, worldPosition);
-            this.connectionType = ConnectionType.AS_RECEIVER;
-        }
-        this.bandId = band.getName();
-    }
-
-    public void cleanConnection()
-    {
-        if(level == null || level.isClientSide()) return;
-        BroadcastFrequencyBand band = FrequencyBandManager.getBand(this.bandId);
-        if(band == null) return;
-
-        band.removeReceiver(level, worldPosition);
-        band.removeSender(level, worldPosition);
-        this.bandId = "";
-        this.connectionType = ConnectionType.NO_CONNECTION;
-    }
-
-    public void cleanConnectionTemporary()
-    {
-        if(level == null || level.isClientSide()) return;
-        BroadcastFrequencyBand band = FrequencyBandManager.getBand(this.bandId);
-        if(band == null) return;
-
-        band.removeReceiver(level, worldPosition);
-        band.removeSender(level, worldPosition);
-    }
-
-    @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries)
-    {
-        super.saveAdditional(data, registries);
-        data.putString("bandId", bandId);
-        data.putString("connectionType", connectionType.name());
-    }
-
-    @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries)
-    {
-        super.loadTag(data, registries);
-        bandId = data.getString("bandId");
-        connectionType = ConnectionType.valueOf(data.getString("connectionType"));
-    }
-
-    @Override
-    public void setRemoved()
-    {
-        super.setRemoved();
-        cleanConnectionTemporary(); // 区块卸载时，临时断开链接，但不清除持久化状态
-    }
-
-    /** 在这里重新启用链接，因为只有在这里，网络才初始化完毕 */
-    @Override
-    public void onReady()
-    {
-        super.onReady();
-        if(connectionType == ConnectionType.AS_RECEIVER)
-            connectToBand(bandId, false);
-        else if(connectionType == ConnectionType.AS_SENDER)
-            connectToBand(bandId, true);
-        else
-            cleanConnection();
-    }
-
-    private static enum ConnectionType
+    private enum ConnectionType
     {
         AS_SENDER,
         AS_RECEIVER,

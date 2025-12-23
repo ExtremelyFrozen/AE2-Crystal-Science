@@ -1,19 +1,27 @@
 package io.github.lounode.ae2cs.api;
 
+/**
+ * 该host可以提供自定义最大频道承载量
+ */
 public interface CustomChannelProviderHost
 {
     /**
-     * 该host能承担的最大频道数
+     * 获取该host能承担的最大频道数
      */
     int getMaxChannels();
 
     /**
-     * 用来设置的值还未经过Config乘数，实现需要处理
+     * 设置最大频道数
      */
-    void setMaxChannelsWithOutConfig(int maxChannels);
+    void setMaxChannels(int maxChannels);
 
     /**
-     * 用来设置的值已经被Config乘数处理过，直接应用即可
+     * 是否使用自定义最大频道数
      */
-    void setMaxChannelsWithConfig(int maxChannels);
+    boolean isEnabledCustomChannel();
+
+    /**
+     * 设置状态
+     */
+    void setEnabledCustomChannel(boolean enabled);
 }

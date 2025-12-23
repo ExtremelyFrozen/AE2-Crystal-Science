@@ -1,101 +1,180 @@
 package io.github.lounode.ae2cs.api.linker.broadcast;
 
-import appeng.api.stacks.AEKey;
+import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.storage.LevelResource;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
-import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-/** 用于管理当前服务端内所有频段 */
+/**
+ * 用于管理当前服务端内所有频段（持久化 + 运行时重算调度）
+ */
+@EventBusSubscriber(modid = AECSConstants.MODID)
 public class FrequencyBandManager extends SavedData
 {
-    private static final String MANAGER_PATH = "AECS/FrequencyBandManager";
+    /**
+     * SavedData存放的文件夹
+     */
+    private static final String SAVED_FOLDER_NAME = "aecs";
+
+    /**
+     * 持久化文件名
+     */
+    private static final String MANAGER_PATH = "frequency_band_manager";
 
     private static final SavedData.Factory<FrequencyBandManager> FACTORY =
             new SavedData.Factory<>(FrequencyBandManager::new, FrequencyBandManager::load);
 
-
+    /**
+     * name -> 频段实例
+     */
     private final Map<String, BroadcastFrequencyBand> frequencyBands = new HashMap<>();
 
-    private FrequencyBandManager() {}
+    /**
+     * 运行时：被标记需要重算的 band（值为标记时的 gameTime），用于下一tick重算
+     */
+    private final transient Object2LongOpenHashMap<String> dirtyRuntimeAt = new Object2LongOpenHashMap<>();
 
-    @Nullable
-    public static BroadcastFrequencyBand getTestBand()
+    private FrequencyBandManager()
     {
-        return tryCreateBand("test", "", true, true);
+        dirtyRuntimeAt.defaultReturnValue(Long.MIN_VALUE);
     }
 
+    /**
+     * 获取频段
+     */
     @Nullable
     public static BroadcastFrequencyBand getBand(String bandName)
     {
         FrequencyBandManager manager = resolveManager();
-        if(manager == null) return null;
-
+        if (manager == null) return null;
         return manager.frequencyBands.get(bandName);
     }
 
+    /**
+     * 获取频段，如果不存在则创建
+     */
     @Nullable
     public static BroadcastFrequencyBand tryCreateBand(String bandName, String password, boolean isPublic, boolean allowedMemoryCardCopy)
     {
         FrequencyBandManager manager = resolveManager();
-        if(manager == null) return null;
+        if (manager == null) return null;
 
         BroadcastFrequencyBand band = manager.frequencyBands.get(bandName);
-        if(band == null)
+        if (band == null)
         {
             band = new BroadcastFrequencyBand(bandName, password, isPublic, allowedMemoryCardCopy);
             manager.frequencyBands.put(bandName, band);
+            manager.setDirty();
         }
         return band;
     }
 
+    /**
+     * 标脏
+     */
+    public static void markDirty()
+    {
+        FrequencyBandManager manager = resolveManager();
+        if (manager != null) manager.setDirty();
+    }
+
+    /**
+     * 标记某个band需要在下一个tick重算链接
+     */
+    public static void markRuntimeDirty(MinecraftServer server, String bandName)
+    {
+        FrequencyBandManager manager = resolveManager();
+        if (manager == null) return;
+
+        long now = server.overworld().getGameTime();
+
+        if (manager.dirtyRuntimeAt.getLong(bandName) != now)
+        {
+            manager.dirtyRuntimeAt.put(bandName, now);
+        }
+    }
+
+    /**
+     * 统一调用服务端的频段链接重算
+     */
+    @SubscribeEvent
+    public static void tick(ServerTickEvent.Post event)
+    {
+        FrequencyBandManager manager = resolveManager();
+        if (manager == null) return;
+
+        MinecraftServer server = event.getServer();
+
+        long now = server.overworld().getGameTime();
+
+        var it = manager.dirtyRuntimeAt.object2LongEntrySet().iterator();
+        while (it.hasNext())
+        {
+            var entry = it.next();
+            String bandName = entry.getKey();
+            long markedAt = entry.getLongValue();
+
+            if (now > markedAt)
+            {
+                BroadcastFrequencyBand band = manager.frequencyBands.get(bandName);
+                if (band != null)
+                {
+                    band.recomputeRuntime();
+                }
+                it.remove();
+            }
+        }
+    }
+
+    /**
+     * 获取服务端中唯一的频段管理者
+     */
     @Nullable
     private static FrequencyBandManager resolveManager()
     {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        if(server == null) return null;
+        if (server == null) return null;
 
-        return server.overworld().getDataStorage().computeIfAbsent(FACTORY, MANAGER_PATH);
+        ensureSaveDirExists(server);
+        return server.overworld().getDataStorage().computeIfAbsent(FACTORY, SAVED_FOLDER_NAME + "/" + MANAGER_PATH);
     }
+
+    // ---------- 持久化 ----------
 
     public static FrequencyBandManager load(CompoundTag tag, HolderLookup.Provider registries)
     {
         FrequencyBandManager manager = new FrequencyBandManager();
 
         ListTag bandsTag = tag.getList("bands", 10);
-        for(Tag bandTag : bandsTag)
+        for (Tag bandTag : bandsTag)
         {
-            if(!(bandTag instanceof CompoundTag compoundBandTag)) continue;
+            if (!(bandTag instanceof CompoundTag compoundBandTag)) continue;
 
-            BroadcastFrequencyBand band = null;
-            boolean completed = false;
             try
             {
-                band = new BroadcastFrequencyBand("", "", false, false);
+                BroadcastFrequencyBand band = new BroadcastFrequencyBand("", "", false, false);
                 band.deserializeNBT(registries, compoundBandTag);
-                completed = true;
+                manager.frequencyBands.put(band.getName(), band);
             }
-            catch (Throwable e)
+            catch (Throwable ignored)
             {
-                e.printStackTrace();
-            }
-            finally
-            {
-                if(completed)
-                {
-                    manager.frequencyBands.put(band.getName(), band);
-                }
             }
         }
         return manager;
@@ -105,11 +184,29 @@ public class FrequencyBandManager extends SavedData
     public @NotNull CompoundTag save(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider provider)
     {
         ListTag bandTags = new ListTag();
-        for(BroadcastFrequencyBand band : frequencyBands.values())
+        for (BroadcastFrequencyBand band : frequencyBands.values())
         {
             bandTags.add(band.serializeNBT(provider));
         }
         tag.put("bands", bandTags);
         return tag;
+    }
+
+    /**
+     * 确保 world/data/aecs 目录存在，否则savedData没法正确创建在带目录的路径下
+     */
+    private static void ensureSaveDirExists(@NotNull MinecraftServer server)
+    {
+        Path dir = server.getWorldPath(LevelResource.ROOT)
+                .resolve("data")
+                .resolve(SAVED_FOLDER_NAME);
+        try
+        {
+            Files.createDirectories(dir);
+        }
+        catch (IOException e)
+        {
+            // 静默
+        }
     }
 }

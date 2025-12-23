@@ -18,7 +18,7 @@ public abstract class GridNodeMixin
     @Inject(method = "getMaxChannels", at = @At("HEAD"), cancellable = true)
     public void ae2cs$getMaxChannels(CallbackInfoReturnable<Integer> cir)
     {
-        if (getOwner() instanceof CustomChannelProviderHost host)
+        if (getOwner() instanceof CustomChannelProviderHost host && host.isEnabledCustomChannel())
         {
             cir.setReturnValue(host.getMaxChannels());
         }

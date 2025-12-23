@@ -14,35 +14,51 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * 末影广播装置
+ * 末影广播装置（测试）
  */
 public class EnderBroadcasterBlock extends AEBaseEntityBlock<EnderBroadcasterBlockEntity>
 {
+
     public EnderBroadcasterBlock(BlockBehaviour.Properties properties)
     {
         super(properties);
     }
 
     @Override
-    protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player
-            player, BlockHitResult hitResult)
+    protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult)
     {
-//        super.useWithoutItem(state, level, pos, player, hitResult);
-//        if (!level.isClientSide() && !player.isShiftKeyDown())
-//        {
-//            if (level.getBlockEntity(pos) instanceof EnderBroadcasterBlockEntity be)
-//                MenuOpener.open(AECSMenus.CRYSTAL_GROWTH_CHAMBER_MENU.get(), player, MenuLocators.forBlockEntity(be));
-//        }
-//        return InteractionResult.SUCCESS_NO_ITEM_USED;
-
         super.useWithoutItem(state, level, pos, player, hitResult);
+
         if (!level.isClientSide())
         {
-            if(!(level.getBlockEntity(pos) instanceof EnderBroadcasterBlockEntity be)) return InteractionResult.PASS;
+            if (!(level.getBlockEntity(pos) instanceof EnderBroadcasterBlockEntity be))
+            {
+                return InteractionResult.PASS;
+            }
+
             BroadcastFrequencyBand band = FrequencyBandManager.tryCreateBand("test", "", true, true);
-            if(band == null) return InteractionResult.PASS;
-            be.connectToBand(band.getName(), player.isShiftKeyDown());
+            if (band == null) return InteractionResult.PASS;
+
+            boolean asSender = player.isShiftKeyDown(); // 潜行=发送端；非潜行=接收端
+            be.connectToBand(band.getName(), asSender);
         }
+
         return InteractionResult.SUCCESS_NO_ITEM_USED;
+    }
+
+    /**
+     * 方块真正被替换/移除时，永久清理
+     */
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving)
+    {
+        if (!level.isClientSide() && state.getBlock() != newState.getBlock())
+        {
+            if (level.getBlockEntity(pos) instanceof EnderBroadcasterBlockEntity be)
+            {
+                be.cleanConnectionPermanent();
+            }
+        }
+        super.onRemove(state, level, pos, newState, isMoving);
     }
 }
