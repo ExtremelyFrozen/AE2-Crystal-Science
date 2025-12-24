@@ -8,6 +8,7 @@ import appeng.api.stacks.AEItemKey;
 import appeng.core.AEConfig;
 import io.github.lounode.ae2cs.api.CustomChannelProviderHost;
 import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastFrequencyBand;
+import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastReceiverHost;
 import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastSenderHost;
 import io.github.lounode.ae2cs.api.linker.broadcast.FrequencyBandManager;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
@@ -24,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEntity
-        implements CustomChannelProviderHost, BroadcastSenderHost
+        implements CustomChannelProviderHost, BroadcastSenderHost, BroadcastReceiverHost
 {
     private static final int VIRTUAL_SENDER_NODE_HARD_CAP = 512;
 
@@ -56,6 +57,7 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
 
     private String bandId = "";
     private ConnectionType connectionType = ConnectionType.NO_CONNECTION;
+    private int expectedChannels = 32;
 
     // CustomChannelProviderHost 数据（接收端用）
     private int customMaxChannels = 0;
@@ -120,6 +122,12 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
             }
         }
         return count;
+    }
+
+    @Override
+    public int getExpectedChannels()
+    {
+        return this.expectedChannels;
     }
 
     // ---------------- CustomChannelProviderHost（接收端用） ----------------
@@ -517,23 +525,25 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
     public void saveAdditional(CompoundTag data, HolderLookup.Provider registries)
     {
         super.saveAdditional(data, registries);
-        data.putString("bandId", bandId);
-        data.putString("connectionType", connectionType.name());
-        data.putBoolean("enabledCustomChannel", enabledCustomChannel);
-        data.putInt("customMaxChannels", customMaxChannels);
+        data.putString("band_id", bandId);
+        data.putString("connection_type", connectionType.name());
+        data.putBoolean("enabled_custom_channel", enabledCustomChannel);
+        data.putInt("custom_max_channels", customMaxChannels);
+        data.putInt("expected_channels", expectedChannels);
     }
 
     @Override
     public void loadTag(CompoundTag data, HolderLookup.Provider registries)
     {
         super.loadTag(data, registries);
-        bandId = data.getString("bandId");
+        bandId = data.getString("band_id");
 
-        String t = data.getString("connectionType");
+        String t = data.getString("connection_type");
         connectionType = t.isEmpty() ? ConnectionType.NO_CONNECTION : ConnectionType.valueOf(t);
 
-        enabledCustomChannel = data.getBoolean("enabledCustomChannel");
-        customMaxChannels = data.getInt("customMaxChannels");
+        enabledCustomChannel = data.getBoolean("enabled_custom_channel");
+        customMaxChannels = data.getInt("custom_max_channels");
+        this.expectedChannels = data.getInt("expected_channels");
     }
 
     @Override

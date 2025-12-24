@@ -306,7 +306,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
 
         // 3) 分配
         int capPerReceiver = MAX_RECEIVER_CHANNELS.get();
-        allocateFillFirst(totalUsable, capPerReceiver);
+        allocateToAllReceivers(totalUsable, capPerReceiver);
     }
 
     /**
@@ -370,25 +370,30 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
     }
 
     /**
-     * 满额优先：按 declaredReceivers 的稳定顺序尽可能喂满
+     * 将频道分配到所有接收端
+     * @param totalUsable 可用频道的总数量
+     * @param capPerReceiver 每个接收端所能被分配的频道的硬上限
      */
-    private void allocateFillFirst(long totalUsable, int capPerReceiver)
+    private void allocateToAllReceivers(long totalUsable, int capPerReceiver)
     {
         long remaining = totalUsable;
 
         for (GlobalPos rp : declaredReceivers)
         {
-            IGridNode rNode = onlineReceiverNodes.get(rp);
+            IGridNode receiverNode = onlineReceiverNodes.get(rp);
             CustomChannelProviderHost host = onlineReceiverHosts.get(rp);
-            if (rNode == null || host == null) continue;
+            if (receiverNode == null || host == null) continue;
 
-            int alloc = computeAllocFillFirst(remaining, capPerReceiver);
-            if (capPerReceiver != Integer.MAX_VALUE)
+            if(receiverNode.getOwner() instanceof BroadcastReceiverHost receiverHost)
             {
-                remaining -= alloc;
-            }
+                int alloc = computeAllocChannels(remaining, capPerReceiver, receiverHost.getExpectedChannels());
+                if (capPerReceiver != Integer.MAX_VALUE)
+                {
+                    remaining -= alloc;
+                }
 
-            applyReceiver(rp, rNode, host, alloc);
+                applyReceiver(rp, receiverNode, host, alloc);
+            }
         }
 
         // 在线但未声明的 receiver，一律恢复原版并断开
@@ -407,11 +412,13 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         }
     }
 
-    private int computeAllocFillFirst(long remaining, int capPerReceiver)
+    /** 输入剩余频道总数、频道硬限制、期望频道数，返回当前应该给此接收端分配的频道量 */
+    private int computeAllocChannels(long remaining, int capPerReceiver, int expectedChannels)
     {
+        if (expectedChannels <= 0) return 0;
         if (remaining <= 0) return 0;
         if (capPerReceiver == Integer.MAX_VALUE) return Integer.MAX_VALUE;
-        long give = Math.min((long) capPerReceiver, remaining);
+        long give = Math.min(Math.min(capPerReceiver, remaining), expectedChannels);
         return (int) give;
     }
 
