@@ -71,6 +71,11 @@ public class AECSMenus
                     .build(AE2CrystalScience.makeId("crystal_aggregator_menu"))
     );
 
+    public static final Supplier<MenuType<EnderBroadcasterMenu>> ENDER_BROADCASTER_MENU = MENU_TYPES.register("ender_broadcaster_menu",
+            () -> MenuTypeBuilder.create(EnderBroadcasterMenu::new, EnderBroadcasterBlockEntity.class)
+                    .build(AE2CrystalScience.makeId("ender_broadcaster_menu"))
+    );
+
     public static void registerMenus(IEventBus eventBus)
     {
         MENU_TYPES.register(eventBus);

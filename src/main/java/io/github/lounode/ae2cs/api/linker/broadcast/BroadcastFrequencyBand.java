@@ -72,7 +72,9 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
     @NotNull
     private String password;
 
-    /** 频道所有者 */
+    /**
+     * 频道所有者
+     */
     @NotNull
     private UUID owner;
 
@@ -141,7 +143,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
      */
     private transient @Nullable IGridNode controllerNode;
 
-    public BroadcastFrequencyBand(@NotNull String name, @NotNull String password, @NotNull UUID owner,boolean isPublic, boolean allowedMemoryCardCopy)
+    public BroadcastFrequencyBand(@NotNull String name, @NotNull String password, @NotNull UUID owner, boolean isPublic, boolean allowedMemoryCardCopy)
     {
         this.name = name;
         this.password = password;
@@ -166,7 +168,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
 
     public void setPassword(String password)
     {
-        if(this.password.equals(password)) return;
+        if (this.password.equals(password)) return;
 
         this.password = password;
         FrequencyBandManager.markDirty();
@@ -179,7 +181,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
 
     public void setOwner(@NotNull UUID owner)
     {
-        if(this.owner.equals(owner)) return;
+        if (this.owner.equals(owner)) return;
 
         this.owner = owner;
         FrequencyBandManager.markDirty();
@@ -192,7 +194,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
 
     public void setPublic(boolean isPublic)
     {
-        if(this.isPublic == isPublic) return;
+        if (this.isPublic == isPublic) return;
 
         this.isPublic = isPublic;
         FrequencyBandManager.markDirty();
@@ -205,7 +207,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
 
     public void setAllowedMemoryCardCopy(boolean allowedMemoryCardCopy)
     {
-        if(this.allowedMemoryCardCopy == allowedMemoryCardCopy) return;
+        if (this.allowedMemoryCardCopy == allowedMemoryCardCopy) return;
 
         this.allowedMemoryCardCopy = allowedMemoryCardCopy;
         FrequencyBandManager.markDirty();
@@ -216,7 +218,9 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         return whiteList.contains(uuid);
     }
 
-    /** 不要修改！只读！ */
+    /**
+     * 不要修改！只读！
+     */
     public @NotNull Set<UUID> getWhiteList()
     {
         return whiteList;
@@ -224,7 +228,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
 
     public void addToWhiteList(UUID uuid)
     {
-        if(whiteList.contains(uuid)) return;
+        if (whiteList.contains(uuid)) return;
 
         whiteList.add(uuid);
         FrequencyBandManager.markDirty();
@@ -232,7 +236,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
 
     public void removeFromWhiteList(UUID uuid)
     {
-        if(!whiteList.contains(uuid)) return;
+        if (!whiteList.contains(uuid)) return;
 
         whiteList.remove(uuid);
         FrequencyBandManager.markDirty();
@@ -467,7 +471,8 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
 
     /**
      * 将频道分配到所有接收端
-     * @param totalUsable 可用频道的总数量
+     *
+     * @param totalUsable    可用频道的总数量
      * @param capPerReceiver 每个接收端所能被分配的频道的硬上限
      */
     private void allocateToAllReceivers(long totalUsable, int capPerReceiver)
@@ -480,7 +485,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
             CustomChannelProviderHost host = onlineReceiverHosts.get(rp);
             if (receiverNode == null || host == null) continue;
 
-            if(receiverNode.getOwner() instanceof BroadcastReceiverHost receiverHost)
+            if (receiverNode.getOwner() instanceof BroadcastReceiverHost receiverHost)
             {
                 int alloc = computeAllocChannels(remaining, capPerReceiver, receiverHost.getExpectedChannels());
                 if (capPerReceiver != Integer.MAX_VALUE)
@@ -508,7 +513,9 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         }
     }
 
-    /** 输入剩余频道总数、频道硬限制、期望频道数，返回当前应该给此接收端分配的频道量 */
+    /**
+     * 输入剩余频道总数、频道硬限制、期望频道数，返回当前应该给此接收端分配的频道量
+     */
     private int computeAllocChannels(long remaining, int capPerReceiver, int expectedChannels)
     {
         if (expectedChannels <= 0) return 0;

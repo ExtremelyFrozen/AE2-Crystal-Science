@@ -37,7 +37,7 @@ public class FrequencyBandManager extends SavedData
     /**
      * 持久化文件名
      */
-    private static final String MANAGER_PATH = "frequency_band_manager";
+    private static final String MANAGER_PATH = SAVED_FOLDER_NAME + "/frequency_band_manager";
 
     private static final SavedData.Factory<FrequencyBandManager> FACTORY =
             new SavedData.Factory<>(FrequencyBandManager::new, FrequencyBandManager::load);
@@ -72,7 +72,7 @@ public class FrequencyBandManager extends SavedData
      * 获取频段，如果不存在则创建
      */
     @Nullable
-    public static BroadcastFrequencyBand tryCreateBand(String bandName, String password, UUID ownerId,boolean isPublic, boolean allowedMemoryCardCopy)
+    public static BroadcastFrequencyBand tryCreateBand(String bandName, String password, UUID ownerId, boolean isPublic, boolean allowedMemoryCardCopy)
     {
         FrequencyBandManager manager = resolveManager();
         if (manager == null) return null;
@@ -80,7 +80,7 @@ public class FrequencyBandManager extends SavedData
         BroadcastFrequencyBand band = manager.frequencyBands.get(bandName);
         if (band == null)
         {
-            band = new BroadcastFrequencyBand(bandName, password, ownerId,isPublic, allowedMemoryCardCopy);
+            band = new BroadcastFrequencyBand(bandName, password, ownerId, isPublic, allowedMemoryCardCopy);
             manager.frequencyBands.put(bandName, band);
             manager.setDirty();
         }
@@ -154,7 +154,7 @@ public class FrequencyBandManager extends SavedData
         if (server == null) return null;
 
         ensureSaveDirExists(server);
-        return server.overworld().getDataStorage().computeIfAbsent(FACTORY, SAVED_FOLDER_NAME + "/" + MANAGER_PATH);
+        return server.overworld().getDataStorage().computeIfAbsent(FACTORY, MANAGER_PATH);
     }
 
     // ---------- 持久化 ----------
@@ -170,7 +170,7 @@ public class FrequencyBandManager extends SavedData
 
             try
             {
-                BroadcastFrequencyBand band = new BroadcastFrequencyBand("", "", UUID.randomUUID(),false, false);
+                BroadcastFrequencyBand band = new BroadcastFrequencyBand("", "", UUID.randomUUID(), false, false);
                 band.deserializeNBT(registries, compoundBandTag);
                 manager.frequencyBands.put(band.getName(), band);
             }

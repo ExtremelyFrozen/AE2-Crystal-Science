@@ -5,6 +5,7 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.networking.*;
 import appeng.api.networking.pathing.ChannelMode;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.upgrades.IUpgradeableObject;
 import appeng.core.AEConfig;
 import io.github.lounode.ae2cs.api.CustomChannelProviderHost;
 import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastFrequencyBand;
@@ -23,11 +24,28 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEntity
-        implements CustomChannelProviderHost, BroadcastSenderHost, BroadcastReceiverHost
+        implements CustomChannelProviderHost, BroadcastSenderHost, BroadcastReceiverHost, IUpgradeableObject
 {
     private static final int VIRTUAL_SENDER_NODE_HARD_CAP = 512;
+
+    /**
+     * 作为接收者最多能分配到多少频道，用来限制期望频道量的设置
+     */
+    private static final Supplier<Integer> MAX_RECEIVER_CHANNELS = () ->
+    {
+        ChannelMode mode = AEConfig.instance().getChannelMode();
+        if (mode == ChannelMode.INFINITE)
+        {
+            return Integer.MAX_VALUE;
+        }
+        else
+        {
+            return 32 * mode.getCableCapacityFactor();
+        }
+    };
 
     private static final IGridNodeListener<EnderBroadcasterBlockEntity> VIRTUAL_NODE_LISTENER =
             new IGridNodeListener<>()
@@ -85,6 +103,16 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
         );
     }
 
+    public String getBandName()
+    {
+        return bandId;
+    }
+
+    public ConnectionType getConnectionType()
+    {
+        return connectionType;
+    }
+
     // ---------------- BroadcastSenderHost ----------------
 
     /**
@@ -128,6 +156,17 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
     public int getExpectedChannels()
     {
         return this.expectedChannels;
+    }
+
+    public void setExpectedChannels(int expectedChannels)
+    {
+        int newExpectedChannels = Math.max(0, expectedChannels);
+        newExpectedChannels = Math.min(newExpectedChannels, MAX_RECEIVER_CHANNELS.get());
+        if (newExpectedChannels == this.expectedChannels) return;
+
+        this.expectedChannels = newExpectedChannels;
+        markBandRuntimeDirtyThrottled();
+        setChanged();
     }
 
     // ---------------- CustomChannelProviderHost（接收端用） ----------------
@@ -547,7 +586,7 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
         return AccessRestriction.WRITE;
     }
 
-    private enum ConnectionType
+    public enum ConnectionType
     {
         AS_SENDER,
         AS_RECEIVER,
