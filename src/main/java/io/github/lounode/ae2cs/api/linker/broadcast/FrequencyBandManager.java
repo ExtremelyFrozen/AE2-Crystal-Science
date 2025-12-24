@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * 用于管理当前服务端内所有频段（持久化 + 运行时重算调度）
@@ -71,7 +72,7 @@ public class FrequencyBandManager extends SavedData
      * 获取频段，如果不存在则创建
      */
     @Nullable
-    public static BroadcastFrequencyBand tryCreateBand(String bandName, String password, boolean isPublic, boolean allowedMemoryCardCopy)
+    public static BroadcastFrequencyBand tryCreateBand(String bandName, String password, UUID ownerId,boolean isPublic, boolean allowedMemoryCardCopy)
     {
         FrequencyBandManager manager = resolveManager();
         if (manager == null) return null;
@@ -79,7 +80,7 @@ public class FrequencyBandManager extends SavedData
         BroadcastFrequencyBand band = manager.frequencyBands.get(bandName);
         if (band == null)
         {
-            band = new BroadcastFrequencyBand(bandName, password, isPublic, allowedMemoryCardCopy);
+            band = new BroadcastFrequencyBand(bandName, password, ownerId,isPublic, allowedMemoryCardCopy);
             manager.frequencyBands.put(bandName, band);
             manager.setDirty();
         }
@@ -169,7 +170,7 @@ public class FrequencyBandManager extends SavedData
 
             try
             {
-                BroadcastFrequencyBand band = new BroadcastFrequencyBand("", "", false, false);
+                BroadcastFrequencyBand band = new BroadcastFrequencyBand("", "", UUID.randomUUID(),false, false);
                 band.deserializeNBT(registries, compoundBandTag);
                 manager.frequencyBands.put(band.getName(), band);
             }

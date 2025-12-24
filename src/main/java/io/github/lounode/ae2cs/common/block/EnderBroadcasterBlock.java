@@ -36,7 +36,7 @@ public class EnderBroadcasterBlock extends AEBaseEntityBlock<EnderBroadcasterBlo
                 return InteractionResult.PASS;
             }
 
-            BroadcastFrequencyBand band = FrequencyBandManager.tryCreateBand("test", "", true, true);
+            BroadcastFrequencyBand band = FrequencyBandManager.tryCreateBand("test", "", player.getUUID(),true, true);
             if (band == null) return InteractionResult.PASS;
 
             boolean asSender = player.isShiftKeyDown(); // 潜行=发送端；非潜行=接收端

@@ -72,6 +72,10 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
     @NotNull
     private String password;
 
+    /** 频道所有者 */
+    @NotNull
+    private UUID owner;
+
     /**
      * 是否公共可见
      */
@@ -137,19 +141,111 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
      */
     private transient @Nullable IGridNode controllerNode;
 
-    public BroadcastFrequencyBand(@NotNull String name, @NotNull String password, boolean isPublic, boolean allowedMemoryCardCopy)
+    public BroadcastFrequencyBand(@NotNull String name, @NotNull String password, @NotNull UUID owner,boolean isPublic, boolean allowedMemoryCardCopy)
     {
         this.name = name;
         this.password = password;
+        this.owner = owner;
         this.isPublic = isPublic;
         this.allowedMemoryCardCopy = allowedMemoryCardCopy;
 
         receiverAllocated.defaultReturnValue(0);
     }
 
+    // ----------------- getter & sender -----------------
+
     public @NotNull String getName()
     {
         return name;
+    }
+
+    public boolean validPassword(String password)
+    {
+        return this.password.equals(password);
+    }
+
+    public void setPassword(String password)
+    {
+        if(this.password.equals(password)) return;
+
+        this.password = password;
+        FrequencyBandManager.markDirty();
+    }
+
+    public @NotNull UUID getOwner()
+    {
+        return owner;
+    }
+
+    public void setOwner(@NotNull UUID owner)
+    {
+        if(this.owner.equals(owner)) return;
+
+        this.owner = owner;
+        FrequencyBandManager.markDirty();
+    }
+
+    public boolean isPublic()
+    {
+        return isPublic;
+    }
+
+    public void setPublic(boolean isPublic)
+    {
+        if(this.isPublic == isPublic) return;
+
+        this.isPublic = isPublic;
+        FrequencyBandManager.markDirty();
+    }
+
+    public boolean isAllowedMemoryCardCopy()
+    {
+        return allowedMemoryCardCopy;
+    }
+
+    public void setAllowedMemoryCardCopy(boolean allowedMemoryCardCopy)
+    {
+        if(this.allowedMemoryCardCopy == allowedMemoryCardCopy) return;
+
+        this.allowedMemoryCardCopy = allowedMemoryCardCopy;
+        FrequencyBandManager.markDirty();
+    }
+
+    public boolean validWhiteList(UUID uuid)
+    {
+        return whiteList.contains(uuid);
+    }
+
+    /** 不要修改！只读！ */
+    public @NotNull Set<UUID> getWhiteList()
+    {
+        return whiteList;
+    }
+
+    public void addToWhiteList(UUID uuid)
+    {
+        if(whiteList.contains(uuid)) return;
+
+        whiteList.add(uuid);
+        FrequencyBandManager.markDirty();
+    }
+
+    public void removeFromWhiteList(UUID uuid)
+    {
+        if(!whiteList.contains(uuid)) return;
+
+        whiteList.remove(uuid);
+        FrequencyBandManager.markDirty();
+    }
+
+    public @NotNull Set<GlobalPos> getDeclaredReceivers()
+    {
+        return declaredReceivers;
+    }
+
+    public @NotNull Set<GlobalPos> getDeclaredSenders()
+    {
+        return declaredSenders;
     }
 
     // ----------------- 纯数据 API（只改 declared，不查节点/不动连接） -----------------
@@ -486,6 +582,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         CompoundTag tag = new CompoundTag();
         tag.putString("name", name);
         tag.putString("password", password);
+        tag.putString("owner", owner.toString());
         tag.putBoolean("is_public", isPublic);
         tag.putBoolean("allowed_memory_card_copy", allowedMemoryCardCopy);
 
@@ -522,6 +619,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
     {
         this.name = compoundTag.getString("name");
         this.password = compoundTag.getString("password");
+        this.owner = UUID.fromString(compoundTag.getString("owner"));
         this.isPublic = compoundTag.getBoolean("is_public");
         this.allowedMemoryCardCopy = compoundTag.getBoolean("allowed_memory_card_copy");
 
