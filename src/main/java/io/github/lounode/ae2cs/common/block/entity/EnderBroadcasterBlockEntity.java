@@ -455,17 +455,6 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
     }
 
     /**
-     * BE被移除
-     */
-    @Override
-    public void setRemoved()
-    {
-        // 先做清理，再让AE/父类销毁节点
-        cleanConnectionPermanent();
-        super.setRemoved();
-    }
-
-    /**
      * 网络初始化完成，恢复declared并上线
      */
     @Override
