@@ -22,6 +22,12 @@ public class EnderBroadcasterMenu extends UpgradeableMenu<EnderBroadcasterBlockE
     @GuiSync(12)
     public int receiverExpectedChannels = 0;
 
+    @GuiSync(13)
+    public int receiverActualChannels = 0;
+
+    @GuiSync(14)
+    public int senderSentChannels = 0;
+
 
     public EnderBroadcasterMenu(int id, Inventory playerInv, @NotNull EnderBroadcasterBlockEntity host)
     {
@@ -38,6 +44,8 @@ public class EnderBroadcasterMenu extends UpgradeableMenu<EnderBroadcasterBlockE
         this.bandName = host.getBandName();
         this.connectionType = host.getConnectionType();
         this.receiverExpectedChannels = host.getExpectedChannels();
+        this.receiverActualChannels = host.getMaxChannels(); // 即为CustomChannelProvider中被Band设定的值
+        this.senderSentChannels = host.getCouldSendChannels();
 
         super.broadcastChanges();
     }

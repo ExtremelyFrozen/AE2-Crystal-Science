@@ -11,9 +11,15 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class EnderBroadcasterGUI extends UpgradeableScreen<EnderBroadcasterMenu>
 {
+    // 通用
     private Component bandName = Component.empty();
     private Component connectStatus = Component.empty();
+    // 接收端
     private Component receiverExpectedChannels = Component.empty();
+    private Component receiverActualChannels = Component.empty();
+    // 发射端
+    private Component senderSentChannels = Component.empty();
+
 
     private AE2Button addReceiver1ChannelsButton;
     private AE2Button addReceiver10ChannelsButton;
@@ -57,6 +63,8 @@ public class EnderBroadcasterGUI extends UpgradeableScreen<EnderBroadcasterMenu>
         guiGraphics.drawString(this.font, this.bandName, 8, 16, 4210752, false);
         guiGraphics.drawString(this.font, this.connectStatus, 8, 32, 4210752, false);
         guiGraphics.drawString(this.font, this.receiverExpectedChannels, 8, 48, 4210752, false);
+        guiGraphics.drawString(this.font, this.receiverActualChannels, 8, 64, 4210752, false);
+        guiGraphics.drawString(this.font, this.senderSentChannels, 8, 48, 4210752, false);
     }
 
     @Override
@@ -80,29 +88,35 @@ public class EnderBroadcasterGUI extends UpgradeableScreen<EnderBroadcasterMenu>
         };
         this.connectStatus = Component.translatable("ae2cs.menu.ender_broadcaster.connect_status", typeText);
 
-        if (menu.connectionType == EnderBroadcasterBlockEntity.ConnectionType.AS_RECEIVER)
+        boolean isReceiver = menu.connectionType == EnderBroadcasterBlockEntity.ConnectionType.AS_RECEIVER;
+        boolean isSender = menu.connectionType == EnderBroadcasterBlockEntity.ConnectionType.AS_SENDER;
+
+        if (isReceiver)
         {
             this.receiverExpectedChannels = Component.translatable("ae2cs.menu.ender_broadcaster.receiver_expected_channels", menu.receiverExpectedChannels);
-            this.addReceiver1ChannelsButton.active = true;
-            this.addReceiver1ChannelsButton.visible = true;
-            this.addReceiver10ChannelsButton.active = true;
-            this.addReceiver10ChannelsButton.visible = true;
-            this.reduceReceiver1ChannelsButton.active = true;
-            this.reduceReceiver1ChannelsButton.visible = true;
-            this.reduceReceiver10ChannelsButton.active = true;
-            this.reduceReceiver10ChannelsButton.visible = true;
+            this.receiverActualChannels = Component.translatable("ae2cs.menu.ender_broadcaster.receiver_actual_channels", menu.receiverActualChannels);
         }
         else
         {
             this.receiverExpectedChannels = Component.empty();
-            this.addReceiver1ChannelsButton.active = false;
-            this.addReceiver1ChannelsButton.visible = false;
-            this.addReceiver10ChannelsButton.active = false;
-            this.addReceiver10ChannelsButton.visible = false;
-            this.reduceReceiver1ChannelsButton.active = false;
-            this.reduceReceiver1ChannelsButton.visible = false;
-            this.reduceReceiver10ChannelsButton.active = false;
-            this.reduceReceiver10ChannelsButton.visible = false;
+            this.receiverActualChannels = Component.empty();
+        }
+        this.addReceiver1ChannelsButton.active = isReceiver;
+        this.addReceiver1ChannelsButton.visible = isReceiver;
+        this.addReceiver10ChannelsButton.active = isReceiver;
+        this.addReceiver10ChannelsButton.visible = isReceiver;
+        this.reduceReceiver1ChannelsButton.active = isReceiver;
+        this.reduceReceiver1ChannelsButton.visible = isReceiver;
+        this.reduceReceiver10ChannelsButton.active = isReceiver;
+        this.reduceReceiver10ChannelsButton.visible = isReceiver;
+
+        if (isSender)
+        {
+            this.senderSentChannels = Component.translatable("ae2cs.menu.ender_broadcaster.sender_sent_channels", menu.senderSentChannels);
+        }
+        else
+        {
+            this.senderSentChannels = Component.empty();
         }
     }
 }

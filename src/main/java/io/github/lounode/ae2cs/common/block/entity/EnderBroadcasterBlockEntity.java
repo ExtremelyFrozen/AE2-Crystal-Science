@@ -66,12 +66,12 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
 
                     if (reason == State.CHANNEL || reason == State.GRID_BOOT)
                     {
-                        owner.markBandRuntimeDirtyThrottled();
+                        // 标脏，下一tick重新统计
+                        // 由于发射端channel仅仅取决于此处连接状态，所以也仅需要在此处进行标脏即可
+                        owner.markNeedRecountVirtualSenderNodes();
                     }
                 }
             };
-
-    private long lastRuntimeDirtyMarkTick = Long.MIN_VALUE;
 
     private String bandId = "";
     private ConnectionType connectionType = ConnectionType.NO_CONNECTION;
@@ -84,6 +84,8 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
     // 发送端：虚拟节点池（每个虚拟节点吃 1 个频道）
     private final List<IManagedGridNode> virtualSenderNodes = new ArrayList<>();
     private int virtualSenderNodeTarget = 0;
+    private int succeedVirtualSenderNodes = 0; // 成功连接并分配得到频道的虚拟节点数
+    private boolean needRecountVirtualSenderNodes = true;
 
     public EnderBroadcasterBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
     {
@@ -113,6 +115,26 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
         return connectionType;
     }
 
+    @Override
+    public void serverTick()
+    {
+        super.serverTick();
+
+        if (needRecountVirtualSenderNodes)
+        {
+            this.needRecountVirtualSenderNodes = false;
+            int succeedVirtualSenderNodes = countSucceedVirtualSenderNodes();
+            if (this.succeedVirtualSenderNodes != succeedVirtualSenderNodes)
+            {
+                this.succeedVirtualSenderNodes = succeedVirtualSenderNodes;
+                if (this.connectionType == ConnectionType.AS_SENDER)
+                {
+                    this.markBandRuntimeDirty(); // 可对外发送频段量变化，因此需要让频段重新分配
+                }
+            }
+        }
+    }
+
     // ---------------- BroadcastSenderHost ----------------
 
     /**
@@ -132,24 +154,7 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
             return 0;
         }
 
-        ChannelMode mode = AEConfig.instance().getChannelMode();
-        if (mode == ChannelMode.INFINITE)
-        {
-            return Integer.MAX_VALUE;
-        }
-
-        ensureSenderVirtualNodes();
-
-        int count = 0;
-        for (var managed : virtualSenderNodes)
-        {
-            var node = managed.getNode();
-            if (node != null && node.meetsChannelRequirements())
-            {
-                count++;
-            }
-        }
-        return count;
+        return succeedVirtualSenderNodes;
     }
 
     @Override
@@ -165,7 +170,7 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
         if (newExpectedChannels == this.expectedChannels) return;
 
         this.expectedChannels = newExpectedChannels;
-        markBandRuntimeDirtyThrottled();
+        markBandRuntimeDirty(); // 期望频道数量改变，因此需要标脏
         setChanged();
     }
 
@@ -324,22 +329,28 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
     }
 
     /**
-     * 将链接的频段标脏（内部带同tick限流，可以安全使用）
+     * 仅统计成功分配到频段的虚拟节点并更新到字段
      */
-    private void markBandRuntimeDirtyThrottled()
+    private int countSucceedVirtualSenderNodes()
     {
-        if (level == null || level.isClientSide()) return;
-        if (bandId.isEmpty()) return;
+        int count = 0;
+        for (var managed : virtualSenderNodes)
+        {
+            var node = managed.getNode();
+            if (node != null && node.meetsChannelRequirements())
+            {
+                count++;
+            }
+        }
+        return count;
+    }
 
-        MinecraftServer server = level.getServer();
-        if (server == null) return;
-
-        // 统一使用主世界时间
-        long now = server.overworld().getGameTime();
-        if (lastRuntimeDirtyMarkTick == now) return;
-        lastRuntimeDirtyMarkTick = now;
-
-        FrequencyBandManager.markRuntimeDirty(server, bandId);
+    /**
+     * 标记需要重新统计虚拟节点成功分配到频道的数量
+     */
+    private void markNeedRecountVirtualSenderNodes()
+    {
+        this.needRecountVirtualSenderNodes = true;
     }
 
     // ---------------- 连接逻辑（纯数据 declared + 运行时 online/offline） ----------------
@@ -463,6 +474,22 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
     }
 
     /**
+     * 将链接的频段标脏，让频段下一个tick重新计算频道分配，
+     * 仅当发射端提供的频道/接收端需求的频道量变化时调用。
+     */
+    private void markBandRuntimeDirty()
+    {
+        if (level == null || level.isClientSide()) return;
+        if (bandId.isEmpty()) return;
+
+        MinecraftServer server = level.getServer();
+        if (server == null) return;
+
+        // 内部自带tick限流
+        FrequencyBandManager.markRuntimeDirty(server, bandId);
+    }
+
+    /**
      * 区块卸载时，进行运行时下线，并销毁sender虚拟节点释放频道
      */
     @Override
@@ -544,6 +571,18 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
 
             ensureSenderVirtualNodes();
             band.onSenderOnline(server, gp, node);
+        }
+    }
+
+    @Override
+    public void onMainNodeStateChanged(IGridNodeListener.State reason)
+    {
+        super.onMainNodeStateChanged(reason);
+        if (level == null || level.isClientSide()) return;
+        if (reason == IGridNodeListener.State.CHANNEL || reason == IGridNodeListener.State.GRID_BOOT)
+        {
+            // 内部在连接数相同时会阻止重连节点，不会重复造成网络变化
+            ensureSenderVirtualNodes();
         }
     }
 
