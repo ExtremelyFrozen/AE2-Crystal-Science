@@ -9,6 +9,9 @@ import io.github.lounode.ae2cs.common.block.entity.*;
 import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceHost;
 import io.github.lounode.ae2cs.common.me.logic.MeteoritePatternProviderHost;
 import io.github.lounode.ae2cs.common.menu.*;
+import io.github.lounode.ae2cs.common.menu.linker.broadcast.EnderBroadcasterMenu;
+import io.github.lounode.ae2cs.common.menu.linker.broadcast.FrequencyBandLinkMenu;
+import io.github.lounode.ae2cs.common.menu.linker.broadcast.FrequencyBandMenu;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.bus.api.IEventBus;
@@ -74,6 +77,16 @@ public class AECSMenus
     public static final Supplier<MenuType<EnderBroadcasterMenu>> ENDER_BROADCASTER_MENU = MENU_TYPES.register("ender_broadcaster_menu",
             () -> MenuTypeBuilder.create(EnderBroadcasterMenu::new, EnderBroadcasterBlockEntity.class)
                     .build(AE2CrystalScience.makeId("ender_broadcaster_menu"))
+    );
+
+    public static final Supplier<MenuType<FrequencyBandMenu>> FREQUENCY_BAND_MENU = MENU_TYPES.register("frequency_band_menu",
+            () -> MenuTypeBuilder.create(FrequencyBandMenu::new, EnderBroadcasterBlockEntity.class)
+                    .build(AE2CrystalScience.makeId("frequency_band_menu"))
+    );
+
+    public static final Supplier<MenuType<FrequencyBandLinkMenu>> FREQUENCY_BAND_LINK_MENU = MENU_TYPES.register("frequency_band_link_menu",
+            () -> MenuTypeBuilder.create(FrequencyBandLinkMenu::new, EnderBroadcasterBlockEntity.class)
+                    .build(AE2CrystalScience.makeId("frequency_band_link_menu"))
     );
 
     public static void registerMenus(IEventBus eventBus)

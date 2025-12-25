@@ -1,10 +1,10 @@
-package io.github.lounode.ae2cs.client.gui;
+package io.github.lounode.ae2cs.client.gui.linker.broadcast;
 
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.style.StyleManager;
 import appeng.client.gui.widgets.AE2Button;
 import io.github.lounode.ae2cs.common.block.entity.EnderBroadcasterBlockEntity;
-import io.github.lounode.ae2cs.common.menu.EnderBroadcasterMenu;
+import io.github.lounode.ae2cs.common.menu.linker.broadcast.EnderBroadcasterMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -14,21 +14,24 @@ public class EnderBroadcasterGUI extends UpgradeableScreen<EnderBroadcasterMenu>
     // 通用
     private Component bandName = Component.empty();
     private Component connectStatus = Component.empty();
+    private final AE2Button openFrequencyBandMenuButton;
     // 接收端
     private Component receiverExpectedChannels = Component.empty();
     private Component receiverActualChannels = Component.empty();
+    private final AE2Button addReceiver1ChannelsButton;
+    private final AE2Button addReceiver10ChannelsButton;
+    private final AE2Button reduceReceiver1ChannelsButton;
+    private final AE2Button reduceReceiver10ChannelsButton;
     // 发射端
     private Component senderSentChannels = Component.empty();
 
 
-    private AE2Button addReceiver1ChannelsButton;
-    private AE2Button addReceiver10ChannelsButton;
-    private AE2Button reduceReceiver1ChannelsButton;
-    private AE2Button reduceReceiver10ChannelsButton;
-
     public EnderBroadcasterGUI(EnderBroadcasterMenu menu, Inventory inv, Component title)
     {
         super(menu, inv, title, StyleManager.loadStyleDoc("/screens/ender_broadcaster_menu.json"));
+
+        openFrequencyBandMenuButton = new AE2Button(Component.translatable("ae2cs.menu.ender_broadcaster.button.open_frequency_band_menu"), button -> getMenu().sendFrequencyBandMenuAction());
+        widgets.add("open_frequency_band_menu_button", openFrequencyBandMenuButton);
 
         addReceiver1ChannelsButton = new AE2Button(Component.literal("+1"), button -> {
             int mult = hasShiftDown() ? 5 : 1;

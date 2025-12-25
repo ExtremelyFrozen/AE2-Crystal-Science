@@ -1,6 +1,7 @@
-package io.github.lounode.ae2cs.common.menu;
+package io.github.lounode.ae2cs.common.menu.linker.broadcast;
 
 import appeng.api.util.IConfigManager;
+import appeng.menu.MenuOpener;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.UpgradeableMenu;
 import io.github.lounode.ae2cs.common.block.entity.EnderBroadcasterBlockEntity;
@@ -12,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 public class EnderBroadcasterMenu extends UpgradeableMenu<EnderBroadcasterBlockEntity>
 {
     private static final String changeExpectedChannelsAction = "change_expected_channels";
+    private static final String openFrequencyBandMenuAction = "open_frequency_band_menu";
 
     @GuiSync(10)
     public String bandName = "";
@@ -33,6 +35,7 @@ public class EnderBroadcasterMenu extends UpgradeableMenu<EnderBroadcasterBlockE
     {
         super(AECSMenus.ENDER_BROADCASTER_MENU.get(), id, playerInv, host);
         registerClientAction(changeExpectedChannelsAction, Integer.class, this::acceptChangeExpectedChannelsAction);
+        registerClientAction(openFrequencyBandMenuAction, this::openFrequencyBandMenuAction);
     }
 
 
@@ -44,7 +47,7 @@ public class EnderBroadcasterMenu extends UpgradeableMenu<EnderBroadcasterBlockE
         this.bandName = host.getBandName();
         this.connectionType = host.getConnectionType();
         this.receiverExpectedChannels = host.getExpectedChannels();
-        this.receiverActualChannels = host.getMaxChannels(); // 即为CustomChannelProvider中被Band设定的值
+        this.receiverActualChannels = host.isEnabledCustomChannel() ? host.getMaxChannels() : 0; // 即为CustomChannelProvider中被Band设定的值
         this.senderSentChannels = host.getCouldSendChannels();
 
         super.broadcastChanges();
@@ -56,10 +59,20 @@ public class EnderBroadcasterMenu extends UpgradeableMenu<EnderBroadcasterBlockE
         sendClientAction(changeExpectedChannelsAction, delta);
     }
 
+    public void sendFrequencyBandMenuAction()
+    {
+        sendClientAction(openFrequencyBandMenuAction);
+    }
+
     // 动作机制：服务端处理
     private void acceptChangeExpectedChannelsAction(int delta)
     {
         getHost().setExpectedChannels(receiverExpectedChannels + delta);
+    }
+
+    private void openFrequencyBandMenuAction()
+    {
+        MenuOpener.open(AECSMenus.FREQUENCY_BAND_MENU.get(), getPlayer(), getLocator());
     }
 
     @Override

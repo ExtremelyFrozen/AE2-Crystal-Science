@@ -1,12 +1,14 @@
 package io.github.lounode.ae2cs.api.linker.broadcast;
 
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
+import io.github.lounode.ae2cs.api.linker.broadcast.networking.BroadcastBandsField;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.LevelResource;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -19,9 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * 用于管理当前服务端内所有频段（持久化 + 运行时重算调度）
@@ -45,7 +45,7 @@ public class FrequencyBandManager extends SavedData
     /**
      * name -> 频段实例
      */
-    private final Map<String, BroadcastFrequencyBand> frequencyBands = new HashMap<>();
+    private final Map<String, BroadcastFrequencyBand> frequencyBands = new LinkedHashMap<>();
 
     /**
      * 运行时：被标记需要重算的 band（值为标记时的 gameTime），用于下一tick重算
@@ -66,6 +66,59 @@ public class FrequencyBandManager extends SavedData
         FrequencyBandManager manager = resolveManager();
         if (manager == null) return null;
         return manager.frequencyBands.get(bandName);
+    }
+
+    /**
+     * 将频段的大体信息包装后用以网络传输
+     */
+    @Nullable
+    public static BroadcastBandsField getBandsInfo()
+    {
+        FrequencyBandManager manager = resolveManager();
+        if (manager == null) return null;
+
+        List<BroadcastBandsField.Entry> out = new ArrayList<>(manager.frequencyBands.size());
+
+        for (BroadcastFrequencyBand band : manager.frequencyBands.values())
+        {
+            String name = band.getName();
+
+            boolean isPublic = band.isPublic();
+            boolean isEncrypted = !band.getPassword().isEmpty();
+
+            byte flags = BroadcastBandsField.Entry.pack(isPublic, isEncrypted);
+            out.add(new BroadcastBandsField.Entry(name, flags));
+        }
+
+        return new BroadcastBandsField(List.copyOf(out));
+    }
+
+    /**
+     * 将频段的大体信息包装后用以网络传输，但剔除掉玩家不可见的部分
+     */
+    @Nullable
+    public static BroadcastBandsField getBandsInfoByPlayer(Player player)
+    {
+        FrequencyBandManager manager = resolveManager();
+        if (manager == null) return null;
+
+        UUID playerUUID = player.getUUID();
+        List<BroadcastBandsField.Entry> out = new ArrayList<>(manager.frequencyBands.size());
+
+        for (BroadcastFrequencyBand band : manager.frequencyBands.values())
+        {
+            String name = band.getName();
+
+            boolean isPublic = band.isPublic();
+            if (!isPublic && !band.validWhiteList(playerUUID)) continue;
+
+            boolean isEncrypted = !band.getPassword().isEmpty();
+
+            byte flags = BroadcastBandsField.Entry.pack(isPublic, isEncrypted);
+            out.add(new BroadcastBandsField.Entry(name, flags));
+        }
+
+        return new BroadcastBandsField(List.copyOf(out));
     }
 
     /**

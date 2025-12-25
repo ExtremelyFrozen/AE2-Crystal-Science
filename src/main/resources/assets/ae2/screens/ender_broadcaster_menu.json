@@ -25,6 +25,12 @@
     }
   },
   "widgets": {
+    "open_frequency_band_menu_button": {
+      "left": 90,
+      "top": 95,
+      "width": 40,
+      "height": 20
+    },
     "add_receiver_expected_channels_button_10": {
       "right": 34,
       "top": 76,

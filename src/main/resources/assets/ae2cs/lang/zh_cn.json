@@ -63,6 +63,19 @@
   "ae2cs.menu.ender_broadcaster.receiver_expected_channels": "期望频段数：%s",
   "ae2cs.menu.ender_broadcaster.receiver_actual_channels": "实际接收频道：%s",
   "ae2cs.menu.ender_broadcaster.sender_sent_channels": "发送频道数：%s",
+  "ae2cs.menu.ender_broadcaster.button.open_frequency_band_menu": "打开频段菜单",
+
+  "ae2cs.menu.title.frequency_bands": "频段菜单",
+  "ae2cs.menu.widgets.frequency_info_panel.encrypted": "已加密",
+
+  "ae2cs.menu.title.frequency_band_link": "尝试链接",
+  "ae2cs.menu.frequency_band_menu.as_sender": "作为发送端",
+  "ae2cs.menu.frequency_band_menu.as_receiver": "作为接收端",
+  "ae2cs.menu.frequency_band_menu.connected": "已链接",
+  "ae2cs.menu.frequency_band_menu.not_connected": "未链接",
+  "ae2cs.menu.frequency_band_menu.confirm": "确认",
+  "ae2cs.menu.frequency_band_menu.input_password": "请输入密码…",
+
 
   "ae2_crystal_seeds.configuration.title": "AE2 Crystal Seeds Configs",
   "ae2_crystal_seeds.configuration.section.ae2_crystal_seeds.common.toml": "AE2 Crystal Seeds Configs",

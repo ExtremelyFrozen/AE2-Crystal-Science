@@ -12,12 +12,15 @@ import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastFrequencyBand;
 import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastReceiverHost;
 import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastSenderHost;
 import io.github.lounode.ae2cs.api.linker.broadcast.FrequencyBandManager;
+import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
+import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -27,7 +30,8 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEntity
-        implements CustomChannelProviderHost, BroadcastSenderHost, BroadcastReceiverHost, IUpgradeableObject
+        implements CustomChannelProviderHost, BroadcastSenderHost, BroadcastReceiverHost, IUpgradeableObject,
+        CustomReturnableSubMenuHost
 {
     private static final int VIRTUAL_SENDER_NODE_HARD_CAP = 512;
 
@@ -623,6 +627,12 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
     public AccessRestriction getPowerFlow()
     {
         return AccessRestriction.WRITE;
+    }
+
+    @Override
+    public ItemStack getMainMenuIcon()
+    {
+        return AECSBlocks.ENDER_BROADCASTER_BLOCK.toStack();
     }
 
     public enum ConnectionType

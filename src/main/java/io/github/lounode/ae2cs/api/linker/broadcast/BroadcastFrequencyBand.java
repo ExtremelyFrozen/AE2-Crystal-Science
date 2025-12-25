@@ -163,7 +163,13 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
 
     public boolean validPassword(String password)
     {
+        if (this.password.isEmpty()) return true;
         return this.password.equals(password);
+    }
+
+    public @NotNull String getPassword()
+    {
+        return password;
     }
 
     public void setPassword(String password)
@@ -215,7 +221,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
 
     public boolean validWhiteList(UUID uuid)
     {
-        return whiteList.contains(uuid);
+        return owner.equals(uuid) || whiteList.contains(uuid);
     }
 
     /**

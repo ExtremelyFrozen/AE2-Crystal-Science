@@ -40,4 +40,16 @@ public class GuiRenderHelper
         // 4) 绘制
         guiGraphics.drawString(font, text, xStart, y, color, dropShadow);
     }
+
+    public static void drawRightAlignedAtX(GuiGraphics guiGraphics,
+                                           Font font,
+                                           Component text,
+                                           int xRight,
+                                           int y,
+                                           int color,
+                                           boolean dropShadow)
+    {
+        int xStart = xRight - font.width(text);
+        guiGraphics.drawString(font, text, xStart, y, color, dropShadow);
+    }
 }
