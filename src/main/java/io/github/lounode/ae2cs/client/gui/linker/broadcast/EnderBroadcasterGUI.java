@@ -16,6 +16,7 @@ public class EnderBroadcasterGUI extends UpgradeableScreen<EnderBroadcasterMenu>
     private Component connectStatus = Component.empty();
     private final AE2Button openFrequencyBandMenuButton;
     private final AE2Button openFrequencyBandCreateMenuButton;
+    private final AE2Button openFrequencyBandManagerMenuButton;
     // 接收端
     private Component receiverExpectedChannels = Component.empty();
     private Component receiverActualChannels = Component.empty();
@@ -38,6 +39,10 @@ public class EnderBroadcasterGUI extends UpgradeableScreen<EnderBroadcasterMenu>
                 Component.translatable("ae2cs.menu.ender_broadcaster.button.open_frequency_band_create_menu"),
                 menu::sendOpenFrequencyBandCreateMenuAction
         );
+
+        openFrequencyBandManagerMenuButton = widgets.addButton("open_frequency_band_manager_menu_button",
+                Component.translatable("ae2cs.menu.ender_broadcaster.button.open_frequency_band_manager_menu"),
+                menu::sendOpenFrequencyBandManagerMenuAction);
 
         addReceiver1ChannelsButton = new AE2Button(Component.literal("+1"), button -> {
             int mult = hasShiftDown() ? 5 : 1;

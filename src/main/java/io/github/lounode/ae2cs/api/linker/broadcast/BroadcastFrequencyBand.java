@@ -23,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -92,7 +91,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
      * 白名单：对于公共频段，无需密码；对于私人频段，允许白名单上的人可见可连
      */
     @NotNull
-    private final Set<UUID> whiteList = new HashSet<>();
+    private final Set<UUID> whiteList = new LinkedHashSet<>();
 
     /**
      * 持久化声明：这个位置应该有sender

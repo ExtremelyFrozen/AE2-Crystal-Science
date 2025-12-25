@@ -5,10 +5,7 @@ import appeng.client.gui.style.StyleManager;
 import appeng.menu.implementations.PatternProviderMenu;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.client.gui.*;
-import io.github.lounode.ae2cs.client.gui.linker.broadcast.EnderBroadcasterGUI;
-import io.github.lounode.ae2cs.client.gui.linker.broadcast.FrequencyBandCreateGUI;
-import io.github.lounode.ae2cs.client.gui.linker.broadcast.FrequencyBandGUI;
-import io.github.lounode.ae2cs.client.gui.linker.broadcast.FrequencyBandLinkGUI;
+import io.github.lounode.ae2cs.client.gui.linker.broadcast.*;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 import io.github.lounode.ae2cs.common.menu.MeteoritePatternProviderMenu;
 import net.neoforged.api.distmarker.Dist;
@@ -38,5 +35,6 @@ public class AECSScreens
         event.register(AECSMenus.FREQUENCY_BAND_MENU.get(), FrequencyBandGUI::new);
         event.register(AECSMenus.FREQUENCY_BAND_LINK_MENU.get(), FrequencyBandLinkGUI::new);
         event.register(AECSMenus.FREQUENCY_BAND_CREATE_MENU.get(), FrequencyBandCreateGUI::new);
+        event.register(AECSMenus.FREQUENCY_BAND_MANAGER_MENU.get(), FrequencyBandManagerGUI::new);
     }
 }

@@ -1,0 +1,18 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json", "aecs_util/back_button.json"],
+  "background": {
+    "texture": "ae2cs:textures/gui/frequency_band_manager_menu.png",
+    "textureWidth": 256,
+    "textureHeight": 256,
+    "srcRect": [0, 0, 176, 54]
+  },
+  "text": {
+    "title": {
+      "text": { "translate": "ae2cs.menu.title.frequency_band_manager" },
+      "position": { "left": 8, "top": 6 }
+    }
+  },
+  "widgets": {
+  }
+}
