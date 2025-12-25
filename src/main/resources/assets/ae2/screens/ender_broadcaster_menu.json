@@ -26,6 +26,12 @@
   },
   "widgets": {
     "open_frequency_band_menu_button": {
+      "left": 45,
+      "top": 95,
+      "width": 40,
+      "height": 20
+    },
+    "open_frequency_band_create_menu_button": {
       "left": 90,
       "top": 95,
       "width": 40,

@@ -14,6 +14,7 @@ public class EnderBroadcasterMenu extends UpgradeableMenu<EnderBroadcasterBlockE
 {
     private static final String changeExpectedChannelsAction = "change_expected_channels";
     private static final String openFrequencyBandMenuAction = "open_frequency_band_menu";
+    private static final String openFrequencyBandCreateMenuAction = "open_frequency_band_create_menu";
 
     @GuiSync(10)
     public String bandName = "";
@@ -36,6 +37,7 @@ public class EnderBroadcasterMenu extends UpgradeableMenu<EnderBroadcasterBlockE
         super(AECSMenus.ENDER_BROADCASTER_MENU.get(), id, playerInv, host);
         registerClientAction(changeExpectedChannelsAction, Integer.class, this::acceptChangeExpectedChannelsAction);
         registerClientAction(openFrequencyBandMenuAction, this::openFrequencyBandMenuAction);
+        registerClientAction(openFrequencyBandCreateMenuAction, this::openFrequencyBandCreateMenuAction);
     }
 
 
@@ -64,6 +66,11 @@ public class EnderBroadcasterMenu extends UpgradeableMenu<EnderBroadcasterBlockE
         sendClientAction(openFrequencyBandMenuAction);
     }
 
+    public void sendOpenFrequencyBandCreateMenuAction()
+    {
+        sendClientAction(openFrequencyBandCreateMenuAction);
+    }
+
     // 动作机制：服务端处理
     private void acceptChangeExpectedChannelsAction(int delta)
     {
@@ -73,6 +80,11 @@ public class EnderBroadcasterMenu extends UpgradeableMenu<EnderBroadcasterBlockE
     private void openFrequencyBandMenuAction()
     {
         MenuOpener.open(AECSMenus.FREQUENCY_BAND_MENU.get(), getPlayer(), getLocator());
+    }
+
+    private void openFrequencyBandCreateMenuAction()
+    {
+        MenuOpener.open(AECSMenus.FREQUENCY_BAND_CREATE_MENU.get(), getPlayer(), getLocator());
     }
 
     @Override

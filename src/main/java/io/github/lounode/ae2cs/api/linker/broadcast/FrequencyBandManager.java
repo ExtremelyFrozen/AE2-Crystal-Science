@@ -69,6 +69,17 @@ public class FrequencyBandManager extends SavedData
     }
 
     /**
+     * 查询是否存在此频段
+     */
+    public static boolean isBandPresent(String bandName)
+    {
+        FrequencyBandManager manager = resolveManager();
+        if (manager == null) return false;
+
+        return manager.frequencyBands.containsKey(bandName);
+    }
+
+    /**
      * 将频段的大体信息包装后用以网络传输
      */
     @Nullable

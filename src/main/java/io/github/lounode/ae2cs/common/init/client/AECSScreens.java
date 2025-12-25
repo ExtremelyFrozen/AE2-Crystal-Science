@@ -6,6 +6,7 @@ import appeng.menu.implementations.PatternProviderMenu;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.client.gui.*;
 import io.github.lounode.ae2cs.client.gui.linker.broadcast.EnderBroadcasterGUI;
+import io.github.lounode.ae2cs.client.gui.linker.broadcast.FrequencyBandCreateGUI;
 import io.github.lounode.ae2cs.client.gui.linker.broadcast.FrequencyBandGUI;
 import io.github.lounode.ae2cs.client.gui.linker.broadcast.FrequencyBandLinkGUI;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
@@ -36,5 +37,6 @@ public class AECSScreens
         event.register(AECSMenus.ENDER_BROADCASTER_MENU.get(), EnderBroadcasterGUI::new);
         event.register(AECSMenus.FREQUENCY_BAND_MENU.get(), FrequencyBandGUI::new);
         event.register(AECSMenus.FREQUENCY_BAND_LINK_MENU.get(), FrequencyBandLinkGUI::new);
+        event.register(AECSMenus.FREQUENCY_BAND_CREATE_MENU.get(), FrequencyBandCreateGUI::new);
     }
 }

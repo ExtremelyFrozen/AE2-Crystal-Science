@@ -64,6 +64,7 @@
   "ae2cs.menu.ender_broadcaster.receiver_actual_channels": "实际接收频道：%s",
   "ae2cs.menu.ender_broadcaster.sender_sent_channels": "发送频道数：%s",
   "ae2cs.menu.ender_broadcaster.button.open_frequency_band_menu": "打开频段菜单",
+  "ae2cs.menu.ender_broadcaster.button.open_frequency_band_create_menu": "创建新频段",
 
   "ae2cs.menu.title.frequency_bands": "频段菜单",
   "ae2cs.menu.widgets.frequency_info_panel.encrypted": "已加密",
@@ -75,6 +76,13 @@
   "ae2cs.menu.frequency_band_menu.not_connected": "未链接",
   "ae2cs.menu.frequency_band_menu.confirm": "确认",
   "ae2cs.menu.frequency_band_menu.input_password": "请输入密码…",
+
+  "ae2cs.menu.title.frequency_band_create": "创建频段",
+  "ae2cs.menu.frequency_band_create_menu.input_band_name": "请输入频段名…",
+  "ae2cs.menu.frequency_band_create_menu.input_password": "请输入密码…",
+  "ae2cs.menu.frequency_band_create_menu.is_public": "是否公开频段",
+  "ae2cs.menu.frequency_band_create_menu.allow_memory_card_copy": "是否允许内存卡复制链接状态",
+  "ae2cs.menu.frequency_band_create_menu.confirm": "确认",
 
 
   "ae2_crystal_seeds.configuration.title": "AE2 Crystal Seeds Configs",
