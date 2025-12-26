@@ -9,7 +9,6 @@ import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.Scrollbar;
 import io.github.lounode.ae2cs.common.menu.linker.broadcast.FrequencyBandManagerMenu;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.MultiLineTextWidget;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -30,11 +29,13 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
     private AE2Button confirmChangePasswordButton;
     private AECheckbox changePublicBox;
     private AECheckbox changeAllowMemoryCardBox;
-    private MultiLineTextWidget whiteListText;
+    private AE2Button openBandWhiteManagerButton;
 
     private final Scrollbar broadcasterScrollbar;
 
-    private record DisplayEntry(net.minecraft.core.GlobalPos pos, boolean isSender) {}
+    private record DisplayEntry(net.minecraft.core.GlobalPos pos, boolean isSender)
+    {
+    }
 
     private List<DisplayEntry> broadcasterEntries = List.of();
     private final List<BroadcasterPanel> broadcasterPanelPool = new ArrayList<>();
@@ -65,8 +66,10 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
                 "change_allow_memory_card_box",
                 Component.translatable("ae2cs.menu.frequency_manager_menu.change_allow_memory_card_box"),
                 () -> menu.sendChangeAllowMemoryCardAction(changeAllowMemoryCardBox.isSelected()));
-        whiteListText = new MultiLineTextWidget(Component.empty(), this.font);
-        widgets.add("whitelist_text", whiteListText);
+        openBandWhiteManagerButton = widgets.addButton(
+                "open_band_whitelist_manager_button",
+                Component.translatable("ae2cs.menu.frequency_manager_menu.open_band_whitelist_menu"),
+                menu::sendOpenBandManagerMenu);
 
         this.broadcasterScrollbar = widgets.addScrollBar("broadcaster_scrollbar", Scrollbar.BIG);
         this.broadcasterScrollbar.setHeight(BROADCASTER_AREA.getHeight());
@@ -98,9 +101,6 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
         bandName = Component.translatable("ae2cs.menu.frequency_manager_menu.band_name", menu.bandDetailInfo.name());
         changePublicBox.setSelected(menu.bandDetailInfo.isPublic());
         changeAllowMemoryCardBox.setSelected(menu.bandDetailInfo.allowedMemoryCardCopy());
-
-        Component whiteListComponent = Component.translatable("ae2cs.menu.frequency_manager_menu.white_list", String.join(", ", menu.bandDetailInfo.whiteList()));
-        whiteListText.setMessage(whiteListComponent);
 
         // 如果服务端同步过来了新 sender/receiver 列表，刷新滚动列表
         refreshBroadcastersFromMenuIfNeeded(false);

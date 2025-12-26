@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs.common.menu.linker.broadcast;
 
 import appeng.api.storage.ISubMenuHost;
 import appeng.menu.AEBaseMenu;
+import appeng.menu.MenuOpener;
 import appeng.menu.guisync.GuiSync;
 import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastFrequencyBand;
 import io.github.lounode.ae2cs.api.linker.broadcast.FrequencyBandManager;
@@ -10,7 +11,6 @@ import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenu;
 import io.github.lounode.ae2cs.api.util.GlobalPosJson;
 import io.github.lounode.ae2cs.common.block.entity.EnderBroadcasterBlockEntity;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
-import io.github.lounode.ae2cs.util.ServerUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.server.MinecraftServer;
@@ -31,10 +31,11 @@ public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturn
     private static final String changeAllowMemoryCardAction = "change_allow_memory_card";
     private static final String tryDisconnectBroadcasterAction = "try_disconnect_broadcast";
     private static final String tryTapToBroadcasterAction = "try_tap_to_broadcaster";
+    private static final String openBandWhiteManagerAction = "open_band_white_manager";
 
     private final EnderBroadcasterBlockEntity host;
     private final BroadcastFrequencyBand band;
-    private int tick = 5; // 作限流，减少同步频率
+    private int tick = 5; // 作限流，减少同步频率（限流之后UI手感太tm奇怪了，所以实际上我还没有应用它）
 
     @GuiSync(1)
     public FrequencyBandDetailInfo bandDetailInfo = new FrequencyBandDetailInfo("", false, false, false, List.of(), List.of(), List.of());
@@ -50,6 +51,7 @@ public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturn
         registerClientAction(changeAllowMemoryCardAction, Boolean.class, this::changeAllowMemoryCardAction);
         registerClientAction(tryDisconnectBroadcasterAction, GlobalPosJson.class, this::tryDisconnectBroadcasterAction);
         registerClientAction(tryTapToBroadcasterAction, GlobalPosJson.class, this::tryTapToBroadcasterAction);
+        registerClientAction(openBandWhiteManagerAction, this::openBandWhiteManagerAction);
     }
 
     // 动作机制-客户端
@@ -78,6 +80,11 @@ public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturn
     {
         GlobalPosJson json = GlobalPosJson.from(pos);
         sendClientAction(tryTapToBroadcasterAction, json);
+    }
+
+    public void sendOpenBandManagerMenu()
+    {
+        sendClientAction(openBandWhiteManagerAction);
     }
 
     // 动作机制-服务端
@@ -146,6 +153,11 @@ public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturn
         getPlayer().teleportTo(level, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, Set.of(), getPlayer().getYRot(), getPlayer().getXRot());
     }
 
+    private void openBandWhiteManagerAction()
+    {
+        MenuOpener.open(AECSMenus.BAND_WHITE_LIST_MANAGER_MENU.get(), getPlayer(), getLocator());
+    }
+
     @Override
     public void broadcastChanges()
     {
@@ -156,7 +168,7 @@ public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturn
                     !band.getPassword().isEmpty(),
                     band.isPublic(),
                     band.isAllowedMemoryCardCopy(),
-                    band.getWhiteList().stream().map(uuid -> ServerUtil.getPlayerNameByUUID(uuid, getPlayer().getServer())).toList(),
+                    List.of(), // 这个UI中我们用不到它
                     band.getDeclaredSenders().stream().toList(),
                     band.getDeclaredReceivers().stream().toList()
             );

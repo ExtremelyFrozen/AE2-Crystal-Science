@@ -97,6 +97,11 @@ public class AECSMenus
                     .build(AE2CrystalScience.makeId("frequency_band_manager_menu"))
     );
 
+    public static final Supplier<MenuType<BandWhiteListManagerMenu>> BAND_WHITE_LIST_MANAGER_MENU = MENU_TYPES.register("band_white_list_manager_menu",
+            () -> MenuTypeBuilder.create(BandWhiteListManagerMenu::new, EnderBroadcasterBlockEntity.class)
+                    .build(AE2CrystalScience.makeId("band_white_list_manager_menu"))
+    );
+
     public static void registerMenus(IEventBus eventBus)
     {
         MENU_TYPES.register(eventBus);
