@@ -129,6 +129,7 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
     {
         super.serverTick();
 
+        // 重新计数succeedVirtualSenderNodes
         if (needRecountVirtualSenderNodes)
         {
             this.needRecountVirtualSenderNodes = false;
@@ -143,6 +144,7 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
             }
         }
 
+        // 更改方块状态
         if (level == null || level.isClientSide()) return;
         boolean asSender = this.connectionType == ConnectionType.AS_SENDER;
         boolean asReceiver = this.connectionType == ConnectionType.AS_RECEIVER;
@@ -211,11 +213,6 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
     @Override
     public int getMaxChannels()
     {
-        // 只有作为“接收端”时才启用 custom；否则恢复原版上限
-        if (!enabledCustomChannel)
-        {
-            return getVanillaMaxChannels();
-        }
         return Math.max(0, customMaxChannels);
     }
 
@@ -237,20 +234,10 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
         this.enabledCustomChannel = enabled;
     }
 
-    private int getVanillaMaxChannels()
-    {
-        ChannelMode mode = AEConfig.instance().getChannelMode();
-        if (mode == ChannelMode.INFINITE)
-        {
-            return Integer.MAX_VALUE;
-        }
-        return 32 * mode.getCableCapacityFactor();
-    }
-
     // ---------------- 发送端虚拟节点维护 ----------------
 
     /**
-     * 获取我们当前应该创建的虚拟节点数，一般为32 * factor，512为硬上限
+     * 获取我们当前应该创建的虚拟节点数，一般为32 * factor
      */
     private int computeSenderVirtualNodeTarget()
     {
@@ -262,6 +249,7 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
 
         int desired = Math.max(0, 32 * mode.getCableCapacityFactor());
 
+        // 接收端紧贴控制器，则还要乘上控制器数量，以模拟接收多面频道功能
         if(level != null)
         {
             int controlSide = 0;
@@ -273,13 +261,11 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
             int mutil = Math.max(1, controlSide);
             desired = desired * mutil;
         }
-
-
         return Math.min(desired, VIRTUAL_SENDER_NODE_HARD_CAP);
     }
 
     /**
-     * 确保be链接到了足够多的虚拟节点
+     * 确保BE链接到足够多的虚拟节点
      */
     private void ensureSenderVirtualNodes()
     {
@@ -326,10 +312,11 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
         IGridNode anchor = getMainNode().getNode();
         if (anchor == null)
         {
-            // 主节点还没准备好：等onReady或下一次getCouldSendChannels再试
+            // 主节点还没准备好
             return;
         }
 
+        // 在实际链接之前，打开自定义频道量并指定最大数量
         setEnabledCustomChannel(true);
         setMaxChannels(target);
 
@@ -448,9 +435,7 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
             newBand.declareSender(globalPos);
             newBand.undeclareReceiver(globalPos);
 
-            setEnabledCustomChannel(false);
             this.connectionType = ConnectionType.AS_SENDER;
-
             ensureSenderVirtualNodes();
 
             IGridNode node = getMainNode().getNode();
@@ -537,7 +522,6 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
         MinecraftServer server = level.getServer();
         if (server == null) return;
 
-        // 内部自带tick限流
         FrequencyBandManager.markRuntimeDirty(server, bandId);
     }
 
@@ -618,8 +602,6 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
         {
             band.declareSender(gp);
             band.undeclareReceiver(gp);
-
-            setEnabledCustomChannel(false);
 
             ensureSenderVirtualNodes();
             band.onSenderOnline(server, gp, node);
