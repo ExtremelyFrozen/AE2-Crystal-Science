@@ -7,6 +7,7 @@ import appeng.api.networking.pathing.ChannelMode;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.core.AEConfig;
+import appeng.core.definitions.AEBlocks;
 import appeng.util.SettingsFrom;
 import io.github.lounode.ae2cs.api.CustomChannelProviderHost;
 import io.github.lounode.ae2cs.api.linker.broadcast.*;
@@ -16,6 +17,7 @@ import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
@@ -36,7 +38,7 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
         implements CustomChannelProviderHost, BroadcastSenderHost, BroadcastReceiverHost, IUpgradeableObject,
         CustomReturnableSubMenuHost
 {
-    private static final int VIRTUAL_SENDER_NODE_HARD_CAP = 512;
+    private static final int VIRTUAL_SENDER_NODE_HARD_CAP = 768;
 
     /**
      * 作为接收者最多能分配到多少频道，用来限制期望频道量的设置
@@ -259,6 +261,20 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
         }
 
         int desired = Math.max(0, 32 * mode.getCableCapacityFactor());
+
+        if(level != null)
+        {
+            int controlSide = 0;
+            for(Direction direction : Direction.values())
+            {
+                if(level.getBlockState(worldPosition.relative(direction)).getBlock() == AEBlocks.CONTROLLER.block())
+                    controlSide++;
+            }
+            int mutil = Math.max(1, controlSide);
+            desired = desired * mutil;
+        }
+
+
         return Math.min(desired, VIRTUAL_SENDER_NODE_HARD_CAP);
     }
 
@@ -313,6 +329,9 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
             // 主节点还没准备好：等onReady或下一次getCouldSendChannels再试
             return;
         }
+
+        setEnabledCustomChannel(true);
+        setMaxChannels(target);
 
         for (int i = 0; i < target; i++)
         {
@@ -686,7 +705,7 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
     @Override
     public boolean isAEPublicPowerStorage()
     {
-        return false;
+        return true;
     }
 
     @Override
