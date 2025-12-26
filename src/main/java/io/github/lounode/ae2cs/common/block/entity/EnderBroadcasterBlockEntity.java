@@ -433,6 +433,7 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
         }
 
         this.bandId = newBand.getName();
+        setChanged();
     }
 
     /**
@@ -475,6 +476,7 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
         bandId = "";
         connectionType = ConnectionType.NO_CONNECTION;
         setEnabledCustomChannel(false);
+        setChanged();
     }
 
     /**

@@ -86,6 +86,12 @@
   "ae2cs.menu.frequency_band_create_menu.confirm": "确认",
 
   "ae2cs.menu.title.frequency_band_manager": "管理频段",
+  "ae2cs.menu.frequency_manager_menu.band_name": "名称：%s",
+  "ae2cs.menu.frequency_manager_menu.confirm_password_button": "修改密码",
+  "ae2cs.menu.frequency_manager_menu.change_public_box": "是否公开频段",
+  "ae2cs.menu.frequency_manager_menu.change_allow_memory_card_box": "是否允许内存卡复制链接状态",
+  "ae2cs.menu.frequency_manager_menu.input_password_field": "在此修改密码",
+  "ae2cs.menu.frequency_manager_menu.white_list": "白名单：%s",
 
 
   "ae2_crystal_seeds.configuration.title": "AE2 Crystal Seeds Configs",
