@@ -64,6 +64,7 @@ public class FrequencyBandGUI extends AEBaseScreen<FrequencyBandMenu>
         this.searchField.setResponder(s -> {
             this.searchQuery = (s == null ? "" : s.trim().toLowerCase(Locale.ROOT));
             rebuildFilter();
+            updateScrollbarRangeByFilteredSize();
             this.scrollbar.setCurrentScroll(0);
             this.lastTopRow = -1;
             reLayoutVisiblePanels();

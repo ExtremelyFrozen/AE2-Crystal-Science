@@ -93,6 +93,9 @@
   "ae2cs.menu.frequency_manager_menu.input_password_field": "在此修改密码",
   "ae2cs.menu.frequency_manager_menu.white_list": "白名单：%s",
 
+  "ae2cs.widgets.broadcaster.sender": "发送端",
+  "ae2cs.widgets.broadcaster.receiver": "接收端",
+
 
   "ae2_crystal_seeds.configuration.title": "AE2 Crystal Seeds Configs",
   "ae2_crystal_seeds.configuration.section.ae2_crystal_seeds.common.toml": "AE2 Crystal Seeds Configs",

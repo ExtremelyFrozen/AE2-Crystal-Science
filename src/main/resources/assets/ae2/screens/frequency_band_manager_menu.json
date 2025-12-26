@@ -41,6 +41,10 @@
       "top": 90,
       "width": 140,
       "height": 40
+    },
+    "broadcaster_scrollbar": {
+      "left": 175,
+      "top": 19
     }
   }
 }
