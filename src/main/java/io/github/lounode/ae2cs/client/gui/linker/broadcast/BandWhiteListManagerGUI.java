@@ -71,6 +71,22 @@ public class BandWhiteListManagerGUI extends AEBaseScreen<BandWhiteListManagerMe
         this.visibleWhitelistRows = Math.max(1, WHITELIST_AREA.getHeight() / ROW_H);
         this.visibleOtherRows = Math.max(1, OTHER_AREA.getHeight() / ROW_H);
 
+        this.whitelistScrollbar.setHeight(WHITELIST_AREA.getHeight());
+        this.otherScrollbar.setHeight(OTHER_AREA.getHeight());
+
+        hideAllWhitelistPanels();
+        hideAllOtherPanels();
+
+        whitelistPool.clear();
+        otherPool.clear();
+
+        this.lastWhitelistTopRow = -1;
+        this.lastOtherTopRow = -1;
+        this.totalWhitelistRows = 0;
+        this.totalOtherRows = 0;
+        this.whitelistScrollbar.setCurrentScroll(0);
+        this.otherScrollbar.setCurrentScroll(0);
+
         refreshFromMenuIfNeeded(true);
     }
 

@@ -103,6 +103,14 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
         super.init();
 
         this.visibleBroadcasterRows = Math.max(1, BROADCASTER_AREA.getHeight() / ROW_H);
+
+        this.broadcasterScrollbar.setHeight(BROADCASTER_AREA.getHeight());
+
+        this.broadcasterPanelPool.clear();
+
+        this.lastBroadcasterTopRow = -1;
+        this.totalBroadcasterRows = 0;
+        this.broadcasterScrollbar.setCurrentScroll(0);
         refreshBroadcastersFromMenuIfNeeded(true);
     }
 

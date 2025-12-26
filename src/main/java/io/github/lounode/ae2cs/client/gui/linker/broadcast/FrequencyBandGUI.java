@@ -76,6 +76,10 @@ public class FrequencyBandGUI extends AEBaseScreen<FrequencyBandMenu>
     {
         super.init();
         this.visibleRows = Math.max(1, PANEL_AREA.getHeight() / ROW_H);
+        this.scrollbar.setHeight(PANEL_AREA.getHeight());
+
+        panelPool.clear();
+
         refreshBandsFromMenuIfNeeded(true);
     }
 
