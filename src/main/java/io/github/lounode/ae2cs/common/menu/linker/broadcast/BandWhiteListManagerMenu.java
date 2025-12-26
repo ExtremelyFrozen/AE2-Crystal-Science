@@ -57,7 +57,7 @@ public class BandWhiteListManagerMenu extends AEBaseMenu implements CustomReturn
         UUID ownerId = band.getOwner();
         if (ownerId.equals(getPlayer().getUUID()))
         {
-            if(!ownerId.equals(playerId))
+            if (!ownerId.equals(playerId))
             {
                 if (band.validWhiteList(playerId))
                     band.removeFromWhiteList(playerId);

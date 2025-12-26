@@ -17,10 +17,7 @@ import net.minecraft.data.models.blockstates.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
-import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
-import net.neoforged.neoforge.client.model.generators.ModelBuilder;
-import net.neoforged.neoforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.client.model.generators.*;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import org.jetbrains.annotations.Nullable;
@@ -48,6 +45,7 @@ public class AECSBlockStateProvider extends BlockStateProvider
         genSixFaceLike(AECSBlocks.CIRCUIT_ETCHER_BLOCK.get());
         genSixFaceLike(AECSBlocks.CRYSTAL_PULVERIZER_BLOCK.get());
         genSixFaceLike(AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK.get());
+        genEnderBroadcaster();
     }
 
     private void blockWithItem(DeferredBlock<? extends Block> deferredBlock)
@@ -277,5 +275,40 @@ public class AECSBlockStateProvider extends BlockStateProvider
     protected static PropertyDispatch createFacingSpinDispatch()
     {
         return createFacingSpinDispatch(0, 0);
+    }
+
+
+    // 以下是特殊方块模型生成------------------------------------------------------------------------------------------------
+
+    /**
+     * 生成末影广播装置
+     */
+    private void genEnderBroadcaster()
+    {
+        Block block = AECSBlocks.ENDER_BROADCASTER_BLOCK.get();
+        var offModel = models().getExistingFile(modLoc("block/me_ender_broadcaster/off"));
+        var senderModel = models().getExistingFile(modLoc("block/me_ender_broadcaster/sender"));
+        var receiverModel = models().getExistingFile(modLoc("block/me_ender_broadcaster/receiver"));
+
+        getVariantBuilder(block).forAllStates(state -> {
+            boolean active = state.getValue(AECSBlockProperties.ACTIVE);
+
+            ModelFile model;
+            if (!active)
+            {
+                model = offModel;
+            }
+            else
+            {
+                boolean sender = state.getValue(AECSBlockProperties.BROADCASTER_SENDER);
+                model = sender ? senderModel : receiverModel;
+            }
+
+            return ConfiguredModel.builder()
+                    .modelFile(model)
+                    .build();
+        });
+
+        simpleBlockItem(block, offModel);
     }
 }

@@ -12,6 +12,7 @@ import io.github.lounode.ae2cs.api.CustomChannelProviderHost;
 import io.github.lounode.ae2cs.api.linker.broadcast.*;
 import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
+import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
 import net.minecraft.core.BlockPos;
@@ -138,6 +139,29 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
                     this.markBandRuntimeDirty(); // 可对外发送频段量变化，因此需要让频段重新分配
                 }
             }
+        }
+
+        if (level == null || level.isClientSide()) return;
+        boolean asSender = this.connectionType == ConnectionType.AS_SENDER;
+        boolean asReceiver = this.connectionType == ConnectionType.AS_RECEIVER;
+        boolean active = false;
+        if (asSender)
+        {
+            active = getCouldSendChannels() > 0;
+        }
+        else if (asReceiver && getMainNode().getGrid() != null)
+        {
+            active = getMainNode().getGrid().getEnergyService().isNetworkPowered();
+        }
+
+        BlockState state = getBlockState();
+        if (state.hasProperty(AECSBlockProperties.ACTIVE) && state.getValue(AECSBlockProperties.ACTIVE) != active)
+        {
+            level.setBlock(worldPosition, getBlockState().setValue(AECSBlockProperties.ACTIVE, active), 2);
+        }
+        if (state.hasProperty(AECSBlockProperties.BROADCASTER_SENDER) && state.getValue(AECSBlockProperties.BROADCASTER_SENDER) != asSender)
+        {
+            level.setBlock(worldPosition, getBlockState().setValue(AECSBlockProperties.BROADCASTER_SENDER, asSender), 2);
         }
     }
 
@@ -343,7 +367,7 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
         for (var managed : virtualSenderNodes)
         {
             var node = managed.getNode();
-            if (node != null && node.meetsChannelRequirements())
+            if (node != null && node.isOnline()) // 同时检查能量和频道，模拟电量消耗
             {
                 count++;
             }
