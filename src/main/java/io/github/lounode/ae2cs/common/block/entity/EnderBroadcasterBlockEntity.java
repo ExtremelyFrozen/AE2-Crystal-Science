@@ -465,6 +465,7 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
     /**
      * 对外接口，让be永久断开频段链接
      */
+    @Override
     public void cleanConnectionPermanent()
     {
         if (level == null || level.isClientSide()) return;

@@ -13,12 +13,16 @@ import io.github.lounode.ae2cs.api.CustomChannelProviderHost;
 import io.github.lounode.ae2cs.api.util.AECSGridHelper;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.*;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -617,6 +621,75 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         {
             if (conn != null) conn.destroy();
             receiverConnections.put(receiverPos, GridHelper.createConnection(controllerNode, receiverNode));
+        }
+    }
+
+    /**
+     * 频段被删除前的清理：恢复所有在线 receiver 为原版并断开连接，清空运行时缓存
+     * 包可见，供 FrequencyBandManager 调用
+     */
+    void onRemoved()
+    {
+        // 清除所有可能存在的持久化链接，数据声明在此自动清空
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        if (server != null)
+        {
+            cleanupDeclaredBlockEntities(server);
+        }
+
+        // 清空运行时缓存
+        onlineSenderNodes.clear();
+        onlineReceiverNodes.clear();
+        onlineReceiverHosts.clear();
+        receiverAllocated.clear();
+
+        bindGrid = null;
+        controllerNode = null;
+
+        usableChannels = 0;
+        usedChannels = 0;
+        errorState = BandError.FINE;
+    }
+
+    /**
+     * 遍历所有 declared sender/receiver 的位置：
+     * - 若区块未加载则尝试加载
+     * - 找到 BE 后若实现了 BandLinkHost，则调用 cleanConnectionPermanent()
+     */
+    private void cleanupDeclaredBlockEntities(MinecraftServer server)
+    {
+        var targets = new LinkedHashSet<GlobalPos>();
+        targets.addAll(declaredSenders);
+        targets.addAll(declaredReceivers);
+
+        for (GlobalPos gp : targets)
+        {
+            if (gp == null) continue;
+
+            ServerLevel level = server.getLevel(gp.dimension());
+            if (level == null) continue;
+
+            BlockPos pos = gp.pos();
+            try
+            {
+                level.getChunk(pos);
+            }
+            catch (Throwable ignored)
+            {
+                continue;
+            }
+
+            BlockEntity be = level.getBlockEntity(pos);
+            if (be instanceof BandLinkHost linkHost)
+            {
+                try
+                {
+                    linkHost.cleanConnectionPermanent();
+                }
+                catch (Throwable ignored)
+                {
+                }
+            }
         }
     }
 

@@ -33,6 +33,7 @@ public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturn
     private static final String tryDisconnectBroadcasterAction = "try_disconnect_broadcast";
     private static final String tryTapToBroadcasterAction = "try_tap_to_broadcaster";
     private static final String openBandWhiteManagerAction = "open_band_white_manager";
+    private static final String removeBandAction = "remove_band";
 
     private final EnderBroadcasterBlockEntity host;
     private final BroadcastFrequencyBand band;
@@ -59,6 +60,7 @@ public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturn
         registerClientAction(tryDisconnectBroadcasterAction, GlobalPosJson.class, this::tryDisconnectBroadcasterAction);
         registerClientAction(tryTapToBroadcasterAction, GlobalPosJson.class, this::tryTapToBroadcasterAction);
         registerClientAction(openBandWhiteManagerAction, this::openBandWhiteManagerAction);
+        registerClientAction(removeBandAction, this::onRemoveBand);
     }
 
     // 动作机制-客户端
@@ -92,6 +94,11 @@ public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturn
     public void sendOpenBandManagerMenu()
     {
         sendClientAction(openBandWhiteManagerAction);
+    }
+
+    public void sendDeleteBand()
+    {
+        sendClientAction(removeBandAction);
     }
 
     // 动作机制-服务端
@@ -175,6 +182,19 @@ public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturn
     private void openBandWhiteManagerAction()
     {
         MenuOpener.open(AECSMenus.BAND_WHITE_LIST_MANAGER_MENU.get(), getPlayer(), getLocator());
+    }
+
+    private void onRemoveBand()
+    {
+        if (band.getOwner().equals(getPlayer().getUUID()))
+        {
+            getPlayer().closeContainer();
+            FrequencyBandManager.deleteBand(band.getName());
+        }
+        else
+        {
+            getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.frequency_manager.you_not_owner"), true);
+        }
     }
 
     @Override

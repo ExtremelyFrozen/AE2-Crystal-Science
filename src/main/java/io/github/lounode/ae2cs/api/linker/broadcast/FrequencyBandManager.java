@@ -152,6 +152,35 @@ public class FrequencyBandManager extends SavedData
     }
 
     /**
+     * 删除频段
+     *
+     * @return true=成功删除；false=不存在或 manager 不可用
+     */
+    public static boolean deleteBand(String bandName)
+    {
+        FrequencyBandManager manager = resolveManager();
+        if (manager == null) return false;
+
+        BroadcastFrequencyBand band = manager.frequencyBands.get(bandName);
+        if (band == null) return false;
+
+        // 删除前清理（断链/清缓存/清 BE 持久化连接）
+        try
+        {
+            band.onRemoved();
+        }
+        catch (Throwable ignored)
+        {
+        }
+
+        // 最后清走band，保证onRemoved中部分依赖bandManager的工作可以正常完成
+        manager.frequencyBands.remove(bandName);
+        manager.dirtyRuntimeAt.removeLong(bandName);
+        manager.setDirty();
+        return true;
+    }
+
+    /**
      * 标脏
      */
     public static void markDirty()

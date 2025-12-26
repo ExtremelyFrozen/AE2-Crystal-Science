@@ -33,6 +33,7 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
     private AECheckbox changePublicBox;
     private AECheckbox changeAllowMemoryCardBox;
     private AE2Button openBandWhiteManagerButton;
+    private AE2Button removeBandButton;
 
     private final Scrollbar broadcasterScrollbar;
 
@@ -47,6 +48,8 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
     private int totalBroadcasterRows = 0;
     private int lastBroadcasterTopRow = -1;
     private int lastBroadcasterHash = 0;
+
+    private int clickRemoveButtonTicks = 0;
 
     public FrequencyBandManagerGUI(FrequencyBandManagerMenu menu, Inventory playerInventory, Component title)
     {
@@ -73,6 +76,21 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
                 "open_band_whitelist_manager_button",
                 Component.translatable("ae2cs.menu.frequency_manager_menu.open_band_whitelist_menu"),
                 menu::sendOpenBandManagerMenu);
+        removeBandButton = widgets.addButton(
+                "remove_band_button",
+                Component.translatable("ae2cs.menu.frequency_manager_menu.remove_band_button"),
+                () ->
+                {
+                    if (clickRemoveButtonTicks > 0)
+                    {
+                        menu.sendDeleteBand();
+                    }
+                    else
+                    {
+                        clickRemoveButtonTicks = 40;
+                        getPlayer().displayClientMessage(Component.translatable("ae2cs.menu.frequency_manager_menu.click_again"), false);
+                    }
+                });
 
         this.broadcasterScrollbar = widgets.addScrollBar("broadcaster_scrollbar", Scrollbar.BIG);
         this.broadcasterScrollbar.setHeight(BROADCASTER_AREA.getHeight());
@@ -103,6 +121,7 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
     {
         super.updateBeforeRender();
 
+        clickRemoveButtonTicks--;
         bandName = Component.translatable("ae2cs.menu.frequency_manager_menu.band_name", menu.bandDetailInfo.name());
         channelUsage = Component.translatable("ae2cs.menu.frequency_manager_menu.band_usage", menu.usedChannels + "/" + menu.usableChannels);
         changePublicBox.setSelected(menu.bandDetailInfo.isPublic());

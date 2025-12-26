@@ -32,6 +32,12 @@
       "width": 40,
       "height": 14
     },
+    "remove_band_button": {
+      "left": 170,
+      "top": 50,
+      "width": 40,
+      "height": 14
+    },
     "change_public_box": {
       "left": 10,
       "top": 60,

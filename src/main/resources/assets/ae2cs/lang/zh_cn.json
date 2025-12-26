@@ -99,6 +99,8 @@
   "ae2cs.menu.frequency_manager_menu.band_error.controller_conflict": "错误：有至少2个发送端处于不同的带控制器网络",
   "ae2cs.menu.frequency_manager_menu.band_error.sender_error": "错误：有发送端处于无控制器网络或发送端自身状态未就绪",
   "ae2cs.menu.frequency_manager_menu.band_error.no_sender": "当前状态：找不到任何发送端，如果发送端确实存在，请检查区块加载",
+  "ae2cs.menu.frequency_manager_menu.remove_band_button": "删除频段",
+  "ae2cs.menu.frequency_manager_menu.click_again": "再次点击以确认",
 
   "ae2cs.widgets.broadcaster.sender": "发送端",
   "ae2cs.widgets.broadcaster.receiver": "接收端",
