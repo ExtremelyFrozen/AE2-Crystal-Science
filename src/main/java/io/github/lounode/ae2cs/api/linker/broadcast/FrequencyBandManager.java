@@ -199,7 +199,9 @@ public class FrequencyBandManager extends SavedData
 
         long now = server.overworld().getGameTime();
 
-        if (manager.dirtyRuntimeAt.getLong(bandName) != now)
+        // 只有dirtyRuntimeAt中不存在bandName时才把now放进去，防止重复标脏
+        // tick查表后，则把相关元素从表中移走，保证多次标记仅会记录到第一次
+        if (manager.dirtyRuntimeAt.getLong(bandName) == Long.MIN_VALUE)
         {
             manager.dirtyRuntimeAt.put(bandName, now);
         }
@@ -225,6 +227,7 @@ public class FrequencyBandManager extends SavedData
             String bandName = entry.getKey();
             long markedAt = entry.getLongValue();
 
+            // 下一tick再计算，避免本tick计算与ae网络的寻路撞车
             if (now > markedAt)
             {
                 BroadcastFrequencyBand band = manager.frequencyBands.get(bandName);
@@ -232,6 +235,7 @@ public class FrequencyBandManager extends SavedData
                 {
                     band.recomputeRuntime();
                 }
+                // 最后移除掉已经tick过的元素
                 it.remove();
             }
         }
@@ -246,7 +250,6 @@ public class FrequencyBandManager extends SavedData
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server == null) return null;
 
-        ensureSaveDirExists(server);
         return server.overworld().getDataStorage().computeIfAbsent(FACTORY, MANAGER_PATH);
     }
 
@@ -277,6 +280,9 @@ public class FrequencyBandManager extends SavedData
     @Override
     public @NotNull CompoundTag save(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider provider)
     {
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        if (server != null) ensureSaveDirExists(server);
+
         ListTag bandTags = new ListTag();
         for (BroadcastFrequencyBand band : frequencyBands.values())
         {
