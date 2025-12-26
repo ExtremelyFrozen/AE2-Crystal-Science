@@ -10,6 +10,7 @@ import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenu;
 import io.github.lounode.ae2cs.common.block.entity.EnderBroadcasterBlockEntity;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 import io.github.lounode.ae2cs.util.ServerUtil;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -54,12 +55,19 @@ public class BandWhiteListManagerMenu extends AEBaseMenu implements CustomReturn
     {
         MinecraftServer server = getPlayer().getServer();
         UUID ownerId = band.getOwner();
-        if (ownerId.equals(getPlayer().getUUID()) && !ownerId.equals(playerId))
+        if (ownerId.equals(getPlayer().getUUID()))
         {
-            if (band.validWhiteList(playerId))
-                band.removeFromWhiteList(playerId);
-            else if (server != null && server.getPlayerList().getPlayer(playerId) != null)
-                band.addToWhiteList(playerId);
+            if(!ownerId.equals(playerId))
+            {
+                if (band.validWhiteList(playerId))
+                    band.removeFromWhiteList(playerId);
+                else if (server != null && server.getPlayerList().getPlayer(playerId) != null)
+                    band.addToWhiteList(playerId);
+            }
+        }
+        else
+        {
+            getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.frequency_manager.you_not_owner"), true);
         }
     }
 
