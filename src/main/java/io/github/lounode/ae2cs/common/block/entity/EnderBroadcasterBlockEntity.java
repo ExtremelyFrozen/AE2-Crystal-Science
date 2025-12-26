@@ -7,23 +7,25 @@ import appeng.api.networking.pathing.ChannelMode;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.core.AEConfig;
+import appeng.util.SettingsFrom;
 import io.github.lounode.ae2cs.api.CustomChannelProviderHost;
-import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastFrequencyBand;
-import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastReceiverHost;
-import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastSenderHost;
-import io.github.lounode.ae2cs.api.linker.broadcast.FrequencyBandManager;
+import io.github.lounode.ae2cs.api.linker.broadcast.*;
 import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.init.AECSDataComponents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -589,6 +591,43 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
         {
             // 内部在连接数相同时会阻止重连节点，不会重复造成网络变化
             ensureSenderVirtualNodes();
+        }
+    }
+
+    // ---------------- 内存卡 ----------------
+
+    @Override
+    public void importSettings(SettingsFrom mode, DataComponentMap input, @Nullable Player player)
+    {
+        super.importSettings(mode, input, player);
+
+        if (mode == SettingsFrom.MEMORY_CARD)
+        {
+            MemoryCardBandInfo targetLink = input.get(AECSDataComponents.MEMORY_CARD_BAND_INFO.get());
+            if (targetLink == null) return;
+
+            BroadcastFrequencyBand band = FrequencyBandManager.getBand(targetLink.bandName());
+            if (band == null || !band.isAllowedMemoryCardCopy()) return;
+
+            this.cleanConnectionPermanent();
+            this.connectToBand(targetLink.bandName(), targetLink.asSender());
+        }
+    }
+
+    @Override
+    public void exportSettings(SettingsFrom mode, DataComponentMap.Builder builder, @Nullable Player player)
+    {
+        super.exportSettings(mode, builder, player);
+
+        if (mode == SettingsFrom.MEMORY_CARD)
+        {
+            if (bandId == null || bandId.isEmpty()) return;
+            BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
+            if (band == null || !band.isAllowedMemoryCardCopy()) return;
+
+            boolean asSender = this.connectionType == ConnectionType.AS_SENDER;
+
+            builder.set(AECSDataComponents.MEMORY_CARD_BAND_INFO, new MemoryCardBandInfo(bandId, asSender));
         }
     }
 

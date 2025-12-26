@@ -4,8 +4,11 @@ import appeng.api.util.IConfigManager;
 import appeng.menu.MenuOpener;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.UpgradeableMenu;
+import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastFrequencyBand;
+import io.github.lounode.ae2cs.api.linker.broadcast.FrequencyBandManager;
 import io.github.lounode.ae2cs.common.block.entity.EnderBroadcasterBlockEntity;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
@@ -16,6 +19,7 @@ public class EnderBroadcasterMenu extends UpgradeableMenu<EnderBroadcasterBlockE
     private static final String openFrequencyBandMenuAction = "open_frequency_band_menu";
     private static final String openFrequencyBandCreateMenuAction = "open_frequency_band_create_menu";
     private static final String openFrequencyBandManagerMenuAction = "open_frequency_band_manager_menu";
+    private static final String toggleLinkerSideAction = "toggle_linker_side";
 
     @GuiSync(10)
     public String bandName = "";
@@ -40,6 +44,7 @@ public class EnderBroadcasterMenu extends UpgradeableMenu<EnderBroadcasterBlockE
         registerClientAction(openFrequencyBandMenuAction, this::openFrequencyBandMenuAction);
         registerClientAction(openFrequencyBandCreateMenuAction, this::openFrequencyBandCreateMenuAction);
         registerClientAction(openFrequencyBandManagerMenuAction, this::openFrequencyBandManagerMenuAction);
+        registerClientAction(toggleLinkerSideAction, this::toggleLinkerSideAction);
     }
 
 
@@ -78,6 +83,11 @@ public class EnderBroadcasterMenu extends UpgradeableMenu<EnderBroadcasterBlockE
         sendClientAction(openFrequencyBandManagerMenuAction);
     }
 
+    public void sendToggleLinkerSideAction()
+    {
+        sendClientAction(toggleLinkerSideAction);
+    }
+
     // 动作机制：服务端处理
     private void acceptChangeExpectedChannelsAction(int delta)
     {
@@ -99,6 +109,29 @@ public class EnderBroadcasterMenu extends UpgradeableMenu<EnderBroadcasterBlockE
         if (bandName != null && !bandName.isEmpty())
         {
             MenuOpener.open(AECSMenus.FREQUENCY_BAND_MANAGER_MENU.get(), getPlayer(), getLocator());
+        }
+        else
+        {
+            getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.broadcaster.sender.not_connect_any_band"), true);
+        }
+    }
+
+    private void toggleLinkerSideAction()
+    {
+        if (bandName == null || bandName.isEmpty()) return;
+        BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandName);
+        if (band == null) return;
+
+        String targetBand = band.getName();
+        if (getHost().getConnectionType() == EnderBroadcasterBlockEntity.ConnectionType.AS_RECEIVER)
+        {
+            getHost().cleanConnectionPermanent();
+            getHost().connectToBand(targetBand, true);
+        }
+        else if (getHost().getConnectionType() == EnderBroadcasterBlockEntity.ConnectionType.AS_SENDER)
+        {
+            getHost().cleanConnectionPermanent();
+            getHost().connectToBand(targetBand, false);
         }
     }
 

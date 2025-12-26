@@ -1,5 +1,7 @@
 package io.github.lounode.ae2cs.common.menu.linker.broadcast;
 
+import appeng.api.networking.IGrid;
+import appeng.api.networking.pathing.ControllerState;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.guisync.GuiSync;
@@ -10,6 +12,7 @@ import io.github.lounode.ae2cs.api.linker.broadcast.networking.FrequencyBandLink
 import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenu;
 import io.github.lounode.ae2cs.common.block.entity.EnderBroadcasterBlockEntity;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
@@ -54,15 +57,44 @@ public class FrequencyBandLinkMenu extends AEBaseMenu implements CustomReturnabl
         String password = info.password();
         boolean asSender = info.asSender();
 
-        boolean inWhiteList = band.validWhiteList(getPlayer().getUUID());
+        boolean permissionValid = band.validWhiteList(getPlayer().getUUID()) || band.validPassword(password);
 
-        if (inWhiteList)
+        if (permissionValid)
         {
+            IGrid bandGrid = band.getBindGrid();
+            IGrid hostGrid = host.getMainNode().getGrid();
+            // 进行状态验证
+            if (asSender)
+            {
+                if (hostGrid == null) return;
+
+                if (hostGrid.getPathingService().getControllerState() != ControllerState.CONTROLLER_ONLINE)
+                {
+                    getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.band_link.sender.grid_must_has_control"), true);
+                    return;
+                }
+                if (bandGrid != null && bandGrid != hostGrid)
+                {
+                    getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.band_link.sender.grid_conflict"), true);
+                    return;
+                }
+            }
+            else
+            {
+                if (hostGrid != null
+                        && hostGrid.getPathingService().getControllerState() == ControllerState.CONTROLLER_ONLINE
+                        && hostGrid != bandGrid)
+                {
+                    getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.band_link.receiver.grid_conflict"), true);
+                    return;
+                }
+            }
             getHost().connectToBand(this.selectedBand, asSender);
         }
-        else if (band.validPassword(password))
+        else
         {
-            getHost().connectToBand(this.selectedBand, asSender);
+            getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.band_link.password_error"), true);
+            return;
         }
     }
 

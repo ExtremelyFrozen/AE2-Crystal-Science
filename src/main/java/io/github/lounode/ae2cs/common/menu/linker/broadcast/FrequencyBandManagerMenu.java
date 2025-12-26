@@ -13,6 +13,7 @@ import io.github.lounode.ae2cs.common.block.entity.EnderBroadcasterBlockEntity;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Inventory;
@@ -38,7 +39,13 @@ public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturn
     private int tick = 5; // 作限流，减少同步频率（限流之后UI手感太tm奇怪了，所以实际上我还没有应用它）
 
     @GuiSync(1)
-    public FrequencyBandDetailInfo bandDetailInfo = new FrequencyBandDetailInfo("", false, false, false, List.of(), List.of(), List.of());
+    public FrequencyBandDetailInfo bandDetailInfo = new FrequencyBandDetailInfo("", false, false, false, BroadcastFrequencyBand.BandError.NO_SENDER, List.of(), List.of(), List.of());
+
+    @GuiSync(2)
+    public long usableChannels = 0;
+
+    @GuiSync(3)
+    public long usedChannels = 0;
 
     public FrequencyBandManagerMenu(int id, Inventory playerInventory, EnderBroadcasterBlockEntity host)
     {
@@ -94,6 +101,10 @@ public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturn
         {
             band.setPassword(newPassword);
         }
+        else
+        {
+            getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.frequency_manager.you_not_owner"), true);
+        }
     }
 
     private void changePublicAction(boolean publicMode)
@@ -102,6 +113,10 @@ public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturn
         {
             band.setPublic(publicMode);
         }
+        else
+        {
+            getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.frequency_manager.you_not_owner"), true);
+        }
     }
 
     private void changeAllowMemoryCardAction(boolean allowMemoryCard)
@@ -109,6 +124,10 @@ public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturn
         if (band.getOwner().equals(getPlayer().getUUID()))
         {
             band.setAllowedMemoryCardCopy(allowMemoryCard);
+        }
+        else
+        {
+            getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.frequency_manager.you_not_owner"), true);
         }
     }
 
@@ -168,12 +187,16 @@ public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturn
                     !band.getPassword().isEmpty(),
                     band.isPublic(),
                     band.isAllowedMemoryCardCopy(),
+                    band.getErrorState(),
                     List.of(), // 这个UI中我们用不到它
                     band.getDeclaredSenders().stream().toList(),
                     band.getDeclaredReceivers().stream().toList()
             );
             this.tick = 0;
         }
+
+        usableChannels = band.getUsableChannels();
+        usedChannels = band.getUsedChannels();
 
         super.broadcastChanges();
     }

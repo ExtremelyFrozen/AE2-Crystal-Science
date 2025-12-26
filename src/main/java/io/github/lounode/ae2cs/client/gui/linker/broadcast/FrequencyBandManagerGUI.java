@@ -10,6 +10,7 @@ import appeng.client.gui.widgets.Scrollbar;
 import io.github.lounode.ae2cs.common.menu.linker.broadcast.FrequencyBandManagerMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -25,6 +26,8 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
     private static final int HIDE_Y = -10000;
 
     private Component bandName = Component.empty();
+    private Component channelUsage = Component.empty();
+    private Component bandError = Component.empty();
     private AETextField inputPassword;
     private AE2Button confirmChangePasswordButton;
     private AECheckbox changePublicBox;
@@ -33,7 +36,7 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
 
     private final Scrollbar broadcasterScrollbar;
 
-    private record DisplayEntry(net.minecraft.core.GlobalPos pos, boolean isSender)
+    private record DisplayEntry(GlobalPos pos, boolean isSender)
     {
     }
 
@@ -91,6 +94,8 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
         super.drawFG(guiGraphics, offsetX, offsetY, mouseX, mouseY);
 
         guiGraphics.drawString(this.font, bandName, 10, 20, 4210752, false);
+        guiGraphics.drawString(this.font, channelUsage, 10, 30, 4210752, false);
+        guiGraphics.drawString(this.font, bandError, 10, 90, 4210752, false);
     }
 
     @Override
@@ -99,8 +104,19 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
         super.updateBeforeRender();
 
         bandName = Component.translatable("ae2cs.menu.frequency_manager_menu.band_name", menu.bandDetailInfo.name());
+        channelUsage = Component.translatable("ae2cs.menu.frequency_manager_menu.band_usage", menu.usedChannels + "/" + menu.usableChannels);
         changePublicBox.setSelected(menu.bandDetailInfo.isPublic());
         changeAllowMemoryCardBox.setSelected(menu.bandDetailInfo.allowedMemoryCardCopy());
+        bandError = switch (menu.bandDetailInfo.errorState())
+        {
+            case FINE -> Component.translatable("ae2cs.menu.frequency_manager_menu.band_error.fine");
+            case MISSING_CONTROLLER ->
+                    Component.translatable("ae2cs.menu.frequency_manager_menu.band_error.missing_controller");
+            case CONTROLLER_CONFLICT ->
+                    Component.translatable("ae2cs.menu.frequency_manager_menu.band_error.controller_conflict");
+            case SENDER_ERROR -> Component.translatable("ae2cs.menu.frequency_manager_menu.band_error.sender_error");
+            case NO_SENDER -> Component.translatable("ae2cs.menu.frequency_manager_menu.band_error.no_sender");
+        };
 
         // 如果服务端同步过来了新 sender/receiver 列表，刷新滚动列表
         refreshBroadcastersFromMenuIfNeeded(false);

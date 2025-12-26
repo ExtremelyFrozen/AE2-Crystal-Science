@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs.common.init;
 
 import com.mojang.serialization.Codec;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
+import io.github.lounode.ae2cs.api.linker.broadcast.MemoryCardBandInfo;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -28,6 +29,14 @@ public class AECSDataComponents
             register("grow_process", b -> b
                     .persistent(Codec.INT)
                     .networkSynchronized(ByteBufCodecs.VAR_INT)
+                    .cacheEncoding()
+            );
+
+    // 频段名称-给内存卡记录用
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<MemoryCardBandInfo>> MEMORY_CARD_BAND_INFO =
+            register("band_name", b -> b
+                    .persistent(MemoryCardBandInfo.CODEC)
+                    .networkSynchronized(MemoryCardBandInfo.STREAM_CODEC)
                     .cacheEncoding()
             );
 

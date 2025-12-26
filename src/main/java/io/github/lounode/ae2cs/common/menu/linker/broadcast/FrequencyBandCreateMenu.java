@@ -7,6 +7,7 @@ import io.github.lounode.ae2cs.api.linker.broadcast.networking.FrequencyBandCrea
 import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenu;
 import io.github.lounode.ae2cs.common.block.entity.EnderBroadcasterBlockEntity;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
@@ -39,13 +40,24 @@ public class FrequencyBandCreateMenu extends AEBaseMenu implements CustomReturna
         boolean isPublic = info.isPublic();
         boolean allowedMemoryCardCopy = info.allowedMemoryCardCopy();
 
-        if (name.isEmpty() || ownerId == null) return;
+        if (name.isEmpty() || ownerId == null)
+        {
+            getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.band_create.no_name"), true);
+            return;
+        }
+        ;
 
-        if (FrequencyBandManager.isBandPresent(info.name())) return;
+        if (FrequencyBandManager.isBandPresent(info.name()))
+        {
+            getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.band_create.band_present"), true);
+            return;
+        }
+        ;
 
         if (FrequencyBandManager.tryCreateBand(name, password, ownerId, isPublic, allowedMemoryCardCopy) != null)
         {
             // 创建成功，关闭此菜单
+            getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.band_create.success"), true);
             getHost().returnToMainMenu(getPlayer(), this);
         }
     }

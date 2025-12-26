@@ -17,6 +17,7 @@ public class EnderBroadcasterGUI extends UpgradeableScreen<EnderBroadcasterMenu>
     private final AE2Button openFrequencyBandMenuButton;
     private final AE2Button openFrequencyBandCreateMenuButton;
     private final AE2Button openFrequencyBandManagerMenuButton;
+    private final AE2Button toggleBandLinkButton;
     // 接收端
     private Component receiverExpectedChannels = Component.empty();
     private Component receiverActualChannels = Component.empty();
@@ -43,6 +44,11 @@ public class EnderBroadcasterGUI extends UpgradeableScreen<EnderBroadcasterMenu>
         openFrequencyBandManagerMenuButton = widgets.addButton("open_frequency_band_manager_menu_button",
                 Component.translatable("ae2cs.menu.ender_broadcaster.button.open_frequency_band_manager_menu"),
                 menu::sendOpenFrequencyBandManagerMenuAction);
+
+        toggleBandLinkButton = widgets.addButton(
+                "toggle_band_link_side_button",
+                Component.translatable("ae2cs.menu.ender_broadcaster.button.toggle_linker_side"),
+                menu::sendToggleLinkerSideAction);
 
         addReceiver1ChannelsButton = new AE2Button(Component.literal("+1"), button -> {
             int mult = hasShiftDown() ? 5 : 1;
@@ -131,6 +137,17 @@ public class EnderBroadcasterGUI extends UpgradeableScreen<EnderBroadcasterMenu>
         else
         {
             this.senderSentChannels = Component.empty();
+        }
+
+        if (!isReceiver && !isSender)
+        {
+            toggleBandLinkButton.active = false;
+            toggleBandLinkButton.visible = false;
+        }
+        else
+        {
+            toggleBandLinkButton.active = true;
+            toggleBandLinkButton.visible = true;
         }
     }
 }

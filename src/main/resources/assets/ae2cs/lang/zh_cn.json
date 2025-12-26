@@ -66,6 +66,7 @@
   "ae2cs.menu.ender_broadcaster.button.open_frequency_band_menu": "打开频段菜单",
   "ae2cs.menu.ender_broadcaster.button.open_frequency_band_create_menu": "创建新频段",
   "ae2cs.menu.ender_broadcaster.button.open_frequency_band_manager_menu": "管理当前频段",
+  "ae2cs.menu.ender_broadcaster.button.toggle_linker_side": "切换端模式",
 
   "ae2cs.menu.title.frequency_bands": "频段菜单",
   "ae2cs.menu.widgets.frequency_info_panel.encrypted": "已加密",
@@ -87,16 +88,35 @@
 
   "ae2cs.menu.title.frequency_band_manager": "管理频段",
   "ae2cs.menu.frequency_manager_menu.band_name": "名称：%s",
+  "ae2cs.menu.frequency_manager_menu.band_usage": "频道情况：%s",
   "ae2cs.menu.frequency_manager_menu.confirm_password_button": "修改密码",
   "ae2cs.menu.frequency_manager_menu.change_public_box": "是否公开频段",
   "ae2cs.menu.frequency_manager_menu.change_allow_memory_card_box": "是否允许内存卡复制链接状态",
   "ae2cs.menu.frequency_manager_menu.input_password_field": "在此修改密码",
   "ae2cs.menu.frequency_manager_menu.open_band_whitelist_menu": "打开白名单管理",
+  "ae2cs.menu.frequency_manager_menu.band_error.fine": "当前状态：正常",
+  "ae2cs.menu.frequency_manager_menu.band_error.missing_controller": "错误：没有任何发送端处于带控制器网络",
+  "ae2cs.menu.frequency_manager_menu.band_error.controller_conflict": "错误：有至少2个发送端处于不同的带控制器网络",
+  "ae2cs.menu.frequency_manager_menu.band_error.sender_error": "错误：有发送端处于无控制器网络或发送端自身状态未就绪",
+  "ae2cs.menu.frequency_manager_menu.band_error.no_sender": "当前状态：找不到任何发送端，如果发送端确实存在，请检查区块加载",
 
   "ae2cs.widgets.broadcaster.sender": "发送端",
   "ae2cs.widgets.broadcaster.receiver": "接收端",
 
   "ae2cs.menu.title.band_white_list_manager": "管理白名单",
+
+  "ae2cs.msg.broadcaster.sender.not_connect_any_band": "当前广播装置未链接到任何频段",
+
+  "ae2cs.msg.band_create.no_name": "频段名不能为空",
+  "ae2cs.msg.band_create.band_present": "频段已存在",
+  "ae2cs.msg.band_create.success": "成功创建",
+
+  "ae2cs.msg.band_link.password_error": "密码错误",
+  "ae2cs.msg.band_link.sender.grid_must_has_control": "发送端必须处于有控制器的网络",
+  "ae2cs.msg.band_link.sender.grid_conflict": "同一个频段的发送端不能处于不同的ME网络中",
+  "ae2cs.msg.band_link.receiver.grid_conflict": "发送端将要链接的网络将会导致控制器冲突",
+
+  "ae2cs.msg.frequency_manager.you_not_owner": "只有所有者才能修改此选项",
 
 
   "ae2_crystal_seeds.configuration.title": "AE2 Crystal Seeds Configs",

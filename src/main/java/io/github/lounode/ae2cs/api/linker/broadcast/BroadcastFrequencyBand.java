@@ -142,6 +142,12 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
      */
     private transient @Nullable IGridNode controllerNode;
 
+    private long usableChannels;
+
+    private long usedChannels;
+
+    private BandError errorState = BandError.FINE;
+
     public BroadcastFrequencyBand(@NotNull String name, @NotNull String password, @NotNull UUID owner, boolean isPublic, boolean allowedMemoryCardCopy)
     {
         this.name = name;
@@ -257,6 +263,26 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         return declaredSenders;
     }
 
+    public long getUsableChannels()
+    {
+        return usableChannels;
+    }
+
+    public long getUsedChannels()
+    {
+        return usedChannels;
+    }
+
+    public @Nullable IGrid getBindGrid()
+    {
+        return bindGrid;
+    }
+
+    public BandError getErrorState()
+    {
+        return errorState;
+    }
+
     // ----------------- 纯数据 API（只改 declared，不查节点/不动连接） -----------------
 
     public boolean declareSender(GlobalPos pos)
@@ -339,27 +365,27 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
     {
         // 1) 选择 bindGrid：sender所在网络必须有控制器，且所有在线sender必须同一grid，否则视为冲突，所有接收端断链
         IGrid newBindGrid = null;
-        boolean conflict = false;
+        this.errorState = BandError.FINE;
 
         for (var entry : onlineSenderNodes.object2ObjectEntrySet())
         {
             IGridNode senderNode = entry.getValue();
             if (senderNode == null)
             {
-                conflict = true;
+                this.errorState = BandError.SENDER_ERROR;
                 break;
             }
 
             IGrid grid = senderNode.getGrid();
             if (grid == null)
             {
-                conflict = true;
+                this.errorState = BandError.SENDER_ERROR;
                 break;
             }
 
             if (grid.getPathingService().getControllerState() != ControllerState.CONTROLLER_ONLINE)
             {
-                conflict = true;
+                this.errorState = BandError.SENDER_ERROR;
                 break;
             }
 
@@ -369,13 +395,16 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
             }
             else if (newBindGrid != grid)
             {
-                conflict = true;
+                this.errorState = BandError.CONTROLLER_CONFLICT;
                 break;
             }
         }
 
-        if (conflict || newBindGrid == null)
+        if (this.errorState != BandError.FINE || newBindGrid == null)
         {
+            if (newBindGrid == null)
+                this.errorState = BandError.NO_SENDER;
+
             bindGrid = null;
             controllerNode = null;
             dropAllReceiversToVanillaAndDisconnect();
@@ -386,6 +415,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         IGridNode newController = AECSGridHelper.getControlNode(newBindGrid);
         if (newController == null)
         {
+            this.errorState = BandError.MISSING_CONTROLLER;
             bindGrid = null;
             controllerNode = null;
             dropAllReceiversToVanillaAndDisconnect();
@@ -408,6 +438,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
 
         // 2) 统计 sender 提供的可用频道总量（long 防溢出）
         long totalUsable = computeTotalUsableChannels();
+        this.usableChannels = totalUsable;
 
         // 3) 分配
         int capPerReceiver = MAX_RECEIVER_CHANNELS.get();
@@ -501,6 +532,8 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
                 applyReceiver(rp, receiverNode, host, alloc);
             }
         }
+
+        this.usedChannels = totalUsable - remaining;
 
         // 在线但未声明的 receiver，一律恢复原版并断开
         for (var entry : onlineReceiverHosts.object2ObjectEntrySet())
@@ -687,5 +720,14 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
                     () -> AE2CrystalScience.LOGGER.error("Failed to parse GlobalPos from receiver_list entry: {}", t)
             );
         }
+    }
+
+    public static enum BandError
+    {
+        FINE, // 工作正常
+        MISSING_CONTROLLER, // 缺失控制器
+        CONTROLLER_CONFLICT, // 发射端接在了不同控制器网络中
+        SENDER_ERROR, // 某个发送端处于无控制器网络，或发送端自身未就绪
+        NO_SENDER // 网络中无发射端
     }
 }

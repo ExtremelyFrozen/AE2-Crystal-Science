@@ -1,6 +1,7 @@
 package io.github.lounode.ae2cs.api.linker.broadcast.networking;
 
 import appeng.menu.guisync.PacketWritable;
+import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastFrequencyBand;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 
@@ -15,6 +16,7 @@ public record FrequencyBandDetailInfo(
         boolean isEncrypted,
         boolean isPublic,
         boolean allowedMemoryCardCopy,
+        BroadcastFrequencyBand.BandError errorState,
         List<String> whiteList,
         List<GlobalPos> senderList,
         List<GlobalPos> receiverList
@@ -28,6 +30,7 @@ public record FrequencyBandDetailInfo(
                 buf.readBoolean(),
                 buf.readBoolean(),
                 buf.readBoolean(),
+                buf.readEnum(BroadcastFrequencyBand.BandError.class),
                 readStringList(buf),
                 readGlobalPosList(buf),
                 readGlobalPosList(buf)
@@ -63,6 +66,7 @@ public record FrequencyBandDetailInfo(
         buf.writeBoolean(isEncrypted);
         buf.writeBoolean(isPublic);
         buf.writeBoolean(allowedMemoryCardCopy);
+        buf.writeEnum(errorState);
 
         buf.writeVarInt(whiteList.size());
         for (String whiteListEntry : whiteList)

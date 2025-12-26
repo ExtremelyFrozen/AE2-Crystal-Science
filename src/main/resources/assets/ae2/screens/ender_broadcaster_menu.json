@@ -43,6 +43,12 @@
       "width": 40,
       "height": 20
     },
+    "toggle_band_link_side_button": {
+      "left": 100,
+      "top": 30,
+      "width": 40,
+      "height": 20
+    },
     "add_receiver_expected_channels_button_10": {
       "right": 34,
       "top": 76,
