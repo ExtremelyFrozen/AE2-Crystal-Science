@@ -83,6 +83,11 @@ public class AECSBlocks
      */
     public static final DeferredBlock<EnderBroadcasterBlock> ENDER_BROADCASTER_BLOCK = registerOtherBlock(AECSBlockIds.ENDER_BROADCASTER, () -> new EnderBroadcasterBlock(AEBaseBlock.metalProps()));
 
+    /**
+     * 末影发信器
+     */
+    public static final DeferredBlock<EnderEmitterBlock> ENDER_EMITTER_BLOCK = registerOtherBlock(AECSBlockIds.ENDER_EMITTER, () -> new EnderEmitterBlock(AEBaseBlock.metalProps()));
+
     public static BlockBehaviour.Properties copy(BlockBehaviour behaviour)
     {
         return BlockBehaviour.Properties.ofFullCopy(behaviour);
