@@ -84,44 +84,63 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         IGridNode selfNode = getMainNode().getNode();
         if (selfNode == null) return;
         if (selfNode.getUsedChannels() >= getMaxLinkChannels()) return;
-
         if (!selfNode.isActive()) return;
 
-        BlockPos connectedPos = null;
-        for (BlockPos targetPos : pendingLinkPositions)
+        for (Iterator<BlockPos> it = pendingLinkPositions.iterator(); it.hasNext(); )
         {
-            // 如果目标位置有链接，先摧毁
+            BlockPos targetPos = it.next();
+
+            // 不处理未加载区块的情况
+            if (!level.isLoaded(targetPos)) continue;
+
+            // 如果目标位置已有旧链接，先摧毁
             List<IGridConnection> oldConnections = linkedConnections.remove(targetPos);
             if (oldConnections != null)
             {
                 for (IGridConnection connection : oldConnections)
                 {
-                    connection.destroy();
+                    if (connection != null)
+                    {
+                        connection.destroy();
+                    }
                 }
             }
 
-            // 连接
+            // 尝试建立连接
             List<IGridNode> targetNodes = getConnectableNodes(level, targetPos);
-            if (targetNodes.isEmpty()) continue;
+            if (targetNodes.isEmpty())
+            {
+                // 任何可连接节点
+                it.remove();
+                continue;
+            }
 
             ArrayList<IGridConnection> newConnections = new ArrayList<>();
             for (IGridNode targetNode : targetNodes)
             {
                 if (targetNode == null) continue;
-                newConnections.add(GridHelper.createConnection(selfNode, targetNode));
+                try
+                {
+                    newConnections.add(GridHelper.createConnection(selfNode, targetNode));
+                }
+                catch (IllegalStateException e)
+                {
+                    // 此错误说明两者之间已有连接，无需log记录
+                }
             }
-            // 这一轮有任何成功链接就结束，剩下的等待下一轮
-            if (!newConnections.isEmpty())
+
+            if (newConnections.isEmpty())
             {
-                linkedConnections.put(targetPos, newConnections);
-                connectedPos = targetPos;
-                break;
+                // 本轮没有完成任何连接
+                it.remove();
+                continue;
             }
-        }
-        if (connectedPos != null)
-        {
-            pendingLinkPositions.remove(connectedPos);
-            linkedPositions.add(connectedPos);
+
+            // 本轮有任何成功链接就结束，剩下的等待下一轮
+            linkedConnections.put(targetPos, newConnections);
+            it.remove();
+            linkedPositions.add(targetPos);
+            break;
         }
     }
 
@@ -130,9 +149,12 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
      */
     private boolean isRecentAddedPos()
     {
-        boolean result = recentAddedPosCountdown > 0;
-        this.recentAddedPosCountdown--;
-        return result;
+        if (recentAddedPosCountdown > 0)
+        {
+            recentAddedPosCountdown--;
+            return true;
+        }
+        return false;
     }
 
     private void addPosToPending(BlockPos pos)
@@ -191,10 +213,10 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
     }
 
     @Override
-    public void onChunkUnloaded()
+    public void setRemoved()
     {
-        super.onChunkUnloaded();
-        // 区块卸载时从缓存表移除
+        super.setRemoved();
+        // 方块被移除或区块卸载时从全局索引移除
         if (level != null && !level.isClientSide())
         {
             ChunkPos center = new ChunkPos(worldPosition);
