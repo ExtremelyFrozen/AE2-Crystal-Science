@@ -22,6 +22,9 @@ public class EnderEmitterMenu extends UpgradeableMenu<EnderEmitterBlockEntity>
     @GuiSync(12)
     public boolean allowAutoLinkCable;
 
+    @GuiSync(13)
+    public int maxLinkDistance;
+
     public EnderEmitterMenu(MenuType<?> menuType, int id, Inventory ip, EnderEmitterBlockEntity host)
     {
         super(menuType, id, ip, host);
@@ -37,6 +40,7 @@ public class EnderEmitterMenu extends UpgradeableMenu<EnderEmitterBlockEntity>
         this.linkDistance = getHost().getLinkDistance();
         this.autoMode = getHost().isAutoMode();
         this.allowAutoLinkCable = getHost().allowAutoLinkCableLike();
+        this.maxLinkDistance = EnderEmitterBlockEntity.maxLinkDistance;
 
         super.broadcastChanges();
     }

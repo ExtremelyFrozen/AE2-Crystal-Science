@@ -46,8 +46,12 @@ public class EnderEmitterGUI extends UpgradeableScreen<EnderEmitterMenu>
         super.drawFG(guiGraphics, offsetX, offsetY, mouseX, mouseY);
 
         guiGraphics.drawString(this.font,
-                Component.translatable("ae2cs.menu.ender_emitter.distance", menu.linkDistance),
+                Component.translatable("ae2cs.menu.ender_emitter.max_distance", menu.maxLinkDistance),
                 10, 20, 4210752, false);
+
+        guiGraphics.drawString(this.font,
+                Component.translatable("ae2cs.menu.ender_emitter.distance", menu.linkDistance),
+                10, 31, 4210752, false);
     }
 
     @Override

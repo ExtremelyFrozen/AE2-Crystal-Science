@@ -4,6 +4,7 @@ import appeng.api.upgrades.Upgrades;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.ids.AECSItemIds;
 import io.github.lounode.ae2cs.common.item.CrystalSeedItem;
+import io.github.lounode.ae2cs.common.item.EnderLinkerItem;
 import io.github.lounode.ae2cs.common.item.PureCrystalItem;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
@@ -37,7 +38,7 @@ public class AECSItems
     /**
      * 杂项物品
      */
-    private static final List<DeferredItem<Item>> OTHERS = new ArrayList<>();
+    private static final List<DeferredItem<? extends Item>> OTHERS = new ArrayList<>();
 
     public static final DeferredItem<PureCrystalItem> pureCertusQuartzCrystal = registerPureCrystalItem(AECSItemIds.PURE_CERTUS_QUARTZ_CRYSTAL, () -> new PureCrystalItem(defaultBuilder()));
     public static final DeferredItem<PureCrystalItem> pureFluixCrystal = registerPureCrystalItem(AECSItemIds.PURE_FLUIX_CRYSTAL, () -> new PureCrystalItem(defaultBuilder()));
@@ -63,6 +64,8 @@ public class AECSItems
 
     public static final DeferredItem<Item> crystalGrowthCard = registerOtherItem(AECSItemIds.CRYSTAL_GROWTH_CARD, () -> Upgrades.createUpgradeCardItem(new Item.Properties()));
 
+    public static final DeferredItem<EnderLinkerItem> enderLink = registerOtherItem(AECSItemIds.ENDER_LINKER, () -> new EnderLinkerItem(new Item.Properties()));
+
     // 快速物品状态
     public static Item.Properties defaultBuilder()
     {
@@ -85,7 +88,7 @@ public class AECSItems
         return Collections.unmodifiableList(PURE_CRYSTAL);
     }
 
-    public static List<DeferredItem<Item>> getOthers()
+    public static List<DeferredItem<? extends Item>> getOthers()
     {
         return Collections.unmodifiableList(OTHERS);
     }
@@ -115,9 +118,9 @@ public class AECSItems
         return obj;
     }
 
-    private static DeferredItem<Item> registerOtherItem(String name, Supplier<Item> sup)
+    private static <T extends Item> DeferredItem<T> registerOtherItem(String name, Supplier<T> sup)
     {
-        DeferredItem<Item> obj = registerItem(name, sup);
+        DeferredItem<T> obj = registerItem(name, sup);
         OTHERS.add(obj);
         return obj;
     }

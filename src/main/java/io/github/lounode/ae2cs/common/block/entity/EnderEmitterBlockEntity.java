@@ -423,7 +423,8 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         IGridNode emitterNode = emitter.getMainNode().getNode();
         if (emitterNode == null) return false;
 
-        if (emitterNode.getUsedChannels() < emitter.getMaxLinkChannels())
+        if (emitterNode.getUsedChannels() < emitter.getMaxLinkChannels()
+                && VecHelper.closerThanChebyshev(emitter.worldPosition, pos, maxLinkDistance))
         {
             emitter.addPosToPending(pos);
             emitter.setChanged();

@@ -3,6 +3,7 @@ package io.github.lounode.ae2cs.common.init;
 import com.mojang.serialization.Codec;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.linker.broadcast.MemoryCardBandInfo;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -37,6 +38,14 @@ public class AECSDataComponents
             register("band_name", b -> b
                     .persistent(MemoryCardBandInfo.CODEC)
                     .networkSynchronized(MemoryCardBandInfo.STREAM_CODEC)
+                    .cacheEncoding()
+            );
+
+    // 记录发信器信息坐标位置
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<GlobalPos>> ENDER_EMITTER_POS =
+            register("ender_emitter_pos", b -> b
+                    .persistent(GlobalPos.CODEC)
+                    .networkSynchronized(GlobalPos.STREAM_CODEC)
                     .cacheEncoding()
             );
 

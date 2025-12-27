@@ -41,7 +41,8 @@
   "item.ae2cs.purified_meteor_crystal": "高纯陨石水晶",
   
   "item.ae2cs.crystal_growth_card": "晶体催生卡",
-  
+  "item.ae2cs.ender_linker": "末影连接工具",
+
   "message.ae2_crystal_seeds.tooltip.seed_growth": "生长度：%1$s％",
   "message.ae2cs.tooltip.burn_time": "燃烧时间：%s刻",
   "message.ae2cs.tooltip.energy": "能量密度：%sFE每刻",
@@ -108,6 +109,7 @@
   "ae2cs.menu.ender_emitter.auto_mode_box": "自动连接模式",
   "ae2cs.menu.ender_emitter.distance": "当前自动连接距离：%s",
   "ae2cs.menu.ender_emitter.auto_link_cable_box": "自动连接到线缆和面板",
+  "ae2cs.menu.ender_emitter.max_distance": "最大可连接距离：%s",
 
   "ae2cs.widgets.broadcaster.sender": "发送端",
   "ae2cs.widgets.broadcaster.receiver": "接收端",
@@ -126,6 +128,10 @@
   "ae2cs.msg.band_link.receiver.grid_conflict": "发送端将要链接的网络将会导致控制器冲突",
 
   "ae2cs.msg.frequency_manager.you_not_owner": "只有所有者才能修改此选项",
+
+  "ae2cs.msg.item.ender_linker.bing_to_emitter": "已绑定到该发信器",
+  "ae2cs.msg.item.ender_linker.try_to_link": "成功将此设备连接到绑定的发信器",
+  "ae2cs.msg.item.ender_linker.failed_to_link": "绑定失败，相关发信器可能没有多余频道或超出最大连接距离",
 
 
   "ae2_crystal_seeds.configuration.title": "AE2 Crystal Seeds Configs",

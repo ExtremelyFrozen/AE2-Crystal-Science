@@ -28,13 +28,13 @@
   "widgets": {
     "add_distance_button": {
       "left": 10,
-      "top": 40,
+      "top": 42,
       "width": 40,
       "height": 20
     },
     "reduce_distance_button": {
       "left": 60,
-      "top": 40,
+      "top": 42,
       "width": 40,
       "height": 20
     },

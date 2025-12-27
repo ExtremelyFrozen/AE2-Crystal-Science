@@ -25,4 +25,5 @@ public class AECSItemIds
     public static final String PURE_METEOR_CRYSTAL = "purified_meteor_crystal";
 
     public static final String CRYSTAL_GROWTH_CARD = "crystal_growth_card";
+    public static final String ENDER_LINKER = "ender_linker";
 }

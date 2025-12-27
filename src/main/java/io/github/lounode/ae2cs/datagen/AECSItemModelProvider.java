@@ -37,7 +37,7 @@ public class AECSItemModelProvider extends ItemModelProvider
         {
             basicItem(item.get());
         }
-        for (DeferredItem<Item> item : AECSItems.getOthers())
+        for (DeferredItem<? extends Item> item : AECSItems.getOthers())
         {
             basicItem(item.get());
         }
