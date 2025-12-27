@@ -29,7 +29,7 @@ public class CableBusBlockEntityMixin extends AEBaseBlockEntity
     public void ae2cs$addPart(IPartItem<? extends IPart> partItem, Direction side, @Nullable Player player,
                               CallbackInfoReturnable<? extends IPart> cir)
     {
-        if(cir.getReturnValue() != null && level != null)
+        if (cir.getReturnValue() != null && level != null)
         {
             EnderEmitterBlockEntity.addPosToRecentEmitter(level, worldPosition);
         }
@@ -39,7 +39,7 @@ public class CableBusBlockEntityMixin extends AEBaseBlockEntity
     public void ae2cs$replacePart(IPartItem<? extends IPart> partItem, @Nullable Direction side, Player owner, InteractionHand hand,
                                   CallbackInfoReturnable<? extends IPart> cir)
     {
-        if(cir.getReturnValue() != null && level != null)
+        if (cir.getReturnValue() != null && level != null)
         {
             EnderEmitterBlockEntity.addPosToRecentEmitter(level, worldPosition);
         }
@@ -48,7 +48,7 @@ public class CableBusBlockEntityMixin extends AEBaseBlockEntity
     @Inject(method = "removePart", at = @At("RETURN"))
     public void ae2cs$removePart(IPart part, CallbackInfoReturnable<Boolean> cir)
     {
-        if(cir.getReturnValueZ() && level != null)
+        if (cir.getReturnValueZ() && level != null)
         {
             // 不使用remove，而是使用add对其进行刷新
             EnderEmitterBlockEntity.addPosToRecentEmitter(level, worldPosition);

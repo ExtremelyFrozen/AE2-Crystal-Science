@@ -11,6 +11,7 @@ public class EnderEmitterMenu extends UpgradeableMenu<EnderEmitterBlockEntity>
 {
     private static final String changeAutoModeAction = "change_auto_mode";
     private static final String changeDistanceAction = "change_distance";
+    private static final String changeAllowAutoLinkCableAction = "change_allow_auto_link_cable";
 
     @GuiSync(10)
     public int linkDistance;
@@ -18,12 +19,16 @@ public class EnderEmitterMenu extends UpgradeableMenu<EnderEmitterBlockEntity>
     @GuiSync(11)
     public boolean autoMode;
 
+    @GuiSync(12)
+    public boolean allowAutoLinkCable;
+
     public EnderEmitterMenu(MenuType<?> menuType, int id, Inventory ip, EnderEmitterBlockEntity host)
     {
         super(menuType, id, ip, host);
 
         registerClientAction(changeAutoModeAction, Boolean.class, this::onChangeAutoMode);
         registerClientAction(changeDistanceAction, Integer.class, this::onChangeDistance);
+        registerClientAction(changeAllowAutoLinkCableAction, Boolean.class, this::onChangeAllowAutoLinkCable);
     }
 
     @Override
@@ -31,6 +36,7 @@ public class EnderEmitterMenu extends UpgradeableMenu<EnderEmitterBlockEntity>
     {
         this.linkDistance = getHost().getLinkDistance();
         this.autoMode = getHost().isAutoMode();
+        this.allowAutoLinkCable = getHost().allowAutoLinkCableLike();
 
         super.broadcastChanges();
     }
@@ -45,6 +51,11 @@ public class EnderEmitterMenu extends UpgradeableMenu<EnderEmitterBlockEntity>
         sendClientAction(changeDistanceAction, delta);
     }
 
+    public void sendAllowAutoLinkCable(boolean allowAutoLinkCable)
+    {
+        sendClientAction(changeAllowAutoLinkCableAction, allowAutoLinkCable);
+    }
+
     private void onChangeAutoMode(boolean autoMode)
     {
         getHost().setAutoMode(autoMode);
@@ -53,6 +64,11 @@ public class EnderEmitterMenu extends UpgradeableMenu<EnderEmitterBlockEntity>
     private void onChangeDistance(int delta)
     {
         getHost().setLinkDistance(this.linkDistance + delta);
+    }
+
+    private void onChangeAllowAutoLinkCable(boolean allowAutoLinkCable)
+    {
+        getHost().setAllowAutoLinkCableLike(allowAutoLinkCable);
     }
 
     @Override

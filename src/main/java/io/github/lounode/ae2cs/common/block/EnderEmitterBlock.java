@@ -3,7 +3,6 @@ package io.github.lounode.ae2cs.common.block;
 import appeng.block.AEBaseEntityBlock;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
-import io.github.lounode.ae2cs.common.block.entity.CrystalPulverizerBlockEntity;
 import io.github.lounode.ae2cs.common.block.entity.EnderEmitterBlockEntity;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 import net.minecraft.core.BlockPos;

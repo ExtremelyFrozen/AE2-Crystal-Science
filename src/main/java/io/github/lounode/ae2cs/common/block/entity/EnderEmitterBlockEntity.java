@@ -12,6 +12,7 @@ import appeng.blockentity.grid.AENetworkedBlockEntity;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.blockentity.networking.ControllerBlockEntity;
 import appeng.parts.CableBusContainer;
+import io.github.lounode.ae2cs.Config;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.util.GlobalChunkPos;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
@@ -50,11 +51,14 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
 
     public static MinecraftServer boundServer = null;
 
+    public static final int autoAreaFactor = Config.INSTANCE.startUpConfig.enderEmitterAutoAreaFactor.getAsInt();
+
     // 最大可连接距离，半径，计算时使用直线距离
-    private static final int maxLinkDistance = 16;
+    public static final int maxLinkDistance = 16 * autoAreaFactor;
 
     private boolean autoMode = true;
-    private int linkDistance = 0;
+    private boolean allowAutoLinkCableLike = false;
+    private int linkDistance = 8;
     private Set<BlockPos> pendingLinkPositions = new HashSet<>();
     private Set<BlockPos> linkedPositions = new HashSet<>();
     /**
@@ -100,6 +104,17 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
     public void setLinkDistance(int linkDistance)
     {
         this.linkDistance = Math.max(0, Math.min(linkDistance, maxLinkDistance));
+        setChanged();
+    }
+
+    public boolean allowAutoLinkCableLike()
+    {
+        return allowAutoLinkCableLike;
+    }
+
+    public void setAllowAutoLinkCableLike(boolean allowAutoLinkCableLike)
+    {
+        this.allowAutoLinkCableLike = allowAutoLinkCableLike;
         setChanged();
     }
 
@@ -223,9 +238,9 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         if (level != null && !level.isClientSide())
         {
             ChunkPos center = new ChunkPos(worldPosition);
-            for (int offsetX = -1; offsetX <= 1; offsetX++)
+            for (int offsetX = -autoAreaFactor; offsetX <= autoAreaFactor; offsetX++)
             {
-                for (int offsetZ = -1; offsetZ <= 1; offsetZ++)
+                for (int offsetZ = -autoAreaFactor; offsetZ <= autoAreaFactor; offsetZ++)
                 {
                     GlobalChunkPos chunkKey = new GlobalChunkPos(level.dimension(), center.x + offsetX, center.z + offsetZ);
                     EMITTER_CHUNK_POSITIONS
@@ -250,9 +265,9 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
             ChunkPos center = new ChunkPos(worldPosition);
             BlockPos posKey = worldPosition.immutable();
 
-            for (int offsetX = -1; offsetX <= 1; offsetX++)
+            for (int offsetX = -autoAreaFactor; offsetX <= autoAreaFactor; offsetX++)
             {
-                for (int offsetZ = -1; offsetZ <= 1; offsetZ++)
+                for (int offsetZ = -autoAreaFactor; offsetZ <= autoAreaFactor; offsetZ++)
                 {
                     GlobalChunkPos chunkKey = new GlobalChunkPos(level.dimension(), center.x + offsetX, center.z + offsetZ);
 
@@ -277,6 +292,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
 
         data.putInt("link_distance", this.linkDistance);
         data.putBoolean("auto_mode", this.autoMode);
+        data.putBoolean("allow_auto_link_cable_like", this.allowAutoLinkCableLike);
 
         ListTag linkPositions = new ListTag();
         for (BlockPos pos : linkedPositions)
@@ -304,6 +320,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
 
         this.linkDistance = data.getInt("link_distance");
         this.autoMode = data.getBoolean("auto_mode");
+        this.allowAutoLinkCableLike = data.getBoolean("allow_auto_link_cable_like");
 
         linkedPositions.clear();
 
@@ -461,6 +478,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
                 // 打开自动模式、检查emitter的独特距离，最后再尝试加入到emitter
                 if (emitter.isAutoMode()
                         && VecHelper.closerThanChebyshev(linkPos, targetPos, emitter.linkDistance)
+                        && (!(targetNodeHost instanceof CableBusBlockEntity) || emitter.allowAutoLinkCableLike())
                         && addPosToEmitter(emitter, targetPos))
                 {
                     return;

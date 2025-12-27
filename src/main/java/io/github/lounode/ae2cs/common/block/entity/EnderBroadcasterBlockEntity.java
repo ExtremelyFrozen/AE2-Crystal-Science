@@ -250,12 +250,12 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
         int desired = Math.max(0, 32 * mode.getCableCapacityFactor());
 
         // 接收端紧贴控制器，则还要乘上控制器数量，以模拟接收多面频道功能
-        if(level != null)
+        if (level != null)
         {
             int controlSide = 0;
-            for(Direction direction : Direction.values())
+            for (Direction direction : Direction.values())
             {
-                if(level.getBlockState(worldPosition.relative(direction)).getBlock() == AEBlocks.CONTROLLER.block())
+                if (level.getBlockState(worldPosition.relative(direction)).getBlock() == AEBlocks.CONTROLLER.block())
                     controlSide++;
             }
             int mutil = Math.max(1, controlSide);

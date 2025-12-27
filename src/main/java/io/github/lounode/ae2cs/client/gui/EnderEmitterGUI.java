@@ -14,6 +14,7 @@ public class EnderEmitterGUI extends UpgradeableScreen<EnderEmitterMenu>
     private AE2Button addDistanceButton;
     private AE2Button reduceDistanceButton;
     private AECheckbox autoModeBox;
+    private AECheckbox allowAutoLinkCableLikeBox;
 
     public EnderEmitterGUI(EnderEmitterMenu menu, Inventory playerInventory, Component title, ScreenStyle style)
     {
@@ -34,6 +35,9 @@ public class EnderEmitterGUI extends UpgradeableScreen<EnderEmitterMenu>
         this.autoModeBox = widgets.addCheckbox("auto_mode_box",
                 Component.translatable("ae2cs.menu.ender_emitter.auto_mode_box"),
                 () -> menu.sendChangeAutoMode(autoModeBox.isSelected()));
+        this.allowAutoLinkCableLikeBox = widgets.addCheckbox("auto_link_cable_box",
+                Component.translatable("ae2cs.menu.ender_emitter.auto_link_cable_box"),
+                () -> menu.sendAllowAutoLinkCable(allowAutoLinkCableLikeBox.isSelected()));
     }
 
     @Override
@@ -50,6 +54,7 @@ public class EnderEmitterGUI extends UpgradeableScreen<EnderEmitterMenu>
     protected void updateBeforeRender()
     {
         this.autoModeBox.setSelected(menu.autoMode);
+        this.allowAutoLinkCableLikeBox.setSelected(menu.allowAutoLinkCable);
         super.updateBeforeRender();
     }
 }
