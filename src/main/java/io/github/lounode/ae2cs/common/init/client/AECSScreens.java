@@ -7,6 +7,7 @@ import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.client.gui.*;
 import io.github.lounode.ae2cs.client.gui.linker.broadcast.*;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
+import io.github.lounode.ae2cs.common.menu.EnderEmitterMenu;
 import io.github.lounode.ae2cs.common.menu.MeteoritePatternProviderMenu;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -37,5 +38,9 @@ public class AECSScreens
         event.register(AECSMenus.FREQUENCY_BAND_CREATE_MENU.get(), FrequencyBandCreateGUI::new);
         event.register(AECSMenus.FREQUENCY_BAND_MANAGER_MENU.get(), FrequencyBandManagerGUI::new);
         event.register(AECSMenus.BAND_WHITE_LIST_MANAGER_MENU.get(), BandWhiteListManagerGUI::new);
+
+        event.<EnderEmitterMenu, EnderEmitterGUI>register(AECSMenus.ENDER_EMITTER_MENU.get(),
+                (menu, inv, title) -> new EnderEmitterGUI(menu, inv, title,
+                        StyleManager.loadStyleDoc("/screens/ender_emitter_menu.json")));
     }
 }

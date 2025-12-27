@@ -6,6 +6,7 @@ import appeng.api.networking.pathing.ChannelMode;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.api.networking.pathing.IPathingService;
 import appeng.api.parts.IPart;
+import appeng.api.upgrades.IUpgradeableObject;
 import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.blockentity.grid.AENetworkedBlockEntity;
 import appeng.blockentity.networking.CableBusBlockEntity;
@@ -14,6 +15,7 @@ import appeng.parts.CableBusContainer;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.util.GlobalChunkPos;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
+import io.github.lounode.ae2cs.util.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -38,7 +40,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 @EventBusSubscriber(modid = AECSConstants.MODID)
-public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements ServerTickingBlockEntity
+public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements ServerTickingBlockEntity,
+        IUpgradeableObject
 {
     /**
      * 以全局区块坐标为索引的发信器位置表，用来快速寻找发信器，每个区块key下的set集合都对应周围3x3区块范围内所有发信器
@@ -48,8 +51,10 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
     public static MinecraftServer boundServer = null;
 
     // 最大可连接距离，半径，计算时使用直线距离
-    private static int maxLinkDistance = 16;
+    private static final int maxLinkDistance = 16;
 
+    private boolean autoMode = true;
+    private int linkDistance = 0;
     private Set<BlockPos> pendingLinkPositions = new HashSet<>();
     private Set<BlockPos> linkedPositions = new HashSet<>();
     /**
@@ -74,6 +79,28 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
                 AECSBlockEntities.ENDER_EMITTER_BLOCK_ENTITY.get(),
                 (be, unused) -> be
         );
+    }
+
+    public boolean isAutoMode()
+    {
+        return autoMode;
+    }
+
+    public void setAutoMode(boolean autoMode)
+    {
+        this.autoMode = autoMode;
+        setChanged();
+    }
+
+    public int getLinkDistance()
+    {
+        return linkDistance;
+    }
+
+    public void setLinkDistance(int linkDistance)
+    {
+        this.linkDistance = Math.max(0, Math.min(linkDistance, maxLinkDistance));
+        setChanged();
     }
 
     @Override
@@ -140,6 +167,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
             linkedConnections.put(targetPos, newConnections);
             it.remove();
             linkedPositions.add(targetPos);
+            setChanged();
             break;
         }
     }
@@ -247,6 +275,9 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
     {
         super.saveAdditional(data, registries);
 
+        data.putInt("link_distance", this.linkDistance);
+        data.putBoolean("auto_mode", this.autoMode);
+
         ListTag linkPositions = new ListTag();
         for (BlockPos pos : linkedPositions)
         {
@@ -270,6 +301,9 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
     public void loadTag(CompoundTag data, HolderLookup.Provider registries)
     {
         super.loadTag(data, registries);
+
+        this.linkDistance = data.getInt("link_distance");
+        this.autoMode = data.getBoolean("auto_mode");
 
         linkedPositions.clear();
 
@@ -375,6 +409,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         if (emitterNode.getUsedChannels() < emitter.getMaxLinkChannels())
         {
             emitter.addPosToPending(pos);
+            emitter.setChanged();
             return true;
         }
         return false;
@@ -388,6 +423,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         emitter.pendingLinkPositions.remove(targetPos);
         emitter.linkedPositions.remove(targetPos);
         emitter.linkedConnections.remove(targetPos); // 连接本体会被ae自动摧毁，这里只需要丢掉引用
+        emitter.setChanged();
     }
 
     /**
@@ -403,25 +439,32 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         GlobalChunkPos targetChunkPos = new GlobalChunkPos(targetLevel.dimension(), targetPos);
         Set<BlockPos> linkPositions = EMITTER_CHUNK_POSITIONS.get(targetChunkPos);
         if (linkPositions == null || linkPositions.isEmpty()) return;
-        double maxDistSq = (double) maxLinkDistance * (double) maxLinkDistance;
+
         List<BlockPos> availablePositions = new ArrayList<>(linkPositions.size());
         for (BlockPos linkPos : linkPositions)
         {
-            if (linkPos.distSqr(targetPos) <= maxDistSq)
+            if (VecHelper.closerThanChebyshev(linkPos, targetPos, maxLinkDistance))
             {
                 availablePositions.add(linkPos);
             }
         }
         if (availablePositions.isEmpty()) return;
-        availablePositions.sort(Comparator.comparingDouble(p -> p.distSqr(targetPos)));
+
+        // 按欧式距离排序优先级
+        availablePositions.sort(Comparator.comparingDouble(pos -> pos.distSqr(targetPos)));
 
         // 迭代寻找可用发信器并与之连接
         for (BlockPos linkPos : availablePositions)
         {
             if (targetLevel.getBlockEntity(linkPos) instanceof EnderEmitterBlockEntity emitter)
             {
-                if (addPosToEmitter(emitter, targetPos))
+                // 打开自动模式、检查emitter的独特距离，最后再尝试加入到emitter
+                if (emitter.isAutoMode()
+                        && VecHelper.closerThanChebyshev(linkPos, targetPos, emitter.linkDistance)
+                        && addPosToEmitter(emitter, targetPos))
+                {
                     return;
+                }
             }
         }
     }

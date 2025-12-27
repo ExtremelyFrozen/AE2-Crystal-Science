@@ -102,6 +102,11 @@ public class AECSMenus
                     .build(AE2CrystalScience.makeId("band_white_list_manager_menu"))
     );
 
+    public static final Supplier<MenuType<EnderEmitterMenu>> ENDER_EMITTER_MENU = MENU_TYPES.register("ender_emitter_menu",
+            () -> MenuTypeBuilder.create(EnderEmitterMenu::new, EnderEmitterBlockEntity.class)
+                    .build(AE2CrystalScience.makeId("ender_emitter_menu"))
+    );
+
     public static void registerMenus(IEventBus eventBus)
     {
         MENU_TYPES.register(eventBus);

@@ -12,6 +12,7 @@
   "block.ae2cs.simple_pattern_provider": "初级样板供应器",
   "block.ae2cs.crystal_aggregator": "晶能聚合器",
   "block.ae2cs.ender_broadcaster": "ME末影广播装置",
+  "block.ae2cs.ender_emitter": "ME末影发信器",
 
   "item.ae2cs.certus_quartz_seed": "赛特斯石英水晶种子",
   "item.ae2cs.fluix_crystal_seed": "福鲁伊克斯种子",
@@ -101,6 +102,11 @@
   "ae2cs.menu.frequency_manager_menu.band_error.no_sender": "当前状态：找不到任何发送端，如果发送端确实存在，请检查区块加载",
   "ae2cs.menu.frequency_manager_menu.remove_band_button": "删除频段",
   "ae2cs.menu.frequency_manager_menu.click_again": "再次点击以确认",
+
+  "ae2cs.menu.ender_emitter.add_distance": "增加距离",
+  "ae2cs.menu.ender_emitter.reduce_distance": "减少距离",
+  "ae2cs.menu.ender_emitter.auto_mode_box": "自动连接模式",
+  "ae2cs.menu.ender_emitter.distance": "当前自动连接距离：%s",
 
   "ae2cs.widgets.broadcaster.sender": "发送端",
   "ae2cs.widgets.broadcaster.receiver": "接收端",
