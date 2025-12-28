@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "ae2cs:block/me_ender_emitter/off"
+    },
+    "active=true": {
+      "model": "ae2cs:block/me_ender_emitter/on"
+    }
+  }
+}

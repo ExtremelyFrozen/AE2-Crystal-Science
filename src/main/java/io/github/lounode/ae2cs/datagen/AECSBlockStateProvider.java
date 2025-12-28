@@ -46,6 +46,7 @@ public class AECSBlockStateProvider extends BlockStateProvider
         genSixFaceLike(AECSBlocks.CRYSTAL_PULVERIZER_BLOCK.get());
         genSixFaceLike(AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK.get());
         genEnderBroadcaster();
+        genEnderEmitter();
     }
 
     private void blockWithItem(DeferredBlock<? extends Block> deferredBlock)
@@ -302,6 +303,36 @@ public class AECSBlockStateProvider extends BlockStateProvider
             {
                 boolean sender = state.getValue(AECSBlockProperties.BROADCASTER_SENDER);
                 model = sender ? senderModel : receiverModel;
+            }
+
+            return ConfiguredModel.builder()
+                    .modelFile(model)
+                    .build();
+        });
+
+        simpleBlockItem(block, offModel);
+    }
+
+    /**
+     * 生成末影发信器
+     */
+    private void genEnderEmitter()
+    {
+        Block block = AECSBlocks.ENDER_EMITTER_BLOCK.get();
+        var offModel = models().getExistingFile(modLoc("block/me_ender_emitter/off"));
+        var onModel = models().getExistingFile(modLoc("block/me_ender_emitter/on"));
+
+        getVariantBuilder(block).forAllStates(state -> {
+            boolean active = state.getValue(AECSBlockProperties.ACTIVE);
+
+            ModelFile model;
+            if (!active)
+            {
+                model = offModel;
+            }
+            else
+            {
+                model = onModel;
             }
 
             return ConfiguredModel.builder()

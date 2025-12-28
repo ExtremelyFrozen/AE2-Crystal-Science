@@ -132,7 +132,7 @@
   "ae2cs.msg.frequency_manager.you_not_owner": "只有所有者才能修改此选项",
 
   "ae2cs.msg.item.ender_linker.bing_to_emitter": "已绑定到该发信器",
-  "ae2cs.msg.item.ender_linker.try_to_link": "成功将此设备连接到绑定的发信器",
+  "ae2cs.msg.item.ender_linker.success_to_link": "成功将此设备连接到绑定的发信器",
   "ae2cs.msg.item.ender_linker.failed_to_link": "绑定失败，相关发信器可能没有多余频道或超出最大连接距离",
 
 

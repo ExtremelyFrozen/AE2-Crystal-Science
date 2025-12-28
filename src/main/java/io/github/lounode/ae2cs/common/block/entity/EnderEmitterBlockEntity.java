@@ -7,6 +7,7 @@ import appeng.api.networking.pathing.ControllerState;
 import appeng.api.networking.pathing.IPathingService;
 import appeng.api.parts.IPart;
 import appeng.api.upgrades.IUpgradeableObject;
+import appeng.blockentity.ClientTickingBlockEntity;
 import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.blockentity.grid.AENetworkedBlockEntity;
 import appeng.blockentity.networking.CableBusBlockEntity;
@@ -16,6 +17,7 @@ import io.github.lounode.ae2cs.Config;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.util.GlobalChunkPos;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
+import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.util.ChunkHelper;
 import io.github.lounode.ae2cs.util.VecHelper;
 import net.minecraft.core.BlockPos;
@@ -25,6 +27,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
@@ -45,7 +48,7 @@ import java.util.*;
 
 @EventBusSubscriber(modid = AECSConstants.MODID)
 public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements ServerTickingBlockEntity,
-        IUpgradeableObject
+        IUpgradeableObject, ClientTickingBlockEntity
 {
     /**
      * 以全局区块坐标为索引的发信器位置表，用来快速寻找发信器，每个区块key下的set集合都对应周围3x3区块范围内所有发信器
@@ -59,6 +62,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
     // 最大可连接距离，半径，计算时使用直线距离
     public static final int maxLinkDistance = 16 * autoAreaFactor;
 
+    private boolean active = false;
     private boolean autoMode = true;
     private boolean allowAutoLinkCableLike = false;
     private int linkDistance = 8;
@@ -121,6 +125,16 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         setChanged();
     }
 
+    public List<BlockPos> getPendingRenderPositionsSnapshot()
+    {
+        return this.pendingLinkPositions.isEmpty() ? List.of() : List.copyOf(this.pendingLinkPositions);
+    }
+
+    public List<BlockPos> getLinkedRenderPositionsSnapshot()
+    {
+        return this.linkedPositions.isEmpty() ? List.of() : List.copyOf(this.linkedPositions);
+    }
+
     @Override
     public void serverTick()
     {
@@ -128,9 +142,25 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         if (level == null) return;
         IGridNode selfNode = getMainNode().getNode();
         if (selfNode == null) return;
-        if (selfNode.getUsedChannels() >= getMaxLinkChannels()) return;
-        if (!selfNode.isActive()) return;
+        if (active != selfNode.isActive())
+        {
+            active = selfNode.isActive();
+            markForClientUpdate();
+        }
+        if (!active) return;
+        if (selfNode.getUsedChannels() >= getMaxLinkChannels())
+        {
+            // 当无可用频道时清除pending
+            if (!pendingLinkPositions.isEmpty())
+            {
+                pendingLinkPositions.clear();
+                setChanged();
+                markForClientUpdate();
+            }
+            return;
+        }
 
+        int pendingSize = pendingLinkPositions.size();
         for (Iterator<BlockPos> it = pendingLinkPositions.iterator(); it.hasNext(); )
         {
             BlockPos targetPos = it.next();
@@ -197,8 +227,24 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
             linkedConnections.put(targetPos, newConnections);
             it.remove();
             linkedPositions.add(targetPos);
-            setChanged();
             break;
+        }
+
+        if (pendingSize != pendingLinkPositions.size())
+        {
+            setChanged();
+            markForClientUpdate();
+        }
+    }
+
+    @Override
+    public void clientTick()
+    {
+        if (level == null) return;
+        BlockState state = getBlockState();
+        if (state.hasProperty(AECSBlockProperties.ACTIVE) && state.getValue(AECSBlockProperties.ACTIVE) != active)
+        {
+            level.setBlock(worldPosition, getBlockState().setValue(AECSBlockProperties.ACTIVE, active), 2);
         }
     }
 
@@ -361,6 +407,50 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         }
     }
 
+    // 把重要信息和pengding和linked写表，用于客户端显示
+    @Override
+    protected void writeToStream(RegistryFriendlyByteBuf data)
+    {
+        super.writeToStream(data);
+        data.writeBoolean(this.autoMode);
+        data.writeBoolean(this.active);
+        data.writeInt(this.linkDistance);
+        data.writeInt(this.pendingLinkPositions.size());
+        for (BlockPos pos : this.pendingLinkPositions)
+        {
+            BlockPos.STREAM_CODEC.encode(data, pos);
+        }
+        data.writeInt(this.linkedPositions.size());
+        for (BlockPos pos : this.linkedPositions)
+        {
+            BlockPos.STREAM_CODEC.encode(data, pos);
+        }
+    }
+
+    @Override
+    protected boolean readFromStream(RegistryFriendlyByteBuf data)
+    {
+        super.readFromStream(data);
+        this.autoMode = data.readBoolean();
+        this.active = data.readBoolean();
+        this.linkDistance = data.readInt();
+        this.pendingLinkPositions.clear();
+        int pendingSize = data.readInt();
+        for (int i = 0; i < pendingSize; i++)
+        {
+            BlockPos pos = BlockPos.STREAM_CODEC.decode(data);
+            this.pendingLinkPositions.add(pos);
+        }
+        this.linkedPositions.clear();
+        int linkSize = data.readInt();
+        for (int i = 0; i < linkSize; i++)
+        {
+            BlockPos pos = BlockPos.STREAM_CODEC.decode(data);
+            this.linkedPositions.add(pos);
+        }
+        return true;
+    }
+
     /**
      * 获取目标位置中最适合被无线连接的一个或一群节点，其内部元素亦不为null
      */
@@ -457,6 +547,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         if (valid)
         {
             emitter.addPosToPending(pos);
+            emitter.markForClientUpdate();
             emitter.setChanged();
             return true;
         }
@@ -470,8 +561,17 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
     {
         emitter.pendingLinkPositions.remove(targetPos);
         emitter.linkedPositions.remove(targetPos);
-        emitter.linkedConnections.remove(targetPos); // 连接本体会被ae自动摧毁，这里只需要丢掉引用
+        var connections = emitter.linkedConnections.remove(targetPos);
+        if (connections != null && !connections.isEmpty())
+        {
+            for (IGridConnection connection : connections)
+            {
+                if (connection != null)
+                    connection.destroy();
+            }
+        }
         emitter.setChanged();
+        emitter.markForClientUpdate();
     }
 
     /**
@@ -569,6 +669,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         emitter.linkedPositions.clear();
         emitter.pendingLinkPositions.clear();
         emitter.setChanged();
+        emitter.markForClientUpdate();
     }
 
     // 用来确定缓存表可用性-----------------------------------------------------
