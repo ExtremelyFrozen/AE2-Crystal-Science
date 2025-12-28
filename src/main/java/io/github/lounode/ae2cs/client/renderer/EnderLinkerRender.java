@@ -7,14 +7,18 @@ import io.github.lounode.ae2cs.common.block.entity.EnderEmitterBlockEntity;
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
 import io.github.lounode.ae2cs.common.item.EnderLinkerItem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -39,6 +43,15 @@ public class EnderLinkerRender
 
     private static final int MAX_BEAMS_PER_SET = 512;
 
+    // === 范围渲染参数 ===
+    private static final double RANGE_BOX_EPS = 0.002; // 防 z-fighting
+    private static final float RANGE_LINE_ALPHA = 0.55f;
+
+    // 自动连接范围（偏青绿）
+    private static final float AUTO_R = 0.20f, AUTO_G = 0.95f, AUTO_B = 0.75f;
+    // 最大连接范围（偏黄橙）
+    private static final float MAX_R = 1.00f, MAX_G = 0.85f, MAX_B = 0.15f;
+
     @SubscribeEvent
     public static void onRenderLevelStage(RenderLevelStageEvent event)
     {
@@ -48,7 +61,9 @@ public class EnderLinkerRender
         Player player = mc.player;
         if (player == null) return;
 
-        // 仅当玩家手持末影发信器时渲染
+        PoseStack poseStack = event.getPoseStack();
+
+        // 仅当玩家手持末影连接器时渲染
         ItemStack main = player.getMainHandItem();
         ItemStack off = player.getOffhandItem();
 
@@ -59,7 +74,7 @@ public class EnderLinkerRender
         }
         else if (off.getItem() instanceof EnderLinkerItem)
         {
-            targetPos = main.get(AECSDataComponents.ENDER_EMITTER_POS);
+            targetPos = off.get(AECSDataComponents.ENDER_EMITTER_POS);
         }
         if (targetPos == null) return;
 
@@ -68,7 +83,7 @@ public class EnderLinkerRender
 
         if (!(level.getBlockEntity(targetPos.pos()) instanceof EnderEmitterBlockEntity emitter)) return;
 
-        // 距离裁剪：玩家距离 emitter 超出范围就不画
+        // 距离裁剪
         Vec3 playerEye = player.getEyePosition();
         Vec3 emitterCenter = Vec3.atCenterOf(targetPos.pos());
         if (playerEye.distanceToSqr(emitterCenter) > SHOW_RANGE_SQR) return;
@@ -77,23 +92,25 @@ public class EnderLinkerRender
         var camera = event.getCamera();
         Vec3 camPos = camera.getPosition();
 
-        PoseStack poseStack = event.getPoseStack();
-
         MultiBufferSource.BufferSource buffer = mc.renderBuffers().bufferSource();
-        VertexConsumer vc = buffer.getBuffer(RenderType.entityTranslucent(WHITE_TEX));
 
         // 把世界坐标平移到相机原点
         poseStack.pushPose();
         poseStack.translate(-camPos.x, -camPos.y, -camPos.z);
 
-        PoseStack.Pose pose = poseStack.last();
-
-        // 起点
-        Vector3f startW = new Vector3f((float) emitterCenter.x, (float) emitterCenter.y, (float) emitterCenter.z);
-        Vector3f camW = new Vector3f((float) camPos.x, (float) camPos.y, (float) camPos.z);
-
         int packedLight = LightTexture.FULL_BRIGHT;
         int packedOverlay = net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY;
+
+        // 先画范围线框
+        renderChebyshevRanges(poseStack, buffer, emitter, targetPos.pos());
+
+        // 再获取 beam 的 consumer 并绘制（避免 Not building）
+        VertexConsumer beamVc = buffer.getBuffer(RenderType.entityTranslucent(WHITE_TEX));
+
+        PoseStack.Pose pose = poseStack.last();
+
+        Vector3f startW = new Vector3f((float) emitterCenter.x, (float) emitterCenter.y, (float) emitterCenter.z);
+        Vector3f camW = new Vector3f((float) camPos.x, (float) camPos.y, (float) camPos.z);
 
         // pending（淡红）
         List<?> pending = emitter.getPendingRenderPositionsSnapshot();
@@ -101,13 +118,13 @@ public class EnderLinkerRender
         for (Object o : pending)
         {
             if (++c1 > MAX_BEAMS_PER_SET) break;
-            var target = (net.minecraft.core.BlockPos) o;
+            BlockPos target = (BlockPos) o;
             if (!level.isLoaded(target)) continue;
 
             Vec3 targetCenter = Vec3.atCenterOf(target);
             Vector3f endW = new Vector3f((float) targetCenter.x, (float) targetCenter.y, (float) targetCenter.z);
 
-            drawBeamCrossWorld(pose, vc, startW, endW, camW, PENDING_WIDTH,
+            drawBeamCrossWorld(pose, beamVc, startW, endW, camW, PENDING_WIDTH,
                     1.00f, 0.35f, 0.35f, 0.35f,
                     packedLight, packedOverlay);
         }
@@ -118,20 +135,50 @@ public class EnderLinkerRender
         for (Object o : linked)
         {
             if (++c2 > MAX_BEAMS_PER_SET) break;
-            var target = (net.minecraft.core.BlockPos) o;
+            BlockPos target = (BlockPos) o;
             if (!level.isLoaded(target)) continue;
 
             Vec3 targetCenter = Vec3.atCenterOf(target);
             Vector3f endW = new Vector3f((float) targetCenter.x, (float) targetCenter.y, (float) targetCenter.z);
 
-            drawBeamCrossWorld(pose, vc, startW, endW, camW, LINKED_WIDTH,
+            drawBeamCrossWorld(pose, beamVc, startW, endW, camW, LINKED_WIDTH,
                     0.55f, 0.05f, 1.00f, 0.80f,
                     packedLight, packedOverlay);
         }
 
         poseStack.popPose();
 
+        buffer.endBatch(RenderType.lines());
         buffer.endBatch(RenderType.entityTranslucent(WHITE_TEX));
+    }
+
+    /**
+     * 渲染切比雪夫半径范围：两个线框立方体
+     */
+    private static void renderChebyshevRanges(PoseStack poseStack,
+                                              MultiBufferSource.BufferSource buffer,
+                                              EnderEmitterBlockEntity emitter,
+                                              BlockPos emitterPos)
+    {
+        int autoR = Mth.clamp(emitter.getLinkDistance(), 0, 512);
+        int maxR = Mth.clamp(emitter.getMaxLinkDistanceForClient(), 0, 512);
+        if (maxR < autoR) maxR = autoR;
+
+        VertexConsumer lineVc = buffer.getBuffer(RenderType.lines());
+
+        // 外层（最大范围）
+        if (maxR > 0)
+        {
+            AABB maxBox = new AABB(emitterPos).inflate(maxR).inflate(RANGE_BOX_EPS);
+            LevelRenderer.renderLineBox(poseStack, lineVc, maxBox, MAX_R, MAX_G, MAX_B, RANGE_LINE_ALPHA);
+        }
+
+        // 内层（自动范围）
+        if (autoR > 0)
+        {
+            AABB autoBox = new AABB(emitterPos).inflate(autoR).inflate(RANGE_BOX_EPS);
+            LevelRenderer.renderLineBox(poseStack, lineVc, autoBox, AUTO_R, AUTO_G, AUTO_B, RANGE_LINE_ALPHA);
+        }
     }
 
     // 光束绘制
@@ -181,7 +228,6 @@ public class EnderLinkerRender
         float aEnd = a * 0.20f;
 
         float nx = 0f, ny = 1f, nz = 0f;
-
 
         putVertex(pose, vc, s1, 0f, 0f, r, g, b, aStart, packedLight, packedOverlay, nx, ny, nz);
         putVertex(pose, vc, s2, 1f, 0f, r, g, b, aStart, packedLight, packedOverlay, nx, ny, nz);

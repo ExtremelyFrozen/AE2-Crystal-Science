@@ -66,6 +66,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
     private boolean autoMode = true;
     private boolean allowAutoLinkCableLike = false;
     private int linkDistance = 8;
+    private int maxLinkDistanceForClient = 16;
     private final Set<BlockPos> pendingLinkPositions = new HashSet<>();
     private final Set<BlockPos> linkedPositions = new HashSet<>();
     /**
@@ -99,8 +100,12 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
 
     public void setAutoMode(boolean autoMode)
     {
-        this.autoMode = autoMode;
-        setChanged();
+        if (this.autoMode != autoMode)
+        {
+            this.autoMode = autoMode;
+            markForClientUpdate();
+            setChanged();
+        }
     }
 
     public int getLinkDistance()
@@ -108,10 +113,20 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         return linkDistance;
     }
 
-    public void setLinkDistance(int linkDistance)
+    public void setLinkDistance(int newLinkDistance)
     {
-        this.linkDistance = Math.max(0, Math.min(linkDistance, maxLinkDistance));
-        setChanged();
+        newLinkDistance = Math.max(0, Math.min(newLinkDistance, maxLinkDistance));
+        if (newLinkDistance != this.linkDistance)
+        {
+            this.linkDistance = newLinkDistance;
+            markForClientUpdate();
+            setChanged();
+        }
+    }
+
+    public int getMaxLinkDistanceForClient()
+    {
+        return maxLinkDistanceForClient;
     }
 
     public boolean allowAutoLinkCableLike()
@@ -414,6 +429,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         super.writeToStream(data);
         data.writeBoolean(this.autoMode);
         data.writeBoolean(this.active);
+        data.writeInt(this.maxLinkDistanceForClient);
         data.writeInt(this.linkDistance);
         data.writeInt(this.pendingLinkPositions.size());
         for (BlockPos pos : this.pendingLinkPositions)
@@ -433,6 +449,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         super.readFromStream(data);
         this.autoMode = data.readBoolean();
         this.active = data.readBoolean();
+        this.maxLinkDistanceForClient = data.readInt();
         this.linkDistance = data.readInt();
         this.pendingLinkPositions.clear();
         int pendingSize = data.readInt();
