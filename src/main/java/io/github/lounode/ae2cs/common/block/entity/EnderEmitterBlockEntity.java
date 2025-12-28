@@ -93,6 +93,11 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         );
     }
 
+    public boolean isActive()
+    {
+        return active;
+    }
+
     public boolean isAutoMode()
     {
         return autoMode;
@@ -553,7 +558,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         {
             if (emitter.level == null) return false;
             IGridNode emitterNode = emitter.getMainNode().getNode();
-            if (emitterNode == null) return false;
+            if (emitterNode == null || !emitterNode.isActive()) return false;
             IInWorldGridNodeHost targetNodeHost = emitter.level.getCapability(AECapabilities.IN_WORLD_GRID_NODE_HOST, pos);
             valid = (forceAuto || emitter.isAutoMode())
                     && emitterNode.getUsedChannels() < emitter.getMaxLinkChannels()

@@ -305,8 +305,9 @@ public class AECSBlockStateProvider extends BlockStateProvider
     private void genEnderEmitter()
     {
         Block block = AECSBlocks.ENDER_EMITTER_BLOCK.get();
-        var offModel = models().getExistingFile(modLoc("block/me_ender_emitter/off"));
-        var onModel = models().getExistingFile(modLoc("block/me_ender_emitter/on"));
+        var offModel = models().getExistingFile(modLoc("block/me_ender_emitter/off_form"));
+        var onModel = models().getExistingFile(modLoc("block/me_ender_emitter/on_form"));
+        var itemModel = models().getExistingFile(modLoc("block/me_ender_emitter/item"));
 
         getVariantBuilder(block).forAllStates(state -> {
             boolean active = state.getValue(AECSBlockProperties.ACTIVE);
@@ -326,6 +327,6 @@ public class AECSBlockStateProvider extends BlockStateProvider
                     .build();
         });
 
-        simpleBlockItem(block, offModel);
+        simpleBlockItem(block, itemModel);
     }
 }

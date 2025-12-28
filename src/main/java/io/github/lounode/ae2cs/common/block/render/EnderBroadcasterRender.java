@@ -34,13 +34,13 @@ public class EnderBroadcasterRender implements BlockEntityRenderer<EnderBroadcas
         if (be.isActiveForClient())
         {
             if (be.isAsSenderForClient())
-                coreModel = Minecraft.getInstance().getModelManager().getModel(AECSAdditionalModels.SENDER_CORE_MODEL);
+                coreModel = Minecraft.getInstance().getModelManager().getModel(AECSAdditionalModels.BROADCASTER_SENDER_CORE_MODEL);
             else
-                coreModel = Minecraft.getInstance().getModelManager().getModel(AECSAdditionalModels.RECEIVER_CORE_MODEL);
+                coreModel = Minecraft.getInstance().getModelManager().getModel(AECSAdditionalModels.BROADCASTER_RECEIVER_CORE_MODEL);
         }
         else
         {
-            coreModel = Minecraft.getInstance().getModelManager().getModel(AECSAdditionalModels.OFF_CORE_MODEL);
+            coreModel = Minecraft.getInstance().getModelManager().getModel(AECSAdditionalModels.BROADCASTER_OFF_CORE);
         }
 
         RenderType rt = RenderType.cutout();

@@ -13,18 +13,27 @@ public final class AECSAdditionalModels
 {
 
     // 广播装置
-    public static final ModelResourceLocation OFF_CORE_MODEL =
+    public static final ModelResourceLocation BROADCASTER_OFF_CORE =
             ModelResourceLocation.standalone(AE2CrystalScience.makeId("block/me_ender_broadcaster/off_core"));
-    public static final ModelResourceLocation SENDER_CORE_MODEL =
+    public static final ModelResourceLocation BROADCASTER_SENDER_CORE_MODEL =
             ModelResourceLocation.standalone(AE2CrystalScience.makeId("block/me_ender_broadcaster/sender_core"));
-    public static final ModelResourceLocation RECEIVER_CORE_MODEL =
+    public static final ModelResourceLocation BROADCASTER_RECEIVER_CORE_MODEL =
             ModelResourceLocation.standalone(AE2CrystalScience.makeId("block/me_ender_broadcaster/receiver_core"));
+
+    // 发信器
+    public static final ModelResourceLocation EMITTER_TOP_ON_MODEL =
+            ModelResourceLocation.standalone(AE2CrystalScience.makeId("block/me_ender_emitter/on_top"));
+
+    public static final ModelResourceLocation EMITTER_TOP_OFF_MODEL =
+            ModelResourceLocation.standalone(AE2CrystalScience.makeId("block/me_ender_emitter/off_top"));
 
     @SubscribeEvent
     public static void onRegisterAdditionalModels(ModelEvent.RegisterAdditional event)
     {
-        event.register(OFF_CORE_MODEL);
-        event.register(SENDER_CORE_MODEL);
-        event.register(RECEIVER_CORE_MODEL);
+        event.register(BROADCASTER_OFF_CORE);
+        event.register(BROADCASTER_SENDER_CORE_MODEL);
+        event.register(BROADCASTER_RECEIVER_CORE_MODEL);
+        event.register(EMITTER_TOP_ON_MODEL);
+        event.register(EMITTER_TOP_OFF_MODEL);
     }
 }

@@ -1,10 +1,28 @@
 {
   "variants": {
-    "active=false": {
-      "model": "ae2cs:block/me_ender_emitter/off"
+    "active=false,facing=east": {
+      "model": "ae2cs:block/me_ender_emitter/off_form"
     },
-    "active=true": {
-      "model": "ae2cs:block/me_ender_emitter/on"
+    "active=false,facing=north": {
+      "model": "ae2cs:block/me_ender_emitter/off_form"
+    },
+    "active=false,facing=south": {
+      "model": "ae2cs:block/me_ender_emitter/off_form"
+    },
+    "active=false,facing=west": {
+      "model": "ae2cs:block/me_ender_emitter/off_form"
+    },
+    "active=true,facing=east": {
+      "model": "ae2cs:block/me_ender_emitter/on_form"
+    },
+    "active=true,facing=north": {
+      "model": "ae2cs:block/me_ender_emitter/on_form"
+    },
+    "active=true,facing=south": {
+      "model": "ae2cs:block/me_ender_emitter/on_form"
+    },
+    "active=true,facing=west": {
+      "model": "ae2cs:block/me_ender_emitter/on_form"
     }
   }
 }

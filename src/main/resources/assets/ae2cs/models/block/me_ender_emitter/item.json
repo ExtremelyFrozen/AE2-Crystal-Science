@@ -451,6 +451,17 @@
 			}
 		}
 	],
+	"display": {
+		"gui": {
+			"rotation": [30, -135, 0],
+			"translation": [0, -2, 0],
+			"scale": [0.45, 0.45, 0.45]
+		},
+		"fixed": {
+			"translation": [0, -2, 0],
+			"scale": [0.35, 0.35, 0.35]
+		}
+	},
 	"groups": [
 		{
 			"name": "base",
