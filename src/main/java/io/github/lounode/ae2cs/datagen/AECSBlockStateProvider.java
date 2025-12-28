@@ -17,6 +17,7 @@ import net.minecraft.data.models.blockstates.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.neoforged.neoforge.client.model.generators.*;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -308,9 +309,11 @@ public class AECSBlockStateProvider extends BlockStateProvider
         var offModel = models().getExistingFile(modLoc("block/me_ender_emitter/off_form"));
         var onModel = models().getExistingFile(modLoc("block/me_ender_emitter/on_form"));
         var itemModel = models().getExistingFile(modLoc("block/me_ender_emitter/item"));
+        var upperModel = models().getExistingFile(modLoc("block/me_ender_emitter/upper"));
 
         getVariantBuilder(block).forAllStates(state -> {
             boolean active = state.getValue(AECSBlockProperties.ACTIVE);
+            boolean upper = state.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.UPPER;
 
             ModelFile model;
             if (!active)
@@ -321,6 +324,10 @@ public class AECSBlockStateProvider extends BlockStateProvider
             {
                 model = onModel;
             }
+
+            if (upper)
+                model = upperModel;
+
 
             return ConfiguredModel.builder()
                     .modelFile(model)

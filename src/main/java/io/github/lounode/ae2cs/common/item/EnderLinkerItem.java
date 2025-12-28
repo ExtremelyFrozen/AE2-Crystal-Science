@@ -12,6 +12,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class EnderLinkerItem extends Item
 {
@@ -21,7 +22,7 @@ public class EnderLinkerItem extends Item
     }
 
     @Override
-    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context)
+    public @NotNull InteractionResult onItemUseFirst(@NotNull ItemStack stack, UseOnContext context)
     {
         Player player = context.getPlayer();
         Level level = context.getLevel();
@@ -54,8 +55,11 @@ public class EnderLinkerItem extends Item
                 }
                 else
                 {
+                    // 如果能成功添加的话，我们额外做一次移除，以实现类似换绑的功能
                     if (EnderEmitterBlockEntity.addPosToEmitter(emitter, context.getClickedPos(), true, false))
                     {
+                        EnderEmitterBlockEntity.removePosFromRecentEmitter(level, context.getClickedPos());
+                        EnderEmitterBlockEntity.addPosToEmitter(emitter, context.getClickedPos(), true, false);
                         player.displayClientMessage(Component.translatable("ae2cs.msg.item.ender_linker.success_to_link"), true);
                     }
                     else
