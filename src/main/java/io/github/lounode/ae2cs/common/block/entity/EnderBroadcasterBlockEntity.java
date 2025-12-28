@@ -13,7 +13,6 @@ import io.github.lounode.ae2cs.api.CustomChannelProviderHost;
 import io.github.lounode.ae2cs.api.linker.broadcast.*;
 import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
-import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
 import net.minecraft.core.BlockPos;
@@ -22,6 +21,7 @@ import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -96,6 +96,10 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
     private int succeedVirtualSenderNodes = 0; // 成功连接并分配得到频道的虚拟节点数
     private boolean needRecountVirtualSenderNodes = true;
 
+    // 用于客户端渲染
+    private boolean activeForClient = false;
+    private boolean asSenderForClient = false;
+
     public EnderBroadcasterBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
     {
         super(type, pos, state, 80000);
@@ -124,6 +128,16 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
         return connectionType;
     }
 
+    public boolean isActiveForClient()
+    {
+        return activeForClient;
+    }
+
+    public boolean isAsSenderForClient()
+    {
+        return asSenderForClient;
+    }
+
     @Override
     public void serverTick()
     {
@@ -144,7 +158,7 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
             }
         }
 
-        // 更改方块状态
+        // 更新客户端渲染信息
         if (level == null || level.isClientSide()) return;
         boolean asSender = this.connectionType == ConnectionType.AS_SENDER;
         boolean asReceiver = this.connectionType == ConnectionType.AS_RECEIVER;
@@ -157,15 +171,15 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
         {
             active = getMainNode().getGrid().getEnergyService().isNetworkPowered();
         }
-
-        BlockState state = getBlockState();
-        if (state.hasProperty(AECSBlockProperties.ACTIVE) && state.getValue(AECSBlockProperties.ACTIVE) != active)
+        if (active != this.activeForClient)
         {
-            level.setBlock(worldPosition, getBlockState().setValue(AECSBlockProperties.ACTIVE, active), 2);
+            this.activeForClient = active;
+            markForClientUpdate();
         }
-        if (state.hasProperty(AECSBlockProperties.BROADCASTER_SENDER) && state.getValue(AECSBlockProperties.BROADCASTER_SENDER) != asSender)
+        if (asSender != this.asSenderForClient)
         {
-            level.setBlock(worldPosition, getBlockState().setValue(AECSBlockProperties.BROADCASTER_SENDER, asSender), 2);
+            this.asSenderForClient = asSender;
+            markForClientUpdate();
         }
     }
 
@@ -682,6 +696,23 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
         enabledCustomChannel = data.getBoolean("enabled_custom_channel");
         customMaxChannels = data.getInt("custom_max_channels");
         this.expectedChannels = data.getInt("expected_channels");
+    }
+
+    @Override
+    protected void writeToStream(RegistryFriendlyByteBuf data)
+    {
+        super.writeToStream(data);
+        data.writeBoolean(this.activeForClient);
+        data.writeBoolean(this.asSenderForClient);
+    }
+
+    @Override
+    protected boolean readFromStream(RegistryFriendlyByteBuf data)
+    {
+        super.readFromStream(data);
+        this.activeForClient = data.readBoolean();
+        this.asSenderForClient = data.readBoolean();
+        return true;
     }
 
     @Override

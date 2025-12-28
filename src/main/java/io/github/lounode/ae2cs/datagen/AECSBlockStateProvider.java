@@ -287,30 +287,16 @@ public class AECSBlockStateProvider extends BlockStateProvider
     private void genEnderBroadcaster()
     {
         Block block = AECSBlocks.ENDER_BROADCASTER_BLOCK.get();
-        var offModel = models().getExistingFile(modLoc("block/me_ender_broadcaster/off"));
-        var senderModel = models().getExistingFile(modLoc("block/me_ender_broadcaster/sender"));
-        var receiverModel = models().getExistingFile(modLoc("block/me_ender_broadcaster/receiver"));
+        // 核心由BER渲染
+        var formModel = models().getExistingFile(modLoc("block/me_ender_broadcaster/form"));
 
         getVariantBuilder(block).forAllStates(state -> {
-            boolean active = state.getValue(AECSBlockProperties.ACTIVE);
-
-            ModelFile model;
-            if (!active)
-            {
-                model = offModel;
-            }
-            else
-            {
-                boolean sender = state.getValue(AECSBlockProperties.BROADCASTER_SENDER);
-                model = sender ? senderModel : receiverModel;
-            }
-
             return ConfiguredModel.builder()
-                    .modelFile(model)
+                    .modelFile(formModel)
                     .build();
         });
 
-        simpleBlockItem(block, offModel);
+        simpleBlockItem(block, formModel);
     }
 
     /**

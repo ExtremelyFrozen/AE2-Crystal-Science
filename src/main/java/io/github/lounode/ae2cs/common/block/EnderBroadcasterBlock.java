@@ -4,16 +4,13 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
 import io.github.lounode.ae2cs.common.block.entity.EnderBroadcasterBlockEntity;
-import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,18 +23,6 @@ public class EnderBroadcasterBlock extends AEBaseEntityBlock<EnderBroadcasterBlo
     public EnderBroadcasterBlock(BlockBehaviour.Properties properties)
     {
         super(properties.noOcclusion());
-        this.registerDefaultState(this.defaultBlockState()
-                .setValue(AECSBlockProperties.ACTIVE, false)
-                .setValue(AECSBlockProperties.BROADCASTER_SENDER, false)
-        );
-    }
-
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
-    {
-        super.createBlockStateDefinition(builder);
-        builder.add(AECSBlockProperties.ACTIVE);
-        builder.add(AECSBlockProperties.BROADCASTER_SENDER);
     }
 
     @Override

@@ -5,7 +5,6 @@
 	"render_type": "cutout",
 	"textures": {
 		"1": "ae2cs:block/me_ender_broadcaster/side",
-		"4": "ae2cs:block/me_ender_broadcaster/crystal_off",
 		"5": "ae2cs:block/me_ender_broadcaster/grid",
 		"particle": "ae2cs:block/me_ender_broadcaster/side"
 	},
@@ -297,50 +296,20 @@
 				"up": {"uv": [11, 6, 5, 4], "rotation": 90, "texture": "#1"},
 				"down": {"uv": [5, 4, 11, 6], "rotation": 270, "texture": "#1"}
 			}
-		},
-		{
-			"name": "core",
-			"from": [4, 4, 4],
-			"to": [12, 12, 12],
-			"rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 8]},
-			"faces": {
-				"north": {"uv": [0, 0, 8, 8], "texture": "#4"},
-				"east": {"uv": [8, 0, 0, 8], "texture": "#4"},
-				"south": {"uv": [8, 0, 0, 8], "texture": "#4"},
-				"west": {"uv": [0, 0, 8, 8], "texture": "#4"},
-				"up": {"uv": [8, 0, 0, 8], "texture": "#4"},
-				"down": {"uv": [8, 8, 0, 0], "texture": "#4"}
-			}
-		},
-		{
-			"name": "core_light",
-			"from": [12.2, 12.2, 12.2],
-			"to": [3.8, 3.8, 3.8],
-			"rotation": {"angle": 45, "axis": "y", "origin": [8, 8, 8]},
-			"faces": {
-				"north": {"uv": [8, 0, 16, 8], "texture": "#4"},
-				"east": {"uv": [16, 0, 8, 8], "texture": "#4"},
-				"south": {"uv": [16, 0, 8, 8], "texture": "#4"},
-				"west": {"uv": [8, 0, 16, 8], "texture": "#4"},
-				"up": {"uv": [16, 0, 8, 8], "texture": "#4"},
-				"down": {"uv": [16, 8, 8, 0], "texture": "#4"}
-			}
 		}
 	],
 	"groups": [
 		{
-			"name": "ring",
+			"name": "group",
 			"origin": [8, 8, 8],
 			"color": 0,
 			"children": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 		},
 		{
-			"name": "side",
+			"name": "group",
 			"origin": [8, 8, 8],
 			"color": 0,
 			"children": [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
-		},
-		22,
-		23
+		}
 	]
 }

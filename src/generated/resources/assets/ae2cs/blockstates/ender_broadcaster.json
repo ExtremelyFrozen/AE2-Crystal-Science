@@ -1,16 +1,7 @@
 {
   "variants": {
-    "active=false,broadcaster_sender=false": {
-      "model": "ae2cs:block/me_ender_broadcaster/off"
-    },
-    "active=false,broadcaster_sender=true": {
-      "model": "ae2cs:block/me_ender_broadcaster/off"
-    },
-    "active=true,broadcaster_sender=false": {
-      "model": "ae2cs:block/me_ender_broadcaster/receiver"
-    },
-    "active=true,broadcaster_sender=true": {
-      "model": "ae2cs:block/me_ender_broadcaster/sender"
+    "": {
+      "model": "ae2cs:block/me_ender_broadcaster/form"
     }
   }
 }

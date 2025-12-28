@@ -1,6 +1,7 @@
 package io.github.lounode.ae2cs.common.init.client;
 
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
+import io.github.lounode.ae2cs.common.block.render.EnderBroadcasterRender;
 import io.github.lounode.ae2cs.common.block.render.EnderEmitterRenderer;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import net.neoforged.api.distmarker.Dist;
@@ -16,5 +17,6 @@ public class AECSClientRenderers
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers e)
     {
         e.registerBlockEntityRenderer(AECSBlockEntities.ENDER_EMITTER_BLOCK_ENTITY.get(), EnderEmitterRenderer::new);
+        e.registerBlockEntityRenderer(AECSBlockEntities.ENDER_BROADCASTER_BLOCK_ENTITY.get(), EnderBroadcasterRender::new);
     }
 }
