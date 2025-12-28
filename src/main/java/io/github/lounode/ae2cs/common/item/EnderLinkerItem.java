@@ -47,7 +47,7 @@ public class EnderLinkerItem extends Item
 
             if (level.getBlockEntity(linkerPos.pos()) instanceof EnderEmitterBlockEntity emitter)
             {
-                if (EnderEmitterBlockEntity.addPosToEmitter(emitter, context.getClickedPos()))
+                if (EnderEmitterBlockEntity.addPosToEmitter(emitter, context.getClickedPos(), true, false))
                 {
                     player.displayClientMessage(Component.translatable("ae2cs.msg.item.ender_linker.success_to_link"), true);
                 }

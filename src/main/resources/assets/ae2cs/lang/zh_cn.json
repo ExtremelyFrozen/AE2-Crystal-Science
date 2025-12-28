@@ -110,6 +110,8 @@
   "ae2cs.menu.ender_emitter.distance": "当前自动连接距离：%s",
   "ae2cs.menu.ender_emitter.auto_link_cable_box": "自动连接到线缆和面板",
   "ae2cs.menu.ender_emitter.max_distance": "最大可连接距离：%s",
+  "ae2cs.menu.ender_emitter.try_sacn_all": "主动扫描",
+  "ae2cs.menu.ender_emitter.destroy_all": "断开全部连接",
 
   "ae2cs.widgets.broadcaster.sender": "发送端",
   "ae2cs.widgets.broadcaster.receiver": "接收端",

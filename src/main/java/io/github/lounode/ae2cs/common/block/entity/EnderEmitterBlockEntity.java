@@ -16,6 +16,7 @@ import io.github.lounode.ae2cs.Config;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.util.GlobalChunkPos;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
+import io.github.lounode.ae2cs.util.ChunkHelper;
 import io.github.lounode.ae2cs.util.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -25,10 +26,12 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -59,12 +62,12 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
     private boolean autoMode = true;
     private boolean allowAutoLinkCableLike = false;
     private int linkDistance = 8;
-    private Set<BlockPos> pendingLinkPositions = new HashSet<>();
-    private Set<BlockPos> linkedPositions = new HashSet<>();
+    private final Set<BlockPos> pendingLinkPositions = new HashSet<>();
+    private final Set<BlockPos> linkedPositions = new HashSet<>();
     /**
      * 到目标位置的连接，显式清除连接，方块破坏和区块卸载时只需清表，不需要手动摧毁连接，ae已经处理了这件事
      */
-    private Map<BlockPos, List<IGridConnection>> linkedConnections = new HashMap<>();
+    private final Map<BlockPos, List<IGridConnection>> linkedConnections = new HashMap<>();
     private int recentAddedPosCountdown = 2;
 
     public EnderEmitterBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState)
@@ -148,11 +151,11 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
                 }
             }
 
-            // 尝试建立连接
+            // 尝试建立连接，这里targets会自动筛掉不符合条件的
             List<IGridNode> targetNodes = getConnectableNodes(level, targetPos);
             if (targetNodes.isEmpty())
             {
-                // 任何可连接节点
+                // 无任何可连接节点
                 it.remove();
                 continue;
             }
@@ -160,7 +163,19 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
             ArrayList<IGridConnection> newConnections = new ArrayList<>();
             for (IGridNode targetNode : targetNodes)
             {
-                if (targetNode == null) continue;
+                IGrid targetGrid = targetNode.getGrid();
+                IGrid selfGrid = selfNode.getGrid();
+                if (targetGrid != null && selfGrid != null)
+                {
+                    if (targetGrid.getPathingService().getControllerState() != ControllerState.NO_CONTROLLER)
+                    {
+                        if (targetGrid != selfGrid)
+                            continue; // 不连接导致冲突的网络
+                        else if (targetNode.meetsChannelRequirements())
+                            continue; // 同一个网络内，若对方已经分配有频道，不连接
+                    }
+                }
+
                 try
                 {
                     newConnections.add(GridHelper.createConnection(selfNode, targetNode));
@@ -219,6 +234,8 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
 
         IPathingService pathingService = grid.getPathingService();
         ChannelMode mode = pathingService.getChannelMode();
+
+        if (mode == ChannelMode.INFINITE) return Integer.MAX_VALUE;
 
         if (pathingService.getControllerState() == ControllerState.CONTROLLER_ONLINE)
         {
@@ -345,7 +362,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
     }
 
     /**
-     * 获取目标位置中最适合被无线连接的一个或一群节点，其内部元素无法判别是否为null，需要外部自行判断
+     * 获取目标位置中最适合被无线连接的一个或一群节点，其内部元素亦不为null
      */
     public static List<IGridNode> getConnectableNodes(Level level, BlockPos pos)
     {
@@ -391,6 +408,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
             }
         }
 
+        nodes.removeIf(Objects::isNull);
         return nodes;
     }
 
@@ -418,13 +436,25 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
     /**
      * 将需要连接的位置添加到指定发信器
      */
-    public static boolean addPosToEmitter(@NotNull EnderEmitterBlockEntity emitter, @NotNull BlockPos pos)
+    public static boolean addPosToEmitter(@NotNull EnderEmitterBlockEntity emitter, @NotNull BlockPos pos, boolean byManual, boolean forceAuto)
     {
-        IGridNode emitterNode = emitter.getMainNode().getNode();
-        if (emitterNode == null) return false;
+        // 如果是手动连接，仅检查手动方法
+        boolean valid = byManual && VecHelper.closerThanChebyshev(emitter.worldPosition, pos, maxLinkDistance);
 
-        if (emitterNode.getUsedChannels() < emitter.getMaxLinkChannels()
-                && VecHelper.closerThanChebyshev(emitter.worldPosition, pos, maxLinkDistance))
+        // 自动连接额外检查
+        if (!valid)
+        {
+            if (emitter.level == null) return false;
+            IGridNode emitterNode = emitter.getMainNode().getNode();
+            if (emitterNode == null) return false;
+            IInWorldGridNodeHost targetNodeHost = emitter.level.getCapability(AECapabilities.IN_WORLD_GRID_NODE_HOST, pos);
+            valid = (forceAuto || emitter.isAutoMode())
+                    && emitterNode.getUsedChannels() < emitter.getMaxLinkChannels()
+                    && (!(targetNodeHost instanceof CableBusBlockEntity) || emitter.allowAutoLinkCableLike())
+                    && VecHelper.closerThanChebyshev(emitter.worldPosition, pos, emitter.linkDistance);
+        }
+
+        if (valid)
         {
             emitter.addPosToPending(pos);
             emitter.setChanged();
@@ -477,10 +507,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
             if (targetLevel.getBlockEntity(linkPos) instanceof EnderEmitterBlockEntity emitter)
             {
                 // 打开自动模式、检查emitter的独特距离，最后再尝试加入到emitter
-                if (emitter.isAutoMode()
-                        && VecHelper.closerThanChebyshev(linkPos, targetPos, emitter.linkDistance)
-                        && (!(targetNodeHost instanceof CableBusBlockEntity) || emitter.allowAutoLinkCableLike())
-                        && addPosToEmitter(emitter, targetPos))
+                if (addPosToEmitter(emitter, targetPos, false, false))
                 {
                     return;
                 }
@@ -507,6 +534,41 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
                 removePosFromEmitter(emitter, targetPos);
             }
         }
+    }
+
+    /**
+     * 用来主动将附近区块的be全部添加进表
+     */
+    public static void addAllRecentBEtoEmitter(@NotNull EnderEmitterBlockEntity emitter)
+    {
+        Level targetLevel = emitter.level;
+        if (targetLevel instanceof ServerLevel serverLevel)
+        {
+            ChunkPos centerChunk = new ChunkPos(emitter.worldPosition);
+            List<BlockEntity> blockEntities = ChunkHelper.getBlockEntitiesInChunks(serverLevel, centerChunk, autoAreaFactor);
+            for (BlockEntity be : blockEntities)
+            {
+                addPosToEmitter(emitter, be.getBlockPos(), false, true);
+            }
+        }
+    }
+
+    /**
+     * 手动显式清除所有连接
+     */
+    public static void removeAllLinkedFromEmitter(@NotNull EnderEmitterBlockEntity emitter)
+    {
+        for (Collection<IGridConnection> connections : emitter.linkedConnections.values())
+        {
+            for (IGridConnection connection : connections)
+            {
+                connection.destroy();
+            }
+        }
+        emitter.linkedConnections.clear();
+        emitter.linkedPositions.clear();
+        emitter.pendingLinkPositions.clear();
+        emitter.setChanged();
     }
 
     // 用来确定缓存表可用性-----------------------------------------------------

@@ -38,6 +38,18 @@
       "width": 40,
       "height": 20
     },
+    "try_sacn_all_button": {
+      "left": 110,
+      "top": 42,
+      "width": 40,
+      "height": 20
+    },
+    "destroy_all_button": {
+      "left": 160,
+      "top": 42,
+      "width": 40,
+      "height": 20
+    },
     "auto_mode_box": {
       "left": 10,
       "top": 80,

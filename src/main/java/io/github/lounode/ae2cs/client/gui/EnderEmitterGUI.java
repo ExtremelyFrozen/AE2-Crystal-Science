@@ -15,6 +15,8 @@ public class EnderEmitterGUI extends UpgradeableScreen<EnderEmitterMenu>
     private AE2Button reduceDistanceButton;
     private AECheckbox autoModeBox;
     private AECheckbox allowAutoLinkCableLikeBox;
+    private AE2Button trySacnAllButton;
+    private AE2Button destroyAllButton;
 
     public EnderEmitterGUI(EnderEmitterMenu menu, Inventory playerInventory, Component title, ScreenStyle style)
     {
@@ -32,6 +34,12 @@ public class EnderEmitterGUI extends UpgradeableScreen<EnderEmitterMenu>
                     int mult = hasShiftDown() ? 5 : 1;
                     menu.sendChangeDistance(-1 * mult);
                 });
+        this.trySacnAllButton = widgets.addButton(
+                "try_sacn_all_button", Component.translatable("ae2cs.menu.ender_emitter.try_sacn_all"),
+                menu::sendSacnAll);
+        this.destroyAllButton = widgets.addButton(
+                "destroy_all_button", Component.translatable("ae2cs.menu.ender_emitter.destroy_all"),
+                menu::sendDestroyAll);
         this.autoModeBox = widgets.addCheckbox("auto_mode_box",
                 Component.translatable("ae2cs.menu.ender_emitter.auto_mode_box"),
                 () -> menu.sendChangeAutoMode(autoModeBox.isSelected()));

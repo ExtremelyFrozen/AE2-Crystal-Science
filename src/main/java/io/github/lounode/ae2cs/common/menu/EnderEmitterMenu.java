@@ -12,6 +12,8 @@ public class EnderEmitterMenu extends UpgradeableMenu<EnderEmitterBlockEntity>
     private static final String changeAutoModeAction = "change_auto_mode";
     private static final String changeDistanceAction = "change_distance";
     private static final String changeAllowAutoLinkCableAction = "change_allow_auto_link_cable";
+    private static final String trySacnAllAction = "try_sacn_all";
+    private static final String destroyAllAction = "destroy_all";
 
     @GuiSync(10)
     public int linkDistance;
@@ -32,6 +34,8 @@ public class EnderEmitterMenu extends UpgradeableMenu<EnderEmitterBlockEntity>
         registerClientAction(changeAutoModeAction, Boolean.class, this::onChangeAutoMode);
         registerClientAction(changeDistanceAction, Integer.class, this::onChangeDistance);
         registerClientAction(changeAllowAutoLinkCableAction, Boolean.class, this::onChangeAllowAutoLinkCable);
+        registerClientAction(trySacnAllAction, this::onSacnAll);
+        registerClientAction(destroyAllAction, this::onDestroyAll);
     }
 
     @Override
@@ -60,6 +64,16 @@ public class EnderEmitterMenu extends UpgradeableMenu<EnderEmitterBlockEntity>
         sendClientAction(changeAllowAutoLinkCableAction, allowAutoLinkCable);
     }
 
+    public void sendSacnAll()
+    {
+        sendClientAction(trySacnAllAction);
+    }
+
+    public void sendDestroyAll()
+    {
+        sendClientAction(destroyAllAction);
+    }
+
     private void onChangeAutoMode(boolean autoMode)
     {
         getHost().setAutoMode(autoMode);
@@ -73,6 +87,16 @@ public class EnderEmitterMenu extends UpgradeableMenu<EnderEmitterBlockEntity>
     private void onChangeAllowAutoLinkCable(boolean allowAutoLinkCable)
     {
         getHost().setAllowAutoLinkCableLike(allowAutoLinkCable);
+    }
+
+    private void onSacnAll()
+    {
+        EnderEmitterBlockEntity.addAllRecentBEtoEmitter(getHost());
+    }
+
+    private void onDestroyAll()
+    {
+        EnderEmitterBlockEntity.removeAllLinkedFromEmitter(getHost());
     }
 
     @Override
