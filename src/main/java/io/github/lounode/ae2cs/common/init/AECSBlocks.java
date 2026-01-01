@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs.common.init;
 
 import appeng.block.AEBaseBlock;
 import appeng.block.crafting.PatternProviderBlock;
+import appeng.block.misc.InterfaceBlock;
 import io.github.lounode.ae2cs.api.ids.AECSBlockIds;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.block.*;
@@ -87,6 +88,12 @@ public class AECSBlocks
      * 末影发信器
      */
     public static final DeferredBlock<EnderEmitterBlock> ENDER_EMITTER_BLOCK = registerOtherBlock(AECSBlockIds.ENDER_EMITTER, () -> new EnderEmitterBlock(AEBaseBlock.metalProps()));
+
+    /**
+     * 末影接口
+     */
+    public static final DeferredBlock<InterfaceBlock> ENDER_INTERFACE_BLOCK = registerOtherBlock(AECSBlockIds.ENDER_INTERFACE, InterfaceBlock::new);
+
 
     public static BlockBehaviour.Properties copy(BlockBehaviour behaviour)
     {

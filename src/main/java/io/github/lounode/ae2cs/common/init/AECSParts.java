@@ -9,6 +9,7 @@ import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModelsHelper;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.ids.AECSPartIds;
+import io.github.lounode.ae2cs.common.me.part.EnderInterfacePart;
 import io.github.lounode.ae2cs.common.me.part.IntegratedInterfacePart;
 import io.github.lounode.ae2cs.common.me.part.MeteoritePatternProviderPart;
 import io.github.lounode.ae2cs.common.me.part.SimplePatternProviderPart;
@@ -42,6 +43,12 @@ public class AECSParts
             AECSPartIds.METEORITE_PATTERN_PROVIDER,
             MeteoritePatternProviderPart.class,
             MeteoritePatternProviderPart::new
+    );
+
+    public static final DeferredItem<PartItem<EnderInterfacePart>> ENDER_INTERFACE_PART = registerPart(
+            AECSPartIds.ENDER_INTERFACE,
+            EnderInterfacePart.class,
+            EnderInterfacePart::new
     );
 
     public static List<DeferredItem<? extends PartItem<?>>> getAll()

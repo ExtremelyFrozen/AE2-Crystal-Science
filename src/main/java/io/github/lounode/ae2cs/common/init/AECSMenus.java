@@ -6,6 +6,7 @@ import appeng.menu.implementations.PatternProviderMenu;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.block.entity.*;
+import io.github.lounode.ae2cs.common.me.logic.EnderInterfaceHost;
 import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceHost;
 import io.github.lounode.ae2cs.common.me.logic.MeteoritePatternProviderHost;
 import io.github.lounode.ae2cs.common.menu.*;
@@ -105,6 +106,11 @@ public class AECSMenus
     public static final Supplier<MenuType<EnderEmitterMenu>> ENDER_EMITTER_MENU = MENU_TYPES.register("ender_emitter_menu",
             () -> MenuTypeBuilder.create(EnderEmitterMenu::new, EnderEmitterBlockEntity.class)
                     .build(AE2CrystalScience.makeId("ender_emitter_menu"))
+    );
+
+    public static final Supplier<MenuType<EnderInterfaceMenu>> ENDER_INTERFACE_MENU = MENU_TYPES.register("ender_interface_menu",
+            () -> MenuTypeBuilder.create(EnderInterfaceMenu::new, EnderInterfaceHost.class)
+                    .build(AE2CrystalScience.makeId("ender_interface_menu"))
     );
 
     public static void registerMenus(IEventBus eventBus)

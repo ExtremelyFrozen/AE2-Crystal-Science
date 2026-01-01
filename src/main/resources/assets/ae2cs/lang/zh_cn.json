@@ -13,6 +13,7 @@
   "block.ae2cs.crystal_aggregator": "晶能聚合器",
   "block.ae2cs.ender_broadcaster": "ME末影广播装置",
   "block.ae2cs.ender_emitter": "ME末影发信器",
+  "block.ae2cs.ender_interface": "ME末影接口",
 
   "item.ae2cs.certus_quartz_seed": "赛特斯石英水晶种子",
   "item.ae2cs.fluix_crystal_seed": "福鲁伊克斯种子",
@@ -28,6 +29,7 @@
   "item.ae2cs.integrated_interface_part": "ME集成接口",
   "item.ae2cs.simple_pattern_provider_part": "初级样板供应器",
   "item.ae2cs.meteorite_pattern_provider_part": "自装配式样板供应器",
+  "item.ae2cs.ender_interface_part": "ME末影接口",
 
   "item.ae2cs.purified_certus_quartz_crystal": "高纯赛特斯石英水晶",
   "item.ae2cs.purified_fluix_crystal": "高纯福鲁伊克斯水晶",
@@ -112,6 +114,10 @@
   "ae2cs.menu.ender_emitter.max_distance": "最大可连接距离：%s",
   "ae2cs.menu.ender_emitter.try_sacn_all": "主动扫描",
   "ae2cs.menu.ender_emitter.destroy_all": "断开全部连接",
+
+  "ae2cs.menu.ender_interface.black_list_mode_box": "黑名单模式",
+  "ae2cs.menu.ender_interface.add_range": "增加距离",
+  "ae2cs.menu.ender_interface.reduce_range": "减少距离",
 
   "ae2cs.widgets.broadcaster.sender": "发送端",
   "ae2cs.widgets.broadcaster.receiver": "接收端",

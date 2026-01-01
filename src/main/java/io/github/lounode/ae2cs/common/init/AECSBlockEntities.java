@@ -146,6 +146,16 @@ public class AECSBlockEntities
     );
 
     /**
+     * 末影接口
+     */
+    public static final DeferredBlockEntityType<EnderInterfaceBlockEntity> ENDER_INTERFACE_BLOCK_ENTITY = create(
+            AECSBlockIds.ENDER_INTERFACE,
+            EnderInterfaceBlockEntity.class,
+            EnderInterfaceBlockEntity::new,
+            AECSBlocks.ENDER_INTERFACE_BLOCK
+    );
+
+    /**
      * 注册监听
      */
     public static void register(IEventBus eventBus)

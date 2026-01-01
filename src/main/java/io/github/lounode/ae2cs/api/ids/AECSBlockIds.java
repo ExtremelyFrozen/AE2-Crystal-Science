@@ -13,4 +13,5 @@ public class AECSBlockIds
     public static final String CRYSTAL_AGGREGATOR = "crystal_aggregator";
     public static final String ENDER_BROADCASTER = "ender_broadcaster";
     public static final String ENDER_EMITTER = "ender_emitter";
+    public static final String ENDER_INTERFACE = "ender_interface";
 }
