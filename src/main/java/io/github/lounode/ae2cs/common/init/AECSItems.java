@@ -6,6 +6,7 @@ import io.github.lounode.ae2cs.api.ids.AECSItemIds;
 import io.github.lounode.ae2cs.common.item.CrystalSeedItem;
 import io.github.lounode.ae2cs.common.item.EnderLinkerItem;
 import io.github.lounode.ae2cs.common.item.PureCrystalItem;
+import io.github.lounode.ae2cs.common.item.ResonatingPatternItem;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -65,6 +66,8 @@ public class AECSItems
     public static final DeferredItem<Item> crystalGrowthCard = registerOtherItem(AECSItemIds.CRYSTAL_GROWTH_CARD, () -> Upgrades.createUpgradeCardItem(new Item.Properties()));
 
     public static final DeferredItem<EnderLinkerItem> enderLink = registerOtherItem(AECSItemIds.ENDER_LINKER, () -> new EnderLinkerItem(new Item.Properties()));
+
+    public static final DeferredItem<ResonatingPatternItem> RESONATING_PATTERN = registerOtherItem(AECSItemIds.RESONATING_PATTERN, () -> new ResonatingPatternItem(new Item.Properties()));
 
     // 快速物品状态
     public static Item.Properties defaultBuilder()

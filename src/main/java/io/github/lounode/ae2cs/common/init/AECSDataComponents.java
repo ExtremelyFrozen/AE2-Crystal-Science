@@ -3,6 +3,7 @@ package io.github.lounode.ae2cs.common.init;
 import com.mojang.serialization.Codec;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.linker.broadcast.MemoryCardBandInfo;
+import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
@@ -46,6 +47,26 @@ public class AECSDataComponents
             register("ender_emitter_pos", b -> b
                     .persistent(GlobalPos.CODEC)
                     .networkSynchronized(GlobalPos.STREAM_CODEC)
+                    .cacheEncoding()
+            );
+
+    /**
+     * 用于存储谐振样板信息
+     */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<EncodedResonatingPattern>> ENCODED_RESONATING_PATTERN =
+            register("encoded_resonating_pattern", b -> b
+                    .persistent(EncodedResonatingPattern.CODEC)
+                    .networkSynchronized(EncodedResonatingPattern.STREAM_CODEC)
+                    .cacheEncoding()
+            );
+
+    /**
+     * 用于记录当前谐振样板的目标资源索引
+     */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> RESONATING_PATTERN_SELECTED_INPUT =
+            register("resonating_pattern_selected_input", b -> b
+                    .persistent(Codec.INT)
+                    .networkSynchronized(ByteBufCodecs.VAR_INT)
                     .cacheEncoding()
             );
 

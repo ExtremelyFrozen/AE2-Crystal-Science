@@ -1,6 +1,7 @@
 package io.github.lounode.ae2cs.common.init;
 
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
+import io.github.lounode.ae2cs.common.recipe.ResonatingPatternUpgradeRecipe;
 import io.github.lounode.ae2cs.common.recipe.circuit_etcher.CircuitEtcherRecipe;
 import io.github.lounode.ae2cs.common.recipe.circuit_etcher.CircuitEtcherRecipeSerializer;
 import io.github.lounode.ae2cs.common.recipe.crystal_aggregator.CrystalAggregatorRecipe;
@@ -9,6 +10,7 @@ import io.github.lounode.ae2cs.common.recipe.crystal_pulverizer.CrystalPulverize
 import io.github.lounode.ae2cs.common.recipe.crystal_pulverizer.CrystalPulverizerRecipeSerializer;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -27,6 +29,10 @@ public class AECSRecipeSerializers
 
     public static final Supplier<RecipeSerializer<CrystalPulverizerRecipe>> CRYSTAL_PULVERIZER =
             RECIPE_SERIALIZERS.register("crystal_pulverizer_recipe_serializer", CrystalPulverizerRecipeSerializer::new);
+
+    public static final Supplier<RecipeSerializer<ResonatingPatternUpgradeRecipe>> RESONATING_PATTERN_UPGRADE =
+            RECIPE_SERIALIZERS.register("resonating_pattern_upgrade", () -> new SimpleCraftingRecipeSerializer<>(ResonatingPatternUpgradeRecipe::new));
+
 
     public static void register(IEventBus modEventBus)
     {

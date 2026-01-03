@@ -14,4 +14,5 @@ public class AECSBlockIds
     public static final String ENDER_BROADCASTER = "ender_broadcaster";
     public static final String ENDER_EMITTER = "ender_emitter";
     public static final String ENDER_INTERFACE = "ender_interface";
+    public static final String RESONATING_PATTERN_PROVIDER = "resonating_pattern_provider";
 }

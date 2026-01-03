@@ -44,10 +44,20 @@
   
   "item.ae2cs.crystal_growth_card": "晶体催生卡",
   "item.ae2cs.ender_linker": "末影连接工具",
+  "item.ae2cs.resonating_pattern": "谐振样板",
 
   "message.ae2_crystal_seeds.tooltip.seed_growth": "生长度：%1$s％",
   "message.ae2cs.tooltip.burn_time": "燃烧时间：%s刻",
   "message.ae2cs.tooltip.energy": "能量密度：%sFE每刻",
+
+  "ae2cs.msg.resonating_pattern.no_inputs": "该样板没有任何输入材料。",
+  "ae2cs.msg.resonating_pattern.input_empty": "空槽",
+  "ae2cs.msg.resonating_pattern.input_invalid": "未知",
+  "ae2cs.msg.resonating_pattern.no_valid_inputs": "该样板没有任何有效输入材料。",
+  "ae2cs.msg.resonating_pattern.selected_input_unmarked": "已切换目标材料：%1$d/%2$d（%3$s） 未标记",
+  "ae2cs.msg.resonating_pattern.selected_input_marked": "已切换目标材料：%1$d/%2$d（%3$s） 已标记到 %4$s %5$d %6$d %7$d 的 %8$s 面",
+  "ae2cs.msg.resonating_pattern.marked": "已标记：%1$d/%2$d（%3$s）→ %4$d %5$d %6$d 的 %7$s 面",
+  "ae2cs.msg.resonating_pattern.unmarked": "已取消标记：%1$d/%2$d（%3$s）",
 
   "ae2cs.simple_component.work_progress_bar": "进度：",
   "ae2cs.simple_component.energy_progress_bar": "当前能量（AE）：",

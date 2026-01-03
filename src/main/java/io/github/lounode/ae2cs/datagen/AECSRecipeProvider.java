@@ -3,6 +3,7 @@ package io.github.lounode.ae2cs.datagen;
 import appeng.core.definitions.AEItems;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.common.init.AECSItems;
+import io.github.lounode.ae2cs.common.recipe.ResonatingPatternUpgradeRecipe;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CircuitEtcherRecipeBuilder;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBuilder;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalPulverizerRecipeBuilder;
@@ -10,6 +11,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.SpecialRecipeBuilder;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.conditions.IConditionBuilder;
 import org.jetbrains.annotations.NotNull;
@@ -45,6 +47,9 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
                 .require(Items.SAND, 1)
                 .save(recipeOutput, AE2CrystalScience.makeId("pulverizer/silicon"));
 
+        // 添加谐振样板配方
+        SpecialRecipeBuilder.special(ResonatingPatternUpgradeRecipe::new)
+                .save(recipeOutput, "resonating_pattern_upgrade");
 
     }
 

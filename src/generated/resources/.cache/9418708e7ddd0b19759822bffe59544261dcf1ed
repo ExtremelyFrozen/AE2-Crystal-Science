@@ -1,4 +1,4 @@
-// 1.21.1	2025-12-28T12:47:31.1743765	Item Models: ae2cs
+// 1.21.1	2026-01-03T20:02:40.6932394	Item Models: ae2cs
 b12dd22e280360c8a0e60dab4f633579f285ac71 assets/ae2cs/models/item/certus_quartz_seed.json
 9b0a0f5bbd61b4a4cf3d2083524df9fe42b70ac5 assets/ae2cs/models/item/certus_quartz_seed_1.json
 9359cf66e98b5af14ae724e4097a9a8916b30c0e assets/ae2cs/models/item/certus_quartz_seed_2.json
@@ -35,6 +35,7 @@ e4b8a6a69bf42c179b44ddfe070889105ffc36f2 assets/ae2cs/models/item/quantum_crysta
 7172ec548140bf8fd63f3acd6de31760a934b8d0 assets/ae2cs/models/item/redstone_crystal_seed.json
 2551b3c96cf94950597e1f102a9027d89f1c525d assets/ae2cs/models/item/redstone_crystal_seed_1.json
 7c53ff256d4638987b90f041a4d94d8d61866c49 assets/ae2cs/models/item/redstone_crystal_seed_2.json
+f79b2104f45b825c2c88afb434772711a18bc1cc assets/ae2cs/models/item/resonating_pattern.json
 2a4e6524227f3217025214e5e249e1735923ee93 assets/ae2cs/models/item/resonating_seed.json
 90f243f9aaac8805cb2da5542623511e9a6655e5 assets/ae2cs/models/item/resonating_seed_1.json
 4d97e6d35f1e3519c056c70b6db51adcd2d3c93b assets/ae2cs/models/item/resonating_seed_2.json

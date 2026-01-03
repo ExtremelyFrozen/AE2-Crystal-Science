@@ -26,4 +26,5 @@ public class AECSItemIds
 
     public static final String CRYSTAL_GROWTH_CARD = "crystal_growth_card";
     public static final String ENDER_LINKER = "ender_linker";
+    public static final String RESONATING_PATTERN = "resonating_pattern";
 }
