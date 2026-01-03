@@ -9,10 +9,7 @@ import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModelsHelper;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.ids.AECSPartIds;
-import io.github.lounode.ae2cs.common.me.part.EnderInterfacePart;
-import io.github.lounode.ae2cs.common.me.part.IntegratedInterfacePart;
-import io.github.lounode.ae2cs.common.me.part.MeteoritePatternProviderPart;
-import io.github.lounode.ae2cs.common.me.part.SimplePatternProviderPart;
+import io.github.lounode.ae2cs.common.me.part.*;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -49,6 +46,12 @@ public class AECSParts
             AECSPartIds.ENDER_INTERFACE,
             EnderInterfacePart.class,
             EnderInterfacePart::new
+    );
+
+    public static final DeferredItem<PartItem<ResonatingPatternProviderPart>> RESONATING_PATTERN_PROVIDER_PART = registerPart(
+            AECSPartIds.RESONATING_PATTERN_PROVIDER,
+            ResonatingPatternProviderPart.class,
+            ResonatingPatternProviderPart::new
     );
 
     public static List<DeferredItem<? extends PartItem<?>>> getAll()

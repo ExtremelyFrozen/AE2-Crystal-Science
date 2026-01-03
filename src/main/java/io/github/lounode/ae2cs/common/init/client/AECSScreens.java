@@ -10,6 +10,7 @@ import io.github.lounode.ae2cs.common.init.AECSMenus;
 import io.github.lounode.ae2cs.common.menu.EnderEmitterMenu;
 import io.github.lounode.ae2cs.common.menu.EnderInterfaceMenu;
 import io.github.lounode.ae2cs.common.menu.MeteoritePatternProviderMenu;
+import io.github.lounode.ae2cs.common.menu.ResonatingPatternProviderMenu;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -46,5 +47,8 @@ public class AECSScreens
         event.<EnderInterfaceMenu, EnderInterfaceGUI>register(AECSMenus.ENDER_INTERFACE_MENU.get(),
                 (menu, inv, title) -> new EnderInterfaceGUI(menu, inv, title,
                         StyleManager.loadStyleDoc("/screens/ender_interface_menu.json")));
+        event.<ResonatingPatternProviderMenu, ResonatingPatternProviderGUI>register(AECSMenus.RESONATING_PATTERN_PROVIDER_MENU.get(),
+                (menu, inv, title) -> new ResonatingPatternProviderGUI(menu, inv, title,
+                        StyleManager.loadStyleDoc("/screens/resonating_pattern_provider.json")));
     }
 }

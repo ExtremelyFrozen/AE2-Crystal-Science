@@ -9,6 +9,7 @@ import io.github.lounode.ae2cs.common.block.entity.*;
 import io.github.lounode.ae2cs.common.me.logic.EnderInterfaceHost;
 import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceHost;
 import io.github.lounode.ae2cs.common.me.logic.MeteoritePatternProviderHost;
+import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderHost;
 import io.github.lounode.ae2cs.common.menu.*;
 import io.github.lounode.ae2cs.common.menu.linker.broadcast.*;
 import net.minecraft.core.registries.Registries;
@@ -111,6 +112,11 @@ public class AECSMenus
     public static final Supplier<MenuType<EnderInterfaceMenu>> ENDER_INTERFACE_MENU = MENU_TYPES.register("ender_interface_menu",
             () -> MenuTypeBuilder.create(EnderInterfaceMenu::new, EnderInterfaceHost.class)
                     .build(AE2CrystalScience.makeId("ender_interface_menu"))
+    );
+
+    public static final Supplier<MenuType<ResonatingPatternProviderMenu>> RESONATING_PATTERN_PROVIDER_MENU = MENU_TYPES.register("resonating_pattern_provider_menu",
+            () -> MenuTypeBuilder.create(ResonatingPatternProviderMenu::new, ResonatingPatternProviderHost.class)
+                    .build(AE2CrystalScience.makeId("resonating_pattern_provider_menu"))
     );
 
     public static void registerMenus(IEventBus eventBus)

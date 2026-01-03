@@ -94,6 +94,11 @@ public class AECSBlocks
      */
     public static final DeferredBlock<InterfaceBlock> ENDER_INTERFACE_BLOCK = registerOtherBlock(AECSBlockIds.ENDER_INTERFACE, InterfaceBlock::new);
 
+    /**
+     * 谐振样板供应器
+     */
+    public static final DeferredBlock<PatternProviderBlock> RESONATING_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.RESONATING_PATTERN_PROVIDER, PatternProviderBlock::new);
+
 
     public static BlockBehaviour.Properties copy(BlockBehaviour behaviour)
     {

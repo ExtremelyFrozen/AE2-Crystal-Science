@@ -3,10 +3,7 @@ package io.github.lounode.ae2cs.common.init;
 import appeng.api.parts.RegisterPartCapabilitiesEvent;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.block.entity.*;
-import io.github.lounode.ae2cs.common.me.part.EnderInterfacePart;
-import io.github.lounode.ae2cs.common.me.part.IntegratedInterfacePart;
-import io.github.lounode.ae2cs.common.me.part.MeteoritePatternProviderPart;
-import io.github.lounode.ae2cs.common.me.part.SimplePatternProviderPart;
+import io.github.lounode.ae2cs.common.me.part.*;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -29,6 +26,7 @@ public class AECSCapabilities
         EnderBroadcasterBlockEntity.onRegisterCaps(event);
         EnderEmitterBlockEntity.onRegisterCaps(event);
         EnderInterfaceBlockEntity.onRegisterCaps(event);
+        ResonatingPatternProviderBlockEntity.onRegisterCaps(event);
     }
 
     @SubscribeEvent
@@ -38,5 +36,6 @@ public class AECSCapabilities
         MeteoritePatternProviderPart.onRegisterCaps(event);
         SimplePatternProviderPart.onRegisterCaps(event);
         EnderInterfacePart.onRegisterCaps(event);
+        ResonatingPatternProviderPart.onRegisterCaps(event);
     }
 }

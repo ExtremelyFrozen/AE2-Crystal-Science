@@ -156,6 +156,16 @@ public class AECSBlockEntities
     );
 
     /**
+     * 谐振样板供应器
+     */
+    public static final DeferredBlockEntityType<ResonatingPatternProviderBlockEntity> RESONATING_PATTERN_PROVIDER_BLOCK_ENTITY = create(
+            AECSBlockIds.RESONATING_PATTERN_PROVIDER,
+            ResonatingPatternProviderBlockEntity.class,
+            ResonatingPatternProviderBlockEntity::new,
+            AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK
+    );
+
+    /**
      * 注册监听
      */
     public static void register(IEventBus eventBus)

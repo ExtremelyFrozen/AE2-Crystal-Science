@@ -16,7 +16,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.Stream;
 
-/** target的size必须与inputs相等以方便进行一一对应，但是target的optional可为空以代表无指定目标 */
+/**
+ * target的size必须与inputs相等以方便进行一一对应，但是target的optional可为空以代表无指定目标
+ */
 public record EncodedResonatingPattern(
         List<GenericStack> sparseInputs,
         List<GenericStack> sparseOutputs,

@@ -14,6 +14,7 @@
   "block.ae2cs.ender_broadcaster": "ME末影广播装置",
   "block.ae2cs.ender_emitter": "ME末影发信器",
   "block.ae2cs.ender_interface": "ME末影接口",
+  "block.ae2cs.resonating_pattern_provider": "谐振样板供应器",
 
   "item.ae2cs.certus_quartz_seed": "赛特斯石英水晶种子",
   "item.ae2cs.fluix_crystal_seed": "福鲁伊克斯种子",
@@ -45,6 +46,7 @@
   "item.ae2cs.crystal_growth_card": "晶体催生卡",
   "item.ae2cs.ender_linker": "末影连接工具",
   "item.ae2cs.resonating_pattern": "谐振样板",
+  "item.ae2cs.resonating_pattern_provider_part": "谐振样板供应器",
 
   "message.ae2_crystal_seeds.tooltip.seed_growth": "生长度：%1$s％",
   "message.ae2cs.tooltip.burn_time": "燃烧时间：%s刻",
@@ -128,6 +130,9 @@
   "ae2cs.menu.ender_interface.black_list_mode_box": "黑名单模式",
   "ae2cs.menu.ender_interface.add_range": "增加距离",
   "ae2cs.menu.ender_interface.reduce_range": "减少距离",
+
+  "ae2cs.menu.resonating_provider.pull_mode_title": "拉取模式",
+  "ae2cs.menu.resonating_provider.pull_mode_desc": "切换是否从周围容器主动收取物品",
 
   "ae2cs.widgets.broadcaster.sender": "发送端",
   "ae2cs.widgets.broadcaster.receiver": "接收端",
