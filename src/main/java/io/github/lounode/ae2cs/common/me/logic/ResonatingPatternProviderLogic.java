@@ -336,7 +336,9 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic
         return super.isBusy() || !resonatingSendList.isEmpty();
     }
 
-    /** 从周围面抽取资源进入返回仓 */
+    /**
+     * 从周围面抽取资源进入返回仓
+     */
     private boolean doPullWork()
     {
         if (!enablePull) return false;

@@ -30,72 +30,29 @@ public class ResonatingPatternItem extends EncodedPatternItem<ResonatingPatternD
                 ResonatingPatternDetails::getInvalidPatternTooltip);
     }
 
+    /**
+     * 右键方块进行标记
+     */
     @Override
     public @NotNull InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context)
-    {
-        // 取消掉AE2原版在此的拆解逻辑，使交互管线向后继续运行
-        return InteractionResult.PASS;
-    }
-
-    /**
-     * 右键空气：
-     * - 非Shift：切换selectedInput
-     * - Shift：交给AE原版触发拆解逻辑
-     */
-    @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand)
-    {
-        ItemStack stack = player.getItemInHand(hand);
-
-        var encoded = stack.get(AECSDataComponents.ENCODED_RESONATING_PATTERN.get());
-        if (encoded == null)
-        {
-            return super.use(level, player, hand);
-        }
-
-        // Shift 交给AE原版拆解
-        if (InteractionUtil.isInAlternateUseMode(player))
-        {
-            return super.use(level, player, hand);
-        }
-
-        // 非Shift 切换selectedInput
-        if (!level.isClientSide())
-        {
-            cycleSelectedInputAndToast(player, stack, encoded);
-        }
-
-        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
-    }
-
-    /**
-     * 右键方块：
-     * - 非Shift：切换selectedInput
-     * - Shift：标记/取消标记
-     */
-    @Override
-    public @NotNull InteractionResult useOn(UseOnContext context)
     {
         var level = context.getLevel();
         var player = context.getPlayer();
         if (player == null) return InteractionResult.PASS;
 
-        var stack = context.getItemInHand();
+        // 只处理主手
+        if (context.getHand() != InteractionHand.MAIN_HAND) return InteractionResult.PASS;
 
         var encoded = stack.get(AECSDataComponents.ENCODED_RESONATING_PATTERN.get());
         if (encoded == null) return InteractionResult.PASS;
 
-        // 非Shift：只做切换
-        if (!InteractionUtil.isInAlternateUseMode(player))
+        // 现在“Shift”留给滚轮切换：Shift+右键方块不做标记，直接放行
+        if (InteractionUtil.isInAlternateUseMode(player))
         {
-            if (!level.isClientSide())
-            {
-                cycleSelectedInputAndToast(player, stack, encoded);
-            }
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.PASS;
         }
 
-        // Shift+右键方块：标记/取消标记
+        // 客户端动画
         if (level.isClientSide())
         {
             return InteractionResult.SUCCESS;
@@ -163,11 +120,52 @@ public class ResonatingPatternItem extends EncodedPatternItem<ResonatingPatternD
                 true
         );
 
+        // 拦截后续方块交互
         return InteractionResult.CONSUME;
     }
 
-    private static void cycleSelectedInputAndToast(Player player, ItemStack stack,
-                                                   EncodedResonatingPattern encoded)
+    /**
+     * 右键空气：
+     * - Shift：交给AE2原版拆解逻辑
+     * - 非Shift：直接PASS
+     */
+    @Override
+    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand)
+    {
+        ItemStack stack = player.getItemInHand(hand);
+
+        var encoded = stack.get(AECSDataComponents.ENCODED_RESONATING_PATTERN.get());
+        if (encoded == null)
+        {
+            return super.use(level, player, hand);
+        }
+
+        // Shift交给AE原版拆解
+        if (InteractionUtil.isInAlternateUseMode(player))
+        {
+            return super.use(level, player, hand);
+        }
+
+        return InteractionResultHolder.pass(stack);
+    }
+
+    /**
+     * useOn不承担任何逻辑
+     */
+    @Override
+    public @NotNull InteractionResult useOn(@NotNull UseOnContext context)
+    {
+        return InteractionResult.PASS;
+    }
+
+
+    // -----------------------辅助操作方法---------------------------
+
+    /**
+     * 服务端调用：根据next(向后/向前)切换selectedInput，并给玩家发提示
+     */
+    public static void scrollSelectedInputAndToast(Player player, ItemStack stack,
+                                                   EncodedResonatingPattern encoded, boolean next)
     {
         int n = encoded.sparseInputs().size();
         if (n <= 0)
@@ -185,7 +183,6 @@ public class ResonatingPatternItem extends EncodedPatternItem<ResonatingPatternD
             return;
         }
 
-        // 先把当前 selected 修正到一个非空输入上（防旧数据/异常）
         int cur = resolveSelectedNonEmpty(stack, encoded);
         if (cur < 0)
         {
@@ -194,24 +191,24 @@ public class ResonatingPatternItem extends EncodedPatternItem<ResonatingPatternD
             return;
         }
 
-        int next = findNextNonEmptyInput(encoded, cur);
-        if (next < 0)
+        int nextIdx = next ? findNextNonEmptyInput(encoded, cur) : findPrevNonEmptyInput(encoded, cur);
+        if (nextIdx < 0)
         {
             player.displayClientMessage(Component.translatable("ae2cs.msg.resonating_pattern.no_valid_inputs")
                     .withStyle(ChatFormatting.RED), true);
             return;
         }
 
-        stack.set(AECSDataComponents.RESONATING_PATTERN_SELECTED_INPUT.get(), next);
+        stack.set(AECSDataComponents.RESONATING_PATTERN_SELECTED_INPUT.get(), nextIdx);
 
-        int ord = ordinalOfNonEmptyInput(encoded, next);
-        var selectedInfo = buildSelectedInputInfo(encoded, next);
-        var markInfo = buildSelectedInputMarkInfo(encoded, next);
+        int ord = ordinalOfNonEmptyInput(encoded, nextIdx);
+        var selectedInfo = buildSelectedInputInfo(encoded, nextIdx);
+        var markInfo = buildSelectedInputMarkInfo(encoded, nextIdx);
 
         if (markInfo.isPresent())
         {
             var t = markInfo.get();
-            var dimId = t.pos().dimension().location().toString();
+            var dimId = Component.translatable(t.pos().dimension().location().toLanguageKey("dimension"));
             var pos = t.pos().pos();
             player.displayClientMessage(
                     Component.translatable("ae2cs.msg.resonating_pattern.selected_input_marked",
@@ -269,8 +266,24 @@ public class ResonatingPatternItem extends EncodedPatternItem<ResonatingPatternD
     }
 
     /**
-     * 把sparseIndex映射为“第几个非空输入”。
-     * 若该sparseIndex本身为空，返回 0。
+     * 从start往前找上一个非空输入（循环一圈），找不到返回 -1
+     */
+    private static int findPrevNonEmptyInput(EncodedResonatingPattern encoded, int start)
+    {
+        int n = encoded.sparseInputs().size();
+        if (n <= 0) return -1;
+
+        for (int step = 1; step <= n; step++)
+        {
+            int idx = (start - step) % n;
+            if (idx < 0) idx += n;
+            if (isNonEmptySparseInput(encoded, idx)) return idx;
+        }
+        return -1;
+    }
+
+    /**
+     * 把sparseIndex映射为“第几个非空输入”。若该sparseIndex本身为空，返回 0。
      */
     private static int ordinalOfNonEmptyInput(EncodedResonatingPattern encoded, int sparseIndex)
     {
@@ -309,7 +322,6 @@ public class ResonatingPatternItem extends EncodedPatternItem<ResonatingPatternD
         return next;
     }
 
-
     private static Optional<Target> buildSelectedInputMarkInfo(EncodedResonatingPattern encoded, int sparseIndex)
     {
         if (sparseIndex < 0 || sparseIndex >= encoded.inputTargets().size())
@@ -318,7 +330,6 @@ public class ResonatingPatternItem extends EncodedPatternItem<ResonatingPatternD
         }
         return encoded.inputTargets().get(sparseIndex);
     }
-
 
     /**
      * 构造一个“当前选中输入”的显示信息（尽量显示物品名；如果为空则显示“空槽”）
