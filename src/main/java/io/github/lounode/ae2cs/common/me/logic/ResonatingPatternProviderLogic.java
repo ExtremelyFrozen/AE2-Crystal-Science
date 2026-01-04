@@ -219,6 +219,10 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic
         {
             var adapter = findTarget(m.target());
             if (adapter == null) return false;
+
+            // 阻挡模式
+            if (isBlockedByMode(adapter)) return false;
+
             long simulated = adapter.insert(m.key(), m.amount(), Actionable.SIMULATE);
             if (simulated < m.amount()) return false;
         }
@@ -394,6 +398,11 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic
 
     // -------------------辅助方法-------------------------
 
+    private boolean isBlockedByMode(PatternProviderTarget adapter)
+    {
+        return this.isBlocking() && adapter.containsPatternInput(this.patternInputs);
+    }
+
     private static KeyCounter[] copyKeyCounters(KeyCounter[] inputHolder)
     {
         var out = new KeyCounter[inputHolder.length];
@@ -548,6 +557,12 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic
             if (adapter == null)
             {
                 continue; // 维度不存在/区块未加载/能力不存在
+            }
+
+            // 阻挡模式
+            if (isBlockedByMode(adapter))
+            {
+                continue;
             }
 
             var what = pending.stack().what();
