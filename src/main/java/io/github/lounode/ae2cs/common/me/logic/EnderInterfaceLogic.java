@@ -11,7 +11,6 @@ import appeng.api.stacks.AEKey;
 import appeng.api.storage.MEStorage;
 import appeng.core.settings.TickRates;
 import appeng.helpers.InterfaceLogic;
-import appeng.helpers.InterfaceLogicHost;
 import appeng.util.ConfigInventory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -32,20 +31,21 @@ public class EnderInterfaceLogic extends InterfaceLogic
 {
     private static final int MAX_ABSORB_RANGE = 9;
 
-    private final InterfaceLogicHost host;
+    private final EnderInterfaceHost host;
 
     private final ConfigInventory absorbConfigInventory;
     private boolean blackListMode = false; // 黑名单还是白名单？
     private int range = 3; // 吸收半径，切比雪夫距离
+    private boolean renderRangeInClient;
 
     private Set<AEKey> absorbFilterdKeys = new HashSet<>();
 
-    public EnderInterfaceLogic(IManagedGridNode gridNode, InterfaceLogicHost host, Item is)
+    public EnderInterfaceLogic(IManagedGridNode gridNode, EnderInterfaceHost host, Item is)
     {
         this(gridNode, host, is, 9, 18);
     }
 
-    public EnderInterfaceLogic(IManagedGridNode gridNode, InterfaceLogicHost host, Item is, int slots, int absorbConfigSlots)
+    public EnderInterfaceLogic(IManagedGridNode gridNode, EnderInterfaceHost host, Item is, int slots, int absorbConfigSlots)
     {
         super(gridNode, host, is, slots);
 
@@ -90,7 +90,21 @@ public class EnderInterfaceLogic extends InterfaceLogic
             this.range = newValue;
             mainNode.ifPresent((iGrid, iGridNode) -> iGrid.getTickManager().alertDevice(iGridNode));
             this.host.saveChanges();
+            this.host.markForLogicClientUpdate();
         }
+    }
+
+    public boolean isRenderRangeInClient()
+    {
+        return renderRangeInClient;
+    }
+
+    public void setRenderRangeInClient(boolean newValue)
+    {
+        if (newValue == renderRangeInClient) return;
+        renderRangeInClient = newValue;
+        host.saveChanges();
+        this.host.markForLogicClientUpdate();
     }
 
     @Override
@@ -100,6 +114,7 @@ public class EnderInterfaceLogic extends InterfaceLogic
         absorbConfigInventory.writeToChildTag(tag, "absorb_config", registries);
         tag.putInt("range", range);
         tag.putBoolean("black_list_mode", blackListMode);
+        tag.putBoolean("render_range_in_client", this.renderRangeInClient);
     }
 
     @Override
@@ -109,6 +124,7 @@ public class EnderInterfaceLogic extends InterfaceLogic
         absorbConfigInventory.readFromChildTag(tag, "absorb_config", registries);
         range = tag.getInt("range");
         blackListMode = tag.getBoolean("black_list_mode");
+        this.renderRangeInClient = tag.getBoolean("render_range_in_client");
 
         onAbsorbConfigChange();
     }

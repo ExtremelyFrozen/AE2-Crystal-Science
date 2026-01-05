@@ -5,4 +5,6 @@ import appeng.helpers.InterfaceLogicHost;
 public interface EnderInterfaceHost extends InterfaceLogicHost
 {
     EnderInterfaceLogic getEnderInterfaceLogic();
+
+    void markForLogicClientUpdate();
 }

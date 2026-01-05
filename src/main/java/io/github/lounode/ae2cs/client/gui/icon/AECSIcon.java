@@ -10,7 +10,22 @@ public enum AECSIcon implements IButtonIcon
     PULL_MODE_OFF(16, 0),
 
     ENTROPY_INCREASE(0, 16),
-    ENTROPY_DECREASE(16, 16);
+    ENTROPY_DECREASE(16, 16),
+
+    WHITE_LIST_MODE(0, 32),
+    BLACK_LIST_MODE(16, 32),
+
+    SUBTRACTION_SIGN(0, 48),
+    ADDITION_SIGN(16, 48),
+
+    BREAK_ALL_LINKS(0, 64),
+    LINK_TO_ALL(16, 64),
+
+    AUTO_LINK_CABLE_DISABLE(0, 80),
+    AUTO_LINK_CABLE_ENABLE(16, 80),
+
+    AUTO_LINK_DISABLE(0, 96),
+    AUTO_LINK_ENABLE(16, 96);
 
 
     public final int x;

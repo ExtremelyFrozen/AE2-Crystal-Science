@@ -12,6 +12,7 @@ import io.github.lounode.ae2cs.common.init.AECSMenus;
 import io.github.lounode.ae2cs.common.me.logic.EnderInterfaceHost;
 import io.github.lounode.ae2cs.common.me.logic.EnderInterfaceLogic;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -75,5 +76,29 @@ public class EnderInterfaceBlockEntity extends InterfaceBlockEntity implements E
     public EnderInterfaceLogic getEnderInterfaceLogic()
     {
         return (EnderInterfaceLogic) getInterfaceLogic();
+    }
+
+    @Override
+    public void markForLogicClientUpdate()
+    {
+        if (level != null && !level.isClientSide())
+            this.markForClientUpdate();
+    }
+
+    @Override
+    protected void writeToStream(RegistryFriendlyByteBuf data)
+    {
+        super.writeToStream(data);
+        data.writeBoolean(this.getEnderInterfaceLogic().isRenderRangeInClient());
+        data.writeInt(getEnderInterfaceLogic().getRange());
+    }
+
+    @Override
+    protected boolean readFromStream(RegistryFriendlyByteBuf data)
+    {
+        super.readFromStream(data);
+        this.getEnderInterfaceLogic().setRenderRangeInClient(data.readBoolean());
+        this.getEnderInterfaceLogic().setRange(data.readInt());
+        return true;
     }
 }

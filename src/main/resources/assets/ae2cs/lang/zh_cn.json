@@ -168,9 +168,13 @@
   "ae2cs.menu.ender_emitter.try_sacn_all": "主动扫描",
   "ae2cs.menu.ender_emitter.destroy_all": "断开全部连接",
 
-  "ae2cs.menu.ender_interface.black_list_mode_box": "黑名单模式",
+  "ae2cs.menu.ender_interface.black_list_mode_title": "切换黑白名单模式",
+  "ae2cs.menu.ender_interface.black_list_mode_desc": "当图标为黑时，不吸收标记的物品\n当图标为白色时，只吸收标记的物品",
   "ae2cs.menu.ender_interface.add_range": "增加距离",
   "ae2cs.menu.ender_interface.reduce_range": "减少距离",
+  "ae2cs.menu.ender_interface.absorb_slot_text": "吸收标记与距离设置",
+  "ae2cs.menu.ender_interface.show_range_title": "展示掉落物吸收范围",
+  "ae2cs.menu.ender_interface.show_range_desc": "切换是否显示掉落物吸收范围",
 
   "ae2cs.menu.resonating_provider.pull_mode_title": "拉取模式",
   "ae2cs.menu.resonating_provider.pull_mode_desc": "切换是否从周围容器主动收取物品",

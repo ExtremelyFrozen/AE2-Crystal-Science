@@ -12,7 +12,8 @@ import net.minecraft.world.inventory.MenuType;
 public class EnderInterfaceMenu extends InterfaceMenu
 {
     private static final String changeBlackListMode = "change_black_list_mode";
-    public static final String changeAbsorbRange = "change_absorb_range";
+    private static final String changeAbsorbRange = "change_absorb_range";
+    private static final String changeShowRange = "change_show_range";
 
     @GuiSync(10)
     public boolean blackListMode = false;
@@ -20,12 +21,16 @@ public class EnderInterfaceMenu extends InterfaceMenu
     @GuiSync(11)
     public int absorbRange = 3;
 
+    @GuiSync(12)
+    public boolean showRange = false;
+
     public EnderInterfaceMenu(MenuType<? extends InterfaceMenu> menuType, int id, Inventory ip, EnderInterfaceHost host)
     {
         super(menuType, id, ip, host);
 
         registerClientAction(changeBlackListMode, Boolean.class, this::onChangeBlackListMode);
         registerClientAction(changeAbsorbRange, Integer.class, this::onChangeAbsorbRange);
+        registerClientAction(changeShowRange, Boolean.class, this::onChangeShowRange);
     }
 
     @Override
@@ -33,6 +38,7 @@ public class EnderInterfaceMenu extends InterfaceMenu
     {
         blackListMode = getEnderInterfaceHost().getEnderInterfaceLogic().isBlackListMode();
         absorbRange = getEnderInterfaceHost().getEnderInterfaceLogic().getRange();
+        showRange = getEnderInterfaceHost().getEnderInterfaceLogic().isRenderRangeInClient();
         super.broadcastChanges();
     }
 
@@ -46,6 +52,11 @@ public class EnderInterfaceMenu extends InterfaceMenu
         sendClientAction(changeAbsorbRange, delta);
     }
 
+    public void sendChangeShowRange(boolean newMode)
+    {
+        sendClientAction(changeShowRange, newMode);
+    }
+
     private void onChangeBlackListMode(boolean newMode)
     {
         getEnderInterfaceHost().getEnderInterfaceLogic().setBlackListMode(newMode);
@@ -55,6 +66,11 @@ public class EnderInterfaceMenu extends InterfaceMenu
     {
         int originalValue = getEnderInterfaceHost().getEnderInterfaceLogic().getRange();
         getEnderInterfaceHost().getEnderInterfaceLogic().setRange(originalValue + delta);
+    }
+
+    private void onChangeShowRange(boolean newMode)
+    {
+        getEnderInterfaceHost().getEnderInterfaceLogic().setRenderRangeInClient(newMode);
     }
 
     @Override

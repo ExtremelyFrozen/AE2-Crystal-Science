@@ -12,14 +12,22 @@ import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuHostLocator;
 import appeng.parts.PartModel;
 import appeng.parts.misc.InterfacePart;
+import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 import io.github.lounode.ae2cs.common.init.AECSParts;
 import io.github.lounode.ae2cs.common.me.logic.EnderInterfaceHost;
 import io.github.lounode.ae2cs.common.me.logic.EnderInterfaceLogic;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class EnderInterfacePart extends InterfacePart implements EnderInterfaceHost
 {
@@ -105,5 +113,72 @@ public class EnderInterfacePart extends InterfacePart implements EnderInterfaceH
     public EnderInterfaceLogic getEnderInterfaceLogic()
     {
         return (EnderInterfaceLogic) getInterfaceLogic();
+    }
+
+    @Override
+    public void writeToStream(RegistryFriendlyByteBuf data)
+    {
+        super.writeToStream(data);
+        data.writeBoolean(this.getEnderInterfaceLogic().isRenderRangeInClient());
+        data.writeInt(this.getEnderInterfaceLogic().getRange());
+    }
+
+    @Override
+    public boolean readFromStream(RegistryFriendlyByteBuf data)
+    {
+        super.readFromStream(data);
+        this.getEnderInterfaceLogic().setRenderRangeInClient(data.readBoolean());
+        this.getEnderInterfaceLogic().setRange(data.readInt());
+        return true;
+    }
+
+    @Override
+    public void markForLogicClientUpdate()
+    {
+        if (this.getBlockEntity().getLevel() != null && !this.getBlockEntity().getLevel().isClientSide())
+        {
+            this.getHost().markForUpdate();
+        }
+    }
+
+    @Override
+    public boolean requireDynamicRender()
+    {
+        return true;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void renderDynamic(float partialTicks, PoseStack poseStack, MultiBufferSource buffers, int combinedLightIn, int combinedOverlayIn)
+    {
+        if (!getEnderInterfaceLogic().isRenderRangeInClient()) return;
+
+        super.renderDynamic(partialTicks, poseStack, buffers, combinedLightIn, combinedOverlayIn);
+
+        var logic = this.getEnderInterfaceLogic();
+        if (logic == null || !logic.isRenderRangeInClient())
+        {
+            return;
+        }
+
+        int r = logic.getRange();
+        if (r <= 0)
+        {
+            return;
+        }
+
+        var aabb = new AABB(
+                -r, -r, -r,
+                r + 1.0, r + 1.0, r + 1.0
+        );
+
+        var consumer = buffers.getBuffer(RenderType.lines());
+
+        float red = 0.2f, green = 0.9f, blue = 0.9f, alpha = 0.8f;
+
+        LevelRenderer.renderLineBox(
+                poseStack, consumer, aabb,
+                red, green, blue, alpha
+        );
     }
 }
