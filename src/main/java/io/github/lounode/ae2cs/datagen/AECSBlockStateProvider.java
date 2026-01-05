@@ -36,7 +36,10 @@ public class AECSBlockStateProvider extends BlockStateProvider
     @Override
     protected void registerStatesAndModels()
     {
-
+        for (DeferredBlock<? extends Block> block : AECSBlocks.getCrystalBlocks())
+        {
+            blockWithItem(block);
+        }
         genPatternProviderLike(AECSBlocks.INTEGRATED_INTERFACE_BLOCK.get(), "block/integrated_interface");
         genPatternProviderLike(AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK.get(), "block/meteorite_pattern_provider");
         genPatternProviderLike(AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK.get(), "block/simple_pattern_provider");

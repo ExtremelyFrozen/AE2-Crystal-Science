@@ -30,9 +30,23 @@ public class AECSBlocks
     private static final List<DeferredBlock<? extends Block>> ALL = new ArrayList<>();
 
     /**
+     * 水晶块
+     */
+    private static final List<DeferredBlock<? extends Block>> CRYSTAL_BLOCKS = new ArrayList<>();
+
+    /**
      * 杂项方块
      */
     private static final List<DeferredBlock<? extends Block>> OTHERS = new ArrayList<>();
+
+    // -------------------高纯水晶块-----------------
+    public static final DeferredBlock<Block> PURE_ENDER_QUARTZ_BLOCK = registerCrystalBlock(AECSBlockIds.ENDER_QUARTZ_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
+    public static final DeferredBlock<Block> PURE_RESONATING_CRYSTAL_BLOCK = registerCrystalBlock(AECSBlockIds.RESONATING_CRYSTAL_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
+    public static final DeferredBlock<Block> PURE_METEOR_CRYSTAL_BLOCK = registerCrystalBlock(AECSBlockIds.METEOR_CRYSTAL_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
+    public static final DeferredBlock<Block> PURE_REDSTONE_CRYSTAL_BLOCK = registerCrystalBlock(AECSBlockIds.REDSTONE_CRYSTAL_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
+    public static final DeferredBlock<Block> PURE_QUANTUM_CRYSTAL_BLOCK = registerCrystalBlock(AECSBlockIds.QUANTUM_CRYSTAL_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
+    public static final DeferredBlock<Block> PURE_ROSE_QUARTZ_BLOCK = registerCrystalBlock(AECSBlockIds.ROSE_QUARTZ_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
+    public static final DeferredBlock<Block> IRRADIATED_CRYSTAL_BLOCK = registerCrystalBlock(AECSBlockIds.IRRADIATED_CRYSTAL_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
 
     /**
      * 水晶催生仓
@@ -116,11 +130,23 @@ public class AECSBlocks
         return Collections.unmodifiableList(OTHERS);
     }
 
+    public static List<DeferredBlock<? extends Block>> getCrystalBlocks()
+    {
+        return CRYSTAL_BLOCKS;
+    }
+
     // 工具方法
     private static <T extends Block> DeferredBlock<T> registerOtherBlock(String name, Supplier<T> block)
     {
         DeferredBlock<T> toReturn = registerBlock(name, block);
         OTHERS.add(toReturn);
+        return toReturn;
+    }
+
+    private static <T extends Block> DeferredBlock<T> registerCrystalBlock(String name, Supplier<T> block)
+    {
+        DeferredBlock<T> toReturn = registerBlock(name, block);
+        CRYSTAL_BLOCKS.add(toReturn);
         return toReturn;
     }
 
