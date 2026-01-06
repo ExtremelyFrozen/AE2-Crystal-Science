@@ -15,6 +15,7 @@
   "block.ae2cs.ender_emitter": "ME末影发信器",
   "block.ae2cs.ender_interface": "ME末影接口",
   "block.ae2cs.resonating_pattern_provider": "谐振样板供应器",
+  "block.ae2cs.entropy_variation_reaction_chamber": "熵变反应器",
 
   "block.ae2cs.ender_quartz_block": "末影水晶块",
   "block.ae2cs.resonating_crystal_block": "谐振水晶块",
@@ -183,6 +184,9 @@
   "ae2cs.widgets.broadcaster.receiver": "接收端",
 
   "ae2cs.menu.title.band_white_list_manager": "管理白名单",
+
+  "ae2cs.menu.entropy_variation_reaction_chamber.entropy_mode_title": "熵变模式",
+  "ae2cs.menu.entropy_variation_reaction_chamber.entropy_mode_desc": "切换熵增或熵减模式",
 
   "ae2cs.msg.broadcaster.sender.not_connect_any_band": "当前广播装置未链接到任何频段",
 

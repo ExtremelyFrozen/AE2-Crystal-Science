@@ -166,6 +166,16 @@ public class AECSBlockEntities
     );
 
     /**
+     * 熵变反应仓
+     */
+    public static final DeferredBlockEntityType<EntropyVariationReactionChamberBlockEntity> ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK_ENTITY = create(
+            AECSBlockIds.ENTROPY_VARIATION_REACTION_CHAMBER,
+            EntropyVariationReactionChamberBlockEntity.class,
+            EntropyVariationReactionChamberBlockEntity::new,
+            AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK
+    );
+
+    /**
      * 注册监听
      */
     public static void register(IEventBus eventBus)

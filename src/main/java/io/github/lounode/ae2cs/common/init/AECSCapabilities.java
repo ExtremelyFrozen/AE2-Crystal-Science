@@ -27,6 +27,7 @@ public class AECSCapabilities
         EnderEmitterBlockEntity.onRegisterCaps(event);
         EnderInterfaceBlockEntity.onRegisterCaps(event);
         ResonatingPatternProviderBlockEntity.onRegisterCaps(event);
+        EntropyVariationReactionChamberBlockEntity.onRegisterCaps(event);
     }
 
     @SubscribeEvent

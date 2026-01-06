@@ -1,0 +1,546 @@
+package io.github.lounode.ae2cs.common.block.entity;
+
+import appeng.api.AECapabilities;
+import appeng.api.config.AccessRestriction;
+import appeng.api.config.Actionable;
+import appeng.api.networking.security.IActionSource;
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.GenericStack;
+import appeng.api.upgrades.IUpgradeInventory;
+import appeng.api.upgrades.IUpgradeableObject;
+import appeng.api.upgrades.UpgradeInventories;
+import appeng.core.definitions.AEItems;
+import appeng.recipes.entropy.EntropyMode;
+import appeng.recipes.entropy.EntropyRecipe;
+import appeng.util.ConfigInventory;
+import io.github.lounode.ae2cs.api.genericinv.CombinedGenericInternalInventory;
+import io.github.lounode.ae2cs.api.genericinv.GenericStackInvWrapper;
+import io.github.lounode.ae2cs.api.util.ForgeEnergyAdapterUpgrade;
+import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
+import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
+import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfPoweredBlockEntity implements IUpgradeableObject
+{
+    /**
+     * 基础能量消耗，每tick 200AE，每多一个加速卡，则此数值翻倍，同时机器运行速率也翻倍。
+     * <p>
+     * 目前最大四张加速卡，则最大速率为16倍，同时最大每tick消耗也为16倍，即3200AE每tick
+     */
+    private static final double BASIC_ENERGY_COST_PER_TICK = 200;
+
+    private static final int RECIPE_DEFAULT_COST_TIME = 300;
+
+    /**
+     * 输入仓
+     */
+    private final ConfigInventory inputInv;
+
+    /**
+     * 输出仓
+     */
+    private final ConfigInventory outputInv;
+
+    /**
+     * 能力暴露-输入
+     */
+    private final GenericStackInvWrapper filteredInputInv;
+
+    /**
+     * 能力暴露-输出
+     */
+    private final GenericStackInvWrapper filteredOutputInv;
+
+    /**
+     * 能力暴露-结合库存
+     */
+    private final CombinedGenericInternalInventory combinedInv;
+
+    /**
+     * 升级仓
+     */
+    private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(AECSBlocks.CRYSTAL_PULVERIZER_BLOCK,
+            4, this::saveChanges);
+
+    /**
+     * 当前熵变方向
+     */
+    private EntropyMode entropyMode = EntropyMode.HEAT;
+
+    /**
+     * 当前执行的配方
+     */
+    @Nullable
+    private RecipeHolder<EntropyRecipe> activeRecipe;
+
+    /**
+     * 当前执行配方的id，在重新加载时保证机器运行进展不会因为配方检查被刷新掉
+     */
+    @Nullable
+    private ResourceLocation activeRecipeId;
+
+    /**
+     * 该配方需要的总时间（tick）
+     */
+    private int activeRecipeTime = 0;
+
+    /**
+     * 当前配方运行时间
+     */
+    private int recipeProgress = 0;
+
+    /**
+     * 是否需要更新配方状态
+     */
+    private boolean needRefreshRecipeState = true;
+
+    private IActionSource actionSource;
+
+    public EntropyVariationReactionChamberBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState)
+    {
+        super(blockEntityType, pos, blockState, 80000);
+
+        inputInv = ConfigInventory.storage(1)
+                .changeListener(() -> {
+                    needRefreshRecipeState = true;
+                    setChanged();
+                }).build();
+
+        outputInv = ConfigInventory.storage(4)
+                .changeListener(this::setChanged).build();
+
+        filteredInputInv = new GenericStackInvWrapper(inputInv)
+        {
+            @Override
+            public boolean canExtract()
+            {
+                return false;
+            }
+        };
+
+        filteredOutputInv = new GenericStackInvWrapper(outputInv)
+        {
+            @Override
+            public boolean canInsert()
+            {
+                return false;
+            }
+        };
+
+        combinedInv = new CombinedGenericInternalInventory(filteredInputInv, filteredOutputInv);
+
+        getMainNode().setIdlePowerUsage(0);
+
+        actionSource = IActionSource.ofMachine(this);
+    }
+
+    /**
+     * 注册AE节点和能量能力
+     */
+    public static void onRegisterCaps(RegisterCapabilitiesEvent event)
+    {
+        event.registerBlockEntity(
+                AECapabilities.IN_WORLD_GRID_NODE_HOST,
+                AECSBlockEntities.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK_ENTITY.get(),
+                (be, unused) -> be
+        );
+        event.registerBlockEntity(
+                Capabilities.EnergyStorage.BLOCK,
+                AECSBlockEntities.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK_ENTITY.get(),
+                (be, direction) -> new ForgeEnergyAdapterUpgrade(be, AccessRestriction.WRITE)
+        );
+        event.registerBlockEntity(
+                AECapabilities.GENERIC_INTERNAL_INV,
+                AECSBlockEntities.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK_ENTITY.get(),
+                (be, direction) -> be.combinedInv
+        );
+    }
+
+    public ConfigInventory getInputInv()
+    {
+        return inputInv;
+    }
+
+    public ConfigInventory getOutputInv()
+    {
+        return outputInv;
+    }
+
+    public int getRecipeProgress()
+    {
+        return recipeProgress;
+    }
+
+    public int getActiveRecipeTime()
+    {
+        return activeRecipeTime;
+    }
+
+    public EntropyMode getEntropyMode()
+    {
+        return entropyMode;
+    }
+
+    public void setEntropyMode(EntropyMode entropyMode)
+    {
+        if (this.entropyMode == entropyMode) return;
+        this.entropyMode = entropyMode;
+        needRefreshRecipeState = true;
+        setChanged();
+    }
+
+    public void checkActive(boolean active)
+    {
+        if (level == null || level.isClientSide()) return;
+        BlockState state = getBlockState();
+        if (state.hasProperty(AECSBlockProperties.ACTIVE) && state.getValue(AECSBlockProperties.ACTIVE) != active)
+        {
+            level.setBlock(worldPosition, getBlockState().setValue(AECSBlockProperties.ACTIVE, active), 2);
+        }
+    }
+
+    @Override
+    public IUpgradeInventory getUpgrades()
+    {
+        return upgrades;
+    }
+
+    @Override
+    public boolean isAEPublicPowerStorage()
+    {
+        return false;
+    }
+
+    @Override
+    public AccessRestriction getPowerFlow()
+    {
+        return AccessRestriction.WRITE;
+    }
+
+    @Override
+    public void serverTick()
+    {
+        super.serverTick();
+
+        if (getLevel() == null || getLevel().isClientSide()) return;
+
+        checkActive(getAECurrentPower() > 0);
+
+        // 1) 更新/确认活动配方
+        if (needRefreshRecipeState)
+        {
+            updateActiveRecipe();
+            needRefreshRecipeState = false;
+        }
+        if (activeRecipe == null)
+        {
+            recipeProgress = 0;
+            return;
+        }
+
+        Level level = getLevel();
+        EntropyRecipe recipe = activeRecipe.value();
+
+        // 2) 若未完成：推进进度 + 扣能量
+        if (recipeProgress < activeRecipeTime)
+        {
+            int speed = getSpeedMultiplier();
+            double neededEnergy = getEnergyPerTick();
+
+            if (getAECurrentPower() < neededEnergy) return;
+            extractAEPower(neededEnergy, Actionable.MODULATE);
+
+            recipeProgress = Math.min(activeRecipeTime, recipeProgress + speed);
+            setChanged();
+        }
+
+        // 3) 已经完成：消耗资源并产出
+        if (recipeProgress >= activeRecipeTime)
+        {
+            List<GenericStack> result = getRecipeOutput(recipe);
+            if (result.isEmpty()) // 如果我们拿不到输出，说明配方可能有问题，此时清空状态
+            {
+                recipeProgress = 0;
+                activeRecipe = null;
+                activeRecipeTime = 0;
+                return;
+            }
+
+            // 如果输出放不下，则将recipeProgress钳制在最大配方时间
+            for (GenericStack stack : result)
+            {
+                // TODO 就现在而言，理论上result可以有多个输出，逐步单输出的模拟对于具有多输出的配方失效
+                // TODO 但是，所有AE原版的熵变配方都是单输出，因此，目前只用这种模拟方式
+                if (outputInv.insert(stack.what(), stack.amount(), Actionable.SIMULATE, actionSource) < stack.amount())
+                {
+                    recipeProgress = activeRecipeTime;
+                    return;
+                }
+            }
+
+            if (!consumeInputs(recipe))
+            {
+                // 输入不够：清缓存和状态，等待刷新
+                recipeProgress = 0;
+                activeRecipe = null;
+                activeRecipeTime = 0;
+                return;
+            }
+
+            for (GenericStack stack : result)
+            {
+                outputInv.insert(stack.what(), stack.amount(), Actionable.MODULATE, actionSource);
+            }
+            recipeProgress = 0;
+            setChanged();
+        }
+    }
+
+    // 计算能量消耗
+    private int getSpeedMultiplier()
+    {
+        int c = Math.min(4, upgrades.getInstalledUpgrades(AEItems.SPEED_CARD));
+        return 1 << c;
+    }
+
+    private double getEnergyPerTick()
+    {
+        return BASIC_ENERGY_COST_PER_TICK * getSpeedMultiplier();
+    }
+
+    /**
+     * 更新配方状态
+     */
+    private void updateActiveRecipe()
+    {
+        if (getLevel() == null || getLevel().isClientSide()) return;
+
+        var level = getLevel();
+        AEKey inputKey = inputInv.getKey(0);
+        BlockState inputBlockState = Blocks.VOID_AIR.defaultBlockState();
+        FluidState inputFluidState = Fluids.EMPTY.defaultFluidState();
+        if (inputKey instanceof AEItemKey itemKey && itemKey.getItem() instanceof BlockItem blockItem)
+        {
+            inputBlockState = blockItem.getBlock().defaultBlockState();
+        }
+        if (inputKey instanceof AEFluidKey fluidKey)
+        {
+            inputFluidState = fluidKey.getFluid().defaultFluidState();
+        }
+
+
+        var holder = findRecipe(level, this.entropyMode, inputBlockState, inputFluidState);
+        if (holder == null)
+        {
+            // 没有配方，清空进度
+            activeRecipe = null;
+            activeRecipeTime = 0;
+            recipeProgress = 0;
+            return;
+        }
+
+        // 配方未变：保持进度，仅刷新 match/time
+        if (activeRecipe != null && activeRecipe.id().equals(holder.id()))
+        {
+            activeRecipeTime = RECIPE_DEFAULT_COST_TIME;
+            return;
+        }
+
+        // 配方变了：切换配方，重置进度
+        activeRecipe = holder;
+        activeRecipeTime = RECIPE_DEFAULT_COST_TIME;
+        recipeProgress = 0;
+    }
+
+    /**
+     * 尝试从输入槽中来抽取当前配方所需资源，如果能成功则返回true
+     */
+    private boolean consumeInputs(EntropyRecipe recipe)
+    {
+        EntropyRecipe.Input required = recipe.getInput();
+
+        // 模拟抽取
+        boolean canConsume = required.block().map(blockInput -> {
+            Item blockItem = blockInput.block().asItem();
+            if (blockItem != Items.AIR)
+            {
+                return inputInv.extract(0, AEItemKey.of(blockItem), 1, Actionable.SIMULATE) >= 1;
+            }
+            else
+                return true;
+        }).orElse(true);
+        canConsume = canConsume && required.fluid().map(fluidInput -> {
+            Fluid fluid = fluidInput.fluid();
+            if (fluid != Fluids.EMPTY)
+            {
+                return inputInv.extract(0, AEFluidKey.of(fluid), 1000, Actionable.SIMULATE) >= 1000;
+            }
+            else
+                return true;
+        }).orElse(true);
+        if (!canConsume) return false;
+
+        // 实际抽取
+        required.block().ifPresent(blockInput -> {
+            Item blockItem = blockInput.block().asItem();
+            if (blockItem != Items.AIR)
+            {
+                inputInv.extract(0, AEItemKey.of(blockItem), 1, Actionable.MODULATE);
+            }
+        });
+        required.fluid().ifPresent(fluidInput -> {
+            Fluid fluid = fluidInput.fluid();
+            if (fluid != Fluids.EMPTY)
+            {
+                inputInv.extract(0, AEFluidKey.of(fluid), 1000, Actionable.MODULATE);
+            }
+        });
+        return true;
+    }
+
+    @Override
+    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries)
+    {
+        super.saveAdditional(data, registries);
+        inputInv.writeToChildTag(data, "input_inv", registries);
+        outputInv.writeToChildTag(data, "output_inv", registries);
+        upgrades.writeToNBT(data, "upgrades", registries);
+        data.putInt("recipe_progress", recipeProgress);
+        data.putString("entropy_mode", this.entropyMode.name());
+        if (activeRecipe != null)
+        {
+            data.putString("active_recipe_id", activeRecipe.id().toString());
+        }
+    }
+
+    @Override
+    public void loadTag(CompoundTag data, HolderLookup.Provider registries)
+    {
+        super.loadTag(data, registries);
+        inputInv.readFromChildTag(data, "input_inv", registries);
+        outputInv.readFromChildTag(data, "output_inv", registries);
+        upgrades.readFromNBT(data, "upgrades", registries);
+        recipeProgress = data.getInt("recipe_progress");
+        this.entropyMode = EntropyMode.valueOf(data.getString("entropy_mode"));
+        if (data.contains("active_recipe_id"))
+        {
+            activeRecipeId = ResourceLocation.parse(data.getString("active_recipe_id"));
+        }
+    }
+
+    @Override
+    public void onLoad()
+    {
+        super.onLoad();
+        if (activeRecipeId != null && level != null)
+        {
+            Optional<RecipeHolder<?>> opt = level.getRecipeManager().byKey(activeRecipeId);
+            opt.ifPresent(recipeHolder -> activeRecipe = (RecipeHolder<EntropyRecipe>) recipeHolder);
+        }
+        updateActiveRecipe();
+    }
+
+    @Override
+    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops)
+    {
+        super.addAdditionalDrops(level, pos, drops);
+        for (GenericStack stack : this.getInputInv().toList())
+        {
+            if (stack == null) continue;
+
+            stack.what().addDrops(stack.amount(), drops, this.getLevel(), this.getBlockPos());
+        }
+        for (GenericStack stack : this.getOutputInv().toList())
+        {
+            if (stack == null) continue;
+
+            stack.what().addDrops(stack.amount(), drops, this.getLevel(), this.getBlockPos());
+        }
+        for (ItemStack stack : upgrades)
+        {
+            drops.add(stack);
+        }
+    }
+
+    @Override
+    public void clearContent()
+    {
+        super.clearContent();
+        inputInv.clear();
+        outputInv.clear();
+        upgrades.clear();
+    }
+
+    /**
+     * 用来找出对应的配方
+     */
+    @Nullable
+    private static RecipeHolder<EntropyRecipe> findRecipe(Level level, EntropyMode mode, BlockState blockState,
+                                                          FluidState fluidState)
+    {
+        for (var holder : level.getRecipeManager().byType(EntropyRecipe.TYPE))
+        {
+            var recipe = holder.value();
+            if (recipe.matches(mode, blockState, fluidState))
+            {
+                return holder;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 把配方输出的东西转为可直接识别的GStack
+     */
+    private static List<GenericStack> getRecipeOutput(EntropyRecipe recipe)
+    {
+        List<GenericStack> outputList = new ArrayList<>();
+        EntropyRecipe.Output output = recipe.getOutput();
+        output.block().ifPresent(blockOutput -> {
+            Item blockItem = blockOutput.block().asItem();
+            if (blockItem != Items.AIR)
+            {
+                outputList.add(new GenericStack(AEItemKey.of(blockItem), 1));
+            }
+        });
+        output.fluid().ifPresent(fluidOutput -> {
+            Fluid fluid = fluidOutput.fluid();
+            if (fluid != Fluids.EMPTY)
+            {
+                outputList.add(new GenericStack(AEFluidKey.of(fluid), 1000));
+            }
+        });
+        output.drops().forEach(outputDrop -> {
+            if (!outputDrop.isEmpty())
+            {
+                outputList.add(new GenericStack(AEItemKey.of(outputDrop), outputDrop.getCount()));
+            }
+        });
+        return outputList;
+    }
+}

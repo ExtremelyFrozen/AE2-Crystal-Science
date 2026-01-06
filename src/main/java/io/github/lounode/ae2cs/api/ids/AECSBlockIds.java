@@ -23,4 +23,5 @@ public class AECSBlockIds
     public static final String ENDER_EMITTER = "ender_emitter";
     public static final String ENDER_INTERFACE = "ender_interface";
     public static final String RESONATING_PATTERN_PROVIDER = "resonating_pattern_provider";
+    public static final String ENTROPY_VARIATION_REACTION_CHAMBER = "entropy_variation_reaction_chamber";
 }

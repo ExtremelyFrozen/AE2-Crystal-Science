@@ -7,10 +7,7 @@ import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.client.gui.*;
 import io.github.lounode.ae2cs.client.gui.linker.broadcast.*;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
-import io.github.lounode.ae2cs.common.menu.EnderEmitterMenu;
-import io.github.lounode.ae2cs.common.menu.EnderInterfaceMenu;
-import io.github.lounode.ae2cs.common.menu.MeteoritePatternProviderMenu;
-import io.github.lounode.ae2cs.common.menu.ResonatingPatternProviderMenu;
+import io.github.lounode.ae2cs.common.menu.*;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -50,5 +47,8 @@ public class AECSScreens
         event.<ResonatingPatternProviderMenu, ResonatingPatternProviderGUI>register(AECSMenus.RESONATING_PATTERN_PROVIDER_MENU.get(),
                 (menu, inv, title) -> new ResonatingPatternProviderGUI(menu, inv, title,
                         StyleManager.loadStyleDoc("/screens/resonating_pattern_provider.json")));
+        event.<EntropyVariationReactionChamberMenu, EntropyVariationReactionChamberGUI>register(AECSMenus.ENTROPY_VARIATION_REACTION_CHAMBER_MENU.get(),
+                (menu, inv, title) -> new EntropyVariationReactionChamberGUI(menu, inv, title,
+                        StyleManager.loadStyleDoc("/screens/entropy_variation_reaction_chamber_menu.json")));
     }
 }

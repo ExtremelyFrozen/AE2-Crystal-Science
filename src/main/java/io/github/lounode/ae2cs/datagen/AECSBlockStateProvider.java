@@ -50,6 +50,7 @@ public class AECSBlockStateProvider extends BlockStateProvider
         genSixFaceLike(AECSBlocks.CIRCUIT_ETCHER_BLOCK.get());
         genSixFaceLike(AECSBlocks.CRYSTAL_PULVERIZER_BLOCK.get());
         genSixFaceLike(AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK.get());
+        genSixFaceLike(AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK.get());
         genEnderBroadcaster();
         genEnderEmitter();
         simpleBlockWithItem(AECSBlocks.ENDER_INTERFACE_BLOCK.get(), cubeAllWithTexture(AECSBlocks.ENDER_INTERFACE_BLOCK.get(), AE2CrystalScience.makeId("block/ender_interface/base")));

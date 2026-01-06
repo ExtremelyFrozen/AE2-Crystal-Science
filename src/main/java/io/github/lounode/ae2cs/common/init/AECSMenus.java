@@ -119,6 +119,11 @@ public class AECSMenus
                     .build(AE2CrystalScience.makeId("resonating_pattern_provider_menu"))
     );
 
+    public static final Supplier<MenuType<EntropyVariationReactionChamberMenu>> ENTROPY_VARIATION_REACTION_CHAMBER_MENU = MENU_TYPES.register("entropy_variation_reaction_chamber_menu",
+            () -> MenuTypeBuilder.create(EntropyVariationReactionChamberMenu::new, EntropyVariationReactionChamberBlockEntity.class)
+                    .build(AE2CrystalScience.makeId("entropy_variation_reaction_chamber_menu"))
+    );
+
     public static void registerMenus(IEventBus eventBus)
     {
         MENU_TYPES.register(eventBus);
