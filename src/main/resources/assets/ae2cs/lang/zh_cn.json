@@ -222,5 +222,9 @@
 
   "ae2cs.machine_settings.black_list_mode.title": "切换黑白名单模式",
   "ae2cs.machine_settings.black_list_mode.white_list.desc": "当前为白名单模式",
-  "ae2cs.machine_settings.black_list_mode.black_list.desc": "当前为黑名单模式"
+  "ae2cs.machine_settings.black_list_mode.black_list.desc": "当前为黑名单模式",
+
+  "ae2cs.machine_settings.pull_mode.title": "抽取目标面容器",
+  "ae2cs.machine_settings.pull_mode.on.desc": "当前会抽取目标面容器",
+  "ae2cs.machine_settings.pull_mode.off.desc": "当前不会抽取目标面容器"
 }

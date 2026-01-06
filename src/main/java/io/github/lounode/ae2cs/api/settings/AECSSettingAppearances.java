@@ -54,6 +54,15 @@ public final class AECSSettingAppearances
                 Component.translatable("ae2cs.machine_settings.black_list_mode.title"),
                 Component.translatable("ae2cs.machine_settings.black_list_mode.black_list.desc"));
 
+        register(AECSIcon.PULL_MODE_ON,
+                AECSSettings.PULL_MODE, PullMode.PULL_ON,
+                Component.translatable("ae2cs.machine_settings.pull_mode.title"),
+                Component.translatable("ae2cs.machine_settings.pull_mode.on.desc"));
+        register(AECSIcon.PULL_MODE_OFF,
+                AECSSettings.PULL_MODE, PullMode.PULL_OFF,
+                Component.translatable("ae2cs.machine_settings.pull_mode.title"),
+                Component.translatable("ae2cs.machine_settings.pull_mode.off.desc"));
+
     }
 
     private AECSSettingAppearances()

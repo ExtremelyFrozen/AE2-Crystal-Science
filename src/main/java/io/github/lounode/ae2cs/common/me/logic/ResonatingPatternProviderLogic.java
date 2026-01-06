@@ -1,7 +1,6 @@
 package io.github.lounode.ae2cs.common.me.logic;
 
-import appeng.api.config.Actionable;
-import appeng.api.config.LockCraftingMode;
+import appeng.api.config.*;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
@@ -12,6 +11,7 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
+import appeng.api.util.IConfigManager;
 import appeng.core.settings.TickRates;
 import appeng.helpers.InterfaceLogicHost;
 import appeng.helpers.patternprovider.PatternProviderLogic;
@@ -19,6 +19,8 @@ import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.helpers.patternprovider.PatternProviderTarget;
 import appeng.me.helpers.MachineSource;
 import io.github.lounode.ae2cs.AE2CrystalScience;
+import io.github.lounode.ae2cs.api.settings.AECSSettings;
+import io.github.lounode.ae2cs.api.settings.PullMode;
 import io.github.lounode.ae2cs.api.util.GenericStackInvHelper;
 import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern;
 import io.github.lounode.ae2cs.common.me.crafting.ResonatingPatternDetails;
@@ -60,9 +62,6 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic
      */
     private int localRoundRobinIndex = 0;
 
-    // 是否启用主动抽取
-    private boolean enablePull = false;
-
     public ResonatingPatternProviderLogic(IManagedGridNode mainNode, PatternProviderLogicHost host)
     {
         this(mainNode, host, 9);
@@ -75,27 +74,35 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic
         this.host = host;
         this.mainNode = mainNode.addService(IGridTickable.class, new ResonatingTicker());
         this.actionSource = new MachineSource(mainNode::getNode);
+
+        configManager = IConfigManager.builder(this::configChanged)
+                .registerSetting(Settings.BLOCKING_MODE, YesNo.NO)
+                .registerSetting(Settings.PATTERN_ACCESS_TERMINAL, YesNo.YES)
+                .registerSetting(Settings.LOCK_CRAFTING_MODE, LockCraftingMode.NONE)
+                .registerSetting(AECSSettings.PULL_MODE, PullMode.PULL_OFF)
+                .build();
     }
 
     public boolean isEnablePull()
     {
-        return enablePull;
+        return configManager.getSetting(AECSSettings.PULL_MODE) == PullMode.PULL_ON;
     }
 
-    public void setEnablePull(boolean enablePull)
+    @Override
+    protected void configChanged(IConfigManager manager, Setting<?> setting)
     {
-        if (this.enablePull == enablePull) return;
-        this.enablePull = enablePull;
-        host.saveChanges();
-        this.mainNode.ifPresent((grid, node) -> grid.getTickManager().alertDevice(node));
+        super.configChanged(manager, setting);
+        if (setting == AECSSettings.PULL_MODE)
+        {
+            host.saveChanges();
+            this.mainNode.ifPresent((grid, node) -> grid.getTickManager().alertDevice(node));
+        }
     }
 
     @Override
     public void writeToNBT(CompoundTag tag, HolderLookup.Provider registries)
     {
         super.writeToNBT(tag, registries);
-
-        tag.putBoolean("enable_pull", enablePull);
 
         var list = new ListTag();
         for (var p : resonatingSendList)
@@ -114,8 +121,6 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic
     public void readFromNBT(CompoundTag tag, HolderLookup.Provider registries)
     {
         super.readFromNBT(tag, registries);
-
-        this.enablePull = tag.getBoolean("enable_pull");
 
         resonatingSendList.clear();
         if (!tag.contains("resonating_send_list", Tag.TAG_LIST))
@@ -341,7 +346,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic
      */
     private boolean doPullWork()
     {
-        if (!enablePull) return false;
+        if (!isEnablePull()) return false;
 
         var hostBe = host.getBlockEntity();
         var hostLevelRaw = hostBe.getLevel();
@@ -596,7 +601,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic
         @Override
         public TickingRequest getTickingRequest(IGridNode node)
         {
-            boolean idle = !hasWorkToDo() && !hasResonatingWorkToDo() && !enablePull;
+            boolean idle = !hasWorkToDo() && !hasResonatingWorkToDo() && !isEnablePull();
             return new TickingRequest(TickRates.Interface, idle);
         }
 
@@ -609,7 +614,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic
             }
 
             boolean could = doWork() | doResonatingWork() | doPullWork();
-            boolean has = hasWorkToDo() || hasResonatingWorkToDo() || enablePull;
+            boolean has = hasWorkToDo() || hasResonatingWorkToDo() || isEnablePull();
 
             return has ? (could ? TickRateModulation.URGENT : TickRateModulation.SLOWER)
                     : TickRateModulation.SLEEP;
