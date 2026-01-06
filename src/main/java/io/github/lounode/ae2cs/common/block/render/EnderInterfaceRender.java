@@ -62,15 +62,6 @@ public class EnderInterfaceRender implements BlockEntityRenderer<EnderInterfaceB
     @Override
     public @NotNull AABB getRenderBoundingBox(@NotNull EnderInterfaceBlockEntity blockEntity)
     {
-        BlockPos centerPos = blockEntity.getBlockEntity().getBlockPos();
-        int range = blockEntity.getEnderInterfaceLogic().getRange();
-        return new AABB(
-                centerPos.getX() - range,
-                centerPos.getY() - range,
-                centerPos.getZ() - range,
-                centerPos.getX() + range,
-                centerPos.getY() + range,
-                centerPos.getZ() + range
-        );
+        return blockEntity.getCustomBoundingBox(blockEntity.getBlockPos());
     }
 }

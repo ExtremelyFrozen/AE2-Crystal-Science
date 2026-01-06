@@ -8,6 +8,7 @@
     "PatternAccessTermMenuMixin"
   ],
   "client": [
+    "IBlockEntityRendererExtensionMixin"
   ],
   "server": [
   ],
