@@ -118,6 +118,11 @@ public class AECSBlocks
      */
     public static final DeferredBlock<EntropyVariationReactionChamberBlock> ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK = registerOtherBlock(AECSBlockIds.ENTROPY_VARIATION_REACTION_CHAMBER, () -> new EntropyVariationReactionChamberBlock(AEBaseBlock.metalProps()));
 
+    /**
+     * 石英震荡钟
+     */
+    public static final DeferredBlock<QuartzOscillatorClockBlock> QUARTZ_OSCILLATOR_CLOCK_BLOCK = registerOtherBlock(AECSBlockIds.QUARTZ_OSCILLATOR_CLOCK, () -> new QuartzOscillatorClockBlock(AEBaseBlock.metalProps()));
+
 
     public static BlockBehaviour.Properties copy(BlockBehaviour behaviour)
     {

@@ -41,14 +41,21 @@ public class AECSScreens
         event.<EnderEmitterMenu, EnderEmitterGUI>register(AECSMenus.ENDER_EMITTER_MENU.get(),
                 (menu, inv, title) -> new EnderEmitterGUI(menu, inv, title,
                         StyleManager.loadStyleDoc("/screens/ender_emitter_menu.json")));
+
         event.<EnderInterfaceMenu, EnderInterfaceGUI>register(AECSMenus.ENDER_INTERFACE_MENU.get(),
                 (menu, inv, title) -> new EnderInterfaceGUI(menu, inv, title,
                         StyleManager.loadStyleDoc("/screens/ender_interface_menu.json")));
+
         event.<ResonatingPatternProviderMenu, ResonatingPatternProviderGUI>register(AECSMenus.RESONATING_PATTERN_PROVIDER_MENU.get(),
                 (menu, inv, title) -> new ResonatingPatternProviderGUI(menu, inv, title,
                         StyleManager.loadStyleDoc("/screens/resonating_pattern_provider.json")));
+
         event.<EntropyVariationReactionChamberMenu, EntropyVariationReactionChamberGUI>register(AECSMenus.ENTROPY_VARIATION_REACTION_CHAMBER_MENU.get(),
                 (menu, inv, title) -> new EntropyVariationReactionChamberGUI(menu, inv, title,
                         StyleManager.loadStyleDoc("/screens/entropy_variation_reaction_chamber_menu.json")));
+
+        event.<QuartzOscillatorClockMenu, QuartzOscillatorClockGUI>register(AECSMenus.QUARTZ_OSCILLATOR_CLOCK_MENU.get(),
+                (menu, inv, title) -> new QuartzOscillatorClockGUI(menu, inv, title,
+                        StyleManager.loadStyleDoc("/screens/quartz_oscillator_clock_menu.json")));
     }
 }

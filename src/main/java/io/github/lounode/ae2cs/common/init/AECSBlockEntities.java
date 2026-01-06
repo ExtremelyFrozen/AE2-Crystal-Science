@@ -176,6 +176,16 @@ public class AECSBlockEntities
     );
 
     /**
+     * 石英震荡器
+     */
+    public static final DeferredBlockEntityType<QuartzOscillatorClockBlockEntity> QUARTZ_OSCILLATOR_CLOCK_BLOCK_ENTITY = create(
+            AECSBlockIds.QUARTZ_OSCILLATOR_CLOCK,
+            QuartzOscillatorClockBlockEntity.class,
+            QuartzOscillatorClockBlockEntity::new,
+            AECSBlocks.QUARTZ_OSCILLATOR_CLOCK_BLOCK
+    );
+
+    /**
      * 注册监听
      */
     public static void register(IEventBus eventBus)

@@ -1,4 +1,4 @@
-// 1.21.1	2026-01-06T13:27:46.7920338	Loot Tables
+// 1.21.1	2026-01-06T18:07:35.4357517	Loot Tables
 93b3ddea891577d7b33a68a99d53e8949833ac2a data/ae2cs/loot_table/blocks/circuit_etcher.json
 9c356edccaf967415e2f4938c59f78f196b561d6 data/ae2cs/loot_table/blocks/crystal_aggregator.json
 b19823a1a13cb6767ce6290a3d8436ab51ac0280 data/ae2cs/loot_table/blocks/crystal_growth_chamber.json
@@ -15,6 +15,7 @@ fb5708b5d7be523a2ba43b03cd17f6d971bcfc81 data/ae2cs/loot_table/blocks/ender_quar
 328ae551b7c986b6480378a55f76d0b428c84136 data/ae2cs/loot_table/blocks/meteor_crystal_block.json
 9f9940a125103b67f568e960d309e6c490aada00 data/ae2cs/loot_table/blocks/quantum_crystal_block.json
 673b50445370ac8d00d9dc7feb484feacba09480 data/ae2cs/loot_table/blocks/quartz_grindstone.json
+7345d893ae339e2622e4566ef8936d7cff8badcd data/ae2cs/loot_table/blocks/quartz_oscillator_clock.json
 653f7523021ddde4e3a0c088f426c994f171c4de data/ae2cs/loot_table/blocks/redstone_crystal_block.json
 4f1e514bc07d15062c503853ae5624402e24f8b5 data/ae2cs/loot_table/blocks/resonating_crystal_block.json
 e2f0c588f1883464f857f952269bc9fee049c1ea data/ae2cs/loot_table/blocks/resonating_pattern_provider.json

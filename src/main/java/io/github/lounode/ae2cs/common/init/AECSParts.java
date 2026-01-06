@@ -54,6 +54,12 @@ public class AECSParts
             ResonatingPatternProviderPart::new
     );
 
+    public static final DeferredItem<PartItem<QuartzOscillatorClockPart>> QUARTZ_OSCILLATOR_CLOCK_PART = registerPart(
+            AECSPartIds.QUARTZ_OSCILLATOR_CLOCK,
+            QuartzOscillatorClockPart.class,
+            QuartzOscillatorClockPart::new
+    );
+
     public static List<DeferredItem<? extends PartItem<?>>> getAll()
     {
         return Collections.unmodifiableList(ALL);

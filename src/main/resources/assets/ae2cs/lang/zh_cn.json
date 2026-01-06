@@ -16,6 +16,7 @@
   "block.ae2cs.ender_interface": "ME末影接口",
   "block.ae2cs.resonating_pattern_provider": "谐振样板供应器",
   "block.ae2cs.entropy_variation_reaction_chamber": "熵变反应器",
+  "block.ae2cs.quartz_oscillator_clock": "石英震荡器",
 
   "block.ae2cs.ender_quartz_block": "末影水晶块",
   "block.ae2cs.resonating_crystal_block": "谐振水晶块",
@@ -47,6 +48,7 @@
   "item.ae2cs.simple_pattern_provider_part": "初级样板供应器",
   "item.ae2cs.meteorite_pattern_provider_part": "自装配式样板供应器",
   "item.ae2cs.ender_interface_part": "ME末影接口",
+  "item.ae2cs.quartz_oscillator_clock_part": "石英震荡器",
 
   "item.ae2cs.purified_certus_quartz_crystal": "高纯赛特斯石英水晶",
   "item.ae2cs.purified_fluix_crystal": "高纯福鲁伊克斯水晶",
@@ -205,12 +207,8 @@
   "ae2cs.msg.item.ender_linker.success_to_link": "成功将此设备连接到绑定的发信器",
   "ae2cs.msg.item.ender_linker.failed_to_link": "绑定失败，相关发信器可能没有多余频道或超出最大连接距离",
 
-
-  "ae2_crystal_seeds.configuration.title": "AE2 Crystal Seeds Configs",
-  "ae2_crystal_seeds.configuration.section.ae2_crystal_seeds.common.toml": "AE2 Crystal Seeds Configs",
-  "ae2_crystal_seeds.configuration.section.ae2_crystal_seeds.common.toml.title": "AE2 Crystal Seeds Configs",
-  "ae2_crystal_seeds.configuration.items": "Item List",
-  "ae2_crystal_seeds.configuration.logDirtBlock": "Log Dirt Block",
-  "ae2_crystal_seeds.configuration.magicNumberIntroduction": "Magic Number Text",
-  "ae2_crystal_seeds.configuration.magicNumber": "Magic Number"
+  "ae2cs.machine_settings.redstone_controlled_no_pulse.title": "红石模式",
+  "ae2cs.machine_settings.redstone_controlled_no_pulse.ignore.desc": "始终工作",
+  "ae2cs.machine_settings.redstone_controlled_no_pulse.low_signal.desc": "无信号时工作",
+  "ae2cs.machine_settings.redstone_controlled_no_pulse.high_signal.desc": "有信号时工作"
 }

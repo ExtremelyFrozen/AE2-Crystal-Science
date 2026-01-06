@@ -6,10 +6,7 @@ import appeng.menu.implementations.PatternProviderMenu;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.block.entity.*;
-import io.github.lounode.ae2cs.common.me.logic.EnderInterfaceHost;
-import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceHost;
-import io.github.lounode.ae2cs.common.me.logic.MeteoritePatternProviderHost;
-import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderHost;
+import io.github.lounode.ae2cs.common.me.logic.*;
 import io.github.lounode.ae2cs.common.menu.*;
 import io.github.lounode.ae2cs.common.menu.linker.broadcast.*;
 import net.minecraft.core.registries.Registries;
@@ -122,6 +119,11 @@ public class AECSMenus
     public static final Supplier<MenuType<EntropyVariationReactionChamberMenu>> ENTROPY_VARIATION_REACTION_CHAMBER_MENU = MENU_TYPES.register("entropy_variation_reaction_chamber_menu",
             () -> MenuTypeBuilder.create(EntropyVariationReactionChamberMenu::new, EntropyVariationReactionChamberBlockEntity.class)
                     .build(AE2CrystalScience.makeId("entropy_variation_reaction_chamber_menu"))
+    );
+
+    public static final Supplier<MenuType<QuartzOscillatorClockMenu>> QUARTZ_OSCILLATOR_CLOCK_MENU = MENU_TYPES.register("quartz_oscillator_clock_menu",
+            () -> MenuTypeBuilder.create(QuartzOscillatorClockMenu::new, QuartzOscillatorClockHost.class)
+                    .build(AE2CrystalScience.makeId("quartz_oscillator_clock_menu"))
     );
 
     public static void registerMenus(IEventBus eventBus)

@@ -15,6 +15,7 @@ public class AEPlugin
     private static String INTERFACE_GROUP_NAME = "block.ae2.interface";
     private static String METEORITE_PATTERN_PROVIDER_GROUP_NAME = "block.ae2cs.meteorite_pattern_provider";
     private static String ENDER_INTERFACE_GROUP_NAME = "block.ae2cs.ender_interface";
+    private static String QUARTZ_OSCILLATOR_CLOCK_GROUP_NAME = "block.ae2cs.quartz_oscillator_clock";
 
     /**
      * 在mod入口点调用
@@ -68,5 +69,7 @@ public class AEPlugin
         Upgrades.add(AEItems.CRAFTING_CARD, AECSBlocks.ENDER_INTERFACE_BLOCK, 1, ENDER_INTERFACE_GROUP_NAME);
         Upgrades.add(AEItems.FUZZY_CARD, AECSParts.ENDER_INTERFACE_PART, 1, ENDER_INTERFACE_GROUP_NAME);
         Upgrades.add(AEItems.FUZZY_CARD, AECSBlocks.ENDER_INTERFACE_BLOCK, 1, ENDER_INTERFACE_GROUP_NAME);
+        Upgrades.add(AEItems.REDSTONE_CARD, AECSBlocks.QUARTZ_OSCILLATOR_CLOCK_BLOCK, 1, QUARTZ_OSCILLATOR_CLOCK_GROUP_NAME);
+        Upgrades.add(AEItems.REDSTONE_CARD, AECSParts.QUARTZ_OSCILLATOR_CLOCK_PART, 1, QUARTZ_OSCILLATOR_CLOCK_GROUP_NAME);
     }
 }
