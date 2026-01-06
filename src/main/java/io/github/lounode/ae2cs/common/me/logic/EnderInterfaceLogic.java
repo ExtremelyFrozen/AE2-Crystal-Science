@@ -12,6 +12,7 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.MEStorage;
 import appeng.api.util.IConfigManager;
+import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.helpers.InterfaceLogic;
 import appeng.util.ConfigInventory;
@@ -156,18 +157,6 @@ public class EnderInterfaceLogic extends InterfaceLogic
         else return !absorbConfigInventory.isEmpty();
     }
 
-    private boolean validAbsorbThing(AEKey key)
-    {
-        if (blackListMode)
-        {
-            return !absorbFilterdKeys.contains(key);
-        }
-        else
-        {
-            return absorbFilterdKeys.contains(key);
-        }
-    }
-
     private boolean doAbsorbWork()
     {
         if (!(this.host.getBlockEntity().getLevel() instanceof ServerLevel level)) return false;
@@ -203,6 +192,46 @@ public class EnderInterfaceLogic extends InterfaceLogic
             }
         }
         return hasAbsorbed;
+    }
+
+    private boolean validAbsorbThing(AEKey key)
+    {
+        boolean match;
+        if (getUpgrades().isInstalled(AEItems.FUZZY_CARD))
+        {
+            match = isInAbsorbFilter(key);
+        }
+        else
+        {
+            match = absorbFilterdKeys.contains(key);
+        }
+
+        return blackListMode ? !match : match;
+    }
+
+    private boolean absorbKeyMatches(AEKey configured, AEKey candidate)
+    {
+        if (getUpgrades().isInstalled(AEItems.FUZZY_CARD) && configured.supportsFuzzyRangeSearch())
+        {
+            var fuzzyMode = getConfigManager().getSetting(Settings.FUZZY_MODE);
+            return configured.fuzzyEquals(candidate, fuzzyMode);
+        }
+        return configured.equals(candidate);
+    }
+
+    /**
+     * 模糊卡专用匹配
+     */
+    private boolean isInAbsorbFilter(AEKey key)
+    {
+        for (var configured : absorbFilterdKeys)
+        {
+            if (absorbKeyMatches(configured, key))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     private class Ticker implements IGridTickable
