@@ -2,9 +2,13 @@ package io.github.lounode.ae2cs.common.block.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.lounode.ae2cs.common.block.entity.EnderInterfaceBlockEntity;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 
 public class EnderInterfaceRender implements BlockEntityRenderer<EnderInterfaceBlockEntity>
@@ -38,20 +42,35 @@ public class EnderInterfaceRender implements BlockEntityRenderer<EnderInterfaceB
             return;
         }
 
-        var aabb = new net.minecraft.world.phys.AABB(
+        var aabb = new AABB(
                 -r, -r, -r,
                 r + 1.0, r + 1.0, r + 1.0
         );
 
-        var consumer = buffer.getBuffer(net.minecraft.client.renderer.RenderType.lines());
+        var consumer = buffer.getBuffer(RenderType.lines());
 
         float red = 0.2f, green = 0.9f, blue = 0.9f, alpha = 0.8f;
 
-        net.minecraft.client.renderer.LevelRenderer.renderLineBox(
+        LevelRenderer.renderLineBox(
                 poseStack,
                 consumer,
                 aabb,
                 red, green, blue, alpha
+        );
+    }
+
+    @Override
+    public @NotNull AABB getRenderBoundingBox(@NotNull EnderInterfaceBlockEntity blockEntity)
+    {
+        BlockPos centerPos = blockEntity.getBlockEntity().getBlockPos();
+        int range = blockEntity.getEnderInterfaceLogic().getRange();
+        return new AABB(
+                centerPos.getX() - range,
+                centerPos.getY() - range,
+                centerPos.getZ() - range,
+                centerPos.getX() + range,
+                centerPos.getY() + range,
+                centerPos.getZ() + range
         );
     }
 }
