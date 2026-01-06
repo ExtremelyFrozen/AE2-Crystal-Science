@@ -11,12 +11,15 @@ import appeng.api.stacks.GenericStack;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
+import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigurableObject;
 import appeng.core.definitions.AEItems;
 import appeng.recipes.entropy.EntropyMode;
 import appeng.recipes.entropy.EntropyRecipe;
 import appeng.util.ConfigInventory;
 import io.github.lounode.ae2cs.api.genericinv.CombinedGenericInternalInventory;
 import io.github.lounode.ae2cs.api.genericinv.GenericStackInvWrapper;
+import io.github.lounode.ae2cs.api.settings.AECSSettings;
 import io.github.lounode.ae2cs.api.util.ForgeEnergyAdapterUpgrade;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
@@ -45,7 +48,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfPoweredBlockEntity implements IUpgradeableObject
+public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfPoweredBlockEntity implements
+        IUpgradeableObject, IConfigurableObject
 {
     /**
      * 基础能量消耗，每tick 200AE，每多一个加速卡，则此数值翻倍，同时机器运行速率也翻倍。
@@ -87,10 +91,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
     private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(AECSBlocks.CRYSTAL_PULVERIZER_BLOCK,
             4, this::saveChanges);
 
-    /**
-     * 当前熵变方向
-     */
-    private EntropyMode entropyMode = EntropyMode.HEAT;
+    private IConfigManager configManager;
 
     /**
      * 当前执行的配方
@@ -124,6 +125,10 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
     public EntropyVariationReactionChamberBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState)
     {
         super(blockEntityType, pos, blockState, 80000);
+
+        configManager = IConfigManager.builder(this::onConfigChange)
+                .registerSetting(AECSSettings.ENTROPY_CHANGE_MODE, EntropyMode.HEAT)
+                .build();
 
         inputInv = ConfigInventory.storage(1)
                 .changeListener(() -> {
@@ -203,15 +208,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
 
     public EntropyMode getEntropyMode()
     {
-        return entropyMode;
-    }
-
-    public void setEntropyMode(EntropyMode entropyMode)
-    {
-        if (this.entropyMode == entropyMode) return;
-        this.entropyMode = entropyMode;
-        needRefreshRecipeState = true;
-        setChanged();
+        return configManager.getSetting(AECSSettings.ENTROPY_CHANGE_MODE);
     }
 
     public void checkActive(boolean active)
@@ -222,6 +219,18 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
         {
             level.setBlock(worldPosition, getBlockState().setValue(AECSBlockProperties.ACTIVE, active), 2);
         }
+    }
+
+    @Override
+    public IConfigManager getConfigManager()
+    {
+        return this.configManager;
+    }
+
+    protected void onConfigChange()
+    {
+        needRefreshRecipeState = true;
+        this.saveChanges();
     }
 
     @Override
@@ -354,7 +363,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
         }
 
 
-        var holder = findRecipe(level, this.entropyMode, inputBlockState, inputFluidState);
+        var holder = findRecipe(level, getEntropyMode(), inputBlockState, inputFluidState);
         if (holder == null)
         {
             // 没有配方，清空进度
@@ -427,11 +436,11 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
     public void saveAdditional(CompoundTag data, HolderLookup.Provider registries)
     {
         super.saveAdditional(data, registries);
+        this.configManager.writeToNBT(data, registries);
         inputInv.writeToChildTag(data, "input_inv", registries);
         outputInv.writeToChildTag(data, "output_inv", registries);
         upgrades.writeToNBT(data, "upgrades", registries);
         data.putInt("recipe_progress", recipeProgress);
-        data.putString("entropy_mode", this.entropyMode.name());
         if (activeRecipe != null)
         {
             data.putString("active_recipe_id", activeRecipe.id().toString());
@@ -442,11 +451,11 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
     public void loadTag(CompoundTag data, HolderLookup.Provider registries)
     {
         super.loadTag(data, registries);
+        this.configManager.readFromNBT(data, registries);
         inputInv.readFromChildTag(data, "input_inv", registries);
         outputInv.readFromChildTag(data, "output_inv", registries);
         upgrades.readFromNBT(data, "upgrades", registries);
         recipeProgress = data.getInt("recipe_progress");
-        this.entropyMode = EntropyMode.valueOf(data.getString("entropy_mode"));
         if (data.contains("active_recipe_id"))
         {
             activeRecipeId = ResourceLocation.parse(data.getString("active_recipe_id"));

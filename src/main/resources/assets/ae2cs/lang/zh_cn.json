@@ -226,5 +226,9 @@
 
   "ae2cs.machine_settings.pull_mode.title": "抽取目标面容器",
   "ae2cs.machine_settings.pull_mode.on.desc": "当前会抽取目标面容器",
-  "ae2cs.machine_settings.pull_mode.off.desc": "当前不会抽取目标面容器"
+  "ae2cs.machine_settings.pull_mode.off.desc": "当前不会抽取目标面容器",
+
+  "ae2cs.machine_settings.entropy_change_mode.title": "熵变模式",
+  "ae2cs.machine_settings.entropy_change_mode.increase.desc": "熵增",
+  "ae2cs.machine_settings.entropy_change_mode.decrease.desc": "熵减"
 }

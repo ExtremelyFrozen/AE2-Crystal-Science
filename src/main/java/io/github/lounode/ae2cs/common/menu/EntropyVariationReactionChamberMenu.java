@@ -7,6 +7,7 @@ import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.UpgradeableMenu;
 import appeng.menu.slot.AppEngSlot;
 import appeng.recipes.entropy.EntropyMode;
+import io.github.lounode.ae2cs.api.settings.AECSSettings;
 import io.github.lounode.ae2cs.common.block.entity.EntropyVariationReactionChamberBlockEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
@@ -14,8 +15,6 @@ import net.minecraft.world.item.ItemStack;
 
 public class EntropyVariationReactionChamberMenu extends UpgradeableMenu<EntropyVariationReactionChamberBlockEntity>
 {
-    private static final String changeEntropyMode = "change_entropy_mode";
-
     @GuiSync(10)
     public int recipeProgress;
 
@@ -34,8 +33,6 @@ public class EntropyVariationReactionChamberMenu extends UpgradeableMenu<Entropy
     public EntropyVariationReactionChamberMenu(MenuType<?> menuType, int id, Inventory ip, EntropyVariationReactionChamberBlockEntity host)
     {
         super(menuType, id, ip, host);
-
-        registerClientAction(changeEntropyMode, EntropyMode.class, this::onChangeEntropyMode);
     }
 
     @Override
@@ -65,19 +62,10 @@ public class EntropyVariationReactionChamberMenu extends UpgradeableMenu<Entropy
 
     }
 
-    public void sendChangeEntropyMode(EntropyMode newEntropyMode)
-    {
-        sendClientAction(changeEntropyMode, newEntropyMode);
-    }
-
-    private void onChangeEntropyMode(EntropyMode newEntropyMode)
-    {
-        this.getHost().setEntropyMode(newEntropyMode);
-    }
-
     @Override
     protected void loadSettingsFromHost(IConfigManager cm)
     {
+        this.entropyMode = cm.getSetting(AECSSettings.ENTROPY_CHANGE_MODE);
     }
 
     @Override

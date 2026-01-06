@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs.api.settings;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Setting;
+import appeng.recipes.entropy.EntropyMode;
 import io.github.lounode.ae2cs.client.gui.icon.AECSIcon;
 import io.github.lounode.ae2cs.client.gui.icon.AdaptedAE2Icon;
 import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
@@ -62,6 +63,15 @@ public final class AECSSettingAppearances
                 AECSSettings.PULL_MODE, PullMode.PULL_OFF,
                 Component.translatable("ae2cs.machine_settings.pull_mode.title"),
                 Component.translatable("ae2cs.machine_settings.pull_mode.off.desc"));
+
+        register(AECSIcon.ENTROPY_INCREASE,
+                AECSSettings.ENTROPY_CHANGE_MODE, EntropyMode.HEAT,
+                Component.translatable("ae2cs.machine_settings.entropy_change_mode.title"),
+                Component.translatable("ae2cs.machine_settings.entropy_change_mode.increase.desc"));
+        register(AECSIcon.ENTROPY_DECREASE,
+                AECSSettings.ENTROPY_CHANGE_MODE, EntropyMode.COOL,
+                Component.translatable("ae2cs.machine_settings.entropy_change_mode.title"),
+                Component.translatable("ae2cs.machine_settings.entropy_change_mode.decrease.desc"));
 
     }
 
