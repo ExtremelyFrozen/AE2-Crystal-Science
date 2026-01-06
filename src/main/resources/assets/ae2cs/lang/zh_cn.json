@@ -26,6 +26,10 @@
   "block.ae2cs.rose_quartz_block": "玫瑰石英块",
   "block.ae2cs.irradiated_crystal_block": "辐射水晶块",
 
+  "block.ae2cs.certus_quartz_ore": "赛特斯矿石",
+  "block.ae2cs.deepslate_certus_quartz_ore": "深层赛特斯矿石",
+  "block.ae2cs.silicon_block": "硅块",
+
   "item.ae2cs.certus_quartz_seed": "赛特斯石英水晶种子",
   "item.ae2cs.fluix_crystal_seed": "福鲁伊克斯种子",
   "item.ae2cs.nether_quartz_seed": "下界石英种子",

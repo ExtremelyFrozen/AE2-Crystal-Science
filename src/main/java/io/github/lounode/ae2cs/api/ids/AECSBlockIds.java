@@ -10,6 +10,11 @@ public class AECSBlockIds
     public static final String ROSE_QUARTZ_BLOCK = "rose_quartz_block";
     public static final String IRRADIATED_CRYSTAL_BLOCK = "irradiated_crystal_block";
 
+    public static final String CERTUS_QUARTZ_ORE = "certus_quartz_ore";
+    public static final String DEEPSLATE_CERTUS_QUARTZ_ORE = "deepslate_certus_quartz_ore";
+    public static final String SILICON_BLOCK = "silicon_block";
+
+
     public static final String CRYSTAL_GROWTH_CHAMBER = "crystal_growth_chamber";
     public static final String CIRCUIT_ETCHER = "circuit_etcher";
     public static final String QUARTZ_GRINDSTONE = "quartz_grindstone";

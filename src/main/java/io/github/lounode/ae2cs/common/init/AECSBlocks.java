@@ -48,6 +48,14 @@ public class AECSBlocks
     public static final DeferredBlock<Block> PURE_ROSE_QUARTZ_BLOCK = registerCrystalBlock(AECSBlockIds.ROSE_QUARTZ_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
     public static final DeferredBlock<Block> IRRADIATED_CRYSTAL_BLOCK = registerCrystalBlock(AECSBlockIds.IRRADIATED_CRYSTAL_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
 
+    // 基础材料
+    // 硅块
+    public static final DeferredBlock<Block> SILICON_BLOCK = registerOtherBlock(AECSBlockIds.SILICON_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
+    // 赛特斯石英矿石
+    public static final DeferredBlock<Block> CERTUS_QUARTZ_ORE = registerOtherBlock(AECSBlockIds.CERTUS_QUARTZ_ORE, () -> new Block(copy(Blocks.IRON_BLOCK)));
+    // 深层赛特斯石英矿石
+    public static final DeferredBlock<Block> DEEPSLATE_CERTUS_QUARTZ_ORE = registerOtherBlock(AECSBlockIds.DEEPSLATE_CERTUS_QUARTZ_ORE, () -> new Block(copy(Blocks.IRON_BLOCK)));
+
     /**
      * 水晶催生仓
      */
