@@ -1,6 +1,8 @@
 package io.github.lounode.ae2cs.common.me.logic;
 
 import appeng.api.config.Actionable;
+import appeng.api.config.FuzzyMode;
+import appeng.api.config.Settings;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.ticking.IGridTickable;
@@ -9,9 +11,13 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.MEStorage;
+import appeng.api.util.IConfigManager;
 import appeng.core.settings.TickRates;
 import appeng.helpers.InterfaceLogic;
 import appeng.util.ConfigInventory;
+import io.github.lounode.ae2cs.api.settings.AECSSettings;
+import io.github.lounode.ae2cs.api.settings.BlackListMode;
+import io.github.lounode.ae2cs.api.settings.ShowRangeMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -55,6 +61,12 @@ public class EnderInterfaceLogic extends InterfaceLogic
         this.absorbConfigInventory.useRegisteredCapacities();
 
         mainNode.addService(IGridTickable.class, new Ticker());
+
+        cm = IConfigManager.builder(this::onConfigChanged)
+                .registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL)
+                .registerSetting(AECSSettings.SHOW_RANGE_MODE, ShowRangeMode.HIDE_RANGE)
+                .registerSetting(AECSSettings.BLACK_LIST_MODE, BlackListMode.WHITELIST)
+                .build();
     }
 
     public ConfigInventory getAbsorbConfigInventory()
@@ -62,19 +74,28 @@ public class EnderInterfaceLogic extends InterfaceLogic
         return absorbConfigInventory;
     }
 
-    public boolean isBlackListMode()
+    @Override
+    protected void onConfigChanged()
     {
-        return blackListMode;
-    }
-
-    public void setBlackListMode(boolean blackListMode)
-    {
-        if (this.blackListMode != blackListMode)
+        super.onConfigChanged();
+        boolean newRenderRangeInClient = cm.getSetting(AECSSettings.SHOW_RANGE_MODE) == ShowRangeMode.SHOW_RANGE;
+        boolean newBlackListMode = cm.getSetting(AECSSettings.BLACK_LIST_MODE) == BlackListMode.BLACKLIST;
+        if (this.renderRangeInClient != newRenderRangeInClient)
         {
-            this.blackListMode = blackListMode;
+            this.renderRangeInClient = newRenderRangeInClient;
+            this.host.markForLogicClientUpdate();
+        }
+        if (this.blackListMode != newBlackListMode)
+        {
+            this.blackListMode = newBlackListMode;
             mainNode.ifPresent((iGrid, iGridNode) -> iGrid.getTickManager().alertDevice(iGridNode));
             this.host.saveChanges();
         }
+    }
+
+    public boolean isBlackListMode()
+    {
+        return blackListMode;
     }
 
     public int getRange()
@@ -99,12 +120,9 @@ public class EnderInterfaceLogic extends InterfaceLogic
         return renderRangeInClient;
     }
 
-    public void setRenderRangeInClient(boolean newValue)
+    public void setRenderRangeInClient(boolean renderRangeInClient)
     {
-        if (newValue == renderRangeInClient) return;
-        renderRangeInClient = newValue;
-        host.saveChanges();
-        this.host.markForLogicClientUpdate();
+        this.renderRangeInClient = renderRangeInClient;
     }
 
     @Override
@@ -113,8 +131,6 @@ public class EnderInterfaceLogic extends InterfaceLogic
         super.writeToNBT(tag, registries);
         absorbConfigInventory.writeToChildTag(tag, "absorb_config", registries);
         tag.putInt("range", range);
-        tag.putBoolean("black_list_mode", blackListMode);
-        tag.putBoolean("render_range_in_client", this.renderRangeInClient);
     }
 
     @Override
@@ -123,9 +139,7 @@ public class EnderInterfaceLogic extends InterfaceLogic
         super.readFromNBT(tag, registries);
         absorbConfigInventory.readFromChildTag(tag, "absorb_config", registries);
         range = tag.getInt("range");
-        blackListMode = tag.getBoolean("black_list_mode");
-        this.renderRangeInClient = tag.getBoolean("render_range_in_client");
-
+        this.onConfigChanged();
         onAbsorbConfigChange();
     }
 

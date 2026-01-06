@@ -1,13 +1,14 @@
 package io.github.lounode.ae2cs.client.gui;
 
-import appeng.client.gui.Icon;
 import appeng.client.gui.implementations.InterfaceScreen;
 import appeng.client.gui.style.ScreenStyle;
-import io.github.lounode.ae2cs.client.gui.icon.AE2IconAdapter;
+import io.github.lounode.ae2cs.api.settings.AECSSettings;
+import io.github.lounode.ae2cs.api.settings.BlackListMode;
+import io.github.lounode.ae2cs.api.settings.ShowRangeMode;
 import io.github.lounode.ae2cs.client.gui.icon.AECSIcon;
 import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSIconButton;
-import io.github.lounode.ae2cs.client.gui.widgets.AECSToggleButton;
+import io.github.lounode.ae2cs.client.gui.widgets.AECSServerSettingToggleButton;
 import io.github.lounode.ae2cs.common.menu.EnderInterfaceMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -15,8 +16,8 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class EnderInterfaceGUI extends InterfaceScreen<EnderInterfaceMenu>
 {
-    private AECSToggleButton blackListModeButton;
-    private AECSToggleButton showRangeButton;
+    private AECSServerSettingToggleButton<BlackListMode> blackListModeButton;
+    private AECSServerSettingToggleButton<ShowRangeMode> showRangeButton;
     private AECSIconButton addRangeButton;
     private AECSIconButton reduceRangeButton;
 
@@ -24,18 +25,10 @@ public class EnderInterfaceGUI extends InterfaceScreen<EnderInterfaceMenu>
     {
         super(menu, playerInventory, title, style);
 
-        blackListModeButton = new AECSToggleButton(
-                AECSIcon.BLACK_LIST_MODE, AECSIcon.WHITE_LIST_MODE,
-                Component.translatable("ae2cs.menu.ender_interface.black_list_mode_title"),
-                Component.translatable("ae2cs.menu.ender_interface.black_list_mode_desc"),
-                menu::sendChangeBlackListMode);
+        blackListModeButton = new AECSServerSettingToggleButton<>(AECSSettings.BLACK_LIST_MODE, BlackListMode.WHITELIST);
         addToLeftToolbar(blackListModeButton);
 
-        showRangeButton = new AECSToggleButton(
-                new AE2IconAdapter(Icon.OVERLAY_ON), new AE2IconAdapter(Icon.OVERLAY_OFF),
-                Component.translatable("ae2cs.menu.ender_interface.show_range_title"),
-                Component.translatable("ae2cs.menu.ender_interface.show_range_desc"),
-                menu::sendChangeShowRange);
+        showRangeButton = new AECSServerSettingToggleButton<>(AECSSettings.SHOW_RANGE_MODE, ShowRangeMode.HIDE_RANGE);
         addToLeftToolbar(showRangeButton);
 
         addRangeButton = new AECSIconButton(button -> menu.sendChangeAbsorbRange(1))
@@ -71,7 +64,7 @@ public class EnderInterfaceGUI extends InterfaceScreen<EnderInterfaceMenu>
     protected void updateBeforeRender()
     {
         super.updateBeforeRender();
-        blackListModeButton.setState(menu.blackListMode);
-        showRangeButton.setState(menu.showRange);
+        blackListModeButton.set(menu.blackListMode);
+        showRangeButton.set(menu.showRange);
     }
 }

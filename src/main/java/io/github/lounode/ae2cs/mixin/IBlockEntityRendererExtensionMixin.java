@@ -22,19 +22,23 @@ public interface IBlockEntityRendererExtensionMixin
     )
     private AABB aecs$getRenderBoundingBox(AABB original, BlockEntity be)
     {
-        if (!(this instanceof CableBusTESR)) {
+        if (!(this instanceof CableBusTESR))
+        {
             return original;
         }
-        if (!(be instanceof CableBusBlockEntity te)) {
+        if (!(be instanceof CableBusBlockEntity te))
+        {
             return original;
         }
 
         BlockPos center = te.getBlockPos();
         AABB result = original;
 
-        for (Direction dir : Direction.values()) {
+        for (Direction dir : Direction.values())
+        {
             IPart part = te.getPart(dir);
-            if (!(part instanceof ICustomRenderBounding custom)) {
+            if (!(part instanceof ICustomRenderBounding custom))
+            {
                 continue;
             }
 

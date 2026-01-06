@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs.api.settings;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Setting;
+import io.github.lounode.ae2cs.client.gui.icon.AECSIcon;
 import io.github.lounode.ae2cs.client.gui.icon.AdaptedAE2Icon;
 import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
 import net.minecraft.network.chat.Component;
@@ -34,6 +35,24 @@ public final class AECSSettingAppearances
                 AECSSettings.REDSTONE_CONTROLLED_NO_PULSE, RedstoneMode.HIGH_SIGNAL,
                 Component.translatable("ae2cs.machine_settings.redstone_controlled_no_pulse.title"),
                 Component.translatable("ae2cs.machine_settings.redstone_controlled_no_pulse.high_signal.desc"));
+
+        register(AdaptedAE2Icon.OVERLAY_ON,
+                AECSSettings.SHOW_RANGE_MODE, ShowRangeMode.SHOW_RANGE,
+                Component.translatable("ae2cs.machine_settings.show_range_mode.title"),
+                Component.translatable("ae2cs.machine_settings.show_range_mode.show.desc"));
+        register(AdaptedAE2Icon.OVERLAY_OFF,
+                AECSSettings.SHOW_RANGE_MODE, ShowRangeMode.HIDE_RANGE,
+                Component.translatable("ae2cs.machine_settings.show_range_mode.title"),
+                Component.translatable("ae2cs.machine_settings.show_range_mode.hide.desc"));
+
+        register(AECSIcon.WHITE_LIST_MODE,
+                AECSSettings.BLACK_LIST_MODE, BlackListMode.WHITELIST,
+                Component.translatable("ae2cs.machine_settings.black_list_mode.title"),
+                Component.translatable("ae2cs.machine_settings.black_list_mode.white_list.desc"));
+        register(AECSIcon.BLACK_LIST_MODE,
+                AECSSettings.BLACK_LIST_MODE, BlackListMode.BLACKLIST,
+                Component.translatable("ae2cs.machine_settings.black_list_mode.title"),
+                Component.translatable("ae2cs.machine_settings.black_list_mode.black_list.desc"));
 
     }
 

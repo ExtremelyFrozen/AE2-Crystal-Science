@@ -1,50 +1,51 @@
 package io.github.lounode.ae2cs.common.menu;
 
 import appeng.api.inventories.InternalInventory;
+import appeng.api.util.IConfigManager;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.InterfaceMenu;
 import appeng.menu.slot.FakeSlot;
+import io.github.lounode.ae2cs.api.settings.AECSSettings;
+import io.github.lounode.ae2cs.api.settings.BlackListMode;
+import io.github.lounode.ae2cs.api.settings.ShowRangeMode;
 import io.github.lounode.ae2cs.common.me.logic.EnderInterfaceHost;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
 public class EnderInterfaceMenu extends InterfaceMenu
 {
-    private static final String changeBlackListMode = "change_black_list_mode";
     private static final String changeAbsorbRange = "change_absorb_range";
-    private static final String changeShowRange = "change_show_range";
 
     @GuiSync(10)
-    public boolean blackListMode = false;
+    public BlackListMode blackListMode;
 
     @GuiSync(11)
     public int absorbRange = 3;
 
     @GuiSync(12)
-    public boolean showRange = false;
+    public ShowRangeMode showRange;
 
     public EnderInterfaceMenu(MenuType<? extends InterfaceMenu> menuType, int id, Inventory ip, EnderInterfaceHost host)
     {
         super(menuType, id, ip, host);
 
-        registerClientAction(changeBlackListMode, Boolean.class, this::onChangeBlackListMode);
         registerClientAction(changeAbsorbRange, Integer.class, this::onChangeAbsorbRange);
-        registerClientAction(changeShowRange, Boolean.class, this::onChangeShowRange);
+    }
+
+    @Override
+    protected void loadSettingsFromHost(IConfigManager cm)
+    {
+        super.loadSettingsFromHost(cm);
+        showRange = cm.getSetting(AECSSettings.SHOW_RANGE_MODE);
+        blackListMode = cm.getSetting(AECSSettings.BLACK_LIST_MODE);
     }
 
     @Override
     public void broadcastChanges()
     {
-        blackListMode = getEnderInterfaceHost().getEnderInterfaceLogic().isBlackListMode();
         absorbRange = getEnderInterfaceHost().getEnderInterfaceLogic().getRange();
-        showRange = getEnderInterfaceHost().getEnderInterfaceLogic().isRenderRangeInClient();
         super.broadcastChanges();
-    }
-
-    public void sendChangeBlackListMode(boolean newMode)
-    {
-        sendClientAction(changeBlackListMode, newMode);
     }
 
     public void sendChangeAbsorbRange(int delta)
@@ -52,25 +53,10 @@ public class EnderInterfaceMenu extends InterfaceMenu
         sendClientAction(changeAbsorbRange, delta);
     }
 
-    public void sendChangeShowRange(boolean newMode)
-    {
-        sendClientAction(changeShowRange, newMode);
-    }
-
-    private void onChangeBlackListMode(boolean newMode)
-    {
-        getEnderInterfaceHost().getEnderInterfaceLogic().setBlackListMode(newMode);
-    }
-
     private void onChangeAbsorbRange(int delta)
     {
         int originalValue = getEnderInterfaceHost().getEnderInterfaceLogic().getRange();
         getEnderInterfaceHost().getEnderInterfaceLogic().setRange(originalValue + delta);
-    }
-
-    private void onChangeShowRange(boolean newMode)
-    {
-        getEnderInterfaceHost().getEnderInterfaceLogic().setRenderRangeInClient(newMode);
     }
 
     @Override

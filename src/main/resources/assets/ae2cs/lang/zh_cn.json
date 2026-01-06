@@ -214,5 +214,13 @@
   "ae2cs.machine_settings.redstone_controlled_no_pulse.title": "红石模式",
   "ae2cs.machine_settings.redstone_controlled_no_pulse.ignore.desc": "始终工作",
   "ae2cs.machine_settings.redstone_controlled_no_pulse.low_signal.desc": "无信号时工作",
-  "ae2cs.machine_settings.redstone_controlled_no_pulse.high_signal.desc": "有信号时工作"
+  "ae2cs.machine_settings.redstone_controlled_no_pulse.high_signal.desc": "有信号时工作",
+
+  "ae2cs.machine_settings.show_range_mode.title": "展示工作范围",
+  "ae2cs.machine_settings.show_range_mode.show.desc": "显示当前工作范围",
+  "ae2cs.machine_settings.show_range_mode.hide.desc": "隐藏当前工作范围",
+
+  "ae2cs.machine_settings.black_list_mode.title": "切换黑白名单模式",
+  "ae2cs.machine_settings.black_list_mode.white_list.desc": "当前为白名单模式",
+  "ae2cs.machine_settings.black_list_mode.black_list.desc": "当前为黑名单模式"
 }

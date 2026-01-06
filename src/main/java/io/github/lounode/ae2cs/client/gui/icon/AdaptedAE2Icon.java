@@ -12,4 +12,8 @@ public class AdaptedAE2Icon
     public static final AE2IconAdapter REDSTONE_LOW = new AE2IconAdapter(Icon.REDSTONE_LOW);
     public static final AE2IconAdapter REDSTONE_HIGH = new AE2IconAdapter(Icon.REDSTONE_HIGH);
     public static final AE2IconAdapter REDSTONE_PULSE = new AE2IconAdapter(Icon.REDSTONE_PULSE);
+
+    public static final AE2IconAdapter OVERLAY_ON = new AE2IconAdapter(Icon.OVERLAY_ON);
+    public static final AE2IconAdapter OVERLAY_OFF = new AE2IconAdapter(Icon.OVERLAY_OFF);
+
 }
