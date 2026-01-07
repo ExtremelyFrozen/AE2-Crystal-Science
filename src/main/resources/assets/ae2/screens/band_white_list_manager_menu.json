@@ -3,9 +3,9 @@
   "includes": ["common/common.json", "aecs_util/back_button.json"],
   "background": {
     "texture": "ae2cs:textures/gui/band_white_list_manager_menu.png",
-    "textureWidth": 256,
-    "textureHeight": 256,
-    "srcRect": [0, 0, 176, 224]
+    "textureWidth": 512,
+    "textureHeight": 512,
+    "srcRect": [0, 0, 363, 219]
   },
   "text": {
     "title": {

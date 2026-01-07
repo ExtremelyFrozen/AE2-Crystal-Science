@@ -18,8 +18,9 @@ import java.util.UUID;
  */
 public class WhiteListPlayerPanel extends AbstractWidget
 {
-    private static final ResourceLocation BG = AE2CrystalScience.makeId("textures/gui/frequency_band_menu.png");
-    private static final Rect2i TEXTURE_BOUND = new Rect2i(0, 224, 140, 16);
+    private static final ResourceLocation BG = AE2CrystalScience.makeId("textures/gui/band_white_list_manager_menu.png");
+    private static final Rect2i TEXTURE_BOUND = new Rect2i(0, 219, 158, 17);
+    private static final Rect2i TEXTURE_HIGHLIGHT_BOUND = new Rect2i(0, 236, 158, 17);
 
     private final BandWhiteListManagerMenu menu;
 
@@ -43,18 +44,22 @@ public class WhiteListPlayerPanel extends AbstractWidget
     @Override
     protected void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float pt)
     {
-        guiGraphics.blit(BG, getX(), getY(), TEXTURE_BOUND.getX(), TEXTURE_BOUND.getY(), TEXTURE_BOUND.getWidth(), TEXTURE_BOUND.getHeight(), 256, 256);
+        Rect2i bounds;
+        if (isHovered())
+            bounds = TEXTURE_HIGHLIGHT_BOUND;
+        else
+            bounds = TEXTURE_BOUND;
+        guiGraphics.blit(BG, getX(), getY(), bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight(), 512, 512);
 
         final var font = Minecraft.getInstance().font;
 
-        guiGraphics.drawString(font, playerName, getX() + 2, getY() + 4, 0xFFFFFF, false);
+        guiGraphics.drawString(font, playerName, getX() + 2, getY() + 4, 4276052, false);
     }
 
     @Override
     public void onClick(double mouseX, double mouseY, int button)
     {
         super.onClick(mouseX, mouseY, button);
-
         menu.sendChangeWhiteListStateAction(playerId);
     }
 

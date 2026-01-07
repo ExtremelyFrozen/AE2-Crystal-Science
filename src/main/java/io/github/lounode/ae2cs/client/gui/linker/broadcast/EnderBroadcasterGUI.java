@@ -131,11 +131,14 @@ public class EnderBroadcasterGUI extends UpgradeableScreen<EnderBroadcasterMenu>
         setTextContent("band_name", Component.translatable("ae2cs.menu.ender_broadcaster.current_band", bandValue));
         setTextContent("connect_status", Component.translatable("ae2cs.menu.ender_broadcaster.connect_status", typeText));
 
-        setTextContent("receiver_expected_channels", Component.translatable("ae2cs.menu.ender_broadcaster.receiver_expected_channels", menu.receiverExpectedChannels));
-        setTextHidden("receiver_expected_channels", !isReceiver);
-
         setTextContent("receiver_actual_channels", Component.translatable("ae2cs.menu.ender_broadcaster.receiver_actual_channels", menu.receiverActualChannels));
         setTextHidden("receiver_actual_channels", !isReceiver);
+
+        setTextContent("receiver_expected_channels_title", Component.translatable("ae2cs.menu.ender_broadcaster.receiver_expected_channels_title"));
+        setTextHidden("receiver_expected_channels_title", !isReceiver);
+
+        setTextContent("receiver_expected_channels_count", Component.literal(String.valueOf(menu.receiverExpectedChannels)));
+        setTextHidden("receiver_expected_channels_count", !isReceiver);
 
         setTextContent("sender_sent_channels", Component.translatable("ae2cs.menu.ender_broadcaster.sender_sent_channels", menu.senderSentChannels));
         setTextHidden("sender_sent_channels", !isSender);

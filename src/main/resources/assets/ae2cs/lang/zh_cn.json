@@ -124,7 +124,7 @@
   "ae2cs.menu.ender_broadcaster.connection_type.as_sender": "发射端",
   "ae2cs.menu.ender_broadcaster.connection_type.as_receiver": "接收端",
   "ae2cs.menu.ender_broadcaster.connection_type.no_connection": "无链接",
-  "ae2cs.menu.ender_broadcaster.receiver_expected_channels": "期望频段数：%s",
+  "ae2cs.menu.ender_broadcaster.receiver_expected_channels_title": "期望频段数：",
   "ae2cs.menu.ender_broadcaster.receiver_actual_channels": "实际接收频道：%s",
   "ae2cs.menu.ender_broadcaster.sender_sent_channels": "发送频道数：%s",
   "ae2cs.menu.ender_broadcaster.button.open_frequency_band_menu": "打开频段菜单",
