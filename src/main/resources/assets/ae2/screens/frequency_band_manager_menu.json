@@ -3,50 +3,38 @@
   "includes": ["common/common.json", "aecs_util/back_button.json"],
   "background": {
     "texture": "ae2cs:textures/gui/frequency_band_manager_menu.png",
-    "textureWidth": 256,
-    "textureHeight": 256,
-    "srcRect": [0, 0, 176, 224]
+    "textureWidth": 512,
+    "textureHeight": 512,
+    "srcRect": [0, 0, 195, 226]
   },
   "text": {
     "title": {
       "text": { "translate": "ae2cs.menu.title.frequency_band_manager" },
       "position": { "left": 8, "top": 6 }
+    },
+    "band_name": {
+      "position": { "left": 10, "top": 170 }
+    },
+    "channel_usage": {
+      "position": { "left": 10, "top": 180 }
+    },
+    "band_error": {
+      "position": { "left": 10, "top": 190 },
+      "maxWidth": 165
     }
   },
   "widgets": {
     "input_password_field": {
-      "left": 10,
-      "top": 40,
-      "width": 100,
+      "left": 8,
+      "top": 155,
+      "width": 89,
       "height": 12
     },
     "confirm_password_change_button": {
-      "left": 120,
-      "top": 39,
+      "left": 100,
+      "top": 154,
       "width": 40,
       "height": 14
-    },
-    "open_band_whitelist_manager_button": {
-      "left": 120,
-      "top": 50,
-      "width": 40,
-      "height": 14
-    },
-    "remove_band_button": {
-      "left": 170,
-      "top": 50,
-      "width": 40,
-      "height": 14
-    },
-    "change_public_box": {
-      "left": 10,
-      "top": 60,
-      "width": 50
-    },
-    "change_allow_memory_card_box": {
-      "left": 70,
-      "top": 60,
-      "width": 50
     },
     "broadcaster_scrollbar": {
       "left": 175,

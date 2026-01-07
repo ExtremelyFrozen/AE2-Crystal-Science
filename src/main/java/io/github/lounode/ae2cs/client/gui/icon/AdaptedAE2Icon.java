@@ -19,4 +19,6 @@ public class AdaptedAE2Icon
     public static final AE2IconAdapter LOCKED = new AE2IconAdapter(Icon.LOCKED);
     public static final AE2IconAdapter UNLOCKED = new AE2IconAdapter(Icon.UNLOCKED);
 
+    public static final AE2IconAdapter CLEAR = new AE2IconAdapter(Icon.CLEAR);
+
 }

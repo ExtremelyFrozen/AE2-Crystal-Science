@@ -57,7 +57,7 @@ public class FrequencyBandInfoPanel extends AbstractWidget
 
         // 频段名
         final var font = Minecraft.getInstance().font;
-        guiGraphics.drawString(font, bandId, getX() + 6, getY() + 4, 0xFFFFFF, false);
+        guiGraphics.drawString(font, bandId, getX() + 6, getY() + 4, 4276052, false);
 
         // 加密图标
         if (isEncrypted)

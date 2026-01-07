@@ -191,8 +191,16 @@
   "ae2cs.menu.ender_emitter.button.add_distance": "自动连接距离设置\n自动连接范围 +1",
   "ae2cs.menu.ender_emitter.button.reduce_distance": "自动连接距离设置\n自动连接范围 -1",
 
+  "ae2cs.menu.frequency_manager.button.change_public.title": "切换可见性",
+  "ae2cs.menu.frequency_manager.button.change_public.desc": "在公开和私有之间切换频段可见性，只有处于白名单的玩家才能看见私有频段",
+  "ae2cs.menu.frequency_manager.button.change_allow_memory_card.title": "切换内存卡模式",
+  "ae2cs.menu.frequency_manager.button.change_allow_memory_card.desc": "此频段是否允许使用内存卡复制从机器上复制链接状态",
+  "ae2cs.menu.frequency_manager.button.remove_band": "删除此频段\n注意：此操作不可撤销！",
+  "ae2cs.menu.frequency_manager.button.open_white_list_manager": "打开白名单管理\n你可以在此菜单内管理频段白名单玩家",
+
   "ae2cs.widgets.broadcaster.sender": "发送端",
   "ae2cs.widgets.broadcaster.receiver": "接收端",
+  "ae2cs.widgets.broadcaster.pos": "位于：\n维度：%s\nx：%s，y：%s，z：%s",
 
   "ae2cs.menu.title.band_white_list_manager": "管理白名单",
 

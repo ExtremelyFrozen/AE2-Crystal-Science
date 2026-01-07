@@ -25,7 +25,10 @@ public enum AECSIcon implements IButtonIcon
     AUTO_LINK_CABLE_ENABLE(16, 80),
 
     AUTO_LINK_DISABLE(0, 96),
-    AUTO_LINK_ENABLE(16, 96);
+    AUTO_LINK_ENABLE(16, 96),
+
+    ALLOW_MEMORY_CARD(0, 160),
+    DENY_MEMORY_CARD(16, 160);
 
 
     public final int x;

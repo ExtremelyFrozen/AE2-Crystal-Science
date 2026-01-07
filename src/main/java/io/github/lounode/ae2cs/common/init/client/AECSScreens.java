@@ -35,7 +35,7 @@ public class AECSScreens
         event.register(AECSMenus.FREQUENCY_BAND_MENU.get(), FrequencyBandGUI::new);
         event.register(AECSMenus.FREQUENCY_BAND_LINK_MENU.get(), FrequencyBandLinkGUI::new);
         event.register(AECSMenus.FREQUENCY_BAND_CREATE_MENU.get(), FrequencyBandCreateGUI::new);
-        event.register(AECSMenus.FREQUENCY_BAND_MANAGER_MENU.get(), FrequencyBandManagerGUI::new);
+        event.register(AECSMenus.FREQUENCY_BAND_MANAGER_MENU.get(), io.github.lounode.ae2cs.client.gui.linker.broadcast.FrequencyBandManagerGUI::new);
         event.register(AECSMenus.BAND_WHITE_LIST_MANAGER_MENU.get(), BandWhiteListManagerGUI::new);
 
         event.<EnderEmitterMenu, EnderEmitterGUI>register(AECSMenus.ENDER_EMITTER_MENU.get(),
