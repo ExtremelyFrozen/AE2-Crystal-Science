@@ -27,6 +27,13 @@ public enum AECSIcon implements IButtonIcon
     AUTO_LINK_DISABLE(0, 96),
     AUTO_LINK_ENABLE(16, 96),
 
+    RECEIVER_STATE(0, 112),
+    SENDER_STATE(16, 112),
+
+    BAND_VIEW(0, 128),
+    BAND_CREATE(16, 128),
+    BAND_MANAGER(0, 144),
+
     ALLOW_MEMORY_CARD(0, 160),
     DENY_MEMORY_CARD(16, 160);
 

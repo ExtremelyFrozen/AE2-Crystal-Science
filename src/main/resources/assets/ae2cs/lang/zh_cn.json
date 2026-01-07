@@ -131,6 +131,11 @@
   "ae2cs.menu.ender_broadcaster.button.open_frequency_band_create_menu": "创建新频段",
   "ae2cs.menu.ender_broadcaster.button.open_frequency_band_manager_menu": "管理当前频段",
   "ae2cs.menu.ender_broadcaster.button.toggle_linker_side": "切换端模式",
+  "ae2cs.menu.ender_broadcaster.button.toggle_band_side.title": "切换端模式",
+  "ae2cs.menu.ender_broadcaster.button.toggle_band_side.desc": "在发送端与接收端之间切换",
+  "ae2cs.menu.ender_broadcaster.button.open_frequency_view_menu": "打开频段菜单\n查看服务器内所有可链接频段",
+  "ae2cs.menu.ender_broadcaster.button.open_frequency_create_menu": "打开频段创建菜单\n在此处创建新的频段",
+  "ae2cs.menu.ender_broadcaster.button.open_frequency_manager_menu": "打开频段管理菜单\n在此查看和修改频段信息，以及所有频段链接的端",
 
   "ae2cs.menu.title.frequency_bands": "频段菜单",
   "ae2cs.menu.widgets.frequency_info_panel.encrypted": "已加密",
