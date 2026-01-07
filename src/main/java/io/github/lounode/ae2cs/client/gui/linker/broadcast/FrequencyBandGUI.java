@@ -21,18 +21,20 @@ public class FrequencyBandGUI extends AEBaseScreen<FrequencyBandMenu>
     /**
      * 可用于显示频段的区域（相对 GUI 左上角）
      */
-    private static final Rect2i PANEL_AREA = new Rect2i(8, 32, 140, 96);
+    private static final Rect2i PANEL_AREA = new Rect2i(9, 39, 158, 170);
 
     /**
      * 单个频段面板高度
      */
-    private static final int ROW_H = 16;
+    private static final int ROW_H = 17;
 
     /**
      * 隐藏停靠点
      */
     private static final int HIDE_X = -10000;
     private static final int HIDE_Y = -10000;
+
+    private static final int SCROLL_HEIGHT = 189;
 
     private final Scrollbar scrollbar;
     private final AETextField searchField;
@@ -58,7 +60,7 @@ public class FrequencyBandGUI extends AEBaseScreen<FrequencyBandMenu>
         this.scrollbar = widgets.addScrollBar("scrollbar", Scrollbar.BIG);
         this.searchField = widgets.addTextField("search");
 
-        this.scrollbar.setHeight(PANEL_AREA.getHeight());
+        this.scrollbar.setHeight(SCROLL_HEIGHT);
         this.scrollbar.setRange(0, 0, 1);
 
         this.searchField.setResponder(s -> {
@@ -76,7 +78,7 @@ public class FrequencyBandGUI extends AEBaseScreen<FrequencyBandMenu>
     {
         super.init();
         this.visibleRows = Math.max(1, PANEL_AREA.getHeight() / ROW_H);
-        this.scrollbar.setHeight(PANEL_AREA.getHeight());
+        this.scrollbar.setHeight(SCROLL_HEIGHT);
 
         panelPool.clear();
 

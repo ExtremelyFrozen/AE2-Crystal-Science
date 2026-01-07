@@ -16,4 +16,7 @@ public class AdaptedAE2Icon
     public static final AE2IconAdapter OVERLAY_ON = new AE2IconAdapter(Icon.OVERLAY_ON);
     public static final AE2IconAdapter OVERLAY_OFF = new AE2IconAdapter(Icon.OVERLAY_OFF);
 
+    public static final AE2IconAdapter LOCKED = new AE2IconAdapter(Icon.LOCKED);
+    public static final AE2IconAdapter UNLOCKED = new AE2IconAdapter(Icon.UNLOCKED);
+
 }
