@@ -2,8 +2,6 @@ package io.github.lounode.ae2cs.client.gui;
 
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.style.ScreenStyle;
-import appeng.client.gui.widgets.AE2Button;
-import appeng.client.gui.widgets.AECheckbox;
 import io.github.lounode.ae2cs.api.settings.AECSSettings;
 import io.github.lounode.ae2cs.api.settings.AutoLinkCableMode;
 import io.github.lounode.ae2cs.api.settings.AutoLinkMode;
@@ -17,7 +15,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class EnderEmitterGUI extends UpgradeableScreen<EnderEmitterMenu>
 {

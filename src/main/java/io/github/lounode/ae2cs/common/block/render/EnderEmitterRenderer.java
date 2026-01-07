@@ -133,7 +133,9 @@ public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlo
         return 96;
     }
 
-    /** 渲染线框与光束 */
+    /**
+     * 渲染线框与光束
+     */
     private static void renderLinkStatus(EnderEmitterBlockEntity be, float partialTick,
                                          PoseStack poseStack, MultiBufferSource buffer)
     {
@@ -244,7 +246,9 @@ public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlo
         }
     }
 
-    /** 光束渲染 */
+    /**
+     * 光束渲染
+     */
     private static void drawBeamCrossLocal(PoseStack.Pose pose, VertexConsumer vc,
                                            Vector3f startL, Vector3f endL, Vector3f camL,
                                            float width,

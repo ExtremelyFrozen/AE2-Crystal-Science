@@ -179,10 +179,10 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
     @Override
     public AABB getCustomBoundingBox(BlockPos centerPos)
     {
-        if(enableCustomRenderBounding())
+        if (enableCustomRenderBounding())
             return ICustomRenderBounding.super.getCustomBoundingBox(centerPos);
         else
-            return new AABB(centerPos).inflate(0,1,0);
+            return new AABB(centerPos).inflate(0, 1, 0);
     }
 
     @Override

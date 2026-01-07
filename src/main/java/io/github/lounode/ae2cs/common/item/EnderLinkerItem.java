@@ -53,7 +53,7 @@ public class EnderLinkerItem extends Item
                 {
                     EnderEmitterBlockEntity.removePosFromEmitter(emitter, context.getClickedPos());
                 }
-                else
+                else if (!emitter.getBlockPos().equals(context.getClickedPos()))
                 {
                     // 如果能成功添加的话，我们额外做一次移除，以实现类似换绑的功能
                     if (EnderEmitterBlockEntity.addPosToEmitter(emitter, context.getClickedPos(), true, false))
