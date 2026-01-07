@@ -17,4 +17,8 @@ public class AECSSettings
     public static final Setting<PullMode> PULL_MODE = Settings.register("aecs_pull_mode", PullMode.class);
 
     public static final Setting<EntropyMode> ENTROPY_CHANGE_MODE = Settings.register("aecs_entropy_change_mode", EntropyMode.class);
+
+    public static final Setting<AutoLinkMode> AUTO_LINK_MODE = Settings.register("aecs_auto_link_mode", AutoLinkMode.class);
+
+    public static final Setting<AutoLinkCableMode> AUTO_LINK_CABLE_MODE = Settings.register("aecs_auto_link_cable_mode", AutoLinkCableMode.class);
 }

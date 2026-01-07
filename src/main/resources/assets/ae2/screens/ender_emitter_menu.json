@@ -5,7 +5,7 @@
     "texture": "ae2cs:textures/gui/ender_emitter_menu.png",
     "textureWidth": 256,
     "textureHeight": 256,
-    "srcRect": [0, 0, 176, 224]
+    "srcRect": [0, 0, 176, 168]
   },
   "slots": {
     "UPGRADE": {
@@ -27,38 +27,12 @@
   },
   "widgets": {
     "add_distance_button": {
-      "left": 10,
-      "top": 42,
-      "width": 40,
-      "height": 20
+      "right": 26,
+      "top": 16
     },
     "reduce_distance_button": {
-      "left": 60,
-      "top": 42,
-      "width": 40,
-      "height": 20
-    },
-    "try_sacn_all_button": {
-      "left": 110,
-      "top": 42,
-      "width": 40,
-      "height": 20
-    },
-    "destroy_all_button": {
-      "left": 160,
-      "top": 42,
-      "width": 40,
-      "height": 20
-    },
-    "auto_mode_box": {
-      "left": 10,
-      "top": 80,
-      "width": 70
-    },
-    "auto_link_cable_box": {
-      "left": 90,
-      "top": 80,
-      "width": 70
+      "right": 26,
+      "top": 48
     }
   }
 }

@@ -7,6 +7,8 @@ import appeng.api.networking.pathing.ControllerState;
 import appeng.api.networking.pathing.IPathingService;
 import appeng.api.parts.IPart;
 import appeng.api.upgrades.IUpgradeableObject;
+import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.ClientTickingBlockEntity;
 import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.blockentity.grid.AENetworkedBlockEntity;
@@ -15,6 +17,11 @@ import appeng.blockentity.networking.ControllerBlockEntity;
 import appeng.parts.CableBusContainer;
 import io.github.lounode.ae2cs.Config;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
+import io.github.lounode.ae2cs.api.render.ICustomRenderBounding;
+import io.github.lounode.ae2cs.api.settings.AECSSettings;
+import io.github.lounode.ae2cs.api.settings.AutoLinkCableMode;
+import io.github.lounode.ae2cs.api.settings.AutoLinkMode;
+import io.github.lounode.ae2cs.api.settings.ShowRangeMode;
 import io.github.lounode.ae2cs.api.util.GlobalChunkPos;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
@@ -37,6 +44,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -48,7 +56,7 @@ import java.util.*;
 
 @EventBusSubscriber(modid = AECSConstants.MODID)
 public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements ServerTickingBlockEntity,
-        IUpgradeableObject, ClientTickingBlockEntity
+        IUpgradeableObject, ClientTickingBlockEntity, IConfigurableObject, ICustomRenderBounding
 {
     /**
      * 以全局区块坐标为索引的发信器位置表，用来快速寻找发信器，每个区块key下的set集合都对应周围3x3区块范围内所有发信器
@@ -62,23 +70,35 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
     // 最大可连接距离，半径，计算时使用直线距离
     public static final int maxLinkDistance = 16 * autoAreaFactor;
 
-    private boolean active = false;
-    private boolean autoMode = true;
-    private boolean allowAutoLinkCableLike = false;
+    // 客户端 + 服务端字段
+    private final IConfigManager configManager;
     private int linkDistance = 8;
-    private int maxLinkDistanceForClient = 16;
     private final Set<BlockPos> pendingLinkPositions = new HashSet<>();
     private final Set<BlockPos> linkedPositions = new HashSet<>();
     /**
-     * 到目标位置的连接，显式清除连接，方块破坏和区块卸载时只需清表，不需要手动摧毁连接，ae已经处理了这件事
+     * 到目标位置的连接，用于显式清除连接
      */
     private final Map<BlockPos, List<IGridConnection>> linkedConnections = new HashMap<>();
     private int recentAddedPosCountdown = 2;
+
+    // 服务端字段
+
+    // 客户端字段
+    private boolean active = false;
+    private boolean autoMode = true;
+    private boolean allowAutoLinkCableLike = false;
+    private int maxLinkDistanceForClient = 16;
+    private boolean showLinkStatus = false;
 
     public EnderEmitterBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState)
     {
         super(blockEntityType, pos, blockState);
         getMainNode().setFlags(GridFlags.DENSE_CAPACITY);
+        configManager = IConfigManager.builder(this::onConfigChanged)
+                .registerSetting(AECSSettings.AUTO_LINK_MODE, AutoLinkMode.ENABLE)
+                .registerSetting(AECSSettings.AUTO_LINK_CABLE_MODE, AutoLinkCableMode.ENABLE)
+                .registerSetting(AECSSettings.SHOW_RANGE_MODE, ShowRangeMode.HIDE_RANGE)
+                .build();
     }
 
     /**
@@ -103,19 +123,19 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         return autoMode;
     }
 
-    public void setAutoMode(boolean autoMode)
-    {
-        if (this.autoMode != autoMode)
-        {
-            this.autoMode = autoMode;
-            markForClientUpdate();
-            setChanged();
-        }
-    }
-
     public int getLinkDistance()
     {
         return linkDistance;
+    }
+
+    public boolean allowAutoLinkCableLike()
+    {
+        return allowAutoLinkCableLike;
+    }
+
+    public boolean isShowLinkStatus()
+    {
+        return showLinkStatus;
     }
 
     public void setLinkDistance(int newLinkDistance)
@@ -134,17 +154,6 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         return maxLinkDistanceForClient;
     }
 
-    public boolean allowAutoLinkCableLike()
-    {
-        return allowAutoLinkCableLike;
-    }
-
-    public void setAllowAutoLinkCableLike(boolean allowAutoLinkCableLike)
-    {
-        this.allowAutoLinkCableLike = allowAutoLinkCableLike;
-        setChanged();
-    }
-
     public List<BlockPos> getPendingRenderPositionsSnapshot()
     {
         return this.pendingLinkPositions.isEmpty() ? List.of() : List.copyOf(this.pendingLinkPositions);
@@ -153,6 +162,42 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
     public List<BlockPos> getLinkedRenderPositionsSnapshot()
     {
         return this.linkedPositions.isEmpty() ? List.of() : List.copyOf(this.linkedPositions);
+    }
+
+    @Override
+    public boolean enableCustomRenderBounding()
+    {
+        return isShowLinkStatus();
+    }
+
+    @Override
+    public int getRange()
+    {
+        return this.maxLinkDistanceForClient * 2;
+    }
+
+    @Override
+    public AABB getCustomBoundingBox(BlockPos centerPos)
+    {
+        if(enableCustomRenderBounding())
+            return ICustomRenderBounding.super.getCustomBoundingBox(centerPos);
+        else
+            return new AABB(centerPos).inflate(0,1,0);
+    }
+
+    @Override
+    public IConfigManager getConfigManager()
+    {
+        return configManager;
+    }
+
+    protected void onConfigChanged()
+    {
+        this.autoMode = configManager.getSetting(AECSSettings.AUTO_LINK_MODE) == AutoLinkMode.ENABLE;
+        this.allowAutoLinkCableLike = configManager.getSetting(AECSSettings.AUTO_LINK_CABLE_MODE) == AutoLinkCableMode.ENABLE;
+        this.showLinkStatus = configManager.getSetting(AECSSettings.SHOW_RANGE_MODE) == ShowRangeMode.SHOW_RANGE;
+        this.saveChanges();
+        this.markForClientUpdate();
     }
 
     @Override
@@ -372,10 +417,8 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
     public void saveAdditional(CompoundTag data, HolderLookup.Provider registries)
     {
         super.saveAdditional(data, registries);
-
+        configManager.writeToNBT(data, registries);
         data.putInt("link_distance", this.linkDistance);
-        data.putBoolean("auto_mode", this.autoMode);
-        data.putBoolean("allow_auto_link_cable_like", this.allowAutoLinkCableLike);
 
         ListTag linkPositions = new ListTag();
         for (BlockPos pos : linkedPositions)
@@ -400,10 +443,8 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
     public void loadTag(CompoundTag data, HolderLookup.Provider registries)
     {
         super.loadTag(data, registries);
-
+        this.configManager.readFromNBT(data, registries);
         this.linkDistance = data.getInt("link_distance");
-        this.autoMode = data.getBoolean("auto_mode");
-        this.allowAutoLinkCableLike = data.getBoolean("allow_auto_link_cable_like");
 
         linkedPositions.clear();
 
@@ -425,6 +466,11 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
                 // 忽略
             }
         }
+
+        this.autoMode = configManager.getSetting(AECSSettings.AUTO_LINK_MODE) == AutoLinkMode.ENABLE;
+        this.allowAutoLinkCableLike = configManager.getSetting(AECSSettings.AUTO_LINK_CABLE_MODE) == AutoLinkCableMode.ENABLE;
+        this.showLinkStatus = configManager.getSetting(AECSSettings.SHOW_RANGE_MODE) == ShowRangeMode.SHOW_RANGE;
+        this.markForClientUpdate();
     }
 
     // 把重要信息和pengding和linked写表，用于客户端显示
@@ -434,6 +480,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         super.writeToStream(data);
         data.writeBoolean(this.autoMode);
         data.writeBoolean(this.active);
+        data.writeBoolean(this.showLinkStatus);
         data.writeInt(this.maxLinkDistanceForClient);
         data.writeInt(this.linkDistance);
         data.writeInt(this.pendingLinkPositions.size());
@@ -454,6 +501,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         super.readFromStream(data);
         this.autoMode = data.readBoolean();
         this.active = data.readBoolean();
+        this.showLinkStatus = data.readBoolean();
         this.maxLinkDistanceForClient = data.readInt();
         this.linkDistance = data.readInt();
         this.pendingLinkPositions.clear();

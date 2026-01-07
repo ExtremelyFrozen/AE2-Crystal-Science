@@ -186,6 +186,11 @@
   "ae2cs.menu.resonating_provider.pull_mode_title": "拉取模式",
   "ae2cs.menu.resonating_provider.pull_mode_desc": "切换是否从周围容器主动收取物品",
 
+  "ae2cs.menu.ender_emitter.button.try_sacn_all": "主动扫描\n对周围所有可连接设备进行一次连接尝试",
+  "ae2cs.menu.ender_emitter.button.destroy_all": "断开连接\n断开当前发信器的全部无线连接",
+  "ae2cs.menu.ender_emitter.button.add_distance": "自动连接距离设置\n自动连接范围 +1",
+  "ae2cs.menu.ender_emitter.button.reduce_distance": "自动连接距离设置\n自动连接范围 -1",
+
   "ae2cs.widgets.broadcaster.sender": "发送端",
   "ae2cs.widgets.broadcaster.receiver": "接收端",
 
@@ -230,5 +235,13 @@
 
   "ae2cs.machine_settings.entropy_change_mode.title": "熵变模式",
   "ae2cs.machine_settings.entropy_change_mode.increase.desc": "熵增",
-  "ae2cs.machine_settings.entropy_change_mode.decrease.desc": "熵减"
+  "ae2cs.machine_settings.entropy_change_mode.decrease.desc": "熵减",
+
+  "ae2cs.machine_settings.auto_link_mode.title": "自动连接模式",
+  "ae2cs.machine_settings.auto_link_mode.enable.desc": "自动连接到范围内新放置的设备",
+  "ae2cs.machine_settings.auto_link_mode.disable.desc": "停止自动连接到范围内新放置的设备",
+
+  "ae2cs.machine_settings.auto_link_cable_mode.title": "自动连接模式下的线缆设置",
+  "ae2cs.machine_settings.auto_link_cable_mode.enable.desc": "打开自动连接模式后会连接到线缆类设备",
+  "ae2cs.machine_settings.auto_link_cable_mode.disable.desc": "打开自动连接模式后不会连接到线缆类设备"
 }

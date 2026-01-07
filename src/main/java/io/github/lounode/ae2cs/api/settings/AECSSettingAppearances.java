@@ -73,6 +73,24 @@ public final class AECSSettingAppearances
                 Component.translatable("ae2cs.machine_settings.entropy_change_mode.title"),
                 Component.translatable("ae2cs.machine_settings.entropy_change_mode.decrease.desc"));
 
+        register(AECSIcon.AUTO_LINK_ENABLE,
+                AECSSettings.AUTO_LINK_MODE, AutoLinkMode.ENABLE,
+                Component.translatable("ae2cs.machine_settings.auto_link_mode.title"),
+                Component.translatable("ae2cs.machine_settings.auto_link_mode.enable.desc"));
+        register(AECSIcon.AUTO_LINK_DISABLE,
+                AECSSettings.AUTO_LINK_MODE, AutoLinkMode.DISABLE,
+                Component.translatable("ae2cs.machine_settings.auto_link_mode.title"),
+                Component.translatable("ae2cs.machine_settings.auto_link_mode.disable.desc"));
+
+        register(AECSIcon.AUTO_LINK_CABLE_ENABLE,
+                AECSSettings.AUTO_LINK_CABLE_MODE, AutoLinkCableMode.ENABLE,
+                Component.translatable("ae2cs.machine_settings.auto_link_cable_mode.title"),
+                Component.translatable("ae2cs.machine_settings.auto_link_cable_mode.enable.desc"));
+        register(AECSIcon.AUTO_LINK_CABLE_DISABLE,
+                AECSSettings.AUTO_LINK_CABLE_MODE, AutoLinkCableMode.DISABLE,
+                Component.translatable("ae2cs.machine_settings.auto_link_cable_mode.title"),
+                Component.translatable("ae2cs.machine_settings.auto_link_cable_mode.disable.desc"));
+
     }
 
     private AECSSettingAppearances()

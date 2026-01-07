@@ -3,15 +3,17 @@ package io.github.lounode.ae2cs.common.menu;
 import appeng.api.util.IConfigManager;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.UpgradeableMenu;
+import io.github.lounode.ae2cs.api.settings.AECSSettings;
+import io.github.lounode.ae2cs.api.settings.AutoLinkCableMode;
+import io.github.lounode.ae2cs.api.settings.AutoLinkMode;
+import io.github.lounode.ae2cs.api.settings.ShowRangeMode;
 import io.github.lounode.ae2cs.common.block.entity.EnderEmitterBlockEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
 public class EnderEmitterMenu extends UpgradeableMenu<EnderEmitterBlockEntity>
 {
-    private static final String changeAutoModeAction = "change_auto_mode";
     private static final String changeDistanceAction = "change_distance";
-    private static final String changeAllowAutoLinkCableAction = "change_allow_auto_link_cable";
     private static final String trySacnAllAction = "try_sacn_all";
     private static final String destroyAllAction = "destroy_all";
 
@@ -19,49 +21,46 @@ public class EnderEmitterMenu extends UpgradeableMenu<EnderEmitterBlockEntity>
     public int linkDistance;
 
     @GuiSync(11)
-    public boolean autoMode;
+    public AutoLinkMode autoMode;
 
     @GuiSync(12)
-    public boolean allowAutoLinkCable;
+    public AutoLinkCableMode autoLinkCableMode;
 
     @GuiSync(13)
     public int maxLinkDistance;
+
+    @GuiSync(14)
+    public ShowRangeMode showRangeMode;
 
     public EnderEmitterMenu(MenuType<?> menuType, int id, Inventory ip, EnderEmitterBlockEntity host)
     {
         super(menuType, id, ip, host);
 
-        registerClientAction(changeAutoModeAction, Boolean.class, this::onChangeAutoMode);
         registerClientAction(changeDistanceAction, Integer.class, this::onChangeDistance);
-        registerClientAction(changeAllowAutoLinkCableAction, Boolean.class, this::onChangeAllowAutoLinkCable);
         registerClientAction(trySacnAllAction, this::onSacnAll);
         registerClientAction(destroyAllAction, this::onDestroyAll);
+    }
+
+    @Override
+    protected void loadSettingsFromHost(IConfigManager cm)
+    {
+        this.autoMode = getHost().getConfigManager().getSetting(AECSSettings.AUTO_LINK_MODE);
+        this.autoLinkCableMode = getHost().getConfigManager().getSetting(AECSSettings.AUTO_LINK_CABLE_MODE);
+        this.showRangeMode = getHost().getConfigManager().getSetting(AECSSettings.SHOW_RANGE_MODE);
     }
 
     @Override
     public void broadcastChanges()
     {
         this.linkDistance = getHost().getLinkDistance();
-        this.autoMode = getHost().isAutoMode();
-        this.allowAutoLinkCable = getHost().allowAutoLinkCableLike();
         this.maxLinkDistance = EnderEmitterBlockEntity.maxLinkDistance;
 
         super.broadcastChanges();
     }
 
-    public void sendChangeAutoMode(boolean autoMode)
-    {
-        sendClientAction(changeAutoModeAction, autoMode);
-    }
-
     public void sendChangeDistance(int delta)
     {
         sendClientAction(changeDistanceAction, delta);
-    }
-
-    public void sendAllowAutoLinkCable(boolean allowAutoLinkCable)
-    {
-        sendClientAction(changeAllowAutoLinkCableAction, allowAutoLinkCable);
     }
 
     public void sendSacnAll()
@@ -74,19 +73,9 @@ public class EnderEmitterMenu extends UpgradeableMenu<EnderEmitterBlockEntity>
         sendClientAction(destroyAllAction);
     }
 
-    private void onChangeAutoMode(boolean autoMode)
-    {
-        getHost().setAutoMode(autoMode);
-    }
-
     private void onChangeDistance(int delta)
     {
         getHost().setLinkDistance(this.linkDistance + delta);
-    }
-
-    private void onChangeAllowAutoLinkCable(boolean allowAutoLinkCable)
-    {
-        getHost().setAllowAutoLinkCableLike(allowAutoLinkCable);
     }
 
     private void onSacnAll()
@@ -97,11 +86,5 @@ public class EnderEmitterMenu extends UpgradeableMenu<EnderEmitterBlockEntity>
     private void onDestroyAll()
     {
         EnderEmitterBlockEntity.removeAllLinkedFromEmitter(getHost());
-    }
-
-    @Override
-    protected void loadSettingsFromHost(IConfigManager cm)
-    {
-
     }
 }

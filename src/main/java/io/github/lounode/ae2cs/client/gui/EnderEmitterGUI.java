@@ -4,48 +4,93 @@ import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.AE2Button;
 import appeng.client.gui.widgets.AECheckbox;
+import io.github.lounode.ae2cs.api.settings.AECSSettings;
+import io.github.lounode.ae2cs.api.settings.AutoLinkCableMode;
+import io.github.lounode.ae2cs.api.settings.AutoLinkMode;
+import io.github.lounode.ae2cs.api.settings.ShowRangeMode;
+import io.github.lounode.ae2cs.client.gui.icon.AECSIcon;
+import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
+import io.github.lounode.ae2cs.client.gui.widgets.AECSIconButton;
+import io.github.lounode.ae2cs.client.gui.widgets.AECSServerSettingToggleButton;
 import io.github.lounode.ae2cs.common.menu.EnderEmitterMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class EnderEmitterGUI extends UpgradeableScreen<EnderEmitterMenu>
 {
-    private AE2Button addDistanceButton;
-    private AE2Button reduceDistanceButton;
-    private AECheckbox autoModeBox;
-    private AECheckbox allowAutoLinkCableLikeBox;
-    private AE2Button trySacnAllButton;
-    private AE2Button destroyAllButton;
+    private AECSIconButton addDistanceButton;
+    private AECSIconButton reduceDistanceButton;
+    private AECSServerSettingToggleButton<AutoLinkMode> autoModeButton;
+    private AECSServerSettingToggleButton<AutoLinkCableMode> autoLinkCableButton;
+    private AECSServerSettingToggleButton<ShowRangeMode> showRangeModeButton;
+    private AECSIconButton trySacnAllButton;
+    private AECSIconButton destroyAllButton;
 
     public EnderEmitterGUI(EnderEmitterMenu menu, Inventory playerInventory, Component title, ScreenStyle style)
     {
         super(menu, playerInventory, title, style);
 
-        this.addDistanceButton = widgets.addButton(
-                "add_distance_button", Component.translatable("ae2cs.menu.ender_emitter.add_distance"),
-                () -> {
-                    int mult = hasShiftDown() ? 5 : 1;
-                    menu.sendChangeDistance(1 * mult);
-                });
-        this.reduceDistanceButton = widgets.addButton(
-                "reduce_distance_button", Component.translatable("ae2cs.menu.ender_emitter.reduce_distance"),
-                () -> {
-                    int mult = hasShiftDown() ? 5 : 1;
-                    menu.sendChangeDistance(-1 * mult);
-                });
-        this.trySacnAllButton = widgets.addButton(
-                "try_sacn_all_button", Component.translatable("ae2cs.menu.ender_emitter.try_sacn_all"),
-                menu::sendSacnAll);
-        this.destroyAllButton = widgets.addButton(
-                "destroy_all_button", Component.translatable("ae2cs.menu.ender_emitter.destroy_all"),
-                menu::sendDestroyAll);
-        this.autoModeBox = widgets.addCheckbox("auto_mode_box",
-                Component.translatable("ae2cs.menu.ender_emitter.auto_mode_box"),
-                () -> menu.sendChangeAutoMode(autoModeBox.isSelected()));
-        this.allowAutoLinkCableLikeBox = widgets.addCheckbox("auto_link_cable_box",
-                Component.translatable("ae2cs.menu.ender_emitter.auto_link_cable_box"),
-                () -> menu.sendAllowAutoLinkCable(allowAutoLinkCableLikeBox.isSelected()));
+        this.addDistanceButton = new AECSIconButton(button -> {
+            int mult = hasShiftDown() ? 5 : 1;
+            menu.sendChangeDistance(1 * mult);
+        })
+        {
+            @Override
+            protected @NotNull IButtonIcon getIcon()
+            {
+                return AECSIcon.ADDITION_SIGN;
+            }
+        };
+        this.addDistanceButton.setMessage(Component.translatable("ae2cs.menu.ender_emitter.button.add_distance"));
+        this.widgets.add("add_distance_button", addDistanceButton);
+
+        this.reduceDistanceButton = new AECSIconButton(button -> {
+            int mult = hasShiftDown() ? 5 : 1;
+            menu.sendChangeDistance(-1 * mult);
+        })
+        {
+            @Override
+            protected @NotNull IButtonIcon getIcon()
+            {
+                return AECSIcon.SUBTRACTION_SIGN;
+            }
+        };
+        this.reduceDistanceButton.setMessage(Component.translatable("ae2cs.menu.ender_emitter.button.reduce_distance"));
+        this.widgets.add("reduce_distance_button", reduceDistanceButton);
+
+        this.showRangeModeButton = new AECSServerSettingToggleButton<>(AECSSettings.SHOW_RANGE_MODE, ShowRangeMode.HIDE_RANGE);
+        addToLeftToolbar(showRangeModeButton);
+
+        this.autoModeButton = new AECSServerSettingToggleButton<>(AECSSettings.AUTO_LINK_MODE, AutoLinkMode.ENABLE);
+        addToLeftToolbar(autoModeButton);
+
+        this.autoLinkCableButton = new AECSServerSettingToggleButton<>(AECSSettings.AUTO_LINK_CABLE_MODE, AutoLinkCableMode.ENABLE);
+        addToLeftToolbar(autoLinkCableButton);
+
+        this.trySacnAllButton = new AECSIconButton(button -> menu.sendSacnAll())
+        {
+            @Override
+            protected @NotNull IButtonIcon getIcon()
+            {
+                return AECSIcon.LINK_TO_ALL;
+            }
+        };
+        this.trySacnAllButton.setMessage(Component.translatable("ae2cs.menu.ender_emitter.button.try_sacn_all"));
+        addToLeftToolbar(trySacnAllButton);
+
+        this.destroyAllButton = new AECSIconButton(button -> menu.sendDestroyAll())
+        {
+            @Override
+            protected @NotNull IButtonIcon getIcon()
+            {
+                return AECSIcon.BREAK_ALL_LINKS;
+            }
+        };
+        this.destroyAllButton.setMessage(Component.translatable("ae2cs.menu.ender_emitter.button.destroy_all"));
+        addToLeftToolbar(destroyAllButton);
     }
 
     @Override
@@ -59,14 +104,15 @@ public class EnderEmitterGUI extends UpgradeableScreen<EnderEmitterMenu>
 
         guiGraphics.drawString(this.font,
                 Component.translatable("ae2cs.menu.ender_emitter.distance", menu.linkDistance),
-                10, 31, 4210752, false);
+                10, 36, 4210752, false);
     }
 
     @Override
     protected void updateBeforeRender()
     {
-        this.autoModeBox.setSelected(menu.autoMode);
-        this.allowAutoLinkCableLikeBox.setSelected(menu.allowAutoLinkCable);
+        this.autoModeButton.set(menu.autoMode);
+        this.autoLinkCableButton.set(menu.autoLinkCableMode);
+        this.showRangeModeButton.set(menu.showRangeMode);
         super.updateBeforeRender();
     }
 }
