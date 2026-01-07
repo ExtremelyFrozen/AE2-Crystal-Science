@@ -11,7 +11,6 @@ import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSIconButton;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSServerSettingToggleButton;
 import io.github.lounode.ae2cs.common.menu.EnderEmitterMenu;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -91,25 +90,14 @@ public class EnderEmitterGUI extends UpgradeableScreen<EnderEmitterMenu>
     }
 
     @Override
-    public void drawFG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX, int mouseY)
-    {
-        super.drawFG(guiGraphics, offsetX, offsetY, mouseX, mouseY);
-
-        guiGraphics.drawString(this.font,
-                Component.translatable("ae2cs.menu.ender_emitter.max_distance", menu.maxLinkDistance),
-                10, 20, 4210752, false);
-
-        guiGraphics.drawString(this.font,
-                Component.translatable("ae2cs.menu.ender_emitter.distance", menu.linkDistance),
-                10, 36, 4210752, false);
-    }
-
-    @Override
     protected void updateBeforeRender()
     {
+        super.updateBeforeRender();
         this.autoModeButton.set(menu.autoMode);
         this.autoLinkCableButton.set(menu.autoLinkCableMode);
         this.showRangeModeButton.set(menu.showRangeMode);
-        super.updateBeforeRender();
+
+        setTextContent("max_distance", Component.translatable("ae2cs.menu.ender_emitter.max_distance", menu.maxLinkDistance));
+        setTextContent("distance", Component.translatable("ae2cs.menu.ender_emitter.distance", menu.linkDistance));
     }
 }

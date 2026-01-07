@@ -9,7 +9,6 @@ import io.github.lounode.ae2cs.client.gui.widgets.AECSIconButton;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSToggleButton;
 import io.github.lounode.ae2cs.common.block.entity.EnderBroadcasterBlockEntity;
 import io.github.lounode.ae2cs.common.menu.linker.broadcast.EnderBroadcasterMenu;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -95,18 +94,6 @@ public class EnderBroadcasterGUI extends UpgradeableScreen<EnderBroadcasterMenu>
             menu.sendChangeExpectedChannels(-10 * mult);
         });
         widgets.add("reduce_receiver_expected_channels_button_10", reduceReceiver10ChannelsButton);
-    }
-
-    @Override
-    public void drawFG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX, int mouseY)
-    {
-        super.drawFG(guiGraphics, offsetX, offsetY, mouseX, mouseY);
-
-//        guiGraphics.drawString(this.font, this.bandName, 8, 16, 4210752, false);
-//        guiGraphics.drawString(this.font, this.connectStatus, 8, 32, 4210752, false);
-//        guiGraphics.drawString(this.font, this.receiverExpectedChannels, 8, 48, 4210752, false);
-//        guiGraphics.drawString(this.font, this.receiverActualChannels, 8, 64, 4210752, false);
-//        guiGraphics.drawString(this.font, this.senderSentChannels, 8, 48, 4210752, false);
     }
 
     @Override

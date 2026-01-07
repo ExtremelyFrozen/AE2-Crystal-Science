@@ -8,7 +8,6 @@ import appeng.client.gui.widgets.AECheckbox;
 import appeng.client.gui.widgets.AETextField;
 import io.github.lounode.ae2cs.api.linker.broadcast.networking.FrequencyBandLinkInfo;
 import io.github.lounode.ae2cs.common.menu.linker.broadcast.FrequencyBandLinkMenu;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -18,7 +17,6 @@ public class FrequencyBandLinkGUI extends AEBaseScreen<FrequencyBandLinkMenu>
     private AECheckbox linkAsSenderBox;
     private AECheckbox linkAsReceiverBox;
     private AE2Button confirmButton;
-    private Component linkState = Component.empty();
 
     public FrequencyBandLinkGUI(FrequencyBandLinkMenu menu, Inventory playerInventory, Component title)
     {
@@ -37,26 +35,17 @@ public class FrequencyBandLinkGUI extends AEBaseScreen<FrequencyBandLinkMenu>
     }
 
     @Override
-    public void drawFG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX, int mouseY)
-    {
-        super.drawFG(guiGraphics, offsetX, offsetY, mouseX, mouseY);
-
-        guiGraphics.drawString(this.font, linkState, 120, 6, 4210752, false);
-    }
-
-    @Override
     protected void updateBeforeRender()
     {
         super.updateBeforeRender();
 
+        Component linkState = Component.translatable("ae2cs.menu.frequency_band_menu.not_connected");
         if (menu.connected)
         {
             linkState = Component.translatable("ae2cs.menu.frequency_band_menu.connected");
         }
-        else
-        {
-            linkState = Component.translatable("ae2cs.menu.frequency_band_menu.not_connected");
-        }
+
+        setTextContent("link_state", linkState);
     }
 
     private void confirm()

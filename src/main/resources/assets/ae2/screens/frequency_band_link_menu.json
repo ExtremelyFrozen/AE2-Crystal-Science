@@ -11,6 +11,9 @@
     "title": {
       "text": { "translate": "ae2cs.menu.title.frequency_band_link" },
       "position": { "left": 8, "top": 6 }
+    },
+    "link_state": {
+      "position": { "left": 120, "top": 6 }
     }
   },
   "widgets": {

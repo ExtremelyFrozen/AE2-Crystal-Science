@@ -23,6 +23,18 @@
         "left": 8,
         "top": 6
       }
+    },
+    "max_distance": {
+      "position": {
+        "left": 10,
+        "top": 20
+      }
+    },
+    "distance": {
+      "position": {
+        "left": 10,
+        "top": 36
+      }
     }
   },
   "widgets": {

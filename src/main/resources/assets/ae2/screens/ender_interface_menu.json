@@ -64,6 +64,12 @@
         "left": 8,
         "top": 118
       }
+    },
+    "absorb_range": {
+      "position": {
+        "left": 139,
+        "top": 112
+      }
     }
   },
   "widgets": {

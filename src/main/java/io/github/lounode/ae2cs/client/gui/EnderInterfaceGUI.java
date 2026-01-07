@@ -10,7 +10,6 @@ import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSIconButton;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSServerSettingToggleButton;
 import io.github.lounode.ae2cs.common.menu.EnderInterfaceMenu;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -53,18 +52,12 @@ public class EnderInterfaceGUI extends InterfaceScreen<EnderInterfaceMenu>
     }
 
     @Override
-    public void drawFG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX, int mouseY)
-    {
-        super.drawFG(guiGraphics, offsetX, offsetY, mouseX, mouseY);
-
-        guiGraphics.drawString(this.font, String.valueOf(menu.absorbRange), 139, 112, 4210752, false);
-    }
-
-    @Override
     protected void updateBeforeRender()
     {
         super.updateBeforeRender();
         blackListModeButton.set(menu.blackListMode);
         showRangeButton.set(menu.showRange);
+
+        setTextContent("absorb_range", Component.literal(String.valueOf(menu.absorbRange)));
     }
 }
