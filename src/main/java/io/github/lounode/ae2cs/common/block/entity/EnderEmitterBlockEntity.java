@@ -598,6 +598,8 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
      */
     public static boolean addPosToEmitter(@NotNull EnderEmitterBlockEntity emitter, @NotNull BlockPos pos, boolean byManual, boolean forceAuto)
     {
+        if(emitter.getBlockPos().equals(pos)) return false;
+
         // 如果是手动连接，仅检查手动方法
         boolean valid = byManual && VecHelper.closerThanChebyshev(emitter.worldPosition, pos, maxLinkDistance);
 
