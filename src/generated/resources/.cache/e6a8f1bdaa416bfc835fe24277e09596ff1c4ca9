@@ -1,2 +1,9 @@
-// 1.21.1	2025-12-26T19:09:22.955139	Tags for minecraft:block mod id ae2cs
+// 1.21.1	2026-01-08T21:51:47.0081663	Tags for minecraft:block mod id ae2cs
+0e8f0709d636ec302f83327e36dfa48c29006393 data/c/tags/block/ores.json
+a3a8141d634ad8aaaac56779885575d8800ff2aa data/c/tags/block/ores/certus_quartz.json
+a65451bf3218dcb44cdadf3f0969d31595cf340a data/c/tags/block/ores_in_ground/deepslate.json
+ec5809e397729eed5dfe584f8eddfec528892c45 data/c/tags/block/ores_in_ground/stone.json
+0e8f0709d636ec302f83327e36dfa48c29006393 data/c/tags/block/ore_rates/singular.json
 dad08624a019cfeac441ed510efc6f9c28135620 data/minecraft/tags/block/beacon_base_blocks.json
+a3a8141d634ad8aaaac56779885575d8800ff2aa data/minecraft/tags/block/mineable/pickaxe.json
+0e8f0709d636ec302f83327e36dfa48c29006393 data/minecraft/tags/block/overworld_carver_replaceables.json

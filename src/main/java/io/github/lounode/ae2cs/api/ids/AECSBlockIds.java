@@ -12,8 +12,9 @@ public class AECSBlockIds
 
     public static final String CERTUS_QUARTZ_ORE = "certus_quartz_ore";
     public static final String DEEPSLATE_CERTUS_QUARTZ_ORE = "deepslate_certus_quartz_ore";
+    public static final String CHARGED_CERTUS_QUARTZ_ORE = "charged_certus_quartz_ore";
+    public static final String DEEPSLATE_CHARGED_CERTUS_QUARTZ_ORE = "deepslate_charged_certus_quartz_ore";
     public static final String SILICON_BLOCK = "silicon_block";
-
 
     public static final String CRYSTAL_GROWTH_CHAMBER = "crystal_growth_chamber";
     public static final String CIRCUIT_ETCHER = "circuit_etcher";

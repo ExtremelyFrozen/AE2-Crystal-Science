@@ -25,10 +25,10 @@ public class AECSItemTagProvider extends ItemTagsProvider
     @Override
     protected void addTags(HolderLookup.@NotNull Provider provider)
     {
-        tag(AECSTags.CRYSTAL_SEEDS)
+        tag(AECSTags.Items.CRYSTAL_SEEDS)
                 .add(AECSItems.getCrystalSeeds().stream().map(DeferredItem::get).toArray(Item[]::new));
 
-        tag(AECSTags.PURIFIED_CRYSTAL)
+        tag(AECSTags.Items.PURIFIED_CRYSTAL)
                 .add(AECSItems.getPureCrystal().stream().map(DeferredItem::get).toArray(Item[]::new));
     }
 }

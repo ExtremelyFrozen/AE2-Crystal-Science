@@ -2,7 +2,12 @@ package io.github.lounode.ae2cs.datagen;
 
 import com.mojang.logging.LogUtils;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
+import io.github.lounode.ae2cs.datagen.worldgen.AECSBiomeModifiers;
+import io.github.lounode.ae2cs.datagen.worldgen.AECSConfiguredFeatures;
+import io.github.lounode.ae2cs.datagen.worldgen.AECSPlacedFeatures;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.LootTableProvider;
@@ -10,12 +15,15 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
+import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.slf4j.Logger;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 @EventBusSubscriber(modid = AECSConstants.MODID)
@@ -48,6 +56,16 @@ public class DataGenerators
 
         // 生成配方表
         generator.addProvider(event.includeServer(), new AECSRecipeProvider(packOutput, lookupProvider));
+
+        // 矿石生成
+        generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(
+                packOutput, lookupProvider,
+                new RegistrySetBuilder()
+                        .add(Registries.CONFIGURED_FEATURE, AECSConfiguredFeatures::bootstrap)
+                        .add(Registries.PLACED_FEATURE, AECSPlacedFeatures::bootstrap)
+                        .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, AECSBiomeModifiers::bootstrap),
+                Set.of(AECSConstants.MODID)
+        ));
 
     }
 }

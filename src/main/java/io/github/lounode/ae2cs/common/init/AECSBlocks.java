@@ -39,6 +39,11 @@ public class AECSBlocks
      */
     private static final List<DeferredBlock<? extends Block>> OTHERS = new ArrayList<>();
 
+    /**
+     * 非自身掉落式方块 用于datagen避让
+     */
+    private static final List<DeferredBlock<? extends Block>> NOT_SELF_DROP = new ArrayList<>();
+
     // -------------------高纯水晶块-----------------
     public static final DeferredBlock<Block> PURE_ENDER_QUARTZ_BLOCK = registerCrystalBlock(AECSBlockIds.ENDER_QUARTZ_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
     public static final DeferredBlock<Block> PURE_RESONATING_CRYSTAL_BLOCK = registerCrystalBlock(AECSBlockIds.RESONATING_CRYSTAL_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
@@ -49,12 +54,56 @@ public class AECSBlocks
     public static final DeferredBlock<Block> IRRADIATED_CRYSTAL_BLOCK = registerCrystalBlock(AECSBlockIds.IRRADIATED_CRYSTAL_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
 
     // 基础材料
-    // 硅块
+
+    /**
+     * 硅块
+     */
     public static final DeferredBlock<Block> SILICON_BLOCK = registerOtherBlock(AECSBlockIds.SILICON_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
-    // 赛特斯石英矿石
-    public static final DeferredBlock<Block> CERTUS_QUARTZ_ORE = registerOtherBlock(AECSBlockIds.CERTUS_QUARTZ_ORE, () -> new Block(copy(Blocks.IRON_BLOCK)));
-    // 深层赛特斯石英矿石
-    public static final DeferredBlock<Block> DEEPSLATE_CERTUS_QUARTZ_ORE = registerOtherBlock(AECSBlockIds.DEEPSLATE_CERTUS_QUARTZ_ORE, () -> new Block(copy(Blocks.IRON_BLOCK)));
+
+    /**
+     * 赛特斯石英矿石
+     */
+    public static final DeferredBlock<CertusQuartzOreBlock> CERTUS_QUARTZ_ORE =
+            registerOtherBlock(AECSBlockIds.CERTUS_QUARTZ_ORE,
+                    () -> new CertusQuartzOreBlock(
+                            copy(Blocks.STONE)
+                                    .strength(3, 5)
+                                    .requiresCorrectToolForDrops()
+                    ));
+
+    /**
+     * 深层赛特斯石英矿石
+     */
+    public static final DeferredBlock<CertusQuartzOreBlock> DEEPSLATE_CERTUS_QUARTZ_ORE =
+            registerOtherBlock(AECSBlockIds.DEEPSLATE_CERTUS_QUARTZ_ORE,
+                    () -> new CertusQuartzOreBlock(
+                            copy(Blocks.DEEPSLATE)
+                                    .strength(4.5f, 7.5f)
+                                    .requiresCorrectToolForDrops()
+                    ));
+
+    /**
+     * 充能赛特斯石英矿石
+     */
+    public static final DeferredBlock<ChargedCertusQuartzOreBlock> CHARGED_CERTUS_QUARTZ_ORE =
+            registerOtherBlock(AECSBlockIds.CHARGED_CERTUS_QUARTZ_ORE,
+                    () -> new ChargedCertusQuartzOreBlock(
+                            copy(Blocks.STONE)
+                                    .strength(3, 5)
+                                    .requiresCorrectToolForDrops()
+                                    .lightLevel(value -> 7)
+                    ));
+
+    /**
+     * 深层充能赛特斯石英矿石
+     */
+    public static final DeferredBlock<ChargedCertusQuartzOreBlock> DEEPSLATE_CHARGED_CERTUS_QUARTZ_ORE =
+            registerOtherBlock(AECSBlockIds.DEEPSLATE_CHARGED_CERTUS_QUARTZ_ORE,
+                    () -> new ChargedCertusQuartzOreBlock(copy(Blocks.DEEPSLATE)
+                            .strength(4.5f, 7.5f)
+                            .requiresCorrectToolForDrops()
+                            .lightLevel(value -> 7)
+                    ));
 
     /**
      * 水晶催生仓
@@ -143,7 +192,7 @@ public class AECSBlocks
         return Collections.unmodifiableList(ALL);
     }
 
-    public static List<DeferredBlock<? extends Block>> getOTHERS()
+    public static List<DeferredBlock<? extends Block>> getOthers()
     {
         return Collections.unmodifiableList(OTHERS);
     }
@@ -153,7 +202,19 @@ public class AECSBlocks
         return CRYSTAL_BLOCKS;
     }
 
+    public static List<DeferredBlock<? extends Block>> getNotSelfDrop()
+    {
+        return NOT_SELF_DROP;
+    }
+
     // 工具方法
+    private static <T extends Block> DeferredBlock<T> registerNotSelfDropBlock(String name, Supplier<T> block)
+    {
+        DeferredBlock<T> toReturn = registerBlock(name, block);
+        NOT_SELF_DROP.add(toReturn);
+        return toReturn;
+    }
+
     private static <T extends Block> DeferredBlock<T> registerOtherBlock(String name, Supplier<T> block)
     {
         DeferredBlock<T> toReturn = registerBlock(name, block);

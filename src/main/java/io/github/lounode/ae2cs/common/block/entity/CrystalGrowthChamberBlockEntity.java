@@ -80,13 +80,13 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
         @Override
         public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack)
         {
-            return stack != null && !stack.isEmpty() && stack.is(AECSTags.CRYSTAL_SEEDS);
+            return stack != null && !stack.isEmpty() && stack.is(AECSTags.Items.CRYSTAL_SEEDS);
         }
 
         @Override
         public boolean allowExtract(InternalInventory inv, int slot, int amount)
         {
-            return inv.getStackInSlot(slot).is(AECSTags.PURIFIED_CRYSTAL);
+            return inv.getStackInSlot(slot).is(AECSTags.Items.PURIFIED_CRYSTAL);
         }
     });
 
@@ -104,7 +104,7 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
             @Override
             public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack)
             {
-                return stack != null && !stack.isEmpty() && stack.is(AECSTags.CRYSTAL_SEEDS);
+                return stack != null && !stack.isEmpty() && stack.is(AECSTags.Items.CRYSTAL_SEEDS);
             }
         });
     }
@@ -218,7 +218,7 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
         for (int i = 0; i < inventory.size(); ++i)
         {
             ItemStack stack = inventory.getStackInSlot(i);
-            if (stack.isEmpty() || !stack.is(AECSTags.CRYSTAL_SEEDS)) continue;
+            if (stack.isEmpty() || !stack.is(AECSTags.Items.CRYSTAL_SEEDS)) continue;
 
             worked = true;
             ItemStack result = CrystalSeedItem.grow(stack, growthTick * 10); // 每10tick运行一次，乘10以补足

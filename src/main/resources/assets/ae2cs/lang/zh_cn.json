@@ -28,6 +28,8 @@
 
   "block.ae2cs.certus_quartz_ore": "赛特斯矿石",
   "block.ae2cs.deepslate_certus_quartz_ore": "深层赛特斯矿石",
+  "block.ae2cs.charged_certus_quartz_ore": "充能赛特斯矿石",
+  "block.ae2cs.deepslate_charged_certus_quartz_ore": "充能深层赛特斯矿石",
   "block.ae2cs.silicon_block": "硅块",
 
   "item.ae2cs.certus_quartz_seed": "赛特斯石英水晶种子",

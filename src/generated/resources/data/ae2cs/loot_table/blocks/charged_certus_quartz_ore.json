@@ -26,7 +26,7 @@
                   }
                 }
               ],
-              "name": "ae2cs:certus_quartz_ore"
+              "name": "ae2cs:charged_certus_quartz_ore"
             },
             {
               "type": "minecraft:item",
@@ -49,7 +49,7 @@
                   "function": "minecraft:explosion_decay"
                 }
               ],
-              "name": "ae2:certus_quartz_crystal"
+              "name": "ae2:charged_certus_quartz_crystal"
             }
           ]
         }
@@ -57,5 +57,5 @@
       "rolls": 1.0
     }
   ],
-  "random_sequence": "ae2cs:blocks/certus_quartz_ore"
+  "random_sequence": "ae2cs:blocks/charged_certus_quartz_ore"
 }

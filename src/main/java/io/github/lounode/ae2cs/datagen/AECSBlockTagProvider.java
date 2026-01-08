@@ -2,9 +2,11 @@ package io.github.lounode.ae2cs.datagen;
 
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.init.AECSTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -23,7 +25,44 @@ public class AECSBlockTagProvider extends BlockTagsProvider
     @Override
     protected void addTags(HolderLookup.@NotNull Provider provider)
     {
+        // 信标基座
         tag(BlockTags.BEACON_BASE_BLOCKS)
                 .add(AECSBlocks.ENDER_BROADCASTER_BLOCK.get());
+
+        // 镐挖掘
+        tag(BlockTags.MINEABLE_WITH_PICKAXE)
+                .add(AECSBlocks.CERTUS_QUARTZ_ORE.get())
+                .add(AECSBlocks.DEEPSLATE_CERTUS_QUARTZ_ORE.get())
+                .add(AECSBlocks.CHARGED_CERTUS_QUARTZ_ORE.get())
+                .add(AECSBlocks.DEEPSLATE_CHARGED_CERTUS_QUARTZ_ORE.get());
+
+        // 赛特斯石英矿
+        tag(AECSTags.Blocks.CERTUS_QUARTZ_ORE)
+                .add(AECSBlocks.CERTUS_QUARTZ_ORE.get())
+                .add(AECSBlocks.DEEPSLATE_CERTUS_QUARTZ_ORE.get())
+                .add(AECSBlocks.CHARGED_CERTUS_QUARTZ_ORE.get())
+                .add(AECSBlocks.DEEPSLATE_CHARGED_CERTUS_QUARTZ_ORE.get());
+
+        // 矿
+        tag(Tags.Blocks.ORES)
+                .addTag(AECSTags.Blocks.CERTUS_QUARTZ_ORE);
+
+        // 普通倍率矿石
+        tag(Tags.Blocks.ORE_RATES_SINGULAR)
+                .addTag(AECSTags.Blocks.CERTUS_QUARTZ_ORE);
+
+        // 生成在石头中的矿石
+        tag(Tags.Blocks.ORES_IN_GROUND_STONE)
+                .add(AECSBlocks.CERTUS_QUARTZ_ORE.get())
+                .add(AECSBlocks.CHARGED_CERTUS_QUARTZ_ORE.get());
+
+        // 深板岩层的矿石
+        tag(Tags.Blocks.ORES_IN_GROUND_DEEPSLATE)
+                .add(AECSBlocks.DEEPSLATE_CERTUS_QUARTZ_ORE.get())
+                .add(AECSBlocks.DEEPSLATE_CHARGED_CERTUS_QUARTZ_ORE.get());
+
+        // 允许主世界洞穴生成覆盖这些方块
+        tag(BlockTags.OVERWORLD_CARVER_REPLACEABLES)
+                .addTag(AECSTags.Blocks.CERTUS_QUARTZ_ORE);
     }
 }

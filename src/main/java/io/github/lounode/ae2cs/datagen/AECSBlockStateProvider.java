@@ -43,6 +43,8 @@ public class AECSBlockStateProvider extends BlockStateProvider
         blockWithItem(AECSBlocks.SILICON_BLOCK);
         blockWithItem(AECSBlocks.CERTUS_QUARTZ_ORE);
         blockWithItem(AECSBlocks.DEEPSLATE_CERTUS_QUARTZ_ORE);
+        blockWithItem(AECSBlocks.CHARGED_CERTUS_QUARTZ_ORE);
+        blockWithItem(AECSBlocks.DEEPSLATE_CHARGED_CERTUS_QUARTZ_ORE);
         genPatternProviderLike(AECSBlocks.INTEGRATED_INTERFACE_BLOCK.get(), "block/integrated_interface");
         genPatternProviderLike(AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK.get(), "block/meteorite_pattern_provider");
         genPatternProviderLike(AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK.get(), "block/simple_pattern_provider");
