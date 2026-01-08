@@ -1,6 +1,8 @@
 package io.github.lounode.ae2cs.common.me.logic;
 
-import appeng.api.config.*;
+import appeng.api.config.Actionable;
+import appeng.api.config.LockCraftingMode;
+import appeng.api.config.Setting;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
@@ -18,6 +20,7 @@ import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.helpers.patternprovider.PatternProviderTarget;
 import appeng.me.helpers.MachineSource;
+import appeng.util.ConfigManager;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.settings.AECSSettings;
 import io.github.lounode.ae2cs.api.settings.PullMode;
@@ -75,17 +78,15 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic
         this.mainNode = mainNode.addService(IGridTickable.class, new ResonatingTicker());
         this.actionSource = new MachineSource(mainNode::getNode);
 
-        configManager = IConfigManager.builder(this::configChanged)
-                .registerSetting(Settings.BLOCKING_MODE, YesNo.NO)
-                .registerSetting(Settings.PATTERN_ACCESS_TERMINAL, YesNo.YES)
-                .registerSetting(Settings.LOCK_CRAFTING_MODE, LockCraftingMode.NONE)
-                .registerSetting(AECSSettings.PULL_MODE, PullMode.PULL_OFF)
-                .build();
+        if (getConfigManager() instanceof ConfigManager cm)
+        {
+            cm.registerSetting(AECSSettings.PULL_MODE, PullMode.PULL_OFF);
+        }
     }
 
     public boolean isEnablePull()
     {
-        return configManager.getSetting(AECSSettings.PULL_MODE) == PullMode.PULL_ON;
+        return getConfigManager().getSetting(AECSSettings.PULL_MODE) == PullMode.PULL_ON;
     }
 
     @Override

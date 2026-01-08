@@ -1,7 +1,6 @@
 package io.github.lounode.ae2cs.common.me.logic;
 
 import appeng.api.config.Actionable;
-import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
@@ -11,11 +10,11 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.MEStorage;
-import appeng.api.util.IConfigManager;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.helpers.InterfaceLogic;
 import appeng.util.ConfigInventory;
+import appeng.util.ConfigManager;
 import io.github.lounode.ae2cs.api.settings.AECSSettings;
 import io.github.lounode.ae2cs.api.settings.BlackListMode;
 import io.github.lounode.ae2cs.api.settings.ShowRangeMode;
@@ -63,11 +62,11 @@ public class EnderInterfaceLogic extends InterfaceLogic
 
         mainNode.addService(IGridTickable.class, new Ticker());
 
-        cm = IConfigManager.builder(this::onConfigChanged)
-                .registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL)
-                .registerSetting(AECSSettings.SHOW_RANGE_MODE, ShowRangeMode.HIDE_RANGE)
-                .registerSetting(AECSSettings.BLACK_LIST_MODE, BlackListMode.WHITELIST)
-                .build();
+        if (getConfigManager() instanceof ConfigManager cm)
+        {
+            cm.registerSetting(AECSSettings.SHOW_RANGE_MODE, ShowRangeMode.HIDE_RANGE);
+            cm.registerSetting(AECSSettings.BLACK_LIST_MODE, BlackListMode.WHITELIST);
+        }
     }
 
     public ConfigInventory getAbsorbConfigInventory()
@@ -79,8 +78,8 @@ public class EnderInterfaceLogic extends InterfaceLogic
     protected void onConfigChanged()
     {
         super.onConfigChanged();
-        boolean newRenderRangeInClient = cm.getSetting(AECSSettings.SHOW_RANGE_MODE) == ShowRangeMode.SHOW_RANGE;
-        boolean newBlackListMode = cm.getSetting(AECSSettings.BLACK_LIST_MODE) == BlackListMode.BLACKLIST;
+        boolean newRenderRangeInClient = getConfigManager().getSetting(AECSSettings.SHOW_RANGE_MODE) == ShowRangeMode.SHOW_RANGE;
+        boolean newBlackListMode = getConfigManager().getSetting(AECSSettings.BLACK_LIST_MODE) == BlackListMode.BLACKLIST;
         if (this.renderRangeInClient != newRenderRangeInClient)
         {
             this.renderRangeInClient = newRenderRangeInClient;
