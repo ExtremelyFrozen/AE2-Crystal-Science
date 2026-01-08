@@ -136,6 +136,7 @@
   "ae2cs.menu.ender_broadcaster.button.open_frequency_view_menu": "打开频段菜单\n查看服务器内所有可链接频段",
   "ae2cs.menu.ender_broadcaster.button.open_frequency_create_menu": "打开频段创建菜单\n在此处创建新的频段",
   "ae2cs.menu.ender_broadcaster.button.open_frequency_manager_menu": "打开频段管理菜单\n在此查看和修改频段信息，以及所有频段链接的端",
+  "ae2cs.menu.ender_broadcaster.button.clean_linker_connection": "清空链接\n将机器与频段的链接断开",
 
   "ae2cs.menu.title.frequency_bands": "频段菜单",
   "ae2cs.menu.widgets.frequency_info_panel.encrypted": "已加密",

@@ -20,6 +20,7 @@ public class EnderBroadcasterMenu extends UpgradeableMenu<EnderBroadcasterBlockE
     private static final String openFrequencyBandCreateMenuAction = "open_frequency_band_create_menu";
     private static final String openFrequencyBandManagerMenuAction = "open_frequency_band_manager_menu";
     private static final String toggleLinkerSideAction = "toggle_linker_side";
+    private static final String cleanLinkerConnectionAction = "clean_linker_connection";
 
     @GuiSync(10)
     public String bandName = "";
@@ -45,6 +46,7 @@ public class EnderBroadcasterMenu extends UpgradeableMenu<EnderBroadcasterBlockE
         registerClientAction(openFrequencyBandCreateMenuAction, this::openFrequencyBandCreateMenuAction);
         registerClientAction(openFrequencyBandManagerMenuAction, this::openFrequencyBandManagerMenuAction);
         registerClientAction(toggleLinkerSideAction, this::toggleLinkerSideAction);
+        registerClientAction(cleanLinkerConnectionAction, this::cleanLinkerConnectionAction);
     }
 
 
@@ -86,6 +88,11 @@ public class EnderBroadcasterMenu extends UpgradeableMenu<EnderBroadcasterBlockE
     public void sendToggleLinkerSideAction()
     {
         sendClientAction(toggleLinkerSideAction);
+    }
+
+    public void sendCleanLinkerConnectionAction()
+    {
+        sendClientAction(cleanLinkerConnectionAction);
     }
 
     // 动作机制：服务端处理
@@ -132,6 +139,14 @@ public class EnderBroadcasterMenu extends UpgradeableMenu<EnderBroadcasterBlockE
         {
             getHost().cleanConnectionPermanent();
             getHost().connectToBand(targetBand, false);
+        }
+    }
+
+    private void cleanLinkerConnectionAction()
+    {
+        if (getHost().getBandName() != null && !getHost().getBandName().isEmpty())
+        {
+            getHost().cleanConnectionPermanent();
         }
     }
 

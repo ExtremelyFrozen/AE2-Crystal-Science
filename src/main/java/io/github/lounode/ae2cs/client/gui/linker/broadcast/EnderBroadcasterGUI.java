@@ -4,6 +4,7 @@ import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.style.StyleManager;
 import appeng.client.gui.widgets.AE2Button;
 import io.github.lounode.ae2cs.client.gui.icon.AECSIcon;
+import io.github.lounode.ae2cs.client.gui.icon.AdaptedAE2Icon;
 import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSIconButton;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSToggleButton;
@@ -20,6 +21,7 @@ public class EnderBroadcasterGUI extends UpgradeableScreen<EnderBroadcasterMenu>
     private final AECSIconButton openFrequencyBandCreateMenuButton;
     private final AECSIconButton openFrequencyBandManagerMenuButton;
     private final AECSToggleButton toggleBandLinkButton;
+    private final AECSIconButton cleanLinkerConnectionButton;
     // 接收端
     private final AE2Button addReceiver1ChannelsButton;
     private final AE2Button addReceiver10ChannelsButton;
@@ -70,6 +72,17 @@ public class EnderBroadcasterGUI extends UpgradeableScreen<EnderBroadcasterMenu>
                 Component.translatable("ae2cs.menu.ender_broadcaster.button.toggle_band_side.desc"),
                 state -> menu.sendToggleLinkerSideAction());
         addToLeftToolbar(toggleBandLinkButton);
+
+        cleanLinkerConnectionButton = new AECSIconButton(button -> menu.sendCleanLinkerConnectionAction())
+        {
+            @Override
+            protected @NotNull IButtonIcon getIcon()
+            {
+                return AdaptedAE2Icon.CLEAR;
+            }
+        };
+        this.cleanLinkerConnectionButton.setMessage(Component.translatable("ae2cs.menu.ender_broadcaster.button.clean_linker_connection"));
+        addToLeftToolbar(cleanLinkerConnectionButton);
 
         addReceiver1ChannelsButton = new AE2Button(Component.literal("+1"), button -> {
             int mult = hasShiftDown() ? 5 : 1;
@@ -135,6 +148,7 @@ public class EnderBroadcasterGUI extends UpgradeableScreen<EnderBroadcasterMenu>
         toggleBandLinkButton.setVisibility(isReceiver || isSender);
 
         openFrequencyBandManagerMenuButton.setVisibility(menu.connectionType != EnderBroadcasterBlockEntity.ConnectionType.NO_CONNECTION);
+        cleanLinkerConnectionButton.setVisibility(menu.connectionType != EnderBroadcasterBlockEntity.ConnectionType.NO_CONNECTION);
 
         this.addReceiver1ChannelsButton.active = isReceiver;
         this.addReceiver1ChannelsButton.visible = isReceiver;
