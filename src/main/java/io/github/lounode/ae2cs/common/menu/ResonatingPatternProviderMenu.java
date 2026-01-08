@@ -1,5 +1,7 @@
 package io.github.lounode.ae2cs.common.menu;
 
+import appeng.api.upgrades.IUpgradeInventory;
+import appeng.menu.ToolboxMenu;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.PatternProviderMenu;
 import io.github.lounode.ae2cs.api.settings.AECSSettings;
@@ -12,6 +14,7 @@ import net.minecraft.world.inventory.MenuType;
 public class ResonatingPatternProviderMenu extends PatternProviderMenu
 {
     private final ResonatingPatternProviderLogic logic;
+    private final ToolboxMenu toolbox;
 
     @GuiSync(10)
     public PullMode pullMode;
@@ -20,6 +23,9 @@ public class ResonatingPatternProviderMenu extends PatternProviderMenu
     {
         super(menuType, id, playerInventory, host);
         this.logic = host.getResonatingLogic();
+        this.toolbox = new ToolboxMenu(this);
+
+        setupUpgrades(host.getUpgrades());
     }
 
     @Override
@@ -27,5 +33,15 @@ public class ResonatingPatternProviderMenu extends PatternProviderMenu
     {
         pullMode = this.logic.getConfigManager().getSetting(AECSSettings.PULL_MODE);
         super.broadcastChanges();
+    }
+
+    public ToolboxMenu getToolbox()
+    {
+        return toolbox;
+    }
+
+    public IUpgradeInventory getUpgrades()
+    {
+        return logic.getUpgrades();
     }
 }

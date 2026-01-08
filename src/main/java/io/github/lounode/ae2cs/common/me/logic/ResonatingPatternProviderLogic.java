@@ -13,6 +13,9 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
+import appeng.api.upgrades.IUpgradeInventory;
+import appeng.api.upgrades.IUpgradeableObject;
+import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.IConfigManager;
 import appeng.core.settings.TickRates;
 import appeng.helpers.InterfaceLogicHost;
@@ -25,6 +28,7 @@ import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.settings.AECSSettings;
 import io.github.lounode.ae2cs.api.settings.PullMode;
 import io.github.lounode.ae2cs.api.util.GenericStackInvHelper;
+import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern;
 import io.github.lounode.ae2cs.common.me.crafting.ResonatingPatternDetails;
 import net.minecraft.core.BlockPos;
@@ -49,7 +53,7 @@ import java.util.Set;
 /**
  * 谐振样板供应器，对于谐振样板，尝试将标记了位置的原料发送到指定位置
  */
-public class ResonatingPatternProviderLogic extends PatternProviderLogic
+public class ResonatingPatternProviderLogic extends PatternProviderLogic implements IUpgradeableObject
 {
     private final IActionSource actionSource;
     private final PatternProviderLogicHost host;
@@ -59,6 +63,8 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic
      * 带目的地的待发送队列，若一次未能完全发送，则缓存在此，下次尝试
      */
     private final List<PendingSend> resonatingSendList = new ArrayList<>();
+
+    private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK, 1, this::onUpgradesChange);
 
     /**
      * 用于未标记目的地发送材料的round-robin
@@ -90,6 +96,12 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic
     }
 
     @Override
+    public IUpgradeInventory getUpgrades()
+    {
+        return upgrades;
+    }
+
+    @Override
     protected void configChanged(IConfigManager manager, Setting<?> setting)
     {
         super.configChanged(manager, setting);
@@ -100,10 +112,17 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic
         }
     }
 
+    private void onUpgradesChange()
+    {
+        this.saveChanges();
+    }
+
     @Override
     public void writeToNBT(CompoundTag tag, HolderLookup.Provider registries)
     {
         super.writeToNBT(tag, registries);
+
+        this.upgrades.writeToNBT(tag, "upgrades", registries);
 
         var list = new ListTag();
         for (var p : resonatingSendList)
@@ -122,6 +141,8 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic
     public void readFromNBT(CompoundTag tag, HolderLookup.Provider registries)
     {
         super.readFromNBT(tag, registries);
+
+        this.upgrades.readFromNBT(tag, "upgrades", registries);
 
         resonatingSendList.clear();
         if (!tag.contains("resonating_send_list", Tag.TAG_LIST))

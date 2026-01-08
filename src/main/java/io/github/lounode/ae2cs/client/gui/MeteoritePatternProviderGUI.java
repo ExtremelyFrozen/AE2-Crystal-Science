@@ -19,9 +19,18 @@ public class MeteoritePatternProviderGUI extends PatternProviderScreen<Meteorite
     public MeteoritePatternProviderGUI(MeteoritePatternProviderMenu menu, Inventory playerInventory, Component title, ScreenStyle style)
     {
         super(menu, playerInventory, title, style);
-        this.widgets.add("upgrades", new UpgradesPanel(
-                menu.getSlots(SlotSemantics.UPGRADE),
-                this::getCompatibleUpgrades));
+
+        try
+        {
+            this.widgets.add("upgrades", new UpgradesPanel(
+                    menu.getSlots(SlotSemantics.UPGRADE),
+                    this::getCompatibleUpgrades));
+        }
+        catch (IllegalStateException e)
+        {
+            // 可能有其他模组完成了添加，静默处理
+        }
+
         if (menu.getToolbox().isPresent())
         {
             this.widgets.add("toolbox", new ToolboxPanel(style, menu.getToolbox().getName()));
