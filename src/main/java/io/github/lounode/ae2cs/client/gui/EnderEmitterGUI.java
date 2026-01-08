@@ -31,6 +31,8 @@ public class EnderEmitterGUI extends UpgradeableScreen<EnderEmitterMenu>
 
         this.addDistanceButton = new AECSIconButton(button -> {
             int mult = hasShiftDown() ? 5 : 1;
+            mult = hasControlDown() ? menu.linkDistance/2 : mult;
+            mult = Math.max(1, mult);
             menu.sendChangeDistance(1 * mult);
         })
         {
@@ -45,6 +47,8 @@ public class EnderEmitterGUI extends UpgradeableScreen<EnderEmitterMenu>
 
         this.reduceDistanceButton = new AECSIconButton(button -> {
             int mult = hasShiftDown() ? 5 : 1;
+            mult = hasControlDown() ? menu.linkDistance/2 : mult;
+            mult = Math.max(1, mult);
             menu.sendChangeDistance(-1 * mult);
         })
         {
