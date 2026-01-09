@@ -16,7 +16,6 @@ import appeng.core.definitions.AEItems;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
-import io.github.lounode.ae2cs.api.util.ForgeEnergyAdapterUpgrade;
 import io.github.lounode.ae2cs.common.init.*;
 import io.github.lounode.ae2cs.common.item.CrystalSeedItem;
 import net.minecraft.core.BlockPos;
@@ -94,7 +93,8 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
 
     public CrystalGrowthChamberBlockEntity(BlockPos pos, BlockState state)
     {
-        super(AECSBlockEntities.CRYSTAL_GROWTH_CHAMBER.get(), pos, state, 40000);
+        super(AECSBlockEntities.CRYSTAL_GROWTH_CHAMBER.get(), pos, state,
+                40000, false, AccessRestriction.WRITE);
 
         getMainNode().setIdlePowerUsage(0.0);
 
@@ -118,11 +118,6 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
                 AECapabilities.IN_WORLD_GRID_NODE_HOST,
                 AECSBlockEntities.CRYSTAL_GROWTH_CHAMBER.get(),
                 (be, unused) -> be
-        );
-        event.registerBlockEntity(
-                Capabilities.EnergyStorage.BLOCK,
-                AECSBlockEntities.CRYSTAL_GROWTH_CHAMBER.get(),
-                (be, direction) -> new ForgeEnergyAdapterUpgrade(be, AccessRestriction.WRITE)
         );
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
@@ -281,17 +276,5 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
         super.clearContent();
         this.inventory.clear();
         this.upgrades.clear();
-    }
-
-    @Override
-    public boolean isAEPublicPowerStorage()
-    {
-        return false;
-    }
-
-    @Override
-    public AccessRestriction getPowerFlow()
-    {
-        return AccessRestriction.WRITE;
     }
 }

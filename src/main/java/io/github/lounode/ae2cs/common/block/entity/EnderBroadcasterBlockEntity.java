@@ -102,7 +102,8 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
 
     public EnderBroadcasterBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
     {
-        super(type, pos, state, 80000);
+        super(type, pos, state,
+                80000, false, AccessRestriction.WRITE);
         getMainNode().setFlags(GridFlags.DENSE_CAPACITY);
     }
 
@@ -713,18 +714,6 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
         this.activeForClient = data.readBoolean();
         this.asSenderForClient = data.readBoolean();
         return true;
-    }
-
-    @Override
-    public boolean isAEPublicPowerStorage()
-    {
-        return true;
-    }
-
-    @Override
-    public AccessRestriction getPowerFlow()
-    {
-        return AccessRestriction.WRITE;
     }
 
     @Override

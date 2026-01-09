@@ -10,7 +10,6 @@ import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
-import io.github.lounode.ae2cs.api.util.ForgeEnergyAdapterUpgrade;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSRecipeTypes;
 import io.github.lounode.ae2cs.common.recipe.crystal_pulverizer.CrystalPulverizerRecipe;
@@ -150,7 +149,8 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
 
     public QuartzGrindstoneBlockEntity(BlockPos pos, BlockState blockState)
     {
-        super(AECSBlockEntities.QUARTZ_GRINDSTONE_BLOCK_ENTITY.get(), pos, blockState, 10000);
+        super(AECSBlockEntities.QUARTZ_GRINDSTONE_BLOCK_ENTITY.get(), pos, blockState,
+                10000, false, AccessRestriction.WRITE);
 
         getMainNode().setIdlePowerUsage(0);
 
@@ -186,11 +186,6 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
                 AECapabilities.IN_WORLD_GRID_NODE_HOST,
                 AECSBlockEntities.QUARTZ_GRINDSTONE_BLOCK_ENTITY.get(),
                 (be, unused) -> be
-        );
-        event.registerBlockEntity(
-                Capabilities.EnergyStorage.BLOCK,
-                AECSBlockEntities.QUARTZ_GRINDSTONE_BLOCK_ENTITY.get(),
-                (be, direction) -> new ForgeEnergyAdapterUpgrade(be, AccessRestriction.WRITE)
         );
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
@@ -230,18 +225,6 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
     public int getActiveRecipeEnergyCost()
     {
         return activeRecipeEnergyCost;
-    }
-
-    @Override
-    public boolean isAEPublicPowerStorage()
-    {
-        return false;
-    }
-
-    @Override
-    public AccessRestriction getPowerFlow()
-    {
-        return AccessRestriction.WRITE;
     }
 
     @Override

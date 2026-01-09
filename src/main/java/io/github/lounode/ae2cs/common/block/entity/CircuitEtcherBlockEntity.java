@@ -140,7 +140,8 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
 
     public CircuitEtcherBlockEntity(BlockPos pos, BlockState blockState)
     {
-        super(AECSBlockEntities.CIRCUIT_ETCHER_BLOCK_ENTITY.get(), pos, blockState, 80000);
+        super(AECSBlockEntities.CIRCUIT_ETCHER_BLOCK_ENTITY.get(), pos, blockState,
+                80000, false, AccessRestriction.WRITE);
 
         getMainNode().setIdlePowerUsage(0);
     }
@@ -201,18 +202,6 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
     public IUpgradeInventory getUpgrades()
     {
         return upgrades;
-    }
-
-    @Override
-    public boolean isAEPublicPowerStorage()
-    {
-        return false;
-    }
-
-    @Override
-    public AccessRestriction getPowerFlow()
-    {
-        return AccessRestriction.WRITE;
     }
 
     @Override

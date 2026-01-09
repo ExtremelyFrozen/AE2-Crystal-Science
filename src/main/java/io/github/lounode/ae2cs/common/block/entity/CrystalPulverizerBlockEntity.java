@@ -12,7 +12,6 @@ import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
-import io.github.lounode.ae2cs.api.util.ForgeEnergyAdapterUpgrade;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
@@ -135,7 +134,8 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
 
     public CrystalPulverizerBlockEntity(BlockPos pos, BlockState blockState)
     {
-        super(AECSBlockEntities.CRYSTAL_PULVERIZER_BLOCK_ENTITY.get(), pos, blockState, 80000);
+        super(AECSBlockEntities.CRYSTAL_PULVERIZER_BLOCK_ENTITY.get(), pos, blockState,
+                80000, false, AccessRestriction.WRITE);
 
         getMainNode().setIdlePowerUsage(0);
     }
@@ -149,11 +149,6 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
                 AECapabilities.IN_WORLD_GRID_NODE_HOST,
                 AECSBlockEntities.CRYSTAL_PULVERIZER_BLOCK_ENTITY.get(),
                 (be, unused) -> be
-        );
-        event.registerBlockEntity(
-                Capabilities.EnergyStorage.BLOCK,
-                AECSBlockEntities.CRYSTAL_PULVERIZER_BLOCK_ENTITY.get(),
-                (be, direction) -> new ForgeEnergyAdapterUpgrade(be, AccessRestriction.WRITE)
         );
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
@@ -196,18 +191,6 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
     public IUpgradeInventory getUpgrades()
     {
         return upgrades;
-    }
-
-    @Override
-    public boolean isAEPublicPowerStorage()
-    {
-        return false;
-    }
-
-    @Override
-    public AccessRestriction getPowerFlow()
-    {
-        return AccessRestriction.WRITE;
     }
 
     @Override

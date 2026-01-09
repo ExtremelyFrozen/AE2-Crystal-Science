@@ -20,7 +20,6 @@ import appeng.util.ConfigInventory;
 import io.github.lounode.ae2cs.api.genericinv.CombinedGenericInternalInventory;
 import io.github.lounode.ae2cs.api.genericinv.GenericStackInvWrapper;
 import io.github.lounode.ae2cs.api.settings.AECSSettings;
-import io.github.lounode.ae2cs.api.util.ForgeEnergyAdapterUpgrade;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
@@ -40,7 +39,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.Nullable;
 
@@ -124,7 +122,8 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
 
     public EntropyVariationReactionChamberBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState)
     {
-        super(blockEntityType, pos, blockState, 80000);
+        super(blockEntityType, pos, blockState,
+                80000, false, AccessRestriction.WRITE);
 
         configManager = IConfigManager.builder(this::onConfigChange)
                 .registerSetting(AECSSettings.ENTROPY_CHANGE_MODE, EntropyMode.HEAT)
@@ -173,11 +172,6 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
                 AECapabilities.IN_WORLD_GRID_NODE_HOST,
                 AECSBlockEntities.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK_ENTITY.get(),
                 (be, unused) -> be
-        );
-        event.registerBlockEntity(
-                Capabilities.EnergyStorage.BLOCK,
-                AECSBlockEntities.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK_ENTITY.get(),
-                (be, direction) -> new ForgeEnergyAdapterUpgrade(be, AccessRestriction.WRITE)
         );
         event.registerBlockEntity(
                 AECapabilities.GENERIC_INTERNAL_INV,
@@ -237,18 +231,6 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
     public IUpgradeInventory getUpgrades()
     {
         return upgrades;
-    }
-
-    @Override
-    public boolean isAEPublicPowerStorage()
-    {
-        return false;
-    }
-
-    @Override
-    public AccessRestriction getPowerFlow()
-    {
-        return AccessRestriction.WRITE;
     }
 
     @Override

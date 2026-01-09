@@ -10,7 +10,6 @@ import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.AECableType;
 import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.util.ConfigInventory;
-import io.github.lounode.ae2cs.api.util.ForgeEnergyAdapterUpgrade;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
@@ -22,7 +21,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import java.util.List;
@@ -40,7 +38,8 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
 
     public CrystalVibrationChamberBlockEntity(BlockPos pos, BlockState blockState)
     {
-        super(AECSBlockEntities.CRYSTAL_VIBRATION_CHAMBER_BLOCK_ENTITY.get(), pos, blockState, 1000000);
+        super(AECSBlockEntities.CRYSTAL_VIBRATION_CHAMBER_BLOCK_ENTITY.get(), pos, blockState,
+                1000000, false, AccessRestriction.READ);
         this.getMainNode().setIdlePowerUsage(0);
 
         this.upgrades = UpgradeInventories.forMachine(AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK, 3, this::saveChanges);
@@ -60,11 +59,6 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
                 AECapabilities.IN_WORLD_GRID_NODE_HOST,
                 AECSBlockEntities.CRYSTAL_VIBRATION_CHAMBER_BLOCK_ENTITY.get(),
                 (be, unused) -> be
-        );
-        event.registerBlockEntity(
-                Capabilities.EnergyStorage.BLOCK,
-                AECSBlockEntities.CRYSTAL_VIBRATION_CHAMBER_BLOCK_ENTITY.get(),
-                (be, direction) -> new ForgeEnergyAdapterUpgrade(be, AccessRestriction.READ)
         );
         event.registerBlockEntity(
                 AECapabilities.GENERIC_INTERNAL_INV,
@@ -212,17 +206,5 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
         this.remainingBurnTime = 0;
         this.energyPerTick = 0;
         this.maxBurnTime = 0;
-    }
-
-    @Override
-    public boolean isAEPublicPowerStorage()
-    {
-        return false;
-    }
-
-    @Override
-    public AccessRestriction getPowerFlow()
-    {
-        return AccessRestriction.READ;
     }
 }
