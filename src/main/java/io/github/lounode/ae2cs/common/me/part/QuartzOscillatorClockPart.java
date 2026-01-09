@@ -44,7 +44,7 @@ public class QuartzOscillatorClockPart extends AEBasePart implements QuartzOscil
             AppEng.makeId("part/interface_on"));
 
     @PartModels
-    public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE_ON,
+    public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE_OFF,
             AppEng.makeId("part/interface_has_channel"));
 
 
@@ -65,18 +65,12 @@ public class QuartzOscillatorClockPart extends AEBasePart implements QuartzOscil
     @Override
     public IPartModel getStaticModels()
     {
-        if (this.isActive() && this.isPowered())
-        {
-            return MODELS_HAS_CHANNEL;
-        }
-        else if (this.isPowered())
-        {
+        if(this.pulseActive)
             return MODELS_ON;
-        }
+        else if (this.isActive() && this.isPowered())
+            return MODELS_HAS_CHANNEL;
         else
-        {
             return MODELS_OFF;
-        }
     }
 
     protected QuartzOscillatorClockLogic createLogic()
