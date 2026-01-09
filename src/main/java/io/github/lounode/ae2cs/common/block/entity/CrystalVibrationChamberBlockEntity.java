@@ -18,6 +18,7 @@ import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.item.PureCrystalItem;
 import io.github.lounode.ae2cs.common.machine.component.GenericStackInvComponent;
 import io.github.lounode.ae2cs.common.machine.component.InvPort;
+import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -54,6 +55,7 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
         GenericStackInvComponent component = new GenericStackInvComponent();
         component.addPort(InvPort.WORK, inv);
         getMachineComponents().add(component);
+        getMachineComponents().add(new SideConfigComponent());
     }
 
     public GenericStackInv getInv()

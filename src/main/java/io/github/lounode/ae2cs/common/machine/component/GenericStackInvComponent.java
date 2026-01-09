@@ -47,6 +47,15 @@ public final class GenericStackInvComponent extends BaseMachineComponent
         Set<GenericStackInvWrapper> filters = Collections.newSetFromMap(new IdentityHashMap<>());
         filters.addAll(portWrappers.values());
         combined = new CombinedGenericInternalInventory(filters.toArray(GenericStackInvWrapper[]::new));
+
+        if (container != null)
+        {
+            container.host().invalidCap();
+            if (container.hasService(SideConfigComponent.class))
+            {
+                container.getService(SideConfigComponent.class).invalidateAllCaches();
+            }
+        }
         return this;
     }
 

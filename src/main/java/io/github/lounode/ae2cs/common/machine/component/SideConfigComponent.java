@@ -55,7 +55,7 @@ public class SideConfigComponent extends BaseMachineComponent
         genericSideCache.remove(dir);
     }
 
-    private void invalidateAllCaches()
+    public void invalidateAllCaches()
     {
         appEngSideCacheComputed.clear();
         appEngSideCache.clear();

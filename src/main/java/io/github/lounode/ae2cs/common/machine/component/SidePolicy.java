@@ -8,8 +8,8 @@ public enum SidePolicy
     ALL(false, true);
 
 
-    boolean allowInsert;
-    boolean allowExtract;
+    final boolean allowInsert;
+    final boolean allowExtract;
 
     SidePolicy(boolean allowInsert, boolean allowExtract)
     {

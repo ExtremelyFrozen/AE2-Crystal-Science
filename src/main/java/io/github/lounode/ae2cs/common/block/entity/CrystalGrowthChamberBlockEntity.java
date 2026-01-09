@@ -20,6 +20,7 @@ import io.github.lounode.ae2cs.common.init.*;
 import io.github.lounode.ae2cs.common.item.CrystalSeedItem;
 import io.github.lounode.ae2cs.common.machine.component.AppEngInvComponent;
 import io.github.lounode.ae2cs.common.machine.component.InvPort;
+import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -111,6 +112,7 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
         invComponent.addPort(InvPort.WORK, inventory);
         getMachineComponents().add(invComponent);
         invComponent.setWrap(InvPort.WORK, exposeInv);
+        getMachineComponents().add(new SideConfigComponent());
     }
 
     /**

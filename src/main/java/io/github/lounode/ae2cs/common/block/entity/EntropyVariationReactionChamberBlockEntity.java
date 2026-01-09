@@ -24,6 +24,7 @@ import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.machine.component.GenericStackInvComponent;
 import io.github.lounode.ae2cs.common.machine.component.InvPort;
+import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -123,6 +124,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
         genericStackInvComponent.addPort(InvPort.WORK, inputInv);
         genericStackInvComponent.addPort(InvPort.OUTPUT, outputInv);
         getMachineComponents().add(genericStackInvComponent);
+        getMachineComponents().add(new SideConfigComponent());
     }
 
     public GenericStackInv getInputInv()

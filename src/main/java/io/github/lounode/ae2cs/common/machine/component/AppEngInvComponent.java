@@ -46,6 +46,15 @@ public class AppEngInvComponent extends BaseMachineComponent
         Set<FilteredInternalInventory> filters = Collections.newSetFromMap(new IdentityHashMap<>());
         filters.addAll(portWrappers.values());
         combined = new CombinedInternalInventory(filters.toArray(FilteredInternalInventory[]::new));
+
+        if (container != null)
+        {
+            container.host().invalidCap();
+            if (container.hasService(SideConfigComponent.class))
+            {
+                container.getService(SideConfigComponent.class).invalidateAllCaches();
+            }
+        }
         return this;
     }
 
