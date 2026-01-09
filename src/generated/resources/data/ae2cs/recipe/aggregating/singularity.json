@@ -1,5 +1,6 @@
 {
   "type": "ae2cs:crystal_aggregator_recipe_serializer",
+  "energy_cost": 6400,
   "input_a": {
     "count": 64,
     "item": "ae2:matter_ball"
@@ -11,6 +12,5 @@
   "result": {
     "count": 64,
     "id": "ae2:singularity"
-  },
-  "time": 300
+  }
 }

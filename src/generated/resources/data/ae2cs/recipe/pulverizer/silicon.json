@@ -1,5 +1,6 @@
 {
   "type": "ae2cs:crystal_pulverizer_recipe_serializer",
+  "energy_cost": 6400,
   "input": {
     "count": 1,
     "item": "minecraft:sand"
@@ -7,6 +8,5 @@
   "result": {
     "count": 9,
     "id": "ae2:silicon"
-  },
-  "time": 300
+  }
 }

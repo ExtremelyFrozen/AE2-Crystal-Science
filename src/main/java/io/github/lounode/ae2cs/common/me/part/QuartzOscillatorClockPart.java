@@ -65,7 +65,7 @@ public class QuartzOscillatorClockPart extends AEBasePart implements QuartzOscil
     @Override
     public IPartModel getStaticModels()
     {
-        if(this.pulseActive)
+        if (this.pulseActive)
             return MODELS_ON;
         else if (this.isActive() && this.isPowered())
             return MODELS_HAS_CHANNEL;

@@ -134,12 +134,12 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
     private ResourceLocation activeRecipeId;
 
     /**
-     * 该配方需要的总时间（tick）
+     * 该配方需要的总能量
      */
-    private int activeRecipeTime = 0;
+    private int activeRecipeEnergyCost = 0;
 
     /**
-     * 当前配方运行时间
+     * 当前配方进度
      */
     private int recipeProgress = 0;
 
@@ -227,9 +227,9 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
         return recipeProgress;
     }
 
-    public int getActiveRecipeTime()
+    public int getActiveRecipeEnergyCost()
     {
-        return activeRecipeTime;
+        return activeRecipeEnergyCost;
     }
 
     @Override
@@ -270,20 +270,19 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
         CrystalPulverizerRecipe recipe = activeRecipe.value();
 
         // 2) 若未完成：推进进度 + 扣能量
-        if (recipeProgress < activeRecipeTime)
+        if (recipeProgress < activeRecipeEnergyCost)
         {
-            int speed = getSpeedMultiplier();
+            if (getAECurrentPower() <= 0) return;
+
             double neededEnergy = getEnergyPerTick();
-
-            if (getAECurrentPower() < neededEnergy) return;
-            extractAEPower(neededEnergy, Actionable.MODULATE);
-
-            recipeProgress = Math.min(activeRecipeTime, recipeProgress + speed);
+            neededEnergy = Math.min(neededEnergy, activeRecipeEnergyCost - recipeProgress);
+            double actualCost = extractAEPower(neededEnergy, Actionable.MODULATE);
+            recipeProgress = Math.min(recipeProgress + (int) actualCost, activeRecipeEnergyCost);
             setChanged();
         }
 
         // 3) 已经完成：消耗资源并产出
-        if (recipeProgress >= activeRecipeTime)
+        if (recipeProgress >= activeRecipeEnergyCost)
         {
             SingleRecipeInput input = new SingleRecipeInput(workingInv.getStackInSlot(0));
             ItemStack result = recipe.assemble(input, level.registryAccess());
@@ -291,14 +290,14 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
             {
                 recipeProgress = 0;
                 activeRecipe = null;
-                activeRecipeTime = 0;
+                activeRecipeEnergyCost = 0;
                 return;
             }
 
             // 如果输出放不下，则将recipeProgress钳制在最大配方时间
             if (!outputInv.addItems(result, true).isEmpty())
             {
-                recipeProgress = activeRecipeTime;
+                recipeProgress = activeRecipeEnergyCost;
                 return;
             }
 
@@ -307,7 +306,7 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
                 // 输入不够：清缓存和状态，等待刷新
                 recipeProgress = 0;
                 activeRecipe = null;
-                activeRecipeTime = 0;
+                activeRecipeEnergyCost = 0;
                 return;
             }
 
@@ -348,7 +347,7 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
         if (opt.isEmpty())
         {
             activeRecipe = null;
-            activeRecipeTime = 0;
+            activeRecipeEnergyCost = 0;
             recipeProgress = 0;
             return;
         }
@@ -361,7 +360,7 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
         {
             // 理论上不该发生（因为 getRecipeFor 已经匹配过），但保底
             activeRecipe = null;
-            activeRecipeTime = 0;
+            activeRecipeEnergyCost = 0;
             recipeProgress = 0;
             return;
         }
@@ -369,13 +368,13 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
         // 配方未变：保持进度，仅刷新 match/time
         if (activeRecipe != null && activeRecipe.id().equals(holder.id()))
         {
-            activeRecipeTime = recipe.time();
+            activeRecipeEnergyCost = recipe.energyCost();
             return;
         }
 
         // 配方变了：切换配方，重置进度
         activeRecipe = holder;
-        activeRecipeTime = recipe.time();
+        activeRecipeEnergyCost = recipe.energyCost();
         recipeProgress = 0;
     }
 

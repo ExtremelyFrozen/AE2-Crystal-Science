@@ -16,14 +16,14 @@ public class CrystalPulverizerRecipeSerializer implements RecipeSerializer<Cryst
     public static final MapCodec<CrystalPulverizerRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
             SizedIngredient.FLAT_CODEC.fieldOf("input").forGetter(CrystalPulverizerRecipe::input),
             ItemStack.CODEC.fieldOf("result").forGetter(CrystalPulverizerRecipe::result),
-            Codec.INT.optionalFieldOf("time", 200).forGetter(CrystalPulverizerRecipe::time)
+            Codec.INT.optionalFieldOf("energy_cost", 200).forGetter(CrystalPulverizerRecipe::energyCost)
     ).apply(inst, CrystalPulverizerRecipe::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, CrystalPulverizerRecipe> STREAM_CODEC =
             StreamCodec.composite(
                     SizedIngredient.STREAM_CODEC, CrystalPulverizerRecipe::input,
                     ItemStack.STREAM_CODEC, CrystalPulverizerRecipe::result,
-                    ByteBufCodecs.VAR_INT, CrystalPulverizerRecipe::time,
+                    ByteBufCodecs.VAR_INT, CrystalPulverizerRecipe::energyCost,
                     CrystalPulverizerRecipe::new
             );
 

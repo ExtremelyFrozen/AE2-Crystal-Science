@@ -23,7 +23,7 @@ public class CircuitEtcherRecipeSerializer implements RecipeSerializer<CircuitEt
             SizedIngredient.FLAT_CODEC.optionalFieldOf("input_b", EMPTY).forGetter(CircuitEtcherRecipe::inputB),
             SizedIngredient.FLAT_CODEC.optionalFieldOf("input_c", EMPTY).forGetter(CircuitEtcherRecipe::inputC),
             ItemStack.CODEC.fieldOf("result").forGetter(CircuitEtcherRecipe::result),
-            Codec.INT.optionalFieldOf("time", 200).forGetter(CircuitEtcherRecipe::time)
+            Codec.INT.optionalFieldOf("energy_cost", 3200).forGetter(CircuitEtcherRecipe::energyCost)
     ).apply(inst, CircuitEtcherRecipe::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, CircuitEtcherRecipe> STREAM_CODEC =
@@ -32,7 +32,7 @@ public class CircuitEtcherRecipeSerializer implements RecipeSerializer<CircuitEt
                     SizedIngredient.STREAM_CODEC, CircuitEtcherRecipe::inputB,
                     SizedIngredient.STREAM_CODEC, CircuitEtcherRecipe::inputC,
                     ItemStack.STREAM_CODEC, CircuitEtcherRecipe::result,
-                    ByteBufCodecs.VAR_INT, CircuitEtcherRecipe::time,
+                    ByteBufCodecs.VAR_INT, CircuitEtcherRecipe::energyCost,
                     CircuitEtcherRecipe::new
             );
 

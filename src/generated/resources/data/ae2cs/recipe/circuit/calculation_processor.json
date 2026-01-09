@@ -1,5 +1,6 @@
 {
   "type": "ae2cs:circuit_etcher_recipe_serializer",
+  "energy_cost": 6400,
   "input_a": {
     "count": 64,
     "item": "minecraft:redstone"
@@ -15,6 +16,5 @@
   "result": {
     "count": 64,
     "id": "ae2:calculation_processor"
-  },
-  "time": 300
+  }
 }

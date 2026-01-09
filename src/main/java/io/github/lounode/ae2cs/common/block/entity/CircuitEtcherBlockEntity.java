@@ -124,12 +124,12 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
     private int @Nullable [] activeMatch;
 
     /**
-     * 该配方需要的总时间（tick）
+     * 该配方需要的总能量
      */
-    private int activeRecipeTime = 0;
+    private int activeRecipeEnergyCost = 0;
 
     /**
-     * 当前配方运行时间
+     * 当前配方进度
      */
     private int recipeProgress = 0;
 
@@ -182,9 +182,9 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
         return recipeProgress;
     }
 
-    public int getActiveRecipeTime()
+    public int getActiveRecipeEnergyCost()
     {
-        return activeRecipeTime;
+        return activeRecipeEnergyCost;
     }
 
     public void checkActive(boolean active)
@@ -240,20 +240,19 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
         CircuitEtcherRecipe recipe = activeRecipe.value();
 
         // 2) 若未完成：推进进度 + 扣能量
-        if (recipeProgress < activeRecipeTime)
+        if (recipeProgress < activeRecipeEnergyCost)
         {
-            int speed = getSpeedMultiplier();
+            if (getAECurrentPower() <= 0) return;
+
             double neededEnergy = getEnergyPerTick();
-
-            if (getAECurrentPower() < neededEnergy) return;
-            extractAEPower(neededEnergy, Actionable.MODULATE);
-
-            recipeProgress = Math.min(activeRecipeTime, recipeProgress + speed);
+            neededEnergy = Math.min(neededEnergy, activeRecipeEnergyCost - recipeProgress);
+            double actualCost = extractAEPower(neededEnergy, Actionable.MODULATE);
+            recipeProgress = Math.min(recipeProgress + (int) actualCost, activeRecipeEnergyCost);
             setChanged();
         }
 
         // 3) 已经完成：消耗资源并产出
-        if (recipeProgress >= activeRecipeTime)
+        if (recipeProgress >= activeRecipeEnergyCost)
         {
             ThreeItemStackRecipeInput input = ThreeItemStackRecipeInput.of(
                     inputInv.getStackInSlot(0),
@@ -266,14 +265,14 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
                 recipeProgress = 0;
                 activeRecipe = null;
                 activeMatch = null;
-                activeRecipeTime = 0;
+                activeRecipeEnergyCost = 0;
                 return;
             }
 
             // 如果输出放不下，则将recipeProgress钳制在最大配方时间
             if (!outputInv.insertItem(0, result, true).isEmpty())
             {
-                recipeProgress = activeRecipeTime;
+                recipeProgress = activeRecipeEnergyCost;
                 return;
             }
 
@@ -283,7 +282,7 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
                 recipeProgress = 0;
                 activeRecipe = null;
                 activeMatch = null;
-                activeRecipeTime = 0;
+                activeRecipeEnergyCost = 0;
                 return;
             }
 
@@ -330,7 +329,7 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
         {
             activeRecipe = null;
             activeMatch = null;
-            activeRecipeTime = 0;
+            activeRecipeEnergyCost = 0;
             recipeProgress = 0;
             return;
         }
@@ -344,7 +343,7 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
             // 理论上不该发生（因为 getRecipeFor 已经匹配过），但保底
             activeRecipe = null;
             activeMatch = null;
-            activeRecipeTime = 0;
+            activeRecipeEnergyCost = 0;
             recipeProgress = 0;
             return;
         }
@@ -353,14 +352,14 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
         if (activeRecipe != null && activeRecipe.id().equals(holder.id()))
         {
             activeMatch = match;
-            activeRecipeTime = recipe.time();
+            activeRecipeEnergyCost = recipe.energyCost();
             return;
         }
 
         // 配方变了：切换配方，重置进度
         activeRecipe = holder;
         activeMatch = match;
-        activeRecipeTime = recipe.time();
+        activeRecipeEnergyCost = recipe.energyCost();
         recipeProgress = 0;
     }
 

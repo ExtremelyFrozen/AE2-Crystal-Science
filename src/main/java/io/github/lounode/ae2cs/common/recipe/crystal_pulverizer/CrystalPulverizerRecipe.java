@@ -16,22 +16,22 @@ public class CrystalPulverizerRecipe implements Recipe<SingleRecipeInput>
 {
     private final SizedIngredient input;
     private final ItemStack result;
-    private final int time;
+    private final int energyCost;
 
-    public CrystalPulverizerRecipe(SizedIngredient input, ItemStack result, int time)
+    public CrystalPulverizerRecipe(SizedIngredient input, ItemStack result, int energyCost)
     {
         if (input.ingredient().isEmpty() || input.count() <= 0)
         {
             throw new IllegalArgumentException("Input cannot be empty");
         }
-        if (time <= 0)
+        if (energyCost <= 0)
         {
             throw new IllegalArgumentException("Time must be positive");
         }
 
         this.input = input;
         this.result = result;
-        this.time = time;
+        this.energyCost = energyCost;
     }
 
     public SizedIngredient input()
@@ -44,9 +44,9 @@ public class CrystalPulverizerRecipe implements Recipe<SingleRecipeInput>
         return result;
     }
 
-    public int time()
+    public int energyCost()
     {
-        return time;
+        return energyCost;
     }
 
     @Override

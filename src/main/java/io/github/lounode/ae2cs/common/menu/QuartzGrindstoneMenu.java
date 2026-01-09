@@ -65,7 +65,7 @@ public class QuartzGrindstoneMenu extends UpgradeableMenu<QuartzGrindstoneBlockE
     @Override
     public void broadcastChanges()
     {
-        recipeNeedTicks = getHost().getActiveRecipeTime();
+        recipeNeedTicks = getHost().getActiveRecipeEnergyCost();
         recipeProgress = getHost().getRecipeProgress();
 
         super.broadcastChanges();

@@ -23,7 +23,7 @@ public class CrystalAggregatorRecipeSerializer implements RecipeSerializer<Cryst
             SizedIngredient.FLAT_CODEC.optionalFieldOf("input_b", EMPTY).forGetter(CrystalAggregatorRecipe::inputB),
             SizedIngredient.FLAT_CODEC.optionalFieldOf("input_c", EMPTY).forGetter(CrystalAggregatorRecipe::inputC),
             ItemStack.CODEC.fieldOf("result").forGetter(CrystalAggregatorRecipe::result),
-            Codec.INT.optionalFieldOf("time", 200).forGetter(CrystalAggregatorRecipe::time)
+            Codec.INT.optionalFieldOf("energy_cost", 200).forGetter(CrystalAggregatorRecipe::energyCost)
     ).apply(inst, CrystalAggregatorRecipe::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, CrystalAggregatorRecipe> STREAM_CODEC =
@@ -32,7 +32,7 @@ public class CrystalAggregatorRecipeSerializer implements RecipeSerializer<Cryst
                     SizedIngredient.STREAM_CODEC, CrystalAggregatorRecipe::inputB,
                     SizedIngredient.STREAM_CODEC, CrystalAggregatorRecipe::inputC,
                     ItemStack.STREAM_CODEC, CrystalAggregatorRecipe::result,
-                    ByteBufCodecs.VAR_INT, CrystalAggregatorRecipe::time,
+                    ByteBufCodecs.VAR_INT, CrystalAggregatorRecipe::energyCost,
                     CrystalAggregatorRecipe::new
             );
 

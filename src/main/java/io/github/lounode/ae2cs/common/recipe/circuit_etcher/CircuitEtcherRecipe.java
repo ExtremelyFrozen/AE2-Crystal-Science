@@ -23,19 +23,19 @@ public class CircuitEtcherRecipe implements Recipe<ThreeItemStackRecipeInput>
     private final SizedIngredient inputB;
     private final SizedIngredient inputC;
     private final ItemStack result;
-    private final int time;
+    private final int energyCost;
 
     // 真正所需的输入的缓存
     private final List<SizedIngredient> effective;
 
     public CircuitEtcherRecipe(SizedIngredient inputA, SizedIngredient inputB, SizedIngredient inputC,
-                               ItemStack result, int time)
+                               ItemStack result, int energyCost)
     {
         this.inputA = inputA;
         this.inputB = inputB;
         this.inputC = inputC;
         this.result = result;
-        this.time = time;
+        this.energyCost = energyCost;
 
         this.effective = new ArrayList<>(3);
         addIfRequired(this.effective, inputA);
@@ -71,9 +71,9 @@ public class CircuitEtcherRecipe implements Recipe<ThreeItemStackRecipeInput>
         return result;
     }
 
-    public int time()
+    public int energyCost()
     {
-        return time;
+        return energyCost;
     }
 
     public List<SizedIngredient> required()

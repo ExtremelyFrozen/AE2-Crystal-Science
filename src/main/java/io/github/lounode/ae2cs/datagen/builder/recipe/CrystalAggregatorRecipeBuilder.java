@@ -29,7 +29,7 @@ public class CrystalAggregatorRecipeBuilder implements RecipeBuilder
     private static final SizedIngredient EMPTY = new SizedIngredient(Ingredient.EMPTY, 1);
 
     private final ItemStack result;
-    private final int time;
+    private final int energyCost;
     private final List<SizedIngredient> inputs = new ArrayList<>(3);
 
     private final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
@@ -37,20 +37,20 @@ public class CrystalAggregatorRecipeBuilder implements RecipeBuilder
     // 用来自动写配方成就，在没有手写unlockBy条件时，会自动启用
     private final List<ItemPredicate.Builder> autoUnlockPredicates = new ArrayList<>(3);
 
-    private CrystalAggregatorRecipeBuilder(ItemStack result, int time)
+    private CrystalAggregatorRecipeBuilder(ItemStack result, int energyCost)
     {
         this.result = result;
-        this.time = time;
+        this.energyCost = energyCost;
     }
 
-    public static CrystalAggregatorRecipeBuilder aggregating(ItemStack result, int time)
+    public static CrystalAggregatorRecipeBuilder aggregating(ItemStack result, int energyCost)
     {
-        return new CrystalAggregatorRecipeBuilder(result, time);
+        return new CrystalAggregatorRecipeBuilder(result, energyCost);
     }
 
-    public static CrystalAggregatorRecipeBuilder aggregating(ItemLike result, int count, int time)
+    public static CrystalAggregatorRecipeBuilder aggregating(ItemLike result, int count, int energyCost)
     {
-        return new CrystalAggregatorRecipeBuilder(new ItemStack(result, count), time);
+        return new CrystalAggregatorRecipeBuilder(new ItemStack(result, count), energyCost);
     }
 
     /**
@@ -145,7 +145,7 @@ public class CrystalAggregatorRecipeBuilder implements RecipeBuilder
         SizedIngredient b = inputs.size() > 1 ? inputs.get(1) : EMPTY;
         SizedIngredient c = inputs.size() > 2 ? inputs.get(2) : EMPTY;
 
-        var recipe = new CrystalAggregatorRecipe(a, b, c, result, time);
+        var recipe = new CrystalAggregatorRecipe(a, b, c, result, energyCost);
         output.accept(id, recipe, adv.build(id.withPrefix("recipes/")));
     }
 

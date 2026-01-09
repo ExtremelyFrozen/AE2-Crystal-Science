@@ -26,7 +26,7 @@ import java.util.*;
 public class CrystalPulverizerRecipeBuilder implements RecipeBuilder
 {
     private final ItemStack result;
-    private final int time;
+    private final int energyCost;
 
     private @Nullable SizedIngredient input = null;
 
@@ -35,20 +35,20 @@ public class CrystalPulverizerRecipeBuilder implements RecipeBuilder
     // 自动成就解锁：如果没有手写 unlockedBy，则自动从输入推导
     private final List<ItemPredicate.Builder> autoUnlockPredicates = new ArrayList<>(1);
 
-    private CrystalPulverizerRecipeBuilder(ItemStack result, int time)
+    private CrystalPulverizerRecipeBuilder(ItemStack result, int energyCost)
     {
         this.result = result;
-        this.time = time;
+        this.energyCost = energyCost;
     }
 
-    public static CrystalPulverizerRecipeBuilder pulverizing(ItemStack result, int time)
+    public static CrystalPulverizerRecipeBuilder pulverizing(ItemStack result, int energyCost)
     {
-        return new CrystalPulverizerRecipeBuilder(result, time);
+        return new CrystalPulverizerRecipeBuilder(result, energyCost);
     }
 
-    public static CrystalPulverizerRecipeBuilder pulverizing(ItemLike result, int count, int time)
+    public static CrystalPulverizerRecipeBuilder pulverizing(ItemLike result, int count, int energyCost)
     {
-        return new CrystalPulverizerRecipeBuilder(new ItemStack(result, count), time);
+        return new CrystalPulverizerRecipeBuilder(new ItemStack(result, count), energyCost);
     }
 
     /**
@@ -105,7 +105,7 @@ public class CrystalPulverizerRecipeBuilder implements RecipeBuilder
         {
             throw new IllegalStateException("CrystalPulverizerRecipe requires exactly 1 valid input: " + id);
         }
-        if (this.time <= 0)
+        if (this.energyCost <= 0)
         {
             throw new IllegalStateException("CrystalPulverizerRecipe time must be positive: " + id);
         }
@@ -144,7 +144,7 @@ public class CrystalPulverizerRecipeBuilder implements RecipeBuilder
             }
         }
 
-        var recipe = new CrystalPulverizerRecipe(this.input, this.result, this.time);
+        var recipe = new CrystalPulverizerRecipe(this.input, this.result, this.energyCost);
         output.accept(id, recipe, adv.build(id.withPrefix("recipes/")));
     }
 

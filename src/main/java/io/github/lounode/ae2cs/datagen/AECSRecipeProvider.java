@@ -30,20 +30,20 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     protected void buildRecipes(@NotNull RecipeOutput recipeOutput)
     {
         // 这里是一个测试，用来测试电路蚀刻器的配方生成工作
-        CircuitEtcherRecipeBuilder.etching(AEItems.CALCULATION_PROCESSOR, 64, 300)
+        CircuitEtcherRecipeBuilder.etching(AEItems.CALCULATION_PROCESSOR, 64, 6400)
                 .require(Items.REDSTONE, 64)
                 .require(AEItems.SILICON, 64)
                 .require(AECSItems.pureCertusQuartzCrystal, 64)
                 .save(recipeOutput, AE2CrystalScience.makeId("circuit/calculation_processor"));
 
         // 晶能装配器测试配方
-        CrystalAggregatorRecipeBuilder.aggregating(AEItems.SINGULARITY, 64, 300)
+        CrystalAggregatorRecipeBuilder.aggregating(AEItems.SINGULARITY, 64, 6400)
                 .require(AEItems.MATTER_BALL, 64)
                 .require(AECSItems.pureCertusQuartzCrystal, 64)
                 .save(recipeOutput, AE2CrystalScience.makeId("aggregating/singularity"));
 
         // 用于测试晶能粉碎机的配方生成
-        CrystalPulverizerRecipeBuilder.pulverizing(AEItems.SILICON, 9, 300)
+        CrystalPulverizerRecipeBuilder.pulverizing(AEItems.SILICON, 9, 6400)
                 .require(Items.SAND, 1)
                 .save(recipeOutput, AE2CrystalScience.makeId("pulverizer/silicon"));
 
