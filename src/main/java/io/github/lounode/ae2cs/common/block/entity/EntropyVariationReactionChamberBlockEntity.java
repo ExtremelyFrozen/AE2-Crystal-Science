@@ -112,6 +112,8 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
                 }).build();
         ConfigInventory outputInv = ConfigInventory.storage(4)
                 .changeListener(this::setChanged).build();
+        inputInv.useRegisteredCapacities();
+        outputInv.useRegisteredCapacities();
 
         InventoryComponent inventoryComponent = new InventoryComponent();
         inventoryComponent.addPort(InvPort.INPUT, inputInv);
