@@ -1,12 +1,10 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
-import appeng.api.AECapabilities;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.grid.AENetworkedBlockEntity;
-import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.me.logic.QuartzOscillatorClockHost;
 import io.github.lounode.ae2cs.common.me.logic.QuartzOscillatorClockLogic;
@@ -16,7 +14,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import java.util.EnumSet;
 

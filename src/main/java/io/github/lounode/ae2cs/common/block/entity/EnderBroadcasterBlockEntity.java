@@ -1,6 +1,5 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
-import appeng.api.AECapabilities;
 import appeng.api.config.AccessRestriction;
 import appeng.api.networking.*;
 import appeng.api.networking.pathing.ChannelMode;
@@ -12,7 +11,6 @@ import appeng.util.SettingsFrom;
 import io.github.lounode.ae2cs.api.CustomChannelProviderHost;
 import io.github.lounode.ae2cs.api.linker.broadcast.*;
 import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
-import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
 import net.minecraft.core.BlockPos;
@@ -27,7 +25,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;

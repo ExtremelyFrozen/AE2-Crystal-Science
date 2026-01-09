@@ -20,8 +20,8 @@ import appeng.util.ConfigInventory;
 import io.github.lounode.ae2cs.api.settings.AECSSettings;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
-import io.github.lounode.ae2cs.common.machine.component.InvPort;
 import io.github.lounode.ae2cs.common.machine.component.GenericStackInvComponent;
+import io.github.lounode.ae2cs.common.machine.component.InvPort;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -390,7 +390,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
             Optional<RecipeHolder<?>> opt = level.getRecipeManager().byKey(activeRecipeId);
             opt.ifPresent(recipeHolder -> activeRecipe = (RecipeHolder<EntropyRecipe>) recipeHolder);
         }
-        if(level != null && !level.isClientSide())
+        if (level != null && !level.isClientSide())
         {
             updateActiveRecipe();
         }

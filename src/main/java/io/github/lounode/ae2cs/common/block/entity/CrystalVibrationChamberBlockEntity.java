@@ -1,6 +1,5 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
-import appeng.api.AECapabilities;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.stacks.GenericStack;
@@ -9,11 +8,14 @@ import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.AECableType;
 import appeng.blockentity.ServerTickingBlockEntity;
+import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.util.ConfigInventory;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.item.PureCrystalItem;
+import io.github.lounode.ae2cs.common.machine.component.GenericStackInvComponent;
+import io.github.lounode.ae2cs.common.machine.component.InvPort;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -21,15 +23,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import java.util.List;
 
 public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBlockEntity implements IUpgradeableObject,
         ServerTickingBlockEntity
 {
-    private final ConfigInventory inv;
-
     private final IUpgradeInventory upgrades;
 
     private int maxBurnTime = 0;
@@ -44,27 +43,19 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
 
         this.upgrades = UpgradeInventories.forMachine(AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK, 3, this::saveChanges);
 
-        inv = ConfigInventory.storage(1)
+        ConfigInventory inv = ConfigInventory.storage(1)
                 .slotFilter(input -> input.getPrimaryKey() instanceof PureCrystalItem)
                 .changeListener(this::saveChanges)
                 .build();
+
+        GenericStackInvComponent component = new GenericStackInvComponent();
+        component.addPort(InvPort.WORK, inv);
+        getMachineComponents().add(component);
     }
 
-    /**
-     * 注册AE节点和能量能力
-     */
-    public static void onRegisterCaps(RegisterCapabilitiesEvent event)
+    public GenericStackInv getInv()
     {
-        event.registerBlockEntity(
-                AECapabilities.GENERIC_INTERNAL_INV,
-                AECSBlockEntities.CRYSTAL_VIBRATION_CHAMBER_BLOCK_ENTITY.get(),
-                (be, direction) -> be.inv
-        );
-    }
-
-    public ConfigInventory getInv()
-    {
-        return inv;
+        return getMachineComponents().getService(GenericStackInvComponent.class).port(InvPort.WORK);
     }
 
     public int getMaxBurnTime()
@@ -103,7 +94,6 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
     {
         super.saveAdditional(data, registries);
         this.upgrades.writeToNBT(data, "upgrades", registries);
-        this.inv.writeToChildTag(data, "inv", registries);
         data.putInt("max_burn_time", this.maxBurnTime);
         data.putInt("burn_time", this.remainingBurnTime);
         data.putDouble("energy_per_tick", this.energyPerTick);
@@ -114,7 +104,6 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
     {
         super.loadTag(data, registries);
         this.upgrades.readFromNBT(data, "upgrades", registries);
-        this.inv.readFromChildTag(data, "inv", registries);
         this.maxBurnTime = data.getInt("max_burn_time");
         this.remainingBurnTime = data.getInt("burn_time");
         this.energyPerTick = data.getDouble("energy_per_tick");
@@ -129,12 +118,6 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
         {
             drops.add(upgrade);
         }
-
-        for (GenericStack stack : this.inv.toList())
-        {
-            if (stack == null) continue;
-            stack.what().addDrops(stack.amount(), drops, getLevel(), getBlockPos());
-        }
     }
 
     @Override
@@ -142,7 +125,6 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
     {
         super.clearContent();
         upgrades.clear();
-        inv.clear();
     }
 
     @Override
@@ -166,12 +148,12 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
         // 查看当前槽位的物品，如果为合适物品就消耗掉1个，填充燃烧数据（如果正在燃烧则跳过此步）
         if (remainingBurnTime <= 0)
         {
-            GenericStack fuel = inv.getStack(0);
+            GenericStack fuel = getInv().getStack(0);
             if (fuel != null
                     && fuel.what().getPrimaryKey() instanceof PureCrystalItem pureCrystalItem
                     && fuel.amount() > 0)
             {
-                long extracted = inv.extract(0, fuel.what(), 1, Actionable.MODULATE);
+                long extracted = getInv().extract(0, fuel.what(), 1, Actionable.MODULATE);
                 if (extracted > 0)
                 {
                     this.remainingBurnTime = pureCrystalItem.getBurnTime();

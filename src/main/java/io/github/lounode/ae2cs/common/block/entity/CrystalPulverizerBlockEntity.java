@@ -1,21 +1,18 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
-import appeng.api.AECapabilities;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
-import appeng.api.inventories.InternalInventory;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.core.definitions.AEItems;
 import appeng.util.inv.AppEngInternalInventory;
-import appeng.util.inv.CombinedInternalInventory;
-import appeng.util.inv.FilteredInternalInventory;
-import appeng.util.inv.filter.IAEItemFilter;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSRecipeTypes;
+import io.github.lounode.ae2cs.common.machine.component.AppEngInvComponent;
+import io.github.lounode.ae2cs.common.machine.component.InvPort;
 import io.github.lounode.ae2cs.common.recipe.crystal_pulverizer.CrystalPulverizerRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -26,8 +23,6 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,62 +37,6 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
      * 目前最大四张加速卡，则最大速率为16倍，同时最大每tick消耗也为16倍，即3200AE每tick
      */
     private static final double BASIC_ENERGY_COST_PER_TICK = 200;
-
-    /**
-     * 输入仓
-     */
-    private final AppEngInternalInventory inputInv = new AppEngInternalInventory(1)
-    {
-        @Override
-        protected void onContentsChanged(int slot)
-        {
-            super.onContentsChanged(slot);
-            needRefreshRecipeState = true;
-            setChanged();
-        }
-    };
-
-    /**
-     * 输出仓
-     */
-    private final AppEngInternalInventory outputInv = new AppEngInternalInventory(4)
-    {
-        @Override
-        protected void onContentsChanged(int slot)
-        {
-            super.onContentsChanged(slot);
-            setChanged();
-        }
-    };
-
-    /**
-     * 能力暴露-输入
-     */
-    FilteredInternalInventory filteredInputInv = new FilteredInternalInventory(inputInv, new IAEItemFilter()
-    {
-        @Override
-        public boolean allowExtract(InternalInventory inv, int slot, int amount)
-        {
-            return false;
-        }
-    });
-
-    /**
-     * 能力暴露-输出
-     */
-    FilteredInternalInventory filteredOutputInv = new FilteredInternalInventory(outputInv, new IAEItemFilter()
-    {
-        @Override
-        public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack)
-        {
-            return false;
-        }
-    });
-
-    /**
-     * 能力暴露-结合库存
-     */
-    CombinedInternalInventory combinedInv = new CombinedInternalInventory(filteredInputInv, filteredOutputInv);
 
     /**
      * 升级仓
@@ -138,28 +77,42 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
                 80000, false, AccessRestriction.WRITE);
 
         getMainNode().setIdlePowerUsage(0);
-    }
 
-    /**
-     * 注册AE节点和能量能力
-     */
-    public static void onRegisterCaps(RegisterCapabilitiesEvent event)
-    {
-        event.registerBlockEntity(
-                Capabilities.ItemHandler.BLOCK,
-                AECSBlockEntities.CRYSTAL_PULVERIZER_BLOCK_ENTITY.get(),
-                (be, direction) -> be.combinedInv.toItemHandler()
-        );
+        AppEngInternalInventory inputInv = new AppEngInternalInventory(1)
+        {
+            @Override
+            protected void onContentsChanged(int slot)
+            {
+                super.onContentsChanged(slot);
+                needRefreshRecipeState = true;
+                setChanged();
+            }
+        };
+        AppEngInternalInventory outputInv = new AppEngInternalInventory(4)
+        {
+            @Override
+            protected void onContentsChanged(int slot)
+            {
+                super.onContentsChanged(slot);
+                setChanged();
+            }
+        };
+
+        AppEngInvComponent invComponent = new AppEngInvComponent();
+        invComponent.addPort(InvPort.INPUT, inputInv);
+        invComponent.addPort(InvPort.WORK, inputInv);
+        invComponent.addPort(InvPort.OUTPUT, outputInv);
+        getMachineComponents().add(invComponent);
     }
 
     public AppEngInternalInventory getInputInv()
     {
-        return inputInv;
+        return getMachineComponents().getService(AppEngInvComponent.class).port(InvPort.INPUT);
     }
 
     public AppEngInternalInventory getOutputInv()
     {
-        return outputInv;
+        return getMachineComponents().getService(AppEngInvComponent.class).port(InvPort.OUTPUT);
     }
 
     public int getRecipeProgress()
@@ -227,7 +180,7 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
         // 3) 已经完成：消耗资源并产出
         if (recipeProgress >= activeRecipeEnergyCost)
         {
-            SingleRecipeInput input = new SingleRecipeInput(inputInv.getStackInSlot(0));
+            SingleRecipeInput input = new SingleRecipeInput(getInputInv().getStackInSlot(0));
             ItemStack result = recipe.assemble(input, level.registryAccess());
             if (result.isEmpty()) // 如果我们拿不到输出，说明配方可能有问题，此时清空状态
             {
@@ -238,7 +191,7 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
             }
 
             // 如果输出放不下，则将recipeProgress钳制在最大配方时间
-            if (!outputInv.addItems(result, true).isEmpty())
+            if (!getOutputInv().addItems(result, true).isEmpty())
             {
                 recipeProgress = activeRecipeEnergyCost;
                 return;
@@ -253,7 +206,7 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
                 return;
             }
 
-            outputInv.addItems(result, false);
+            getOutputInv().addItems(result, false);
             recipeProgress = 0;
             setChanged();
         }
@@ -279,7 +232,7 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
         if (getLevel() == null || getLevel().isClientSide()) return;
 
         var level = getLevel();
-        var input = new SingleRecipeInput(inputInv.getStackInSlot(0));
+        var input = new SingleRecipeInput(getInputInv().getStackInSlot(0));
 
         var opt = level.getRecipeManager().getRecipeFor(
                 AECSRecipeTypes.CRYSTAL_PULVERIZER.get(),
@@ -331,11 +284,11 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
 
         int amount = required.count();
         // 先进行模拟抽取
-        ItemStack extracted = inputInv.extractItem(0, amount, true);
+        ItemStack extracted = getInputInv().extractItem(0, amount, true);
         if (extracted.isEmpty() || !required.test(extracted)) return false;
 
         // 执行扣除
-        inputInv.extractItem(0, amount, false);
+        getInputInv().extractItem(0, amount, false);
         return true;
     }
 
@@ -343,8 +296,6 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
     public void saveAdditional(CompoundTag data, HolderLookup.Provider registries)
     {
         super.saveAdditional(data, registries);
-        inputInv.writeToNBT(data, "input_inv", registries);
-        outputInv.writeToNBT(data, "output_inv", registries);
         upgrades.writeToNBT(data, "upgrades", registries);
         data.putInt("recipe_progress", recipeProgress);
         if (activeRecipe != null)
@@ -357,8 +308,6 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
     public void loadTag(CompoundTag data, HolderLookup.Provider registries)
     {
         super.loadTag(data, registries);
-        inputInv.readFromNBT(data, "input_inv", registries);
-        outputInv.readFromNBT(data, "output_inv", registries);
         upgrades.readFromNBT(data, "upgrades", registries);
         recipeProgress = data.getInt("recipe_progress");
         if (data.contains("active_recipe_id"))
@@ -383,14 +332,6 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
     public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops)
     {
         super.addAdditionalDrops(level, pos, drops);
-        for (ItemStack stack : inputInv)
-        {
-            drops.add(stack);
-        }
-        for (ItemStack stack : outputInv)
-        {
-            drops.add(stack);
-        }
         for (ItemStack stack : upgrades)
         {
             drops.add(stack);
@@ -401,8 +342,6 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
     public void clearContent()
     {
         super.clearContent();
-        inputInv.clear();
-        outputInv.clear();
         upgrades.clear();
     }
 }

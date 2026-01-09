@@ -7,11 +7,12 @@ import appeng.api.implementations.blockentities.ICrankable;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.util.inv.AppEngInternalInventory;
-import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSRecipeTypes;
+import io.github.lounode.ae2cs.common.machine.component.AppEngInvComponent;
+import io.github.lounode.ae2cs.common.machine.component.InvPort;
 import io.github.lounode.ae2cs.common.recipe.crystal_pulverizer.CrystalPulverizerRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -23,12 +24,10 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Optional;
 
 public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEntity implements ICrankable,
@@ -38,87 +37,6 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
      * 基础能量消耗，每tick 200AE，即能量消耗和速率上限均更低的晶能粉碎机
      */
     private static final double BASIC_ENERGY_COST_PER_TICK = 200;
-
-    /**
-     * 输入仓
-     */
-    private final AppEngInternalInventory inputInv = new AppEngInternalInventory(3)
-    {
-        @Override
-        protected void onContentsChanged(int slot)
-        {
-            super.onContentsChanged(slot);
-            setChanged();
-        }
-    };
-
-    /**
-     * 工作仓
-     */
-    private final AppEngInternalInventory workingInv = new AppEngInternalInventory(1)
-    {
-        @Override
-        protected void onContentsChanged(int slot)
-        {
-            super.onContentsChanged(slot);
-            needRefreshRecipeState = true;
-            setChanged();
-        }
-    };
-
-    /**
-     * 输出仓
-     */
-    private final AppEngInternalInventory outputInv = new AppEngInternalInventory(3)
-    {
-        @Override
-        protected void onContentsChanged(int slot)
-        {
-            super.onContentsChanged(slot);
-            setChanged();
-        }
-    };
-
-    /**
-     * 能力暴露-输入
-     */
-    FilteredInternalInventory filteredInputInv = new FilteredInternalInventory(inputInv, new IAEItemFilter()
-    {
-        @Override
-        public boolean allowExtract(InternalInventory inv, int slot, int amount)
-        {
-            return false;
-        }
-    });
-
-    /**
-     * 能力暴露-工作
-     */
-    FilteredInternalInventory filteredWorkingInv = new FilteredInternalInventory(workingInv, new IAEItemFilter()
-    {
-        @Override
-        public boolean allowExtract(InternalInventory inv, int slot, int amount)
-        {
-            return false;
-        }
-    });
-
-    /**
-     * 能力暴露-输出
-     */
-    FilteredInternalInventory filteredOutputInv = new FilteredInternalInventory(outputInv, new IAEItemFilter()
-    {
-        @Override
-        public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack)
-        {
-            return false;
-        }
-    });
-
-    /**
-     * 能力暴露-结合库存
-     */
-    CombinedInternalInventory combinedInv = new CombinedInternalInventory(filteredInputInv, filteredWorkingInv, filteredOutputInv);
 
     /**
      * 当前执行的配方
@@ -154,6 +72,37 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
 
         getMainNode().setIdlePowerUsage(0);
 
+        AppEngInternalInventory inputInv = new AppEngInternalInventory(3)
+        {
+            @Override
+            protected void onContentsChanged(int slot)
+            {
+                super.onContentsChanged(slot);
+                setChanged();
+            }
+        };
+
+        AppEngInternalInventory workingInv = new AppEngInternalInventory(1)
+        {
+            @Override
+            protected void onContentsChanged(int slot)
+            {
+                super.onContentsChanged(slot);
+                needRefreshRecipeState = true;
+                setChanged();
+            }
+        };
+
+        AppEngInternalInventory outputInv = new AppEngInternalInventory(3)
+        {
+            @Override
+            protected void onContentsChanged(int slot)
+            {
+                super.onContentsChanged(slot);
+                setChanged();
+            }
+        };
+
         // 工作仓只能由可以运行配方的物品进入
         workingInv.setFilter(new IAEItemFilter()
         {
@@ -175,6 +124,21 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
                 return IAEItemFilter.super.allowInsert(inv, slot, stack) && canInsert;
             }
         });
+        FilteredInternalInventory filteredWorkingInv = new FilteredInternalInventory(workingInv, new IAEItemFilter()
+        {
+            @Override
+            public boolean allowExtract(InternalInventory inv, int slot, int amount)
+            {
+                return false;
+            }
+        });
+
+        AppEngInvComponent invComponent = new AppEngInvComponent();
+        invComponent.addPort(InvPort.INPUT, inputInv);
+        invComponent.addPort(InvPort.WORK, workingInv);
+        invComponent.addPort(InvPort.OUTPUT, outputInv);
+        getMachineComponents().add(invComponent);
+        invComponent.setWrap(InvPort.WORK, filteredWorkingInv);
     }
 
     /**
@@ -182,11 +146,6 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
      */
     public static void onRegisterCaps(RegisterCapabilitiesEvent event)
     {
-        event.registerBlockEntity(
-                Capabilities.ItemHandler.BLOCK,
-                AECSBlockEntities.QUARTZ_GRINDSTONE_BLOCK_ENTITY.get(),
-                (be, direction) -> be.combinedInv.toItemHandler()
-        );
         event.registerBlockEntity(
                 AECapabilities.CRANKABLE,
                 AECSBlockEntities.QUARTZ_GRINDSTONE_BLOCK_ENTITY.get(),
@@ -199,17 +158,17 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
 
     public AppEngInternalInventory getInputInv()
     {
-        return inputInv;
+        return getMachineComponents().getService(AppEngInvComponent.class).port(InvPort.INPUT);
     }
 
     public AppEngInternalInventory getWorkingInv()
     {
-        return workingInv;
+        return getMachineComponents().getService(AppEngInvComponent.class).port(InvPort.WORK);
     }
 
     public AppEngInternalInventory getOutputInv()
     {
-        return outputInv;
+        return getMachineComponents().getService(AppEngInvComponent.class).port(InvPort.OUTPUT);
     }
 
     public int getRecipeProgress()
@@ -262,7 +221,7 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
         // 3) 已经完成：消耗资源并产出
         if (recipeProgress >= activeRecipeEnergyCost)
         {
-            SingleRecipeInput input = new SingleRecipeInput(workingInv.getStackInSlot(0));
+            SingleRecipeInput input = new SingleRecipeInput(getWorkingInv().getStackInSlot(0));
             ItemStack result = recipe.assemble(input, level.registryAccess());
             if (result.isEmpty()) // 如果我们拿不到输出，说明配方可能有问题，此时清空状态
             {
@@ -273,7 +232,7 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
             }
 
             // 如果输出放不下，则将recipeProgress钳制在最大配方时间
-            if (!outputInv.addItems(result, true).isEmpty())
+            if (!getOutputInv().addItems(result, true).isEmpty())
             {
                 recipeProgress = activeRecipeEnergyCost;
                 return;
@@ -288,7 +247,7 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
                 return;
             }
 
-            outputInv.addItems(result, false);
+            getOutputInv().addItems(result, false);
             recipeProgress = 0;
             setChanged();
         }
@@ -313,7 +272,7 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
         if (getLevel() == null || getLevel().isClientSide()) return;
 
         var level = getLevel();
-        var input = new SingleRecipeInput(workingInv.getStackInSlot(0));
+        var input = new SingleRecipeInput(getWorkingInv().getStackInSlot(0));
 
         var opt = level.getRecipeManager().getRecipeFor(
                 AECSRecipeTypes.CRYSTAL_PULVERIZER.get(),
@@ -365,25 +324,25 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
 
         int amount = required.count();
         // 先进行模拟抽取
-        ItemStack extracted = workingInv.extractItem(0, amount, true);
+        ItemStack extracted = getWorkingInv().extractItem(0, amount, true);
         if (extracted.isEmpty() || !required.test(extracted)) return false;
 
         // 执行扣除
-        workingInv.extractItem(0, amount, false);
+        getWorkingInv().extractItem(0, amount, false);
         return true;
     }
 
     private void pushRawsIntoWork()
     {
-        for (int i = 0; i < inputInv.size() && workingInv.isEmpty(); i++)
+        for (int i = 0; i < getInputInv().size() && getWorkingInv().isEmpty(); i++)
         {
-            ItemStack stack = inputInv.extractItem(i, 99, false);
+            ItemStack stack = getInputInv().extractItem(i, 99, false);
             if (stack.isEmpty()) continue;
 
-            ItemStack remaining = workingInv.insertItem(0, stack, false);
+            ItemStack remaining = getWorkingInv().insertItem(0, stack, false);
             if (!remaining.isEmpty())
             {
-                inputInv.insertItem(i, remaining, false);
+                getInputInv().insertItem(i, remaining, false);
             }
         }
     }
@@ -392,9 +351,6 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
     public void saveAdditional(CompoundTag data, HolderLookup.Provider registries)
     {
         super.saveAdditional(data, registries);
-        inputInv.writeToNBT(data, "input_inv", registries);
-        workingInv.writeToNBT(data, "working_inv", registries);
-        outputInv.writeToNBT(data, "output_inv", registries);
         data.putInt("recipe_progress", recipeProgress);
         if (activeRecipe != null)
         {
@@ -407,9 +363,6 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
     public void loadTag(CompoundTag data, HolderLookup.Provider registries)
     {
         super.loadTag(data, registries);
-        inputInv.readFromNBT(data, "input_inv", registries);
-        workingInv.readFromNBT(data, "working_inv", registries);
-        outputInv.readFromNBT(data, "output_inv", registries);
         recipeProgress = data.getInt("recipe_progress");
         if (data.contains("active_recipe_id"))
         {
@@ -427,33 +380,6 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
             opt.ifPresent(recipeHolder -> activeRecipe = (RecipeHolder<CrystalPulverizerRecipe>) recipeHolder);
         }
         updateActiveRecipe();
-    }
-
-    @Override
-    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops)
-    {
-        super.addAdditionalDrops(level, pos, drops);
-        for (ItemStack stack : inputInv)
-        {
-            drops.add(stack);
-        }
-        for (ItemStack stack : outputInv)
-        {
-            drops.add(stack);
-        }
-        for (ItemStack stack : workingInv)
-        {
-            drops.add(stack);
-        }
-    }
-
-    @Override
-    public void clearContent()
-    {
-        super.clearContent();
-        inputInv.clear();
-        outputInv.clear();
-        workingInv.clear();
     }
 
     @Override
