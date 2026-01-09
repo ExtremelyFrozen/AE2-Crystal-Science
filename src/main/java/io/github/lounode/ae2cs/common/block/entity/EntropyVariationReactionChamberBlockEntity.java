@@ -58,7 +58,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
      */
     private static final double BASIC_ENERGY_COST_PER_TICK = 200;
 
-    private static final int RECIPE_DEFAULT_COST_TIME = 300;
+    private static final int RECIPE_DEFAULT_COST_ENERGY = 1600;
 
     /**
      * 输入仓
@@ -106,12 +106,12 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
     private ResourceLocation activeRecipeId;
 
     /**
-     * 该配方需要的总时间（tick）
+     * 该配方需要的总能量
      */
-    private int activeRecipeTime = 0;
+    private int activeRecipeEnergyCost = 0;
 
     /**
-     * 当前配方运行时间
+     * 当前配方进度
      */
     private int recipeProgress = 0;
 
@@ -201,9 +201,9 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
         return recipeProgress;
     }
 
-    public int getActiveRecipeTime()
+    public int getActiveRecipeEnergyCost()
     {
-        return activeRecipeTime;
+        return activeRecipeEnergyCost;
     }
 
     public EntropyMode getEntropyMode()
@@ -276,27 +276,26 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
         EntropyRecipe recipe = activeRecipe.value();
 
         // 2) 若未完成：推进进度 + 扣能量
-        if (recipeProgress < activeRecipeTime)
+        if (recipeProgress < activeRecipeEnergyCost)
         {
-            int speed = getSpeedMultiplier();
+            if (getAECurrentPower() <= 0) return;
+
             double neededEnergy = getEnergyPerTick();
-
-            if (getAECurrentPower() < neededEnergy) return;
-            extractAEPower(neededEnergy, Actionable.MODULATE);
-
-            recipeProgress = Math.min(activeRecipeTime, recipeProgress + speed);
+            neededEnergy = Math.min(neededEnergy, activeRecipeEnergyCost - recipeProgress);
+            double actualCost = extractAEPower(neededEnergy, Actionable.MODULATE);
+            recipeProgress = Math.min(recipeProgress + (int) actualCost, activeRecipeEnergyCost);
             setChanged();
         }
 
         // 3) 已经完成：消耗资源并产出
-        if (recipeProgress >= activeRecipeTime)
+        if (recipeProgress >= activeRecipeEnergyCost)
         {
             List<GenericStack> result = getRecipeOutput(recipe);
             if (result.isEmpty()) // 如果我们拿不到输出，说明配方可能有问题，此时清空状态
             {
                 recipeProgress = 0;
                 activeRecipe = null;
-                activeRecipeTime = 0;
+                activeRecipeEnergyCost = 0;
                 return;
             }
 
@@ -307,7 +306,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
                 // TODO 但是，所有AE原版的熵变配方都是单输出，因此，目前只用这种模拟方式
                 if (outputInv.insert(stack.what(), stack.amount(), Actionable.SIMULATE, actionSource) < stack.amount())
                 {
-                    recipeProgress = activeRecipeTime;
+                    recipeProgress = activeRecipeEnergyCost;
                     return;
                 }
             }
@@ -317,7 +316,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
                 // 输入不够：清缓存和状态，等待刷新
                 recipeProgress = 0;
                 activeRecipe = null;
-                activeRecipeTime = 0;
+                activeRecipeEnergyCost = 0;
                 return;
             }
 
@@ -368,7 +367,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
         {
             // 没有配方，清空进度
             activeRecipe = null;
-            activeRecipeTime = 0;
+            activeRecipeEnergyCost = 0;
             recipeProgress = 0;
             return;
         }
@@ -376,13 +375,13 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
         // 配方未变：保持进度，仅刷新 match/time
         if (activeRecipe != null && activeRecipe.id().equals(holder.id()))
         {
-            activeRecipeTime = RECIPE_DEFAULT_COST_TIME;
+            activeRecipeEnergyCost = RECIPE_DEFAULT_COST_ENERGY;
             return;
         }
 
         // 配方变了：切换配方，重置进度
         activeRecipe = holder;
-        activeRecipeTime = RECIPE_DEFAULT_COST_TIME;
+        activeRecipeEnergyCost = RECIPE_DEFAULT_COST_ENERGY;
         recipeProgress = 0;
     }
 

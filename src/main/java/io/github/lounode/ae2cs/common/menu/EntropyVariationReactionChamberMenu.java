@@ -71,7 +71,7 @@ public class EntropyVariationReactionChamberMenu extends UpgradeableMenu<Entropy
     @Override
     public void broadcastChanges()
     {
-        recipeNeedTicks = getHost().getActiveRecipeTime();
+        recipeNeedTicks = getHost().getActiveRecipeEnergyCost();
         recipeProgress = getHost().getRecipeProgress();
         maxEnergy = getHost().getAEMaxPower();
         currentEnergy = getHost().getAECurrentPower();
