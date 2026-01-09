@@ -6,6 +6,7 @@ import appeng.api.parts.RegisterPartCapabilitiesEvent;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.block.entity.*;
 import io.github.lounode.ae2cs.common.machine.IMachineHost;
+import io.github.lounode.ae2cs.common.machine.component.AppEngInvComponent;
 import io.github.lounode.ae2cs.common.machine.component.EnergyComponent;
 import io.github.lounode.ae2cs.common.machine.component.GenericStackInvComponent;
 import io.github.lounode.ae2cs.common.me.part.*;
@@ -48,6 +49,20 @@ public class AECSCapabilities
                         if (be instanceof IMachineHost host && host.getMachineComponents().hasService(EnergyComponent.class))
                         {
                             return host.getMachineComponents().getService(EnergyComponent.class).getForgeEnergyAdapter();
+                        }
+                        return null;
+                    }
+            );
+        }
+        for (BlockEntityType<?> beType : AECSBlockEntities.getImplementorsOf(IMachineHost.class))
+        {
+            event.registerBlockEntity(
+                    Capabilities.ItemHandler.BLOCK,
+                    beType,
+                    (be, direction) -> {
+                        if (be instanceof IMachineHost host && host.getMachineComponents().hasService(AppEngInvComponent.class))
+                        {
+                            return host.getMachineComponents().getService(AppEngInvComponent.class).combined().toItemHandler();
                         }
                         return null;
                     }
