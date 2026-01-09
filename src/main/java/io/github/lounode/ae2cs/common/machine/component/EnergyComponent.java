@@ -30,6 +30,8 @@ public class EnergyComponent extends NetworkMachineComponent implements IAEPower
         this.storedEnergy = new StoredEnergyAmount(0, maxEnergy, type -> markChanged());
         this.isAEPublicPowerStorage = isAEPublicPowerStorage;
         this.accessRestriction = accessRestriction;
+
+        getMainNode().addService(IAEPowerStorage.class, this);
     }
 
     @Override
@@ -93,6 +95,7 @@ public class EnergyComponent extends NetworkMachineComponent implements IAEPower
     @Override
     public final double injectAEPower(double amt, Actionable mode)
     {
+        markChanged();
         return amt - storedEnergy.insert(amt, mode == Actionable.MODULATE);
     }
 
@@ -128,6 +131,7 @@ public class EnergyComponent extends NetworkMachineComponent implements IAEPower
 
     public double extractAEPower(double amt, Actionable mode)
     {
+        markChanged();
         return this.storedEnergy.extract(amt, mode == Actionable.MODULATE);
     }
 
