@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public final class InventoryComponent extends BaseMachineComponent
+public final class GenericStackInvComponent extends BaseMachineComponent
 {
     /**
      * 原始仓库
@@ -35,7 +35,7 @@ public final class InventoryComponent extends BaseMachineComponent
     /**
      * 输入之前必须把change给Inv准备好
      */
-    public InventoryComponent addPort(InvPort port, GenericStackInv inv)
+    public GenericStackInvComponent addPort(InvPort port, GenericStackInv inv)
     {
         ports.put(port, inv);
         return this;
@@ -94,7 +94,7 @@ public final class InventoryComponent extends BaseMachineComponent
         }
         combined = new CombinedGenericInternalInventory(list.toArray(GenericStackInvWrapper[]::new));
 
-        container.exposeService(InventoryComponent.class, this);
+        container.exposeService(GenericStackInvComponent.class, this);
         container.exposeService(CombinedGenericInternalInventory.class, combined);
     }
 

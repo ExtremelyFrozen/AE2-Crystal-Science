@@ -21,7 +21,7 @@ import io.github.lounode.ae2cs.api.settings.AECSSettings;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.machine.component.InvPort;
-import io.github.lounode.ae2cs.common.machine.component.InventoryComponent;
+import io.github.lounode.ae2cs.common.machine.component.GenericStackInvComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -115,21 +115,21 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
         inputInv.useRegisteredCapacities();
         outputInv.useRegisteredCapacities();
 
-        InventoryComponent inventoryComponent = new InventoryComponent();
-        inventoryComponent.addPort(InvPort.INPUT, inputInv);
-        inventoryComponent.addPort(InvPort.WORK, inputInv);
-        inventoryComponent.addPort(InvPort.OUTPUT, outputInv);
-        getMachineComponents().add(inventoryComponent);
+        GenericStackInvComponent genericStackInvComponent = new GenericStackInvComponent();
+        genericStackInvComponent.addPort(InvPort.INPUT, inputInv);
+        genericStackInvComponent.addPort(InvPort.WORK, inputInv);
+        genericStackInvComponent.addPort(InvPort.OUTPUT, outputInv);
+        getMachineComponents().add(genericStackInvComponent);
     }
 
     public GenericStackInv getInputInv()
     {
-        return getMachineComponents().getService(InventoryComponent.class).port(InvPort.INPUT);
+        return getMachineComponents().getService(GenericStackInvComponent.class).port(InvPort.INPUT);
     }
 
     public GenericStackInv getOutputInv()
     {
-        return getMachineComponents().getService(InventoryComponent.class).port(InvPort.OUTPUT);
+        return getMachineComponents().getService(GenericStackInvComponent.class).port(InvPort.OUTPUT);
     }
 
     public int getRecipeProgress()

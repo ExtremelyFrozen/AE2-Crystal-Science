@@ -7,7 +7,7 @@ import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.block.entity.*;
 import io.github.lounode.ae2cs.common.machine.IMachineHost;
 import io.github.lounode.ae2cs.common.machine.component.EnergyComponent;
-import io.github.lounode.ae2cs.common.machine.component.InventoryComponent;
+import io.github.lounode.ae2cs.common.machine.component.GenericStackInvComponent;
 import io.github.lounode.ae2cs.common.me.part.*;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -64,9 +64,9 @@ public class AECSCapabilities
                     AECapabilities.GENERIC_INTERNAL_INV,
                     beType,
                     (be, direction) -> {
-                        if (be instanceof IMachineHost host && host.getMachineComponents().hasService(InventoryComponent.class))
+                        if (be instanceof IMachineHost host && host.getMachineComponents().hasService(GenericStackInvComponent.class))
                         {
-                            return host.getMachineComponents().getService(InventoryComponent.class).combined();
+                            return host.getMachineComponents().getService(GenericStackInvComponent.class).combined();
                         }
                         return null;
                     }
