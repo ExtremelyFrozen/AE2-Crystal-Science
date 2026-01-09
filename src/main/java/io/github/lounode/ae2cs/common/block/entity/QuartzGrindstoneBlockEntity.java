@@ -1,6 +1,5 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
-import appeng.api.AECapabilities;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.implementations.blockentities.ICrankable;
@@ -15,7 +14,6 @@ import io.github.lounode.ae2cs.common.machine.component.AppEngInvComponent;
 import io.github.lounode.ae2cs.common.machine.component.InvPort;
 import io.github.lounode.ae2cs.common.recipe.crystal_pulverizer.CrystalPulverizerRecipe;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -24,7 +22,6 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jetbrains.annotations.Nullable;
 
@@ -139,21 +136,6 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
         invComponent.addPort(InvPort.OUTPUT, outputInv);
         getMachineComponents().add(invComponent);
         invComponent.setWrap(InvPort.WORK, filteredWorkingInv);
-    }
-
-    /**
-     * 注册AE节点和能量能力
-     */
-    public static void onRegisterCaps(RegisterCapabilitiesEvent event)
-    {
-        event.registerBlockEntity(
-                AECapabilities.CRANKABLE,
-                AECSBlockEntities.QUARTZ_GRINDSTONE_BLOCK_ENTITY.get(),
-                (be, direction) -> {
-                    if (direction == Direction.UP) return be;
-                    else return null;
-                }
-        );
     }
 
     public AppEngInternalInventory getInputInv()

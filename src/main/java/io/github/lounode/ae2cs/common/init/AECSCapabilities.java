@@ -9,6 +9,7 @@ import io.github.lounode.ae2cs.common.machine.IMachineHost;
 import io.github.lounode.ae2cs.common.machine.component.EnergyComponent;
 import io.github.lounode.ae2cs.common.machine.component.GenericStackInvComponent;
 import io.github.lounode.ae2cs.common.me.part.*;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -21,15 +22,10 @@ public class AECSCapabilities
     @SubscribeEvent
     public static void onRegisterCaps(RegisterCapabilitiesEvent event)
     {
-        CrystalGrowthChamberBlockEntity.onRegisterCaps(event);
         IntegratedInterfaceBlockEntity.onRegisterCaps(event);
-        CrystalVibrationChamberBlockEntity.onRegisterCaps(event);
-        CircuitEtcherBlockEntity.onRegisterCaps(event);
-        CrystalPulverizerBlockEntity.onRegisterCaps(event);
         QuartzGrindstoneBlockEntity.onRegisterCaps(event);
         MeteoritePatternProviderBlockEntity.onRegisterCaps(event);
         SimplePatternProviderBlockEntity.onRegisterCaps(event);
-        CrystalAggregatorBlockEntity.onRegisterCaps(event);
         EnderInterfaceBlockEntity.onRegisterCaps(event);
         ResonatingPatternProviderBlockEntity.onRegisterCaps(event);
 
@@ -73,6 +69,14 @@ public class AECSCapabilities
             );
         }
 
+        event.registerBlockEntity(
+                AECapabilities.CRANKABLE,
+                AECSBlockEntities.QUARTZ_GRINDSTONE_BLOCK_ENTITY.get(),
+                (be, direction) -> {
+                    if (direction == Direction.UP) return be;
+                    else return null;
+                }
+        );
     }
 
     @SubscribeEvent
