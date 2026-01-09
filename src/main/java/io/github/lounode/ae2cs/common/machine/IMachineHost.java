@@ -23,6 +23,8 @@ public interface IMachineHost
 
     void markForClientUpdate();
 
+    void invalidCap();
+
     void updateBlockState(BlockState newState, int flags);
 
     default <T extends Comparable<T>> void updateProperty(Property<T> prop, T value, int flags)

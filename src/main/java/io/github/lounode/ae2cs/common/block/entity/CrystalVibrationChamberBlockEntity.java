@@ -1,5 +1,6 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
+import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.stacks.GenericStack;
@@ -10,6 +11,7 @@ import appeng.api.util.AECableType;
 import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.util.ConfigInventory;
+import io.github.lounode.ae2cs.api.cap.ProvideCaps;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
@@ -26,6 +28,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
 
+@ProvideCaps(GenericInternalInventory.class)
 public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBlockEntity implements IUpgradeableObject,
         ServerTickingBlockEntity
 {

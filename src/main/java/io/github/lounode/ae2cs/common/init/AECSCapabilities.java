@@ -1,6 +1,8 @@
 package io.github.lounode.ae2cs.common.init;
 
 import appeng.api.AECapabilities;
+import appeng.api.behaviors.GenericInternalInventory;
+import appeng.api.inventories.BaseInternalInventory;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.parts.RegisterPartCapabilitiesEvent;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
@@ -9,6 +11,7 @@ import io.github.lounode.ae2cs.common.machine.IMachineHost;
 import io.github.lounode.ae2cs.common.machine.component.AppEngInvComponent;
 import io.github.lounode.ae2cs.common.machine.component.EnergyComponent;
 import io.github.lounode.ae2cs.common.machine.component.GenericStackInvComponent;
+import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
 import io.github.lounode.ae2cs.common.me.part.*;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -16,6 +19,8 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.items.IItemHandler;
 
 @EventBusSubscriber(modid = AECSConstants.MODID)
 public class AECSCapabilities
@@ -29,7 +34,7 @@ public class AECSCapabilities
         EnderInterfaceBlockEntity.onRegisterCaps(event);
         ResonatingPatternProviderBlockEntity.onRegisterCaps(event);
 
-        for (BlockEntityType<?> beType : AECSBlockEntities.getImplementorsOf(IInWorldGridNodeHost.class))
+        for (BlockEntityType<?> beType : AECSBlockEntities.getAnnotatedWith(IInWorldGridNodeHost.class))
         {
             event.registerBlockEntity(
                     AECapabilities.IN_WORLD_GRID_NODE_HOST,
@@ -40,7 +45,7 @@ public class AECSCapabilities
                     }
             );
         }
-        for (BlockEntityType<?> beType : AECSBlockEntities.getImplementorsOf(IMachineHost.class))
+        for (BlockEntityType<?> beType : AECSBlockEntities.getAnnotatedWith(IEnergyStorage.class))
         {
             event.registerBlockEntity(
                     Capabilities.EnergyStorage.BLOCK,
@@ -54,7 +59,7 @@ public class AECSCapabilities
                     }
             );
         }
-        for (BlockEntityType<?> beType : AECSBlockEntities.getImplementorsOf(IMachineHost.class))
+        for (BlockEntityType<?> beType : AECSBlockEntities.getAnnotatedWith(IItemHandler.class))
         {
             event.registerBlockEntity(
                     Capabilities.ItemHandler.BLOCK,
@@ -62,13 +67,24 @@ public class AECSCapabilities
                     (be, direction) -> {
                         if (be instanceof IMachineHost host && host.getMachineComponents().hasService(AppEngInvComponent.class))
                         {
-                            return host.getMachineComponents().getService(AppEngInvComponent.class).combined().toItemHandler();
+                            if (host.getMachineComponents().hasService(SideConfigComponent.class))
+                            {
+                                BaseInternalInventory inv = host.getMachineComponents().getService(SideConfigComponent.class).appEngInvForSide(direction);
+                                if (inv != null)
+                                    return inv.toItemHandler();
+                                else
+                                    return null;
+                            }
+                            else
+                            {
+                                return host.getMachineComponents().getService(AppEngInvComponent.class).combined().toItemHandler();
+                            }
                         }
                         return null;
                     }
             );
         }
-        for (BlockEntityType<?> beType : AECSBlockEntities.getImplementorsOf(IMachineHost.class))
+        for (BlockEntityType<?> beType : AECSBlockEntities.getAnnotatedWith(GenericInternalInventory.class))
         {
             event.registerBlockEntity(
                     AECapabilities.GENERIC_INTERNAL_INV,
@@ -76,7 +92,14 @@ public class AECSCapabilities
                     (be, direction) -> {
                         if (be instanceof IMachineHost host && host.getMachineComponents().hasService(GenericStackInvComponent.class))
                         {
-                            return host.getMachineComponents().getService(GenericStackInvComponent.class).combined();
+                            if (host.getMachineComponents().hasService(SideConfigComponent.class))
+                            {
+                                return host.getMachineComponents().getService(SideConfigComponent.class).genericInvForSide(direction);
+                            }
+                            else
+                            {
+                                return host.getMachineComponents().getService(GenericStackInvComponent.class).combined();
+                            }
                         }
                         return null;
                     }

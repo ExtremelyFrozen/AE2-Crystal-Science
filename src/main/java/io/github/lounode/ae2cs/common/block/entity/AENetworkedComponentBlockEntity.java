@@ -1,8 +1,10 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
+import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.blockentity.ClientTickingBlockEntity;
 import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.blockentity.grid.AENetworkedBlockEntity;
+import io.github.lounode.ae2cs.api.cap.ProvideCaps;
 import io.github.lounode.ae2cs.common.machine.IMachineHost;
 import io.github.lounode.ae2cs.common.machine.MachineComponentContainer;
 import io.github.lounode.ae2cs.common.machine.MachineContext;
@@ -18,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+@ProvideCaps(IInWorldGridNodeHost.class)
 public class AENetworkedComponentBlockEntity extends AENetworkedBlockEntity implements IMachineHost,
         ServerTickingBlockEntity, ClientTickingBlockEntity
 {
@@ -45,6 +48,12 @@ public class AENetworkedComponentBlockEntity extends AENetworkedBlockEntity impl
     public void markChanged()
     {
         this.saveChanges();
+    }
+
+    @Override
+    public void invalidCap()
+    {
+        this.invalidateCapabilities();
     }
 
     @Override

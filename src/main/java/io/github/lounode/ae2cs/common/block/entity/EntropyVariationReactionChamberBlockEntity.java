@@ -1,5 +1,6 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
+import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
@@ -17,6 +18,7 @@ import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.recipes.entropy.EntropyMode;
 import appeng.recipes.entropy.EntropyRecipe;
 import appeng.util.ConfigInventory;
+import io.github.lounode.ae2cs.api.cap.ProvideCaps;
 import io.github.lounode.ae2cs.api.settings.AECSSettings;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
@@ -44,6 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@ProvideCaps(GenericInternalInventory.class)
 public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfPoweredBlockEntity implements
         IUpgradeableObject, IConfigurableObject
 {
