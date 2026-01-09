@@ -23,7 +23,6 @@ public class AECSCapabilities
     public static void onRegisterCaps(RegisterCapabilitiesEvent event)
     {
         IntegratedInterfaceBlockEntity.onRegisterCaps(event);
-        QuartzGrindstoneBlockEntity.onRegisterCaps(event);
         MeteoritePatternProviderBlockEntity.onRegisterCaps(event);
         SimplePatternProviderBlockEntity.onRegisterCaps(event);
         EnderInterfaceBlockEntity.onRegisterCaps(event);
