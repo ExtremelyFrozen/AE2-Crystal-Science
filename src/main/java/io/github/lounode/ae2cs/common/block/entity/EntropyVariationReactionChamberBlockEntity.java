@@ -88,7 +88,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
     /**
      * 升级仓
      */
-    private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(AECSBlocks.CRYSTAL_PULVERIZER_BLOCK,
+    private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK,
             4, this::saveChanges);
 
     private final IConfigManager configManager;
