@@ -115,11 +115,6 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
     public static void onRegisterCaps(RegisterCapabilitiesEvent event)
     {
         event.registerBlockEntity(
-                AECapabilities.IN_WORLD_GRID_NODE_HOST,
-                AECSBlockEntities.CRYSTAL_GROWTH_CHAMBER.get(),
-                (be, unused) -> be
-        );
-        event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
                 AECSBlockEntities.CRYSTAL_GROWTH_CHAMBER.get(),
                 (be, direction) -> be.outputInv.toItemHandler()

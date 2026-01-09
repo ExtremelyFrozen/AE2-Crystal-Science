@@ -101,18 +101,6 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
                 .build();
     }
 
-    /**
-     * 注册AE节点和能量能力
-     */
-    public static void onRegisterCaps(RegisterCapabilitiesEvent event)
-    {
-        event.registerBlockEntity(
-                AECapabilities.IN_WORLD_GRID_NODE_HOST,
-                AECSBlockEntities.ENDER_EMITTER_BLOCK_ENTITY.get(),
-                (be, unused) -> be
-        );
-    }
-
     public boolean isActive()
     {
         return active;

@@ -1,5 +1,7 @@
-package io.github.lounode.ae2cs.common.machine;
+package io.github.lounode.ae2cs.common.machine.component;
 
+import io.github.lounode.ae2cs.common.machine.MachineComponentContainer;
+import io.github.lounode.ae2cs.common.machine.MachineContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;

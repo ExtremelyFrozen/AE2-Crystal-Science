@@ -183,11 +183,6 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
     public static void onRegisterCaps(RegisterCapabilitiesEvent event)
     {
         event.registerBlockEntity(
-                AECapabilities.IN_WORLD_GRID_NODE_HOST,
-                AECSBlockEntities.QUARTZ_GRINDSTONE_BLOCK_ENTITY.get(),
-                (be, unused) -> be
-        );
-        event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
                 AECSBlockEntities.QUARTZ_GRINDSTONE_BLOCK_ENTITY.get(),
                 (be, direction) -> be.combinedInv.toItemHandler()

@@ -1,4 +1,4 @@
-package io.github.lounode.ae2cs.common.machine;
+package io.github.lounode.ae2cs.common.machine.component;
 
 import appeng.api.networking.IManagedGridNode;
 

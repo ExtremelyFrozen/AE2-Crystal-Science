@@ -38,11 +38,6 @@ public class ResonatingPatternProviderBlockEntity extends PatternProviderBlockEn
     public static void onRegisterCaps(RegisterCapabilitiesEvent event)
     {
         event.registerBlockEntity(
-                AECapabilities.IN_WORLD_GRID_NODE_HOST,
-                AECSBlockEntities.RESONATING_PATTERN_PROVIDER_BLOCK_ENTITY.get(),
-                (be, unused) -> be
-        );
-        event.registerBlockEntity(
                 AECapabilities.GENERIC_INTERNAL_INV,
                 AECSBlockEntities.RESONATING_PATTERN_PROVIDER_BLOCK_ENTITY.get(),
                 (be, direction) -> be.getLogic().getReturnInv()

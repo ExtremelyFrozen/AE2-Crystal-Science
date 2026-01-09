@@ -1,5 +1,7 @@
 package io.github.lounode.ae2cs.common.init;
 
+import appeng.api.AECapabilities;
+import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.parts.RegisterPartCapabilitiesEvent;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.block.entity.*;
@@ -27,12 +29,9 @@ public class AECSCapabilities
         MeteoritePatternProviderBlockEntity.onRegisterCaps(event);
         SimplePatternProviderBlockEntity.onRegisterCaps(event);
         CrystalAggregatorBlockEntity.onRegisterCaps(event);
-        EnderBroadcasterBlockEntity.onRegisterCaps(event);
-        EnderEmitterBlockEntity.onRegisterCaps(event);
         EnderInterfaceBlockEntity.onRegisterCaps(event);
         ResonatingPatternProviderBlockEntity.onRegisterCaps(event);
         EntropyVariationReactionChamberBlockEntity.onRegisterCaps(event);
-        QuartzOscillatorClockBlockEntity.onRegisterCaps(event);
 
         for (BlockEntityType<?> beType : AECSBlockEntities.getImplementorsOf(IMachineHost.class))
         {
@@ -45,6 +44,17 @@ public class AECSCapabilities
                             return host.getMachineComponents().getService(EnergyComponent.class).getForgeEnergyAdapter();
                         }
                         return null;
+                    }
+            );
+        }
+        for (BlockEntityType<?> beType : AECSBlockEntities.getImplementorsOf(IInWorldGridNodeHost.class))
+        {
+            event.registerBlockEntity(
+                    AECapabilities.IN_WORLD_GRID_NODE_HOST,
+                    beType,
+                    (be, direction) -> {
+                        if (be instanceof IInWorldGridNodeHost inWorldGridNodeHost) return inWorldGridNodeHost;
+                        else return null;
                     }
             );
         }

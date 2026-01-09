@@ -1,5 +1,6 @@
 package io.github.lounode.ae2cs.common.machine;
 
+import io.github.lounode.ae2cs.common.machine.component.IMachineComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;

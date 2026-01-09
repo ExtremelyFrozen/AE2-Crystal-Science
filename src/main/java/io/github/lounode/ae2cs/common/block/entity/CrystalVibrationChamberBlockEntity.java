@@ -56,11 +56,6 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
     public static void onRegisterCaps(RegisterCapabilitiesEvent event)
     {
         event.registerBlockEntity(
-                AECapabilities.IN_WORLD_GRID_NODE_HOST,
-                AECSBlockEntities.CRYSTAL_VIBRATION_CHAMBER_BLOCK_ENTITY.get(),
-                (be, unused) -> be
-        );
-        event.registerBlockEntity(
                 AECapabilities.GENERIC_INTERNAL_INV,
                 AECSBlockEntities.CRYSTAL_VIBRATION_CHAMBER_BLOCK_ENTITY.get(),
                 (be, direction) -> be.inv

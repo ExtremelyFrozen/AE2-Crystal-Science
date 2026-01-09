@@ -10,7 +10,6 @@ import appeng.api.networking.energy.IEnergyService;
 import appeng.me.energy.StoredEnergyAmount;
 import io.github.lounode.ae2cs.api.util.ForgeEnergyAdapterUpgrade;
 import io.github.lounode.ae2cs.common.machine.MachineContext;
-import io.github.lounode.ae2cs.common.machine.NetworkMachineComponent;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 

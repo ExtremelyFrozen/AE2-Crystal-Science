@@ -49,11 +49,6 @@ public class IntegratedInterfaceBlockEntity extends AENetworkedBlockEntity imple
     public static void onRegisterCaps(RegisterCapabilitiesEvent event)
     {
         event.registerBlockEntity(
-                AECapabilities.IN_WORLD_GRID_NODE_HOST,
-                AECSBlockEntities.INTEGRATED_INTERFACE_BLOCK_ENTITY.get(),
-                (be, unused) -> be
-        );
-        event.registerBlockEntity(
                 AECapabilities.GENERIC_INTERNAL_INV,
                 AECSBlockEntities.INTEGRATED_INTERFACE_BLOCK_ENTITY.get(),
                 (be, direction) -> be.getLogic().getStorageInv()

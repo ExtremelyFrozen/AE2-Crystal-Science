@@ -146,11 +146,6 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
     public static void onRegisterCaps(RegisterCapabilitiesEvent event)
     {
         event.registerBlockEntity(
-                AECapabilities.IN_WORLD_GRID_NODE_HOST,
-                AECSBlockEntities.CRYSTAL_PULVERIZER_BLOCK_ENTITY.get(),
-                (be, unused) -> be
-        );
-        event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
                 AECSBlockEntities.CRYSTAL_PULVERIZER_BLOCK_ENTITY.get(),
                 (be, direction) -> be.combinedInv.toItemHandler()

@@ -152,16 +152,6 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
     public static void onRegisterCaps(RegisterCapabilitiesEvent event)
     {
         event.registerBlockEntity(
-                AECapabilities.IN_WORLD_GRID_NODE_HOST,
-                AECSBlockEntities.CIRCUIT_ETCHER_BLOCK_ENTITY.get(),
-                (be, unused) -> be
-        );
-        event.registerBlockEntity(
-                Capabilities.EnergyStorage.BLOCK,
-                AECSBlockEntities.CIRCUIT_ETCHER_BLOCK_ENTITY.get(),
-                (be, direction) -> new ForgeEnergyAdapterUpgrade(be, AccessRestriction.WRITE)
-        );
-        event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
                 AECSBlockEntities.CIRCUIT_ETCHER_BLOCK_ENTITY.get(),
                 (be, direction) -> be.combinedInv.toItemHandler()

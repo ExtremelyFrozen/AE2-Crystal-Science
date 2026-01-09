@@ -31,18 +31,6 @@ public class QuartzOscillatorClockBlockEntity extends AENetworkedBlockEntity imp
         this.logic = createLogic();
     }
 
-    /**
-     * 注册AE节点和能量能力
-     */
-    public static void onRegisterCaps(RegisterCapabilitiesEvent event)
-    {
-        event.registerBlockEntity(
-                AECapabilities.IN_WORLD_GRID_NODE_HOST,
-                AECSBlockEntities.QUARTZ_OSCILLATOR_CLOCK_BLOCK_ENTITY.get(),
-                (be, unused) -> be
-        );
-    }
-
     protected QuartzOscillatorClockLogic createLogic()
     {
         return new QuartzOscillatorClockLogic(getMainNode(), this, getItemFromBlockEntity().asItem());

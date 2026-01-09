@@ -1,4 +1,6 @@
-package io.github.lounode.ae2cs.common.machine;
+package io.github.lounode.ae2cs.common.machine.component;
+
+import io.github.lounode.ae2cs.common.machine.MachineComponentContainer;
 
 public abstract class BaseMachineComponent implements IMachineComponent
 {

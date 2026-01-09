@@ -107,18 +107,6 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
         getMainNode().setFlags(GridFlags.DENSE_CAPACITY);
     }
 
-    /**
-     * 注册 AE 节点能力
-     */
-    public static void onRegisterCaps(RegisterCapabilitiesEvent event)
-    {
-        event.registerBlockEntity(
-                AECapabilities.IN_WORLD_GRID_NODE_HOST,
-                AECSBlockEntities.ENDER_BROADCASTER_BLOCK_ENTITY.get(),
-                (be, unused) -> be
-        );
-    }
-
     public String getBandName()
     {
         return bandId;
