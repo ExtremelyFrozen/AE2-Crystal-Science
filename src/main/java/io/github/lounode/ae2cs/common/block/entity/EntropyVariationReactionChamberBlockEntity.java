@@ -1,6 +1,5 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
-import appeng.api.AECapabilities;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
@@ -14,15 +13,15 @@ import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.core.definitions.AEItems;
+import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.recipes.entropy.EntropyMode;
 import appeng.recipes.entropy.EntropyRecipe;
 import appeng.util.ConfigInventory;
-import io.github.lounode.ae2cs.api.genericinv.CombinedGenericInternalInventory;
-import io.github.lounode.ae2cs.api.genericinv.GenericStackInvWrapper;
 import io.github.lounode.ae2cs.api.settings.AECSSettings;
-import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.machine.component.InvPort;
+import io.github.lounode.ae2cs.common.machine.component.InventoryComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -39,7 +38,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -57,31 +55,6 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
     private static final double BASIC_ENERGY_COST_PER_TICK = 200;
 
     private static final int RECIPE_DEFAULT_COST_ENERGY = 1600;
-
-    /**
-     * 输入仓
-     */
-    private final ConfigInventory inputInv;
-
-    /**
-     * 输出仓
-     */
-    private final ConfigInventory outputInv;
-
-    /**
-     * 能力暴露-输入
-     */
-    private final GenericStackInvWrapper filteredInputInv;
-
-    /**
-     * 能力暴露-输出
-     */
-    private final GenericStackInvWrapper filteredOutputInv;
-
-    /**
-     * 能力暴露-结合库存
-     */
-    private final CombinedGenericInternalInventory combinedInv;
 
     /**
      * 升级仓
@@ -118,7 +91,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
      */
     private boolean needRefreshRecipeState = true;
 
-    private IActionSource actionSource;
+    private final IActionSource actionSource;
 
     public EntropyVariationReactionChamberBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState)
     {
@@ -129,60 +102,32 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
                 .registerSetting(AECSSettings.ENTROPY_CHANGE_MODE, EntropyMode.HEAT)
                 .build();
 
-        inputInv = ConfigInventory.storage(1)
+        getMainNode().setIdlePowerUsage(0);
+        actionSource = IActionSource.ofMachine(this);
+
+        ConfigInventory inputInv = ConfigInventory.storage(1)
                 .changeListener(() -> {
                     needRefreshRecipeState = true;
                     setChanged();
                 }).build();
-
-        outputInv = ConfigInventory.storage(4)
+        ConfigInventory outputInv = ConfigInventory.storage(4)
                 .changeListener(this::setChanged).build();
 
-        filteredInputInv = new GenericStackInvWrapper(inputInv)
-        {
-            @Override
-            public boolean canExtract()
-            {
-                return false;
-            }
-        };
-
-        filteredOutputInv = new GenericStackInvWrapper(outputInv)
-        {
-            @Override
-            public boolean canInsert()
-            {
-                return false;
-            }
-        };
-
-        combinedInv = new CombinedGenericInternalInventory(filteredInputInv, filteredOutputInv);
-
-        getMainNode().setIdlePowerUsage(0);
-
-        actionSource = IActionSource.ofMachine(this);
+        InventoryComponent inventoryComponent = new InventoryComponent();
+        inventoryComponent.addPort(InvPort.INPUT, inputInv);
+        inventoryComponent.addPort(InvPort.WORK, inputInv);
+        inventoryComponent.addPort(InvPort.OUTPUT, outputInv);
+        getMachineComponents().add(inventoryComponent);
     }
 
-    /**
-     * 注册AE节点和能量能力
-     */
-    public static void onRegisterCaps(RegisterCapabilitiesEvent event)
+    public GenericStackInv getInputInv()
     {
-        event.registerBlockEntity(
-                AECapabilities.GENERIC_INTERNAL_INV,
-                AECSBlockEntities.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK_ENTITY.get(),
-                (be, direction) -> be.combinedInv
-        );
+        return getMachineComponents().getService(InventoryComponent.class).port(InvPort.INPUT);
     }
 
-    public ConfigInventory getInputInv()
+    public GenericStackInv getOutputInv()
     {
-        return inputInv;
-    }
-
-    public ConfigInventory getOutputInv()
-    {
-        return outputInv;
+        return getMachineComponents().getService(InventoryComponent.class).port(InvPort.OUTPUT);
     }
 
     public int getRecipeProgress()
@@ -281,7 +226,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
             {
                 // TODO 就现在而言，理论上result可以有多个输出，逐步单输出的模拟对于具有多输出的配方失效
                 // TODO 但是，所有AE原版的熵变配方都是单输出，因此，目前只用这种模拟方式
-                if (outputInv.insert(stack.what(), stack.amount(), Actionable.SIMULATE, actionSource) < stack.amount())
+                if (getOutputInv().insert(stack.what(), stack.amount(), Actionable.SIMULATE, actionSource) < stack.amount())
                 {
                     recipeProgress = activeRecipeEnergyCost;
                     return;
@@ -299,7 +244,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
 
             for (GenericStack stack : result)
             {
-                outputInv.insert(stack.what(), stack.amount(), Actionable.MODULATE, actionSource);
+                getOutputInv().insert(stack.what(), stack.amount(), Actionable.MODULATE, actionSource);
             }
             recipeProgress = 0;
             setChanged();
@@ -326,7 +271,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
         if (getLevel() == null || getLevel().isClientSide()) return;
 
         var level = getLevel();
-        AEKey inputKey = inputInv.getKey(0);
+        AEKey inputKey = getInputInv().getKey(0);
         BlockState inputBlockState = Blocks.VOID_AIR.defaultBlockState();
         FluidState inputFluidState = Fluids.EMPTY.defaultFluidState();
         if (inputKey instanceof AEItemKey itemKey && itemKey.getItem() instanceof BlockItem blockItem)
@@ -374,7 +319,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
             Item blockItem = blockInput.block().asItem();
             if (blockItem != Items.AIR)
             {
-                return inputInv.extract(0, AEItemKey.of(blockItem), 1, Actionable.SIMULATE) >= 1;
+                return getInputInv().extract(0, AEItemKey.of(blockItem), 1, Actionable.SIMULATE) >= 1;
             }
             else
                 return true;
@@ -383,7 +328,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
             Fluid fluid = fluidInput.fluid();
             if (fluid != Fluids.EMPTY)
             {
-                return inputInv.extract(0, AEFluidKey.of(fluid), 1000, Actionable.SIMULATE) >= 1000;
+                return getInputInv().extract(0, AEFluidKey.of(fluid), 1000, Actionable.SIMULATE) >= 1000;
             }
             else
                 return true;
@@ -395,14 +340,14 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
             Item blockItem = blockInput.block().asItem();
             if (blockItem != Items.AIR)
             {
-                inputInv.extract(0, AEItemKey.of(blockItem), 1, Actionable.MODULATE);
+                getInputInv().extract(0, AEItemKey.of(blockItem), 1, Actionable.MODULATE);
             }
         });
         required.fluid().ifPresent(fluidInput -> {
             Fluid fluid = fluidInput.fluid();
             if (fluid != Fluids.EMPTY)
             {
-                inputInv.extract(0, AEFluidKey.of(fluid), 1000, Actionable.MODULATE);
+                getInputInv().extract(0, AEFluidKey.of(fluid), 1000, Actionable.MODULATE);
             }
         });
         return true;
@@ -413,8 +358,6 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
     {
         super.saveAdditional(data, registries);
         this.configManager.writeToNBT(data, registries);
-        inputInv.writeToChildTag(data, "input_inv", registries);
-        outputInv.writeToChildTag(data, "output_inv", registries);
         upgrades.writeToNBT(data, "upgrades", registries);
         data.putInt("recipe_progress", recipeProgress);
         if (activeRecipe != null)
@@ -428,8 +371,6 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
     {
         super.loadTag(data, registries);
         this.configManager.readFromNBT(data, registries);
-        inputInv.readFromChildTag(data, "input_inv", registries);
-        outputInv.readFromChildTag(data, "output_inv", registries);
         upgrades.readFromNBT(data, "upgrades", registries);
         recipeProgress = data.getInt("recipe_progress");
         if (data.contains("active_recipe_id"))
@@ -447,25 +388,16 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
             Optional<RecipeHolder<?>> opt = level.getRecipeManager().byKey(activeRecipeId);
             opt.ifPresent(recipeHolder -> activeRecipe = (RecipeHolder<EntropyRecipe>) recipeHolder);
         }
-        updateActiveRecipe();
+        if(level != null && !level.isClientSide())
+        {
+            updateActiveRecipe();
+        }
     }
 
     @Override
     public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops)
     {
         super.addAdditionalDrops(level, pos, drops);
-        for (GenericStack stack : this.getInputInv().toList())
-        {
-            if (stack == null) continue;
-
-            stack.what().addDrops(stack.amount(), drops, this.getLevel(), this.getBlockPos());
-        }
-        for (GenericStack stack : this.getOutputInv().toList())
-        {
-            if (stack == null) continue;
-
-            stack.what().addDrops(stack.amount(), drops, this.getLevel(), this.getBlockPos());
-        }
         for (ItemStack stack : upgrades)
         {
             drops.add(stack);
@@ -476,8 +408,6 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
     public void clearContent()
     {
         super.clearContent();
-        inputInv.clear();
-        outputInv.clear();
         upgrades.clear();
     }
 

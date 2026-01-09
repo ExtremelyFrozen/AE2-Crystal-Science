@@ -25,7 +25,6 @@ public class AENetworkedSelfPoweredBlockEntity extends AENetworkedComponentBlock
 
         EnergyComponent component = new EnergyComponent(getMainNode(), maxEnergy, isAEPublicPowerStorage, accessRestriction);
         getMachineComponents().add(component);
-        getMachineComponents().exposeService(EnergyComponent.class, component);
     }
 
     // IAEPowerStorage---------

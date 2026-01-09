@@ -7,6 +7,7 @@ import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.block.entity.*;
 import io.github.lounode.ae2cs.common.machine.IMachineHost;
 import io.github.lounode.ae2cs.common.machine.component.EnergyComponent;
+import io.github.lounode.ae2cs.common.machine.component.InventoryComponent;
 import io.github.lounode.ae2cs.common.me.part.*;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -31,8 +32,18 @@ public class AECSCapabilities
         CrystalAggregatorBlockEntity.onRegisterCaps(event);
         EnderInterfaceBlockEntity.onRegisterCaps(event);
         ResonatingPatternProviderBlockEntity.onRegisterCaps(event);
-        EntropyVariationReactionChamberBlockEntity.onRegisterCaps(event);
 
+        for (BlockEntityType<?> beType : AECSBlockEntities.getImplementorsOf(IInWorldGridNodeHost.class))
+        {
+            event.registerBlockEntity(
+                    AECapabilities.IN_WORLD_GRID_NODE_HOST,
+                    beType,
+                    (be, direction) -> {
+                        if (be instanceof IInWorldGridNodeHost inWorldGridNodeHost) return inWorldGridNodeHost;
+                        else return null;
+                    }
+            );
+        }
         for (BlockEntityType<?> beType : AECSBlockEntities.getImplementorsOf(IMachineHost.class))
         {
             event.registerBlockEntity(
@@ -47,17 +58,21 @@ public class AECSCapabilities
                     }
             );
         }
-        for (BlockEntityType<?> beType : AECSBlockEntities.getImplementorsOf(IInWorldGridNodeHost.class))
+        for (BlockEntityType<?> beType : AECSBlockEntities.getImplementorsOf(IMachineHost.class))
         {
             event.registerBlockEntity(
-                    AECapabilities.IN_WORLD_GRID_NODE_HOST,
+                    AECapabilities.GENERIC_INTERNAL_INV,
                     beType,
                     (be, direction) -> {
-                        if (be instanceof IInWorldGridNodeHost inWorldGridNodeHost) return inWorldGridNodeHost;
-                        else return null;
+                        if (be instanceof IMachineHost host && host.getMachineComponents().hasService(InventoryComponent.class))
+                        {
+                            return host.getMachineComponents().getService(InventoryComponent.class).combined();
+                        }
+                        return null;
                     }
             );
         }
+
     }
 
     @SubscribeEvent

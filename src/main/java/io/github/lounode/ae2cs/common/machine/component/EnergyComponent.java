@@ -9,6 +9,7 @@ import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.me.energy.StoredEnergyAmount;
 import io.github.lounode.ae2cs.api.util.ForgeEnergyAdapterUpgrade;
+import io.github.lounode.ae2cs.common.machine.MachineComponentContainer;
 import io.github.lounode.ae2cs.common.machine.MachineContext;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -29,6 +30,13 @@ public class EnergyComponent extends NetworkMachineComponent implements IAEPower
         this.storedEnergy = new StoredEnergyAmount(0, maxEnergy, type -> markChanged());
         this.isAEPublicPowerStorage = isAEPublicPowerStorage;
         this.accessRestriction = accessRestriction;
+    }
+
+    @Override
+    public void onConstruct(MachineComponentContainer container)
+    {
+        super.onConstruct(container);
+        container.exposeService(EnergyComponent.class, this);
     }
 
     @Override
