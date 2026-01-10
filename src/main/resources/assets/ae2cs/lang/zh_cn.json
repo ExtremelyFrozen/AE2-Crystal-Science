@@ -215,6 +215,8 @@
   "ae2cs.menu.entropy_variation_reaction_chamber.entropy_mode_title": "熵变模式",
   "ae2cs.menu.entropy_variation_reaction_chamber.entropy_mode_desc": "切换熵增或熵减模式",
 
+  "ae2cs.menu.title.side_config_menu": "面配置",
+
   "ae2cs.msg.broadcaster.sender.not_connect_any_band": "当前广播装置未链接到任何频段",
 
   "ae2cs.msg.band_create.no_name": "频段名不能为空",

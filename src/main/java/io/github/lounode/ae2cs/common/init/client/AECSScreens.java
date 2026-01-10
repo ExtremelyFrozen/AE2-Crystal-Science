@@ -6,8 +6,10 @@ import appeng.menu.implementations.PatternProviderMenu;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.client.gui.*;
 import io.github.lounode.ae2cs.client.gui.linker.broadcast.*;
+import io.github.lounode.ae2cs.client.gui.subGUI.SideConfigGUI;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 import io.github.lounode.ae2cs.common.menu.*;
+import io.github.lounode.ae2cs.common.menu.submenu.SideConfigMenu;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -57,5 +59,9 @@ public class AECSScreens
         event.<QuartzOscillatorClockMenu, QuartzOscillatorClockGUI>register(AECSMenus.QUARTZ_OSCILLATOR_CLOCK_MENU.get(),
                 (menu, inv, title) -> new QuartzOscillatorClockGUI(menu, inv, title,
                         StyleManager.loadStyleDoc("/screens/quartz_oscillator_clock_menu.json")));
+
+        event.<SideConfigMenu, SideConfigGUI>register(AECSMenus.SIDE_CONFIG_MENU.get(),
+                (menu, inv, title) -> new SideConfigGUI(menu, inv, title,
+                        StyleManager.loadStyleDoc("/screens/side_config_menu.json")));
     }
 }

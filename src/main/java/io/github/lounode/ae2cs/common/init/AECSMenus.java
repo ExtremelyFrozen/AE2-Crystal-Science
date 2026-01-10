@@ -1,17 +1,31 @@
 package io.github.lounode.ae2cs.common.init;
 
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
+import appeng.menu.AEBaseMenu;
+import appeng.menu.MenuOpener;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.implementations.PatternProviderMenu;
+import appeng.menu.locator.MenuLocators;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
+import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
 import io.github.lounode.ae2cs.common.block.entity.*;
 import io.github.lounode.ae2cs.common.me.logic.*;
 import io.github.lounode.ae2cs.common.menu.*;
 import io.github.lounode.ae2cs.common.menu.linker.broadcast.*;
+import io.github.lounode.ae2cs.common.menu.submenu.SideConfigMenu;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ServerboundContainerClosePacket;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
@@ -125,6 +139,106 @@ public class AECSMenus
             () -> MenuTypeBuilder.create(QuartzOscillatorClockMenu::new, QuartzOscillatorClockHost.class)
                     .build(AE2CrystalScience.makeId("quartz_oscillator_clock_menu"))
     );
+
+    public static final Supplier<MenuType<SideConfigMenu>> SIDE_CONFIG_MENU = MENU_TYPES.register("side_config_menu",
+            () -> MenuTypeBuilder.create(SideConfigMenu::new, CustomReturnableSubMenuHost.class)
+                    .build(AE2CrystalScience.makeId("side_config_menu"))
+    );
+
+    private static MenuType<SideConfigMenu> buildSideConfig() {
+        // 1) 客户端 fromNetwork：读 locator + fromSubMenu + parentMenuId
+        MenuType<SideConfigMenu> type = IMenuTypeExtension.create((containerId, inv, buf) -> {
+            var locator = MenuLocators.readFromPacket(buf);
+            CustomReturnableSubMenuHost host = locator.locate(inv.player, CustomReturnableSubMenuHost.class);
+            if (host == null) {
+                var connection = Minecraft.getInstance().getConnection();
+                if (connection != null) {
+                    connection.send(new ServerboundContainerClosePacket(containerId));
+                }
+                throw new IllegalStateException("Couldn't find menu host at " + locator + " for side_config. Closing menu.");
+            }
+
+            SideConfigMenu menu = new SideConfigMenu(type, containerId, inv, host);
+
+            menu.setReturnedFromSubScreen(buf.readBoolean());
+
+            // 读 parent menu type id
+            var parentId = buf.readResourceLocation();
+            var parentType = net.minecraft.core.registries.BuiltInRegistries.MENU.get(parentId);
+            if (parentType != null) {
+                menu.setReturnToMenuType(parentType);
+            }
+
+            return menu;
+        });
+
+        // 2) 服务端 opener：推断 parent menu type，并写入包，同时写入服务端 menu 实例
+        MenuOpener.addOpener(type, (player, locator, fromSubMenu) -> {
+            if (!(player instanceof ServerPlayer sp)) {
+                return false;
+            }
+
+            var host = locator.locate(player, CustomReturnableSubMenuHost.class);
+            if (host == null) {
+                return false;
+            }
+
+            // 推断“父菜单类型”：此刻 containerMenu 还是父菜单
+            MenuType<?> parentType = null;
+            if (sp.containerMenu != null) {
+                parentType = sp.containerMenu.getType();
+            }
+            // 兜底：没有父菜单（极少见）就回到一个固定主菜单或自身
+            if (parentType == null) {
+                parentType = type;
+            }
+
+            // 转成 registry id
+            var parentId = net.minecraft.core.registries.BuiltInRegistries.MENU.getKey(parentType);
+            if (parentId == null) {
+                // 未注册的 MenuType，兜底
+                parentId = net.minecraft.core.registries.BuiltInRegistries.MENU.getKey(type);
+            }
+            final var finalParentType = parentType;
+            final var finalParentId = parentId;
+
+            class Provider implements MenuProvider
+            {
+                @Override
+                public Component getDisplayName() {
+                    return Component.empty();
+                }
+
+                @Override
+                public AbstractContainerMenu createMenu(int wnd, Inventory p, Player pl) {
+                    var m = new SideConfigMenu(type, wnd, p, host);
+                    m.setLocator(locator);
+
+                    // 服务端实例也要知道回哪儿（返回按钮触发时通常在服务端执行 open）
+                    m.setReturnToMenuType(finalParentType);
+
+                    return m;
+                }
+
+                @Override
+                public boolean shouldTriggerClientSideContainerClosingOnOpen() {
+                    return !(player.containerMenu instanceof AEBaseMenu);
+                }
+            }
+
+            sp.openMenu(new Provider(), buffer -> {
+                MenuLocators.writeToPacket(buffer, locator);
+                buffer.writeBoolean(fromSubMenu);
+
+                // 写 parent menu type id
+                buffer.writeResourceLocation(finalParentId);
+            });
+
+            return true;
+        });
+
+        return type;
+    }
 
     public static void registerMenus(IEventBus eventBus)
     {

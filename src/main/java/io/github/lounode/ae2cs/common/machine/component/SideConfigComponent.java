@@ -84,6 +84,39 @@ public class SideConfigComponent extends BaseMachineComponent
         container.exposeService(SideConfigComponent.class, this);
     }
 
+    public EnumMap<Direction, SidePolicy> getPolicies()
+    {
+        return policies;
+    }
+
+    public boolean isAutoImport()
+    {
+        return autoImport;
+    }
+
+    public void setAutoImport(boolean autoImport)
+    {
+        if (this.autoImport == autoImport) return;
+
+        // 主动模式不影响能力系统，只需要标脏即可
+        this.autoImport = autoImport;
+        this.container.host().markChanged();
+    }
+
+    public boolean isAutoExport()
+    {
+        return autoExport;
+    }
+
+    public void setAutoExport(boolean autoExport)
+    {
+        if (this.autoExport == autoExport) return;
+
+        // 主动模式不影响能力系统，只需要标脏即可
+        this.autoExport = autoExport;
+        this.container.host().markChanged();
+    }
+
     public SidePolicy get(Direction dir)
     {
         return policies.get(dir);
