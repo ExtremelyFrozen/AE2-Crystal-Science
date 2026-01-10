@@ -9,6 +9,7 @@ import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 import io.github.lounode.ae2cs.api.cap.ProvideCaps;
+import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSRecipeTypes;
 import io.github.lounode.ae2cs.common.machine.component.AppEngInvComponent;
@@ -32,7 +33,7 @@ import java.util.Optional;
 
 @ProvideCaps(IItemHandler.class)
 public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEntity implements ICrankable,
-        IUpgradeableObject
+        IUpgradeableObject, CustomReturnableSubMenuHost
 {
     /**
      * 基础能量消耗，每tick 200AE，即能量消耗和速率上限均更低的晶能粉碎机
@@ -379,5 +380,11 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
     public void applyTurn()
     {
         injectAEPower(1600, Actionable.MODULATE);
+    }
+
+    @Override
+    public ItemStack getMainMenuIcon()
+    {
+        return new ItemStack(getItemFromBlockEntity());
     }
 }

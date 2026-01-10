@@ -20,6 +20,7 @@ import appeng.recipes.entropy.EntropyRecipe;
 import appeng.util.ConfigInventory;
 import io.github.lounode.ae2cs.api.cap.ProvideCaps;
 import io.github.lounode.ae2cs.api.settings.AECSSettings;
+import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.machine.component.GenericStackInvComponent;
@@ -49,7 +50,7 @@ import java.util.Optional;
 
 @ProvideCaps(GenericInternalInventory.class)
 public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfPoweredBlockEntity implements
-        IUpgradeableObject, IConfigurableObject
+        IUpgradeableObject, IConfigurableObject, CustomReturnableSubMenuHost
 {
     /**
      * 基础能量消耗，每tick 200AE，每多一个加速卡，则此数值翻倍，同时机器运行速率也翻倍。
@@ -416,6 +417,12 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
     {
         super.clearContent();
         upgrades.clear();
+    }
+
+    @Override
+    public ItemStack getMainMenuIcon()
+    {
+        return new ItemStack(getItemFromBlockEntity());
     }
 
     /**

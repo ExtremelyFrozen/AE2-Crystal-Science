@@ -8,6 +8,7 @@ import appeng.api.upgrades.UpgradeInventories;
 import appeng.core.definitions.AEItems;
 import appeng.util.inv.AppEngInternalInventory;
 import io.github.lounode.ae2cs.api.cap.ProvideCaps;
+import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
@@ -33,7 +34,8 @@ import java.util.List;
 import java.util.Optional;
 
 @ProvideCaps(IItemHandler.class)
-public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEntity implements IUpgradeableObject
+public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEntity implements IUpgradeableObject,
+        CustomReturnableSubMenuHost
 {
     /**
      * 基础能量消耗，每tick 200AE，每多一个加速卡，则此数值翻倍，同时机器运行速率也翻倍。
@@ -348,5 +350,11 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
     {
         super.clearContent();
         upgrades.clear();
+    }
+
+    @Override
+    public ItemStack getMainMenuIcon()
+    {
+        return new ItemStack(getItemFromBlockEntity());
     }
 }

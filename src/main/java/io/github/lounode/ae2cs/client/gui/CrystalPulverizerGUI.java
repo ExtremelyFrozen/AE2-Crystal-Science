@@ -3,6 +3,7 @@ package io.github.lounode.ae2cs.client.gui;
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.style.StyleManager;
 import appeng.menu.interfaces.IProgressProvider;
+import io.github.lounode.ae2cs.client.gui.subGUI.SideConfigGUI;
 import io.github.lounode.ae2cs.client.gui.widgets.AdvancedProgressBar;
 import io.github.lounode.ae2cs.common.location.SimpleComponents;
 import io.github.lounode.ae2cs.common.menu.CrystalPulverizerMenu;
@@ -52,5 +53,7 @@ public class CrystalPulverizerGUI extends UpgradeableScreen<CrystalPulverizerMen
             }
         }, style.getImage("workingProgressBar"), AdvancedProgressBar.FillMode.LEFT_TO_RIGHT, SimpleComponents.WORKING_PROGRESS_BAR);
         widgets.add("workingProgressBar", this.workingProgressBar);
+
+        addToLeftToolbar(SideConfigGUI.iconButton());
     }
 }

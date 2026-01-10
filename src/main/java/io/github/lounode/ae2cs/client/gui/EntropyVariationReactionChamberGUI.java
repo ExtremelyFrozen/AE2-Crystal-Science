@@ -5,6 +5,7 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.menu.interfaces.IProgressProvider;
 import appeng.recipes.entropy.EntropyMode;
 import io.github.lounode.ae2cs.api.settings.AECSSettings;
+import io.github.lounode.ae2cs.client.gui.subGUI.SideConfigGUI;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSServerSettingToggleButton;
 import io.github.lounode.ae2cs.client.gui.widgets.AdvancedProgressBar;
 import io.github.lounode.ae2cs.common.location.SimpleComponents;
@@ -61,6 +62,7 @@ public class EntropyVariationReactionChamberGUI extends UpgradeableScreen<Entrop
 
         entropyModeButton = new AECSServerSettingToggleButton<>(AECSSettings.ENTROPY_CHANGE_MODE, EntropyMode.HEAT);
         addToLeftToolbar(entropyModeButton);
+        addToLeftToolbar(SideConfigGUI.iconButton());
     }
 
     @Override

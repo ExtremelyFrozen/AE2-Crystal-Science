@@ -36,15 +36,20 @@ public class SideConfigGUI extends AEBaseScreen<SideConfigMenu>
 
         AESubScreen.addBackButton(menu, "back_button", widgets);
 
-        autoImportButton = new AECSAutoModeToggleButton(false, menu::sendChangeAutoImport);
-        autoExportButton = new AECSAutoModeToggleButton(false, menu::sendChangeAutoExport);
+        autoImportButton = new AECSAutoModeToggleButton(false, Component.translatable("ae2cs.menu.side_config.button.import"), menu::sendChangeAutoImport);
+        autoImportButton.mapIcon(AECSAutoModeToggleButton.State.ENABLED, AECSIcon.RECEIVER_STATE);
+        autoImportButton.mapIcon(AECSAutoModeToggleButton.State.DISABLED, AECSIcon.RECEIVER_STATE);
+        autoExportButton = new AECSAutoModeToggleButton(false, Component.translatable("ae2cs.menu.side_config.button.export"), menu::sendChangeAutoExport);
+        autoExportButton.mapIcon(AECSAutoModeToggleButton.State.ENABLED, AECSIcon.SENDER_STATE);
+        autoExportButton.mapIcon(AECSAutoModeToggleButton.State.DISABLED, AECSIcon.SENDER_STATE);
 
         if (menu.getBlockEntity() instanceof AEBaseBlockEntity aeBaseBlockEntity)
         {
+            // 注意：这里反转了左右，因为ae的给出方向是基于方块的，而这里UI中需要符合玩家视角直觉
             topSideButton = new AECSSideConfigToggleButton(menu, aeBaseBlockEntity.getOrientation().getSide(RelativeSide.TOP), RelativeSide.TOP);
             bottomSideButton = new AECSSideConfigToggleButton(menu, aeBaseBlockEntity.getOrientation().getSide(RelativeSide.BOTTOM), RelativeSide.BOTTOM);
-            leftSideButton = new AECSSideConfigToggleButton(menu, aeBaseBlockEntity.getOrientation().getSide(RelativeSide.LEFT), RelativeSide.LEFT);
-            rightSideButton = new AECSSideConfigToggleButton(menu, aeBaseBlockEntity.getOrientation().getSide(RelativeSide.RIGHT), RelativeSide.RIGHT);
+            leftSideButton = new AECSSideConfigToggleButton(menu, aeBaseBlockEntity.getOrientation().getSide(RelativeSide.RIGHT), RelativeSide.LEFT);
+            rightSideButton = new AECSSideConfigToggleButton(menu, aeBaseBlockEntity.getOrientation().getSide(RelativeSide.LEFT), RelativeSide.RIGHT);
             frontSideButton = new AECSSideConfigToggleButton(menu, aeBaseBlockEntity.getOrientation().getSide(RelativeSide.FRONT), RelativeSide.FRONT);
             backSideButton = new AECSSideConfigToggleButton(menu, aeBaseBlockEntity.getOrientation().getSide(RelativeSide.BACK), RelativeSide.BACK);
         }
@@ -52,8 +57,8 @@ public class SideConfigGUI extends AEBaseScreen<SideConfigMenu>
         {
             topSideButton = new AECSSideConfigToggleButton(menu, Direction.UP, null);
             bottomSideButton = new AECSSideConfigToggleButton(menu, Direction.DOWN, null);
-            leftSideButton = new AECSSideConfigToggleButton(menu, Direction.WEST, null);
-            rightSideButton = new AECSSideConfigToggleButton(menu, Direction.EAST, null);
+            leftSideButton = new AECSSideConfigToggleButton(menu, Direction.EAST, null);
+            rightSideButton = new AECSSideConfigToggleButton(menu, Direction.WEST, null);
             frontSideButton = new AECSSideConfigToggleButton(menu, Direction.NORTH, null);
             backSideButton = new AECSSideConfigToggleButton(menu, Direction.SOUTH, null);
         }
@@ -75,8 +80,8 @@ public class SideConfigGUI extends AEBaseScreen<SideConfigMenu>
 
         if (menu.sidePolicies != null)
         {
-            autoImportButton.setValue(menu.sidePolicies.autoImport() ? AECSAutoModeToggleButton.State.ENABLED : AECSAutoModeToggleButton.State.DISABLED);
-            autoExportButton.setValue(menu.sidePolicies.autoExport() ? AECSAutoModeToggleButton.State.ENABLED : AECSAutoModeToggleButton.State.DISABLED);
+            autoImportButton.setBoolean(menu.sidePolicies.autoImport());
+            autoExportButton.setBoolean(menu.sidePolicies.autoExport());
 
             topSideButton.syncFromMenu();
             bottomSideButton.syncFromMenu();

@@ -384,6 +384,6 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
     @Override
     public ItemStack getMainMenuIcon()
     {
-        return AECSBlocks.CIRCUIT_ETCHER_BLOCK.toStack();
+        return new ItemStack(getItemFromBlockEntity());
     }
 }

@@ -5,6 +5,7 @@ import appeng.client.gui.style.StyleManager;
 import appeng.client.gui.widgets.CommonButtons;
 import appeng.menu.interfaces.IProgressProvider;
 import appeng.util.Platform;
+import io.github.lounode.ae2cs.client.gui.subGUI.SideConfigGUI;
 import io.github.lounode.ae2cs.client.gui.widgets.AdvancedProgressBar;
 import io.github.lounode.ae2cs.common.location.SimpleComponents;
 import io.github.lounode.ae2cs.common.menu.CrystalVibrationChamberMenu;
@@ -33,6 +34,7 @@ public class CrystalVibrationChamberGUI extends UpgradeableScreen<CrystalVibrati
         widgets.add("burnProgressBar", this.burnProgressBar);
 
         addToLeftToolbar(CommonButtons.togglePowerUnit());
+        addToLeftToolbar(SideConfigGUI.iconButton());
     }
 
     @Override

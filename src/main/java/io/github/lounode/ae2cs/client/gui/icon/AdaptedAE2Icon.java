@@ -21,4 +21,7 @@ public class AdaptedAE2Icon
 
     public static final AE2IconAdapter CLEAR = new AE2IconAdapter(Icon.CLEAR);
 
+    public static final AE2IconAdapter TOOLBAR_BUTTON_BACKGROUND = new AE2IconAdapter(Icon.TOOLBAR_BUTTON_BACKGROUND);
+    public static final AE2IconAdapter TOOLBAR_BUTTON_BACKGROUND_FOCUS = new AE2IconAdapter(Icon.TOOLBAR_BUTTON_BACKGROUND_FOCUS);
+    public static final AE2IconAdapter TOOLBAR_BUTTON_BACKGROUND_HOVER = new AE2IconAdapter(Icon.TOOLBAR_BUTTON_BACKGROUND_HOVER);
 }

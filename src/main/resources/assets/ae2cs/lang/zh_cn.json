@@ -217,6 +217,10 @@
 
   "ae2cs.menu.title.side_config_menu": "面配置",
   "ae2cs.menu.side_config.button.open": "面配置\n修改机器的面配置以及自动弹出与自动输入功能",
+  "ae2cs.menu.side_config.button.import": "主动输入",
+  "ae2cs.menu.side_config.button.export": "主动弹出",
+  "ae2cs.auto_mode.disabled": "禁用",
+  "ae2cs.auto_mode.enabled": "启用",
 
   "ae2cs.msg.broadcaster.sender.not_connect_any_band": "当前广播装置未链接到任何频段",
 
@@ -262,5 +266,26 @@
 
   "ae2cs.machine_settings.auto_link_cable_mode.title": "自动连接模式下的线缆设置",
   "ae2cs.machine_settings.auto_link_cable_mode.enable.desc": "打开自动连接模式后会连接到线缆类设备",
-  "ae2cs.machine_settings.auto_link_cable_mode.disable.desc": "打开自动连接模式后不会连接到线缆类设备"
+  "ae2cs.machine_settings.auto_link_cable_mode.disable.desc": "打开自动连接模式后不会连接到线缆类设备",
+
+  "ae2cs.button.side_config.tooltip": "%s\n%s",
+
+  "ae2cs.text.side_policy.insert": "输入",
+  "ae2cs.text.side_policy.extract": "输出",
+  "ae2cs.text.side_policy.all": "输入/输出",
+  "ae2cs.text.side_policy.none": "禁用",
+
+  "ae2cs.text.relative_side.front": "正面",
+  "ae2cs.text.relative_side.back": "背面",
+  "ae2cs.text.relative_side.top": "顶面",
+  "ae2cs.text.relative_side.bottom": "底面",
+  "ae2cs.text.relative_side.left": "左面",
+  "ae2cs.text.relative_side.right": "右面",
+
+  "ae2cs.text.direction.north": "北面",
+  "ae2cs.text.direction.south": "南面",
+  "ae2cs.text.direction.up": "顶面",
+  "ae2cs.text.direction.down": "底面",
+  "ae2cs.text.direction.west": "西面",
+  "ae2cs.text.direction.east": "东面"
 }

@@ -1,6 +1,8 @@
 package io.github.lounode.ae2cs.client.gui.widgets;
 
 import appeng.api.orientation.RelativeSide;
+import io.github.lounode.ae2cs.api.localization.AECSTexts;
+import io.github.lounode.ae2cs.client.gui.icon.AECSIcon;
 import io.github.lounode.ae2cs.common.machine.component.SidePolicy;
 import io.github.lounode.ae2cs.common.menu.submenu.SideConfigMenu;
 import net.minecraft.core.BlockPos;
@@ -14,12 +16,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumMap;
-import java.util.Locale;
 
 /**
  * 仅用于 {@link io.github.lounode.ae2cs.client.gui.subGUI.SideConfigGUI} 的面配置按钮
  */
-public class AECSSideConfigToggleButton extends AECSColorToggleButton<SidePolicy>
+public class AECSSideConfigToggleButton extends AECSBackgroundToggleButton<SidePolicy>
 {
     private final SideConfigMenu menu;
     private final Direction dir;
@@ -34,7 +35,10 @@ public class AECSSideConfigToggleButton extends AECSColorToggleButton<SidePolicy
 
         for (SidePolicy policy : SidePolicy.values())
         {
-            mapBackgroundTint(policy, tintForPolicy(policy));
+            // 背景贴图映射（每个状态一套三态背景）
+            mapBackground(policy, backgroundForPolicy(policy));
+
+            // tooltip映射
             if (relativeSide != null)
             {
                 mapTooltip(policy, tooltipFor(relativeSide, policy));
@@ -70,12 +74,6 @@ public class AECSSideConfigToggleButton extends AECSColorToggleButton<SidePolicy
     }
 
     @Override
-    public void renderWidget(@NotNull net.minecraft.client.gui.GuiGraphics gg, int mouseX, int mouseY, float partial)
-    {
-        super.renderWidget(gg, mouseX, mouseY, partial);
-    }
-
-    @Override
     protected @Nullable Item getItemOverlay()
     {
         BlockEntity be = menu.getBlockEntity();
@@ -91,28 +89,47 @@ public class AECSSideConfigToggleButton extends AECSColorToggleButton<SidePolicy
         return item == Items.AIR ? null : item;
     }
 
-    private static int tintForPolicy(SidePolicy policy)
+    /**
+     * 根据 SidePolicy 返回一套背景贴图（normal/focus/hover）。
+     */
+    private static BackgroundSet backgroundForPolicy(SidePolicy policy)
     {
         return switch (policy)
         {
-            case NONE -> 0x00000000;   // 不覆盖色
-            case INSERT -> 0xA0D07070;
-            case EXTRACT -> 0xA070A0E0;
-            case ALL -> 0xA0A080D0;
+            case NONE -> new BackgroundSet(
+                    AECSIcon.BUTTON_BACKGROUND_ORIGINAL_DARK,
+                    AECSIcon.BUTTON_BACKGROUND_ORIGINAL_FOCUS,
+                    AECSIcon.BUTTON_BACKGROUND_ORIGINAL_HOVER
+            );
+            case INSERT -> new BackgroundSet(
+                    AECSIcon.BUTTON_BACKGROUND_RED_DARK,
+                    AECSIcon.BUTTON_BACKGROUND_RED_FOCUS,
+                    AECSIcon.BUTTON_BACKGROUND_RED_HOVER
+            );
+            case EXTRACT -> new BackgroundSet(
+                    AECSIcon.BUTTON_BACKGROUND_BLUE_DARK,
+                    AECSIcon.BUTTON_BACKGROUND_BLUE_FOCUS,
+                    AECSIcon.BUTTON_BACKGROUND_BLUE_HOVER
+            );
+            case ALL -> new BackgroundSet(
+                    AECSIcon.BUTTON_BACKGROUND_PURPLE_DARK,
+                    AECSIcon.BUTTON_BACKGROUND_PURPLE_FOCUS,
+                    AECSIcon.BUTTON_BACKGROUND_PURPLE_HOVER
+            );
         };
     }
 
     private static Component tooltipFor(Direction dir, SidePolicy policy)
     {
-        String dirKey = dir.getName().toLowerCase(Locale.ROOT);
-        String policyKey = policy.name().toLowerCase(Locale.ROOT);
-        return Component.translatable("ae2cs.side_config.tooltip", dirKey, policyKey);
+        Component dirText = AECSTexts.directionName(dir);
+        Component policyText = AECSTexts.sidePolicyName(policy);
+        return Component.translatable("ae2cs.button.side_config.tooltip", dirText, policyText);
     }
 
     private static Component tooltipFor(RelativeSide side, SidePolicy policy)
     {
-        String dirKey = side.name().toLowerCase(Locale.ROOT);
-        String policyKey = policy.name().toLowerCase(Locale.ROOT);
-        return Component.translatable("ae2cs.side_config.tooltip", dirKey, policyKey);
+        Component sideText = AECSTexts.relativeSideName(side);
+        Component policyText = AECSTexts.sidePolicyName(policy);
+        return Component.translatable("ae2cs.button.side_config.tooltip", sideText, policyText);
     }
 }

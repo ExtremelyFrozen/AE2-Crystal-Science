@@ -9,13 +9,13 @@ import appeng.api.storage.MEStorage;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
-import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 import io.github.lounode.ae2cs.api.cap.ProvideCaps;
+import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
 import io.github.lounode.ae2cs.common.init.*;
 import io.github.lounode.ae2cs.common.item.CrystalSeedItem;
 import io.github.lounode.ae2cs.common.machine.component.AppEngInvComponent;
@@ -35,7 +35,7 @@ import java.util.List;
 
 @ProvideCaps(IItemHandler.class)
 public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlockEntity implements IUpgradeableObject,
-        ServerTickingBlockEntity
+        CustomReturnableSubMenuHost
 {
     /**
      * 晶体催生仓提供的基础生长值
@@ -257,5 +257,11 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
     {
         super.clearContent();
         this.upgrades.clear();
+    }
+
+    @Override
+    public ItemStack getMainMenuIcon()
+    {
+        return new ItemStack(getItemFromBlockEntity());
     }
 }

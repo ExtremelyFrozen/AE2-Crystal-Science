@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs.client.gui;
 
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.style.StyleManager;
+import io.github.lounode.ae2cs.client.gui.subGUI.SideConfigGUI;
 import io.github.lounode.ae2cs.common.menu.CrystalGrowthChamberMenu;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -12,5 +13,6 @@ public class CrystalGrowthChamberGUI extends UpgradeableScreen<CrystalGrowthCham
     public CrystalGrowthChamberGUI(CrystalGrowthChamberMenu menu, Inventory inv, Component title)
     {
         super(menu, inv, title, StyleManager.loadStyleDoc("/screens/crystal_growth_chamber_menu.json"));
+        addToLeftToolbar(SideConfigGUI.iconButton());
     }
 }

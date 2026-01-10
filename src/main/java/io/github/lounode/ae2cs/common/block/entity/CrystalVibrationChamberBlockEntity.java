@@ -8,10 +8,10 @@ import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.AECableType;
-import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.util.ConfigInventory;
 import io.github.lounode.ae2cs.api.cap.ProvideCaps;
+import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
@@ -31,7 +31,7 @@ import java.util.List;
 
 @ProvideCaps(GenericInternalInventory.class)
 public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBlockEntity implements IUpgradeableObject,
-        ServerTickingBlockEntity
+        CustomReturnableSubMenuHost
 {
     private final IUpgradeInventory upgrades;
 
@@ -188,5 +188,11 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
         this.remainingBurnTime = 0;
         this.energyPerTick = 0;
         this.maxBurnTime = 0;
+    }
+
+    @Override
+    public ItemStack getMainMenuIcon()
+    {
+        return new ItemStack(getItemFromBlockEntity());
     }
 }
