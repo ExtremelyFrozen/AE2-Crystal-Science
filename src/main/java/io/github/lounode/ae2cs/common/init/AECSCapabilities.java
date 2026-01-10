@@ -34,7 +34,7 @@ public class AECSCapabilities
         EnderInterfaceBlockEntity.onRegisterCaps(event);
         ResonatingPatternProviderBlockEntity.onRegisterCaps(event);
 
-        for (BlockEntityType<?> beType : AECSBlockEntities.getAnnotatedWith(IInWorldGridNodeHost.class))
+        for (BlockEntityType<?> beType : AECSBlockEntities.getImplementorsOf(IInWorldGridNodeHost.class))
         {
             event.registerBlockEntity(
                     AECapabilities.IN_WORLD_GRID_NODE_HOST,

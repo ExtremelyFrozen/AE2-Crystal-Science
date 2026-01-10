@@ -30,14 +30,14 @@ public class AECSAutoModeToggleButton extends AECSBackgroundToggleButton<AECSAut
         mapTooltipLines(State.ENABLED, List.of(title, Component.translatable("ae2cs.auto_mode.enabled")));
 
         mapBackground(State.DISABLED, new BackgroundSet(
-                AECSIcon.BUTTON_BACKGROUND_ORIGINAL_DARK,
-                AECSIcon.BUTTON_BACKGROUND_ORIGINAL_FOCUS,
-                AECSIcon.BUTTON_BACKGROUND_ORIGINAL_HOVER
+                AECSIcon.BUTTON_ORIGINAL_DARK,
+                AECSIcon.BUTTON_ORIGINAL_DARK,
+                AECSIcon.BUTTON_ORIGINAL_DARK_HOVER
         ));
         mapBackground(State.ENABLED, new BackgroundSet(
-                AECSIcon.BUTTON_BACKGROUND_ORIGINAL_FOCUS,
-                AECSIcon.BUTTON_BACKGROUND_ORIGINAL_FOCUS,
-                AECSIcon.BUTTON_BACKGROUND_ORIGINAL_HOVER
+                AECSIcon.BUTTON_ORIGINAL_LIGHT,
+                AECSIcon.BUTTON_ORIGINAL_LIGHT,
+                AECSIcon.BUTTON_ORIGINAL_LIGHT_HOVER
         ));
 
         setOnValueChanged(state -> this.onChangedBool.accept(state == State.ENABLED));

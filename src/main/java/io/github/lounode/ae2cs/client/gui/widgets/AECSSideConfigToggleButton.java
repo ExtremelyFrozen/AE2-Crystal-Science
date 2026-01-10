@@ -97,24 +97,24 @@ public class AECSSideConfigToggleButton extends AECSBackgroundToggleButton<SideP
         return switch (policy)
         {
             case NONE -> new BackgroundSet(
-                    AECSIcon.BUTTON_BACKGROUND_ORIGINAL_DARK,
-                    AECSIcon.BUTTON_BACKGROUND_ORIGINAL_FOCUS,
-                    AECSIcon.BUTTON_BACKGROUND_ORIGINAL_HOVER
+                    AECSIcon.BUTTON_ORIGINAL_DARK,
+                    AECSIcon.BUTTON_ORIGINAL_DARK,
+                    AECSIcon.BUTTON_ORIGINAL_DARK_HOVER
             );
             case INSERT -> new BackgroundSet(
-                    AECSIcon.BUTTON_BACKGROUND_RED_DARK,
-                    AECSIcon.BUTTON_BACKGROUND_RED_FOCUS,
-                    AECSIcon.BUTTON_BACKGROUND_RED_HOVER
+                    AECSIcon.BUTTON_RED_DARK,
+                    AECSIcon.BUTTON_RED_DARK,
+                    AECSIcon.BUTTON_RED_DARK_HOVER
             );
             case EXTRACT -> new BackgroundSet(
-                    AECSIcon.BUTTON_BACKGROUND_BLUE_DARK,
-                    AECSIcon.BUTTON_BACKGROUND_BLUE_FOCUS,
-                    AECSIcon.BUTTON_BACKGROUND_BLUE_HOVER
+                    AECSIcon.BUTTON_BLUE_DARK,
+                    AECSIcon.BUTTON_BLUE_DARK,
+                    AECSIcon.BUTTON_BLUE_DARK_HOVER
             );
             case ALL -> new BackgroundSet(
-                    AECSIcon.BUTTON_BACKGROUND_PURPLE_DARK,
-                    AECSIcon.BUTTON_BACKGROUND_PURPLE_FOCUS,
-                    AECSIcon.BUTTON_BACKGROUND_PURPLE_HOVER
+                    AECSIcon.BUTTON_PURPLE_DARK,
+                    AECSIcon.BUTTON_PURPLE_DARK,
+                    AECSIcon.BUTTON_PURPLE_DARK_HOVER
             );
         };
     }

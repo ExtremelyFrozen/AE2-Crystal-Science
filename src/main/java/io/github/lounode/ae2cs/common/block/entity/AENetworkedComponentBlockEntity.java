@@ -23,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-@ProvideCaps(IInWorldGridNodeHost.class)
 public class AENetworkedComponentBlockEntity extends AENetworkedBlockEntity implements IMachineHost,
         ServerTickingBlockEntity, ClientTickingBlockEntity
 {
