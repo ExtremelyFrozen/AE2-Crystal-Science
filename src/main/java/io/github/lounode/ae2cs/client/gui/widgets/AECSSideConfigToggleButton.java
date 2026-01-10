@@ -96,9 +96,9 @@ public class AECSSideConfigToggleButton extends AECSColorToggleButton<SidePolicy
         return switch (policy)
         {
             case NONE -> 0x00000000;   // 不覆盖色
-            case INSERT -> 0xA0B05050; // 红（输入）
-            case EXTRACT -> 0xA05080C0; // 蓝（输出）
-            case ALL -> 0xA08060B0;    // 紫（输入输出）
+            case INSERT -> 0xA0D07070;
+            case EXTRACT -> 0xA070A0E0;
+            case ALL -> 0xA0A080D0;
         };
     }
 

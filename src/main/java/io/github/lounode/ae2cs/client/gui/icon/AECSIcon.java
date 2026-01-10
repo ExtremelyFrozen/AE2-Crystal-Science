@@ -35,7 +35,9 @@ public enum AECSIcon implements IButtonIcon
     BAND_MANAGER(0, 144),
 
     ALLOW_MEMORY_CARD(0, 160),
-    DENY_MEMORY_CARD(16, 160);
+    DENY_MEMORY_CARD(16, 160),
+
+    SIDE_CONFIG(0, 176);
 
 
     public final int x;

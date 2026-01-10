@@ -5,12 +5,18 @@ import appeng.blockentity.AEBaseBlockEntity;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.AESubScreen;
 import appeng.client.gui.style.ScreenStyle;
+import io.github.lounode.ae2cs.client.gui.icon.AECSIcon;
+import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSAutoModeToggleButton;
+import io.github.lounode.ae2cs.client.gui.widgets.AECSIconButton;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSSideConfigToggleButton;
 import io.github.lounode.ae2cs.common.menu.submenu.SideConfigMenu;
+import io.github.lounode.ae2cs.network.c2s.SideConfigMenuOpenPacket;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.NotNull;
 
 public class SideConfigGUI extends AEBaseScreen<SideConfigMenu>
 {
@@ -79,5 +85,19 @@ public class SideConfigGUI extends AEBaseScreen<SideConfigMenu>
             frontSideButton.syncFromMenu();
             backSideButton.syncFromMenu();
         }
+    }
+
+    public static AECSIconButton iconButton()
+    {
+        AECSIconButton iconButton = new AECSIconButton(button -> PacketDistributor.sendToServer(new SideConfigMenuOpenPacket()))
+        {
+            @Override
+            protected @NotNull IButtonIcon getIcon()
+            {
+                return AECSIcon.SIDE_CONFIG;
+            }
+        };
+        iconButton.setMessage(Component.translatable("ae2cs.menu.side_config.button.open"));
+        return iconButton;
     }
 }

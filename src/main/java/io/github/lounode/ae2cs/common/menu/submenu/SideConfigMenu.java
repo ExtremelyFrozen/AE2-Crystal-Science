@@ -18,7 +18,7 @@ public class SideConfigMenu extends AEBaseMenu implements CustomReturnableSubMen
     private static final String changeAutoImport = "change_auto_import";
     private static final String changeAutoExport = "change_auto_export";
 
-    private final MenuType<?> returnToMenuType;
+    private MenuType<?> returnToMenuType;
     private final CustomReturnableSubMenuHost host;
     private final SideConfigComponent sideConfig;
 
@@ -29,6 +29,7 @@ public class SideConfigMenu extends AEBaseMenu implements CustomReturnableSubMen
     {
         super(menuType, id, playerInventory, host);
 
+        // 返回至构造发生时的menu，这里做保底防止点击按钮失效，我们在实际打开前后手动设定这个类型
         this.returnToMenuType = menuType;
         this.host = host;
 
@@ -43,10 +44,15 @@ public class SideConfigMenu extends AEBaseMenu implements CustomReturnableSubMen
         registerClientAction(changeAutoExport, Boolean.class, this::onChangeAutoExport);
     }
 
+    public void setReturnToMenuType(MenuType<?> returnToMenuType)
+    {
+        this.returnToMenuType = returnToMenuType;
+    }
+
     @Override
     public void broadcastChanges()
     {
-        sidePolicies = new SideConfigField(sideConfig.getPolicies(), sideConfig.isAutoImport(), sideConfig.isAutoExport());
+        sidePolicies = new SideConfigField(sideConfig.getPolicies().clone(), sideConfig.isAutoImport(), sideConfig.isAutoExport());
         super.broadcastChanges();
     }
 

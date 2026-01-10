@@ -9,6 +9,4 @@ import net.minecraft.world.inventory.MenuType;
 public interface CustomReturnableSubMenu extends ISubMenu
 {
     MenuType<?> getReturnToMenuType();
-
-    void setReturnToMenuType(MenuType<?> menuType);
 }
