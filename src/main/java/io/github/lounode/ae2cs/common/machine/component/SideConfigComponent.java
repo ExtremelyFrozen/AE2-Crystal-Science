@@ -4,20 +4,34 @@ import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.config.Actionable;
 import appeng.api.inventories.BaseInternalInventory;
 import appeng.api.inventories.InternalInventory;
+import appeng.api.inventories.PlatformInventoryWrapper;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
+import appeng.api.stacks.GenericStack;
+import appeng.api.stacks.KeyCounter;
+import appeng.api.storage.MEStorage;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
+import io.github.lounode.ae2cs.api.genericinv.CombinedGenericInternalInventory;
+import io.github.lounode.ae2cs.api.genericinv.GenericInvStorageAdapter;
 import io.github.lounode.ae2cs.api.genericinv.GenericStackInvWrapper;
 import io.github.lounode.ae2cs.api.networking.SideConfigField;
+import io.github.lounode.ae2cs.api.util.GenericStackInvHelper;
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
 import io.github.lounode.ae2cs.common.machine.MachineComponentContainer;
 import io.github.lounode.ae2cs.common.machine.MachineContext;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumMap;
@@ -221,6 +235,316 @@ public class SideConfigComponent extends BaseMachineComponent
         appEngSideCache.put(dir, result);
         appEngSideCacheComputed.add(dir);
         return result;
+    }
+
+    /**
+     * 实际处理自动输入与自动输出
+     */
+    @Override
+    public void onServerTick(MachineContext ctx)
+    {
+        super.onServerTick(ctx);
+
+        Level level = ctx.level();
+        BlockPos pos = ctx.pos();
+
+        tickAppEngInv(level, pos);
+        tickGenericInv(level, pos);
+    }
+
+    private void tickAppEngInv(@NotNull Level level, @NotNull BlockPos pos)
+    {
+        if (level.isClientSide || appEngInvComponent == null) return;
+        if (!autoImport && !autoExport) return;
+
+
+        BaseInternalInventory self = appEngInvComponent.combined();
+
+        // 每个方向每tick的最大搬运量
+        final int TRANSFER_PER_SIDE = 576;
+
+        for (var kv : policies.entrySet())
+        {
+            Direction dir = kv.getKey();
+            SidePolicy policy = kv.getValue();
+
+            boolean doExport = autoExport && policy.allowExtract();
+            boolean doImport = autoImport && policy.allowInsert();
+            if (!doExport && !doImport) continue;
+
+
+            // 获取目标位置
+            BlockPos otherPos = pos.relative(dir);
+            Direction otherSide = dir.getOpposite();
+
+            // 利用AE2对外部进行物品能力进行包装，简化部分操作
+            IItemHandler otherItemHandler = level.getCapability(Capabilities.ItemHandler.BLOCK, otherPos, otherSide);
+            if (otherItemHandler == null) continue;
+            PlatformInventoryWrapper otherInv = new PlatformInventoryWrapper(otherItemHandler);
+
+            // 输出
+            if (doExport)
+            {
+                int remaining = TRANSFER_PER_SIDE;
+
+                for (int slot = 0; slot < self.size() && remaining > 0; slot++)
+                {
+                    ItemStack inside = self.getStackInSlot(slot);
+                    if (inside.isEmpty())
+                    {
+                        continue;
+                    }
+
+                    int attempt = Math.min(inside.getCount(), remaining);
+
+                    // 先模拟外部能吃多少
+                    ItemStack toTry = inside.copy();
+                    toTry.setCount(attempt);
+
+                    ItemStack overflowSim = otherInv.addItems(toTry, true);
+                    int accepted = attempt - overflowSim.getCount();
+                    if (accepted <= 0)
+                    {
+                        continue;
+                    }
+
+                    // 真正抽出accepted，再塞进外部
+                    ItemStack extracted = self.extractItem(slot, accepted, false);
+                    if (extracted.isEmpty())
+                    {
+                        continue;
+                    }
+
+                    ItemStack overflow = otherInv.addItems(extracted, false);
+
+                    // 保底回插
+                    if (!overflow.isEmpty())
+                    {
+                        self.addItems(overflow, false);
+                    }
+                    remaining -= accepted;
+                }
+            }
+
+            // 输入
+            if (doImport)
+            {
+                int remaining = TRANSFER_PER_SIDE;
+
+                for (int slot = 0; slot < otherInv.size() && remaining > 0; slot++)
+                {
+                    ItemStack out = otherInv.getStackInSlot(slot);
+                    if (out.isEmpty())
+                    {
+                        continue;
+                    }
+
+                    int attempt = Math.min(out.getCount(), remaining);
+
+                    // 先模拟内部能吃多少
+                    ItemStack toTry = out.copy();
+                    toTry.setCount(attempt);
+
+                    ItemStack overflowSim = self.addItems(toTry, true);
+                    int accepted = attempt - overflowSim.getCount();
+                    if (accepted <= 0)
+                    {
+                        continue;
+                    }
+
+                    // 真正从外部抽出accepted，塞进内部
+                    ItemStack extracted = otherInv.extractItem(slot, accepted, false);
+                    if (extracted.isEmpty())
+                    {
+                        continue;
+                    }
+
+                    ItemStack overflow = self.addItems(extracted, false);
+
+                    // 保底回插
+                    if (!overflow.isEmpty())
+                    {
+                        otherInv.addItems(overflow, false);
+                    }
+
+                    remaining -= accepted;
+                }
+            }
+        }
+    }
+
+    private void tickGenericInv(@NotNull Level level, @NotNull BlockPos pos)
+    {
+        if (level.isClientSide || genericInvComponent == null) return;
+        if (!autoImport && !autoExport) return;
+
+        CombinedGenericInternalInventory original = genericInvComponent.combined();
+        // 同时实现 MEStorage+GenericInternalInventory用于批量插拔更方便
+        GenericInvStorageAdapter self = new GenericInvStorageAdapter(original);
+
+        final long TRANSFER_PER_SIDE = 576L;
+        IActionSource source = IActionSource.empty();
+
+        for (var kv : policies.entrySet())
+        {
+            Direction dir = kv.getKey();
+            SidePolicy policy = kv.getValue();
+
+            boolean doExport = autoExport && policy.allowExtract();
+            boolean doImport = autoImport && policy.allowInsert();
+            if (!doExport && !doImport) continue;
+
+            BlockPos otherPos = pos.relative(dir);
+            Direction otherSide = dir.getOpposite();
+            BlockEntity otherBe = level.getBlockEntity(otherPos);
+
+            // 遍历优先使用 GenericInternalInventory
+            GenericInternalInventory otherInv =
+                    GenericStackInvHelper.getGenericInternalInv(level, otherPos, otherBe, otherSide);
+
+            // 对于普通仓库使用MEStorage包装（getBetterInteractMEStorage只取包装能力，不直接取MEStorage能力，防止从ME接口直接拿到整个网络存储）
+            MEStorage otherStorage =
+                    GenericStackInvHelper.getBetterInteractMEStorage(level, otherPos, otherSide);
+
+            if (otherInv == null && otherStorage == null)
+            {
+                continue;
+            }
+
+            // 输出
+            if (doExport)
+            {
+                long remaining = TRANSFER_PER_SIDE;
+
+                // 如果有Inv，则只操作Inv
+                if (otherInv != null)
+                {
+                    for (int slot = 0; slot < self.size() && remaining > 0; slot++)
+                    {
+                        GenericStack inside = self.getStack(slot);
+                        if (inside == null || inside.amount() <= 0) continue;
+
+                        AEKey what = inside.what();
+                        long attempt = Math.min(inside.amount(), remaining);
+
+                        // 先模拟目标最大接受量
+                        long accepted = GenericStackInvHelper.simulateInsertIntoInv(otherInv, what, attempt);
+                        if (accepted <= 0) continue;
+
+                        // 从self槽位抽出accepted
+                        long extracted = self.extract(slot, what, accepted, Actionable.MODULATE);
+                        if (extracted <= 0) continue;
+
+                        // 塞进目标
+                        long inserted = GenericStackInvHelper.insertIntoInv(otherInv, what, extracted, Actionable.MODULATE);
+
+                        // 保底回插到
+                        long overflow = extracted - inserted;
+                        if (overflow > 0)
+                        {
+                            GenericStackInvHelper.reinsertToInvPreferSlot(self, slot, what, overflow);
+                        }
+
+                        remaining -= inserted;
+                    }
+                }
+                else // 其次尝试Storage
+                {
+                    for (int slot = 0; slot < self.size() && remaining > 0; slot++)
+                    {
+                        GenericStack in = self.getStack(slot);
+                        if (in == null || in.amount() <= 0) continue;
+
+                        AEKey what = in.what();
+                        long attempt = Math.min(in.amount(), remaining);
+
+                        long accepted = otherStorage.insert(what, attempt, Actionable.SIMULATE, source);
+                        if (accepted <= 0) continue;
+
+                        long extracted = self.extract(slot, what, accepted, Actionable.MODULATE);
+                        if (extracted <= 0) continue;
+
+                        long inserted = otherStorage.insert(what, extracted, Actionable.MODULATE, source);
+
+                        long overflow = extracted - inserted;
+                        if (overflow > 0)
+                        {
+                            GenericStackInvHelper.reinsertToInvPreferSlot(self, slot, what, overflow);
+                        }
+
+                        remaining -= inserted;
+                    }
+                }
+            }
+
+            // 输入
+            if (doImport)
+            {
+                long remaining = TRANSFER_PER_SIDE;
+
+                // 优先Inv
+                if (otherInv != null)
+                {
+                    for (int s = 0; s < otherInv.size() && remaining > 0; s++)
+                    {
+                        GenericStack out = otherInv.getStack(s);
+                        if (out == null || out.amount() <= 0) continue;
+
+                        AEKey what = out.what();
+                        long attempt = Math.min(out.amount(), remaining);
+
+                        // 先模拟self容量
+                        long accepted = self.insert(what, attempt, Actionable.SIMULATE, source);
+                        if (accepted <= 0) continue;
+
+                        // 真正从外部槽位抽出
+                        long extracted = otherInv.extract(s, what, accepted, Actionable.MODULATE);
+                        if (extracted <= 0) continue;
+
+                        // 真正塞进self
+                        long inserted = self.insert(what, extracted, Actionable.MODULATE, source);
+
+                        // 保底回插
+                        long overflow = extracted - inserted;
+                        if (overflow > 0)
+                        {
+                            GenericStackInvHelper.reinsertToInvPreferSlot(otherInv, s, what, overflow);
+                        }
+
+                        remaining -= inserted;
+                    }
+                }
+                else // 无Inv，使用Storage
+                {
+                    KeyCounter counter = otherStorage.getAvailableStacks();
+                    for (AEKey what : counter.keySet())
+                    {
+                        if (remaining <= 0) break;
+
+                        long available = counter.get(what);
+                        if (available <= 0) continue;
+
+                        long attempt = Math.min(available, remaining);
+
+                        long accepted = self.insert(what, attempt, Actionable.SIMULATE, source);
+                        if (accepted <= 0) continue;
+
+                        long extracted = otherStorage.extract(what, accepted, Actionable.MODULATE, source);
+                        if (extracted <= 0) continue;
+
+                        long inserted = self.insert(what, extracted, Actionable.MODULATE, source);
+
+                        long overflow = extracted - inserted;
+                        if (overflow > 0)
+                        {
+                            otherStorage.insert(what, overflow, Actionable.MODULATE, source);
+                        }
+
+                        remaining -= inserted;
+                    }
+                }
+            }
+        }
     }
 
     @Override

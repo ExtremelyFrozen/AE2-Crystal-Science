@@ -77,7 +77,7 @@
   "item.ae2cs.resonating_print_press": "谐振压印模板",
   "item.ae2cs.resonating_circuit_print": "谐振电路板",
   "item.ae2cs.resonating_processor": "谐振处理器",
-  "item.ae2cs.simple_print_press": "简单压印模板",
+  "item.ae2cs.simple_print_press": "空白压印模板",
   "item.ae2cs.simple_circuit_print": "简单电路板",
   "item.ae2cs.simple_processor": "简单处理器",
   "item.ae2cs.meteor_crystal_sword": "陨石水晶剑",
@@ -221,6 +221,7 @@
   "ae2cs.menu.side_config.button.export": "主动弹出",
   "ae2cs.auto_mode.disabled": "禁用",
   "ae2cs.auto_mode.enabled": "启用",
+  "ae2cs.menu.side_config.button.clear": "清空配置\n将所有面配置设置为禁用",
 
   "ae2cs.msg.broadcaster.sender.not_connect_any_band": "当前广播装置未链接到任何频段",
 

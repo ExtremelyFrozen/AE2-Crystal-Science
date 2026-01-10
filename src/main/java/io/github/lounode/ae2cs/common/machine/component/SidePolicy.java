@@ -14,7 +14,7 @@ public enum SidePolicy implements StringRepresentable
     INSERT(true, false),
     EXTRACT(false, true),
     NONE(false, false),
-    ALL(false, true);
+    ALL(true, true);
 
 
     public static final Codec<SidePolicy> CODEC = StringRepresentable.fromEnum(SidePolicy::values);

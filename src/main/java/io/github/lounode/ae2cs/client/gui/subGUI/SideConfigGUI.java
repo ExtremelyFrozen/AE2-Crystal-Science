@@ -6,6 +6,7 @@ import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.AESubScreen;
 import appeng.client.gui.style.ScreenStyle;
 import io.github.lounode.ae2cs.client.gui.icon.AECSIcon;
+import io.github.lounode.ae2cs.client.gui.icon.AdaptedAE2Icon;
 import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSAutoModeToggleButton;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSIconButton;
@@ -22,6 +23,7 @@ public class SideConfigGUI extends AEBaseScreen<SideConfigMenu>
 {
     private final AECSAutoModeToggleButton autoImportButton;
     private final AECSAutoModeToggleButton autoExportButton;
+    private final AECSIconButton clearSideDirPolicyButton;
 
     private final AECSSideConfigToggleButton topSideButton;
     private final AECSSideConfigToggleButton bottomSideButton;
@@ -42,6 +44,15 @@ public class SideConfigGUI extends AEBaseScreen<SideConfigMenu>
         autoExportButton = new AECSAutoModeToggleButton(false, Component.translatable("ae2cs.menu.side_config.button.export"), menu::sendChangeAutoExport);
         autoExportButton.mapIcon(AECSAutoModeToggleButton.State.ENABLED, AECSIcon.SENDER_STATE);
         autoExportButton.mapIcon(AECSAutoModeToggleButton.State.DISABLED, AECSIcon.SENDER_STATE);
+        clearSideDirPolicyButton = new AECSIconButton(button -> menu.sendClearSideDirPolicy())
+        {
+            @Override
+            protected @NotNull IButtonIcon getIcon()
+            {
+                return AdaptedAE2Icon.CLEAR;
+            }
+        };
+        this.clearSideDirPolicyButton.setMessage(Component.translatable("ae2cs.menu.side_config.button.clear"));
 
         if (menu.getBlockEntity() instanceof AEBaseBlockEntity aeBaseBlockEntity)
         {
@@ -65,6 +76,7 @@ public class SideConfigGUI extends AEBaseScreen<SideConfigMenu>
 
         addToLeftToolbar(autoImportButton);
         addToLeftToolbar(autoExportButton);
+        addToLeftToolbar(clearSideDirPolicyButton);
         widgets.add("top_side_button", topSideButton);
         widgets.add("bottom_side_button", bottomSideButton);
         widgets.add("left_side_button", leftSideButton);

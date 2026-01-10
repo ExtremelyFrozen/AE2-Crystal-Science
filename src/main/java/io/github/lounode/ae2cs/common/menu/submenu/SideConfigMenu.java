@@ -15,6 +15,7 @@ import net.minecraft.world.inventory.MenuType;
 public class SideConfigMenu extends AEBaseMenu implements CustomReturnableSubMenu
 {
     private static final String changeSideDirPolicy = "change_side_dir_policy";
+    private static final String clearSideDirPolicy = "clear_side_dir_policy";
     private static final String changeAutoImport = "change_auto_import";
     private static final String changeAutoExport = "change_auto_export";
 
@@ -40,6 +41,7 @@ public class SideConfigMenu extends AEBaseMenu implements CustomReturnableSubMen
         this.sideConfig = machineHost.getMachineComponents().getService(SideConfigComponent.class);
 
         registerClientAction(changeSideDirPolicy, SideConfigChoice.class, this::onChangeSideDirPolicy);
+        registerClientAction(clearSideDirPolicy, this::onClearSideDirPolicy);
         registerClientAction(changeAutoImport, Boolean.class, this::onChangeAutoImport);
         registerClientAction(changeAutoExport, Boolean.class, this::onChangeAutoExport);
     }
@@ -61,6 +63,11 @@ public class SideConfigMenu extends AEBaseMenu implements CustomReturnableSubMen
         sendClientAction(changeSideDirPolicy, choice);
     }
 
+    public void sendClearSideDirPolicy()
+    {
+        sendClientAction(clearSideDirPolicy);
+    }
+
     public void sendChangeAutoImport(boolean autoImport)
     {
         sendClientAction(changeAutoImport, autoImport);
@@ -74,6 +81,14 @@ public class SideConfigMenu extends AEBaseMenu implements CustomReturnableSubMen
     private void onChangeSideDirPolicy(SideConfigChoice choice)
     {
         this.sideConfig.set(choice.dir(), choice.policy());
+    }
+
+    private void onClearSideDirPolicy()
+    {
+        for (Direction dir : Direction.values())
+        {
+            this.sideConfig.set(dir, SidePolicy.NONE);
+        }
     }
 
     private void onChangeAutoImport(boolean autoImport)
