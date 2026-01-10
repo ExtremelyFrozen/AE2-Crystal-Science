@@ -184,15 +184,21 @@ public class QuartzOscillatorClockPart extends AEBasePart implements QuartzOscil
 
     private void notifyRedstoneNeighbors(Level level, BlockPos pos)
     {
+        // 宿主方块位置
         var state = level.getBlockState(pos);
         var block = state.getBlock();
 
         // 通知宿主方块周围
         level.updateNeighborsAt(pos, block);
+        level.updateNeighbourForOutputSignal(pos, block);
 
         // 通知 part 外侧相邻方块
         var outPos = pos.relative(getSide());
-        level.updateNeighborsAt(outPos, block);
+        var outState = level.getBlockState(outPos);
+        var outBlock = outState.getBlock();
+
+        level.updateNeighborsAt(outPos, outBlock);
+        level.updateNeighbourForOutputSignal(outPos, outBlock);
     }
 
     @Override

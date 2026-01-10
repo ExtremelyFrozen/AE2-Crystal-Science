@@ -1,11 +1,9 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
-import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.blockentity.ClientTickingBlockEntity;
 import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.blockentity.grid.AENetworkedBlockEntity;
 import appeng.util.SettingsFrom;
-import io.github.lounode.ae2cs.api.cap.ProvideCaps;
 import io.github.lounode.ae2cs.common.machine.IMachineHost;
 import io.github.lounode.ae2cs.common.machine.MachineComponentContainer;
 import io.github.lounode.ae2cs.common.machine.MachineContext;
