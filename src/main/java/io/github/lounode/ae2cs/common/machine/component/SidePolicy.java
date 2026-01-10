@@ -1,12 +1,24 @@
 package io.github.lounode.ae2cs.common.machine.component;
 
-public enum SidePolicy
+import com.mojang.serialization.Codec;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.StringRepresentable;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Locale;
+
+public enum SidePolicy implements StringRepresentable
 {
     INSERT(true, false),
     EXTRACT(false, true),
     NONE(false, false),
     ALL(false, true);
 
+
+    public static final Codec<SidePolicy> CODEC = StringRepresentable.fromEnum(SidePolicy::values);
+    public static final StreamCodec<ByteBuf, SidePolicy> STREAM_CODEC = ByteBufCodecs.STRING_UTF8.map(SidePolicy::valueOf, Enum::name);
 
     final boolean allowInsert;
     final boolean allowExtract;
@@ -25,5 +37,11 @@ public enum SidePolicy
     public boolean allowInsert()
     {
         return allowInsert;
+    }
+
+    @Override
+    public @NotNull String getSerializedName()
+    {
+        return this.name().toLowerCase(Locale.ROOT);
     }
 }

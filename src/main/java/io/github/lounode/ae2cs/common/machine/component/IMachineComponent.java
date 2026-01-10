@@ -4,10 +4,13 @@ import io.github.lounode.ae2cs.common.machine.MachineComponentContainer;
 import io.github.lounode.ae2cs.common.machine.MachineContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -26,6 +29,14 @@ public interface IMachineComponent
     }
 
     default void onClientTick(MachineContext ctx)
+    {
+    }
+
+    default void importSettings(MachineContext ctx, DataComponentMap input, @Nullable Player player)
+    {
+    }
+
+    default void exportSettings(MachineContext ctx, DataComponentMap.Builder builder, @Nullable Player player)
     {
     }
 

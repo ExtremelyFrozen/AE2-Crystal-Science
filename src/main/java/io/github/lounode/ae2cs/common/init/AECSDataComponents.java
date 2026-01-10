@@ -3,6 +3,7 @@ package io.github.lounode.ae2cs.common.init;
 import com.mojang.serialization.Codec;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.linker.broadcast.MemoryCardBandInfo;
+import io.github.lounode.ae2cs.api.networking.SideConfigField;
 import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponentType;
@@ -67,6 +68,16 @@ public class AECSDataComponents
             register("resonating_pattern_selected_input", b -> b
                     .persistent(Codec.INT)
                     .networkSynchronized(ByteBufCodecs.VAR_INT)
+                    .cacheEncoding()
+            );
+
+    /**
+     * 给内存卡记录当前机器面配置
+     */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<SideConfigField>> SIDE_CONFIG_FOR_MEMORY_CARD =
+            register("side_config_for_memory_card", b -> b
+                    .persistent(SideConfigField.CODEC)
+                    .networkSynchronized(SideConfigField.STREAM_CODEC)
                     .cacheEncoding()
             );
 

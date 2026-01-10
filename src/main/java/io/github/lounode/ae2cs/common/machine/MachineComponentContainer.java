@@ -3,11 +3,14 @@ package io.github.lounode.ae2cs.common.machine;
 import io.github.lounode.ae2cs.common.machine.component.IMachineComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,6 +85,16 @@ public final class MachineComponentContainer
     public void onClientTick(MachineContext ctx)
     {
         components.forEach(component -> component.onClientTick(ctx));
+    }
+
+    public void importSettings(MachineContext ctx, DataComponentMap input, @Nullable Player player)
+    {
+        components.forEach(component -> component.importSettings(ctx, input, player));
+    }
+
+    public void exportSettings(MachineContext ctx, DataComponentMap.Builder builder, @Nullable Player player)
+    {
+        components.forEach(component -> component.exportSettings(ctx, builder, player));
     }
 
     public void writeNbt(CompoundTag tag, HolderLookup.Provider r)

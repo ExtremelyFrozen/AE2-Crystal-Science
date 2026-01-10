@@ -4,14 +4,17 @@ import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.blockentity.ClientTickingBlockEntity;
 import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.blockentity.grid.AENetworkedBlockEntity;
+import appeng.util.SettingsFrom;
 import io.github.lounode.ae2cs.api.cap.ProvideCaps;
 import io.github.lounode.ae2cs.common.machine.IMachineHost;
 import io.github.lounode.ae2cs.common.machine.MachineComponentContainer;
 import io.github.lounode.ae2cs.common.machine.MachineContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -82,6 +85,20 @@ public class AENetworkedComponentBlockEntity extends AENetworkedBlockEntity impl
     public void clientTick()
     {
         machineComponents.onClientTick(new MachineContext(this, level, worldPosition, getBlockState()));
+    }
+
+    @Override
+    public void importSettings(SettingsFrom mode, DataComponentMap input, @Nullable Player player)
+    {
+        super.importSettings(mode, input, player);
+        machineComponents.importSettings(new MachineContext(this, level, worldPosition, getBlockState()), input, player);
+    }
+
+    @Override
+    public void exportSettings(SettingsFrom mode, DataComponentMap.Builder builder, @Nullable Player player)
+    {
+        super.exportSettings(mode, builder, player);
+        machineComponents.exportSettings(new MachineContext(this, level, worldPosition, getBlockState()), builder, player);
     }
 
     @Override

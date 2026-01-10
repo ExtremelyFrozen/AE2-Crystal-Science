@@ -8,11 +8,15 @@ import appeng.api.stacks.AEKey;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 import io.github.lounode.ae2cs.api.genericinv.GenericStackInvWrapper;
+import io.github.lounode.ae2cs.api.networking.SideConfigField;
+import io.github.lounode.ae2cs.common.init.AECSDataComponents;
 import io.github.lounode.ae2cs.common.machine.MachineComponentContainer;
 import io.github.lounode.ae2cs.common.machine.MachineContext;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -217,6 +221,38 @@ public class SideConfigComponent extends BaseMachineComponent
         appEngSideCache.put(dir, result);
         appEngSideCacheComputed.add(dir);
         return result;
+    }
+
+    @Override
+    public void importSettings(MachineContext ctx, DataComponentMap input, @Nullable Player player)
+    {
+        super.importSettings(ctx, input, player);
+
+        SideConfigField configField = input.get(AECSDataComponents.SIDE_CONFIG_FOR_MEMORY_CARD.get());
+        if (configField != null)
+        {
+            this.autoImport = configField.autoImport();
+            this.autoExport = configField.autoExport();
+            for (var kv : configField.sidePolicies().entrySet())
+            {
+                if (kv.getKey() != null && kv.getValue() != null)
+                {
+                    this.policies.put(kv.getKey(), kv.getValue());
+                }
+            }
+
+            invalidateAllCaches();
+            ctx.host().invalidCap();
+        }
+    }
+
+    @Override
+    public void exportSettings(MachineContext ctx, DataComponentMap.Builder builder, @Nullable Player player)
+    {
+        super.exportSettings(ctx, builder, player);
+
+        SideConfigField configField = new SideConfigField(this.policies.clone(), this.autoImport, this.autoExport);
+        builder.set(AECSDataComponents.SIDE_CONFIG_FOR_MEMORY_CARD, configField);
     }
 
     @Override
