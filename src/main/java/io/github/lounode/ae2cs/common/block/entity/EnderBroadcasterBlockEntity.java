@@ -463,6 +463,7 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
         }
 
         this.bandId = newBand.getName();
+        markForClientUpdate();
         setChanged();
     }
 
@@ -505,6 +506,7 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
         }
 
         bandId = "";
+        markForClientUpdate();
         connectionType = ConnectionType.NO_CONNECTION;
         setEnabledCustomChannel(false);
         setChanged();
@@ -688,6 +690,7 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
     protected void writeToStream(RegistryFriendlyByteBuf data)
     {
         super.writeToStream(data);
+        data.writeUtf(bandId);
         data.writeBoolean(this.activeForClient);
         data.writeBoolean(this.asSenderForClient);
     }
@@ -696,6 +699,7 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
     protected boolean readFromStream(RegistryFriendlyByteBuf data)
     {
         super.readFromStream(data);
+        this.bandId = data.readUtf();
         this.activeForClient = data.readBoolean();
         this.asSenderForClient = data.readBoolean();
         return true;
