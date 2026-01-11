@@ -28,7 +28,7 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
     /**
      * 输出翻转后，输入采样冷却（避免输出回灌）
      */
-    private static final int INPUT_SAMPLE_COOLDOWN_TICKS = 2;
+    private static final int INPUT_SAMPLE_COOLDOWN_TICKS = 1;
 
     protected final QuartzOscillatorClockHost host;
     protected final IManagedGridNode mainNode;
