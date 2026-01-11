@@ -15,7 +15,8 @@ import net.minecraft.world.entity.player.Inventory;
 public class QuartzOscillatorClockGUI extends UpgradeableScreen<QuartzOscillatorClockMenu>
 {
     private final AECSServerSettingToggleButton<RedstoneMode> redstoneMode;
-    private final NumberEntryWidget level;
+    private final NumberEntryWidget levelCountHold;
+    private final NumberEntryWidget levelPulseWidth;
 
     public QuartzOscillatorClockGUI(QuartzOscillatorClockMenu menu, Inventory playerInventory, Component title, ScreenStyle style)
     {
@@ -23,10 +24,15 @@ public class QuartzOscillatorClockGUI extends UpgradeableScreen<QuartzOscillator
         this.redstoneMode = new AECSServerSettingToggleButton<>(AECSSettings.REDSTONE_CONTROLLED_NO_PULSE, RedstoneMode.HIGH_SIGNAL);
         this.addToLeftToolbar(this.redstoneMode);
 
-        this.level = widgets.addNumberEntryWidget("level", NumberEntryType.UNITLESS);
-        this.level.setTextFieldStyle(style.getWidget("level_input"));
-        this.level.setOnChange(this::onValueChange);
-        this.level.setOnConfirm(this::onClose);
+        this.levelCountHold = widgets.addNumberEntryWidget("level_count_hold", NumberEntryType.UNITLESS);
+        this.levelCountHold.setTextFieldStyle(style.getWidget("level_count_hold_input"));
+        this.levelCountHold.setOnChange(this::onCountDownChange);
+        this.levelCountHold.setOnConfirm(this::onClose);
+
+        this.levelPulseWidth = widgets.addNumberEntryWidget("level_pulse_width", NumberEntryType.UNITLESS);
+        this.levelPulseWidth.setTextFieldStyle(style.getWidget("level_pulse_width_input"));
+        this.levelPulseWidth.setOnChange(this::onPulseWidthChange);
+        this.levelPulseWidth.setOnConfirm(this::onClose);
     }
 
     @Override
@@ -38,15 +44,24 @@ public class QuartzOscillatorClockGUI extends UpgradeableScreen<QuartzOscillator
         this.redstoneMode.set(menu.getRedStoneMode());
         this.redstoneMode.setVisibility(this.redstoneMode.active);
 
-        this.level.setLongValue(this.menu.pulseCountHold);
+        this.levelCountHold.setLongValue(this.menu.pulseCountHold);
+        this.levelPulseWidth.setLongValue(this.menu.pulseWidthTicks);
 
     }
 
-    private void onValueChange()
+    private void onCountDownChange()
     {
-        this.level.getIntValue().ifPresent(value -> {
+        this.levelCountHold.getIntValue().ifPresent(value -> {
             if (value != menu.pulseCountHold)
                 menu.sendChangePulseCountHold(value);
+        });
+    }
+
+    private void onPulseWidthChange()
+    {
+        this.levelPulseWidth.getIntValue().ifPresent(value -> {
+            if (value != menu.pulseWidthTicks)
+                menu.sendChangePulseWidthTicks(value);
         });
     }
 }

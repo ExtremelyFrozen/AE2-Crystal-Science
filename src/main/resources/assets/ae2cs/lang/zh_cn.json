@@ -223,6 +223,9 @@
   "ae2cs.auto_mode.enabled": "启用",
   "ae2cs.menu.side_config.button.clear": "清空配置\n将所有面配置设置为禁用",
 
+  "ae2cs.menu.quartz_oscillator_clock.text.count_down": "触发间隔时间（刻）：",
+  "ae2cs.menu.quartz_oscillator_clock.text.pulse_width": "触发持续时间（刻）：",
+
   "ae2cs.msg.broadcaster.sender.not_connect_any_band": "当前广播装置未链接到任何频段",
 
   "ae2cs.msg.band_create.no_name": "频段名不能为空",
