@@ -21,4 +21,6 @@ public class AECSSettings
     public static final Setting<AutoLinkMode> AUTO_LINK_MODE = Settings.register("aecs_auto_link_mode", AutoLinkMode.class);
 
     public static final Setting<AutoLinkCableMode> AUTO_LINK_CABLE_MODE = Settings.register("aecs_auto_link_cable_mode", AutoLinkCableMode.class);
+
+    public static final Setting<SoundMode> SOUND_MODE = Settings.register("aecs_sound_mode", SoundMode.class);
 }

@@ -4,6 +4,7 @@ import appeng.api.util.IConfigManager;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.UpgradeableMenu;
 import io.github.lounode.ae2cs.api.settings.AECSSettings;
+import io.github.lounode.ae2cs.api.settings.SoundMode;
 import io.github.lounode.ae2cs.common.me.logic.QuartzOscillatorClockHost;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
@@ -18,6 +19,9 @@ public class QuartzOscillatorClockMenu extends UpgradeableMenu<QuartzOscillatorC
 
     @GuiSync(11)
     public int pulseWidthTicks = 1;
+
+    @GuiSync(12)
+    public SoundMode soundMode = SoundMode.UNMUTE;
 
     public QuartzOscillatorClockMenu(MenuType<?> menuType, int id, Inventory ip, QuartzOscillatorClockHost host)
     {
@@ -59,5 +63,6 @@ public class QuartzOscillatorClockMenu extends UpgradeableMenu<QuartzOscillatorC
     protected void loadSettingsFromHost(IConfigManager cm)
     {
         this.setRedStoneMode(cm.getSetting(AECSSettings.REDSTONE_CONTROLLED_NO_PULSE));
+        soundMode = getHost().getLogic().getConfigManager().getSetting(AECSSettings.SOUND_MODE);
     }
 }

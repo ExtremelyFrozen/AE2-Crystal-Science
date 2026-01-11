@@ -7,6 +7,7 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.NumberEntryWidget;
 import appeng.core.definitions.AEItems;
 import io.github.lounode.ae2cs.api.settings.AECSSettings;
+import io.github.lounode.ae2cs.api.settings.SoundMode;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSServerSettingToggleButton;
 import io.github.lounode.ae2cs.common.menu.QuartzOscillatorClockMenu;
 import net.minecraft.network.chat.Component;
@@ -14,6 +15,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class QuartzOscillatorClockGUI extends UpgradeableScreen<QuartzOscillatorClockMenu>
 {
+    private final AECSServerSettingToggleButton<SoundMode> soundModeButton;
     private final AECSServerSettingToggleButton<RedstoneMode> redstoneMode;
     private final NumberEntryWidget levelCountHold;
     private final NumberEntryWidget levelPulseWidth;
@@ -21,6 +23,8 @@ public class QuartzOscillatorClockGUI extends UpgradeableScreen<QuartzOscillator
     public QuartzOscillatorClockGUI(QuartzOscillatorClockMenu menu, Inventory playerInventory, Component title, ScreenStyle style)
     {
         super(menu, playerInventory, title, style);
+        this.soundModeButton = new AECSServerSettingToggleButton<>(AECSSettings.SOUND_MODE, SoundMode.UNMUTE);
+        this.addToLeftToolbar(soundModeButton);
         this.redstoneMode = new AECSServerSettingToggleButton<>(AECSSettings.REDSTONE_CONTROLLED_NO_PULSE, RedstoneMode.HIGH_SIGNAL);
         this.addToLeftToolbar(this.redstoneMode);
 
@@ -39,6 +43,8 @@ public class QuartzOscillatorClockGUI extends UpgradeableScreen<QuartzOscillator
     protected void updateBeforeRender()
     {
         super.updateBeforeRender();
+
+        this.soundModeButton.set(menu.soundMode);
 
         this.redstoneMode.active = menu.hasUpgrade(AEItems.REDSTONE_CARD);
         this.redstoneMode.set(menu.getRedStoneMode());

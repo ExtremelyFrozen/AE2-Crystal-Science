@@ -14,9 +14,12 @@ import appeng.api.util.IConfigurableObject;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import io.github.lounode.ae2cs.api.settings.AECSSettings;
+import io.github.lounode.ae2cs.api.settings.SoundMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 
@@ -87,6 +90,7 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
 
         this.cm = IConfigManager.builder(this::onConfigManagerChange)
                 .registerSetting(AECSSettings.REDSTONE_CONTROLLED_NO_PULSE, RedstoneMode.IGNORE)
+                .registerSetting(AECSSettings.SOUND_MODE, SoundMode.UNMUTE)
                 .build();
 
         this.upgrades = UpgradeInventories.forMachine(is, 1, this::onUpgradesChange);
@@ -205,7 +209,7 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
      * 开始一次脉冲：只负责拉高输出并设置 pulseEndGameTime。
      * 注意：下一次脉冲的倒计时从“脉冲结束”开始，所以这里不推进/不消耗 countdown。
      */
-    private void beginPulse(Level level)
+    private void beginPulse(Level level, BlockPos pos)
     {
         if (isPulsing(level))
         {
@@ -216,18 +220,25 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
 
         // 具体输出交给host
         this.host.setPulseActive(true);
+        notifyRedstone(level, pos);
 
         // 脉冲期间不排程下一次；等结束时再排程
         this.nextPulseGameTime = -1;
 
         // 短暂不采样输入
         this.inputSampleCooldown = INPUT_SAMPLE_COOLDOWN_TICKS;
+
+        // 声效
+        if (getConfigManager().getSetting(AECSSettings.SOUND_MODE) == SoundMode.UNMUTE)
+        {
+            level.playSound(null, pos, SoundEvents.COPPER_BULB_TURN_ON, SoundSource.BLOCKS);
+        }
     }
 
     /**
      * 结束脉冲，并从“当前时刻”开始排程下一次脉冲：now + hold
      */
-    private void endPulse(Level level)
+    private void endPulse(Level level, BlockPos pos)
     {
         if (this.pulseEndGameTime < 0)
         {
@@ -236,6 +247,7 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
 
         this.pulseEndGameTime = -1;
         this.host.setPulseActive(false);
+        notifyRedstone(level, pos);
 
         // 短暂不采样输入
         this.inputSampleCooldown = INPUT_SAMPLE_COOLDOWN_TICKS;
@@ -243,6 +255,12 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
         int hold = Math.max(1, this.currentHold);
         this.currentCountDown = hold;
         this.nextPulseGameTime = level.getGameTime() + hold;
+
+        // 声效
+        if (getConfigManager().getSetting(AECSSettings.SOUND_MODE) == SoundMode.UNMUTE)
+        {
+            level.playSound(null, pos, SoundEvents.COPPER_BULB_TURN_OFF, SoundSource.BLOCKS);
+        }
     }
 
     private void tickServer(Level level, BlockPos pos, int ticksSinceLastCall)
@@ -254,6 +272,7 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
 
             this.pulseEndGameTime = -1;
             this.host.setPulseActive(false);
+            notifyRedstone(level, pos);
 
             // 读档后：把 nextPulseGameTime 对齐为 “now + currentCountDown”
             int hold = Math.max(1, this.currentHold);
@@ -272,7 +291,7 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
         {
             if (level.getGameTime() >= this.pulseEndGameTime)
             {
-                endPulse(level);
+                endPulse(level, pos);
             }
             return;
         }
@@ -307,7 +326,23 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
         }
 
         // 到点：触发一次脉冲；注意这次脉冲的“下一次倒计时”会在 endPulse 里排程
-        beginPulse(level);
+        beginPulse(level, pos);
+    }
+
+    /**
+     * 为了防止setPulseActive在某些实现可能跳过邻居通知，我们在这里手动进行通知，必须跟在setPulseActive后调用
+     */
+    private void notifyRedstone(Level level, BlockPos pos)
+    {
+        if (level == null || pos == null) return;
+
+        // 宿主方块位置
+        var state = level.getBlockState(pos);
+        var block = state.getBlock();
+
+        // 通知宿主方块周围
+        level.updateNeighborsAt(pos, block);
+        level.updateNeighbourForOutputSignal(pos, block);
     }
 
     public void writeToNBT(CompoundTag tag, HolderLookup.Provider registries)

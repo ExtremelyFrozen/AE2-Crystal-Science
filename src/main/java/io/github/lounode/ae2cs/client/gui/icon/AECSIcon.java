@@ -65,7 +65,10 @@ public enum AECSIcon implements IButtonIcon
     BUTTON_ORIGINAL_COMMON(70, 236, 18, 20),
     BUTTON_ORIGINAL_LIGHT_HOVER(142, 196, 18, 20),
     BUTTON_ORIGINAL_DARK_HOVER(142, 216, 18, 20),
-    BUTTON_ORIGINAL_COMMON_HOVER(142, 236, 18, 20);
+    BUTTON_ORIGINAL_COMMON_HOVER(142, 236, 18, 20),
+
+    SOUND_UNMUTE(0, 192),
+    SOUND_MUTE(0, 208);
 
     public final int x;
     public final int y;

@@ -91,6 +91,15 @@ public final class AECSSettingAppearances
                 Component.translatable("ae2cs.machine_settings.auto_link_cable_mode.title"),
                 Component.translatable("ae2cs.machine_settings.auto_link_cable_mode.disable.desc"));
 
+        register(AECSIcon.SOUND_MUTE,
+                AECSSettings.SOUND_MODE, SoundMode.MUTE,
+                Component.translatable("ae2cs.machine_settings.sound_mode.title"),
+                Component.translatable("ae2cs.machine_settings.sound_mode.mute.desc"));
+        register(AECSIcon.SOUND_UNMUTE,
+                AECSSettings.SOUND_MODE, SoundMode.UNMUTE,
+                Component.translatable("ae2cs.machine_settings.sound_mode.title"),
+                Component.translatable("ae2cs.machine_settings.sound_mode.unmute.desc"));
+
     }
 
     private AECSSettingAppearances()

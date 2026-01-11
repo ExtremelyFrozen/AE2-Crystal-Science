@@ -272,6 +272,10 @@
   "ae2cs.machine_settings.auto_link_cable_mode.enable.desc": "打开自动连接模式后会连接到线缆类设备",
   "ae2cs.machine_settings.auto_link_cable_mode.disable.desc": "打开自动连接模式后不会连接到线缆类设备",
 
+  "ae2cs.machine_settings.sound_mode.title": "声音设置",
+  "ae2cs.machine_settings.sound_mode.mute.desc": "静音",
+  "ae2cs.machine_settings.sound_mode.unmute.desc": "正常",
+
   "ae2cs.button.side_config.tooltip": "%s\n%s",
 
   "ae2cs.text.side_policy.insert": "输入",
