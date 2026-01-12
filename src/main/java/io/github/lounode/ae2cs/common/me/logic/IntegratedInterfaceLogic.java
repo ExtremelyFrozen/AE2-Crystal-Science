@@ -1062,9 +1062,14 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         // 升级
         this.upgrades.readFromNBT(tag, "upgrades", registries);
 
-        // 配置 / 存储
+        // 配置
         this.configInv.readFromChildTag(tag, "config", registries);
-        this.storage.readFromChildTag(tag, "storage", registries);
+
+        // 存储-支持两个key，使其可以通过升级模板从接口或者供应器任意一方升级得到
+        if(tag.contains("storage"))
+            this.storage.readFromChildTag(tag, "storage", registries);
+        else if(tag.contains("returnInv"))
+            this.storage.readFromChildTag(tag, "returnInv", registries);
 
         // 机器配置
         this.configManager.readFromNBT(tag, registries);

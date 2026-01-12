@@ -116,11 +116,13 @@ public class UpgradeItem extends Item
         return InteractionResult.PASS;
     }
 
+    /** 注册方块替换，不得注册save与load不兼容的方块，否则可能导致未定义行为或者错误 */
     public static void registerReplaceInfo(Block from, Block to)
     {
         BLOCK_REPLACE_INFO.put(from, to);
     }
 
+    /** 注册part替换，不得注册save与load不兼容的部件，否则可能导致未定义行为或者错误 */
     public static void registerReplaceInfo(IPartItem<?> from, IPartItem<?> to)
     {
         PART_REPLACE_INFO.put(from, to);
