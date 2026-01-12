@@ -1,5 +1,8 @@
 package io.github.lounode.ae2cs.common.machine;
 
+import io.github.lounode.ae2cs.common.machine.component.AppEngInvComponent;
+import io.github.lounode.ae2cs.common.machine.component.EnergyComponent;
+import io.github.lounode.ae2cs.common.machine.component.GenericStackInvComponent;
 import io.github.lounode.ae2cs.common.machine.component.IMachineComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -23,6 +26,16 @@ public final class MachineComponentContainer
     private final List<IMachineComponent> components = new ArrayList<>();
     private final Map<Class<?>, Object> services = new HashMap<>();
 
+    @Nullable
+    private AppEngInvComponent appEngInvComponent;
+
+    @Nullable
+    private GenericStackInvComponent genericStackInvComponent;
+
+    @Nullable
+    private EnergyComponent energyComponent;
+
+
     public MachineComponentContainer(IMachineHost host)
     {
         this.host = host;
@@ -40,29 +53,44 @@ public final class MachineComponentContainer
         return component;
     }
 
-    public void exposeService(Class<?> key, Object impl)
+    public <T> void exposeService(Class<T> key, T impl)
     {
         services.put(key, impl);
+
+        if (impl instanceof AppEngInvComponent inv)
+            this.appEngInvComponent = inv;
+        else if (impl instanceof GenericStackInvComponent inv)
+            this.genericStackInvComponent = inv;
+        else if (impl instanceof EnergyComponent energy)
+            this.energyComponent = energy;
     }
 
     public boolean hasService(Class<?> key)
     {
+        if (key == AppEngInvComponent.class) return appEngInvComponent != null;
+        if (key == GenericStackInvComponent.class) return genericStackInvComponent != null;
+        if (key == EnergyComponent.class) return energyComponent != null;
+
         return services.containsKey(key);
+    }
+
+    @NotNull
+    public <T> T getService(Class<T> key)
+    {
+        Object obj;
+        if (key == AppEngInvComponent.class) obj = appEngInvComponent;
+        else if (key == GenericStackInvComponent.class) obj = genericStackInvComponent;
+        else if (key == EnergyComponent.class) obj = energyComponent;
+        else obj = services.get(key);
+
+        if (obj == null) throw new IllegalStateException("Missing services: " + key.getName());
+        return key.cast(obj);
     }
 
     public <T extends IMachineComponent> boolean hasComponent(Class<T> type)
     {
         for (var c : components) if (type.isInstance(c)) return true;
         return false;
-    }
-
-    @NotNull
-    @SuppressWarnings("unchecked")
-    public <T> T getService(Class<T> key)
-    {
-        T service = (T) services.get(key);
-        if (service == null) throw new IllegalStateException("Missing services: " + key.getName());
-        return service;
     }
 
     @NotNull
