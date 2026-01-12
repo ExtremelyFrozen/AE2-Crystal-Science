@@ -39,6 +39,21 @@ public class ResonatingPatternProviderPart extends PatternProviderPart implement
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
             AppEng.makeId("part/interface_has_channel"));
 
+    public static final ResourceLocation MODEL_EXTENDED = AE2CrystalScience.makeId(
+            "part/resonating_pattern_provider/extended");
+
+    @PartModels
+    public static final PartModel EXTENDED_MODELS_OFF = new PartModel(MODEL_EXTENDED,
+            AppEng.makeId("part/interface_off"));
+
+    @PartModels
+    public static final PartModel EXTENDED_MODELS_ON = new PartModel(MODEL_EXTENDED,
+            AppEng.makeId("part/interface_on"));
+
+    @PartModels
+    public static final PartModel EXTENDED_MODELS_HAS_CHANNEL = new PartModel(MODEL_EXTENDED,
+            AppEng.makeId("part/interface_has_channel"));
+
     public ResonatingPatternProviderPart(IPartItem<?> partItem)
     {
         super(partItem);
@@ -61,22 +76,29 @@ public class ResonatingPatternProviderPart extends PatternProviderPart implement
     {
         if (this.isActive() && this.isPowered())
         {
-            return MODELS_HAS_CHANNEL;
+            return isExtended() ? EXTENDED_MODELS_HAS_CHANNEL : MODELS_HAS_CHANNEL;
         }
         else if (this.isPowered())
         {
-            return MODELS_ON;
+            return isExtended() ? EXTENDED_MODELS_ON : MODELS_ON;
         }
         else
         {
-            return MODELS_OFF;
+            return isExtended() ? EXTENDED_MODELS_OFF : MODELS_OFF;
         }
+    }
+
+    @Override
+    public boolean isExtended()
+    {
+        return getPartItem() == AECSParts.EX_RESONATING_PATTERN_PROVIDER_PART.get();
     }
 
     @Override
     protected PatternProviderLogic createLogic()
     {
-        return new ResonatingPatternProviderLogic(getMainNode(), this, 9);
+        int patternSize = isExtended() ? 36 : 9;
+        return new ResonatingPatternProviderLogic(getMainNode(), this, patternSize);
     }
 
     @Override
@@ -94,13 +116,13 @@ public class ResonatingPatternProviderPart extends PatternProviderPart implement
     @Override
     public AEItemKey getTerminalIcon()
     {
-        return AEItemKey.of(AECSParts.RESONATING_PATTERN_PROVIDER_PART);
+        return AEItemKey.of(getPartItem());
     }
 
     @Override
     public ItemStack getMainMenuIcon()
     {
-        return AECSParts.RESONATING_PATTERN_PROVIDER_PART.toStack();
+        return new ItemStack(getPartItem());
     }
 
     @Override

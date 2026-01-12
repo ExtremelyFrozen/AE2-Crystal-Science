@@ -103,7 +103,8 @@ public class AECSItems
     public static final DeferredItem<Item> FLOUR = registerOtherItem(AECSItemIds.FLOUR, () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> WOODEN_GEAR = registerOtherItem(AECSItemIds.WOODEN_GEAR, () -> new Item(new Item.Properties()));
 
-    public static final DeferredItem<EnderInterfaceUpgradeItem> ENDER_INTERFACE_UPGRADE = registerOtherItem(AECSItemIds.ENDER_INTERFACE_UPGRADE, () -> new EnderInterfaceUpgradeItem(new Item.Properties()));
+    public static final DeferredItem<ExtendedEnderInterfaceUpgradeItem> EX_ENDER_INTERFACE_UPGRADE = registerOtherItem(AECSItemIds.EX_ENDER_INTERFACE_UPGRADE, () -> new ExtendedEnderInterfaceUpgradeItem(new Item.Properties()));
+    public static final DeferredItem<ExtendedResonatingPatternProviderUpgradeItem> EX_RESONATING_PATTERN_PROVIDER_UPGRADE = registerOtherItem(AECSItemIds.EX_RESONATING_PATTERN_PROVIDER_UPGRADE, () -> new ExtendedResonatingPatternProviderUpgradeItem(new Item.Properties()));
 
     // 快速物品状态
     public static Item.Properties defaultBuilder()

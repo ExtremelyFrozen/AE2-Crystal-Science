@@ -177,6 +177,16 @@ public class AECSBlockEntities
     );
 
     /**
+     * 扩展谐振样板供应器
+     */
+    public static final DeferredBlockEntityType<ResonatingPatternProviderBlockEntity> EX_RESONATING_PATTERN_PROVIDER_BLOCK_ENTITY = create(
+            AECSBlockIds.EX_RESONATING_PATTERN_PROVIDER,
+            ResonatingPatternProviderBlockEntity.class,
+            ResonatingPatternProviderBlockEntity::new,
+            AECSBlocks.EX_RESONATING_PATTERN_PROVIDER_BLOCK
+    );
+
+    /**
      * 熵变反应仓
      */
     public static final DeferredBlockEntityType<EntropyVariationReactionChamberBlockEntity> ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK_ENTITY = create(

@@ -3,9 +3,9 @@ package io.github.lounode.ae2cs.common.item;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSParts;
 
-public class EnderInterfaceUpgradeItem extends UpgradeItem
+public class ExtendedEnderInterfaceUpgradeItem extends UpgradeItem
 {
-    public EnderInterfaceUpgradeItem(Properties properties)
+    public ExtendedEnderInterfaceUpgradeItem(Properties properties)
     {
         super(properties);
 

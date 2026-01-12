@@ -17,4 +17,6 @@ public interface ResonatingPatternProviderHost extends PatternProviderLogicHost,
         else
             return UpgradeInventories.empty();
     }
+
+    boolean isExtended();
 }

@@ -60,6 +60,12 @@ public class AECSParts
             ResonatingPatternProviderPart::new
     );
 
+    public static final DeferredItem<PartItem<ResonatingPatternProviderPart>> EX_RESONATING_PATTERN_PROVIDER_PART = registerPart(
+            AECSPartIds.EX_RESONATING_PATTERN_PROVIDER,
+            ResonatingPatternProviderPart.class,
+            ResonatingPatternProviderPart::new
+    );
+
     public static final DeferredItem<PartItem<QuartzOscillatorClockPart>> QUARTZ_OSCILLATOR_CLOCK_PART = registerPart(
             AECSPartIds.QUARTZ_OSCILLATOR_CLOCK,
             QuartzOscillatorClockPart.class,

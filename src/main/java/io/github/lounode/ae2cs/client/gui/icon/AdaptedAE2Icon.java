@@ -24,4 +24,10 @@ public class AdaptedAE2Icon
     public static final AE2IconAdapter TOOLBAR_BUTTON_BACKGROUND = new AE2IconAdapter(Icon.TOOLBAR_BUTTON_BACKGROUND);
     public static final AE2IconAdapter TOOLBAR_BUTTON_BACKGROUND_FOCUS = new AE2IconAdapter(Icon.TOOLBAR_BUTTON_BACKGROUND_FOCUS);
     public static final AE2IconAdapter TOOLBAR_BUTTON_BACKGROUND_HOVER = new AE2IconAdapter(Icon.TOOLBAR_BUTTON_BACKGROUND_HOVER);
+
+    public static final AE2IconAdapter ARROW_UP = new AE2IconAdapter(Icon.ARROW_UP);
+    public static final AE2IconAdapter ARROW_DOWN = new AE2IconAdapter(Icon.ARROW_DOWN);
+    public static final AE2IconAdapter ARROW_RIGHT = new AE2IconAdapter(Icon.ARROW_RIGHT);
+    public static final AE2IconAdapter ARROW_LEFT = new AE2IconAdapter(Icon.ARROW_LEFT);
+
 }

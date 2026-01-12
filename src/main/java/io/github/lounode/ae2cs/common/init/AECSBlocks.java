@@ -176,6 +176,11 @@ public class AECSBlocks
     public static final DeferredBlock<PatternProviderBlock> RESONATING_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.RESONATING_PATTERN_PROVIDER, PatternProviderBlock::new);
 
     /**
+     * 扩展谐振样板供应器
+     */
+    public static final DeferredBlock<PatternProviderBlock> EX_RESONATING_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.EX_RESONATING_PATTERN_PROVIDER, PatternProviderBlock::new);
+
+    /**
      * 熵变反应仓
      */
     public static final DeferredBlock<EntropyVariationReactionChamberBlock> ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK = registerOtherBlock(AECSBlockIds.ENTROPY_VARIATION_REACTION_CHAMBER, () -> new EntropyVariationReactionChamberBlock(AEBaseBlock.metalProps()));

@@ -16,6 +16,7 @@
   "block.ae2cs.ender_interface": "ME末影接口",
   "block.ae2cs.extended_ender_interface": "扩展ME末影接口",
   "block.ae2cs.resonating_pattern_provider": "谐振样板供应器",
+  "block.ae2cs.extended_resonating_pattern_provider": "扩展谐振样板供应器",
   "block.ae2cs.entropy_variation_reaction_chamber": "熵变反应器",
   "block.ae2cs.quartz_oscillator_clock": "石英震荡器",
 
@@ -75,6 +76,7 @@
   "item.ae2cs.ender_linker": "末影连接工具",
   "item.ae2cs.resonating_pattern": "谐振样板",
   "item.ae2cs.resonating_pattern_provider_part": "谐振样板供应器",
+  "item.ae2cs.extended_resonating_pattern_provider_part": "扩展谐振样板供应器",
 
   "item.ae2cs.resonating_print_press": "谐振压印模板",
   "item.ae2cs.resonating_circuit_print": "谐振电路板",
@@ -100,7 +102,8 @@
   "item.ae2cs.flour": "面粉",
   "item.ae2cs.wooden_gear": "木齿轮",
 
-  "item.ae2cs.ender_interface_upgrade": "扩展末影接口升级",
+  "item.ae2cs.extended_ender_interface_upgrade": "扩展末影接口升级",
+  "item.ae2cs.extended_resonating_pattern_provider_upgrade": "扩展谐振样板供应器升级",
 
   "message.ae2_crystal_seeds.tooltip.seed_growth": "生长度：%1$s％",
   "message.ae2cs.tooltip.burn_time": "燃烧时间：%s刻",

@@ -29,7 +29,14 @@ public class ResonatingPatternProviderBlockEntity extends PatternProviderBlockEn
     @Override
     protected PatternProviderLogic createLogic()
     {
-        return new ResonatingPatternProviderLogic(getMainNode(), this, 9);
+        int patternSize = isExtended() ? 36 : 9;
+        return new ResonatingPatternProviderLogic(getMainNode(), this, patternSize);
+    }
+
+    @Override
+    public boolean isExtended()
+    {
+        return getType() == AECSBlockEntities.EX_RESONATING_PATTERN_PROVIDER_BLOCK_ENTITY.get();
     }
 
     /**
@@ -40,6 +47,12 @@ public class ResonatingPatternProviderBlockEntity extends PatternProviderBlockEn
         event.registerBlockEntity(
                 AECapabilities.GENERIC_INTERNAL_INV,
                 AECSBlockEntities.RESONATING_PATTERN_PROVIDER_BLOCK_ENTITY.get(),
+                (be, direction) -> be.getLogic().getReturnInv()
+        );
+
+        event.registerBlockEntity(
+                AECapabilities.GENERIC_INTERNAL_INV,
+                AECSBlockEntities.EX_RESONATING_PATTERN_PROVIDER_BLOCK_ENTITY.get(),
                 (be, direction) -> be.getLogic().getReturnInv()
         );
     }

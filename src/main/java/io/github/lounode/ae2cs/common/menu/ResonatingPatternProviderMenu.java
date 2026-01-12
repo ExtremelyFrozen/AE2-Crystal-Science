@@ -16,6 +16,8 @@ public class ResonatingPatternProviderMenu extends PatternProviderMenu
     private final ResonatingPatternProviderLogic logic;
     private final ToolboxMenu toolbox;
 
+    public final boolean extended;
+
     @GuiSync(10)
     public PullMode pullMode;
 
@@ -26,6 +28,8 @@ public class ResonatingPatternProviderMenu extends PatternProviderMenu
         this.toolbox = new ToolboxMenu(this);
 
         setupUpgrades(host.getUpgrades());
+
+        this.extended = host.isExtended();
     }
 
     @Override

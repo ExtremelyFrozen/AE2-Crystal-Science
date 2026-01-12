@@ -52,7 +52,9 @@ public class AECSScreens
 
         event.<ResonatingPatternProviderMenu, ResonatingPatternProviderGUI>register(AECSMenus.RESONATING_PATTERN_PROVIDER_MENU.get(),
                 (menu, inv, title) -> new ResonatingPatternProviderGUI(menu, inv, title,
-                        StyleManager.loadStyleDoc("/screens/resonating_pattern_provider.json")));
+                        menu.extended ?
+                                StyleManager.loadStyleDoc("/screens/extended_resonating_pattern_provider_menu.json") :
+                                StyleManager.loadStyleDoc("/screens/resonating_pattern_provider_menu.json")));
 
         event.<EntropyVariationReactionChamberMenu, EntropyVariationReactionChamberGUI>register(AECSMenus.ENTROPY_VARIATION_REACTION_CHAMBER_MENU.get(),
                 (menu, inv, title) -> new EntropyVariationReactionChamberGUI(menu, inv, title,
