@@ -2,7 +2,6 @@ package io.github.lounode.ae2cs.common.item;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
-import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.parts.AEBasePart;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
@@ -44,6 +43,9 @@ public class UpgradeItem extends Item
         super(properties);
     }
 
+    /**
+     * 决定此物品可以用于对哪些方块/部件工作（其实，也许我应该把替换机制写进配方系统）
+     */
     protected void addAllowedReplacement(ItemLike item)
     {
         allowedReplacement.add(item);
@@ -69,12 +71,10 @@ public class UpgradeItem extends Item
                     return InteractionResult.PASS;
                 }
 
-                CompoundTag originalData = originalBe.saveWithoutMetadata(level.registryAccess());
-                if(originalBe instanceof AEBaseBlockEntity aeBaseBlockEntity)
-                    aeBaseBlockEntity.clearContent();
-                int flags = Block.UPDATE_ALL | Block.UPDATE_SUPPRESS_DROPS;
-                level.setBlock(pos, newState, flags);
-
+                CompoundTag originalData = originalBe.saveWithFullMetadata(level.registryAccess());
+                level.removeBlockEntity(pos); // 先行移除掉对应的BE，防止物品掉落
+                level.removeBlock(pos, false);
+                level.setBlock(pos, newState, Block.UPDATE_ALL);
                 BlockEntity newBe = level.getBlockEntity(pos);
                 if (newBe != null)
                 {
@@ -132,13 +132,13 @@ public class UpgradeItem extends Item
         registerReplaceInfo(AECSParts.ENDER_INTERFACE_PART.get(), AECSParts.EX_ENDER_INTERFACE_PART.get());
 
         // 将物品归一化，保证为同一实例
-        for(DeferredItem<? extends Item> item : AECSItems.getALL())
+        for (DeferredItem<? extends Item> item : AECSItems.getALL())
         {
-            if(item.asItem() instanceof UpgradeItem upgradeItem)
+            if (item.asItem() instanceof UpgradeItem upgradeItem)
             {
                 Set<ItemLike> clone = new HashSet<>(upgradeItem.allowedReplacement);
                 upgradeItem.allowedReplacement.clear();
-                for(ItemLike itemLike : clone)
+                for (ItemLike itemLike : clone)
                 {
                     upgradeItem.allowedReplacement.add(itemLike.asItem());
                 }
