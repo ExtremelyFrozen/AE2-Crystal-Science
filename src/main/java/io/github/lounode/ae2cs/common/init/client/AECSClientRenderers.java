@@ -20,5 +20,6 @@ public class AECSClientRenderers
         e.registerBlockEntityRenderer(AECSBlockEntities.ENDER_EMITTER_BLOCK_ENTITY.get(), EnderEmitterRenderer::new);
         e.registerBlockEntityRenderer(AECSBlockEntities.ENDER_BROADCASTER_BLOCK_ENTITY.get(), EnderBroadcasterRender::new);
         e.registerBlockEntityRenderer(AECSBlockEntities.ENDER_INTERFACE_BLOCK_ENTITY.get(), EnderInterfaceRender::new);
+        e.registerBlockEntityRenderer(AECSBlockEntities.EX_ENDER_INTERFACE_BLOCK_ENTITY.get(), EnderInterfaceRender::new);
     }
 }

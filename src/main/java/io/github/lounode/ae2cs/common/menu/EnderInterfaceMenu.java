@@ -17,6 +17,8 @@ public class EnderInterfaceMenu extends InterfaceMenu
 {
     private static final String changeAbsorbRange = "change_absorb_range";
 
+    public final boolean extended;
+
     @GuiSync(10)
     public BlackListMode blackListMode;
 
@@ -29,6 +31,7 @@ public class EnderInterfaceMenu extends InterfaceMenu
     public EnderInterfaceMenu(MenuType<? extends InterfaceMenu> menuType, int id, Inventory ip, EnderInterfaceHost host)
     {
         super(menuType, id, ip, host);
+        extended = host.isExtended();
 
         registerClientAction(changeAbsorbRange, Integer.class, this::onChangeAbsorbRange);
     }

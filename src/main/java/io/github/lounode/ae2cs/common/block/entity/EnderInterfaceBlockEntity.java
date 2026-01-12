@@ -7,7 +7,6 @@ import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuHostLocator;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
-import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 import io.github.lounode.ae2cs.common.me.logic.EnderInterfaceHost;
 import io.github.lounode.ae2cs.common.me.logic.EnderInterfaceLogic;
@@ -27,9 +26,17 @@ public class EnderInterfaceBlockEntity extends InterfaceBlockEntity implements E
     }
 
     @Override
+    public boolean isExtended()
+    {
+        return this.getType() == AECSBlockEntities.EX_ENDER_INTERFACE_BLOCK_ENTITY.get();
+    }
+
+    @Override
     protected InterfaceLogic createLogic()
     {
-        return new EnderInterfaceLogic(getMainNode(), this, getItemFromBlockEntity().asItem());
+        int slotSize = 9;
+        int absorbConfigSlots = isExtended() ? 36 : 18;
+        return new EnderInterfaceLogic(getMainNode(), this, getItemFromBlockEntity().asItem(), slotSize, absorbConfigSlots);
     }
 
     /**
@@ -45,6 +52,17 @@ public class EnderInterfaceBlockEntity extends InterfaceBlockEntity implements E
         event.registerBlockEntity(
                 AECapabilities.ME_STORAGE,
                 AECSBlockEntities.ENDER_INTERFACE_BLOCK_ENTITY.get(),
+                (be, direction) -> be.getInterfaceLogic().getInventory()
+        );
+
+        event.registerBlockEntity(
+                AECapabilities.GENERIC_INTERNAL_INV,
+                AECSBlockEntities.EX_ENDER_INTERFACE_BLOCK_ENTITY.get(),
+                (be, direction) -> be.getInterfaceLogic().getStorage()
+        );
+        event.registerBlockEntity(
+                AECapabilities.ME_STORAGE,
+                AECSBlockEntities.EX_ENDER_INTERFACE_BLOCK_ENTITY.get(),
                 (be, direction) -> be.getInterfaceLogic().getInventory()
         );
     }
@@ -64,7 +82,7 @@ public class EnderInterfaceBlockEntity extends InterfaceBlockEntity implements E
     @Override
     public ItemStack getMainMenuIcon()
     {
-        return AECSBlocks.ENDER_INTERFACE_BLOCK.toStack();
+        return new ItemStack(getItemFromBlockEntity());
     }
 
     @Override

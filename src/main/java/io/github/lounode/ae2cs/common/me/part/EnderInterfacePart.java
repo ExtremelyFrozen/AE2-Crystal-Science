@@ -46,6 +46,22 @@ public class EnderInterfacePart extends InterfacePart implements EnderInterfaceH
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
             AppEng.makeId("part/interface_has_channel"));
 
+    public static final ResourceLocation MODEL_EXTENDED = AE2CrystalScience.makeId(
+            "part/ender_interface/extended");
+
+    @PartModels
+    public static final PartModel EXTENDED_MODELS_OFF = new PartModel(MODEL_EXTENDED,
+            AppEng.makeId("part/interface_off"));
+
+    @PartModels
+    public static final PartModel EXTENDED_MODELS_ON = new PartModel(MODEL_EXTENDED,
+            AppEng.makeId("part/interface_on"));
+
+    @PartModels
+    public static final PartModel EXTENDED_MODELS_HAS_CHANNEL = new PartModel(MODEL_EXTENDED,
+            AppEng.makeId("part/interface_has_channel"));
+
+
     public EnderInterfacePart(IPartItem<?> partItem)
     {
         super(partItem);
@@ -73,22 +89,30 @@ public class EnderInterfacePart extends InterfacePart implements EnderInterfaceH
     {
         if (this.isActive() && this.isPowered())
         {
-            return MODELS_HAS_CHANNEL;
+            return isExtended() ? EXTENDED_MODELS_HAS_CHANNEL : MODELS_HAS_CHANNEL;
         }
         else if (this.isPowered())
         {
-            return MODELS_ON;
+            return isExtended() ? EXTENDED_MODELS_ON : MODELS_ON;
         }
         else
         {
-            return MODELS_OFF;
+            return isExtended() ? EXTENDED_MODELS_OFF : MODELS_OFF;
         }
+    }
+
+    @Override
+    public boolean isExtended()
+    {
+        return this.getPartItem() == AECSParts.EX_ENDER_INTERFACE_PART.get();
     }
 
     @Override
     protected InterfaceLogic createLogic()
     {
-        return new EnderInterfaceLogic(getMainNode(), this, getPartItem().asItem());
+        int slotSize = 9;
+        int absorbConfigSlots = isExtended() ? 36 : 18;
+        return new EnderInterfaceLogic(getMainNode(), this, getPartItem().asItem(), slotSize, absorbConfigSlots);
     }
 
     @Override
@@ -106,7 +130,7 @@ public class EnderInterfacePart extends InterfacePart implements EnderInterfaceH
     @Override
     public ItemStack getMainMenuIcon()
     {
-        return AECSParts.ENDER_INTERFACE_PART.toStack();
+        return new ItemStack(getPartItem());
     }
 
     @Override

@@ -157,6 +157,16 @@ public class AECSBlockEntities
     );
 
     /**
+     * 扩展末影接口
+     */
+    public static final DeferredBlockEntityType<EnderInterfaceBlockEntity> EX_ENDER_INTERFACE_BLOCK_ENTITY = create(
+            AECSBlockIds.EX_ENDER_INTERFACE,
+            EnderInterfaceBlockEntity.class,
+            EnderInterfaceBlockEntity::new,
+            AECSBlocks.EX_ENDER_INTERFACE_BLOCK
+    );
+
+    /**
      * 谐振样板供应器
      */
     public static final DeferredBlockEntityType<ResonatingPatternProviderBlockEntity> RESONATING_PATTERN_PROVIDER_BLOCK_ENTITY = create(

@@ -48,6 +48,12 @@ public class AECSParts
             EnderInterfacePart::new
     );
 
+    public static final DeferredItem<PartItem<EnderInterfacePart>> EX_ENDER_INTERFACE_PART = registerPart(
+            AECSPartIds.EX_ENDER_INTERFACE,
+            EnderInterfacePart.class,
+            EnderInterfacePart::new
+    );
+
     public static final DeferredItem<PartItem<ResonatingPatternProviderPart>> RESONATING_PATTERN_PROVIDER_PART = registerPart(
             AECSPartIds.RESONATING_PATTERN_PROVIDER,
             ResonatingPatternProviderPart.class,

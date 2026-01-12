@@ -60,6 +60,7 @@ public class AECSBlockStateProvider extends BlockStateProvider
         genEnderBroadcaster();
         genEnderEmitter();
         simpleBlockWithItem(AECSBlocks.ENDER_INTERFACE_BLOCK.get(), cubeAllWithTexture(AECSBlocks.ENDER_INTERFACE_BLOCK.get(), AE2CrystalScience.makeId("block/ender_interface/base")));
+        simpleBlockWithItem(AECSBlocks.EX_ENDER_INTERFACE_BLOCK.get(), cubeAllWithTexture(AECSBlocks.EX_ENDER_INTERFACE_BLOCK.get(), AE2CrystalScience.makeId("block/ender_interface/extended")));
     }
 
     private void blockWithItem(DeferredBlock<? extends Block> deferredBlock)

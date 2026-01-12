@@ -14,6 +14,7 @@
   "block.ae2cs.ender_broadcaster": "ME末影广播装置",
   "block.ae2cs.ender_emitter": "ME末影发信器",
   "block.ae2cs.ender_interface": "ME末影接口",
+  "block.ae2cs.extended_ender_interface": "扩展ME末影接口",
   "block.ae2cs.resonating_pattern_provider": "谐振样板供应器",
   "block.ae2cs.entropy_variation_reaction_chamber": "熵变反应器",
   "block.ae2cs.quartz_oscillator_clock": "石英震荡器",
@@ -54,6 +55,7 @@
   "item.ae2cs.simple_pattern_provider_part": "初级样板供应器",
   "item.ae2cs.meteorite_pattern_provider_part": "自装配式样板供应器",
   "item.ae2cs.ender_interface_part": "ME末影接口",
+  "item.ae2cs.extended_ender_interface_part": "扩展ME末影接口",
   "item.ae2cs.quartz_oscillator_clock_part": "石英震荡器",
 
   "item.ae2cs.purified_certus_quartz_crystal": "高纯赛特斯石英水晶",

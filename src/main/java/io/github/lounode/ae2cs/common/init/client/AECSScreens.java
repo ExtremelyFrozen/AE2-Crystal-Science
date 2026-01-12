@@ -46,7 +46,9 @@ public class AECSScreens
 
         event.<EnderInterfaceMenu, EnderInterfaceGUI>register(AECSMenus.ENDER_INTERFACE_MENU.get(),
                 (menu, inv, title) -> new EnderInterfaceGUI(menu, inv, title,
-                        StyleManager.loadStyleDoc("/screens/ender_interface_menu.json")));
+                        menu.extended ?
+                                StyleManager.loadStyleDoc("/screens/extended_ender_interface_menu.json") :
+                                StyleManager.loadStyleDoc("/screens/ender_interface_menu.json")));
 
         event.<ResonatingPatternProviderMenu, ResonatingPatternProviderGUI>register(AECSMenus.RESONATING_PATTERN_PROVIDER_MENU.get(),
                 (menu, inv, title) -> new ResonatingPatternProviderGUI(menu, inv, title,

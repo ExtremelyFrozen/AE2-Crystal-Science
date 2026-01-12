@@ -20,4 +20,6 @@ public interface EnderInterfaceHost extends InterfaceLogicHost, ICustomRenderBou
     {
         return getEnderInterfaceLogic().getRange();
     }
+
+    boolean isExtended();
 }
