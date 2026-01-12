@@ -9,7 +9,7 @@ public class EnderInterfaceUpgradeItem extends UpgradeItem
     {
         super(properties);
 
-        addAllowedReplacement(AECSBlocks.ENDER_INTERFACE_BLOCK);
-        addAllowedReplacement(AECSParts.ENDER_INTERFACE_PART);
+        registerBlockReplaceInfo(AECSBlocks.ENDER_INTERFACE_BLOCK, AECSBlocks.EX_ENDER_INTERFACE_BLOCK);
+        registerPartReplaceInfo(AECSParts.ENDER_INTERFACE_PART, AECSParts.EX_ENDER_INTERFACE_PART);
     }
 }

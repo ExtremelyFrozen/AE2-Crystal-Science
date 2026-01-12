@@ -4,9 +4,6 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.parts.AEBasePart;
-import io.github.lounode.ae2cs.common.init.AECSBlocks;
-import io.github.lounode.ae2cs.common.init.AECSItems;
-import io.github.lounode.ae2cs.common.init.AECSParts;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -14,57 +11,46 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.registries.DeferredItem;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.function.Supplier;
 
-/**
- * 用于升级方块和接口的Item
- */
 public class UpgradeItem extends Item
 {
-    private static final Map<Block, Block> BLOCK_REPLACE_INFO = new IdentityHashMap<>();
-    private static final Map<IPartItem<?>, IPartItem<?>> PART_REPLACE_INFO = new IdentityHashMap<>();
-
-    private final Set<ItemLike> allowedReplacement = new HashSet<>();
+    private final List<ReplaceEntry<Block>> pendingBlockReplacements = new ArrayList<>();
+    private final List<ReplaceEntry<IPartItem<?>>> pendingPartReplacements = new ArrayList<>();
+    private final Map<Block, Block> blockReplaceInfo = new IdentityHashMap<>();
+    private final Map<IPartItem<?>, IPartItem<?>> partReplaceInfo = new IdentityHashMap<>();
+    private boolean initialized = false;
 
     public UpgradeItem(Properties properties)
     {
         super(properties);
     }
 
-    /**
-     * 决定此物品可以用于对哪些方块/部件工作（其实，也许我应该把替换机制写进配方系统）
-     */
-    protected void addAllowedReplacement(ItemLike item)
-    {
-        allowedReplacement.add(item);
-    }
-
     @Override
     public @NotNull InteractionResult useOn(UseOnContext context)
     {
+        init();
         BlockPos pos = context.getClickedPos();
         Level level = context.getLevel();
         BlockEntity originalBe = level.getBlockEntity(pos);
         if (originalBe != null)
         {
             BlockPlaceContext ctx = new BlockPlaceContext(context);
-            if (BLOCK_REPLACE_INFO.containsKey(originalBe.getBlockState().getBlock()) &&
-                    allowedReplacement.contains(originalBe.getBlockState().getBlock().asItem()))
+            if (blockReplaceInfo.containsKey(originalBe.getBlockState().getBlock()))
             {
                 BlockState originState = level.getBlockState(pos);
-                Block newBlock = BLOCK_REPLACE_INFO.get(originState.getBlock());
+                Block newBlock = blockReplaceInfo.get(originState.getBlock());
                 BlockState newState = newBlock.getStateForPlacement(ctx);
                 if (newState == null)
                 {
@@ -91,12 +77,11 @@ public class UpgradeItem extends Item
                 Vec3 hitInBlock = new Vec3(hitVec.x - pos.getX(), hitVec.y - pos.getY(), hitVec.z - pos.getZ());
                 IPart part = cable.getCableBus().selectPartLocal(hitInBlock).part;
                 if (part instanceof AEBasePart basePart &&
-                        PART_REPLACE_INFO.containsKey(part.getPartItem()) &&
-                        allowedReplacement.contains(part.getPartItem().asItem()))
+                        partReplaceInfo.containsKey(part.getPartItem()))
                 {
                     Direction side = basePart.getSide();
                     CompoundTag contents = new CompoundTag();
-                    IPartItem<?> partItem = PART_REPLACE_INFO.get(part.getPartItem());
+                    IPartItem<?> partItem = partReplaceInfo.get(part.getPartItem());
                     part.writeToNBT(contents, level.registryAccess());
                     IPart newPart = cable.replacePart(partItem, side, context.getPlayer(), null);
                     if (newPart != null)
@@ -116,35 +101,34 @@ public class UpgradeItem extends Item
         return InteractionResult.PASS;
     }
 
-    /** 注册方块替换，不得注册save与load不兼容的方块，否则可能导致未定义行为或者错误 */
-    public static void registerReplaceInfo(Block from, Block to)
+    protected void registerBlockReplaceInfo(Supplier<? extends Block> from, Supplier<? extends Block> to)
     {
-        BLOCK_REPLACE_INFO.put(from, to);
+        pendingBlockReplacements.add(new ReplaceEntry<>(from, to));
     }
 
-    /** 注册part替换，不得注册save与load不兼容的部件，否则可能导致未定义行为或者错误 */
-    public static void registerReplaceInfo(IPartItem<?> from, IPartItem<?> to)
+    protected void registerPartReplaceInfo(Supplier<? extends IPartItem<?>> from, Supplier<? extends IPartItem<?>> to)
     {
-        PART_REPLACE_INFO.put(from, to);
+        pendingPartReplacements.add(new ReplaceEntry<>(from, to));
     }
 
-    public static void init()
+    public void init()
     {
-        registerReplaceInfo(AECSBlocks.ENDER_INTERFACE_BLOCK.get(), AECSBlocks.EX_ENDER_INTERFACE_BLOCK.get());
-        registerReplaceInfo(AECSParts.ENDER_INTERFACE_PART.get(), AECSParts.EX_ENDER_INTERFACE_PART.get());
-
-        // 将物品归一化，保证为同一实例
-        for (DeferredItem<? extends Item> item : AECSItems.getALL())
+        if (initialized)
         {
-            if (item.asItem() instanceof UpgradeItem upgradeItem)
-            {
-                Set<ItemLike> clone = new HashSet<>(upgradeItem.allowedReplacement);
-                upgradeItem.allowedReplacement.clear();
-                for (ItemLike itemLike : clone)
-                {
-                    upgradeItem.allowedReplacement.add(itemLike.asItem());
-                }
-            }
+            return;
         }
+        for (ReplaceEntry<Block> entry : pendingBlockReplacements)
+        {
+            blockReplaceInfo.put(entry.from().get(), entry.to().get());
+        }
+        for (ReplaceEntry<IPartItem<?>> entry : pendingPartReplacements)
+        {
+            partReplaceInfo.put(entry.from().get(), entry.to().get());
+        }
+        initialized = true;
+    }
+
+    private record ReplaceEntry<T>(Supplier<? extends T> from, Supplier<? extends T> to)
+    {
     }
 }
