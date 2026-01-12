@@ -1,4 +1,4 @@
-// 1.21.1	2026-01-05T20:12:53.735204	Item Models: ae2cs
+// 1.21.1	2026-01-12T14:55:21.1946659	Item Models: ae2cs
 b12dd22e280360c8a0e60dab4f633579f285ac71 assets/ae2cs/models/item/certus_quartz_seed.json
 9b0a0f5bbd61b4a4cf3d2083524df9fe42b70ac5 assets/ae2cs/models/item/certus_quartz_seed_1.json
 9359cf66e98b5af14ae724e4097a9a8916b30c0e assets/ae2cs/models/item/certus_quartz_seed_2.json
@@ -11,6 +11,7 @@ e1cfd11b998b6a0be487de7b36639d3df66bc468 assets/ae2cs/models/item/ender_crystal_
 8edfa98298826243962fcdbf3cef7d4d34b57735 assets/ae2cs/models/item/ender_crystal_pickaxe.json
 ecb734be260c2f63f314943b3151b34e0e2544ec assets/ae2cs/models/item/ender_crystal_shovel.json
 6a0a2359c254bba82e2076e1773831783375c322 assets/ae2cs/models/item/ender_crystal_sword.json
+a27e976b77bd604722b80f92bdf79493492686f6 assets/ae2cs/models/item/ender_interface_upgrade.json
 9c9874f0152a315768e4814e455777f61f276262 assets/ae2cs/models/item/ender_linker.json
 4944357a5ba894f31854c2e88b03cf939c6aef78 assets/ae2cs/models/item/ender_quartz_seed.json
 e690802c065070aeb0e53b86359205b75a794e3a assets/ae2cs/models/item/ender_quartz_seed_1.json

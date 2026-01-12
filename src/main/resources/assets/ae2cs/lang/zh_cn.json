@@ -100,6 +100,8 @@
   "item.ae2cs.flour": "面粉",
   "item.ae2cs.wooden_gear": "木齿轮",
 
+  "item.ae2cs.ender_interface_upgrade": "扩展末影接口升级",
+
   "message.ae2_crystal_seeds.tooltip.seed_growth": "生长度：%1$s％",
   "message.ae2cs.tooltip.burn_time": "燃烧时间：%s刻",
   "message.ae2cs.tooltip.energy": "能量密度：%sFE每刻",

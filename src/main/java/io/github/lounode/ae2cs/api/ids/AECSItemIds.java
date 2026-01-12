@@ -65,4 +65,6 @@ public class AECSItemIds
 
     public static final String FLOUR = "flour";
     public static final String WOODEN_GEAR = "wooden_gear";
+
+    public static final String ENDER_INTERFACE_UPGRADE = "ender_interface_upgrade";
 }

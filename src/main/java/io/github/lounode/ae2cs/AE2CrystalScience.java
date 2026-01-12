@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.util.PatternAccessTermQuickMoveHelper;
 import io.github.lounode.ae2cs.common.init.*;
+import io.github.lounode.ae2cs.common.item.UpgradeItem;
 import io.github.lounode.ae2cs.common.me.AEPlugin;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
@@ -44,6 +45,7 @@ public class AE2CrystalScience
     {
         AEPlugin.onCommonSetup();
         PatternAccessTermQuickMoveHelper.init();
+        UpgradeItem.init();
     }
 
     @SubscribeEvent

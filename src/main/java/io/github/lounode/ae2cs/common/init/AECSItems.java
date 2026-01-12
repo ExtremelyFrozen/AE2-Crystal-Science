@@ -3,10 +3,7 @@ package io.github.lounode.ae2cs.common.init;
 import appeng.api.upgrades.Upgrades;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.ids.AECSItemIds;
-import io.github.lounode.ae2cs.common.item.CrystalSeedItem;
-import io.github.lounode.ae2cs.common.item.EnderLinkerItem;
-import io.github.lounode.ae2cs.common.item.PureCrystalItem;
-import io.github.lounode.ae2cs.common.item.ResonatingPatternItem;
+import io.github.lounode.ae2cs.common.item.*;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -105,6 +102,8 @@ public class AECSItems
 
     public static final DeferredItem<Item> FLOUR = registerOtherItem(AECSItemIds.FLOUR, () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> WOODEN_GEAR = registerOtherItem(AECSItemIds.WOODEN_GEAR, () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<EnderInterfaceUpgradeItem> ENDER_INTERFACE_UPGRADE = registerOtherItem(AECSItemIds.ENDER_INTERFACE_UPGRADE, () -> new EnderInterfaceUpgradeItem(new Item.Properties()));
 
     // 快速物品状态
     public static Item.Properties defaultBuilder()
