@@ -138,7 +138,7 @@ public class EnderInterfaceLogic extends InterfaceLogic
     {
         super.readFromNBT(tag, registries);
         absorbConfigInventory.readFromChildTag(tag, "absorb_config", registries);
-        range = tag.getInt("range");
+        if(tag.contains("range")) range = tag.getInt("range");
         this.onConfigChanged();
         onAbsorbConfigChange();
     }
