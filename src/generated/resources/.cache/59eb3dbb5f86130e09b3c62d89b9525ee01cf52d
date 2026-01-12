@@ -1,4 +1,4 @@
-// 1.21.1	2026-01-12T20:20:49.2712277	Loot Tables
+// 1.21.1	2026-01-12T21:38:06.2046286	Loot Tables
 9f05dd6fa5778366a4c6bd08364229fd03dca427 data/ae2cs/loot_table/blocks/certus_quartz_ore.json
 7e625e120fa806ef72fac6f816380f3fac707d8e data/ae2cs/loot_table/blocks/charged_certus_quartz_ore.json
 93b3ddea891577d7b33a68a99d53e8949833ac2a data/ae2cs/loot_table/blocks/circuit_etcher.json
@@ -14,6 +14,7 @@ b142fbf5d99eaebca5fa29b6d0f122c6a6624be8 data/ae2cs/loot_table/blocks/deepslate_
 fb5708b5d7be523a2ba43b03cd17f6d971bcfc81 data/ae2cs/loot_table/blocks/ender_quartz_block.json
 97f74b2ed60aae340594e94c2f92edc5b73a07dc data/ae2cs/loot_table/blocks/entropy_variation_reaction_chamber.json
 ff5eaa95843b2cd2da34eda1b6faf996968de4e4 data/ae2cs/loot_table/blocks/extended_ender_interface.json
+27403e2d2496e643688c63e8d4901915ecffddd1 data/ae2cs/loot_table/blocks/extended_integrated_interface.json
 e1ab12e124773398aff0f6d4e7a89a0b8d527766 data/ae2cs/loot_table/blocks/extended_resonating_pattern_provider.json
 4495f4d77c29aaa570cdbe690464bd12a4c8c0a7 data/ae2cs/loot_table/blocks/integrated_interface.json
 8da7dad85ca737ecdfa2d16b122b67a6d48c8618 data/ae2cs/loot_table/blocks/irradiated_crystal_block.json

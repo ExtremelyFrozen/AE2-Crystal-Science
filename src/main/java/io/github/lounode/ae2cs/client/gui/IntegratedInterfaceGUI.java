@@ -11,7 +11,7 @@ import appeng.client.gui.ICompositeWidget;
 import appeng.client.gui.Icon;
 import appeng.client.gui.Tooltip;
 import appeng.client.gui.implementations.UpgradeableScreen;
-import appeng.client.gui.style.StyleManager;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.IconButton;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
@@ -23,6 +23,9 @@ import appeng.core.localization.InGameTooltip;
 import appeng.core.network.ServerboundPacket;
 import appeng.core.network.serverbound.ConfigButtonPacket;
 import appeng.menu.SlotSemantics;
+import io.github.lounode.ae2cs.client.gui.icon.AdaptedAE2Icon;
+import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
+import io.github.lounode.ae2cs.client.gui.widgets.AECSIconButton;
 import io.github.lounode.ae2cs.common.menu.IntegratedInterfaceMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -34,6 +37,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -49,10 +53,12 @@ public class IntegratedInterfaceGUI extends UpgradeableScreen<IntegratedInterfac
 
     private final List<Button> amountButtons = new ArrayList<>();
 
-    // 将使用样式 JSON，背景由样式管理
-    public IntegratedInterfaceGUI(IntegratedInterfaceMenu menu, Inventory inv, Component title)
+    private final AECSIconButton nextPageButton;
+    private final AECSIconButton prevPageButton;
+
+    public IntegratedInterfaceGUI(IntegratedInterfaceMenu menu, Inventory inv, Component title, ScreenStyle style)
     {
-        super(menu, inv, title, StyleManager.loadStyleDoc("/screens/integrated_interface_menu.json"));
+        super(menu, inv, title, style);
 
         this.fuzzyMode = new ServerSettingToggleButton<>(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
         addToLeftToolbar(this.fuzzyMode);
@@ -65,6 +71,28 @@ public class IntegratedInterfaceGUI extends UpgradeableScreen<IntegratedInterfac
                 GuiText.PatternAccessTerminal.text(), GuiText.PatternAccessTerminalHint.text(),
                 btn -> selectNextPatternProviderMode());
         this.addToLeftToolbar(this.showInPatternAccessTerminalButton);
+
+        nextPageButton = new AECSIconButton(button -> menu.onTogglePageButton(1))
+        {
+            @Override
+            protected @NotNull IButtonIcon getIcon()
+            {
+                return AdaptedAE2Icon.ARROW_RIGHT;
+            }
+        };
+        nextPageButton.setMessage(Component.translatable("ae2cs.menu.button.next_page"));
+        this.addToLeftToolbar(nextPageButton);
+
+        prevPageButton = new AECSIconButton(button -> menu.onTogglePageButton(-1))
+        {
+            @Override
+            protected @NotNull IButtonIcon getIcon()
+            {
+                return AdaptedAE2Icon.ARROW_LEFT;
+            }
+        };
+        prevPageButton.setMessage(Component.translatable("ae2cs.menu.button.prev_page"));
+        this.addToLeftToolbar(prevPageButton);
 
         this.lockReason = new PatternProviderLockReason(this);
         widgets.add("lockReason", this.lockReason);
@@ -105,6 +133,16 @@ public class IntegratedInterfaceGUI extends UpgradeableScreen<IntegratedInterfac
         this.lockCraftingModeButton.set(this.menu.getLockCraftingMode());
         this.showInPatternAccessTerminalButton.setState(this.menu.getShowInAccessTerminal() == YesNo.YES);
 
+        this.prevPageButton.setVisibility(menu.pageSize > 1 && menu.pageIndex != 0);
+        this.nextPageButton.setVisibility(menu.pageSize > 1 && menu.pageIndex != menu.pageSize - 1);
+
+        int activeStart = menu.pageIndex * 9;
+        int activeEnd = activeStart + 9;
+        for (int i = 0; i < amountButtons.size(); i++)
+        {
+            var button = amountButtons.get(i);
+            button.visible = i >= activeStart && i < activeEnd;
+        }
         var configSlots = menu.getSlots(SlotSemantics.CONFIG);
         for (int i = 0; i < amountButtons.size(); i++)
         {

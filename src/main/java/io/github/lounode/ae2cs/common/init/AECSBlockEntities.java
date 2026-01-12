@@ -57,6 +57,16 @@ public class AECSBlockEntities
     );
 
     /**
+     * 扩展集成接口
+     */
+    public static final DeferredBlockEntityType<IntegratedInterfaceBlockEntity> EX_INTEGRATED_INTERFACE_BLOCK_ENTITY = create(
+            AECSBlockIds.EX_INTEGRATED_INTERFACE,
+            IntegratedInterfaceBlockEntity.class,
+            IntegratedInterfaceBlockEntity::new,
+            AECSBlocks.EX_INTEGRATED_INTERFACE_BLOCK
+    );
+
+    /**
      * 晶能谐振器
      */
     public static final DeferredBlockEntityType<CrystalVibrationChamberBlockEntity> CRYSTAL_VIBRATION_CHAMBER_BLOCK_ENTITY = create(

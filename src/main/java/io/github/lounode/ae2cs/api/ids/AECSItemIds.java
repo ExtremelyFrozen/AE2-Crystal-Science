@@ -68,4 +68,5 @@ public class AECSItemIds
 
     public static final String EX_ENDER_INTERFACE_UPGRADE = "extended_ender_interface_upgrade";
     public static final String EX_RESONATING_PATTERN_PROVIDER_UPGRADE = "extended_resonating_pattern_provider_upgrade";
+    public static final String EX_INTEGRATED_INTERFACE_UPGRADE = "extended_integrated_interface_upgrade";
 }

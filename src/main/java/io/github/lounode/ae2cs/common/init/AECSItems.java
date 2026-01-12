@@ -105,6 +105,7 @@ public class AECSItems
 
     public static final DeferredItem<ExtendedEnderInterfaceUpgradeItem> EX_ENDER_INTERFACE_UPGRADE = registerOtherItem(AECSItemIds.EX_ENDER_INTERFACE_UPGRADE, () -> new ExtendedEnderInterfaceUpgradeItem(new Item.Properties()));
     public static final DeferredItem<ExtendedResonatingPatternProviderUpgradeItem> EX_RESONATING_PATTERN_PROVIDER_UPGRADE = registerOtherItem(AECSItemIds.EX_RESONATING_PATTERN_PROVIDER_UPGRADE, () -> new ExtendedResonatingPatternProviderUpgradeItem(new Item.Properties()));
+    public static final DeferredItem<ExtendedIntegratedInterfaceUpgradeItem> EX_INTEGRATED_INTERFACE_UPGRADE = registerOtherItem(AECSItemIds.EX_INTEGRATED_INTERFACE_UPGRADE, () -> new ExtendedIntegratedInterfaceUpgradeItem(new Item.Properties()));
 
     // 快速物品状态
     public static Item.Properties defaultBuilder()

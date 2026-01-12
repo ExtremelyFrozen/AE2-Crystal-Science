@@ -24,6 +24,8 @@ public class IntegratedInterfaceMenu extends UpgradeableMenu<IntegratedInterface
 {
     public static final String ACTION_OPEN_SET_AMOUNT = "setAmount";
 
+    public final boolean extended;
+
     @GuiSync(10)
     public YesNo blockingMode = YesNo.NO;
     @GuiSync(11)
@@ -37,11 +39,16 @@ public class IntegratedInterfaceMenu extends UpgradeableMenu<IntegratedInterface
 
     private final IntegratedInterfaceLogic logic;
 
+    public final int pageSize;
+    public int pageIndex = 0;
+
     public IntegratedInterfaceMenu(int id, Inventory ip, IntegratedInterfaceHost host)
     {
         super(AECSMenus.INTEGRATED_INTERFACE_MENU.get(), id, ip, host);
 
         this.logic = host.getLogic();
+        this.extended = host.isExtended();
+        this.pageSize = extended ? 4 : 1;
 
         registerClientAction(ACTION_OPEN_SET_AMOUNT, Integer.class, this::openSetAmountMenu);
     }
@@ -65,6 +72,7 @@ public class IntegratedInterfaceMenu extends UpgradeableMenu<IntegratedInterface
         {
             this.addSlot(new AppEngSlot(storageWrap, i), SlotSemantics.STORAGE);
         }
+        togglePage(pageIndex);
     }
 
     @Override
@@ -76,6 +84,51 @@ public class IntegratedInterfaceMenu extends UpgradeableMenu<IntegratedInterface
         lockCraftingMode = configManager.getSetting(Settings.LOCK_CRAFTING_MODE);
         craftingLockedReason = logic.getCraftingLockedReason();
         unlockStack = logic.getUnlockStack();
+    }
+
+    /**
+     * 此函数客户端直接执行，不在乎服务端状态
+     */
+    public void onTogglePageButton(int delta)
+    {
+        pageIndex += delta;
+        if (pageIndex >= pageSize) pageIndex = 0;
+        else if (pageIndex < 0) pageIndex = pageSize - 1;
+
+        togglePage(pageIndex);
+    }
+
+    /**
+     * 根据翻页数启用和禁用slot
+     */
+    private void togglePage(int pageIndex)
+    {
+        int activeStart = pageIndex * 9;
+        int activeEnd = activeStart + 9;
+
+        var patternSlots = getSlots(SlotSemantics.ENCODED_PATTERN);
+        for (int i = 0; i < patternSlots.size(); ++i)
+        {
+            if (!(patternSlots.get(i) instanceof AppEngSlot appEngSlot)) continue;
+            appEngSlot.setSlotEnabled(i >= activeStart && i < activeEnd);
+            appEngSlot.y = 115;
+        }
+
+        var configSlots = getSlots(SlotSemantics.CONFIG);
+        for (int i = 0; i < configSlots.size(); ++i)
+        {
+            if (!(configSlots.get(i) instanceof AppEngSlot appEngSlot)) continue;
+            appEngSlot.setSlotEnabled(i >= activeStart && i < activeEnd);
+            appEngSlot.y = 53;
+        }
+
+        var storageSlots = getSlots(SlotSemantics.STORAGE);
+        for (int i = 0; i < storageSlots.size(); ++i)
+        {
+            if (!(storageSlots.get(i) instanceof AppEngSlot appEngSlot)) continue;
+            appEngSlot.setSlotEnabled(i >= activeStart && i < activeEnd);
+            appEngSlot.y = 71;
+        }
     }
 
     public YesNo getBlockingMode()

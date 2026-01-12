@@ -13,6 +13,7 @@ import appeng.parts.AEBasePart;
 import appeng.parts.PartModel;
 import appeng.util.SettingsFrom;
 import io.github.lounode.ae2cs.AE2CrystalScience;
+import io.github.lounode.ae2cs.common.init.AECSParts;
 import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceHost;
 import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceLogic;
 import net.minecraft.core.Direction;
@@ -40,6 +41,21 @@ public class IntegratedInterfacePart extends AEBasePart implements IntegratedInt
 
     @PartModels
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, AppEng.makeId("part/interface_has_channel"));
+
+    public static final ResourceLocation MODEL_EXTENDED = AE2CrystalScience.makeId(
+            "part/integrate_interface/extended");
+
+    @PartModels
+    public static final PartModel EXTENDED_MODELS_OFF = new PartModel(MODEL_EXTENDED,
+            AppEng.makeId("part/interface_off"));
+
+    @PartModels
+    public static final PartModel EXTENDED_MODELS_ON = new PartModel(MODEL_EXTENDED,
+            AppEng.makeId("part/interface_on"));
+
+    @PartModels
+    public static final PartModel EXTENDED_MODELS_HAS_CHANNEL = new PartModel(MODEL_EXTENDED,
+            AppEng.makeId("part/interface_has_channel"));
 
     IntegratedInterfaceLogic logic = createLogic();
     private int priority;
@@ -79,15 +95,15 @@ public class IntegratedInterfacePart extends AEBasePart implements IntegratedInt
     {
         if (this.isActive() && this.isPowered())
         {
-            return MODELS_HAS_CHANNEL;
+            return isExtended() ? EXTENDED_MODELS_HAS_CHANNEL : MODELS_HAS_CHANNEL;
         }
         else if (this.isPowered())
         {
-            return MODELS_ON;
+            return isExtended() ? EXTENDED_MODELS_ON : MODELS_ON;
         }
         else
         {
-            return MODELS_OFF;
+            return isExtended() ? EXTENDED_MODELS_OFF : MODELS_OFF;
         }
     }
 
@@ -139,6 +155,12 @@ public class IntegratedInterfacePart extends AEBasePart implements IntegratedInt
     }
 
     @Override
+    public boolean isExtended()
+    {
+        return getPartItem() == AECSParts.EX_INTEGRATE_INTERFACE_PART.get();
+    }
+
+    @Override
     public ItemStack getMainMenuIcon()
     {
         return new ItemStack(getPartItem());
@@ -146,7 +168,8 @@ public class IntegratedInterfacePart extends AEBasePart implements IntegratedInt
 
     protected IntegratedInterfaceLogic createLogic()
     {
-        return new IntegratedInterfaceLogic(this.getMainNode(), this, 9, 9);
+        int size = isExtended() ? 36 : 9;
+        return new IntegratedInterfaceLogic(this.getMainNode(), this, size, size);
     }
 
     @Override

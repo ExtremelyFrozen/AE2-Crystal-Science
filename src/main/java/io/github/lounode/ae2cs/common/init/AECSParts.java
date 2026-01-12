@@ -30,6 +30,12 @@ public class AECSParts
             IntegratedInterfacePart::new
     );
 
+    public static final DeferredItem<PartItem<IntegratedInterfacePart>> EX_INTEGRATE_INTERFACE_PART = registerPart(
+            AECSPartIds.EX_INTEGRATED_INTERFACE,
+            IntegratedInterfacePart.class,
+            IntegratedInterfacePart::new
+    );
+
     public static final DeferredItem<PartItem<SimplePatternProviderPart>> SIMPLE_PATTERN_PROVIDER_PART = registerPart(
             AECSPartIds.SIMPLE_PATTERN_PROVIDER,
             SimplePatternProviderPart.class,

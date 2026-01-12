@@ -37,6 +37,8 @@ public interface IntegratedInterfaceHost extends IConfigurableObject, IPriorityH
 {
     IntegratedInterfaceLogic getLogic();
 
+    boolean isExtended();
+
     /**
      * @return 此持有者在游戏中的方块实体
      */

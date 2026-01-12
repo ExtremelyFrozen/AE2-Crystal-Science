@@ -58,11 +58,29 @@ public class IntegratedInterfaceBlockEntity extends AENetworkedBlockEntity imple
                 AECSBlockEntities.INTEGRATED_INTERFACE_BLOCK_ENTITY.get(),
                 (be, direction) -> be.getLogic().getExposedMEStorage(direction)
         );
+
+        event.registerBlockEntity(
+                AECapabilities.GENERIC_INTERNAL_INV,
+                AECSBlockEntities.EX_INTEGRATED_INTERFACE_BLOCK_ENTITY.get(),
+                (be, direction) -> be.getLogic().getStorageInv()
+        );
+        event.registerBlockEntity(
+                AECapabilities.ME_STORAGE,
+                AECSBlockEntities.EX_INTEGRATED_INTERFACE_BLOCK_ENTITY.get(),
+                (be, direction) -> be.getLogic().getExposedMEStorage(direction)
+        );
+    }
+
+    @Override
+    public boolean isExtended()
+    {
+        return getType() == AECSBlockEntities.EX_INTEGRATED_INTERFACE_BLOCK_ENTITY.get();
     }
 
     protected IntegratedInterfaceLogic createLogic()
     {
-        return new IntegratedInterfaceLogic(this.getMainNode(), this, 9, 9);
+        int size = isExtended() ? 36 : 9;
+        return new IntegratedInterfaceLogic(this.getMainNode(), this, size, size);
     }
 
     @Override

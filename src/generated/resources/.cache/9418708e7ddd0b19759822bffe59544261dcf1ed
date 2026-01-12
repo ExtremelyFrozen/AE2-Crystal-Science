@@ -1,4 +1,4 @@
-// 1.21.1	2026-01-12T20:31:41.7093945	Item Models: ae2cs
+// 1.21.1	2026-01-12T21:38:06.1995996	Item Models: ae2cs
 b12dd22e280360c8a0e60dab4f633579f285ac71 assets/ae2cs/models/item/certus_quartz_seed.json
 9b0a0f5bbd61b4a4cf3d2083524df9fe42b70ac5 assets/ae2cs/models/item/certus_quartz_seed_1.json
 9359cf66e98b5af14ae724e4097a9a8916b30c0e assets/ae2cs/models/item/certus_quartz_seed_2.json
@@ -19,6 +19,7 @@ bba58d5e963d385d1af977ea45e345f6f3373894 assets/ae2cs/models/item/entro_crystal_
 8b9728d16d4068dedacd6909bc261b78d78f903c assets/ae2cs/models/item/entro_crystal_seed_1.json
 707d8abe96ef2bb92dccb737a1bedc597aa27faf assets/ae2cs/models/item/entro_crystal_seed_2.json
 5b183a1728a2a5c9c06ea76183f97358ae7a4132 assets/ae2cs/models/item/extended_ender_interface_upgrade.json
+97b80ab6fcf30f0e41d067c21d4c2cae14e8f342 assets/ae2cs/models/item/extended_integrated_interface_upgrade.json
 e9c7cda57382d561c1a81de077c82f2974efd02e assets/ae2cs/models/item/extended_resonating_pattern_provider_upgrade.json
 c1bb7a94e9b51ff42f2049de3c06bba4b8bc9074 assets/ae2cs/models/item/flour.json
 a4ad85bc6f94c6fb4528be3637079a2b69c43290 assets/ae2cs/models/item/fluix_crystal_seed.json

@@ -116,6 +116,11 @@ public class AECSBlocks
     public static final DeferredBlock<IntegratedInterfaceBlock> INTEGRATED_INTERFACE_BLOCK = registerOtherBlock(AECSBlockIds.INTEGRATED_INTERFACE, () -> new IntegratedInterfaceBlock(AEBaseBlock.metalProps()));
 
     /**
+     * 扩展ME集成接口
+     */
+    public static final DeferredBlock<IntegratedInterfaceBlock> EX_INTEGRATED_INTERFACE_BLOCK = registerOtherBlock(AECSBlockIds.EX_INTEGRATED_INTERFACE, () -> new IntegratedInterfaceBlock(AEBaseBlock.metalProps()));
+
+    /**
      * 晶能谐振器
      */
     public static final DeferredBlock<CrystalVibrationChamberBlock> CRYSTAL_VIBRATION_CHAMBER_BLOCK = registerOtherBlock(AECSBlockIds.CRYSTAL_VIBRATION_CHAMBER, () -> new CrystalVibrationChamberBlock(AEBaseBlock.metalProps().strength(4.5f)));

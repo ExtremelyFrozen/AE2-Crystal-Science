@@ -22,7 +22,12 @@ public class AECSScreens
     public static void registerScreens(RegisterMenuScreensEvent event)
     {
         event.register(AECSMenus.CRYSTAL_GROWTH_CHAMBER_MENU.get(), CrystalGrowthChamberGUI::new);
-        event.register(AECSMenus.INTEGRATED_INTERFACE_MENU.get(), IntegratedInterfaceGUI::new);
+
+        event.<IntegratedInterfaceMenu, IntegratedInterfaceGUI>register(AECSMenus.INTEGRATED_INTERFACE_MENU.get(), (menu, inv, title) -> new IntegratedInterfaceGUI(menu, inv, title,
+                menu.extended ?
+                        StyleManager.loadStyleDoc("/screens/extended_integrated_interface_menu.json") :
+                        StyleManager.loadStyleDoc("/screens/integrated_interface_menu.json")));
+
         event.register(AECSMenus.INTEGRATED_INTERFACE_SET_STOCK_AMOUNT_MENU.get(), IntegratedInterfaceSetStockAmountGUI::new);
         event.register(AECSMenus.CRYSTAL_VIBRATION_CHAMBER_MENU.get(), CrystalVibrationChamberGUI::new);
         event.register(AECSMenus.CIRCUIT_ETCHER_MENU.get(), CircuitEtcherGUI::new);
