@@ -4,6 +4,7 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.parts.AEBasePart;
+import io.github.lounode.ae2cs.util.BlockStateAligner;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -46,18 +47,21 @@ public class UpgradeItem extends Item
         BlockEntity originalBe = level.getBlockEntity(pos);
         if (originalBe != null)
         {
+            if (level.isClientSide()) return InteractionResult.SUCCESS;
+
             BlockPlaceContext ctx = new BlockPlaceContext(context);
             if (blockReplaceInfo.containsKey(originalBe.getBlockState().getBlock()))
             {
                 BlockState originState = level.getBlockState(pos);
                 Block newBlock = blockReplaceInfo.get(originState.getBlock());
-                BlockState newState = newBlock.getStateForPlacement(ctx);
-                if (newState == null)
+                BlockState placed = newBlock.getStateForPlacement(ctx);
+                if (placed == null)
                 {
                     return InteractionResult.PASS;
                 }
+                BlockState newState = BlockStateAligner.align(originState, placed);
 
-                CompoundTag originalData = originalBe.saveWithFullMetadata(level.registryAccess());
+                CompoundTag originalData = originalBe.saveWithoutMetadata(level.registryAccess());
                 level.removeBlockEntity(pos); // 先行移除掉对应的BE，防止物品掉落
                 level.removeBlock(pos, false);
                 level.setBlock(pos, newState, Block.UPDATE_ALL);
@@ -66,7 +70,6 @@ public class UpgradeItem extends Item
                 {
                     newBe.loadWithComponents(originalData, level.registryAccess());
                     newBe.setChanged();
-                    level.sendBlockUpdated(pos, newState, newState, Block.UPDATE_CLIENTS);
                 }
                 context.getItemInHand().shrink(1);
                 return InteractionResult.CONSUME;
@@ -89,12 +92,12 @@ public class UpgradeItem extends Item
                         newPart.readFromNBT(contents, level.registryAccess());
                         newPart.addToWorld();
                     }
+                    context.getItemInHand().shrink(1);
                 }
                 else
                 {
                     return InteractionResult.PASS;
                 }
-                context.getItemInHand().shrink(1);
                 return InteractionResult.sidedSuccess(level.isClientSide);
             }
         }

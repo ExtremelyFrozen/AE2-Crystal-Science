@@ -21,6 +21,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.Nullable;
@@ -38,9 +39,9 @@ public class IntegratedInterfaceBlockEntity extends AENetworkedBlockEntity imple
     IntegratedInterfaceLogic logic = createLogic();
     private int priority;
 
-    public IntegratedInterfaceBlockEntity(BlockPos pos, BlockState blockState)
+    public IntegratedInterfaceBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState)
     {
-        super(AECSBlockEntities.INTEGRATED_INTERFACE_BLOCK_ENTITY.get(), pos, blockState);
+        super(type, pos, blockState);
     }
 
     /**

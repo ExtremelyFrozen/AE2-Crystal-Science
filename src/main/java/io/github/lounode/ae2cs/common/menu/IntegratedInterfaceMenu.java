@@ -72,7 +72,11 @@ public class IntegratedInterfaceMenu extends UpgradeableMenu<IntegratedInterface
         {
             this.addSlot(new AppEngSlot(storageWrap, i), SlotSemantics.STORAGE);
         }
-        togglePage(pageIndex);
+
+        if (isClientSide())
+        {
+            togglePage(pageIndex);
+        }
     }
 
     @Override
