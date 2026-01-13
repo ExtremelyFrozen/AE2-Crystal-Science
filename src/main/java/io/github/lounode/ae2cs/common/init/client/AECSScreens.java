@@ -72,5 +72,9 @@ public class AECSScreens
         event.<SideConfigMenu, SideConfigGUI>register(AECSMenus.SIDE_CONFIG_MENU.get(),
                 (menu, inv, title) -> new SideConfigGUI(menu, inv, title,
                         StyleManager.loadStyleDoc("/screens/side_config_menu.json")));
+
+        event.<ResonatingPatternConverterMenu, ResonatingPatternConverterGUI>register(AECSMenus.RESONATING_PATTERN_CONVERTER_MENU.get(),
+                (menu, inv, title) -> new ResonatingPatternConverterGUI(menu, inv, title,
+                        StyleManager.loadStyleDoc("/screens/resonating_pattern_converter_menu.json")));
     }
 }

@@ -2,19 +2,24 @@ package io.github.lounode.ae2cs.common.me.crafting;
 
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.PatternDetailsTooltip;
+import appeng.api.ids.AEComponents;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
+import appeng.core.definitions.AEItems;
+import appeng.crafting.pattern.EncodedProcessingPattern;
 import com.google.common.base.Preconditions;
 import io.github.lounode.ae2cs.api.util.PatternHelper;
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
+import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern.Target;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -90,6 +95,51 @@ public class ResonatingPatternDetails implements IPatternDetails
         stack.set(AECSDataComponents.ENCODED_RESONATING_PATTERN.get(),
                 new EncodedResonatingPattern(sparseInputs, sparseOutputs, targets));
         stack.set(AECSDataComponents.RESONATING_PATTERN_SELECTED_INPUT.get(), 0);
+    }
+
+    /**
+     * 把信息从处理样板编码到谐振样板上
+     */
+    public static boolean encode(@NotNull ItemStack patternItem, @NotNull ItemStack resonatingPattern)
+    {
+        if (patternItem.isEmpty() || resonatingPattern.isEmpty()) return false;
+
+        if (!patternItem.is(AEItems.PROCESSING_PATTERN.asItem())
+                || !resonatingPattern.is(AECSItems.RESONATING_PATTERN.asItem())
+                || !patternItem.has(AEComponents.ENCODED_PROCESSING_PATTERN))
+            return false;
+
+        EncodedProcessingPattern src = patternItem.get(AEComponents.ENCODED_PROCESSING_PATTERN);
+        List<Optional<EncodedResonatingPattern.Target>> targets = new ArrayList<>(src.sparseInputs().size());
+        for (int i = 0; i < src.sparseInputs().size(); i++)
+        {
+            targets.add(Optional.empty());
+        }
+
+        resonatingPattern.set(AECSDataComponents.ENCODED_RESONATING_PATTERN.get(),
+                new EncodedResonatingPattern(src.sparseInputs(), src.sparseOutputs(), targets));
+        resonatingPattern.set(AECSDataComponents.RESONATING_PATTERN_SELECTED_INPUT.get(), 0);
+        return true;
+    }
+
+    /**
+     * 从处理样板获取一个对应的谐振样板
+     */
+    public static ItemStack encode(@NotNull ItemStack patternItem)
+    {
+        if (patternItem.isEmpty()) return ItemStack.EMPTY;
+
+        if (!patternItem.is(AEItems.PROCESSING_PATTERN.asItem())
+                || !patternItem.has(AEComponents.ENCODED_PROCESSING_PATTERN))
+            return ItemStack.EMPTY;
+
+        ItemStack resonatingItem = AECSItems.RESONATING_PATTERN.get().getDefaultInstance();
+
+        if (encode(patternItem, resonatingItem))
+        {
+            return resonatingItem;
+        }
+        return ItemStack.EMPTY;
     }
 
     @Override

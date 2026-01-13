@@ -111,6 +111,8 @@
   "item.ae2cs.pattern_provider_upgrade": "样板供应器升级",
   "item.ae2cs.meteor_pattern_provider_upgrade": "自装配式样板供应器升级",
 
+  "item.ae2cs.resonating_pattern_converter": "谐振样板转换器",
+
   "ae2cs.item.integrated_interface_upgrade.tooltip": "将样板供应器或ME接口升级为ME集成接口",
   "ae2cs.item.meteor_pattern_provider_upgrade.tooltip": "将样板供应器升级为自装配式样板供应器",
   "ae2cs.item.pattern_provider_upgrade.tooltip": "将初级样板供应器升级为样板供应器",

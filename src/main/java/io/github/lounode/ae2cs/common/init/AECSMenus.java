@@ -8,6 +8,7 @@ import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
 import io.github.lounode.ae2cs.common.block.entity.*;
 import io.github.lounode.ae2cs.common.me.logic.*;
+import io.github.lounode.ae2cs.common.me.menuhost.ResonatingPatternConverterMenuHost;
 import io.github.lounode.ae2cs.common.menu.*;
 import io.github.lounode.ae2cs.common.menu.linker.broadcast.*;
 import io.github.lounode.ae2cs.common.menu.submenu.SideConfigMenu;
@@ -131,6 +132,11 @@ public class AECSMenus
     public static final Supplier<MenuType<SideConfigMenu>> SIDE_CONFIG_MENU = MENU_TYPES.register("side_config_menu",
             () -> MenuTypeBuilder.create(SideConfigMenu::new, CustomReturnableSubMenuHost.class)
                     .build(AE2CrystalScience.makeId("side_config_menu"))
+    );
+
+    public static final Supplier<MenuType<ResonatingPatternConverterMenu>> RESONATING_PATTERN_CONVERTER_MENU = MENU_TYPES.register("resonating_pattern_converter_menu",
+            () -> MenuTypeBuilder.create(ResonatingPatternConverterMenu::new, ResonatingPatternConverterMenuHost.class)
+                    .build(AE2CrystalScience.makeId("resonating_pattern_converter_menu"))
     );
 
     public static void registerMenus(IEventBus eventBus)

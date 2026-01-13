@@ -1,4 +1,4 @@
-// 1.21.1	2026-01-13T13:38:12.0274471	Item Models: ae2cs
+// 1.21.1	2026-01-13T23:09:10.7342412	Item Models: ae2cs
 b12dd22e280360c8a0e60dab4f633579f285ac71 assets/ae2cs/models/item/certus_quartz_seed.json
 9b0a0f5bbd61b4a4cf3d2083524df9fe42b70ac5 assets/ae2cs/models/item/certus_quartz_seed_1.json
 9359cf66e98b5af14ae724e4097a9a8916b30c0e assets/ae2cs/models/item/certus_quartz_seed_2.json
@@ -71,6 +71,7 @@ b7c143e5496e0ee73908d4667f1f4420721522fd assets/ae2cs/models/item/resonating_cry
 caa41a1273a42e287410ba8f4b05ff2b7e4cfdb2 assets/ae2cs/models/item/resonating_crystal_shovel.json
 f383b84aad406ad05749e83dc0fb6dc2fc17c544 assets/ae2cs/models/item/resonating_crystal_sword.json
 f79b2104f45b825c2c88afb434772711a18bc1cc assets/ae2cs/models/item/resonating_pattern.json
+950436d7b93df30d5eb2da5559e9b16bfd6c06fb assets/ae2cs/models/item/resonating_pattern_converter.json
 a8326918d9aa56665a84f48e57f63ba5c6f16135 assets/ae2cs/models/item/resonating_print_press.json
 c30c128a2398fa488e562875c3d1bf4d9f583ac0 assets/ae2cs/models/item/resonating_processor.json
 2a4e6524227f3217025214e5e249e1735923ee93 assets/ae2cs/models/item/resonating_seed.json

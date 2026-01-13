@@ -30,4 +30,6 @@ public class AdaptedAE2Icon
     public static final AE2IconAdapter ARROW_RIGHT = new AE2IconAdapter(Icon.ARROW_RIGHT);
     public static final AE2IconAdapter ARROW_LEFT = new AE2IconAdapter(Icon.ARROW_LEFT);
 
+    public static final AE2IconAdapter SCHEDULING_RANDOM = new AE2IconAdapter(Icon.SCHEDULING_RANDOM);
+
 }
