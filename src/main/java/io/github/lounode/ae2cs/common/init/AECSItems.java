@@ -3,7 +3,11 @@ package io.github.lounode.ae2cs.common.init;
 import appeng.api.upgrades.Upgrades;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.ids.AECSItemIds;
-import io.github.lounode.ae2cs.common.item.*;
+import io.github.lounode.ae2cs.common.item.CrystalSeedItem;
+import io.github.lounode.ae2cs.common.item.EnderLinkerItem;
+import io.github.lounode.ae2cs.common.item.PureCrystalItem;
+import io.github.lounode.ae2cs.common.item.ResonatingPatternItem;
+import io.github.lounode.ae2cs.common.item.upgrades.*;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -106,6 +110,9 @@ public class AECSItems
     public static final DeferredItem<ExtendedEnderInterfaceUpgradeItem> EX_ENDER_INTERFACE_UPGRADE = registerOtherItem(AECSItemIds.EX_ENDER_INTERFACE_UPGRADE, () -> new ExtendedEnderInterfaceUpgradeItem(new Item.Properties()));
     public static final DeferredItem<ExtendedResonatingPatternProviderUpgradeItem> EX_RESONATING_PATTERN_PROVIDER_UPGRADE = registerOtherItem(AECSItemIds.EX_RESONATING_PATTERN_PROVIDER_UPGRADE, () -> new ExtendedResonatingPatternProviderUpgradeItem(new Item.Properties()));
     public static final DeferredItem<ExtendedIntegratedInterfaceUpgradeItem> EX_INTEGRATED_INTERFACE_UPGRADE = registerOtherItem(AECSItemIds.EX_INTEGRATED_INTERFACE_UPGRADE, () -> new ExtendedIntegratedInterfaceUpgradeItem(new Item.Properties()));
+    public static final DeferredItem<IntegratedInterfaceUpgradeItem> INTEGRATED_INTERFACE_UPGRADE = registerOtherItem(AECSItemIds.INTEGRATED_INTERFACE_UPGRADE, () -> new IntegratedInterfaceUpgradeItem(new Item.Properties()));
+    public static final DeferredItem<MeteorPatternProviderUpgradeItem> METEOR_PATTERN_PROVIDER_UPGRADE = registerOtherItem(AECSItemIds.METEOR_PATTERN_PROVIDER_UPGRADE, () -> new MeteorPatternProviderUpgradeItem(new Item.Properties()));
+    public static final DeferredItem<PatternProviderUpgradeItem> PATTERN_PROVIDER_UPGRADE = registerOtherItem(AECSItemIds.PATTERN_PROVIDER_UPGRADE, () -> new PatternProviderUpgradeItem(new Item.Properties()));
 
     // 快速物品状态
     public static Item.Properties defaultBuilder()

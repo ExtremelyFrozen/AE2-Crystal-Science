@@ -1,4 +1,4 @@
-package io.github.lounode.ae2cs.common.item;
+package io.github.lounode.ae2cs.common.item.upgrades;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
