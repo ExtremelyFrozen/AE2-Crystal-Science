@@ -42,6 +42,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -616,6 +617,23 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
     private boolean doResonatingWork()
     {
         return sendResonatingStacksOut();
+    }
+
+    @Override
+    public void addDrops(List<ItemStack> drops)
+    {
+        super.addDrops(drops);
+        for (ItemStack stack : upgrades)
+        {
+            drops.add(stack);
+        }
+    }
+
+    @Override
+    public void clearContent()
+    {
+        super.clearContent();
+        upgrades.clear();
     }
 
     private class ResonatingTicker implements IGridTickable

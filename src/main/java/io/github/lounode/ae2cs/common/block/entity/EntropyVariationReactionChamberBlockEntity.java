@@ -15,6 +15,7 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.core.definitions.AEItems;
 import appeng.helpers.externalstorage.GenericStackInv;
+import appeng.recipes.AERecipeTypes;
 import appeng.recipes.entropy.EntropyMode;
 import appeng.recipes.entropy.EntropyRecipe;
 import appeng.util.ConfigInventory;
@@ -432,7 +433,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
     private static RecipeHolder<EntropyRecipe> findRecipe(Level level, EntropyMode mode, BlockState blockState,
                                                           FluidState fluidState)
     {
-        for (var holder : level.getRecipeManager().byType(EntropyRecipe.TYPE))
+        for (var holder : level.getRecipeManager().byType(AERecipeTypes.ENTROPY))
         {
             var recipe = holder.value();
             if (recipe.matches(mode, blockState, fluidState))

@@ -32,7 +32,10 @@ import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class MeteoritePatternProviderLogic extends PatternProviderLogic implements IUpgradeableObject
 {
@@ -234,6 +237,23 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
         upgrades.readFromNBT(tag, "upgrades", registries);
         AEKeyHelper.readKeyAmountMap(tag, "crafted_contents", craftedContents, registries);
         onUpgradesChange();
+    }
+
+    @Override
+    public void addDrops(List<ItemStack> drops)
+    {
+        super.addDrops(drops);
+        for (ItemStack stack : upgrades)
+        {
+            drops.add(stack);
+        }
+    }
+
+    @Override
+    public void clearContent()
+    {
+        super.clearContent();
+        upgrades.clear();
     }
 
     /**

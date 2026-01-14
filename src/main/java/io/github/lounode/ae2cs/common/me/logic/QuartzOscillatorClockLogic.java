@@ -21,7 +21,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+
+import java.util.List;
 
 public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigurableObject
 {
@@ -398,6 +401,20 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
     {
         return this.upgrades;
     }
+
+    public void addDrops(List<ItemStack> drops)
+    {
+        for (ItemStack stack : upgrades)
+        {
+            drops.add(stack);
+        }
+    }
+
+    public void clearContent()
+    {
+        upgrades.clear();
+    }
+
 
     private class Ticker implements IGridTickable
     {

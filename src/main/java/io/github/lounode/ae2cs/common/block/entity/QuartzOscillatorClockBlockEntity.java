@@ -12,11 +12,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.EnumSet;
+import java.util.List;
 
 public class QuartzOscillatorClockBlockEntity extends AENetworkedBlockEntity implements QuartzOscillatorClockHost,
         IConfigurableObject, IUpgradeableObject
@@ -116,5 +119,17 @@ public class QuartzOscillatorClockBlockEntity extends AENetworkedBlockEntity imp
         this.logic.readFromNBT(data, registries);
     }
 
+    @Override
+    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops)
+    {
+        super.addAdditionalDrops(level, pos, drops);
+        this.logic.addDrops(drops);
+    }
 
+    @Override
+    public void clearContent()
+    {
+        super.clearContent();
+        this.logic.clearContent();
+    }
 }
