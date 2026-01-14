@@ -321,5 +321,10 @@
   "ae2cs.text.direction.east": "东面",
 
   "ae2cs.menu.button.prev_page": "翻页\n上一页",
-  "ae2cs.menu.button.next_page": "翻页\n下一页"
+  "ae2cs.menu.button.next_page": "翻页\n下一页",
+
+  "ae2cs.integration.jei.recipe_category.circuit_etcher": "电路蚀刻",
+  "ae2cs.integration.jei.recipe_category.energy_cost.tooltip": "需要能量：%sAE",
+  "ae2cs.integration.jei.recipe_category.crystal_aggregator": "晶能聚合",
+  "ae2cs.integration.jei.recipe_category.crystal_pulverizer": "粉碎"
 }
