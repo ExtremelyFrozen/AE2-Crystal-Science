@@ -21,6 +21,14 @@ group = mod_group_id
 repositories {
     mavenCentral()
     maven {
+        name = "Jared's maven"
+        url = "https://maven.blamejared.com/"
+    }
+    maven {
+        name = "ModMaven"
+        url = "https://modmaven.dev"
+    }
+    maven {
         url = "https://cursemaven.com"
     }
     maven {
@@ -141,7 +149,10 @@ dependencies {
     implementation "curse.maven:ex-pattern-provider-892005:6283473"
 
     compileOnly "dev.emi:emi-neoforge:${emi_version}:api"
-    localRuntime "dev.emi:emi-neoforge:${emi_version}"
+    //localRuntime "dev.emi:emi-neoforge:${emi_version}"
+
+    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
+    localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
 
     localRuntime "curse.maven:nbtedit-reborn-678133:6125444"
 
