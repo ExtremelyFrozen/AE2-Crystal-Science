@@ -1,8 +1,10 @@
-// 1.21.1	2026-01-09T16:54:52.3208628	Recipes
+// 1.21.1	2026-01-14T18:56:57.8884767	Recipes
 c6301b6d6a62b853b7c5cb93b87f7c8b80b8a64a data/ae2cs/advancement/recipes/aggregating/singularity.json
 e6d07675f165eeb787552ea82bd72cde00c510a5 data/ae2cs/advancement/recipes/circuit/calculation_processor.json
 165dda9cbc7a3799f24a54b565e416653651d99a data/ae2cs/advancement/recipes/pulverizer/silicon.json
 3534ad3fe8d2b34128f10600bdda77301a070ad9 data/ae2cs/recipe/aggregating/singularity.json
 ab99640e1e8cf9271a2bf592aac3b96fb2a1035e data/ae2cs/recipe/circuit/calculation_processor.json
 30d7693e190299923e49810daafc4614a5986205 data/ae2cs/recipe/pulverizer/silicon.json
+fbfdcd1eb45f3ed00b50d078cfc8cc50ec4f1e6e data/ae2/advancement/recipes/misc/blank_pattern.json
+f89a7ab99f1cdfd0f06f6a3fc370c5d2d5f39f10 data/ae2/recipe/blank_pattern.json
 ff9015ba08f80eb29ca557c9ac830dc8516d95bb data/minecraft/recipe/resonating_pattern_upgrade.json

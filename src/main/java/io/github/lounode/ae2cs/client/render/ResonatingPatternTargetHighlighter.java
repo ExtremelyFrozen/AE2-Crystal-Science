@@ -25,14 +25,23 @@ import static net.neoforged.neoforge.client.event.RenderLevelStageEvent.Stage.AF
 
 /**
  * 在手持谐振样板时渲染目标面
+ * - 选中：绿色半透明
+ * - 未选中：蓝色半透明
+ * - 渲染所有存在目标的 sparse input
  */
 @EventBusSubscriber(modid = AECSConstants.MODID, value = Dist.CLIENT)
 public class ResonatingPatternTargetHighlighter
 {
-    // 绿色 + 半透明
-    private static final int R = 0;
-    private static final int G = 255;
-    private static final int B = 0;
+    // 选中：绿色 + 半透明
+    private static final int SEL_R = 0;
+    private static final int SEL_G = 255;
+    private static final int SEL_B = 0;
+
+    // 未选中：蓝色 + 半透明
+    private static final int UNS_R = 0;
+    private static final int UNS_G = 80;
+    private static final int UNS_B = 255;
+
     private static final int A = 90;
 
     // 防Z-fighting
@@ -61,38 +70,58 @@ public class ResonatingPatternTargetHighlighter
         if (encoded == null)
             return;
 
-        int sel = stack.getOrDefault(AECSDataComponents.RESONATING_PATTERN_SELECTED_INPUT.get(), 0);
-        sel = ResonatingPatternDetails.clampSelected(sel, encoded.sparseInputs().size());
-
-        var opt = encoded.targetOfSparseInput(sel);
-        if (opt.isEmpty())
+        int size = encoded.sparseInputs().size();
+        if (size <= 0)
             return;
 
-        EncodedResonatingPattern.Target t = opt.get();
+        int sel = stack.getOrDefault(AECSDataComponents.RESONATING_PATTERN_SELECTED_INPUT.get(), 0);
+        sel = ResonatingPatternDetails.clampSelected(sel, size);
 
         Level level = player.level();
-        if (!level.dimension().equals(t.pos().dimension()))
-            return; // 跨维度时不渲染
-
-        BlockPos pos = t.pos().pos();
-        if (!level.hasChunkAt(pos))
-            return; // 未加载不渲染
-
-        PoseStack poseStack = event.getPoseStack();
-
-        // 移到相机坐标系
         var cam = event.getCamera();
         var camPos = cam.getPosition();
 
-        poseStack.pushPose();
-        poseStack.translate(pos.getX() - camPos.x, pos.getY() - camPos.y, pos.getZ() - camPos.z);
+        PoseStack poseStack = event.getPoseStack();
 
         MultiBufferSource.BufferSource bufferSource = mc.renderBuffers().bufferSource();
         VertexConsumer vc = bufferSource.getBuffer(AECSRenderTypes.RESONATING_MARK_FACE);
 
-        drawFaceQuad(poseStack, vc, t.face(), EPS, R, G, B, A);
+        // 渲染所有存在目标的输入
+        for (int i = 0; i < size; i++)
+        {
+            var opt = encoded.targetOfSparseInput(i);
+            if (opt.isEmpty())
+                continue;
 
-        poseStack.popPose();
+            EncodedResonatingPattern.Target t = opt.get();
+
+            // 跨维度不渲染
+            if (!level.dimension().equals(t.pos().dimension()))
+                continue;
+
+            BlockPos pos = t.pos().pos();
+            // 未加载不渲染
+            if (!level.hasChunkAt(pos))
+                continue;
+
+            boolean selected = (i == sel);
+
+            poseStack.pushPose();
+            // 移到相机坐标系
+            poseStack.translate(pos.getX() - camPos.x, pos.getY() - camPos.y, pos.getZ() - camPos.z);
+
+            if (selected)
+            {
+                drawFaceQuad(poseStack, vc, t.face(), EPS, SEL_R, SEL_G, SEL_B, A);
+            }
+            else
+            {
+                drawFaceQuad(poseStack, vc, t.face(), EPS, UNS_R, UNS_G, UNS_B, A);
+            }
+
+            poseStack.popPose();
+        }
+
         bufferSource.endBatch(AECSRenderTypes.RESONATING_MARK_FACE);
     }
 
@@ -141,7 +170,6 @@ public class ResonatingPatternTargetHighlighter
         }
     }
 
-
     private static void quadPosColor(VertexConsumer vc, Matrix4f mat,
                                      float x0, float y0, float z0,
                                      float x1, float y1, float z1,
@@ -156,5 +184,4 @@ public class ResonatingPatternTargetHighlighter
         vc.addVertex(mat, x2, y2, z2).setColor(argb);
         vc.addVertex(mat, x3, y3, z3).setColor(argb);
     }
-
 }

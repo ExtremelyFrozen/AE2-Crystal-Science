@@ -110,6 +110,7 @@ public class AECSItems
     public static final DeferredItem<IntegratedInterfaceUpgradeItem> INTEGRATED_INTERFACE_UPGRADE = registerOtherItem(AECSItemIds.INTEGRATED_INTERFACE_UPGRADE, () -> new IntegratedInterfaceUpgradeItem(new Item.Properties()));
     public static final DeferredItem<MeteorPatternProviderUpgradeItem> METEOR_PATTERN_PROVIDER_UPGRADE = registerOtherItem(AECSItemIds.METEOR_PATTERN_PROVIDER_UPGRADE, () -> new MeteorPatternProviderUpgradeItem(new Item.Properties()));
     public static final DeferredItem<PatternProviderUpgradeItem> PATTERN_PROVIDER_UPGRADE = registerOtherItem(AECSItemIds.PATTERN_PROVIDER_UPGRADE, () -> new PatternProviderUpgradeItem(new Item.Properties()));
+    public static final DeferredItem<EnderInterfaceUpgradeItem> ENDER_INTERFACE_UPGRADE = registerOtherItem(AECSItemIds.ENDER_INTERFACE_UPGRADE, () -> new EnderInterfaceUpgradeItem(new Item.Properties()));
 
     public static final DeferredItem<ResonatingPatternConverterItem> RESONATING_PATTERN_CONVERTER = registerOtherItem(AECSItemIds.RESONATING_PATTERN_CONVERTER, () -> new ResonatingPatternConverterItem(new Item.Properties().stacksTo(1)));
 

@@ -9,9 +9,7 @@ import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBui
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalPulverizerRecipeBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.data.recipes.SpecialRecipeBuilder;
+import net.minecraft.data.recipes.*;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.conditions.IConditionBuilder;
 import org.jetbrains.annotations.NotNull;
@@ -50,6 +48,12 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
         // 添加谐振样板配方
         SpecialRecipeBuilder.special(ResonatingPatternUpgradeRecipe::new)
                 .save(recipeOutput, "resonating_pattern_upgrade");
+
+        // 添加谐振样板拆解
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEItems.BLANK_PATTERN)
+                .requires(AECSItems.RESONATING_PATTERN)
+                .unlockedBy("just_has_resonating_pattern", has(AECSItems.RESONATING_PATTERN))
+                .save(recipeOutput);
 
     }
 

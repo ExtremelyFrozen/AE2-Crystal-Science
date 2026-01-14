@@ -126,8 +126,7 @@ public class ResonatingPatternItem extends EncodedPatternItem<ResonatingPatternD
 
     /**
      * 右键空气：
-     * - Shift：交给AE2原版拆解逻辑
-     * - 非Shift：直接PASS
+     * - 仅在无编码时允许拆解
      */
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand)
@@ -135,17 +134,12 @@ public class ResonatingPatternItem extends EncodedPatternItem<ResonatingPatternD
         ItemStack stack = player.getItemInHand(hand);
 
         var encoded = stack.get(AECSDataComponents.ENCODED_RESONATING_PATTERN.get());
-        if (encoded == null)
+        if (encoded == null) // 无编码仍然允许直接拆解
         {
             return super.use(level, player, hand);
         }
 
-        // Shift交给AE原版拆解
-        if (InteractionUtil.isInAlternateUseMode(player))
-        {
-            return super.use(level, player, hand);
-        }
-
+        // 有编码的情况下，我们不允许拆解，防止误操作
         return InteractionResultHolder.pass(stack);
     }
 
