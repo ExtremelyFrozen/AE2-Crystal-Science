@@ -48,7 +48,7 @@ public class CrystalAggregatorRecipeCategory implements IRecipeCategory<CrystalA
     {
         var guiHelper = jeiHelper.getGuiHelper();
         this.background = guiHelper.createDrawable(AE2CrystalScience.makeId("textures/gui/recipe/crystal_aggregator.png"), 0, 0, 135, 58);
-        this.icon = guiHelper.createDrawableItemLike(AECSBlocks.CIRCUIT_ETCHER_BLOCK);
+        this.icon = guiHelper.createDrawableItemLike(AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK);
 
         energyRateBar = new AdvancedProgressBar(new IProgressProvider()
         {

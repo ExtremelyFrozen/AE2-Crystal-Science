@@ -45,7 +45,7 @@ public class CrystalPulverizerRecipeCategory implements IRecipeCategory<CrystalP
     {
         var guiHelper = jeiHelper.getGuiHelper();
         this.background = guiHelper.createDrawable(AE2CrystalScience.makeId("textures/gui/recipe/crystal_pulverizer.png"), 0, 0, 135, 58);
-        this.icon = guiHelper.createDrawableItemLike(AECSBlocks.CIRCUIT_ETCHER_BLOCK);
+        this.icon = guiHelper.createDrawableItemLike(AECSBlocks.CRYSTAL_PULVERIZER_BLOCK);
 
         energyRateBar = new AdvancedProgressBar(new IProgressProvider()
         {
