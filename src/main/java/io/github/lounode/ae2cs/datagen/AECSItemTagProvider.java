@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredItem;
+import net.pedroksl.advanced_ae.datagen.AAEConventionTags;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,13 +37,13 @@ public class AECSItemTagProvider extends ItemTagsProvider
         // 宝石
         tag(Tags.Items.GEMS)
                 .addTag(AECSTags.Items.GEM_RESONATING)
-                .addTag(AECSTags.Items.GEM_SKY_STONE)
+                .addTag(AECSTags.Items.GEM_SKY_STONE_CRYSTAL)
                 .addTag(AECSTags.Items.GEM_ENDER_QUARTZ);
         tag(AECSTags.Items.GEM_RESONATING)
                 .add(AECSItems.pureResonatingCrystal.get());
         tag(AECSTags.Items.GEM_ENDER_QUARTZ)
                 .add(AECSItems.pureEnderQuartz.get());
-        tag(AECSTags.Items.GEM_SKY_STONE)
+        tag(AECSTags.Items.GEM_SKY_STONE_CRYSTAL)
                 .add(AECSItems.pureMeteorCrystal.get());
         tag(Tags.Items.GEMS_QUARTZ)
                 .add(AECSItems.pureNetherQuartzCrystal.get());
@@ -59,11 +60,11 @@ public class AECSItemTagProvider extends ItemTagsProvider
 
         // 存储方块
         tag(Tags.Items.STORAGE_BLOCKS)
-                .addTag(AECSTags.Items.STORAGE_BLOCK_SKY_STONE)
+                .addTag(AECSTags.Items.STORAGE_BLOCK_SKY_STONE_CRYSTAL)
                 .addTag(AECSTags.Items.STORAGE_BLOCK_RESONATING)
                 .addTag(AECSTags.Items.STORAGE_BLOCK_ENDER_QUARTZ)
                 .addTag(AECSTags.Items.STORAGE_BLOCK_SILICON);
-        tag(AECSTags.Items.STORAGE_BLOCK_SKY_STONE)
+        tag(AECSTags.Items.STORAGE_BLOCK_SKY_STONE_CRYSTAL)
                 .add(AECSBlocks.PURE_METEOR_CRYSTAL_BLOCK.asItem());
         tag(AECSTags.Items.STORAGE_BLOCK_RESONATING)
                 .add(AECSBlocks.PURE_RESONATING_CRYSTAL_BLOCK.asItem());
@@ -81,5 +82,12 @@ public class AECSItemTagProvider extends ItemTagsProvider
         // 空白压印模板实际上不算压印模板，是故不计入
         tag(ConventionTags.INSCRIBER_PRESSES)
                 .add(AECSItems.RESONATING_PRINT_PRESS.get());
+
+
+        // 联动区域
+        tag(AAEConventionTags.QUANTUM_ALLOY)
+                .add(AECSItems.pureQuantumCrystal.get());
+        tag(AAEConventionTags.QUANTUM_ALLOY_STORAGE_BLOCK_ITEM)
+                .add(AECSBlocks.PURE_QUANTUM_CRYSTAL_BLOCK.asItem());
     }
 }

@@ -43,6 +43,12 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .unlockedBy(getHasName(AECSItems.RESONATING_DUST), has(AECSTags.Items.DUST_RESONATING))
                 .save(recipeOutput, getCrafterPath(AECSItems.resonatingSeed, false));
 
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.crystalGrowthCard)
+                .requires(AEItems.ADVANCED_CARD)
+                .requires(AEBlocks.GROWTH_ACCELERATOR)
+                .unlockedBy(getHasName(AEBlocks.GROWTH_ACCELERATOR), has(AEBlocks.GROWTH_ACCELERATOR))
+                .save(recipeOutput, getCrafterPath(AECSItems.crystalGrowthCard, false));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSItems.BLANK_PRINT_PRESS)
                 .pattern(" a ")
                 .pattern("aba")
@@ -71,7 +77,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .pattern("aba")
                 .pattern("bcb")
                 .pattern("ded")
-                .define('a', AECSTags.Items.GEM_SKY_STONE)
+                .define('a', AECSTags.Items.GEM_SKY_STONE_CRYSTAL)
                 .define('b', AEBlocks.INSCRIBER)
                 .define('c', AECSItems.RESONATING_PROCESSOR)
                 .define('d', AEItems.ENGINEERING_PROCESSOR)
@@ -101,7 +107,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .define('b', AEBlocks.ENERGY_ACCEPTOR)
                 .define('c', Tags.Items.INGOTS_IRON)
                 .define('d', AECSItems.RESONATING_PROCESSOR)
-                .define('e', AECSTags.Items.GEM_SKY_STONE)
+                .define('e', AECSTags.Items.GEM_SKY_STONE_CRYSTAL)
                 .define('f', AEBlocks.VIBRATION_CHAMBER)
                 .unlockedBy(getHasName(AECSItems.RESONATING_PROCESSOR), has(AECSItems.RESONATING_PROCESSOR))
                 .save(recipeOutput, getCrafterPath(AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK, true));
@@ -136,7 +142,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .pattern("aba")
                 .pattern("cdc")
                 .pattern("efe")
-                .define('a', AECSTags.Items.GEM_SKY_STONE)
+                .define('a', AECSTags.Items.GEM_SKY_STONE_CRYSTAL)
                 .define('b', AEItems.ENTROPY_MANIPULATOR)
                 .define('c', AEItems.ENGINEERING_PROCESSOR)
                 .define('d', AEBlocks.CONDENSER)
@@ -150,7 +156,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .pattern("aba")
                 .pattern("cdc")
                 .pattern("efe")
-                .define('a', AECSTags.Items.STORAGE_BLOCK_SKY_STONE)
+                .define('a', AECSTags.Items.STORAGE_BLOCK_SKY_STONE_CRYSTAL)
                 .define('b', AEBlocks.MOLECULAR_ASSEMBLER)
                 .define('c', AEBlocks.PATTERN_PROVIDER)
                 .define('d', AECSItems.RESONATING_PROCESSOR)

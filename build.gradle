@@ -162,6 +162,8 @@ dependencies {
     implementation "maven.modrinth:mekanism:10.7.13.78"
     // OMNI CELL
     implementation "curse.maven:omni-cells-1359517:7169530"
+    // MEGA CELL
+    implementation "curse.maven:mega-cells-622112:6853076"
     // EAE
     implementation "curse.maven:ex-pattern-provider-892005:7356474"
     // AAE

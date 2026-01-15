@@ -3,11 +3,11 @@
   "energy_cost": 14400,
   "input_a": {
     "count": 1,
-    "tag": "c:storage_blocks/resonating"
+    "tag": "c:storage_blocks/gold"
   },
   "input_b": {
     "count": 1,
-    "tag": "c:storage_blocks/sky_stone_crystal"
+    "tag": "c:storage_blocks/redstone"
   },
   "input_c": {
     "count": 1,
@@ -15,6 +15,6 @@
   },
   "result": {
     "count": 9,
-    "id": "ae2cs:resonating_processor"
+    "id": "ae2:logic_processor"
   }
 }

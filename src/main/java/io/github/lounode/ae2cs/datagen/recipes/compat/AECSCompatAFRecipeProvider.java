@@ -1,9 +1,13 @@
 package io.github.lounode.ae2cs.datagen.recipes.compat;
 
+import appeng.core.definitions.AEBlocks;
 import com.glodblock.github.appflux.common.AFSingletons;
+import gripe._90.megacells.definition.MEGAItems;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSItems;
+import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
+import io.github.lounode.ae2cs.datagen.builder.recipe.CircuitEtcherRecipeBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;

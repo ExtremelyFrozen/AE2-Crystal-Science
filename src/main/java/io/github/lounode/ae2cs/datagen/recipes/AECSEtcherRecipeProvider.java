@@ -31,7 +31,7 @@ public class AECSEtcherRecipeProvider extends AECSRecipeProvider
     {
         CircuitEtcherRecipeBuilder.etching(AECSItems.RESONATING_PROCESSOR, 9, 14400)
                 .require(AECSTags.Items.STORAGE_BLOCK_RESONATING, 1)
-                .require(AECSTags.Items.STORAGE_BLOCK_SKY_STONE, 1)
+                .require(AECSTags.Items.STORAGE_BLOCK_SKY_STONE_CRYSTAL, 1)
                 .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 1)
                 .save(recipeOutput);
 
@@ -41,8 +41,20 @@ public class AECSEtcherRecipeProvider extends AECSRecipeProvider
                 .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 1)
                 .save(recipeOutput);
 
+        CircuitEtcherRecipeBuilder.etching(AEItems.LOGIC_PROCESSOR, 9, 14400)
+                .require(Tags.Items.STORAGE_BLOCKS_GOLD, 1)
+                .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 1)
+                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 1)
+                .save(recipeOutput);
+
         CircuitEtcherRecipeBuilder.etching(AEItems.CALCULATION_PROCESSOR, 36, 57600)
                 .require(AECSTags.Items.STORAGE_BLOCK_CERTUS_QUARTZ, 9)
+                .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 4)
+                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 4)
+                .save(recipeOutput);
+
+        CircuitEtcherRecipeBuilder.etching(AECSItems.SIMPLE_PROCESSOR, 36, 57600)
+                .require(AECSTags.Items.STORAGE_BLOCK_QUARTZ, 9)
                 .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 4)
                 .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 4)
                 .save(recipeOutput);

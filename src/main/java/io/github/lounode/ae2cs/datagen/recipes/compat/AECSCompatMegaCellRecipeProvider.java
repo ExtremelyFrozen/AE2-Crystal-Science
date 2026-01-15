@@ -1,8 +1,12 @@
 package io.github.lounode.ae2cs.datagen.recipes.compat;
 
 import appeng.core.definitions.AEBlocks;
-import com.glodblock.github.appflux.common.AFSingletons;
-import io.github.lounode.ae2cs.AE2CrystalScience;
+import appeng.core.definitions.AEItems;
+import appeng.datagen.providers.tags.ConventionTags;
+import com.glodblock.github.extendedae.common.EAESingletons;
+import gripe._90.megacells.MEGACells;
+import gripe._90.megacells.definition.MEGAItems;
+import gripe._90.megacells.definition.MEGATags;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSTags;
@@ -10,20 +14,16 @@ import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CircuitEtcherRecipeBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.neoforged.neoforge.common.Tags;
-import net.pedroksl.advanced_ae.common.definitions.AAEItems;
-import net.pedroksl.advanced_ae.common.definitions.AAETags;
-import net.pedroksl.advanced_ae.datagen.AAEConventionTags;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 
-public class AECSCompatAAERecipeProvider extends AECSRecipeProvider
+public class AECSCompatMegaCellRecipeProvider extends AECSRecipeProvider
 {
-    public AECSCompatAAERecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries)
+    public AECSCompatMegaCellRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries)
     {
         super(output, registries);
     }
@@ -31,21 +31,20 @@ public class AECSCompatAAERecipeProvider extends AECSRecipeProvider
     @Override
     public @NotNull String getName()
     {
-        return "AECS AAE Compat Recipes";
+        return "AECS Mega Cell Compat Recipes";
     }
 
     @Override
     protected void buildRecipes(@NotNull RecipeOutput originalOut)
     {
-        var compatOut = originalOut.withConditions(modLoaded(AECSConstants.AAE_ID));
+        var compatOut = originalOut.withConditions(modLoaded(AECSConstants.MEGA_CELL_ID));
 
-        stonecutterResultFromItem(compatOut, RecipeCategory.MISC, AAEItems.QUANTUM_PROCESSOR_PRESS, AECSItems.BLANK_PRINT_PRESS);
+        stonecutterResultFromItem(compatOut, RecipeCategory.MISC, MEGAItems.ACCUMULATION_PROCESSOR_PRESS, AECSItems.BLANK_PRINT_PRESS);
 
-        CircuitEtcherRecipeBuilder.etching(AAEItems.QUANTUM_PROCESSOR, 9, 14400)
-                .require(AAEConventionTags.QUANTUM_ALLOY_STORAGE_BLOCK_ITEM, 1)
-                .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 1)
+        CircuitEtcherRecipeBuilder.etching(MEGAItems.ACCUMULATION_PROCESSOR, 9, 14400)
+                .require(AECSTags.Items.STORAGE_BLOCK_SKY_STEEL, 1)
+                .require(AEBlocks.FLUIX_BLOCK, 1)
                 .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 1)
                 .save(compatOut);
-
     }
 }

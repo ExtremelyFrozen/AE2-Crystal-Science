@@ -1,16 +1,21 @@
 package io.github.lounode.ae2cs.datagen.recipes.compat;
 
+import appeng.core.definitions.AEBlocks;
 import appeng.datagen.providers.tags.ConventionTags;
 import com.wintercogs.ae2omnicells.common.init.OCBlocks;
 import com.wintercogs.ae2omnicells.common.init.OCItems;
+import gripe._90.megacells.definition.MEGAItems;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSItems;
+import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
+import io.github.lounode.ae2cs.datagen.builder.recipe.CircuitEtcherRecipeBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -45,5 +50,23 @@ public class AECSCompatOCRecipeProvider extends AECSRecipeProvider
                 .define('b', ConventionTags.INSCRIBER_PRESSES)
                 .unlockedBy(getHasName(OCBlocks.ENDER_INGOT_BLOCK), has(OCBlocks.ENDER_INGOT_BLOCK))
                 .save(compatOut, getCrafterPath(AECSItems.ENDER_BLANK_PRINT_PRESS, true));
+
+        CircuitEtcherRecipeBuilder.etching(OCItems.OMNI_LINK_PROCESSOR, 9, 14400)
+                .require(OCBlocks.ENDER_INGOT_BLOCK, 1)
+                .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 1)
+                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 1)
+                .save(compatOut);
+
+        CircuitEtcherRecipeBuilder.etching(OCItems.COMPLEX_LINK_PROCESSOR, 9, 14400)
+                .require(OCBlocks.NETHERITE_SCRAP_BLOCK, 1)
+                .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 1)
+                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 1)
+                .save(compatOut);
+
+        CircuitEtcherRecipeBuilder.etching(OCItems.MULTIDIMENSIONAL_EXPANSION_PROCESSOR, 9, 14400)
+                .require(OCBlocks.SINGULARITY_BLOCK, 1)
+                .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 1)
+                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 1)
+                .save(compatOut);
     }
 }

@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs.datagen;
 
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -9,6 +10,7 @@ import net.minecraft.tags.BlockTags;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.pedroksl.advanced_ae.datagen.AAEConventionTags;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 
@@ -67,11 +69,11 @@ public class AECSBlockTagProvider extends BlockTagsProvider
 
         // 存储方块
         tag(Tags.Blocks.STORAGE_BLOCKS)
-                .addTag(AECSTags.Blocks.STORAGE_BLOCK_SKY_STONE)
+                .addTag(AECSTags.Blocks.STORAGE_BLOCK_SKY_STONE_CRYSTAL)
                 .addTag(AECSTags.Blocks.STORAGE_BLOCK_RESONATING)
                 .addTag(AECSTags.Blocks.STORAGE_BLOCK_ENDER_QUARTZ)
                 .addTag(AECSTags.Blocks.STORAGE_BLOCK_SILICON);
-        tag(AECSTags.Blocks.STORAGE_BLOCK_SKY_STONE)
+        tag(AECSTags.Blocks.STORAGE_BLOCK_SKY_STONE_CRYSTAL)
                 .add(AECSBlocks.PURE_METEOR_CRYSTAL_BLOCK.get());
         tag(AECSTags.Blocks.STORAGE_BLOCK_RESONATING)
                 .add(AECSBlocks.PURE_RESONATING_CRYSTAL_BLOCK.get());
@@ -79,5 +81,10 @@ public class AECSBlockTagProvider extends BlockTagsProvider
                 .add(AECSBlocks.PURE_ENDER_QUARTZ_BLOCK.get());
         tag(AECSTags.Blocks.STORAGE_BLOCK_SILICON)
                 .add(AECSBlocks.SILICON_BLOCK.get());
+
+
+        // 联动区域
+        tag(AAEConventionTags.QUANTUM_ALLOY_STORAGE_BLOCK_BLOCK)
+                .add(AECSBlocks.PURE_QUANTUM_CRYSTAL_BLOCK.get());
     }
 }
