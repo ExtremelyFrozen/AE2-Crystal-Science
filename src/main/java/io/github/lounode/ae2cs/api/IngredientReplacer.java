@@ -33,10 +33,6 @@ public class IngredientReplacer
     {
         // 我们在这里添加一些自带的替换规则，以便让高纯水晶适应一些没有使用tag写配方的模组
         // 原则上，如果对方模组支持tag我们尽可能使用tag
-        if(ModList.get().isLoaded(AECSConstants.AAE_ID))
-        {
-            addRule(AAEItems.QUANTUM_ALLOY.asItem(), AECSItems.pureQuantumCrystal.asItem());
-        }
     }
 
     public static void setRule(Item target, @NotNull Set<Item> extras)

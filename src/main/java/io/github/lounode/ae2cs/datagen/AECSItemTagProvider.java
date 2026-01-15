@@ -45,11 +45,14 @@ public class AECSItemTagProvider extends ItemTagsProvider
         // 粉尘
         tag(Tags.Items.DUSTS)
                 .addTag(AECSTags.Items.DUST_RESONATING)
-                .addTag(AECSTags.Items.DUST_QUARTZ);
+                .addTag(AECSTags.Items.DUST_QUARTZ)
+                .addTag(AECSTags.Items.DUST_QUANTUM_ALLOY);
         tag(AECSTags.Items.DUST_RESONATING)
                 .add(AECSItems.RESONATING_DUST.get());
         tag(AECSTags.Items.DUST_QUARTZ)
                 .add(AECSItems.NETHER_QUARTZ_DUST.get());
+        tag(AECSTags.Items.DUST_QUANTUM_ALLOY)
+                .add(AECSItems.QUANTUM_CRYSTAL_DUST.get());
 
         // 存储方块
         tag(Tags.Items.STORAGE_BLOCKS)
@@ -101,7 +104,5 @@ public class AECSItemTagProvider extends ItemTagsProvider
                 .add(AECSItems.pureRedstoneCrystal.get());
         tag(AGTags.EMBER_CRYSTAL)
                 .add(AECSItems.PURE_EMBER_CRYSTAL.get());
-        tag(AAEConventionTags.QUANTUM_ALLOY)
-                .add(AECSItems.pureQuantumCrystal.get());
     }
 }

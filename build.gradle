@@ -170,6 +170,7 @@ dependencies {
     implementation "curse.maven:ex-pattern-provider-892005:7356474"
     // AAE
     implementation "curse.maven:advancedae-1084104:7374386"
+    compileOnly "io.github.pedroksl:ae2addonlib:1.0.3-1.21.1"
     // AF
     implementation "curse.maven:applied-flux-965012:7429565"
     // AG

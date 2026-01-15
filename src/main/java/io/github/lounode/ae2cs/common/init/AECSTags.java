@@ -8,6 +8,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
+import javax.swing.text.html.HTML;
+
 public class AECSTags
 {
     public static class Blocks
@@ -37,6 +39,7 @@ public class AECSTags
 
         public static final TagKey<Item> DUST_RESONATING = tag("dusts/resonating");
         public static final TagKey<Item> DUST_QUARTZ = tag("dusts/quartz");
+        public static final TagKey<Item> DUST_QUANTUM_ALLOY = tag("dusts/quantum_alloy");
 
         public static final TagKey<Item> GEM_RESONATING = tag("gems/resonating");
         public static final TagKey<Item> GEM_SKY_STONE_CRYSTAL = tag("gems/sky_stone_crystal");
