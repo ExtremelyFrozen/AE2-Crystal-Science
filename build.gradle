@@ -144,10 +144,6 @@ dependencies {
     runtimeOnly "org.appliedenergistics:appliedenergistics2:${ae2_version}"
     accessCompileOnly "org.appliedenergistics:appliedenergistics2:${ae2_version}"
 
-    //EAE
-    implementation "curse.maven:glodium-957920:5614731"
-    implementation "curse.maven:ex-pattern-provider-892005:6283473"
-
     compileOnly "dev.emi:emi-neoforge:${emi_version}:api"
     localRuntime "dev.emi:emi-neoforge:${emi_version}"
 
@@ -158,8 +154,24 @@ dependencies {
 
     localRuntime "curse.maven:nbtedit-reborn-678133:6125444"
 
-    // 把MEK加进来，方便我调试
-    localRuntime "maven.modrinth:mekanism:10.7.13.78"
+    // 联动前置
+    implementation "curse.maven:glodium-957920:5821676"
+    implementation "curse.maven:geckolib-388172:7415496"
+
+    // MEK
+    implementation "maven.modrinth:mekanism:10.7.13.78"
+    // OMNI CELL
+    implementation "curse.maven:omni-cells-1359517:7169530"
+    // EAE
+    implementation "curse.maven:ex-pattern-provider-892005:7356474"
+    // AAE
+    implementation "curse.maven:advancedae-1084104:7374386"
+    // AF
+    implementation "curse.maven:applied-flux-965012:7429565"
+    // AG
+    implementation "curse.maven:applied-generators-1320369:7161908"
+    // Create
+    implementation "curse.maven:create-328085:7408951"
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

@@ -2,6 +2,8 @@ package io.github.lounode.ae2cs.datagen;
 
 import com.mojang.logging.LogUtils;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
+import io.github.lounode.ae2cs.datagen.recipes.*;
+import io.github.lounode.ae2cs.datagen.recipes.compat.*;
 import io.github.lounode.ae2cs.datagen.worldgen.AECSBiomeModifiers;
 import io.github.lounode.ae2cs.datagen.worldgen.AECSConfiguredFeatures;
 import io.github.lounode.ae2cs.datagen.worldgen.AECSPlacedFeatures;
@@ -55,7 +57,19 @@ public class DataGenerators
         generator.addProvider(event.includeServer(), new AECSFluidTagsProvider(packOutput, lookupProvider, existingFileHelper));
 
         // 生成配方表
-        generator.addProvider(event.includeServer(), new AECSRecipeProvider(packOutput, lookupProvider));
+        generator.addProvider(event.includeServer(), new AECSAggregatorRecipeProvider(packOutput, lookupProvider));
+        generator.addProvider(event.includeServer(), new AECSCraftRecipeProvider(packOutput, lookupProvider));
+        generator.addProvider(event.includeServer(), new AECSEtcherRecipeProvider(packOutput, lookupProvider));
+        generator.addProvider(event.includeServer(), new AECSFurnaceRecipeProvider(packOutput, lookupProvider));
+        generator.addProvider(event.includeServer(), new AECSPulverizerRecipeProvider(packOutput, lookupProvider));
+        generator.addProvider(event.includeServer(), new AECSStonecutterRecipeProvider(packOutput, lookupProvider));
+        // 联动配方
+        generator.addProvider(event.includeServer(), new AECSCompatAAERecipeProvider(packOutput, lookupProvider));
+        generator.addProvider(event.includeServer(), new AECSCompatAFRecipeProvider(packOutput, lookupProvider));
+        generator.addProvider(event.includeServer(), new AECSCompatAGRecipeProvider(packOutput, lookupProvider));
+        generator.addProvider(event.includeServer(), new AECSCompatCreateRecipeProvider(packOutput, lookupProvider));
+        generator.addProvider(event.includeServer(), new AECSCompatEAERecipeProvider(packOutput, lookupProvider));
+        generator.addProvider(event.includeServer(), new AECSCompatMEKRecipeProvider(packOutput, lookupProvider));
 
         // 矿石生成
         generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(

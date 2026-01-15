@@ -1,5 +1,6 @@
 package io.github.lounode.ae2cs.datagen.builder.recipe;
 
+import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.common.recipe.crystal_pulverizer.CrystalPulverizerRecipe;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRequirements;
@@ -146,6 +147,13 @@ public class CrystalPulverizerRecipeBuilder implements RecipeBuilder
 
         var recipe = new CrystalPulverizerRecipe(this.input, this.result, this.energyCost);
         output.accept(id, recipe, adv.build(id.withPrefix("recipes/")));
+    }
+
+    @Override
+    public void save(@NotNull RecipeOutput recipeOutput)
+    {
+        ResourceLocation path = AE2CrystalScience.makeId("pulverizer/" + RecipeBuilder.getDefaultRecipeId(getResult()).getPath());
+        save(recipeOutput, path);
     }
 
     // 用于自动生成成就解锁条件

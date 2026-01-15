@@ -1,16 +1,13 @@
 package io.github.lounode.ae2cs.datagen;
 
-import appeng.core.definitions.AEItems;
-import io.github.lounode.ae2cs.AE2CrystalScience;
-import io.github.lounode.ae2cs.common.init.AECSItems;
-import io.github.lounode.ae2cs.common.recipe.ResonatingPatternUpgradeRecipe;
-import io.github.lounode.ae2cs.datagen.builder.recipe.CircuitEtcherRecipeBuilder;
-import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBuilder;
-import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalPulverizerRecipeBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
-import net.minecraft.world.item.Items;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.conditions.IConditionBuilder;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,38 +22,80 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     }
 
     @Override
-    protected void buildRecipes(@NotNull RecipeOutput recipeOutput)
+    public @NotNull String getName()
     {
-        // 这里是一个测试，用来测试电路蚀刻器的配方生成工作
-        CircuitEtcherRecipeBuilder.etching(AEItems.CALCULATION_PROCESSOR, 64, 6400)
-                .require(Items.REDSTONE, 64)
-                .require(AEItems.SILICON, 64)
-                .require(AECSItems.pureCertusQuartzCrystal, 64)
-                .save(recipeOutput, AE2CrystalScience.makeId("circuit/calculation_processor"));
-
-        // 晶能装配器测试配方
-        CrystalAggregatorRecipeBuilder.aggregating(AEItems.SINGULARITY, 64, 6400)
-                .require(AEItems.MATTER_BALL, 64)
-                .require(AECSItems.pureCertusQuartzCrystal, 64)
-                .save(recipeOutput, AE2CrystalScience.makeId("aggregating/singularity"));
-
-        // 用于测试晶能粉碎机的配方生成
-        CrystalPulverizerRecipeBuilder.pulverizing(AEItems.SILICON, 9, 6400)
-                .require(Items.SAND, 1)
-                .save(recipeOutput, AE2CrystalScience.makeId("pulverizer/silicon"));
-
-        // 添加谐振样板配方
-        SpecialRecipeBuilder.special(ResonatingPatternUpgradeRecipe::new)
-                .save(recipeOutput, "resonating_pattern_upgrade");
-
-        // 添加谐振样板拆解
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEItems.BLANK_PATTERN)
-                .requires(AECSItems.RESONATING_PATTERN)
-                .unlockedBy("just_has_resonating_pattern", has(AECSItems.RESONATING_PATTERN))
-                .save(recipeOutput);
-
+        throw new IllegalStateException("Must be overridden");
     }
 
-    // ---------- 统一ID工具 ----------
+    // 熔炉样板辅助工具---------------------------------------------------------------
+    protected static void smeltFood(RecipeCategory category, ItemLike input, ItemLike result, float experience, int cookingTime, RecipeOutput output)
+    {
+        SimpleCookingRecipeBuilder
+                .smelting(Ingredient.of(input), category, result, experience, cookingTime)
+                .unlockedBy(getHasName(input), has(input))
+                .save(output, "smelt/food/" + getItemName(result) + "_from_" + getItemName(input));
+    }
 
+    // 切石样板辅助工具---------------------------------------------------------------
+    protected static void stonecutterResultFromItem(
+            RecipeOutput recipeOutput,
+            RecipeCategory category,
+            ItemLike result,
+            ItemLike input,
+            int resultCount
+    )
+    {
+        Ingredient ingredient = Ingredient.of(input);
+        String recipeId = "stonecutting/" + getItemName(result) + "_from_" + getItemName(input) + "_stonecutting";
+
+        SingleItemRecipeBuilder.stonecutting(ingredient, category, result, resultCount)
+                .unlockedBy(getHasName(input), has(input))
+                .save(recipeOutput, recipeId);
+    }
+
+    protected static void stonecutterResultFromItem(
+            RecipeOutput recipeOutput,
+            RecipeCategory category,
+            ItemLike result,
+            ItemLike input
+    )
+    {
+        stonecutterResultFromItem(recipeOutput, category, result, input, 1);
+    }
+
+    protected static void stonecutterResultFromTag(
+            RecipeOutput recipeOutput,
+            RecipeCategory category,
+            ItemLike result,
+            TagKey<Item> input,
+            int resultCount
+    )
+    {
+        Ingredient ingredient = Ingredient.of(input);
+
+        // minecraft:logs -> "minecraft_logs"
+        String tagId = sanitize(input.location());
+        String unlockName = "has_" + tagId;
+        String recipeId = "stonecutting/" + getItemName(result) + "_from_" + tagId + "_stonecutting";
+
+        SingleItemRecipeBuilder.stonecutting(ingredient, category, result, resultCount)
+                .unlockedBy(unlockName, has(input))
+                .save(recipeOutput, recipeId);
+    }
+
+    protected static void stonecutterResultFromTag(
+            RecipeOutput recipeOutput,
+            RecipeCategory category,
+            ItemLike result,
+            TagKey<Item> input
+    )
+    {
+        stonecutterResultFromTag(recipeOutput, category, result, input, 1);
+    }
+
+    protected static String sanitize(ResourceLocation id)
+    {
+        // namespace:path/xxx -> namespace_path_xxx
+        return id.getNamespace() + "_" + id.getPath().replace('/', '_');
+    }
 }
