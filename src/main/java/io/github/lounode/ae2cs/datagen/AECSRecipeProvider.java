@@ -1,5 +1,6 @@
 package io.github.lounode.ae2cs.datagen;
 
+import io.github.lounode.ae2cs.AE2CrystalScience;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
@@ -94,6 +95,22 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     }
 
     // id工具------------------------------------------------
+    protected static ResourceLocation getCrafterPath(ItemLike output, boolean shaped)
+    {
+        String prefix = shaped ? "craft/shaped" : "craft/shapeless";
+        return AE2CrystalScience.makeId(getPrefixedItemName(prefix, output));
+    }
+
+    protected static ResourceLocation getInscriberPath(ItemLike output)
+    {
+        return AE2CrystalScience.makeId(getPrefixedItemName("inscriber", output));
+    }
+
+    protected static ResourceLocation getTransformPath(ItemLike output)
+    {
+        return AE2CrystalScience.makeId(getPrefixedItemName("transform", output));
+    }
+
     protected static String getPrefixedItemName(String prefix, ItemLike item)
     {
         return prefix + "/" + getItemName(item);

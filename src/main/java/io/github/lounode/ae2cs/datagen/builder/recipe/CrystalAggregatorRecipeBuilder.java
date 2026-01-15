@@ -1,5 +1,6 @@
 package io.github.lounode.ae2cs.datagen.builder.recipe;
 
+import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.common.recipe.crystal_aggregator.CrystalAggregatorRecipe;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRequirements;
@@ -147,6 +148,13 @@ public class CrystalAggregatorRecipeBuilder implements RecipeBuilder
 
         var recipe = new CrystalAggregatorRecipe(a, b, c, result, energyCost);
         output.accept(id, recipe, adv.build(id.withPrefix("recipes/")));
+    }
+
+    @Override
+    public void save(@NotNull RecipeOutput recipeOutput)
+    {
+        ResourceLocation path = AE2CrystalScience.makeId("aggregator/" + RecipeBuilder.getDefaultRecipeId(getResult()).getPath());
+        save(recipeOutput, path);
     }
 
     // 用于自动生成成就解锁条件

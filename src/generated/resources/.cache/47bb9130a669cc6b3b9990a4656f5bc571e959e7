@@ -1,3 +1,10 @@
-// 1.21.1	2026-01-05T19:49:37.7766324	Tags for minecraft:item mod id ae2cs
+// 1.21.1	2026-01-15T17:21:56.4575211	Tags for minecraft:item mod id ae2cs
 226069767492e9920e61aacc9c3f96a036bcf7aa data/ae2cs/tags/item/crystal_seeds.json
 a0729be630883ff905011c97f729d0a8aaa15996 data/ae2cs/tags/item/purified_crystal.json
+7241586779fec347b1737da9df7899c25f97188c data/ae2/tags/item/inscriber_presses.json
+123685416809edfd4cc9a8af733f09904268adf4 data/c/tags/item/dusts.json
+baabaa3d3f64b2c2e2b796437ddc705793790e2e data/c/tags/item/dusts/quartz.json
+94eda0b6765fe5c80a97213bc2d15ed91986e34c data/c/tags/item/dusts/resonating.json
+2e762a829aff882181f4b567535d397e33383a96 data/c/tags/item/gems.json
+ebe2756cfc324c046748bc8f6fe8a0b2bd612bea data/c/tags/item/gems/quartz.json
+c63ffb2a32e79ab05ec3719a3e773b41d76de537 data/c/tags/item/gems/resonating.json

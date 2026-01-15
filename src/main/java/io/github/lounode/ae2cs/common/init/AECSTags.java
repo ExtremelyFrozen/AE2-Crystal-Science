@@ -30,6 +30,11 @@ public class AECSTags
         public static final TagKey<Item> CRYSTAL_SEEDS = aecsTag("crystal_seeds");
         public static final TagKey<Item> PURIFIED_CRYSTAL = aecsTag("purified_crystal");
 
+        public static final TagKey<Item> DUST_RESONATING = tag("dusts/resonating");
+        public static final TagKey<Item> DUST_QUARTZ = tag("dusts/quartz");
+
+        public static final TagKey<Item> GEM_RESONATING = tag("gems/resonating");
+
         private static TagKey<Item> tag(String name)
         {
             return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", name));
