@@ -1,9 +1,12 @@
 package io.github.lounode.ae2cs.datagen.recipes.compat;
 
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
+import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
+import io.github.sapporo1101.appgen.common.AGSingletons;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,8 +26,10 @@ public class AECSCompatAGRecipeProvider extends AECSRecipeProvider
     }
 
     @Override
-    protected void buildRecipes(@NotNull RecipeOutput recipeOutput)
+    protected void buildRecipes(@NotNull RecipeOutput originalOut)
     {
-        var compatOut = recipeOutput.withConditions(modLoaded(AECSConstants.AG_ID));
+        var compatOut = originalOut.withConditions(modLoaded(AECSConstants.AG_ID));
+
+        stonecutterResultFromItem(compatOut, RecipeCategory.MISC, AGSingletons.ORIGINATION_PRESS, AECSItems.SIMPLE_PRINT_PRESS);
     }
 }

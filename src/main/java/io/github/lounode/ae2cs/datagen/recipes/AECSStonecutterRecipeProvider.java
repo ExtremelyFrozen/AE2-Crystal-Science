@@ -41,9 +41,5 @@ public class AECSStonecutterRecipeProvider extends AECSRecipeProvider
         stonecutterResultFromItem(recipeOutput, RecipeCategory.MISC, AEItems.ENGINEERING_PROCESSOR_PRESS, AECSItems.SIMPLE_PRINT_PRESS);
         stonecutterResultFromItem(recipeOutput, RecipeCategory.MISC, AEItems.LOGIC_PROCESSOR_PRESS, AECSItems.SIMPLE_PRINT_PRESS);
         stonecutterResultFromItem(recipeOutput, RecipeCategory.MISC, AECSItems.RESONATING_PRINT_PRESS, AECSItems.SIMPLE_PRINT_PRESS);
-        stonecutterResultFromItem(recipeOutput, RecipeCategory.MISC, AFSingletons.ENERGY_PROCESSOR_PRESS, AECSItems.SIMPLE_PRINT_PRESS);
-        stonecutterResultFromItem(recipeOutput, RecipeCategory.MISC, AAEItems.QUANTUM_PROCESSOR_PRESS, AECSItems.SIMPLE_PRINT_PRESS);
-        stonecutterResultFromItem(recipeOutput, RecipeCategory.MISC, EAESingletons.CONCURRENT_PROCESSOR_PRESS, AECSItems.SIMPLE_PRINT_PRESS);
-        stonecutterResultFromItem(recipeOutput, RecipeCategory.MISC, AGSingletons.ORIGINATION_PRESS, AECSItems.SIMPLE_PRINT_PRESS);
     }
 }

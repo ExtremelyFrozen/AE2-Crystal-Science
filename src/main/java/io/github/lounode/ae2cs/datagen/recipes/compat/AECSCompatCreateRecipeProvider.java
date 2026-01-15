@@ -23,8 +23,8 @@ public class AECSCompatCreateRecipeProvider extends AECSRecipeProvider
     }
 
     @Override
-    protected void buildRecipes(@NotNull RecipeOutput recipeOutput)
+    protected void buildRecipes(@NotNull RecipeOutput originalOut)
     {
-        var compatOut = recipeOutput.withConditions(modLoaded(AECSConstants.CREATE_ID));
+        var compatOut = originalOut.withConditions(modLoaded(AECSConstants.CREATE_ID));
     }
 }
