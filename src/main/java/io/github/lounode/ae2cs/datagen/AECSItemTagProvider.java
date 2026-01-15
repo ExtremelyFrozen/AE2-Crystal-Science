@@ -101,8 +101,6 @@ public class AECSItemTagProvider extends ItemTagsProvider
                 .add(AECSItems.pureRedstoneCrystal.get());
         tag(AGTags.EMBER_CRYSTAL)
                 .add(AECSItems.PURE_EMBER_CRYSTAL.get());
-        tag(AECSTags.Items.INGOTS_URANIUM)
-                .add(AECSItems.PURE_IRRADIATED_CRYSTAL.get());
         tag(AAEConventionTags.QUANTUM_ALLOY)
                 .add(AECSItems.pureQuantumCrystal.get());
     }
