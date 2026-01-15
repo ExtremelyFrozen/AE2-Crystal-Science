@@ -52,6 +52,8 @@ public class AECSTags
         public static final TagKey<Item> STORAGE_BLOCK_QUARTZ = tag("storage_blocks/quartz");
         // 同上
         public static final TagKey<Item> STORAGE_BLOCK_SKY_STEEL = tag("storage_blocks/sky_steel");
+        // 同上
+        public static final TagKey<Item> INGOTS_URANIUM = tag("ingots/uranium");
 
         public static final TagKey<Item> GEARS = tag("gears");
         public static final TagKey<Item> GEARS_WOOD = tag("gears/wood");

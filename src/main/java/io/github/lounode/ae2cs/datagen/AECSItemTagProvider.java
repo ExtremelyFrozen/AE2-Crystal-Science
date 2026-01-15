@@ -1,10 +1,14 @@
 package io.github.lounode.ae2cs.datagen;
 
 import appeng.datagen.providers.tags.ConventionTags;
+import com.glodblock.github.appflux.util.AFTags;
+import com.glodblock.github.extendedae.util.EAETags;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSTags;
+import io.github.sapporo1101.appgen.util.AGTags;
+import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
@@ -34,19 +38,8 @@ public class AECSItemTagProvider extends ItemTagsProvider
         tag(AECSTags.Items.PURIFIED_CRYSTAL)
                 .add(AECSItems.getPureCrystal().stream().map(DeferredItem::get).toArray(Item[]::new));
 
-        // 宝石
-        tag(Tags.Items.GEMS)
-                .addTag(AECSTags.Items.GEM_RESONATING)
-                .addTag(AECSTags.Items.GEM_SKY_STONE_CRYSTAL)
-                .addTag(AECSTags.Items.GEM_ENDER_QUARTZ);
-        tag(AECSTags.Items.GEM_RESONATING)
-                .add(AECSItems.pureResonatingCrystal.get());
-        tag(AECSTags.Items.GEM_ENDER_QUARTZ)
-                .add(AECSItems.pureEnderQuartz.get());
-        tag(AECSTags.Items.GEM_SKY_STONE_CRYSTAL)
-                .add(AECSItems.pureMeteorCrystal.get());
-        tag(Tags.Items.GEMS_QUARTZ)
-                .add(AECSItems.pureNetherQuartzCrystal.get());
+
+
 
 
         // 粉尘
@@ -84,10 +77,33 @@ public class AECSItemTagProvider extends ItemTagsProvider
                 .add(AECSItems.RESONATING_PRINT_PRESS.get());
 
 
-        // 联动区域
+        // 石英水晶对标区
+        tag(Tags.Items.GEMS)
+                .addTag(AECSTags.Items.GEM_RESONATING)
+                .addTag(AECSTags.Items.GEM_SKY_STONE_CRYSTAL)
+                .addTag(AECSTags.Items.GEM_ENDER_QUARTZ);
+
+        tag(ConventionTags.CERTUS_QUARTZ)
+                .add(AECSItems.pureCertusQuartzCrystal.get());
+        tag(ConventionTags.FLUIX_CRYSTAL)
+                .add(AECSItems.pureFluixCrystal.get());
+        tag(Tags.Items.GEMS_QUARTZ)
+                .add(AECSItems.pureNetherQuartzCrystal.get());
+        tag(AECSTags.Items.GEM_RESONATING)
+                .add(AECSItems.pureResonatingCrystal.get());
+        tag(AECSTags.Items.GEM_ENDER_QUARTZ)
+                .add(AECSItems.pureEnderQuartz.get());
+        tag(AECSTags.Items.GEM_SKY_STONE_CRYSTAL)
+                .add(AECSItems.pureMeteorCrystal.get());
+        tag(EAETags.ENTRO_CRYSTAL)
+                .add(AECSItems.pureEntroCrystal.get());
+        tag(AFTags.REDSTONE_GEM)
+                .add(AECSItems.pureRedstoneCrystal.get());
+        tag(AGTags.EMBER_CRYSTAL)
+                .add(AECSItems.PURE_EMBER_CRYSTAL.get());
+        tag(AECSTags.Items.INGOTS_URANIUM)
+                .add(AECSItems.PURE_IRRADIATED_CRYSTAL.get());
         tag(AAEConventionTags.QUANTUM_ALLOY)
                 .add(AECSItems.pureQuantumCrystal.get());
-        tag(AAEConventionTags.QUANTUM_ALLOY_STORAGE_BLOCK_ITEM)
-                .add(AECSBlocks.PURE_QUANTUM_CRYSTAL_BLOCK.asItem());
     }
 }
