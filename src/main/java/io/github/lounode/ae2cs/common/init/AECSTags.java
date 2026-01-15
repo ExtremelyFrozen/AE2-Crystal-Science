@@ -17,6 +17,7 @@ public class AECSTags
         public static final TagKey<Block> STORAGE_BLOCK_SKY_STONE = tag("storage_blocks/sky_stone");
         public static final TagKey<Block> STORAGE_BLOCK_RESONATING = tag("storage_blocks/resonating");
         public static final TagKey<Block> STORAGE_BLOCK_ENDER_QUARTZ = tag("storage_blocks/ender_quartz");
+        public static final TagKey<Block> STORAGE_BLOCK_SILICON = tag("storage_blocks/silicon");
 
         private static TagKey<Block> tag(String name)
         {
@@ -44,6 +45,9 @@ public class AECSTags
         public static final TagKey<Item> STORAGE_BLOCK_SKY_STONE = tag("storage_blocks/sky_stone");
         public static final TagKey<Item> STORAGE_BLOCK_RESONATING = tag("storage_blocks/resonating");
         public static final TagKey<Item> STORAGE_BLOCK_ENDER_QUARTZ = tag("storage_blocks/ender_quartz");
+        public static final TagKey<Item> STORAGE_BLOCK_SILICON = tag("storage_blocks/silicon");
+        // 这个不用添加到tag表，只是为了获取引用
+        public static final TagKey<Item> STORAGE_BLOCK_CERTUS_QUARTZ = tag("storage_blocks/certus_quartz");
 
         public static final TagKey<Item> GEARS = tag("gears");
         public static final TagKey<Item> GEARS_WOOD = tag("gears/wood");

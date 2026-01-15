@@ -61,13 +61,16 @@ public class AECSItemTagProvider extends ItemTagsProvider
         tag(Tags.Items.STORAGE_BLOCKS)
                 .addTag(AECSTags.Items.STORAGE_BLOCK_SKY_STONE)
                 .addTag(AECSTags.Items.STORAGE_BLOCK_RESONATING)
-                .addTag(AECSTags.Items.STORAGE_BLOCK_ENDER_QUARTZ);
+                .addTag(AECSTags.Items.STORAGE_BLOCK_ENDER_QUARTZ)
+                .addTag(AECSTags.Items.STORAGE_BLOCK_SILICON);
         tag(AECSTags.Items.STORAGE_BLOCK_SKY_STONE)
                 .add(AECSBlocks.PURE_METEOR_CRYSTAL_BLOCK.asItem());
         tag(AECSTags.Items.STORAGE_BLOCK_RESONATING)
                 .add(AECSBlocks.PURE_RESONATING_CRYSTAL_BLOCK.asItem());
         tag(AECSTags.Items.STORAGE_BLOCK_ENDER_QUARTZ)
                 .add(AECSBlocks.PURE_ENDER_QUARTZ_BLOCK.asItem());
+        tag(AECSTags.Items.STORAGE_BLOCK_SILICON)
+                .add(AECSBlocks.SILICON_BLOCK.asItem());
 
         // 齿轮
         tag(AECSTags.Items.GEARS)

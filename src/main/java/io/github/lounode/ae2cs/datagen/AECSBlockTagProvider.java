@@ -69,12 +69,15 @@ public class AECSBlockTagProvider extends BlockTagsProvider
         tag(Tags.Blocks.STORAGE_BLOCKS)
                 .addTag(AECSTags.Blocks.STORAGE_BLOCK_SKY_STONE)
                 .addTag(AECSTags.Blocks.STORAGE_BLOCK_RESONATING)
-                .addTag(AECSTags.Blocks.STORAGE_BLOCK_ENDER_QUARTZ);
+                .addTag(AECSTags.Blocks.STORAGE_BLOCK_ENDER_QUARTZ)
+                .addTag(AECSTags.Blocks.STORAGE_BLOCK_SILICON);
         tag(AECSTags.Blocks.STORAGE_BLOCK_SKY_STONE)
                 .add(AECSBlocks.PURE_METEOR_CRYSTAL_BLOCK.get());
         tag(AECSTags.Blocks.STORAGE_BLOCK_RESONATING)
                 .add(AECSBlocks.PURE_RESONATING_CRYSTAL_BLOCK.get());
         tag(AECSTags.Blocks.STORAGE_BLOCK_ENDER_QUARTZ)
                 .add(AECSBlocks.PURE_ENDER_QUARTZ_BLOCK.get());
+        tag(AECSTags.Blocks.STORAGE_BLOCK_SILICON)
+                .add(AECSBlocks.SILICON_BLOCK.get());
     }
 }
