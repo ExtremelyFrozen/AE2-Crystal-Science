@@ -14,6 +14,10 @@ public class AECSTags
     {
         public static final TagKey<Block> CERTUS_QUARTZ_ORE = tag("ores/certus_quartz");
 
+        public static final TagKey<Block> STORAGE_BLOCK_SKY_STONE = tag("storage_blocks/sky_stone");
+        public static final TagKey<Block> STORAGE_BLOCK_RESONATING = tag("storage_blocks/resonating");
+        public static final TagKey<Block> STORAGE_BLOCK_ENDER_QUARTZ = tag("storage_blocks/ender_quartz");
+
         private static TagKey<Block> tag(String name)
         {
             return BlockTags.create(ResourceLocation.fromNamespaceAndPath("c", name));
@@ -34,6 +38,15 @@ public class AECSTags
         public static final TagKey<Item> DUST_QUARTZ = tag("dusts/quartz");
 
         public static final TagKey<Item> GEM_RESONATING = tag("gems/resonating");
+        public static final TagKey<Item> GEM_SKY_STONE = tag("gems/sky_stone");
+        public static final TagKey<Item> GEM_ENDER_QUARTZ = tag("gems/ender_quartz");
+
+        public static final TagKey<Item> STORAGE_BLOCK_SKY_STONE = tag("storage_blocks/sky_stone");
+        public static final TagKey<Item> STORAGE_BLOCK_RESONATING = tag("storage_blocks/resonating");
+        public static final TagKey<Item> STORAGE_BLOCK_ENDER_QUARTZ = tag("storage_blocks/ender_quartz");
+
+        public static final TagKey<Item> GEARS = tag("gears");
+        public static final TagKey<Item> GEARS_WOOD = tag("gears/wood");
 
         private static TagKey<Item> tag(String name)
         {

@@ -1,10 +1,18 @@
-// 1.21.1	2026-01-15T17:21:56.4575211	Tags for minecraft:item mod id ae2cs
+// 1.21.1	2026-01-15T18:46:46.668598	Tags for minecraft:item mod id ae2cs
 226069767492e9920e61aacc9c3f96a036bcf7aa data/ae2cs/tags/item/crystal_seeds.json
 a0729be630883ff905011c97f729d0a8aaa15996 data/ae2cs/tags/item/purified_crystal.json
 7241586779fec347b1737da9df7899c25f97188c data/ae2/tags/item/inscriber_presses.json
 123685416809edfd4cc9a8af733f09904268adf4 data/c/tags/item/dusts.json
 baabaa3d3f64b2c2e2b796437ddc705793790e2e data/c/tags/item/dusts/quartz.json
 94eda0b6765fe5c80a97213bc2d15ed91986e34c data/c/tags/item/dusts/resonating.json
-2e762a829aff882181f4b567535d397e33383a96 data/c/tags/item/gems.json
+028aed084911fca1788cc3d41e1be873dcfca398 data/c/tags/item/gears.json
+a809be2959cf0bf007d2aafc0d411bb16bccd4c6 data/c/tags/item/gears/wood.json
+da89edc6d97e77dad5843984fa748a2c05049ded data/c/tags/item/gems.json
+dbf59d5c44a7056c239184be004d8430056dcd9d data/c/tags/item/gems/ender_quartz.json
 ebe2756cfc324c046748bc8f6fe8a0b2bd612bea data/c/tags/item/gems/quartz.json
 c63ffb2a32e79ab05ec3719a3e773b41d76de537 data/c/tags/item/gems/resonating.json
+074a522de3d8fc121d3e2c0b8c77f11798d559ac data/c/tags/item/gems/sky_stone.json
+4ac46bb4971fa432eb40f472627e805915714fcb data/c/tags/item/storage_blocks.json
+4840a7c0f75ae5cb2c833d1b809f8d32ef3e445e data/c/tags/item/storage_blocks/ender_quartz.json
+92404954f2daf1157dcac4a2f11775509811c99e data/c/tags/item/storage_blocks/resonating.json
+3f0d816bb9f03ca24cad175b41818418fd430d2f data/c/tags/item/storage_blocks/sky_stone.json

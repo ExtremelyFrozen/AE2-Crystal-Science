@@ -64,5 +64,17 @@ public class AECSBlockTagProvider extends BlockTagsProvider
         // 允许主世界洞穴生成覆盖这些方块
         tag(BlockTags.OVERWORLD_CARVER_REPLACEABLES)
                 .addTag(AECSTags.Blocks.CERTUS_QUARTZ_ORE);
+
+        // 存储方块
+        tag(Tags.Blocks.STORAGE_BLOCKS)
+                .addTag(AECSTags.Blocks.STORAGE_BLOCK_SKY_STONE)
+                .addTag(AECSTags.Blocks.STORAGE_BLOCK_RESONATING)
+                .addTag(AECSTags.Blocks.STORAGE_BLOCK_ENDER_QUARTZ);
+        tag(AECSTags.Blocks.STORAGE_BLOCK_SKY_STONE)
+                .add(AECSBlocks.PURE_METEOR_CRYSTAL_BLOCK.get());
+        tag(AECSTags.Blocks.STORAGE_BLOCK_RESONATING)
+                .add(AECSBlocks.PURE_RESONATING_CRYSTAL_BLOCK.get());
+        tag(AECSTags.Blocks.STORAGE_BLOCK_ENDER_QUARTZ)
+                .add(AECSBlocks.PURE_ENDER_QUARTZ_BLOCK.get());
     }
 }
