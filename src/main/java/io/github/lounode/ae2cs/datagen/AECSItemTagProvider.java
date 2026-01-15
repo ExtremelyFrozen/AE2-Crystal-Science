@@ -8,7 +8,6 @@ import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.sapporo1101.appgen.util.AGTags;
-import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
@@ -17,7 +16,6 @@ import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredItem;
-import net.pedroksl.advanced_ae.datagen.AAEConventionTags;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,9 +35,6 @@ public class AECSItemTagProvider extends ItemTagsProvider
                 .add(AECSItems.getCrystalSeeds().stream().map(DeferredItem::get).toArray(Item[]::new));
         tag(AECSTags.Items.PURIFIED_CRYSTAL)
                 .add(AECSItems.getPureCrystal().stream().map(DeferredItem::get).toArray(Item[]::new));
-
-
-
 
 
         // 粉尘

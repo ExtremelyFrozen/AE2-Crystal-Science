@@ -1,12 +1,15 @@
 package io.github.lounode.ae2cs.datagen;
 
+import appeng.recipes.handlers.ChargerRecipeBuilder;
 import io.github.lounode.ae2cs.AE2CrystalScience;
+import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.conditions.IConditionBuilder;
@@ -26,6 +29,90 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     public @NotNull String getName()
     {
         throw new IllegalStateException("Must be overridden");
+    }
+
+    // 合成配方工具---------------------------------------------------------------
+
+    protected static void pack2x2(
+            RecipeOutput recipeOutput,
+            RecipeCategory category,
+            ItemLike input,
+            ItemLike output
+    )
+    {
+        ShapedRecipeBuilder.shaped(category, output)
+                .pattern("##")
+                .pattern("##")
+                .define('#', input)
+                .unlockedBy(getHasName(input), has(input))
+                .save(recipeOutput, getCrafterPath(input, output, true));
+    }
+
+    protected static void unpackTo4(
+            RecipeOutput recipeOutput,
+            RecipeCategory category,
+            ItemLike input,
+            ItemLike output
+    )
+    {
+        ShapelessRecipeBuilder.shapeless(category, output, 4)
+                .requires(input)
+                .unlockedBy(getHasName(input), has(input))
+                .save(recipeOutput, getCrafterPath(input, output, false));
+    }
+
+    protected static void packAndUnpack2x2(
+            RecipeOutput recipeOutput,
+            RecipeCategory packCategory,
+            RecipeCategory unpackCategory,
+            ItemLike loose,
+            ItemLike packed
+    )
+    {
+        pack2x2(recipeOutput, packCategory, loose, packed);
+        unpackTo4(recipeOutput, unpackCategory, packed, loose);
+    }
+
+
+    protected static void pack3x3(
+            RecipeOutput recipeOutput,
+            RecipeCategory category,
+            ItemLike input,
+            ItemLike output
+    )
+    {
+        ShapedRecipeBuilder.shaped(category, output)
+                .pattern("###")
+                .pattern("###")
+                .pattern("###")
+                .define('#', input)
+                .unlockedBy(getHasName(input), has(input))
+                .save(recipeOutput, getCrafterPath(input, output, true));
+    }
+
+    protected static void unpackTo9(
+            RecipeOutput recipeOutput,
+            RecipeCategory category,
+            ItemLike input,
+            ItemLike output
+    )
+    {
+        ShapelessRecipeBuilder.shapeless(category, output, 9)
+                .requires(input)
+                .unlockedBy(getHasName(input), has(input))
+                .save(recipeOutput, getCrafterPath(input, output, false));
+    }
+
+    protected static void packAndUnpack3x3(
+            RecipeOutput recipeOutput,
+            RecipeCategory packCategory,
+            RecipeCategory unpackCategory,
+            ItemLike loose,
+            ItemLike packed
+    )
+    {
+        pack3x3(recipeOutput, packCategory, loose, packed);
+        unpackTo9(recipeOutput, unpackCategory, packed, loose);
     }
 
     // 熔炉样板辅助工具---------------------------------------------------------------
@@ -94,11 +181,52 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
         stonecutterResultFromTag(recipeOutput, category, result, input, 1);
     }
 
+    // AE充能配方-------------------------------------------------------------------
+    protected static void chargedRecipe(RecipeOutput consumer, ItemLike input, ItemLike output)
+    {
+        ResourceLocation id = AE2CrystalScience.makeId("charged/" + getItemName(input) + "_from_" + getItemName(output));
+        ChargerRecipeBuilder.charge(consumer, id, input, output);
+    }
+
+    protected static void chargedRecipe(RecipeOutput consumer, TagKey<Item> input, ItemLike output)
+    {
+        String tagId = sanitize(input.location());
+
+        ResourceLocation id = AE2CrystalScience.makeId("charged/" + getItemName(output) + "_from_" + tagId);
+        ChargerRecipeBuilder.charge(consumer, id, input, output);
+    }
+
+    protected static void chargedRecipeWithAggregator(RecipeOutput consumer, ItemLike input, ItemLike output)
+    {
+        ResourceLocation id = AE2CrystalScience.makeId("aggregator/" + getItemName(input) + "_from_" + getItemName(output));
+        CrystalAggregatorRecipeBuilder.aggregating(new ItemStack(output, 64), 102400)
+                .require(input, 64)
+                .save(consumer, id);
+    }
+
+    protected static void chargedRecipeWithAggregator(RecipeOutput consumer, TagKey<Item> input, ItemLike output)
+    {
+        String tagId = sanitize(input.location());
+
+        ResourceLocation id = AE2CrystalScience.makeId("aggregator/" + getItemName(output) + "_from_" + tagId);
+        CrystalAggregatorRecipeBuilder.aggregating(new ItemStack(output, 64), 102400)
+                .require(input, 64)
+                .save(consumer, id);
+    }
+
+
     // id工具------------------------------------------------
     protected static ResourceLocation getCrafterPath(ItemLike output, boolean shaped)
     {
         String prefix = shaped ? "craft/shaped" : "craft/shapeless";
         return AE2CrystalScience.makeId(getPrefixedItemName(prefix, output));
+    }
+
+    protected static ResourceLocation getCrafterPath(ItemLike input, ItemLike output, boolean shaped)
+    {
+        String prefix = shaped ? "craft/shaped" : "craft/shapeless";
+        String path = prefix + "/" + getItemName(output) + "_from_" + getItemName(input);
+        return AE2CrystalScience.makeId(path);
     }
 
     protected static ResourceLocation getInscriberPath(ItemLike output)

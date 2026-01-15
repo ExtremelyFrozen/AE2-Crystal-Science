@@ -36,7 +36,7 @@ public class AECSMiscRecipeProvider extends AECSRecipeProvider
     protected void buildRecipes(@NotNull RecipeOutput recipeOutput)
     {
         // 爆炸以获得谐振水晶粉
-        TransformRecipeBuilder.transform(recipeOutput, getTransformPath(AECSItems.REDSTONE_CRYSTAL_DUST),
+        TransformRecipeBuilder.transform(recipeOutput, getTransformPath(AECSItems.RESONATING_DUST),
                 AECSItems.REDSTONE_CRYSTAL_DUST, 1,
                 TransformCircumstance.EXPLOSION,
                 AECSItems.pureMeteorCrystal,

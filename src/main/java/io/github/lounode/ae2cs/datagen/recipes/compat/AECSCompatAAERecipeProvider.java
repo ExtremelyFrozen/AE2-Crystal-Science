@@ -1,8 +1,6 @@
 package io.github.lounode.ae2cs.datagen.recipes.compat;
 
-import appeng.core.definitions.AEBlocks;
 import appeng.datagen.providers.tags.ConventionTags;
-import com.glodblock.github.appflux.common.AFSingletons;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSItems;
@@ -10,9 +8,9 @@ import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CircuitEtcherRecipeBuilder;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBuilder;
+import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalPulverizerRecipeBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -20,7 +18,6 @@ import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.Tags;
 import net.pedroksl.advanced_ae.common.definitions.AAEFluids;
 import net.pedroksl.advanced_ae.common.definitions.AAEItems;
-import net.pedroksl.advanced_ae.common.definitions.AAETags;
 import net.pedroksl.advanced_ae.datagen.AAEConventionTags;
 import net.pedroksl.advanced_ae.recipes.ReactionChamberRecipeBuilder;
 import org.jetbrains.annotations.NotNull;
@@ -64,6 +61,10 @@ public class AECSCompatAAERecipeProvider extends AECSRecipeProvider
                 .input(AECSTags.Items.DUST_QUARTZ)
                 .fluid(AAEFluids.QUANTUM_INFUSION.stack(1000))
                 .save(compatOut, getReactionPath(AECSItems.quantumCrystalSeed));
+
+        CrystalPulverizerRecipeBuilder.pulverizing(AECSItems.QUANTUM_CRYSTAL_DUST, 1, 1600)
+                .require(AAEItems.QUANTUM_ALLOY, 1)
+                .save(compatOut, "quantum_crystal_dust_from_ingot");
     }
 
     protected static ResourceLocation getReactionPath(ItemLike output)

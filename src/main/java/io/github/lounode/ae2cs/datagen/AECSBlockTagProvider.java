@@ -2,7 +2,6 @@ package io.github.lounode.ae2cs.datagen;
 
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
-import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;

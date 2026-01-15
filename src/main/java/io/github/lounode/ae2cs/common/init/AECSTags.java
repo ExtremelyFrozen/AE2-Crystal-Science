@@ -8,8 +8,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
-import javax.swing.text.html.HTML;
-
 public class AECSTags
 {
     public static class Blocks

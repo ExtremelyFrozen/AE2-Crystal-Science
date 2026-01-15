@@ -14,6 +14,7 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,6 +36,17 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
     @Override
     protected void buildRecipes(@NotNull RecipeOutput recipeOutput)
     {
+        pack2x2(recipeOutput, RecipeCategory.MISC, AECSItems.pureCertusQuartzCrystal, AEBlocks.QUARTZ_BLOCK);
+        pack2x2(recipeOutput, RecipeCategory.MISC, AECSItems.pureFluixCrystal, AEBlocks.FLUIX_BLOCK);
+        pack2x2(recipeOutput, RecipeCategory.MISC, AECSItems.pureNetherQuartzCrystal, Blocks.QUARTZ_BLOCK);
+
+        packAndUnpack3x3(recipeOutput, RecipeCategory.MISC, RecipeCategory.MISC,
+                AECSItems.pureResonatingCrystal, AECSBlocks.PURE_RESONATING_CRYSTAL_BLOCK);
+        packAndUnpack3x3(recipeOutput, RecipeCategory.MISC, RecipeCategory.MISC,
+                AECSItems.pureMeteorCrystal, AECSBlocks.PURE_METEOR_CRYSTAL_BLOCK);
+        packAndUnpack3x3(recipeOutput, RecipeCategory.MISC, RecipeCategory.MISC,
+                AECSItems.pureEnderQuartz, AECSBlocks.PURE_ENDER_QUARTZ_BLOCK);
+
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.resonatingSeed)
                 .requires(AECSTags.Items.DUST_RESONATING)
                 .requires(ConventionTags.FLUIX_DUST)
