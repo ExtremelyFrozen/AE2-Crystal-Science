@@ -1,6 +1,7 @@
 package io.github.lounode.ae2cs.datagen.recipes;
 
 import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
@@ -56,6 +57,13 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
                 .require(AEParts.LEVEL_EMITTER, 1)
                 .require(AECSItems.RESONATING_PROCESSOR, 1)
                 .require(AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK, 1)
+                .save(recipeOutput);
+
+        // 末影链接工具
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.enderLink.toStack(), 8000)
+                .require(AEItems.WIRELESS_RECEIVER, 1)
+                .require(AECSTags.Items.GEM_ENDER_QUARTZ, 4)
+                .require(AECSItems.RESONATING_PROCESSOR, 1)
                 .save(recipeOutput);
 
     }

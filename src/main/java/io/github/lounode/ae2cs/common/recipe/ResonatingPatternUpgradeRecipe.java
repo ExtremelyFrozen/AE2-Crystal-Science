@@ -6,6 +6,7 @@ import appeng.crafting.pattern.EncodedProcessingPattern;
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSRecipeSerializers;
+import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
@@ -44,7 +45,7 @@ public class ResonatingPatternUpgradeRecipe extends CustomRecipe
                 if (!pattern.isEmpty()) return false;
                 pattern = s;
             }
-            else if (isResonatingCrystal(s))
+            else if (isResonatingDust(s))
             {
                 if (!crystal.isEmpty()) return false;
                 crystal = s;
@@ -112,8 +113,8 @@ public class ResonatingPatternUpgradeRecipe extends CustomRecipe
         return stack.is(AEItems.PROCESSING_PATTERN.asItem()) && stack.has(AEComponents.ENCODED_PROCESSING_PATTERN);
     }
 
-    private static boolean isResonatingCrystal(ItemStack stack)
+    private static boolean isResonatingDust(ItemStack stack)
     {
-        return stack.is(AECSItems.pureResonatingCrystal.asItem());
+        return stack.is(AECSTags.Items.DUST_RESONATING);
     }
 }
