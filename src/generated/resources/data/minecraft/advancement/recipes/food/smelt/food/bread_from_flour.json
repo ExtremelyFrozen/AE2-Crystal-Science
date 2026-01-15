@@ -1,32 +1,32 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_the_recipe": {
-      "conditions": {
-        "recipe": "ae2:blank_pattern"
-      },
-      "trigger": "minecraft:recipe_unlocked"
-    },
-    "just_has_resonating_pattern": {
+    "has_flour": {
       "conditions": {
         "items": [
           {
-            "items": "ae2cs:resonating_pattern"
+            "items": "ae2cs:flour"
           }
         ]
       },
       "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:smelt/food/bread_from_flour"
+      },
+      "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
     [
       "has_the_recipe",
-      "just_has_resonating_pattern"
+      "has_flour"
     ]
   ],
   "rewards": {
     "recipes": [
-      "ae2:blank_pattern"
+      "minecraft:smelt/food/bread_from_flour"
     ]
   }
 }

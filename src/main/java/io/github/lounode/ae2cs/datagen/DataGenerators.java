@@ -70,6 +70,7 @@ public class DataGenerators
         generator.addProvider(event.includeServer(), new AECSCompatCreateRecipeProvider(packOutput, lookupProvider));
         generator.addProvider(event.includeServer(), new AECSCompatEAERecipeProvider(packOutput, lookupProvider));
         generator.addProvider(event.includeServer(), new AECSCompatMEKRecipeProvider(packOutput, lookupProvider));
+        generator.addProvider(event.includeServer(), new AECSCompatOCRecipeProvider(packOutput, lookupProvider));
 
         // 矿石生成
         generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(
