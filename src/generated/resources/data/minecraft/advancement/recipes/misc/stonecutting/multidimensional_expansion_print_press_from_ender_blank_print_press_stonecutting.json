@@ -2,16 +2,16 @@
   "neoforge:conditions": [
     {
       "type": "neoforge:mod_loaded",
-      "modid": "appflux"
+      "modid": "ae2omnicells"
     }
   ],
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_simple_print_press": {
+    "has_ender_blank_print_press": {
       "conditions": {
         "items": [
           {
-            "items": "ae2cs:simple_print_press"
+            "items": "ae2cs:ender_blank_print_press"
           }
         ]
       },
@@ -19,7 +19,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "minecraft:stonecutting/energy_processor_press_from_simple_print_press_stonecutting"
+        "recipe": "minecraft:stonecutting/multidimensional_expansion_print_press_from_ender_blank_print_press_stonecutting"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -27,12 +27,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_simple_print_press"
+      "has_ender_blank_print_press"
     ]
   ],
   "rewards": {
     "recipes": [
-      "minecraft:stonecutting/energy_processor_press_from_simple_print_press_stonecutting"
+      "minecraft:stonecutting/multidimensional_expansion_print_press_from_ender_blank_print_press_stonecutting"
     ]
   }
 }

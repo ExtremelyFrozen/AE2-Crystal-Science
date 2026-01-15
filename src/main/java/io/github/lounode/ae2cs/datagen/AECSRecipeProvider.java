@@ -93,6 +93,12 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
         stonecutterResultFromTag(recipeOutput, category, result, input, 1);
     }
 
+    // id工具------------------------------------------------
+    protected static String getPrefixedItemName(String prefix, ItemLike item)
+    {
+        return prefix + "/" + getItemName(item);
+    }
+
     protected static String sanitize(ResourceLocation id)
     {
         // namespace:path/xxx -> namespace_path_xxx

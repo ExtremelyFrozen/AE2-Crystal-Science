@@ -41,9 +41,11 @@ public class AECSItemIds
     public static final String RESONATING_PRINT_PRESS = "resonating_print_press";
     public static final String RESONATING_CIRCUIT_PRINT = "resonating_circuit_print";
     public static final String RESONATING_PROCESSOR = "resonating_processor";
-    public static final String SIMPLE_PRINT_PRESS = "simple_print_press";
     public static final String SIMPLE_CIRCUIT_PRINT = "simple_circuit_print";
     public static final String SIMPLE_PROCESSOR = "simple_processor";
+
+    public static final String BLANK_PRINT_PRESS = "blank_print_press";
+    public static final String ENDER_BLANK_PRINT_PRESS = "ender_blank_print_press";
 
     public static final String METEOR_CRYSTAL_SWORD = "meteor_crystal_sword";
     public static final String METEOR_CRYSTAL_AXE = "meteor_crystal_axe";

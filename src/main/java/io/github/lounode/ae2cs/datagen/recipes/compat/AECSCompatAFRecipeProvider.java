@@ -30,6 +30,6 @@ public class AECSCompatAFRecipeProvider extends AECSRecipeProvider
     {
         var compatOut = originalOut.withConditions(modLoaded(AECSConstants.AF_ID));
 
-        stonecutterResultFromItem(compatOut, RecipeCategory.MISC, AFSingletons.ENERGY_PROCESSOR_PRESS, AECSItems.SIMPLE_PRINT_PRESS);
+        stonecutterResultFromItem(compatOut, RecipeCategory.MISC, AFSingletons.ENERGY_PROCESSOR_PRESS, AECSItems.BLANK_PRINT_PRESS);
     }
 }

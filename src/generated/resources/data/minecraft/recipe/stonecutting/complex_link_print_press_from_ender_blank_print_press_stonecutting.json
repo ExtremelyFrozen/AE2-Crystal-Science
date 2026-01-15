@@ -7,10 +7,10 @@
   ],
   "type": "minecraft:stonecutting",
   "ingredient": {
-    "item": "ae2cs:simple_print_press"
+    "item": "ae2cs:ender_blank_print_press"
   },
   "result": {
     "count": 1,
-    "id": "ae2omnicells:omni_link_print_press"
+    "id": "ae2omnicells:complex_link_print_press"
   }
 }

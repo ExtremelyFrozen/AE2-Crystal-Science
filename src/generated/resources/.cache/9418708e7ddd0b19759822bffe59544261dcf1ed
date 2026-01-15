@@ -1,4 +1,5 @@
-// 1.21.1	2026-01-14T18:48:29.5823692	Item Models: ae2cs
+// 1.21.1	2026-01-15T16:35:34.749279	Item Models: ae2cs
+a1a1b082687a7d6da6275a26110f9bf64a570d98 assets/ae2cs/models/item/blank_print_press.json
 b12dd22e280360c8a0e60dab4f633579f285ac71 assets/ae2cs/models/item/certus_quartz_seed.json
 9b0a0f5bbd61b4a4cf3d2083524df9fe42b70ac5 assets/ae2cs/models/item/certus_quartz_seed_1.json
 9359cf66e98b5af14ae724e4097a9a8916b30c0e assets/ae2cs/models/item/certus_quartz_seed_2.json
@@ -6,6 +7,7 @@ b12dd22e280360c8a0e60dab4f633579f285ac71 assets/ae2cs/models/item/certus_quartz_
 ba939f800bb2945acb32801eca94bb8e4609e4e0 assets/ae2cs/models/item/ember_seed.json
 218a8b7e0d1f427fc1a388c2a8f9d807c173406e assets/ae2cs/models/item/ember_seed_1.json
 d876586e605bd52dbe3e2c88c6027cc45e0f2290 assets/ae2cs/models/item/ember_seed_2.json
+70878d0fb94352701a30c7484552ced144ad2788 assets/ae2cs/models/item/ender_blank_print_press.json
 41e8b60e9dae0f60b4926f5ca62beb634bf0bb39 assets/ae2cs/models/item/ender_crystal_axe.json
 e1cfd11b998b6a0be487de7b36639d3df66bc468 assets/ae2cs/models/item/ender_crystal_hoe.json
 8edfa98298826243962fcdbf3cef7d4d34b57735 assets/ae2cs/models/item/ender_crystal_pickaxe.json
@@ -82,6 +84,5 @@ ce9e675c2d62b586a4080b4e31a5da4999f6a1b2 assets/ae2cs/models/item/rose_quartz_se
 675d7cf32f7c75485a2f9d6ae599e978995d1851 assets/ae2cs/models/item/rose_quartz_seed_1.json
 adf79fdf982e85de9a495bbb15d7e16b93fa7a14 assets/ae2cs/models/item/rose_quartz_seed_2.json
 34d137192241af8b922a112f50f567cbb5b896f7 assets/ae2cs/models/item/simple_circuit_print.json
-0f4f88f431b6b5828992f84da26e67dcbf48b3d0 assets/ae2cs/models/item/simple_print_press.json
 a2c021bee4db0fbed58226a728088d46e19b3ea4 assets/ae2cs/models/item/simple_processor.json
 3c37c03616b4a13717bb9bb35712ca5acedabe27 assets/ae2cs/models/item/wooden_gear.json

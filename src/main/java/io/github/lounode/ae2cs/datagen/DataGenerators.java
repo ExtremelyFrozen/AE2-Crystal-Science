@@ -61,6 +61,7 @@ public class DataGenerators
         generator.addProvider(event.includeServer(), new AECSCraftRecipeProvider(packOutput, lookupProvider));
         generator.addProvider(event.includeServer(), new AECSEtcherRecipeProvider(packOutput, lookupProvider));
         generator.addProvider(event.includeServer(), new AECSFurnaceRecipeProvider(packOutput, lookupProvider));
+        generator.addProvider(event.includeServer(), new AECSMiscRecipeProvider(packOutput, lookupProvider));
         generator.addProvider(event.includeServer(), new AECSPulverizerRecipeProvider(packOutput, lookupProvider));
         generator.addProvider(event.includeServer(), new AECSStonecutterRecipeProvider(packOutput, lookupProvider));
         // 联动配方

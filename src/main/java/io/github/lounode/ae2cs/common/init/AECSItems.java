@@ -79,9 +79,11 @@ public class AECSItems
     public static final DeferredItem<Item> RESONATING_PRINT_PRESS = registerOtherItem(AECSItemIds.RESONATING_PRINT_PRESS, () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> RESONATING_CIRCUIT_PRINT = registerOtherItem(AECSItemIds.RESONATING_CIRCUIT_PRINT, () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> RESONATING_PROCESSOR = registerOtherItem(AECSItemIds.RESONATING_PROCESSOR, () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> SIMPLE_PRINT_PRESS = registerOtherItem(AECSItemIds.SIMPLE_PRINT_PRESS, () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> SIMPLE_CIRCUIT_PRINT = registerOtherItem(AECSItemIds.SIMPLE_CIRCUIT_PRINT, () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> SIMPLE_PROCESSOR = registerOtherItem(AECSItemIds.SIMPLE_PROCESSOR, () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> BLANK_PRINT_PRESS = registerOtherItem(AECSItemIds.BLANK_PRINT_PRESS, () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> ENDER_BLANK_PRINT_PRESS = registerOtherItem(AECSItemIds.ENDER_BLANK_PRINT_PRESS, () -> new Item(new Item.Properties()));
 
     public static final DeferredItem<Item> METEOR_CRYSTAL_SWORD = registerOtherItem(AECSItemIds.METEOR_CRYSTAL_SWORD, () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> METEOR_CRYSTAL_AXE = registerOtherItem(AECSItemIds.METEOR_CRYSTAL_AXE, () -> new Item(new Item.Properties()));
