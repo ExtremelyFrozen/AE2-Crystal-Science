@@ -49,10 +49,12 @@ public class ToolLinkableHandler implements IGridLinkableHandler
         var targetPos = stack.get(AEComponents.WIRELESS_LINK_TARGET);
         if (targetPos == null) return null;
 
-        if (!(player.level() instanceof ServerLevel serverLevel)) return null;
+        if (!(player.level() instanceof ServerLevel playerLevel)) return null;
 
-        // 先通过找到对应的Grid
-        var linkedLevel = serverLevel.getServer().getLevel(targetPos.dimension());
+        var server = playerLevel.getServer();
+
+        // 目标维度
+        var linkedLevel = server.getLevel(targetPos.dimension());
         if (linkedLevel == null) return null;
 
         var be = Platform.getTickingBlockEntity(linkedLevel, targetPos.pos());
@@ -61,34 +63,7 @@ public class ToolLinkableHandler implements IGridLinkableHandler
         var grid = accessPoint.getGrid();
         if (grid == null) return null;
 
-        // 在该Grid内找一个WAP
-        IWirelessAccessPoint bestWap = null;
-        double bestSqDistance = Double.MAX_VALUE;
-
-        for (var wap : grid.getMachines(WirelessAccessPointBlockEntity.class))
-        {
-            var loc = wap.getLocation();
-            if (loc.getLevel() != player.level()) continue;
-            if (!wap.isActive()) continue;
-
-            double range = wap.getRange();
-            double rangeSq = range * range;
-
-            var pos = loc.getPos();
-            double dx = pos.getX() - player.getX();
-            double dy = pos.getY() - player.getY();
-            double dz = pos.getZ() - player.getZ();
-            double distSq = dx * dx + dy * dy + dz * dz;
-
-            if (distSq < rangeSq && distSq < bestSqDistance)
-            {
-                bestSqDistance = distSq;
-                bestWap = wap;
-            }
-        }
-
-        if (bestWap == null) return null;
-
+        // 不检查距离、维度，直接返回仓库
         return grid.getStorageService().getInventory();
     }
 
