@@ -404,7 +404,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
                 long available = stack.getLongValue();
                 if (available <= 0) continue;
 
-                long request = Math.min(available, 64);
+                long request = Math.min(available, 4000);
 
                 long canBuffer = returnInv.insert(key, request, Actionable.SIMULATE, actionSource);
                 if (canBuffer <= 0) continue;
