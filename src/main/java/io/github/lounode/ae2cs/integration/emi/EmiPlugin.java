@@ -5,7 +5,9 @@ import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.stack.EmiStack;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSRecipeTypes;
+import net.minecraft.world.level.material.Fluids;
 
 @EmiEntrypoint
 public class EmiPlugin implements dev.emi.emi.api.EmiPlugin
@@ -35,6 +37,14 @@ public class EmiPlugin implements dev.emi.emi.api.EmiPlugin
         registry.getRecipeManager().getAllRecipesFor(AECSRecipeTypes.CRYSTAL_PULVERIZER.get())
                 .stream()
                 .map(CrystalPulverizerRecipeCategory::new)
+                .forEach(registry::addRecipe);
+
+        registry.addCategory(CrystalGrowthCategory.RECIPE_TYPE);
+        registry.addWorkstation(CrystalGrowthCategory.RECIPE_TYPE, EmiStack.of(AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK));
+        registry.addWorkstation(CrystalGrowthCategory.RECIPE_TYPE, EmiStack.of(Fluids.WATER));
+        AECSItems.getCrystalSeeds()
+                .stream()
+                .map(crystalSeedItemDeferredItem -> new CrystalGrowthCategory(crystalSeedItemDeferredItem.get()))
                 .forEach(registry::addRecipe);
     }
 }

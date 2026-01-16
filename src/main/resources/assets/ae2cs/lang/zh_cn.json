@@ -330,5 +330,6 @@
   "ae2cs.integration.jei.recipe_category.circuit_etcher": "电路蚀刻",
   "ae2cs.integration.jei.recipe_category.energy_cost.tooltip": "需要能量：%sAE",
   "ae2cs.integration.jei.recipe_category.crystal_aggregator": "晶能聚合",
-  "ae2cs.integration.jei.recipe_category.crystal_pulverizer": "粉碎"
+  "ae2cs.integration.jei.recipe_category.crystal_pulverizer": "粉碎",
+  "ae2cs.integration.jei.recipe_category.crystal_growth": "水晶生长"
 }
