@@ -127,7 +127,7 @@
 
   "message.ae2_crystal_seeds.tooltip.seed_growth": "生长度：%1$s％",
   "message.ae2cs.tooltip.burn_time": "燃烧时间：%s刻",
-  "message.ae2cs.tooltip.energy": "能量密度：%sFE每刻",
+  "message.ae2cs.tooltip.energy": "能量密度：%sAE每刻",
 
   "ae2cs.msg.resonating_pattern.no_inputs": "该样板没有任何输入材料。",
   "ae2cs.msg.resonating_pattern.input_empty": "空槽",
