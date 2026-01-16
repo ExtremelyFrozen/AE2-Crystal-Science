@@ -53,21 +53,21 @@ public class AECSCompatEAERecipeProvider extends AECSRecipeProvider
                 .save(compatOut);
 
         CrystalAggregatorRecipeBuilder.aggregating(EAESingletons.MOSTLY_ENTROIZED_FLUIX_BUDDING, 1, 16000)
-                .require(AECSItems.entroCrystalSeed, 1)
-                .require(AECSItems.pureResonatingCrystal, 1)
+                .require(AECSItems.ENTRO_CRYSTAL_SEED, 1)
+                .require(AECSItems.PURE_RESONATING_CRYSTAL, 1)
                 .require(AEBlocks.FLUIX_BLOCK, 1)
                 .save(compatOut);
 
-        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.entroCrystalSeed, 4, 16000)
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.ENTRO_CRYSTAL_SEED, 4, 16000)
                 .require(EAETags.ENTRO_DUST, 1)
                 .require(AECSTags.Items.DUST_QUARTZ, 3)
                 .require(ConventionTags.SKY_STONE_DUST, 1)
-                .save(compatOut, "aggregator/" + getItemName(AECSItems.entroCrystalSeed) + "_from_dust");
+                .save(compatOut, "aggregator/" + getItemName(AECSItems.ENTRO_CRYSTAL_SEED) + "_from_dust");
 
-        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.entroCrystalSeed, 6, 16000)
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.ENTRO_CRYSTAL_SEED, 6, 16000)
                 .require(EAESingletons.ENTRO_SEED, 2)
                 .require(AECSTags.Items.DUST_QUARTZ, 4)
-                .save(compatOut, "aggregator/" + getItemName(AECSItems.entroCrystalSeed) + "_from_original_seed");
+                .save(compatOut, "aggregator/" + getItemName(AECSItems.ENTRO_CRYSTAL_SEED) + "_from_original_seed");
 
         CrystalAggregatorRecipeBuilder.aggregating(EAESingletons.EX_ASSEMBLER, 1, 32000)
                 .require(AEBlocks.MOLECULAR_ASSEMBLER, 4)
@@ -82,7 +82,7 @@ public class AECSCompatEAERecipeProvider extends AECSRecipeProvider
                 .save(compatOut, "aggregator/" + getItemName(EAESingletons.MACHINE_FRAME) + "_from_entro_ingot");
 
         CrystalAggregatorRecipeBuilder.aggregating(EAESingletons.MACHINE_FRAME, 1, 32000)
-                .require(AECSItems.pureEntroCrystal, 4)
+                .require(AECSItems.PURE_ENTRO_CRYSTAL, 4)
                 .require(AEBlocks.QUARTZ_GLASS, 1)
                 .require(Tags.Items.INGOTS_IRON, 4)
                 .save(compatOut, "aggregator/" + getItemName(EAESingletons.MACHINE_FRAME) + "_from_pure_entro_crystal");

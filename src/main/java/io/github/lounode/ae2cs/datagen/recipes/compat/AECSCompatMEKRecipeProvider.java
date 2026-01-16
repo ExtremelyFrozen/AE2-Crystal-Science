@@ -48,7 +48,7 @@ public class AECSCompatMEKRecipeProvider extends AECSRecipeProvider
                 AECSItems.PURE_IRRADIATED_CRYSTAL, AECSBlocks.IRRADIATED_CRYSTAL_BLOCK);
 
         PressurizedReactionRecipeBuilder.reaction(
-                        ItemStackIngredient.of(SizedIngredient.of(AECSItems.netherQuartzSeed, 1)),
+                        ItemStackIngredient.of(SizedIngredient.of(AECSItems.NETHER_QUARTZ_SEED, 1)),
                         FluidStackIngredient.of(SizedFluidIngredient.of(MekanismTags.Fluids.SULFURIC_ACID, 1000)),
                         ChemicalStackIngredient.of(new SingleChemicalIngredient(MekanismChemicals.FISSILE_FUEL), 1000),
                         400, AECSItems.IRRADIATED_SEED.toStack())

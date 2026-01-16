@@ -85,34 +85,34 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
                 .save(recipeOutput);
 
         // 种子
-        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.resonatingSeed, 64, 144000)
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.RESONATING_SEED, 64, 144000)
                 .require(AECSTags.Items.DUST_RESONATING, 32)
                 .require(ConventionTags.FLUIX_DUST, 32)
                 .require(ConventionTags.SKY_STONE_DUST, 32)
                 .save(recipeOutput);
 
-        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.certusQuartzSeed, 64, 144000)
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.CERTUS_QUARTZ_SEED, 64, 144000)
                 .require(AEItems.CERTUS_QUARTZ_DUST, 16)
                 .require(Blocks.SAND, 64)
                 .save(recipeOutput);
 
-        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.fluixCrystalSeed, 64, 144000)
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.FLUIX_CRYSTAL_SEED, 64, 144000)
                 .require(AEItems.FLUIX_DUST, 16)
                 .require(Blocks.SAND, 64)
                 .save(recipeOutput);
 
-        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.netherQuartzSeed, 64, 144000)
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.NETHER_QUARTZ_SEED, 64, 144000)
                 .require(AECSItems.NETHER_QUARTZ_DUST, 16)
                 .require(Blocks.SAND, 64)
                 .save(recipeOutput);
 
-        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.enderQuartzSeed, 64, 144000)
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.ENDER_QUARTZ_SEED, 64, 144000)
                 .require(AECSItems.NETHER_QUARTZ_DUST, 16)
                 .require(ConventionTags.ENDER_PEARL_DUST, 16)
                 .require(Blocks.END_STONE, 32)
                 .save(recipeOutput);
 
-        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.meteorSeed, 64, 144000)
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.METEOR_SEED, 64, 144000)
                 .require(ConventionTags.SKY_STONE_DUST, 16)
                 .require(ConventionTags.CERTUS_QUARTZ_DUST, 16)
                 .require(Blocks.GRAVEL, 32)
@@ -168,7 +168,7 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
 
         // 其他配方
         CrystalAggregatorRecipeBuilder.aggregating(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, 64, 160000)
-                .require(AECSItems.pureCertusQuartzCrystal, 32)
+                .require(AECSItems.PURE_CERTUS_QUARTZ_CRYSTAL, 32)
                 .require(AEItems.CERTUS_QUARTZ_CRYSTAL, 32)
                 .save(recipeOutput);
 
@@ -190,26 +190,26 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
                 .save(recipeOutput);
 
         CrystalAggregatorRecipeBuilder.aggregating(AEBlocks.DAMAGED_BUDDING_QUARTZ, 1, 16000)
-                .require(AECSItems.certusQuartzSeed, 1)
-                .require(AECSItems.pureResonatingCrystal, 1)
+                .require(AECSItems.CERTUS_QUARTZ_SEED, 1)
+                .require(AECSItems.PURE_RESONATING_CRYSTAL, 1)
                 .require(AEBlocks.QUARTZ_BLOCK, 1)
                 .save(recipeOutput);
 
         CrystalAggregatorRecipeBuilder.aggregating(AEBlocks.CHIPPED_BUDDING_QUARTZ, 1, 16000)
-                .require(AECSItems.certusQuartzSeed, 1)
-                .require(AECSItems.pureResonatingCrystal, 1)
+                .require(AECSItems.CERTUS_QUARTZ_SEED, 1)
+                .require(AECSItems.PURE_RESONATING_CRYSTAL, 1)
                 .require(AEBlocks.DAMAGED_BUDDING_QUARTZ, 1)
                 .save(recipeOutput);
 
         CrystalAggregatorRecipeBuilder.aggregating(AEBlocks.FLAWED_BUDDING_QUARTZ, 1, 16000)
-                .require(AECSItems.certusQuartzSeed, 1)
-                .require(AECSItems.pureResonatingCrystal, 1)
+                .require(AECSItems.CERTUS_QUARTZ_SEED, 1)
+                .require(AECSItems.PURE_RESONATING_CRYSTAL, 1)
                 .require(AEBlocks.CHIPPED_BUDDING_QUARTZ, 1)
                 .save(recipeOutput);
 
         CrystalAggregatorRecipeBuilder.aggregating(AEBlocks.FLAWLESS_BUDDING_QUARTZ, 1, 80000)
-                .require(AECSItems.certusQuartzSeed, 6)
-                .require(AECSItems.pureResonatingCrystal, 6)
+                .require(AECSItems.CERTUS_QUARTZ_SEED, 6)
+                .require(AECSItems.PURE_RESONATING_CRYSTAL, 6)
                 .require(AEBlocks.FLAWED_BUDDING_QUARTZ, 6)
                 .save(recipeOutput);
 
@@ -271,7 +271,7 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
 
         CrystalAggregatorRecipeBuilder.aggregating(Blocks.BUDDING_AMETHYST, 1, 16000)
                 .require(Items.AMETHYST_SHARD, 1)
-                .require(AECSItems.pureResonatingCrystal, 1)
+                .require(AECSItems.PURE_RESONATING_CRYSTAL, 1)
                 .require(Blocks.AMETHYST_BLOCK, 1)
                 .save(recipeOutput);
 

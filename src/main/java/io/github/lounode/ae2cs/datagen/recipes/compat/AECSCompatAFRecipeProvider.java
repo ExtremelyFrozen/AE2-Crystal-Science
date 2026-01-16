@@ -39,14 +39,14 @@ public class AECSCompatAFRecipeProvider extends AECSRecipeProvider
         var compatOut = originalOut.withConditions(modLoaded(AECSConstants.AF_ID));
 
         packAndUnpack3x3(compatOut, RecipeCategory.MISC, RecipeCategory.MISC,
-                AECSItems.pureRedstoneCrystal, AECSBlocks.PURE_REDSTONE_CRYSTAL_BLOCK);
+                AECSItems.PURE_REDSTONE_CRYSTAL, AECSBlocks.PURE_REDSTONE_CRYSTAL_BLOCK);
 
         stonecutterResultFromItem(compatOut, RecipeCategory.MISC, AFSingletons.ENERGY_PROCESSOR_PRESS, AECSItems.BLANK_PRINT_PRESS);
 
-        chargedRecipeWithAggregator(compatOut, AECSItems.pureRedstoneCrystal, AFSingletons.REDSTONE_CRYSTAL);
+        chargedRecipeWithAggregator(compatOut, AECSItems.PURE_REDSTONE_CRYSTAL, AFSingletons.REDSTONE_CRYSTAL);
 
         CrystalPulverizerRecipeBuilder.pulverizing(AECSItems.REDSTONE_CRYSTAL_DUST.toStack(), 8000)
-                .require(AECSItems.pureRedstoneCrystal, 1)
+                .require(AECSItems.PURE_REDSTONE_CRYSTAL, 1)
                 .save(compatOut, "pulverizer/" + getItemName(AECSItems.REDSTONE_CRYSTAL_DUST) + "_from_pure_redstone_crystal");
         CrystalPulverizerRecipeBuilder.pulverizing(AECSItems.REDSTONE_CRYSTAL_DUST.toStack(), 8000)
                 .require(AFSingletons.REDSTONE_CRYSTAL, 1)
@@ -55,7 +55,7 @@ public class AECSCompatAFRecipeProvider extends AECSRecipeProvider
                 .require(AECSItems.REDSTONE_CRYSTAL_DUST, 1)
                 .save(compatOut);
 
-        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.redstoneCrystalSeed.toStack(64), 144000)
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.REDSTONE_CRYSTAL_SEED.toStack(64), 144000)
                 .require(Tags.Items.DUSTS_GLOWSTONE, 32)
                 .require(Tags.Items.DUSTS_REDSTONE, 16)
                 .require(AECSItems.REDSTONE_CRYSTAL_DUST, 16)

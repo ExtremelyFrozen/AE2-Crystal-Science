@@ -40,21 +40,21 @@ public class AECSMiscRecipeProvider extends AECSRecipeProvider
         TransformRecipeBuilder.transform(recipeOutput, getTransformPath(AECSItems.RESONATING_DUST),
                 AECSItems.RESONATING_DUST, 1,
                 TransformCircumstance.EXPLOSION,
-                AECSItems.pureMeteorCrystal,
+                AECSItems.PURE_METEOR_CRYSTAL,
                 Blocks.REDSTONE_BLOCK,
-                AECSItems.pureEnderQuartz);
+                AECSItems.PURE_ENDER_QUARTZ);
 
         // 锻造台配方
         smithingTransform(recipeOutput, RecipeCategory.MISC, AEItems.FLUIX_UPGRADE_SMITHING_TEMPLATE,
-                AECSItems.METEOR_CRYSTAL_PICKAXE, AECSItems.pureResonatingCrystal, AECSItems.RESONATING_CRYSTAL_PICKAXE);
+                AECSItems.METEOR_CRYSTAL_PICKAXE, AECSItems.PURE_RESONATING_CRYSTAL, AECSItems.RESONATING_CRYSTAL_PICKAXE);
         smithingTransform(recipeOutput, RecipeCategory.MISC, AEItems.FLUIX_UPGRADE_SMITHING_TEMPLATE,
-                AECSItems.METEOR_CRYSTAL_AXE, AECSItems.pureResonatingCrystal, AECSItems.RESONATING_CRYSTAL_AXE);
+                AECSItems.METEOR_CRYSTAL_AXE, AECSItems.PURE_RESONATING_CRYSTAL, AECSItems.RESONATING_CRYSTAL_AXE);
         smithingTransform(recipeOutput, RecipeCategory.MISC, AEItems.FLUIX_UPGRADE_SMITHING_TEMPLATE,
-                AECSItems.METEOR_CRYSTAL_SWORD, AECSItems.pureResonatingCrystal, AECSItems.RESONATING_CRYSTAL_SWORD);
+                AECSItems.METEOR_CRYSTAL_SWORD, AECSItems.PURE_RESONATING_CRYSTAL, AECSItems.RESONATING_CRYSTAL_SWORD);
         smithingTransform(recipeOutput, RecipeCategory.MISC, AEItems.FLUIX_UPGRADE_SMITHING_TEMPLATE,
-                AECSItems.METEOR_CRYSTAL_HOE, AECSItems.pureResonatingCrystal, AECSItems.RESONATING_CRYSTAL_HOE);
+                AECSItems.METEOR_CRYSTAL_HOE, AECSItems.PURE_RESONATING_CRYSTAL, AECSItems.RESONATING_CRYSTAL_HOE);
         smithingTransform(recipeOutput, RecipeCategory.MISC, AEItems.FLUIX_UPGRADE_SMITHING_TEMPLATE,
-                AECSItems.METEOR_CRYSTAL_SHOVEL, AECSItems.pureResonatingCrystal, AECSItems.RESONATING_CRYSTAL_SHOVEL);
+                AECSItems.METEOR_CRYSTAL_SHOVEL, AECSItems.PURE_RESONATING_CRYSTAL, AECSItems.RESONATING_CRYSTAL_SHOVEL);
 
         // 压印系列
         InscriberRecipeBuilder.inscribe(AECSTags.Items.GEM_RESONATING, AECSItems.RESONATING_CIRCUIT_PRINT, 1)

@@ -45,7 +45,7 @@ public class AECSCompatAAERecipeProvider extends AECSRecipeProvider
         var compatOut = originalOut.withConditions(modLoaded(AECSConstants.AAE_ID));
 
         packAndUnpack3x3(compatOut, RecipeCategory.MISC, RecipeCategory.MISC,
-                AECSItems.pureQuantumCrystal, AECSBlocks.PURE_QUANTUM_CRYSTAL_BLOCK);
+                AECSItems.PURE_QUANTUM_CRYSTAL, AECSBlocks.PURE_QUANTUM_CRYSTAL_BLOCK);
 
         stonecutterResultFromItem(compatOut, RecipeCategory.MISC, AAEItems.QUANTUM_PROCESSOR_PRESS, AECSItems.BLANK_PRINT_PRESS);
 
@@ -55,12 +55,12 @@ public class AECSCompatAAERecipeProvider extends AECSRecipeProvider
                 .require(Tags.Items.INGOTS, 1)
                 .save(compatOut);
 
-        ReactionChamberRecipeBuilder.react(AECSItems.quantumCrystalSeed, 4, 80000)
+        ReactionChamberRecipeBuilder.react(AECSItems.QUANTUM_CRYSTAL_SEED, 4, 80000)
                 .input(ConventionTags.SKY_STONE_DUST)
                 .input(AECSTags.Items.DUST_QUANTUM_ALLOY)
                 .input(AECSTags.Items.DUST_QUARTZ)
                 .fluid(AAEFluids.QUANTUM_INFUSION.stack(1000))
-                .save(compatOut, getReactionPath(AECSItems.quantumCrystalSeed));
+                .save(compatOut, getReactionPath(AECSItems.QUANTUM_CRYSTAL_SEED));
 
         CrystalPulverizerRecipeBuilder.pulverizing(AECSItems.QUANTUM_CRYSTAL_DUST, 1, 8000)
                 .require(AAEItems.QUANTUM_ALLOY, 1)

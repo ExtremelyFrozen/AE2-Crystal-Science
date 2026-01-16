@@ -36,15 +36,15 @@ public class AECSCompatCreateRecipeProvider extends AECSRecipeProvider
         var compatOut = originalOut.withConditions(modLoaded(AECSConstants.CREATE_ID));
 
         packAndUnpack3x3(compatOut, RecipeCategory.MISC, RecipeCategory.MISC,
-                AECSItems.pureRoseQuartz, AECSBlocks.PURE_ROSE_QUARTZ_BLOCK);
+                AECSItems.PURE_ROSE_QUARTZ, AECSBlocks.PURE_ROSE_QUARTZ_BLOCK);
 
         // 高纯玫瑰水晶的唯一用处
-        stonecutterResultFromItem(compatOut, RecipeCategory.MISC, AllItems.POLISHED_ROSE_QUARTZ, AECSItems.pureRoseQuartz, 2);
+        stonecutterResultFromItem(compatOut, RecipeCategory.MISC, AllItems.POLISHED_ROSE_QUARTZ, AECSItems.PURE_ROSE_QUARTZ, 2);
 
-        MechanicalCraftingRecipeBuilder.shapedRecipe(AECSItems.roseQuartzSeed)
+        MechanicalCraftingRecipeBuilder.shapedRecipe(AECSItems.ROSE_QUARTZ_SEED)
                 .patternLine("a")
                 .key('a', AllItems.POLISHED_ROSE_QUARTZ)
-                .build(compatOut, getMechanicalCraftingPath(AECSItems.roseQuartzSeed));
+                .build(compatOut, getMechanicalCraftingPath(AECSItems.ROSE_QUARTZ_SEED));
     }
 
     protected static ResourceLocation getMechanicalCraftingPath(ItemLike output)

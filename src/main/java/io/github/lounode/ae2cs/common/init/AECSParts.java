@@ -24,30 +24,6 @@ public class AECSParts
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(AECSConstants.MODID);
     private static final List<DeferredItem<? extends PartItem<?>>> ALL = new ArrayList<>();
 
-    public static final DeferredItem<PartItem<IntegratedInterfacePart>> INTEGRATE_INTERFACE_PART = registerPart(
-            AECSPartIds.INTEGRATED_INTERFACE,
-            IntegratedInterfacePart.class,
-            IntegratedInterfacePart::new
-    );
-
-    public static final DeferredItem<PartItem<IntegratedInterfacePart>> EX_INTEGRATE_INTERFACE_PART = registerPart(
-            AECSPartIds.EX_INTEGRATED_INTERFACE,
-            IntegratedInterfacePart.class,
-            IntegratedInterfacePart::new
-    );
-
-    public static final DeferredItem<PartItem<SimplePatternProviderPart>> SIMPLE_PATTERN_PROVIDER_PART = registerPart(
-            AECSPartIds.SIMPLE_PATTERN_PROVIDER,
-            SimplePatternProviderPart.class,
-            SimplePatternProviderPart::new
-    );
-
-    public static final DeferredItem<PartItem<MeteoritePatternProviderPart>> METEORITE_PATTERN_PROVIDER_PART = registerPart(
-            AECSPartIds.METEORITE_PATTERN_PROVIDER,
-            MeteoritePatternProviderPart.class,
-            MeteoritePatternProviderPart::new
-    );
-
     public static final DeferredItem<PartItem<EnderInterfacePart>> ENDER_INTERFACE_PART = registerPart(
             AECSPartIds.ENDER_INTERFACE,
             EnderInterfacePart.class,
@@ -60,6 +36,18 @@ public class AECSParts
             EnderInterfacePart::new
     );
 
+    public static final DeferredItem<PartItem<IntegratedInterfacePart>> INTEGRATE_INTERFACE_PART = registerPart(
+            AECSPartIds.INTEGRATED_INTERFACE,
+            IntegratedInterfacePart.class,
+            IntegratedInterfacePart::new
+    );
+
+    public static final DeferredItem<PartItem<IntegratedInterfacePart>> EX_INTEGRATE_INTERFACE_PART = registerPart(
+            AECSPartIds.EX_INTEGRATED_INTERFACE,
+            IntegratedInterfacePart.class,
+            IntegratedInterfacePart::new
+    );
+
     public static final DeferredItem<PartItem<ResonatingPatternProviderPart>> RESONATING_PATTERN_PROVIDER_PART = registerPart(
             AECSPartIds.RESONATING_PATTERN_PROVIDER,
             ResonatingPatternProviderPart.class,
@@ -70,6 +58,18 @@ public class AECSParts
             AECSPartIds.EX_RESONATING_PATTERN_PROVIDER,
             ResonatingPatternProviderPart.class,
             ResonatingPatternProviderPart::new
+    );
+
+    public static final DeferredItem<PartItem<SimplePatternProviderPart>> SIMPLE_PATTERN_PROVIDER_PART = registerPart(
+            AECSPartIds.SIMPLE_PATTERN_PROVIDER,
+            SimplePatternProviderPart.class,
+            SimplePatternProviderPart::new
+    );
+
+    public static final DeferredItem<PartItem<MeteoritePatternProviderPart>> METEORITE_PATTERN_PROVIDER_PART = registerPart(
+            AECSPartIds.METEORITE_PATTERN_PROVIDER,
+            MeteoritePatternProviderPart.class,
+            MeteoritePatternProviderPart::new
     );
 
     public static final DeferredItem<PartItem<QuartzOscillatorClockPart>> QUARTZ_OSCILLATOR_CLOCK_PART = registerPart(

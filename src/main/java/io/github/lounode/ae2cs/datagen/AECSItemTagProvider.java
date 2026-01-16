@@ -111,21 +111,21 @@ public class AECSItemTagProvider extends ItemTagsProvider
                 .addTag(AECSTags.Items.GEM_ENDER_QUARTZ);
 
         tag(ConventionTags.CERTUS_QUARTZ)
-                .add(AECSItems.pureCertusQuartzCrystal.get());
+                .add(AECSItems.PURE_CERTUS_QUARTZ_CRYSTAL.get());
         tag(ConventionTags.FLUIX_CRYSTAL)
-                .add(AECSItems.pureFluixCrystal.get());
+                .add(AECSItems.PURE_FLUIX_CRYSTAL.get());
         tag(Tags.Items.GEMS_QUARTZ)
-                .add(AECSItems.pureNetherQuartzCrystal.get());
+                .add(AECSItems.PURE_NETHER_QUARTZ_CRYSTAL.get());
         tag(AECSTags.Items.GEM_RESONATING)
-                .add(AECSItems.pureResonatingCrystal.get());
+                .add(AECSItems.PURE_RESONATING_CRYSTAL.get());
         tag(AECSTags.Items.GEM_ENDER_QUARTZ)
-                .add(AECSItems.pureEnderQuartz.get());
+                .add(AECSItems.PURE_ENDER_QUARTZ.get());
         tag(AECSTags.Items.GEM_SKY_STONE_CRYSTAL)
-                .add(AECSItems.pureMeteorCrystal.get());
+                .add(AECSItems.PURE_METEOR_CRYSTAL.get());
         tag(EAETags.ENTRO_CRYSTAL)
-                .add(AECSItems.pureEntroCrystal.get());
+                .add(AECSItems.PURE_ENTRO_CRYSTAL.get());
         tag(AFTags.REDSTONE_GEM)
-                .add(AECSItems.pureRedstoneCrystal.get());
+                .add(AECSItems.PURE_REDSTONE_CRYSTAL.get());
         tag(AGTags.EMBER_CRYSTAL)
                 .add(AECSItems.PURE_EMBER_CRYSTAL.get());
     }
