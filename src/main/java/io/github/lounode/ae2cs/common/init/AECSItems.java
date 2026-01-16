@@ -4,7 +4,9 @@ import appeng.api.upgrades.Upgrades;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.ids.AECSItemIds;
 import io.github.lounode.ae2cs.common.item.*;
+import io.github.lounode.ae2cs.common.item.tools.ender.*;
 import io.github.lounode.ae2cs.common.item.tools.meteor.*;
+import io.github.lounode.ae2cs.common.item.tools.resonating.*;
 import io.github.lounode.ae2cs.common.item.upgrades.*;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
@@ -92,17 +94,17 @@ public class AECSItems
     public static final DeferredItem<MeteorShovelItem> METEOR_CRYSTAL_SHOVEL = registerOtherItem(AECSItemIds.METEOR_CRYSTAL_SHOVEL, () -> new MeteorShovelItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<MeteorHoeItem> METEOR_CRYSTAL_HOE = registerOtherItem(AECSItemIds.METEOR_CRYSTAL_HOE, () -> new MeteorHoeItem(new Item.Properties().stacksTo(1)));
 
-    public static final DeferredItem<Item> ENDER_CRYSTAL_SWORD = registerOtherItem(AECSItemIds.ENDER_CRYSTAL_SWORD, () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> ENDER_CRYSTAL_AXE = registerOtherItem(AECSItemIds.ENDER_CRYSTAL_AXE, () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> ENDER_CRYSTAL_PICKAXE = registerOtherItem(AECSItemIds.ENDER_CRYSTAL_PICKAXE, () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> ENDER_CRYSTAL_SHOVEL = registerOtherItem(AECSItemIds.ENDER_CRYSTAL_SHOVEL, () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> ENDER_CRYSTAL_HOE = registerOtherItem(AECSItemIds.ENDER_CRYSTAL_HOE, () -> new Item(new Item.Properties()));
+    public static final DeferredItem<EnderSwordItem> ENDER_CRYSTAL_SWORD = registerOtherItem(AECSItemIds.ENDER_CRYSTAL_SWORD, () -> new EnderSwordItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<EnderAxeItem> ENDER_CRYSTAL_AXE = registerOtherItem(AECSItemIds.ENDER_CRYSTAL_AXE, () -> new EnderAxeItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<EnderPickaxeItem> ENDER_CRYSTAL_PICKAXE = registerOtherItem(AECSItemIds.ENDER_CRYSTAL_PICKAXE, () -> new EnderPickaxeItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<EnderShovelItem> ENDER_CRYSTAL_SHOVEL = registerOtherItem(AECSItemIds.ENDER_CRYSTAL_SHOVEL, () -> new EnderShovelItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<EnderHoeItem> ENDER_CRYSTAL_HOE = registerOtherItem(AECSItemIds.ENDER_CRYSTAL_HOE, () -> new EnderHoeItem(new Item.Properties().stacksTo(1)));
 
-    public static final DeferredItem<Item> RESONATING_CRYSTAL_SWORD = registerOtherItem(AECSItemIds.RESONATING_CRYSTAL_SWORD, () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> RESONATING_CRYSTAL_AXE = registerOtherItem(AECSItemIds.RESONATING_CRYSTAL_AXE, () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> RESONATING_CRYSTAL_PICKAXE = registerOtherItem(AECSItemIds.RESONATING_CRYSTAL_PICKAXE, () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> RESONATING_CRYSTAL_SHOVEL = registerOtherItem(AECSItemIds.RESONATING_CRYSTAL_SHOVEL, () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> RESONATING_CRYSTAL_HOE = registerOtherItem(AECSItemIds.RESONATING_CRYSTAL_HOE, () -> new Item(new Item.Properties()));
+    public static final DeferredItem<ResonatingSwordItem> RESONATING_CRYSTAL_SWORD = registerOtherItem(AECSItemIds.RESONATING_CRYSTAL_SWORD, () -> new ResonatingSwordItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<ResonatingAxeItem> RESONATING_CRYSTAL_AXE = registerOtherItem(AECSItemIds.RESONATING_CRYSTAL_AXE, () -> new ResonatingAxeItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<ResonatingPickaxeItem> RESONATING_CRYSTAL_PICKAXE = registerOtherItem(AECSItemIds.RESONATING_CRYSTAL_PICKAXE, () -> new ResonatingPickaxeItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<ResonatingShovelItem> RESONATING_CRYSTAL_SHOVEL = registerOtherItem(AECSItemIds.RESONATING_CRYSTAL_SHOVEL, () -> new ResonatingShovelItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<ResonatingHoeItem> RESONATING_CRYSTAL_HOE = registerOtherItem(AECSItemIds.RESONATING_CRYSTAL_HOE, () -> new ResonatingHoeItem(new Item.Properties().stacksTo(1)));
 
     public static final DeferredItem<Item> FLOUR = registerOtherItem(AECSItemIds.FLOUR, () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> WOODEN_GEAR = registerOtherItem(AECSItemIds.WOODEN_GEAR, () -> new Item(new Item.Properties()));

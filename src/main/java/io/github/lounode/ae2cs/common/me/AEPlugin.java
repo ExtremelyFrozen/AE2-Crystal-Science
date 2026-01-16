@@ -1,5 +1,6 @@
 package io.github.lounode.ae2cs.common.me;
 
+import appeng.api.features.GridLinkables;
 import appeng.api.upgrades.Upgrades;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
@@ -7,6 +8,7 @@ import appeng.core.definitions.AEParts;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSParts;
+import io.github.lounode.ae2cs.common.item.tools.ToolLinkableHandler;
 import net.neoforged.bus.api.IEventBus;
 
 public class AEPlugin
@@ -62,6 +64,17 @@ public class AEPlugin
         Upgrades.add(AEItems.REDSTONE_CARD, AECSParts.QUARTZ_OSCILLATOR_CLOCK_PART, 1, QUARTZ_OSCILLATOR_CLOCK_GROUP_NAME);
 
         addGrowthCardSupport();
+
+        GridLinkables.register(AECSItems.ENDER_CRYSTAL_SWORD, ToolLinkableHandler.INSTANCE);
+        GridLinkables.register(AECSItems.ENDER_CRYSTAL_AXE, ToolLinkableHandler.INSTANCE);
+        GridLinkables.register(AECSItems.ENDER_CRYSTAL_PICKAXE, ToolLinkableHandler.INSTANCE);
+        GridLinkables.register(AECSItems.ENDER_CRYSTAL_SHOVEL, ToolLinkableHandler.INSTANCE);
+        GridLinkables.register(AECSItems.ENDER_CRYSTAL_HOE, ToolLinkableHandler.INSTANCE);
+        GridLinkables.register(AECSItems.RESONATING_CRYSTAL_SWORD, ToolLinkableHandler.INSTANCE);
+        GridLinkables.register(AECSItems.RESONATING_CRYSTAL_AXE, ToolLinkableHandler.INSTANCE);
+        GridLinkables.register(AECSItems.RESONATING_CRYSTAL_PICKAXE, ToolLinkableHandler.INSTANCE);
+        GridLinkables.register(AECSItems.RESONATING_CRYSTAL_SHOVEL, ToolLinkableHandler.INSTANCE);
+        GridLinkables.register(AECSItems.RESONATING_CRYSTAL_HOE, ToolLinkableHandler.INSTANCE);
     }
 
     private static void addGrowthCardSupport()
