@@ -14,6 +14,7 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
@@ -47,6 +48,17 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
         packAndUnpack3x3(recipeOutput, RecipeCategory.MISC, RecipeCategory.MISC,
                 AECSItems.pureEnderQuartz, AECSBlocks.PURE_ENDER_QUARTZ_BLOCK);
 
+        toolPickaxeFromItem(recipeOutput, RecipeCategory.MISC, AECSItems.METEOR_CRYSTAL_PICKAXE, AECSItems.pureMeteorCrystal);
+        toolAxeFromItem(recipeOutput, RecipeCategory.MISC, AECSItems.METEOR_CRYSTAL_AXE, AECSItems.pureMeteorCrystal);
+        toolSwordFromItem(recipeOutput, RecipeCategory.MISC, AECSItems.METEOR_CRYSTAL_SWORD, AECSItems.pureMeteorCrystal);
+        toolHoeFromItem(recipeOutput, RecipeCategory.MISC, AECSItems.METEOR_CRYSTAL_HOE, AECSItems.pureMeteorCrystal);
+        toolShovelFromItem(recipeOutput, RecipeCategory.MISC, AECSItems.METEOR_CRYSTAL_SHOVEL, AECSItems.pureMeteorCrystal);
+        toolPickaxeFromItem(recipeOutput, RecipeCategory.MISC, AECSItems.ENDER_CRYSTAL_PICKAXE, AECSItems.pureEnderQuartz);
+        toolAxeFromItem(recipeOutput, RecipeCategory.MISC, AECSItems.ENDER_CRYSTAL_AXE, AECSItems.pureEnderQuartz);
+        toolSwordFromItem(recipeOutput, RecipeCategory.MISC, AECSItems.ENDER_CRYSTAL_SWORD, AECSItems.pureEnderQuartz);
+        toolHoeFromItem(recipeOutput, RecipeCategory.MISC, AECSItems.ENDER_CRYSTAL_HOE, AECSItems.pureEnderQuartz);
+        toolShovelFromItem(recipeOutput, RecipeCategory.MISC, AECSItems.ENDER_CRYSTAL_SHOVEL, AECSItems.pureEnderQuartz);
+
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.resonatingSeed)
                 .requires(AECSTags.Items.DUST_RESONATING)
                 .requires(ConventionTags.FLUIX_DUST)
@@ -69,6 +81,16 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .define('b', ConventionTags.INSCRIBER_PRESSES)
                 .unlockedBy(getHasName(AECSItems.SIMPLE_CIRCUIT_PRINT), has(AECSItems.SIMPLE_CIRCUIT_PRINT))
                 .save(recipeOutput, getCrafterPath(AECSItems.BLANK_PRINT_PRESS, true));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSItems.RESONATING_PRINT_PRESS)
+                .pattern("aba")
+                .pattern("bcb")
+                .pattern("aba")
+                .define('a', Tags.Items.INGOTS_IRON)
+                .define('b', AECSTags.Items.DUST_RESONATING)
+                .define('c', AEItems.SILICON_PRESS)
+                .unlockedBy(getHasName(AEItems.SILICON_PRESS), has(AEItems.SILICON_PRESS))
+                .save(recipeOutput, getCrafterPath(AECSItems.RESONATING_PRINT_PRESS, true));
 
         // 晶能聚合器
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK)
@@ -176,6 +198,18 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .define('f', AEItems.CELL_COMPONENT_256K)
                 .unlockedBy(getHasName(AECSItems.RESONATING_PROCESSOR), has(AECSItems.RESONATING_PROCESSOR))
                 .save(recipeOutput, getCrafterPath(AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK, true));
+
+        // 初级样板供应器
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK)
+                .pattern("aba")
+                .pattern("cdc")
+                .pattern("aba")
+                .define('a', Tags.Items.INGOTS_IRON)
+                .define('b', AECSTags.Items.GEARS_WOOD)
+                .define('c', AECSItems.SIMPLE_PROCESSOR)
+                .define('d', Items.CRAFTING_TABLE)
+                .unlockedBy(getHasName(AECSItems.SIMPLE_PROCESSOR), has(AECSItems.SIMPLE_PROCESSOR))
+                .save(recipeOutput, getCrafterPath(AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK, true));
 
         // 末影广播装置
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSBlocks.ENDER_BROADCASTER_BLOCK)

@@ -1,0 +1,18 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "appflux"
+    }
+  ],
+  "type": "ae2cs:crystal_pulverizer_recipe_serializer",
+  "energy_cost": 1600,
+  "input": {
+    "count": 1,
+    "item": "ae2cs:redstone_crystal_dust"
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:redstone"
+  }
+}

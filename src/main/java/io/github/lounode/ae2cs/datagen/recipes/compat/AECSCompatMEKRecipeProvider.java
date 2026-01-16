@@ -1,9 +1,12 @@
 package io.github.lounode.ae2cs.datagen.recipes.compat;
 
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
+import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,5 +29,8 @@ public class AECSCompatMEKRecipeProvider extends AECSRecipeProvider
     protected void buildRecipes(@NotNull RecipeOutput originalOut)
     {
         var compatOut = originalOut.withConditions(modLoaded(AECSConstants.MEK_ID));
+
+        packAndUnpack3x3(compatOut, RecipeCategory.MISC, RecipeCategory.MISC,
+                AECSItems.PURE_IRRADIATED_CRYSTAL, AECSBlocks.IRRADIATED_CRYSTAL_BLOCK);
     }
 }

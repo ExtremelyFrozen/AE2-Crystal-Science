@@ -1,0 +1,20 @@
+{
+  "type": "ae2cs:crystal_aggregator_recipe_serializer",
+  "energy_cost": 80000,
+  "input_a": {
+    "count": 16,
+    "item": "ae2:certus_quartz_crystal"
+  },
+  "input_b": {
+    "count": 16,
+    "tag": "c:dusts/redstone"
+  },
+  "input_c": {
+    "count": 16,
+    "tag": "c:gems/quartz"
+  },
+  "result": {
+    "count": 64,
+    "id": "ae2:fluix_crystal"
+  }
+}

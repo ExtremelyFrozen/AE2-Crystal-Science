@@ -1,8 +1,10 @@
 package io.github.lounode.ae2cs.datagen.recipes.compat;
 
+import appeng.core.definitions.AEBlocks;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
+import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBuilder;
 import io.github.sapporo1101.appgen.common.AGSingletons;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -31,5 +33,10 @@ public class AECSCompatAGRecipeProvider extends AECSRecipeProvider
         var compatOut = originalOut.withConditions(modLoaded(AECSConstants.AG_ID));
 
         stonecutterResultFromItem(compatOut, RecipeCategory.MISC, AGSingletons.ORIGINATION_PRESS, AECSItems.BLANK_PRINT_PRESS);
+
+        CrystalAggregatorRecipeBuilder.aggregating(AGSingletons.EMBER_CRYSTAL, 64, 64000)
+                .require(AECSItems.PURE_EMBER_CRYSTAL, 32)
+                .require(AEBlocks.TINY_TNT, 1)
+                .save(compatOut);
     }
 }

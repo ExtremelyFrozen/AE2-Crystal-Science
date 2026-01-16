@@ -3,6 +3,7 @@ package io.github.lounode.ae2cs.datagen.recipes.compat;
 import appeng.datagen.providers.tags.ConventionTags;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
+import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
@@ -41,6 +42,9 @@ public class AECSCompatAAERecipeProvider extends AECSRecipeProvider
     protected void buildRecipes(@NotNull RecipeOutput originalOut)
     {
         var compatOut = originalOut.withConditions(modLoaded(AECSConstants.AAE_ID));
+
+        packAndUnpack3x3(compatOut, RecipeCategory.MISC, RecipeCategory.MISC,
+                AECSItems.pureQuantumCrystal, AECSBlocks.PURE_QUANTUM_CRYSTAL_BLOCK);
 
         stonecutterResultFromItem(compatOut, RecipeCategory.MISC, AAEItems.QUANTUM_PROCESSOR_PRESS, AECSItems.BLANK_PRINT_PRESS);
 

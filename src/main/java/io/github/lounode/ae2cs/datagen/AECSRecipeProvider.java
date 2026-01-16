@@ -12,6 +12,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.conditions.IConditionBuilder;
 import org.jetbrains.annotations.NotNull;
 
@@ -114,6 +115,231 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
         pack3x3(recipeOutput, packCategory, loose, packed);
         unpackTo9(recipeOutput, unpackCategory, packed, loose);
     }
+
+    // 五类工具辅助方法---------------------------------------------------------------
+    // Pickaxe 镐：  ###
+    //               |
+    //               |
+    protected static void toolPickaxeFromItem(
+            RecipeOutput recipeOutput,
+            RecipeCategory category,
+            ItemLike result,
+            ItemLike material
+    )
+    {
+        ShapedRecipeBuilder.shaped(category, result)
+                .pattern("###")
+                .pattern(" | ")
+                .pattern(" | ")
+                .define('#', material)
+                .define('|', Tags.Items.RODS_WOODEN)
+                .unlockedBy(getHasName(material), has(material))
+                .save(recipeOutput, getCrafterPath(result, true));
+    }
+
+    protected static void toolPickaxeFromTag(
+            RecipeOutput recipeOutput,
+            RecipeCategory category,
+            ItemLike result,
+            TagKey<Item> material
+    )
+    {
+        String tagId = sanitize(material.location());
+        String unlockName = "has_" + tagId;
+
+        ShapedRecipeBuilder.shaped(category, result)
+                .pattern("###")
+                .pattern(" | ")
+                .pattern(" | ")
+                .define('#', material)
+                .define('|', Tags.Items.RODS_WOODEN)
+                .unlockedBy(unlockName, has(material))
+                .save(recipeOutput, getCrafterPath(result, true));
+    }
+
+    // Axe 斧：  ##
+    //          #|
+    //           |
+    protected static void toolAxeFromItem(
+            RecipeOutput recipeOutput,
+            RecipeCategory category,
+            ItemLike result,
+            ItemLike material
+    )
+    {
+        ShapedRecipeBuilder.shaped(category, result)
+                .pattern("## ")
+                .pattern("#| ")
+                .pattern(" | ")
+                .define('#', material)
+                .define('|', Tags.Items.RODS_WOODEN)
+                .unlockedBy(getHasName(material), has(material))
+                .save(recipeOutput, getCrafterPath(result, true));
+    }
+
+    protected static void toolAxeFromTag(
+            RecipeOutput recipeOutput,
+            RecipeCategory category,
+            ItemLike result,
+            TagKey<Item> material
+    )
+    {
+        String tagId = sanitize(material.location());
+        String unlockName = "has_" + tagId;
+
+        ShapedRecipeBuilder.shaped(category, result)
+                .pattern("## ")
+                .pattern("#| ")
+                .pattern(" | ")
+                .define('#', material)
+                .define('|', Tags.Items.RODS_WOODEN)
+                .unlockedBy(unlockName, has(material))
+                .save(recipeOutput, getCrafterPath(result, true));
+    }
+
+    // Sword 剑： #
+    //           #
+    //           |
+    protected static void toolSwordFromItem(
+            RecipeOutput recipeOutput,
+            RecipeCategory category,
+            ItemLike result,
+            ItemLike material
+    )
+    {
+        ShapedRecipeBuilder.shaped(category, result)
+                .pattern(" # ")
+                .pattern(" # ")
+                .pattern(" | ")
+                .define('#', material)
+                .define('|', Tags.Items.RODS_WOODEN)
+                .unlockedBy(getHasName(material), has(material))
+                .save(recipeOutput, getCrafterPath(result, true));
+    }
+
+    protected static void toolSwordFromTag(
+            RecipeOutput recipeOutput,
+            RecipeCategory category,
+            ItemLike result,
+            TagKey<Item> material
+    )
+    {
+        String tagId = sanitize(material.location());
+        String unlockName = "has_" + tagId;
+
+        ShapedRecipeBuilder.shaped(category, result)
+                .pattern(" # ")
+                .pattern(" # ")
+                .pattern(" | ")
+                .define('#', material)
+                .define('|', Tags.Items.RODS_WOODEN)
+                .unlockedBy(unlockName, has(material))
+                .save(recipeOutput, getCrafterPath(result, true));
+    }
+
+    // Hoe 锄：##
+    //          |
+    //          |
+    protected static void toolHoeFromItem(
+            RecipeOutput recipeOutput,
+            RecipeCategory category,
+            ItemLike result,
+            ItemLike material
+    )
+    {
+        ShapedRecipeBuilder.shaped(category, result)
+                .pattern("## ")
+                .pattern(" | ")
+                .pattern(" | ")
+                .define('#', material)
+                .define('|', Tags.Items.RODS_WOODEN)
+                .unlockedBy(getHasName(material), has(material))
+                .save(recipeOutput, getCrafterPath(result, true));
+    }
+
+    protected static void toolHoeFromTag(
+            RecipeOutput recipeOutput,
+            RecipeCategory category,
+            ItemLike result,
+            TagKey<Item> material
+    )
+    {
+        String tagId = sanitize(material.location());
+        String unlockName = "has_" + tagId;
+
+        ShapedRecipeBuilder.shaped(category, result)
+                .pattern("## ")
+                .pattern(" | ")
+                .pattern(" | ")
+                .define('#', material)
+                .define('|', Tags.Items.RODS_WOODEN)
+                .unlockedBy(unlockName, has(material))
+                .save(recipeOutput, getCrafterPath(result, true));
+    }
+
+    // Shovel 铲： #
+    //            |
+    //            |
+    protected static void toolShovelFromItem(
+            RecipeOutput recipeOutput,
+            RecipeCategory category,
+            ItemLike result,
+            ItemLike material
+    )
+    {
+        ShapedRecipeBuilder.shaped(category, result)
+                .pattern(" # ")
+                .pattern(" | ")
+                .pattern(" | ")
+                .define('#', material)
+                .define('|', Tags.Items.RODS_WOODEN)
+                .unlockedBy(getHasName(material), has(material))
+                .save(recipeOutput, getCrafterPath(result, true));
+    }
+
+    protected static void toolShovelFromTag(
+            RecipeOutput recipeOutput,
+            RecipeCategory category,
+            ItemLike result,
+            TagKey<Item> material
+    )
+    {
+        String tagId = sanitize(material.location());
+        String unlockName = "has_" + tagId;
+
+        ShapedRecipeBuilder.shaped(category, result)
+                .pattern(" # ")
+                .pattern(" | ")
+                .pattern(" | ")
+                .define('#', material)
+                .define('|', Tags.Items.RODS_WOODEN)
+                .unlockedBy(unlockName, has(material))
+                .save(recipeOutput, getCrafterPath(result, true));
+    }
+
+    // 锻造台辅助方法---------------------------------------------------------------
+    protected static void smithingTransform(
+            RecipeOutput out,
+            RecipeCategory category,
+            ItemLike template,
+            ItemLike base,
+            ItemLike addition,
+            ItemLike result
+    )
+    {
+        SmithingTransformRecipeBuilder.smithing(
+                        Ingredient.of(template),
+                        Ingredient.of(base),
+                        Ingredient.of(addition),
+                        category,
+                        result.asItem()
+                )
+                .unlocks(getHasName(base), has(base))
+                .save(out, AE2CrystalScience.makeId(
+                        "smithing/" + getItemName(result) + "_from_" + getItemName(base) + "_and_" + getItemName(addition)
+                ));
+    }
+
 
     // 熔炉样板辅助工具---------------------------------------------------------------
     protected static void smeltFood(RecipeCategory category, ItemLike input, ItemLike result, float experience, int cookingTime, RecipeOutput output)

@@ -1,0 +1,16 @@
+{
+  "type": "ae2cs:crystal_aggregator_recipe_serializer",
+  "energy_cost": 80000,
+  "input_a": {
+    "count": 32,
+    "item": "ae2cs:purified_certus_quartz_crystal"
+  },
+  "input_b": {
+    "count": 32,
+    "item": "ae2:certus_quartz_crystal"
+  },
+  "result": {
+    "count": 64,
+    "id": "ae2:certus_quartz_crystal"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "ae2cs:crystal_pulverizer_recipe_serializer",
+  "energy_cost": 1600,
+  "input": {
+    "count": 1,
+    "item": "ae2cs:purified_quantum_crystal"
+  },
+  "result": {
+    "count": 1,
+    "id": "ae2cs:quantum_crystal_dust"
+  }
+}

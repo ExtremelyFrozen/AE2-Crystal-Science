@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs.datagen.recipes.compat;
 
 import com.glodblock.github.appflux.common.AFSingletons;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
+import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalPulverizerRecipeBuilder;
@@ -31,6 +32,9 @@ public class AECSCompatAFRecipeProvider extends AECSRecipeProvider
     protected void buildRecipes(@NotNull RecipeOutput originalOut)
     {
         var compatOut = originalOut.withConditions(modLoaded(AECSConstants.AF_ID));
+
+        packAndUnpack3x3(compatOut, RecipeCategory.MISC, RecipeCategory.MISC,
+                AECSItems.pureRedstoneCrystal, AECSBlocks.PURE_REDSTONE_CRYSTAL_BLOCK);
 
         stonecutterResultFromItem(compatOut, RecipeCategory.MISC, AFSingletons.ENERGY_PROCESSOR_PRESS, AECSItems.BLANK_PRINT_PRESS);
 

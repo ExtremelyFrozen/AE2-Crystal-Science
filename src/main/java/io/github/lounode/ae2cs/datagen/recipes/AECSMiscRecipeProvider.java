@@ -11,6 +11,7 @@ import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
@@ -42,6 +43,18 @@ public class AECSMiscRecipeProvider extends AECSRecipeProvider
                 AECSItems.pureMeteorCrystal,
                 Blocks.REDSTONE_BLOCK,
                 AECSItems.pureEnderQuartz);
+
+        // 锻造台配方
+        smithingTransform(recipeOutput, RecipeCategory.MISC, AEItems.FLUIX_UPGRADE_SMITHING_TEMPLATE,
+                AECSItems.ENDER_CRYSTAL_PICKAXE, AECSItems.pureResonatingCrystal, AECSItems.RESONATING_CRYSTAL_PICKAXE);
+        smithingTransform(recipeOutput, RecipeCategory.MISC, AEItems.FLUIX_UPGRADE_SMITHING_TEMPLATE,
+                AECSItems.ENDER_CRYSTAL_AXE, AECSItems.pureResonatingCrystal, AECSItems.RESONATING_CRYSTAL_AXE);
+        smithingTransform(recipeOutput, RecipeCategory.MISC, AEItems.FLUIX_UPGRADE_SMITHING_TEMPLATE,
+                AECSItems.ENDER_CRYSTAL_SWORD, AECSItems.pureResonatingCrystal, AECSItems.RESONATING_CRYSTAL_SWORD);
+        smithingTransform(recipeOutput, RecipeCategory.MISC, AEItems.FLUIX_UPGRADE_SMITHING_TEMPLATE,
+                AECSItems.ENDER_CRYSTAL_HOE, AECSItems.pureResonatingCrystal, AECSItems.RESONATING_CRYSTAL_HOE);
+        smithingTransform(recipeOutput, RecipeCategory.MISC, AEItems.FLUIX_UPGRADE_SMITHING_TEMPLATE,
+                AECSItems.ENDER_CRYSTAL_SHOVEL, AECSItems.pureResonatingCrystal, AECSItems.RESONATING_CRYSTAL_SHOVEL);
 
         // 压印系列
         InscriberRecipeBuilder.inscribe(AECSTags.Items.GEM_RESONATING, AECSItems.RESONATING_CIRCUIT_PRINT, 1)
