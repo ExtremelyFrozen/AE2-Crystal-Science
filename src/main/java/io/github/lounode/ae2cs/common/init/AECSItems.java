@@ -42,18 +42,42 @@ public class AECSItems
      */
     private static final List<DeferredItem<? extends Item>> OTHERS = new ArrayList<>();
 
-    public static final DeferredItem<PureCrystalItem> PURE_CERTUS_QUARTZ_CRYSTAL = registerPureCrystalItem(AECSItemIds.PURE_CERTUS_QUARTZ_CRYSTAL, () -> new PureCrystalItem(defaultBuilder()));
-    public static final DeferredItem<PureCrystalItem> PURE_FLUIX_CRYSTAL = registerPureCrystalItem(AECSItemIds.PURE_FLUIX_CRYSTAL, () -> new PureCrystalItem(defaultBuilder()));
-    public static final DeferredItem<PureCrystalItem> PURE_NETHER_QUARTZ_CRYSTAL = registerPureCrystalItem(AECSItemIds.PURE_NETHER_QUARTZ_CRYSTAL, () -> new PureCrystalItem(defaultBuilder()));
-    public static final DeferredItem<PureCrystalItem> PURE_ENDER_QUARTZ = registerPureCrystalItem(AECSItemIds.PURE_ENDER_QUARTZ, () -> new PureCrystalItem(defaultBuilder()));
-    public static final DeferredItem<PureCrystalItem> PURE_METEOR_CRYSTAL = registerPureCrystalItem(AECSItemIds.PURE_METEOR_CRYSTAL, () -> new PureCrystalItem(defaultBuilder()));
-    public static final DeferredItem<PureCrystalItem> PURE_RESONATING_CRYSTAL = registerPureCrystalItem(AECSItemIds.PURE_RESONATING_CRYSTAL, () -> new PureCrystalItem(defaultBuilder()));
-    public static final DeferredItem<PureCrystalItem> PURE_ENTRO_CRYSTAL = registerPureCrystalItem(AECSItemIds.PURE_ENTRO_CRYSTAL, () -> new PureCrystalItem(defaultBuilder()));
-    public static final DeferredItem<PureCrystalItem> PURE_REDSTONE_CRYSTAL = registerPureCrystalItem(AECSItemIds.PURE_REDSTONE_CRYSTAL, () -> new PureCrystalItem(defaultBuilder()));
-    public static final DeferredItem<PureCrystalItem> PURE_QUANTUM_CRYSTAL = registerPureCrystalItem(AECSItemIds.PURE_QUANTUM_CRYSTAL, () -> new PureCrystalItem(defaultBuilder()));
-    public static final DeferredItem<PureCrystalItem> PURE_ROSE_QUARTZ = registerPureCrystalItem(AECSItemIds.PURE_ROSE_QUARTZ, () -> new PureCrystalItem(defaultBuilder()));
-    public static final DeferredItem<PureCrystalItem> PURE_IRRADIATED_CRYSTAL = registerPureCrystalItem(AECSItemIds.PURE_IRRADIATED_CRYSTAL, () -> new PureCrystalItem(defaultBuilder()));
-    public static final DeferredItem<PureCrystalItem> PURE_EMBER_CRYSTAL = registerPureCrystalItem(AECSItemIds.PURE_EMBER_CRYSTAL, () -> new PureCrystalItem(defaultBuilder()));
+    public static final DeferredItem<PureCrystalItem> PURE_CERTUS_QUARTZ_CRYSTAL =
+            registerPureCrystalItem(AECSItemIds.PURE_CERTUS_QUARTZ_CRYSTAL,
+                    () -> new PureCrystalItem(defaultBuilder(), 500d, 600));
+    public static final DeferredItem<PureCrystalItem> PURE_FLUIX_CRYSTAL =
+            registerPureCrystalItem(AECSItemIds.PURE_FLUIX_CRYSTAL,
+                    () -> new PureCrystalItem(defaultBuilder(), 1500d, 1200));
+    public static final DeferredItem<PureCrystalItem> PURE_NETHER_QUARTZ_CRYSTAL =
+            registerPureCrystalItem(AECSItemIds.PURE_NETHER_QUARTZ_CRYSTAL,
+                    () -> new PureCrystalItem(defaultBuilder(), 800d, 900));
+    public static final DeferredItem<PureCrystalItem> PURE_ENDER_QUARTZ =
+            registerPureCrystalItem(AECSItemIds.PURE_ENDER_QUARTZ,
+                    () -> new PureCrystalItem(defaultBuilder(), 900d, 800));
+    public static final DeferredItem<PureCrystalItem> PURE_METEOR_CRYSTAL =
+            registerPureCrystalItem(AECSItemIds.PURE_METEOR_CRYSTAL,
+                    () -> new PureCrystalItem(defaultBuilder(), 1200d, 1500));
+    public static final DeferredItem<PureCrystalItem> PURE_RESONATING_CRYSTAL =
+            registerPureCrystalItem(AECSItemIds.PURE_RESONATING_CRYSTAL,
+                    () -> new PureCrystalItem(defaultBuilder(), 2500d, 2400));
+    public static final DeferredItem<PureCrystalItem> PURE_ENTRO_CRYSTAL =
+            registerPureCrystalItem(AECSItemIds.PURE_ENTRO_CRYSTAL,
+                    () -> new PureCrystalItem(defaultBuilder(), 2000d, 2400));
+    public static final DeferredItem<PureCrystalItem> PURE_REDSTONE_CRYSTAL =
+            registerPureCrystalItem(AECSItemIds.PURE_REDSTONE_CRYSTAL,
+                    () -> new PureCrystalItem(defaultBuilder(), 1800d, 2000));
+    public static final DeferredItem<PureCrystalItem> PURE_QUANTUM_CRYSTAL =
+            registerPureCrystalItem(AECSItemIds.PURE_QUANTUM_CRYSTAL,
+                    () -> new PureCrystalItem(defaultBuilder(), 2320d, 3000));
+    public static final DeferredItem<PureCrystalItem> PURE_ROSE_QUARTZ =
+            registerPureCrystalItem(AECSItemIds.PURE_ROSE_QUARTZ,
+                    () -> new PureCrystalItem(defaultBuilder(), 2000d, 1800));
+    public static final DeferredItem<PureCrystalItem> PURE_IRRADIATED_CRYSTAL =
+            registerPureCrystalItem(AECSItemIds.PURE_IRRADIATED_CRYSTAL,
+                    () -> new PureCrystalItem(defaultBuilder(), 2900d, 2400));
+    public static final DeferredItem<PureCrystalItem> PURE_EMBER_CRYSTAL =
+            registerPureCrystalItem(AECSItemIds.PURE_EMBER_CRYSTAL,
+                    () -> new PureCrystalItem(defaultBuilder(), 2000d, 3600));
 
     public static final DeferredItem<CrystalSeedItem> CERTUS_QUARTZ_SEED = registerCrystalSeedItem(AECSItemIds.CERTUS_QUARTZ_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_CERTUS_QUARTZ_CRYSTAL));
     public static final DeferredItem<CrystalSeedItem> FLUIX_CRYSTAL_SEED = registerCrystalSeedItem(AECSItemIds.FLUIX_CRYSTAL_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_FLUIX_CRYSTAL));

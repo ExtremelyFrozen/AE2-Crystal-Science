@@ -8,11 +8,14 @@ import appeng.recipes.transform.TransformCircumstance;
 import appeng.recipes.transform.TransformRecipeBuilder;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSTags;
+import io.github.lounode.ae2cs.common.recipe.ResonatingPatternUpgradeRecipe;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.data.recipes.SpecialRecipeBuilder;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
@@ -43,6 +46,16 @@ public class AECSMiscRecipeProvider extends AECSRecipeProvider
                 AECSItems.PURE_METEOR_CRYSTAL,
                 Blocks.REDSTONE_BLOCK,
                 AECSItems.PURE_ENDER_QUARTZ);
+
+        // 添加谐振样板配方
+        SpecialRecipeBuilder.special(ResonatingPatternUpgradeRecipe::new)
+                .save(recipeOutput, "resonating_pattern_upgrade");
+
+        // 添加谐振样板拆解
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEItems.BLANK_PATTERN)
+                .requires(AECSItems.RESONATING_PATTERN)
+                .unlockedBy("just_has_resonating_pattern", has(AECSItems.RESONATING_PATTERN))
+                .save(recipeOutput);
 
         // 锻造台配方
         smithingTransform(recipeOutput, RecipeCategory.MISC, AEItems.FLUIX_UPGRADE_SMITHING_TEMPLATE,

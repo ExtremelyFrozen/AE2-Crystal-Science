@@ -1,5 +1,6 @@
 package io.github.lounode.ae2cs.common.item;
 
+import io.github.lounode.ae2cs.Config;
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -26,7 +27,7 @@ public class PureCrystalItem extends Item
     public PureCrystalItem(Item.Properties properties, double energyPerTick, int burnTime)
     {
         super(properties.component(AECSDataComponents.GROW_PROCESS, 0));
-        this.energyPerTick = energyPerTick;
+        this.energyPerTick = energyPerTick * Config.INSTANCE.startUpConfig.pureCrystalBurnMultiplier.getAsDouble();
         this.burnTime = burnTime;
     }
 

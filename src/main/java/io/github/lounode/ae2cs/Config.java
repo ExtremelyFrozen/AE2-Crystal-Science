@@ -43,13 +43,27 @@ public class Config
 
         // 末影发信器自动范围系数
         public final ModConfigSpec.IntValue enderEmitterAutoAreaFactor;
+        // 高纯水晶能量系数
+        public final ModConfigSpec.DoubleValue pureCrystalBurnMultiplier;
 
         public StartUpConfig()
         {
             ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 
-            enderEmitterAutoAreaFactor = builder.comment("Finally result will be 16 * value")
-                    .defineInRange("ender_emitter_auto_area_factor", 1, 1, 100);
+            enderEmitterAutoAreaFactor =
+                    builder.comment(
+                                    "Controls the auto-link search area for the Ender Emitter.",
+                                    "Final area size is computed as: 16 * value."
+                            )
+                            .defineInRange("ender_emitter_auto_area_factor", 1, 1, 100);
+
+            pureCrystalBurnMultiplier =
+                    builder.comment(
+                                    "Global multiplier applied to Pure Crystal energy generation rate (AE/t).",
+                                    "Final AE/t = baseAEPerTick * multiplier.",
+                                    "Range: 0.01..100 (default: 1)."
+                            )
+                            .defineInRange("pure_crystal_burn_multiplier", 1d, 0.01d, 100d);
 
             this.spec = builder.build();
         }
