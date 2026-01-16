@@ -2,8 +2,8 @@
 navigation:
   parent: index.md
   title: 赛特斯石英矿石
-  icon: ae2cs:purified_certus_quartz_crystal
-  position: 10
+  icon: ae2cs:charged_certus_quartz_ore
+  position: 30
 item_ids:
   - ae2cs:certus_quartz_ore
   - ae2cs:deepslate_certus_quartz_ore
