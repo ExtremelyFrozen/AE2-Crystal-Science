@@ -12,7 +12,7 @@ public class AECSTags
 {
     public static class Blocks
     {
-        public static final TagKey<Block> CERTUS_QUARTZ_ORE = tag("ores/certus_quartz");
+        public static final TagKey<Block> ORES_CERTUS_QUARTZ = tag("ores/certus_quartz");
 
         public static final TagKey<Block> STORAGE_BLOCK_SKY_STONE_CRYSTAL = tag("storage_blocks/sky_stone_crystal");
         public static final TagKey<Block> STORAGE_BLOCK_RESONATING = tag("storage_blocks/resonating");
@@ -32,6 +32,8 @@ public class AECSTags
 
     public static class Items
     {
+        public static final TagKey<Item> ORES_CERTUS_QUARTZ = tag("ores/certus_quartz");
+
         public static final TagKey<Item> CRYSTAL_SEEDS = aecsTag("crystal_seeds");
         public static final TagKey<Item> PURIFIED_CRYSTAL = aecsTag("purified_crystal");
 

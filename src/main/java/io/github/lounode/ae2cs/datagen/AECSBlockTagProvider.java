@@ -37,26 +37,22 @@ public class AECSBlockTagProvider extends BlockTagsProvider
                 .add(AECSBlocks.CHARGED_CERTUS_QUARTZ_ORE.get())
                 .add(AECSBlocks.DEEPSLATE_CHARGED_CERTUS_QUARTZ_ORE.get());
 
+        // 矿
+        tag(Tags.Blocks.ORES)
+                .addTag(AECSTags.Blocks.ORES_CERTUS_QUARTZ);
+        // 普通倍率矿石
+        tag(Tags.Blocks.ORE_RATES_SINGULAR)
+                .addTag(AECSTags.Blocks.ORES_CERTUS_QUARTZ);
         // 赛特斯石英矿
-        tag(AECSTags.Blocks.CERTUS_QUARTZ_ORE)
+        tag(AECSTags.Blocks.ORES_CERTUS_QUARTZ)
                 .add(AECSBlocks.CERTUS_QUARTZ_ORE.get())
                 .add(AECSBlocks.DEEPSLATE_CERTUS_QUARTZ_ORE.get())
                 .add(AECSBlocks.CHARGED_CERTUS_QUARTZ_ORE.get())
                 .add(AECSBlocks.DEEPSLATE_CHARGED_CERTUS_QUARTZ_ORE.get());
-
-        // 矿
-        tag(Tags.Blocks.ORES)
-                .addTag(AECSTags.Blocks.CERTUS_QUARTZ_ORE);
-
-        // 普通倍率矿石
-        tag(Tags.Blocks.ORE_RATES_SINGULAR)
-                .addTag(AECSTags.Blocks.CERTUS_QUARTZ_ORE);
-
         // 生成在石头中的矿石
         tag(Tags.Blocks.ORES_IN_GROUND_STONE)
                 .add(AECSBlocks.CERTUS_QUARTZ_ORE.get())
                 .add(AECSBlocks.CHARGED_CERTUS_QUARTZ_ORE.get());
-
         // 深板岩层的矿石
         tag(Tags.Blocks.ORES_IN_GROUND_DEEPSLATE)
                 .add(AECSBlocks.DEEPSLATE_CERTUS_QUARTZ_ORE.get())
@@ -64,7 +60,7 @@ public class AECSBlockTagProvider extends BlockTagsProvider
 
         // 允许主世界洞穴生成覆盖这些方块
         tag(BlockTags.OVERWORLD_CARVER_REPLACEABLES)
-                .addTag(AECSTags.Blocks.CERTUS_QUARTZ_ORE);
+                .addTag(AECSTags.Blocks.ORES_CERTUS_QUARTZ);
 
         // 存储方块
         tag(Tags.Blocks.STORAGE_BLOCKS)

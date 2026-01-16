@@ -92,5 +92,9 @@ public class AECSPulverizerRecipeProvider extends AECSRecipeProvider
         CrystalPulverizerRecipeBuilder.pulverizing(AEItems.FLUIX_DUST, 1, 8000)
                 .require(ConventionTags.ALL_FLUIX, 1)
                 .save(recipeOutput);
+
+        CrystalPulverizerRecipeBuilder.pulverizing(AEItems.CERTUS_QUARTZ_CRYSTAL, 6, 8000)
+                .require(AECSTags.Items.ORES_CERTUS_QUARTZ, 1)
+                .save(recipeOutput);
     }
 }

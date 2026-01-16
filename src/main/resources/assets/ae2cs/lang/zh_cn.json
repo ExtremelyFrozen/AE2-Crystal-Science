@@ -29,10 +29,10 @@
   "block.ae2cs.rose_quartz_block": "玫瑰石英块",
   "block.ae2cs.irradiated_crystal_block": "辐射水晶块",
 
-  "block.ae2cs.certus_quartz_ore": "赛特斯矿石",
-  "block.ae2cs.deepslate_certus_quartz_ore": "深层赛特斯矿石",
-  "block.ae2cs.charged_certus_quartz_ore": "充能赛特斯矿石",
-  "block.ae2cs.deepslate_charged_certus_quartz_ore": "充能深层赛特斯矿石",
+  "block.ae2cs.certus_quartz_ore": "赛特斯石英矿石",
+  "block.ae2cs.deepslate_certus_quartz_ore": "深层赛特斯石英矿石",
+  "block.ae2cs.charged_certus_quartz_ore": "充能赛特斯石英矿石",
+  "block.ae2cs.deepslate_charged_certus_quartz_ore": "充能深层赛特斯石英矿石",
   "block.ae2cs.silicon_block": "硅块",
 
   "item.ae2cs.certus_quartz_seed": "赛特斯石英水晶种子",

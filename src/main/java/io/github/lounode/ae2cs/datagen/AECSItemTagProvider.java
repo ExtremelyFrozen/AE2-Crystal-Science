@@ -37,6 +37,27 @@ public class AECSItemTagProvider extends ItemTagsProvider
         tag(AECSTags.Items.PURIFIED_CRYSTAL)
                 .add(AECSItems.getPureCrystal().stream().map(DeferredItem::get).toArray(Item[]::new));
 
+        // 矿
+        tag(Tags.Items.ORES)
+                .addTag(AECSTags.Items.ORES_CERTUS_QUARTZ);
+        // 普通倍率矿石
+        tag(Tags.Items.ORE_RATES_SINGULAR)
+                .addTag(AECSTags.Items.ORES_CERTUS_QUARTZ);
+        // 赛特斯石英矿
+        tag(AECSTags.Items.ORES_CERTUS_QUARTZ)
+                .add(AECSBlocks.CERTUS_QUARTZ_ORE.asItem())
+                .add(AECSBlocks.DEEPSLATE_CERTUS_QUARTZ_ORE.asItem())
+                .add(AECSBlocks.CHARGED_CERTUS_QUARTZ_ORE.asItem())
+                .add(AECSBlocks.DEEPSLATE_CHARGED_CERTUS_QUARTZ_ORE.asItem());
+        // 生成在石头中的矿石
+        tag(Tags.Items.ORES_IN_GROUND_STONE)
+                .add(AECSBlocks.CERTUS_QUARTZ_ORE.asItem())
+                .add(AECSBlocks.CHARGED_CERTUS_QUARTZ_ORE.asItem());
+        // 深板岩层的矿石
+        tag(Tags.Items.ORES_IN_GROUND_DEEPSLATE)
+                .add(AECSBlocks.DEEPSLATE_CERTUS_QUARTZ_ORE.asItem())
+                .add(AECSBlocks.DEEPSLATE_CHARGED_CERTUS_QUARTZ_ORE.asItem());
+
 
         // 粉尘
         tag(Tags.Items.DUSTS)
