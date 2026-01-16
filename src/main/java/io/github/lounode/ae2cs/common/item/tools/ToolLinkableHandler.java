@@ -6,7 +6,6 @@ import appeng.api.ids.AEComponents;
 import appeng.api.implementations.blockentities.IWirelessAccessPoint;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.MEStorage;
-import appeng.blockentity.networking.WirelessAccessPointBlockEntity;
 import appeng.me.helpers.PlayerSource;
 import appeng.util.Platform;
 import net.minecraft.core.GlobalPos;
