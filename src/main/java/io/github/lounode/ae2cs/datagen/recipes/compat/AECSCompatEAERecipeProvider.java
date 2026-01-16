@@ -4,8 +4,11 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.datagen.providers.tags.ConventionTags;
 import com.glodblock.github.extendedae.common.EAESingletons;
+import com.glodblock.github.extendedae.recipe.CrystalAssemblerRecipeBuilder;
 import com.glodblock.github.extendedae.util.EAETags;
+import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
+import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
@@ -15,6 +18,9 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 
@@ -92,5 +98,42 @@ public class AECSCompatEAERecipeProvider extends AECSRecipeProvider
                 .require(Tags.Items.DUSTS_REDSTONE, 64)
                 .require(AEItems.SILICON_PRINT, 64)
                 .save(compatOut);
+
+        CrystalAggregatorRecipeBuilder.aggregating(AECSBlocks.EX_INTEGRATED_INTERFACE_BLOCK.toStack(), 16000)
+                .require(EAESingletons.EX_PATTERN_PROVIDER, 1)
+                .require(AECSItems.RESONATING_PROCESSOR, 1)
+                .require(EAESingletons.EX_INTERFACE, 1)
+                .save(compatOut, "aggregator/" + getItemName(AECSBlocks.EX_INTEGRATED_INTERFACE_BLOCK) + "_from_extended_pattern_and_interface");
+
+        // 扩展接口联动配方
+        CrystalAssemblerRecipeBuilder.assemble(AECSBlocks.EX_ENDER_INTERFACE_BLOCK)
+                .input(AECSBlocks.ENDER_INTERFACE_BLOCK)
+                .input(AEItems.CAPACITY_CARD, 3)
+                .input(Tags.Items.GLASS_BLOCKS, 3)
+                .input(EAESingletons.CONCURRENT_PROCESSOR)
+                .input(ConventionTags.GLASS_CABLE, 6)
+                .save(compatOut, getCrystalAssemblerPath(AECSBlocks.EX_ENDER_INTERFACE_BLOCK));
+
+        CrystalAssemblerRecipeBuilder.assemble(AECSBlocks.EX_RESONATING_PATTERN_PROVIDER_BLOCK)
+                .input(AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK)
+                .input(AEItems.CAPACITY_CARD, 3)
+                .input(Blocks.CRAFTING_TABLE, 3)
+                .input(EAESingletons.CONCURRENT_PROCESSOR)
+                .input(ConventionTags.GLASS_CABLE, 6)
+                .save(compatOut, getCrystalAssemblerPath(AECSBlocks.EX_RESONATING_PATTERN_PROVIDER_BLOCK));
+
+        CrystalAssemblerRecipeBuilder.assemble(AECSBlocks.EX_INTEGRATED_INTERFACE_BLOCK)
+                .input(AECSBlocks.INTEGRATED_INTERFACE_BLOCK)
+                .input(AEItems.CAPACITY_CARD, 6)
+                .input(Blocks.CRAFTING_TABLE, 6)
+                .input(EAESingletons.CONCURRENT_PROCESSOR, 2)
+                .input(ConventionTags.GLASS_CABLE, 12)
+                .input(Tags.Items.GLASS_BLOCKS, 6)
+                .save(compatOut, getCrystalAssemblerPath(AECSBlocks.EX_INTEGRATED_INTERFACE_BLOCK));
+    }
+
+    protected static ResourceLocation getCrystalAssemblerPath(ItemLike output)
+    {
+        return AE2CrystalScience.makeId(getPrefixedItemName("crystal_assembler", output));
     }
 }

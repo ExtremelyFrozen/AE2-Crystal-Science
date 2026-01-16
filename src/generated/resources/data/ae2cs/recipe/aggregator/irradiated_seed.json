@@ -6,21 +6,21 @@
     }
   ],
   "type": "ae2cs:crystal_aggregator_recipe_serializer",
-  "energy_cost": 16000,
+  "energy_cost": 144000,
   "input_a": {
-    "count": 2,
+    "count": 32,
     "tag": "c:dusts/sulfur"
   },
   "input_b": {
-    "count": 1,
+    "count": 16,
     "tag": "c:dusts/uranium"
   },
   "input_c": {
-    "count": 1,
+    "count": 16,
     "item": "ae2cs:irradiated_crystal_dust"
   },
   "result": {
-    "count": 4,
+    "count": 64,
     "id": "ae2cs:irradiated_seed"
   }
 }

@@ -3,7 +3,7 @@
   "energy_cost": 144000,
   "input_a": {
     "count": 16,
-    "item": "ae2cs:nether_quartz_dust"
+    "item": "ae2:fluix_dust"
   },
   "input_b": {
     "count": 64,
@@ -11,6 +11,6 @@
   },
   "result": {
     "count": 64,
-    "id": "ae2cs:nether_quartz_seed"
+    "id": "ae2cs:fluix_crystal_seed"
   }
 }

@@ -1,6 +1,8 @@
 package io.github.lounode.ae2cs.datagen.recipes.compat;
 
 import com.simibubi.create.AllItems;
+import com.simibubi.create.api.data.recipe.MechanicalCraftingRecipeBuilder;
+import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
@@ -9,6 +11,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -36,5 +40,15 @@ public class AECSCompatCreateRecipeProvider extends AECSRecipeProvider
 
         // 高纯玫瑰水晶的唯一用处
         stonecutterResultFromItem(compatOut, RecipeCategory.MISC, AllItems.POLISHED_ROSE_QUARTZ, AECSItems.pureRoseQuartz, 2);
+
+        MechanicalCraftingRecipeBuilder.shapedRecipe(AECSItems.roseQuartzSeed)
+                .patternLine("a")
+                .key('a', AllItems.POLISHED_ROSE_QUARTZ)
+                .build(compatOut, getMechanicalCraftingPath(AECSItems.roseQuartzSeed));
+    }
+
+    protected static ResourceLocation getMechanicalCraftingPath(ItemLike output)
+    {
+        return AE2CrystalScience.makeId(getPrefixedItemName("mechanical_crafting", output));
     }
 }

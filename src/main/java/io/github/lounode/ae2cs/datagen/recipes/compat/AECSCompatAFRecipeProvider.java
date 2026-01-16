@@ -1,6 +1,7 @@
 package io.github.lounode.ae2cs.datagen.recipes.compat;
 
 import appeng.core.definitions.AEItems;
+import appeng.datagen.providers.tags.ConventionTags;
 import com.glodblock.github.appflux.common.AFSingletons;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
@@ -13,6 +14,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,15 +47,24 @@ public class AECSCompatAFRecipeProvider extends AECSRecipeProvider
 
         CrystalPulverizerRecipeBuilder.pulverizing(AECSItems.REDSTONE_CRYSTAL_DUST.toStack(), 8000)
                 .require(AECSItems.pureRedstoneCrystal, 1)
-                .save(compatOut);
+                .save(compatOut, "pulverizer/" + getItemName(AECSItems.REDSTONE_CRYSTAL_DUST) + "_from_pure_redstone_crystal");
+        CrystalPulverizerRecipeBuilder.pulverizing(AECSItems.REDSTONE_CRYSTAL_DUST.toStack(), 8000)
+                .require(AFSingletons.REDSTONE_CRYSTAL, 1)
+                .save(compatOut, "pulverizer/" + getItemName(AECSItems.REDSTONE_CRYSTAL_DUST) + "_from_redstone_crystal");
         CrystalPulverizerRecipeBuilder.pulverizing(Items.REDSTONE.getDefaultInstance(), 8000)
                 .require(AECSItems.REDSTONE_CRYSTAL_DUST, 1)
                 .save(compatOut);
 
-        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.redstoneCrystalSeed.toStack(4), 16000)
-                .require(Tags.Items.DUSTS_GLOWSTONE, 2)
-                .require(Tags.Items.DUSTS_REDSTONE, 1)
-                .require(AECSItems.REDSTONE_CRYSTAL_DUST, 1)
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.redstoneCrystalSeed.toStack(64), 144000)
+                .require(Tags.Items.DUSTS_GLOWSTONE, 32)
+                .require(Tags.Items.DUSTS_REDSTONE, 16)
+                .require(AECSItems.REDSTONE_CRYSTAL_DUST, 16)
+                .save(compatOut);
+
+        CrystalAggregatorRecipeBuilder.aggregating(AFSingletons.INSULATING_RESIN.getDefaultInstance(), 8000)
+                .require(Blocks.CACTUS, 1)
+                .require(ConventionTags.SILICON, 1)
+                .require(Items.SLIME_BALL, 1)
                 .save(compatOut);
 
         CrystalAggregatorRecipeBuilder.aggregating(AFSingletons.ENERGY_PROCESSOR, 64, 144000)

@@ -43,10 +43,10 @@ public class AECSCompatAGRecipeProvider extends AECSRecipeProvider
                 .require(AEBlocks.TINY_TNT, 1)
                 .save(compatOut);
 
-        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.EMBER_SEED.toStack(4), 16000)
-                .require(AGTags.EMBER_DUST, 1)
-                .require(Items.BLAZE_POWDER, 1)
-                .require(Tags.Items.GUNPOWDERS, 2)
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.EMBER_SEED.toStack(64), 144000)
+                .require(AGTags.EMBER_DUST, 16)
+                .require(Items.BLAZE_POWDER, 16)
+                .require(Tags.Items.GUNPOWDERS, 32)
                 .save(compatOut);
 
         CrystalAggregatorRecipeBuilder.aggregating(AGSingletons.ORIGINATION_PROCESSOR, 64, 144000)

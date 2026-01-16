@@ -6,21 +6,21 @@
     }
   ],
   "type": "ae2cs:crystal_aggregator_recipe_serializer",
-  "energy_cost": 16000,
+  "energy_cost": 144000,
   "input_a": {
-    "count": 1,
+    "count": 16,
     "tag": "c:dusts/ember"
   },
   "input_b": {
-    "count": 1,
+    "count": 16,
     "item": "minecraft:blaze_powder"
   },
   "input_c": {
-    "count": 2,
+    "count": 32,
     "tag": "c:gunpowders"
   },
   "result": {
-    "count": 4,
+    "count": 64,
     "id": "ae2cs:ember_seed"
   }
 }

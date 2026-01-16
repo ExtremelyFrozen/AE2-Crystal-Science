@@ -6,21 +6,21 @@
     }
   ],
   "type": "ae2cs:crystal_aggregator_recipe_serializer",
-  "energy_cost": 144000,
+  "energy_cost": 8000,
   "input_a": {
-    "count": 32,
-    "tag": "c:dusts/glowstone"
+    "count": 1,
+    "item": "minecraft:cactus"
   },
   "input_b": {
-    "count": 16,
-    "tag": "c:dusts/redstone"
+    "count": 1,
+    "tag": "c:silicon"
   },
   "input_c": {
-    "count": 16,
-    "item": "ae2cs:redstone_crystal_dust"
+    "count": 1,
+    "item": "minecraft:slime_ball"
   },
   "result": {
-    "count": 64,
-    "id": "ae2cs:redstone_crystal_seed"
+    "count": 1,
+    "id": "appflux:insulating_resin"
   }
 }

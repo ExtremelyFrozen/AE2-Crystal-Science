@@ -49,11 +49,6 @@ public class AECSCompatAAERecipeProvider extends AECSRecipeProvider
 
         stonecutterResultFromItem(compatOut, RecipeCategory.MISC, AAEItems.QUANTUM_PROCESSOR_PRESS, AECSItems.BLANK_PRINT_PRESS);
 
-        CircuitEtcherRecipeBuilder.etching(AAEItems.QUANTUM_PROCESSOR, 9, 14400)
-                .require(AAEConventionTags.QUANTUM_ALLOY_STORAGE_BLOCK_ITEM, 1)
-                .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 1)
-                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 1)
-                .save(compatOut);
 
         CrystalAggregatorRecipeBuilder.aggregating(AAEItems.QUANTUM_ALLOY.stack(), 16000)
                 .require(AECSTags.Items.DUST_QUANTUM_ALLOY, 1)
@@ -79,6 +74,12 @@ public class AECSCompatAAERecipeProvider extends AECSRecipeProvider
                 .require(AAEItems.QUANTUM_PROCESSOR_PRINT, 64)
                 .require(Tags.Items.DUSTS_REDSTONE, 64)
                 .require(AEItems.SILICON_PRINT, 64)
+                .save(compatOut);
+
+        CircuitEtcherRecipeBuilder.etching(AAEItems.QUANTUM_PROCESSOR, 9, 14400)
+                .require(AAEConventionTags.QUANTUM_ALLOY_STORAGE_BLOCK_ITEM, 1)
+                .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 1)
+                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 1)
                 .save(compatOut);
     }
 

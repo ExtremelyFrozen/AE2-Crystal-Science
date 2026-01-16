@@ -53,10 +53,10 @@ public class AECSCompatMEKRecipeProvider extends AECSRecipeProvider
                         400, AECSItems.IRRADIATED_SEED.toStack())
                 .build(compatOut, getPressurizedReactionPath("irradiated_seed_first"));
 
-        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.IRRADIATED_SEED.toStack(4), 16000)
-                .require(MekanismTags.Items.DUSTS_SULFUR, 2)
-                .require(AECSTags.Items.DUSTS_URANIUM, 1)
-                .require(AECSItems.IRRADIATED_CRYSTAL_DUST, 1)
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.IRRADIATED_SEED.toStack(64), 144000)
+                .require(MekanismTags.Items.DUSTS_SULFUR, 32)
+                .require(AECSTags.Items.DUSTS_URANIUM, 16)
+                .require(AECSItems.IRRADIATED_CRYSTAL_DUST, 16)
                 .save(compatOut);
     }
 

@@ -1,16 +1,16 @@
 {
   "type": "ae2cs:crystal_aggregator_recipe_serializer",
-  "energy_cost": 144000,
+  "energy_cost": 32000,
   "input_a": {
-    "count": 16,
-    "item": "ae2cs:nether_quartz_dust"
+    "count": 64,
+    "tag": "c:dusts/ender_pearl"
   },
   "input_b": {
     "count": 64,
     "item": "minecraft:sand"
   },
   "result": {
-    "count": 64,
-    "id": "ae2cs:nether_quartz_seed"
+    "count": 32,
+    "id": "minecraft:end_stone"
   }
 }

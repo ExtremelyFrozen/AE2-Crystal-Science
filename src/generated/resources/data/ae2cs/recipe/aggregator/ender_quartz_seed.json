@@ -3,18 +3,18 @@
   "energy_cost": 144000,
   "input_a": {
     "count": 16,
-    "tag": "c:dusts/sky_stone"
+    "item": "ae2cs:nether_quartz_dust"
   },
   "input_b": {
     "count": 16,
-    "tag": "c:dusts/certus_quartz"
+    "tag": "c:dusts/ender_pearl"
   },
   "input_c": {
     "count": 32,
-    "item": "minecraft:gravel"
+    "item": "minecraft:end_stone"
   },
   "result": {
     "count": 64,
-    "id": "ae2cs:meteor_seed"
+    "id": "ae2cs:ender_quartz_seed"
   }
 }

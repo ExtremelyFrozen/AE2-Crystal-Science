@@ -48,6 +48,8 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 AECSItems.pureMeteorCrystal, AECSBlocks.PURE_METEOR_CRYSTAL_BLOCK);
         packAndUnpack3x3(recipeOutput, RecipeCategory.MISC, RecipeCategory.MISC,
                 AECSItems.pureEnderQuartz, AECSBlocks.PURE_ENDER_QUARTZ_BLOCK);
+        packAndUnpack3x3(recipeOutput, RecipeCategory.MISC, RecipeCategory.MISC,
+                AEItems.SILICON, AECSBlocks.SILICON_BLOCK);
 
         // 工具配方
         toolPickaxeFromItem(recipeOutput, RecipeCategory.MISC, AECSItems.METEOR_CRYSTAL_PICKAXE, AECSItems.pureMeteorCrystal);
@@ -88,6 +90,14 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .unlockedBy(getHasName(AECSItems.RESONATING_DUST), has(AECSTags.Items.DUST_RESONATING))
                 .save(recipeOutput, getCrafterPath(AECSItems.resonatingSeed, false));
 
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.enderQuartzSeed, 1)
+                .requires(ConventionTags.ENDER_PEARL_DUST)
+                .requires(AECSItems.NETHER_QUARTZ_DUST)
+                .requires(Blocks.SAND)
+                .requires(Blocks.SAND)
+                .unlockedBy(getHasName(Blocks.SAND), has(Blocks.SAND))
+                .save(recipeOutput, getCrafterPath(AECSItems.enderQuartzSeed, false));
+
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.meteorSeed)
                 .requires(ConventionTags.SKY_STONE_DUST)
                 .requires(ConventionTags.CERTUS_QUARTZ_DUST)
@@ -120,6 +130,55 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .define('c', AEItems.SILICON_PRESS)
                 .unlockedBy(getHasName(AEItems.SILICON_PRESS), has(AEItems.SILICON_PRESS))
                 .save(recipeOutput, getCrafterPath(AECSItems.RESONATING_PRINT_PRESS, true));
+
+        // 各类升级
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.ENDER_INTERFACE_UPGRADE)
+                .requires(AECSBlocks.ENDER_INTERFACE_BLOCK)
+                .requires(Tags.Items.INGOTS)
+                .unlockedBy(getHasName(AECSBlocks.ENDER_INTERFACE_BLOCK), has(AECSBlocks.ENDER_INTERFACE_BLOCK))
+                .save(recipeOutput, getCrafterPath(AECSItems.ENDER_INTERFACE_UPGRADE, false));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.EX_ENDER_INTERFACE_UPGRADE)
+                .requires(AECSBlocks.EX_ENDER_INTERFACE_BLOCK)
+                .requires(Tags.Items.INGOTS)
+                .unlockedBy(getHasName(AECSBlocks.EX_ENDER_INTERFACE_BLOCK), has(AECSBlocks.EX_ENDER_INTERFACE_BLOCK))
+                .save(recipeOutput, getCrafterPath(AECSItems.EX_ENDER_INTERFACE_UPGRADE, false));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.INTEGRATED_INTERFACE_UPGRADE)
+                .requires(AECSBlocks.INTEGRATED_INTERFACE_BLOCK)
+                .requires(Tags.Items.INGOTS)
+                .unlockedBy(getHasName(AECSBlocks.INTEGRATED_INTERFACE_BLOCK), has(AECSBlocks.INTEGRATED_INTERFACE_BLOCK))
+                .save(recipeOutput, getCrafterPath(AECSItems.INTEGRATED_INTERFACE_UPGRADE, false));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.EX_INTEGRATED_INTERFACE_UPGRADE)
+                .requires(AECSBlocks.EX_INTEGRATED_INTERFACE_BLOCK)
+                .requires(Tags.Items.INGOTS)
+                .unlockedBy(getHasName(AECSBlocks.EX_INTEGRATED_INTERFACE_BLOCK), has(AECSBlocks.EX_INTEGRATED_INTERFACE_BLOCK))
+                .save(recipeOutput, getCrafterPath(AECSItems.EX_INTEGRATED_INTERFACE_UPGRADE, false));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.RESONATING_PATTERN_PROVIDER_UPGRADE)
+                .requires(AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK)
+                .requires(Tags.Items.INGOTS)
+                .unlockedBy(getHasName(AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK), has(AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK))
+                .save(recipeOutput, getCrafterPath(AECSItems.RESONATING_PATTERN_PROVIDER_UPGRADE, false));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.EX_RESONATING_PATTERN_PROVIDER_UPGRADE)
+                .requires(AECSBlocks.EX_RESONATING_PATTERN_PROVIDER_BLOCK)
+                .requires(Tags.Items.INGOTS)
+                .unlockedBy(getHasName(AECSBlocks.EX_RESONATING_PATTERN_PROVIDER_BLOCK), has(AECSBlocks.EX_RESONATING_PATTERN_PROVIDER_BLOCK))
+                .save(recipeOutput, getCrafterPath(AECSItems.EX_RESONATING_PATTERN_PROVIDER_UPGRADE, false));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.PATTERN_PROVIDER_UPGRADE)
+                .requires(AEBlocks.PATTERN_PROVIDER)
+                .requires(Tags.Items.INGOTS)
+                .unlockedBy(getHasName(AEBlocks.PATTERN_PROVIDER), has(AEBlocks.PATTERN_PROVIDER))
+                .save(recipeOutput, getCrafterPath(AECSItems.PATTERN_PROVIDER_UPGRADE, false));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.METEOR_PATTERN_PROVIDER_UPGRADE)
+                .requires(AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK)
+                .requires(Tags.Items.INGOTS)
+                .unlockedBy(getHasName(AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK), has(AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK))
+                .save(recipeOutput, getCrafterPath(AECSItems.METEOR_PATTERN_PROVIDER_UPGRADE, false));
 
         // 晶能聚合器
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK)
@@ -264,5 +323,19 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .define('e', AECSTags.Items.STORAGE_BLOCK_ENDER_QUARTZ)
                 .unlockedBy(getHasName(AECSItems.RESONATING_PROCESSOR), has(AECSItems.RESONATING_PROCESSOR))
                 .save(recipeOutput, getCrafterPath(AECSBlocks.ENDER_EMITTER_BLOCK, true));
+
+        // 石英振荡器
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSBlocks.QUARTZ_OSCILLATOR_CLOCK_BLOCK)
+                .pattern("aba")
+                .pattern("cdc")
+                .pattern("efe")
+                .define('a', Blocks.COMPARATOR)
+                .define('b', AEParts.LEVEL_EMITTER)
+                .define('c', AEParts.TOGGLE_BUS)
+                .define('d', AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK)
+                .define('e', AECSItems.RESONATING_PROCESSOR)
+                .define('f', Items.CLOCK)
+                .unlockedBy(getHasName(AECSItems.RESONATING_PROCESSOR), has(AECSItems.RESONATING_PROCESSOR))
+                .save(recipeOutput, getCrafterPath(AECSBlocks.QUARTZ_OSCILLATOR_CLOCK_BLOCK, true));
     }
 }
