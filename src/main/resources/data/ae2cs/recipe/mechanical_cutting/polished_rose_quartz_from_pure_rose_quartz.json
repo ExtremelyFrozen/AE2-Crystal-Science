@@ -1,0 +1,14 @@
+{
+  "type": "create:cutting",
+  "ingredients": [
+    {
+      "item": "ae2cs:purified_rose_quartz"
+    }
+  ],
+  "processing_time": 20,
+  "results": [
+    {
+      "id": "create:polished_rose_quartz"
+    }
+  ]
+}
