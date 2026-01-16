@@ -77,6 +77,7 @@ public class AECSItemIds
     public static final String PATTERN_PROVIDER_UPGRADE = "pattern_provider_upgrade";
     public static final String METEOR_PATTERN_PROVIDER_UPGRADE = "meteor_pattern_provider_upgrade";
     public static final String ENDER_INTERFACE_UPGRADE = "ender_interface_upgrade";
+    public static final String RESONATING_PATTERN_PROVIDER_UPGRADE = "resonating_pattern_provider_upgrade";
 
     public static final String RESONATING_PATTERN_CONVERTER = "resonating_pattern_converter";
 }

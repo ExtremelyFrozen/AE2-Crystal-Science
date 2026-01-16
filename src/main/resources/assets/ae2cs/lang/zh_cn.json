@@ -113,6 +113,7 @@
   "item.ae2cs.pattern_provider_upgrade": "样板供应器升级",
   "item.ae2cs.meteor_pattern_provider_upgrade": "自装配式样板供应器升级",
   "item.ae2cs.ender_interface_upgrade": "末影接口升级",
+  "item.ae2cs.resonating_pattern_provider_upgrade": "谐振样板供应器升级",
 
   "item.ae2cs.resonating_pattern_converter": "谐振样板转换器",
 
@@ -122,6 +123,7 @@
   "ae2cs.item.extended_resonating_pattern_provider_upgrade.tooltip": "将谐振样板供应器升级为扩展谐振样板供应器",
   "ae2cs.item.extended_integrated_interface_upgrade.tooltip": "将ME集成接口升级为扩展集成接口",
   "ae2cs.item.extended_ender_interface_upgrade.tooltip": "将ME末影接口升级为扩展末影接口",
+  "ae2cs.item.resonating_pattern_provider_upgrade.tooltip": "将样板供应器升级为谐振样板供应器",
 
   "message.ae2_crystal_seeds.tooltip.seed_growth": "生长度：%1$s％",
   "message.ae2cs.tooltip.burn_time": "燃烧时间：%s刻",
