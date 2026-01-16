@@ -34,6 +34,36 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
 
     // 合成配方工具---------------------------------------------------------------
 
+    /**
+     * 1x1 双向互换
+     */
+    protected static void swap1x1(RecipeOutput out, RecipeCategory category, ItemLike a, ItemLike b)
+    {
+        swap1x1(out, category, category, a, b);
+    }
+
+    /**
+     * 允许为两个方向分别指定RecipeCategory
+     */
+    protected static void swap1x1(RecipeOutput out,
+                                  RecipeCategory aToBCategory,
+                                  RecipeCategory bToACategory,
+                                  ItemLike a,
+                                  ItemLike b)
+    {
+        // A -> B
+        ShapelessRecipeBuilder.shapeless(aToBCategory, b, 1)
+                .requires(a)
+                .unlockedBy(getHasName(a), has(a))
+                .save(out, craftingConversionId(b, a));
+
+        // B -> A
+        ShapelessRecipeBuilder.shapeless(bToACategory, a, 1)
+                .requires(b)
+                .unlockedBy(getHasName(b), has(b))
+                .save(out, craftingConversionId(a, b));
+    }
+
     protected static void pack2x2(
             RecipeOutput recipeOutput,
             RecipeCategory category,
@@ -453,6 +483,14 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
         String prefix = shaped ? "craft/shaped" : "craft/shapeless";
         String path = prefix + "/" + getItemName(output) + "_from_" + getItemName(input);
         return AE2CrystalScience.makeId(path);
+    }
+
+    /**
+     * 给“互换”配方一个稳定的ID
+     */
+    private static ResourceLocation craftingConversionId(ItemLike result, ItemLike material)
+    {
+        return AE2CrystalScience.makeId("crafting/shapeless/" + getConversionRecipeName(result, material) + "_swap");
     }
 
     protected static ResourceLocation getInscriberPath(ItemLike output)

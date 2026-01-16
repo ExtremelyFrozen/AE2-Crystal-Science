@@ -6,6 +6,7 @@ import appeng.core.definitions.AEParts;
 import appeng.datagen.providers.tags.ConventionTags;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
+import io.github.lounode.ae2cs.common.init.AECSParts;
 import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 import net.minecraft.core.HolderLookup;
@@ -62,6 +63,17 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
         toolSwordFromItem(recipeOutput, RecipeCategory.MISC, AECSItems.ENDER_CRYSTAL_SWORD, AECSItems.pureEnderQuartz);
         toolHoeFromItem(recipeOutput, RecipeCategory.MISC, AECSItems.ENDER_CRYSTAL_HOE, AECSItems.pureEnderQuartz);
         toolShovelFromItem(recipeOutput, RecipeCategory.MISC, AECSItems.ENDER_CRYSTAL_SHOVEL, AECSItems.pureEnderQuartz);
+
+        // part<->方块互换配方
+        swap1x1(recipeOutput, RecipeCategory.MISC, AECSBlocks.INTEGRATED_INTERFACE_BLOCK, AECSParts.INTEGRATE_INTERFACE_PART);
+        swap1x1(recipeOutput, RecipeCategory.MISC, AECSBlocks.EX_INTEGRATED_INTERFACE_BLOCK, AECSParts.EX_INTEGRATE_INTERFACE_PART);
+        swap1x1(recipeOutput, RecipeCategory.MISC, AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK, AECSParts.SIMPLE_PATTERN_PROVIDER_PART);
+        swap1x1(recipeOutput, RecipeCategory.MISC, AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK, AECSParts.METEORITE_PATTERN_PROVIDER_PART);
+        swap1x1(recipeOutput, RecipeCategory.MISC, AECSBlocks.ENDER_INTERFACE_BLOCK, AECSParts.ENDER_INTERFACE_PART);
+        swap1x1(recipeOutput, RecipeCategory.MISC, AECSBlocks.EX_ENDER_INTERFACE_BLOCK, AECSParts.EX_ENDER_INTERFACE_PART);
+        swap1x1(recipeOutput, RecipeCategory.MISC, AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK, AECSParts.RESONATING_PATTERN_PROVIDER_PART);
+        swap1x1(recipeOutput, RecipeCategory.MISC, AECSBlocks.EX_RESONATING_PATTERN_PROVIDER_BLOCK, AECSParts.EX_RESONATING_PATTERN_PROVIDER_PART);
+        swap1x1(recipeOutput, RecipeCategory.MISC, AECSBlocks.QUARTZ_OSCILLATOR_CLOCK_BLOCK, AECSParts.QUARTZ_OSCILLATOR_CLOCK_PART);
 
         // 种子配方
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.certusQuartzSeed, 2)
