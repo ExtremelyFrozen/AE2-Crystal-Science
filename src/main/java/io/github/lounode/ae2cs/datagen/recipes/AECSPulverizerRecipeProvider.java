@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs.datagen.recipes;
 
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
+import appeng.datagen.providers.tags.ConventionTags;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
@@ -84,6 +85,12 @@ public class AECSPulverizerRecipeProvider extends AECSRecipeProvider
                 .require(Items.FLINT, 1)
                 .save(recipeOutput);
 
+        CrystalPulverizerRecipeBuilder.pulverizing(AEItems.CERTUS_QUARTZ_DUST, 1, 8000)
+                .require(ConventionTags.ALL_CERTUS_QUARTZ, 1)
+                .save(recipeOutput);
 
+        CrystalPulverizerRecipeBuilder.pulverizing(AEItems.FLUIX_DUST, 1, 8000)
+                .require(ConventionTags.ALL_FLUIX, 1)
+                .save(recipeOutput);
     }
 }

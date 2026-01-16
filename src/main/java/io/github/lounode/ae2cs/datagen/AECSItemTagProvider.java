@@ -112,6 +112,8 @@ public class AECSItemTagProvider extends ItemTagsProvider
 
         tag(ConventionTags.CERTUS_QUARTZ)
                 .add(AECSItems.PURE_CERTUS_QUARTZ_CRYSTAL.get());
+        tag(ConventionTags.ALL_FLUIX)
+                .add(AECSItems.PURE_FLUIX_CRYSTAL.get());
         tag(ConventionTags.FLUIX_CRYSTAL)
                 .add(AECSItems.PURE_FLUIX_CRYSTAL.get());
         tag(Tags.Items.GEMS_QUARTZ)

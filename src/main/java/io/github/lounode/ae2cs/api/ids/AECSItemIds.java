@@ -20,8 +20,8 @@ public class AECSItemIds
     public static final String CERTUS_QUARTZ_SEED = "certus_quartz_seed";
     public static final String FLUIX_CRYSTAL_SEED = "fluix_crystal_seed";
     public static final String NETHER_QUARTZ_SEED = "nether_quartz_seed";
-    public static final String METEOR_SEED = "meteor_seed";
     public static final String ENDER_QUARTZ_SEED = "ender_quartz_seed";
+    public static final String METEOR_SEED = "meteor_seed";
     public static final String RESONATING_SEED = "resonating_seed";
     public static final String ENTRO_CRYSTAL_SEED = "entro_crystal_seed";
     public static final String REDSTONE_CRYSTAL_SEED = "redstone_crystal_seed";
