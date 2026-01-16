@@ -89,6 +89,30 @@ item_ids:
 或者，你可以制造一台<ItemLink id="crystal_growth_chamber" />批量催生水晶，这台机器可以通过加速卡为其额外提供生长效率，并且同时能获得临近催生器的加速效果。
 在得到你的第一个高纯水晶后，你就成功进入了AECS的世界，我建议你尽快准备一些谐振水晶，以制造AECS的高级机器，相信我，它们会非常有用。
 
+## 谐振水晶粉
+<ItemImage id="resonating_crystal_dust" scale="3" /> 
+哈哈，我想起来谐振水晶粉末与其他水晶粉末都不一样，作为模组最高级的材料，你需要将一个高纯石英水晶、一个红石块、一个高纯末影水晶放在一起，经过一场爆炸后，才能得到你的第一个谐振水晶粉末。
+<RecipeFor id="resonating_crystal_dust" /> 
+
+
+## 联动水晶
+<Row>
+  <ItemImage id="purified_entro_crystal" scale="3" />
+  <ItemImage id="purified_redstone_crystal" scale="3" />
+  <ItemImage id="purified_quantum_crystal" scale="3" />
+  <ItemImage id="purified_rose_quartz" scale="3" />
+  <ItemImage id="purified_irradiated_crystal" scale="3" />
+  <ItemImage id="purified_ember_crystal" scale="3" />
+</Row>
+AECS也为各类常见的模组提供了高纯水晶，这里对它们的作用进行一些介绍，具体获取方式请参考jei/emi：
+  <ItemLink id="purified_entro_crystal" /> 提供与恩特罗水晶一致tag，可参与一部分恩特罗水晶的配方
+  <ItemLink id="purified_redstone_crystal" /> 
+  <ItemLink id="purified_quantum_crystal" />
+  <ItemLink id="purified_rose_quartz" />
+  <ItemLink id="purified_irradiated_crystal" />
+  <ItemLink id="purified_ember_crystal" />
+
+
 
 
 

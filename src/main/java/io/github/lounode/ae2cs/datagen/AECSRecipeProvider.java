@@ -454,6 +454,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
 
     protected static void chargedRecipeWithAggregator(RecipeOutput consumer, ItemLike input, ItemLike output)
     {
+        chargedRecipe(consumer, input, output);
         ResourceLocation id = AE2CrystalScience.makeId("aggregator/" + getItemName(input) + "_from_" + getItemName(output));
         CrystalAggregatorRecipeBuilder.aggregating(new ItemStack(output, 64), 102400)
                 .require(input, 64)
@@ -462,8 +463,8 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
 
     protected static void chargedRecipeWithAggregator(RecipeOutput consumer, TagKey<Item> input, ItemLike output)
     {
+        chargedRecipe(consumer, input, output);
         String tagId = sanitize(input.location());
-
         ResourceLocation id = AE2CrystalScience.makeId("aggregator/" + getItemName(output) + "_from_" + tagId);
         CrystalAggregatorRecipeBuilder.aggregating(new ItemStack(output, 64), 102400)
                 .require(input, 64)
