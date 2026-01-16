@@ -50,9 +50,9 @@ public class AECSTags
         // 这个不用添加到tag表，只是为了获取引用
         public static final TagKey<Item> STORAGE_BLOCK_CERTUS_QUARTZ = tag("storage_blocks/certus_quartz");
         // 同上
-        public static final TagKey<Item> STORAGE_BLOCK_QUARTZ = tag("storage_blocks/quartz");
-        // 同上
         public static final TagKey<Item> STORAGE_BLOCK_SKY_STEEL = tag("storage_blocks/sky_steel");
+        // 同上
+        public static final TagKey<Item> DUSTS_URANIUM = tag("dusts/uranium");
 
         public static final TagKey<Item> GEARS = tag("gears");
         public static final TagKey<Item> GEARS_WOOD = tag("gears/wood");

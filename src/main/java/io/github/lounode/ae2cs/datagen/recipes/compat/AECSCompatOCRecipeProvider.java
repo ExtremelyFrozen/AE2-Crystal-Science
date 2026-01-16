@@ -1,5 +1,6 @@
 package io.github.lounode.ae2cs.datagen.recipes.compat;
 
+import appeng.core.definitions.AEItems;
 import appeng.datagen.providers.tags.ConventionTags;
 import com.wintercogs.ae2omnicells.common.init.OCBlocks;
 import com.wintercogs.ae2omnicells.common.init.OCItems;
@@ -8,6 +9,7 @@ import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CircuitEtcherRecipeBuilder;
+import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -65,6 +67,22 @@ public class AECSCompatOCRecipeProvider extends AECSRecipeProvider
                 .require(OCBlocks.SINGULARITY_BLOCK, 1)
                 .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 1)
                 .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 1)
+                .save(compatOut);
+
+        CrystalAggregatorRecipeBuilder.aggregating(OCItems.OMNI_LINK_PROCESSOR, 64, 144000)
+                .require(OCItems.OMNI_LINK_CIRCUIT_PRINT, 64)
+                .require(Tags.Items.DUSTS_REDSTONE, 64)
+                .require(AEItems.SILICON_PRINT, 64)
+                .save(compatOut);
+        CrystalAggregatorRecipeBuilder.aggregating(OCItems.COMPLEX_LINK_PROCESSOR, 64, 144000)
+                .require(OCItems.COMPLEX_LINK_CIRCUIT_PRINT, 64)
+                .require(Tags.Items.DUSTS_REDSTONE, 64)
+                .require(AEItems.SILICON_PRINT, 64)
+                .save(compatOut);
+        CrystalAggregatorRecipeBuilder.aggregating(OCItems.MULTIDIMENSIONAL_EXPANSION_PROCESSOR, 64, 144000)
+                .require(OCItems.MULTIDIMENSIONAL_EXPANSION_CIRCUIT_PRINT, 64)
+                .require(Tags.Items.DUSTS_REDSTONE, 64)
+                .require(AEItems.SILICON_PRINT, 64)
                 .save(compatOut);
     }
 }

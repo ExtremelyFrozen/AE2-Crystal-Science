@@ -8,6 +8,7 @@ import io.github.lounode.ae2cs.datagen.builder.recipe.CircuitEtcherRecipeBuilder
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 
@@ -54,7 +55,7 @@ public class AECSEtcherRecipeProvider extends AECSRecipeProvider
                 .save(recipeOutput);
 
         CircuitEtcherRecipeBuilder.etching(AECSItems.SIMPLE_PROCESSOR, 36, 57600)
-                .require(AECSTags.Items.STORAGE_BLOCK_QUARTZ, 9)
+                .require(Blocks.QUARTZ_BLOCK, 9)
                 .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 4)
                 .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 4)
                 .save(recipeOutput);

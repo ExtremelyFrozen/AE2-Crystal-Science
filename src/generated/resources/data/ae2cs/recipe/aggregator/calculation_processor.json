@@ -1,0 +1,20 @@
+{
+  "type": "ae2cs:crystal_aggregator_recipe_serializer",
+  "energy_cost": 144000,
+  "input_a": {
+    "count": 64,
+    "item": "ae2:printed_calculation_processor"
+  },
+  "input_b": {
+    "count": 64,
+    "tag": "c:dusts/redstone"
+  },
+  "input_c": {
+    "count": 64,
+    "item": "ae2:printed_silicon"
+  },
+  "result": {
+    "count": 64,
+    "id": "ae2:calculation_processor"
+  }
+}

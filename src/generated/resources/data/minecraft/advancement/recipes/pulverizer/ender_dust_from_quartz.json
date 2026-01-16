@@ -16,7 +16,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2cs:pulverizer/sky_dust"
+        "recipe": "minecraft:pulverizer/ender_dust_from_quartz"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -29,7 +29,7 @@
   ],
   "rewards": {
     "recipes": [
-      "ae2cs:pulverizer/sky_dust"
+      "minecraft:pulverizer/ender_dust_from_quartz"
     ]
   }
 }

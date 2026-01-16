@@ -1,0 +1,26 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mekanism"
+    }
+  ],
+  "type": "ae2cs:crystal_aggregator_recipe_serializer",
+  "energy_cost": 16000,
+  "input_a": {
+    "count": 2,
+    "tag": "c:dusts/sulfur"
+  },
+  "input_b": {
+    "count": 1,
+    "tag": "c:dusts/uranium"
+  },
+  "input_c": {
+    "count": 1,
+    "item": "ae2cs:irradiated_crystal_dust"
+  },
+  "result": {
+    "count": 4,
+    "id": "ae2cs:irradiated_seed"
+  }
+}

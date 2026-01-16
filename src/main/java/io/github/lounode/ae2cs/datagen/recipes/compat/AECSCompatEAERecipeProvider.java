@@ -86,5 +86,11 @@ public class AECSCompatEAERecipeProvider extends AECSRecipeProvider
                 .require(AEBlocks.QUANTUM_LINK, 1)
                 .require(EAESingletons.WIRELESS_CONNECTOR, 1)
                 .save(compatOut);
+
+        CrystalAggregatorRecipeBuilder.aggregating(EAESingletons.CONCURRENT_PROCESSOR, 64, 144000)
+                .require(EAESingletons.CONCURRENT_PROCESSOR_PRINT, 64)
+                .require(Tags.Items.DUSTS_REDSTONE, 64)
+                .require(AEItems.SILICON_PRINT, 64)
+                .save(compatOut);
     }
 }

@@ -19,6 +19,7 @@ public class AECSItemIds
     public static final String RESONATING_DUST = "resonating_crystal_dust";
     public static final String REDSTONE_CRYSTAL_DUST = "redstone_crystal_dust";
     public static final String QUANTUM_CRYSTAL_DUST = "quantum_crystal_dust";
+    public static final String IRRADIATED_CRYSTAL_DUST = "irradiated_crystal_dust";
 
 
     public static final String PURE_CERTUS_QUARTZ_CRYSTAL = "purified_certus_quartz_crystal";

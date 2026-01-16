@@ -3,7 +3,7 @@
   "energy_cost": 57600,
   "input_a": {
     "count": 9,
-    "tag": "c:storage_blocks/quartz"
+    "item": "minecraft:quartz_block"
   },
   "input_b": {
     "count": 4,

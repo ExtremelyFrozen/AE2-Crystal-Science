@@ -1,4 +1,4 @@
-// 1.21.1	2026-01-15T16:35:34.749279	Item Models: ae2cs
+// 1.21.1	2026-01-16T15:01:41.9446107	Item Models: ae2cs
 a1a1b082687a7d6da6275a26110f9bf64a570d98 assets/ae2cs/models/item/blank_print_press.json
 b12dd22e280360c8a0e60dab4f633579f285ac71 assets/ae2cs/models/item/certus_quartz_seed.json
 9b0a0f5bbd61b4a4cf3d2083524df9fe42b70ac5 assets/ae2cs/models/item/certus_quartz_seed_1.json
@@ -29,6 +29,7 @@ a4ad85bc6f94c6fb4528be3637079a2b69c43290 assets/ae2cs/models/item/fluix_crystal_
 9322b243a641c047d3c49890e5a02a8c940bb60f assets/ae2cs/models/item/fluix_crystal_seed_1.json
 36782932a20be47b87b3699d69f711ba732913a2 assets/ae2cs/models/item/fluix_crystal_seed_2.json
 b20a730afd75deb6afe7b9e29aa2c318ba24ab52 assets/ae2cs/models/item/integrated_interface_upgrade.json
+0a5400ff48e60f3a74522d05a6e9df33790f313e assets/ae2cs/models/item/irradiated_crystal_dust.json
 7a2111a57c1eb876cda54ee10d941bc3510633c9 assets/ae2cs/models/item/irradiated_seed.json
 44ec56d06874a66ab23d0e38b191f1b4dd8219ce assets/ae2cs/models/item/irradiated_seed_1.json
 3ac7f14e84f2a2096b530b56ce443bc87b1fb120 assets/ae2cs/models/item/irradiated_seed_2.json

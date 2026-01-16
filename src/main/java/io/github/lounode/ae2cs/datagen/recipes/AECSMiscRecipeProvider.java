@@ -61,7 +61,6 @@ public class AECSMiscRecipeProvider extends AECSRecipeProvider
                 .setTop(Ingredient.of(AECSItems.RESONATING_PRINT_PRESS))
                 .setMode(InscriberProcessType.INSCRIBE)
                 .save(recipeOutput, getInscriberPath(AECSItems.RESONATING_CIRCUIT_PRINT));
-
         InscriberRecipeBuilder.inscribe(ConventionTags.SKY_STONE_DUST, AECSItems.RESONATING_PROCESSOR, 1)
                 .setTop(Ingredient.of(AECSTags.Items.GEM_RESONATING))
                 .setBottom(Ingredient.of(AEItems.SILICON_PRINT))
@@ -71,5 +70,10 @@ public class AECSMiscRecipeProvider extends AECSRecipeProvider
         InscriberRecipeBuilder.inscribe(Tags.Items.GEMS_QUARTZ, AECSItems.SIMPLE_CIRCUIT_PRINT, 1)
                 .setMode(InscriberProcessType.PRESS)
                 .save(recipeOutput, getInscriberPath(AECSItems.SIMPLE_CIRCUIT_PRINT));
+        InscriberRecipeBuilder.inscribe(Tags.Items.DUSTS_REDSTONE, AECSItems.SIMPLE_PROCESSOR, 1)
+                .setTop(Ingredient.of(AECSItems.SIMPLE_CIRCUIT_PRINT))
+                .setBottom(Ingredient.of(AEItems.SILICON_PRINT))
+                .setMode(InscriberProcessType.PRESS)
+                .save(recipeOutput, getInscriberPath(AECSItems.SIMPLE_PROCESSOR));
     }
 }

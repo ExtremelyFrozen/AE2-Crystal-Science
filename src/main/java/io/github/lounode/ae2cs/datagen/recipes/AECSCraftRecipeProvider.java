@@ -37,6 +37,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
     @Override
     protected void buildRecipes(@NotNull RecipeOutput recipeOutput)
     {
+        // 块配方
         pack2x2(recipeOutput, RecipeCategory.MISC, AECSItems.pureCertusQuartzCrystal, AEBlocks.QUARTZ_BLOCK);
         pack2x2(recipeOutput, RecipeCategory.MISC, AECSItems.pureFluixCrystal, AEBlocks.FLUIX_BLOCK);
         pack2x2(recipeOutput, RecipeCategory.MISC, AECSItems.pureNetherQuartzCrystal, Blocks.QUARTZ_BLOCK);
@@ -48,6 +49,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
         packAndUnpack3x3(recipeOutput, RecipeCategory.MISC, RecipeCategory.MISC,
                 AECSItems.pureEnderQuartz, AECSBlocks.PURE_ENDER_QUARTZ_BLOCK);
 
+        // 工具配方
         toolPickaxeFromItem(recipeOutput, RecipeCategory.MISC, AECSItems.METEOR_CRYSTAL_PICKAXE, AECSItems.pureMeteorCrystal);
         toolAxeFromItem(recipeOutput, RecipeCategory.MISC, AECSItems.METEOR_CRYSTAL_AXE, AECSItems.pureMeteorCrystal);
         toolSwordFromItem(recipeOutput, RecipeCategory.MISC, AECSItems.METEOR_CRYSTAL_SWORD, AECSItems.pureMeteorCrystal);
@@ -59,6 +61,25 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
         toolHoeFromItem(recipeOutput, RecipeCategory.MISC, AECSItems.ENDER_CRYSTAL_HOE, AECSItems.pureEnderQuartz);
         toolShovelFromItem(recipeOutput, RecipeCategory.MISC, AECSItems.ENDER_CRYSTAL_SHOVEL, AECSItems.pureEnderQuartz);
 
+        // 种子配方
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.certusQuartzSeed, 2)
+                .requires(AEItems.CERTUS_QUARTZ_DUST)
+                .requires(Blocks.SAND)
+                .unlockedBy(getHasName(Blocks.SAND), has(Blocks.SAND))
+                .save(recipeOutput, getCrafterPath(AECSItems.certusQuartzSeed, false));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.fluixCrystalSeed, 2)
+                .requires(AEItems.FLUIX_DUST)
+                .requires(Blocks.SAND)
+                .unlockedBy(getHasName(Blocks.SAND), has(Blocks.SAND))
+                .save(recipeOutput, getCrafterPath(AECSItems.fluixCrystalSeed, false));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.netherQuartzSeed, 2)
+                .requires(AECSItems.NETHER_QUARTZ_DUST)
+                .requires(Blocks.SAND)
+                .unlockedBy(getHasName(Blocks.SAND), has(Blocks.SAND))
+                .save(recipeOutput, getCrafterPath(AECSItems.netherQuartzSeed, false));
+
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.resonatingSeed)
                 .requires(AECSTags.Items.DUST_RESONATING)
                 .requires(ConventionTags.FLUIX_DUST)
@@ -66,6 +87,14 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .requires(Tags.Items.DUSTS_REDSTONE)
                 .unlockedBy(getHasName(AECSItems.RESONATING_DUST), has(AECSTags.Items.DUST_RESONATING))
                 .save(recipeOutput, getCrafterPath(AECSItems.resonatingSeed, false));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.meteorSeed)
+                .requires(ConventionTags.SKY_STONE_DUST)
+                .requires(ConventionTags.CERTUS_QUARTZ_DUST)
+                .requires(Blocks.GRAVEL)
+                .requires(Blocks.GRAVEL)
+                .unlockedBy(getHasName(Blocks.GRAVEL), has(Blocks.GRAVEL))
+                .save(recipeOutput, getCrafterPath(AECSItems.meteorSeed, false));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.crystalGrowthCard)
                 .requires(AEItems.ADVANCED_CARD)

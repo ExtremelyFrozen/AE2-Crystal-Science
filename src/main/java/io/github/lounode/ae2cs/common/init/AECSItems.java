@@ -72,6 +72,7 @@ public class AECSItems
     public static final DeferredItem<Item> RESONATING_DUST = registerOtherItem(AECSItemIds.RESONATING_DUST, () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> REDSTONE_CRYSTAL_DUST = registerOtherItem(AECSItemIds.REDSTONE_CRYSTAL_DUST, () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> QUANTUM_CRYSTAL_DUST = registerOtherItem(AECSItemIds.QUANTUM_CRYSTAL_DUST, () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> IRRADIATED_CRYSTAL_DUST = registerOtherItem(AECSItemIds.IRRADIATED_CRYSTAL_DUST, () -> new Item(new Item.Properties()));
 
     public static final DeferredItem<Item> crystalGrowthCard = registerOtherItem(AECSItemIds.CRYSTAL_GROWTH_CARD, () -> Upgrades.createUpgradeCardItem(new Item.Properties()));
 

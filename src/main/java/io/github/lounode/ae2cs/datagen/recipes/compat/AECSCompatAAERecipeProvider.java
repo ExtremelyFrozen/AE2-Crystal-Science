@@ -1,5 +1,6 @@
 package io.github.lounode.ae2cs.datagen.recipes.compat;
 
+import appeng.core.definitions.AEItems;
 import appeng.datagen.providers.tags.ConventionTags;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
@@ -66,9 +67,19 @@ public class AECSCompatAAERecipeProvider extends AECSRecipeProvider
                 .fluid(AAEFluids.QUANTUM_INFUSION.stack(1000))
                 .save(compatOut, getReactionPath(AECSItems.quantumCrystalSeed));
 
-        CrystalPulverizerRecipeBuilder.pulverizing(AECSItems.QUANTUM_CRYSTAL_DUST, 1, 1600)
+        CrystalPulverizerRecipeBuilder.pulverizing(AECSItems.QUANTUM_CRYSTAL_DUST, 1, 8000)
                 .require(AAEItems.QUANTUM_ALLOY, 1)
                 .save(compatOut, "quantum_crystal_dust_from_ingot");
+
+        CrystalPulverizerRecipeBuilder.pulverizing(AAEItems.QUANTUM_INFUSED_DUST, 1, 8000)
+                .require(AAEItems.SHATTERED_SINGULARITY, 1)
+                .save(compatOut);
+
+        CrystalAggregatorRecipeBuilder.aggregating(AAEItems.QUANTUM_PROCESSOR, 64, 144000)
+                .require(AAEItems.QUANTUM_PROCESSOR_PRINT, 64)
+                .require(Tags.Items.DUSTS_REDSTONE, 64)
+                .require(AEItems.SILICON_PRINT, 64)
+                .save(compatOut);
     }
 
     protected static ResourceLocation getReactionPath(ItemLike output)

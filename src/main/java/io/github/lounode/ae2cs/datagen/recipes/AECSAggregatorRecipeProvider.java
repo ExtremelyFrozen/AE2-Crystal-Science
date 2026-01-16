@@ -35,6 +35,13 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
     @Override
     protected void buildRecipes(@NotNull RecipeOutput recipeOutput)
     {
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.meteorSeed, 4, 16000)
+                .require(ConventionTags.SKY_STONE_DUST, 1)
+                .require(ConventionTags.CERTUS_QUARTZ_DUST, 1)
+                .require(Blocks.GRAVEL, 2)
+                .unlockedBy(getHasName(Blocks.GRAVEL), has(Blocks.GRAVEL))
+                .save(recipeOutput);
+
         // 谐振样板转换器
         CrystalAggregatorRecipeBuilder.aggregating(AECSItems.RESONATING_PATTERN_CONVERTER, 1, 16000)
                 .require(AEItems.BLANK_PATTERN, 1)
@@ -77,6 +84,33 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
                 .require(AECSItems.RESONATING_PROCESSOR, 1)
                 .save(recipeOutput);
 
+        // 处理器聚合配方
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.RESONATING_PROCESSOR, 64, 144000)
+                .require(AECSItems.RESONATING_CIRCUIT_PRINT, 64)
+                .require(ConventionTags.SKY_STONE_DUST, 64)
+                .require(AEItems.SILICON_PRINT, 64)
+                .save(recipeOutput);
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.SIMPLE_PROCESSOR, 64, 144000)
+                .require(AECSItems.SIMPLE_CIRCUIT_PRINT, 64)
+                .require(Tags.Items.DUSTS_REDSTONE, 64)
+                .require(AEItems.SILICON_PRINT, 64)
+                .save(recipeOutput);
+        CrystalAggregatorRecipeBuilder.aggregating(AEItems.LOGIC_PROCESSOR, 64, 144000)
+                .require(AEItems.LOGIC_PROCESSOR_PRINT, 64)
+                .require(Tags.Items.DUSTS_REDSTONE, 64)
+                .require(AEItems.SILICON_PRINT, 64)
+                .save(recipeOutput);
+        CrystalAggregatorRecipeBuilder.aggregating(AEItems.CALCULATION_PROCESSOR, 64, 144000)
+                .require(AEItems.CALCULATION_PROCESSOR_PRINT, 64)
+                .require(Tags.Items.DUSTS_REDSTONE, 64)
+                .require(AEItems.SILICON_PRINT, 64)
+                .save(recipeOutput);
+        CrystalAggregatorRecipeBuilder.aggregating(AEItems.ENGINEERING_PROCESSOR, 64, 144000)
+                .require(AEItems.ENGINEERING_PROCESSOR_PRINT, 64)
+                .require(Tags.Items.DUSTS_REDSTONE, 64)
+                .require(AEItems.SILICON_PRINT, 64)
+                .save(recipeOutput);
+
         CrystalAggregatorRecipeBuilder.aggregating(AEItems.CERTUS_QUARTZ_CRYSTAL, 64, 80000)
                 .require(AECSItems.pureCertusQuartzCrystal, 32)
                 .require(AEItems.CERTUS_QUARTZ_CRYSTAL, 32)
@@ -98,12 +132,6 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
                 .require(AECSTags.Items.DUST_RESONATING, 32)
                 .require(ConventionTags.FLUIX_DUST, 32)
                 .require(ConventionTags.SKY_STONE_DUST, 32)
-                .save(recipeOutput);
-
-        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.RESONATING_PROCESSOR, 64, 144000)
-                .require(AECSItems.RESONATING_CIRCUIT_PRINT, 64)
-                .require(ConventionTags.SKY_STONE_DUST, 64)
-                .require(AEItems.SILICON_PRINT, 64)
                 .save(recipeOutput);
 
         CrystalAggregatorRecipeBuilder.aggregating(AECSItems.netherQuartzSeed, 64, 64000)

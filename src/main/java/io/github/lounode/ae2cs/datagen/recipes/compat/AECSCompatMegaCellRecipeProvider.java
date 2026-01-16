@@ -1,12 +1,15 @@
 package io.github.lounode.ae2cs.datagen.recipes.compat;
 
 import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.datagen.providers.tags.ConventionTags;
 import gripe._90.megacells.definition.MEGAItems;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CircuitEtcherRecipeBuilder;
+import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -39,6 +42,12 @@ public class AECSCompatMegaCellRecipeProvider extends AECSRecipeProvider
                 .require(AECSTags.Items.STORAGE_BLOCK_SKY_STEEL, 1)
                 .require(AEBlocks.FLUIX_BLOCK, 1)
                 .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 1)
+                .save(compatOut);
+
+        CrystalAggregatorRecipeBuilder.aggregating(MEGAItems.ACCUMULATION_PROCESSOR, 64, 144000)
+                .require(MEGAItems.ACCUMULATION_PROCESSOR_PRINT, 64)
+                .require(ConventionTags.FLUIX_DUST, 64)
+                .require(AEItems.SILICON_PRINT, 64)
                 .save(compatOut);
     }
 }

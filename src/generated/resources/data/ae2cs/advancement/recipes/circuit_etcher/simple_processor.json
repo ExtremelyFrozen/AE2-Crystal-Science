@@ -8,7 +8,7 @@
             "count": {
               "min": 1
             },
-            "items": "minecraft:barrier"
+            "items": "minecraft:quartz_block"
           }
         ]
       },
