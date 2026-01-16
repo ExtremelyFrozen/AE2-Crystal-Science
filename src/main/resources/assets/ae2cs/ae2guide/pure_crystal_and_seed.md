@@ -105,12 +105,12 @@ item_ids:
   <ItemImage id="purified_ember_crystal" scale="3" />
 </Row>
 AECS也为各类常见的模组提供了高纯水晶，这里对它们的作用进行一些介绍，具体获取方式请参考jei/emi：
-  <ItemLink id="purified_entro_crystal" /> 提供与恩特罗水晶一致tag，可参与一部分恩特罗水晶的配方
-  <ItemLink id="purified_redstone_crystal" /> 
-  <ItemLink id="purified_quantum_crystal" />
-  <ItemLink id="purified_rose_quartz" />
-  <ItemLink id="purified_irradiated_crystal" />
-  <ItemLink id="purified_ember_crystal" />
+  <ItemLink id="purified_entro_crystal" /> 提供与恩特罗水晶一致tag，可参与一部分恩特罗水晶的配方（EAE）
+  <ItemLink id="purified_redstone_crystal" /> 通过充能器或者晶能聚合器可转换为红石水晶（Applied Fluix）
+  <ItemLink id="purified_quantum_crystal" /> 通过晶能粉碎机可粉碎为量子水晶粉，量子水晶粉在晶能聚合器内与任意锭结合获得量子合金（AAE）
+  <ItemLink id="purified_rose_quartz" /> 通过切石机或动力切割机变为2个磨制石英水晶（Create）
+  <ItemLink id="purified_irradiated_crystal" /> 可在化学氧化机中转换为500ml核废料（MEK）
+  <ItemLink id="purified_ember_crystal" /> 在晶能聚合器中与迷你TNT结合获得两份余烬水晶
 
 
 
