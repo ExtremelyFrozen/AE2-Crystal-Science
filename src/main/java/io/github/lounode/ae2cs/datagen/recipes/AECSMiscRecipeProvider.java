@@ -46,15 +46,15 @@ public class AECSMiscRecipeProvider extends AECSRecipeProvider
 
         // 锻造台配方
         smithingTransform(recipeOutput, RecipeCategory.MISC, AEItems.FLUIX_UPGRADE_SMITHING_TEMPLATE,
-                AECSItems.ENDER_CRYSTAL_PICKAXE, AECSItems.pureResonatingCrystal, AECSItems.RESONATING_CRYSTAL_PICKAXE);
+                AECSItems.METEOR_CRYSTAL_PICKAXE, AECSItems.pureResonatingCrystal, AECSItems.RESONATING_CRYSTAL_PICKAXE);
         smithingTransform(recipeOutput, RecipeCategory.MISC, AEItems.FLUIX_UPGRADE_SMITHING_TEMPLATE,
-                AECSItems.ENDER_CRYSTAL_AXE, AECSItems.pureResonatingCrystal, AECSItems.RESONATING_CRYSTAL_AXE);
+                AECSItems.METEOR_CRYSTAL_AXE, AECSItems.pureResonatingCrystal, AECSItems.RESONATING_CRYSTAL_AXE);
         smithingTransform(recipeOutput, RecipeCategory.MISC, AEItems.FLUIX_UPGRADE_SMITHING_TEMPLATE,
-                AECSItems.ENDER_CRYSTAL_SWORD, AECSItems.pureResonatingCrystal, AECSItems.RESONATING_CRYSTAL_SWORD);
+                AECSItems.METEOR_CRYSTAL_SWORD, AECSItems.pureResonatingCrystal, AECSItems.RESONATING_CRYSTAL_SWORD);
         smithingTransform(recipeOutput, RecipeCategory.MISC, AEItems.FLUIX_UPGRADE_SMITHING_TEMPLATE,
-                AECSItems.ENDER_CRYSTAL_HOE, AECSItems.pureResonatingCrystal, AECSItems.RESONATING_CRYSTAL_HOE);
+                AECSItems.METEOR_CRYSTAL_HOE, AECSItems.pureResonatingCrystal, AECSItems.RESONATING_CRYSTAL_HOE);
         smithingTransform(recipeOutput, RecipeCategory.MISC, AEItems.FLUIX_UPGRADE_SMITHING_TEMPLATE,
-                AECSItems.ENDER_CRYSTAL_SHOVEL, AECSItems.pureResonatingCrystal, AECSItems.RESONATING_CRYSTAL_SHOVEL);
+                AECSItems.METEOR_CRYSTAL_SHOVEL, AECSItems.pureResonatingCrystal, AECSItems.RESONATING_CRYSTAL_SHOVEL);
 
         // 压印系列
         InscriberRecipeBuilder.inscribe(AECSTags.Items.GEM_RESONATING, AECSItems.RESONATING_CIRCUIT_PRINT, 1)

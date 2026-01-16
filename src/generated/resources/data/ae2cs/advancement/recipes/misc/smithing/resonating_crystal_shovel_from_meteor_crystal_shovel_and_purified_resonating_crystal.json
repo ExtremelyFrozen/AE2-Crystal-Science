@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_ender_crystal_axe": {
+    "has_meteor_crystal_shovel": {
       "conditions": {
         "items": [
           {
-            "items": "ae2cs:ender_crystal_axe"
+            "items": "ae2cs:meteor_crystal_shovel"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2cs:smithing/resonating_crystal_axe_from_ender_crystal_axe_and_purified_resonating_crystal"
+        "recipe": "ae2cs:smithing/resonating_crystal_shovel_from_meteor_crystal_shovel_and_purified_resonating_crystal"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_ender_crystal_axe"
+      "has_meteor_crystal_shovel"
     ]
   ],
   "rewards": {
     "recipes": [
-      "ae2cs:smithing/resonating_crystal_axe_from_ender_crystal_axe_and_purified_resonating_crystal"
+      "ae2cs:smithing/resonating_crystal_shovel_from_meteor_crystal_shovel_and_purified_resonating_crystal"
     ]
   }
 }
