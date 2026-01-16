@@ -167,7 +167,7 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
                 .save(recipeOutput);
 
         // 其他配方
-        CrystalAggregatorRecipeBuilder.aggregating(AEItems.CERTUS_QUARTZ_CRYSTAL, 64, 80000)
+        CrystalAggregatorRecipeBuilder.aggregating(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, 64, 160000)
                 .require(AECSItems.pureCertusQuartzCrystal, 32)
                 .require(AEItems.CERTUS_QUARTZ_CRYSTAL, 32)
                 .save(recipeOutput);
@@ -242,7 +242,7 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
                 .save(recipeOutput);
 
         CrystalAggregatorRecipeBuilder.aggregating(Items.SLIME_BALL, 1, 32000)
-                .require(AECSItems.FLOUR, 1)
+                .require(AECSTags.Items.FLOURS, 1)
                 .require(Items.LIME_DYE, 1)
                 .save(recipeOutput);
 
@@ -273,6 +273,16 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
                 .require(Items.AMETHYST_SHARD, 1)
                 .require(AECSItems.pureResonatingCrystal, 1)
                 .require(Blocks.AMETHYST_BLOCK, 1)
+                .save(recipeOutput);
+
+        CrystalAggregatorRecipeBuilder.aggregating(Items.GLOW_INK_SAC, 1, 16000)
+                .require(Tags.Items.DUSTS_GLOWSTONE, 1)
+                .require(Items.INK_SAC, 1)
+                .save(recipeOutput);
+
+        CrystalAggregatorRecipeBuilder.aggregating(Blocks.BELL, 1, 16000)
+                .require(Tags.Items.RODS_WOODEN, 3)
+                .require(Tags.Items.INGOTS_GOLD, 4)
                 .save(recipeOutput);
     }
 }

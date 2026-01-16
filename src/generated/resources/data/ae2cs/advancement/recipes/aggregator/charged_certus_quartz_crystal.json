@@ -8,7 +8,7 @@
             "count": {
               "min": 1
             },
-            "items": "minecraft:barrier"
+            "items": "ae2cs:purified_certus_quartz_crystal"
           }
         ]
       },
@@ -21,7 +21,7 @@
             "count": {
               "min": 1
             },
-            "items": "minecraft:lime_dye"
+            "items": "ae2:certus_quartz_crystal"
           }
         ]
       },
@@ -29,7 +29,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2cs:aggregator/slime_ball"
+        "recipe": "ae2cs:aggregator/charged_certus_quartz_crystal"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -43,7 +43,7 @@
   ],
   "rewards": {
     "recipes": [
-      "ae2cs:aggregator/slime_ball"
+      "ae2cs:aggregator/charged_certus_quartz_crystal"
     ]
   }
 }

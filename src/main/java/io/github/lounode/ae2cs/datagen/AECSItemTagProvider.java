@@ -75,6 +75,12 @@ public class AECSItemTagProvider extends ItemTagsProvider
         tag(ConventionTags.INSCRIBER_PRESSES)
                 .add(AECSItems.RESONATING_PRINT_PRESS.get());
 
+        // 面粉
+        tag(AECSTags.Items.FLOURS)
+                .addTag(AECSTags.Items.FLOURS_WHEAT);
+        tag(AECSTags.Items.FLOURS_WHEAT)
+                .add(AECSItems.FLOUR.get());
+
         // 工具
         tag(ItemTags.SWORDS)
                 .add(AECSItems.ENDER_CRYSTAL_SWORD.get())

@@ -1,4 +1,10 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "appgen"
+    }
+  ],
   "parent": "minecraft:recipes/root",
   "criteria": {
     "has_input_0": {
@@ -8,20 +14,7 @@
             "count": {
               "min": 1
             },
-            "items": "ae2cs:purified_certus_quartz_crystal"
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "has_input_1": {
-      "conditions": {
-        "items": [
-          {
-            "count": {
-              "min": 1
-            },
-            "items": "ae2:certus_quartz_crystal"
+            "items": "minecraft:barrier"
           }
         ]
       },
@@ -29,7 +22,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2cs:aggregator/certus_quartz_crystal"
+        "recipe": "ae2cs:pulverizer/copper_dust"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -37,13 +30,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_input_0",
-      "has_input_1"
+      "has_input_0"
     ]
   ],
   "rewards": {
     "recipes": [
-      "ae2cs:aggregator/certus_quartz_crystal"
+      "ae2cs:pulverizer/copper_dust"
     ]
   }
 }

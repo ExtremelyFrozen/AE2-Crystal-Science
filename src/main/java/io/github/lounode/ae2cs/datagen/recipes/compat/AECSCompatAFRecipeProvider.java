@@ -72,5 +72,13 @@ public class AECSCompatAFRecipeProvider extends AECSRecipeProvider
                 .require(Tags.Items.DUSTS_REDSTONE, 64)
                 .require(AEItems.SILICON_PRINT, 64)
                 .save(compatOut);
+
+        CrystalPulverizerRecipeBuilder.pulverizing(AFSingletons.EMERALD_DUST, 1, 8000)
+                .require(Tags.Items.GEMS_EMERALD, 1)
+                .save(compatOut);
+
+        CrystalPulverizerRecipeBuilder.pulverizing(AFSingletons.DIAMOND_DUST, 1, 8000)
+                .require(Tags.Items.GEMS_DIAMOND, 1)
+                .save(compatOut);
     }
 }

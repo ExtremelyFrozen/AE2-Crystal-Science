@@ -6,6 +6,7 @@ import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBuilder;
+import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalPulverizerRecipeBuilder;
 import io.github.sapporo1101.appgen.common.AGSingletons;
 import io.github.sapporo1101.appgen.util.AGTags;
 import net.minecraft.core.HolderLookup;
@@ -53,6 +54,26 @@ public class AECSCompatAGRecipeProvider extends AECSRecipeProvider
                 .require(AGSingletons.ORIGINATION_PRINT, 64)
                 .require(Tags.Items.DUSTS_REDSTONE, 64)
                 .require(AEItems.SILICON_PRINT, 64)
+                .save(compatOut);
+
+        CrystalPulverizerRecipeBuilder.pulverizing(AGSingletons.EMBER_DUST, 1, 8000)
+                .require(AECSItems.PURE_EMBER_CRYSTAL, 1)
+                .save(compatOut, "pulverizer/" + getItemName(AGSingletons.EMBER_DUST) + "_from_pure_crystal");
+
+        CrystalPulverizerRecipeBuilder.pulverizing(AGSingletons.EMBER_DUST, 1, 8000)
+                .require(AGSingletons.EMBER_CRYSTAL, 1)
+                .save(compatOut, "pulverizer/" + getItemName(AGSingletons.EMBER_DUST) + "_from_original_crystal");
+
+        CrystalPulverizerRecipeBuilder.pulverizing(AGSingletons.COPPER_DUST, 1, 8000)
+                .require(Tags.Items.INGOTS_COPPER, 1)
+                .save(compatOut);
+
+        CrystalPulverizerRecipeBuilder.pulverizing(AGSingletons.GOLD_DUST, 1, 8000)
+                .require(Tags.Items.INGOTS_GOLD, 1)
+                .save(compatOut);
+
+        CrystalPulverizerRecipeBuilder.pulverizing(AGSingletons.NETHERITE_DUST, 1, 8000)
+                .require(Tags.Items.INGOTS_NETHERITE, 1)
                 .save(compatOut);
     }
 }

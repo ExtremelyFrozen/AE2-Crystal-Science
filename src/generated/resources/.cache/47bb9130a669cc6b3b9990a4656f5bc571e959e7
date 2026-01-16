@@ -1,4 +1,4 @@
-// 1.21.1	2026-01-16T12:50:57.3822584	Tags for minecraft:item mod id ae2cs
+// 1.21.1	2026-01-16T18:35:41.5414188	Tags for minecraft:item mod id ae2cs
 226069767492e9920e61aacc9c3f96a036bcf7aa data/ae2cs/tags/item/crystal_seeds.json
 a0729be630883ff905011c97f729d0a8aaa15996 data/ae2cs/tags/item/purified_crystal.json
 7241586779fec347b1737da9df7899c25f97188c data/ae2/tags/item/inscriber_presses.json
@@ -6,6 +6,8 @@ a0729be630883ff905011c97f729d0a8aaa15996 data/ae2cs/tags/item/purified_crystal.j
 17cb1ed9418568b5669876e2046af46959a2cb8a data/c/tags/item/dusts/quantum_alloy.json
 baabaa3d3f64b2c2e2b796437ddc705793790e2e data/c/tags/item/dusts/quartz.json
 94eda0b6765fe5c80a97213bc2d15ed91986e34c data/c/tags/item/dusts/resonating.json
+15dc513fa72adf2c902e3eb2dbbce1502e23b18f data/c/tags/item/flours.json
+3d28e15eae88ffa0d8552f418cf3c90d32adcb79 data/c/tags/item/flours/wheat.json
 028aed084911fca1788cc3d41e1be873dcfca398 data/c/tags/item/gears.json
 a809be2959cf0bf007d2aafc0d411bb16bccd4c6 data/c/tags/item/gears/wood.json
 96d2105744fe361a7e20fa88904ebb6a19329668 data/c/tags/item/gems.json

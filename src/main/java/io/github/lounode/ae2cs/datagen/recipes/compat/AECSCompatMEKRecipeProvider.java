@@ -61,8 +61,8 @@ public class AECSCompatMEKRecipeProvider extends AECSRecipeProvider
                 .save(compatOut);
 
         ItemStackToChemicalRecipeBuilder.oxidizing(
-                ItemStackIngredient.of(SizedIngredient.of(AECSItems.PURE_IRRADIATED_CRYSTAL, 1)),
-                MekanismChemicals.NUCLEAR_WASTE.asStack(500))
+                        ItemStackIngredient.of(SizedIngredient.of(AECSItems.PURE_IRRADIATED_CRYSTAL, 1)),
+                        MekanismChemicals.NUCLEAR_WASTE.asStack(500))
                 .build(compatOut, getOxidizingPath("nuclear_waste"));
     }
 

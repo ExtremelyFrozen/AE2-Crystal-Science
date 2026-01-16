@@ -57,6 +57,9 @@ public class AECSTags
         public static final TagKey<Item> GEARS = tag("gears");
         public static final TagKey<Item> GEARS_WOOD = tag("gears/wood");
 
+        public static final TagKey<Item> FLOURS = tag("flours");
+        public static final TagKey<Item> FLOURS_WHEAT = tag("flours/wheat");
+
         private static TagKey<Item> tag(String name)
         {
             return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", name));

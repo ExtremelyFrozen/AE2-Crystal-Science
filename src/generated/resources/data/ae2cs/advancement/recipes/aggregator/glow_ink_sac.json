@@ -21,7 +21,7 @@
             "count": {
               "min": 1
             },
-            "items": "minecraft:lime_dye"
+            "items": "minecraft:ink_sac"
           }
         ]
       },
@@ -29,7 +29,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2cs:aggregator/slime_ball"
+        "recipe": "ae2cs:aggregator/glow_ink_sac"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -43,7 +43,7 @@
   ],
   "rewards": {
     "recipes": [
-      "ae2cs:aggregator/slime_ball"
+      "ae2cs:aggregator/glow_ink_sac"
     ]
   }
 }
