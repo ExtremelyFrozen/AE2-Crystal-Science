@@ -1,4 +1,4 @@
-// 1.21.1	2026-01-16T01:21:29.4789636	Tags for minecraft:item mod id ae2cs
+// 1.21.1	2026-01-16T12:50:57.3822584	Tags for minecraft:item mod id ae2cs
 226069767492e9920e61aacc9c3f96a036bcf7aa data/ae2cs/tags/item/crystal_seeds.json
 a0729be630883ff905011c97f729d0a8aaa15996 data/ae2cs/tags/item/purified_crystal.json
 7241586779fec347b1737da9df7899c25f97188c data/ae2/tags/item/inscriber_presses.json
@@ -23,3 +23,8 @@ c63ffb2a32e79ab05ec3719a3e773b41d76de537 data/c/tags/item/gems/resonating.json
 92404954f2daf1157dcac4a2f11775509811c99e data/c/tags/item/storage_blocks/resonating.json
 75b56296419e63010f68de2fb01c9d435faff6d8 data/c/tags/item/storage_blocks/silicon.json
 3f0d816bb9f03ca24cad175b41818418fd430d2f data/c/tags/item/storage_blocks/sky_stone_crystal.json
+8dfca5dae86efca46bfbcd6ba07c13b6bef02b01 data/minecraft/tags/item/axes.json
+8d23479ffec474e945b3ba2d26f77a6cd0acc37a data/minecraft/tags/item/hoes.json
+8cfc1f868ef3638d8027699436509d4f53e8586c data/minecraft/tags/item/pickaxes.json
+506356e5f1dca144d45c61a34e3458d8cb934ac7 data/minecraft/tags/item/shovels.json
+3197d71c435af3bb09027ef3b4ac6a76bff39107 data/minecraft/tags/item/swords.json

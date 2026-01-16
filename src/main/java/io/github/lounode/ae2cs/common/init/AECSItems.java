@@ -4,6 +4,7 @@ import appeng.api.upgrades.Upgrades;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.ids.AECSItemIds;
 import io.github.lounode.ae2cs.common.item.*;
+import io.github.lounode.ae2cs.common.item.tools.meteor.*;
 import io.github.lounode.ae2cs.common.item.upgrades.*;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
@@ -85,11 +86,11 @@ public class AECSItems
     public static final DeferredItem<Item> BLANK_PRINT_PRESS = registerOtherItem(AECSItemIds.BLANK_PRINT_PRESS, () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> ENDER_BLANK_PRINT_PRESS = registerOtherItem(AECSItemIds.ENDER_BLANK_PRINT_PRESS, () -> new Item(new Item.Properties()));
 
-    public static final DeferredItem<Item> METEOR_CRYSTAL_SWORD = registerOtherItem(AECSItemIds.METEOR_CRYSTAL_SWORD, () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> METEOR_CRYSTAL_AXE = registerOtherItem(AECSItemIds.METEOR_CRYSTAL_AXE, () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> METEOR_CRYSTAL_PICKAXE = registerOtherItem(AECSItemIds.METEOR_CRYSTAL_PICKAXE, () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> METEOR_CRYSTAL_SHOVEL = registerOtherItem(AECSItemIds.METEOR_CRYSTAL_SHOVEL, () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> METEOR_CRYSTAL_HOE = registerOtherItem(AECSItemIds.METEOR_CRYSTAL_HOE, () -> new Item(new Item.Properties()));
+    public static final DeferredItem<MeteorSwordItem> METEOR_CRYSTAL_SWORD = registerOtherItem(AECSItemIds.METEOR_CRYSTAL_SWORD, () -> new MeteorSwordItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<MeteorAxeItem> METEOR_CRYSTAL_AXE = registerOtherItem(AECSItemIds.METEOR_CRYSTAL_AXE, () -> new MeteorAxeItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<MeteorPickaxeItem> METEOR_CRYSTAL_PICKAXE = registerOtherItem(AECSItemIds.METEOR_CRYSTAL_PICKAXE, () -> new MeteorPickaxeItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<MeteorShovelItem> METEOR_CRYSTAL_SHOVEL = registerOtherItem(AECSItemIds.METEOR_CRYSTAL_SHOVEL, () -> new MeteorShovelItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<MeteorHoeItem> METEOR_CRYSTAL_HOE = registerOtherItem(AECSItemIds.METEOR_CRYSTAL_HOE, () -> new MeteorHoeItem(new Item.Properties().stacksTo(1)));
 
     public static final DeferredItem<Item> ENDER_CRYSTAL_SWORD = registerOtherItem(AECSItemIds.ENDER_CRYSTAL_SWORD, () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> ENDER_CRYSTAL_AXE = registerOtherItem(AECSItemIds.ENDER_CRYSTAL_AXE, () -> new Item(new Item.Properties()));

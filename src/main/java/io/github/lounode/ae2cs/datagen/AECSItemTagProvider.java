@@ -11,6 +11,7 @@ import io.github.sapporo1101.appgen.util.AGTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
@@ -73,6 +74,28 @@ public class AECSItemTagProvider extends ItemTagsProvider
         // 空白压印模板实际上不算压印模板，是故不计入
         tag(ConventionTags.INSCRIBER_PRESSES)
                 .add(AECSItems.RESONATING_PRINT_PRESS.get());
+
+        // 工具
+        tag(ItemTags.SWORDS)
+                .add(AECSItems.ENDER_CRYSTAL_SWORD.get())
+                .add(AECSItems.METEOR_CRYSTAL_SWORD.get())
+                .add(AECSItems.RESONATING_CRYSTAL_SWORD.get());
+        tag(ItemTags.AXES)
+                .add(AECSItems.ENDER_CRYSTAL_AXE.get())
+                .add(AECSItems.METEOR_CRYSTAL_AXE.get())
+                .add(AECSItems.RESONATING_CRYSTAL_AXE.get());
+        tag(ItemTags.PICKAXES)
+                .add(AECSItems.ENDER_CRYSTAL_PICKAXE.get())
+                .add(AECSItems.METEOR_CRYSTAL_PICKAXE.get())
+                .add(AECSItems.RESONATING_CRYSTAL_PICKAXE.get());
+        tag(ItemTags.SHOVELS)
+                .add(AECSItems.ENDER_CRYSTAL_SHOVEL.get())
+                .add(AECSItems.METEOR_CRYSTAL_SHOVEL.get())
+                .add(AECSItems.RESONATING_CRYSTAL_SHOVEL.get());
+        tag(ItemTags.HOES)
+                .add(AECSItems.ENDER_CRYSTAL_HOE.get())
+                .add(AECSItems.METEOR_CRYSTAL_HOE.get())
+                .add(AECSItems.RESONATING_CRYSTAL_HOE.get());
 
 
         // 石英水晶对标区
