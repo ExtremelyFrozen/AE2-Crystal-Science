@@ -1,25 +1,21 @@
 ---
 navigation:
-parent: index.md
-title: 杂项
-icon: ae2cs:flour
-position: 250
+  parent: index.md
+  title: 杂项
+  icon: ae2cs:flour
+  position: 250
 item_ids:
-- ae2cs:flour
-- ae2cs:wooden_gear
-
+  - ae2cs:flour
+  - ae2cs:wooden_gear
 ---
 
 # 杂项
 
-# 杂项物品
-
-<Row>
-  <ItemImage id="flour" scale="4" />
-  <ItemImage id="wooden_gear" scale="4" />
+<Row gap="16">
+  <ItemImage id="ae2cs:flour" scale="2" />
+  <ItemImage id="ae2cs:wooden_gear" scale="2" />
 </Row>
 
-这里的物品没有特别的用处，主要是作为合成材料
-
-
-
+本页列出的物品不构成独立的系统或机制，
+主要作为 **合成材料** 或 **中间产物** 存在，
+用于支撑 AECS 中的其他配方与机器体系。
