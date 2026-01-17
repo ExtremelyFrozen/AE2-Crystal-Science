@@ -40,18 +40,18 @@ public class AECSCompatAGRecipeProvider extends AECSRecipeProvider
 
         stonecutterResultFromItem(compatOut, RecipeCategory.MISC, AGSingletons.ORIGINATION_PRESS, AECSItems.BLANK_PRINT_PRESS);
 
-        CrystalAggregatorRecipeBuilder.aggregating(AGSingletons.EMBER_CRYSTAL, 64, 64000)
+        CrystalAggregatorRecipeBuilder.aggregating(AGSingletons.EMBER_CRYSTAL, 64, 102400)
                 .require(AECSTags.Items.PURE_EMBER_CRYSTAL, 32)
                 .require(AEBlocks.TINY_TNT, 1)
                 .save(compatOut);
 
-        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.EMBER_SEED.toStack(64), 144000)
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.EMBER_SEED.toStack(64), 102400)
                 .require(AGTags.EMBER_DUST, 16)
                 .require(Items.BLAZE_POWDER, 16)
                 .require(Tags.Items.GUNPOWDERS, 32)
                 .save(compatOut);
 
-        CrystalAggregatorRecipeBuilder.aggregating(AGSingletons.ORIGINATION_PROCESSOR, 64, 144000)
+        CrystalAggregatorRecipeBuilder.aggregating(AGSingletons.ORIGINATION_PROCESSOR, 64, 102400)
                 .require(AGSingletons.ORIGINATION_PRINT, 64)
                 .require(Tags.Items.DUSTS_REDSTONE, 64)
                 .require(AEItems.SILICON_PRINT, 64)

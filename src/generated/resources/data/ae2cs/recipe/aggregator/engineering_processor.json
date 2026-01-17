@@ -1,6 +1,6 @@
 {
   "type": "ae2cs:crystal_aggregator_recipe_serializer",
-  "energy_cost": 144000,
+  "energy_cost": 102400,
   "input_a": {
     "count": 64,
     "item": "ae2:printed_engineering_processor"

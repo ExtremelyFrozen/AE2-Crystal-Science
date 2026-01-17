@@ -1,6 +1,6 @@
 {
   "type": "ae2cs:crystal_aggregator_recipe_serializer",
-  "energy_cost": 32000,
+  "energy_cost": 51200,
   "input_a": {
     "count": 64,
     "tag": "c:dusts/ender_pearl"

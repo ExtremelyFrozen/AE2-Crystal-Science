@@ -1,6 +1,6 @@
 {
   "type": "ae2cs:crystal_aggregator_recipe_serializer",
-  "energy_cost": 32000,
+  "energy_cost": 16000,
   "input_a": {
     "count": 1,
     "tag": "c:flours"

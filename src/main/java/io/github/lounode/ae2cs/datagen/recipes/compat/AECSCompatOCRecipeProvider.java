@@ -69,17 +69,17 @@ public class AECSCompatOCRecipeProvider extends AECSRecipeProvider
                 .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 1)
                 .save(compatOut);
 
-        CrystalAggregatorRecipeBuilder.aggregating(OCItems.OMNI_LINK_PROCESSOR, 64, 144000)
+        CrystalAggregatorRecipeBuilder.aggregating(OCItems.OMNI_LINK_PROCESSOR, 64, 102400)
                 .require(OCItems.OMNI_LINK_CIRCUIT_PRINT, 64)
                 .require(Tags.Items.DUSTS_REDSTONE, 64)
                 .require(AEItems.SILICON_PRINT, 64)
                 .save(compatOut);
-        CrystalAggregatorRecipeBuilder.aggregating(OCItems.COMPLEX_LINK_PROCESSOR, 64, 144000)
+        CrystalAggregatorRecipeBuilder.aggregating(OCItems.COMPLEX_LINK_PROCESSOR, 64, 102400)
                 .require(OCItems.COMPLEX_LINK_CIRCUIT_PRINT, 64)
                 .require(Tags.Items.DUSTS_REDSTONE, 64)
                 .require(AEItems.SILICON_PRINT, 64)
                 .save(compatOut);
-        CrystalAggregatorRecipeBuilder.aggregating(OCItems.MULTIDIMENSIONAL_EXPANSION_PROCESSOR, 64, 144000)
+        CrystalAggregatorRecipeBuilder.aggregating(OCItems.MULTIDIMENSIONAL_EXPANSION_PROCESSOR, 64, 102400)
                 .require(OCItems.MULTIDIMENSIONAL_EXPANSION_CIRCUIT_PRINT, 64)
                 .require(Tags.Items.DUSTS_REDSTONE, 64)
                 .require(AEItems.SILICON_PRINT, 64)

@@ -56,19 +56,19 @@ public class AECSCompatAFRecipeProvider extends AECSRecipeProvider
                 .require(AECSItems.REDSTONE_CRYSTAL_DUST, 1)
                 .save(compatOut);
 
-        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.REDSTONE_CRYSTAL_SEED.toStack(64), 144000)
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.REDSTONE_CRYSTAL_SEED.toStack(64), 102400)
                 .require(Tags.Items.DUSTS_GLOWSTONE, 32)
                 .require(Tags.Items.DUSTS_REDSTONE, 16)
                 .require(AECSItems.REDSTONE_CRYSTAL_DUST, 16)
                 .save(compatOut);
 
-        CrystalAggregatorRecipeBuilder.aggregating(AFSingletons.INSULATING_RESIN.getDefaultInstance(), 8000)
+        CrystalAggregatorRecipeBuilder.aggregating(AFSingletons.INSULATING_RESIN.getDefaultInstance(), 16000)
                 .require(Blocks.CACTUS, 1)
                 .require(ConventionTags.SILICON, 1)
                 .require(Items.SLIME_BALL, 1)
                 .save(compatOut);
 
-        CrystalAggregatorRecipeBuilder.aggregating(AFSingletons.ENERGY_PROCESSOR, 64, 144000)
+        CrystalAggregatorRecipeBuilder.aggregating(AFSingletons.ENERGY_PROCESSOR, 64, 102400)
                 .require(AFSingletons.ENERGY_PROCESSOR_PRINT, 64)
                 .require(Tags.Items.DUSTS_REDSTONE, 64)
                 .require(AEItems.SILICON_PRINT, 64)

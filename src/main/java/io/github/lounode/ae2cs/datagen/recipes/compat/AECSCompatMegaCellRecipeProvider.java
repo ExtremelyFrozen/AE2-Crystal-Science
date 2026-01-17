@@ -44,7 +44,7 @@ public class AECSCompatMegaCellRecipeProvider extends AECSRecipeProvider
                 .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 1)
                 .save(compatOut);
 
-        CrystalAggregatorRecipeBuilder.aggregating(MEGAItems.ACCUMULATION_PROCESSOR, 64, 144000)
+        CrystalAggregatorRecipeBuilder.aggregating(MEGAItems.ACCUMULATION_PROCESSOR, 64, 102400)
                 .require(MEGAItems.ACCUMULATION_PROCESSOR_PRINT, 64)
                 .require(ConventionTags.FLUIX_DUST, 64)
                 .require(AEItems.SILICON_PRINT, 64)

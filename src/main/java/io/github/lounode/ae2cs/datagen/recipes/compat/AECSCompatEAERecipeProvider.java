@@ -69,31 +69,31 @@ public class AECSCompatEAERecipeProvider extends AECSRecipeProvider
                 .require(AECSTags.Items.DUST_QUARTZ, 4)
                 .save(compatOut, "aggregator/" + getItemName(AECSItems.ENTRO_CRYSTAL_SEED) + "_from_original_seed");
 
-        CrystalAggregatorRecipeBuilder.aggregating(EAESingletons.EX_ASSEMBLER, 1, 32000)
+        CrystalAggregatorRecipeBuilder.aggregating(EAESingletons.EX_ASSEMBLER, 1, 16000)
                 .require(AEBlocks.MOLECULAR_ASSEMBLER, 4)
                 .require(AECSItems.RESONATING_PROCESSOR, 4)
                 .require(AEItems.SPEED_CARD, 2)
                 .save(compatOut);
 
-        CrystalAggregatorRecipeBuilder.aggregating(EAESingletons.MACHINE_FRAME, 1, 32000)
+        CrystalAggregatorRecipeBuilder.aggregating(EAESingletons.MACHINE_FRAME, 1, 16000)
                 .require(EAETags.ENTRO_INGOT, 4)
                 .require(AEBlocks.QUARTZ_GLASS, 1)
                 .require(Tags.Items.INGOTS_IRON, 4)
                 .save(compatOut, "aggregator/" + getItemName(EAESingletons.MACHINE_FRAME) + "_from_entro_ingot");
 
-        CrystalAggregatorRecipeBuilder.aggregating(EAESingletons.MACHINE_FRAME, 1, 32000)
+        CrystalAggregatorRecipeBuilder.aggregating(EAESingletons.MACHINE_FRAME, 1, 16000)
                 .require(AECSTags.Items.PURE_ENTRO_CRYSTAL, 4)
                 .require(AEBlocks.QUARTZ_GLASS, 1)
                 .require(Tags.Items.INGOTS_IRON, 4)
                 .save(compatOut, "aggregator/" + getItemName(EAESingletons.MACHINE_FRAME) + "_from_pure_entro_crystal");
 
-        CrystalAggregatorRecipeBuilder.aggregating(EAESingletons.WIRELESS_HUB, 1, 32000)
+        CrystalAggregatorRecipeBuilder.aggregating(EAESingletons.WIRELESS_HUB, 1, 16000)
                 .require(AECSItems.RESONATING_PROCESSOR, 4)
                 .require(AEBlocks.QUANTUM_LINK, 1)
                 .require(EAESingletons.WIRELESS_CONNECTOR, 1)
                 .save(compatOut);
 
-        CrystalAggregatorRecipeBuilder.aggregating(EAESingletons.CONCURRENT_PROCESSOR, 64, 144000)
+        CrystalAggregatorRecipeBuilder.aggregating(EAESingletons.CONCURRENT_PROCESSOR, 64, 102400)
                 .require(EAESingletons.CONCURRENT_PROCESSOR_PRINT, 64)
                 .require(Tags.Items.DUSTS_REDSTONE, 64)
                 .require(AEItems.SILICON_PRINT, 64)
