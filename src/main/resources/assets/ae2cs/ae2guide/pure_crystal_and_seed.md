@@ -92,7 +92,7 @@ item_ids:
 ## 谐振水晶粉
 <ItemImage id="resonating_crystal_dust" scale="3" /> 
 哈哈，我想起来谐振水晶粉末与其他水晶粉末都不一样，作为模组最高级的材料，你需要将一个高纯石英水晶、一个红石块、一个高纯末影水晶放在一起，经过一场爆炸后，才能得到你的第一个谐振水晶粉末。
-<RecipeFor id="resonating_crystal_dust" /> 
+<Recipe id="ae2cs:transform/resonating_crystal_dust" /> 
 
 
 ## 联动水晶

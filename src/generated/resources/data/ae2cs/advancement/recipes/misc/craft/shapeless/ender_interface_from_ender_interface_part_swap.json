@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_extended_integrated_interface": {
+    "has_ender_interface_part": {
       "conditions": {
         "items": [
           {
-            "items": "ae2cs:extended_integrated_interface"
+            "items": "ae2cs:ender_interface_part"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2cs:crafting/shapeless/extended_integrated_interface_part_from_extended_integrated_interface_swap"
+        "recipe": "ae2cs:craft/shapeless/ender_interface_from_ender_interface_part_swap"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_extended_integrated_interface"
+      "has_ender_interface_part"
     ]
   ],
   "rewards": {
     "recipes": [
-      "ae2cs:crafting/shapeless/extended_integrated_interface_part_from_extended_integrated_interface_swap"
+      "ae2cs:craft/shapeless/ender_interface_from_ender_interface_part_swap"
     ]
   }
 }

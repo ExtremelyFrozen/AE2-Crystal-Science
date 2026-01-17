@@ -491,7 +491,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
      */
     private static ResourceLocation craftingConversionId(ItemLike result, ItemLike material)
     {
-        return AE2CrystalScience.makeId("crafting/shapeless/" + getConversionRecipeName(result, material) + "_swap");
+        return AE2CrystalScience.makeId("craft/shapeless/" + getConversionRecipeName(result, material) + "_swap");
     }
 
     protected static ResourceLocation getInscriberPath(ItemLike output)

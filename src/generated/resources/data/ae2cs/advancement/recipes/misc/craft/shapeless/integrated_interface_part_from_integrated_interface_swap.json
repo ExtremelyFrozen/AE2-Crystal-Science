@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_simple_pattern_provider": {
+    "has_integrated_interface": {
       "conditions": {
         "items": [
           {
-            "items": "ae2cs:simple_pattern_provider"
+            "items": "ae2cs:integrated_interface"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2cs:crafting/shapeless/simple_pattern_provider_part_from_simple_pattern_provider_swap"
+        "recipe": "ae2cs:craft/shapeless/integrated_interface_part_from_integrated_interface_swap"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_simple_pattern_provider"
+      "has_integrated_interface"
     ]
   ],
   "rewards": {
     "recipes": [
-      "ae2cs:crafting/shapeless/simple_pattern_provider_part_from_simple_pattern_provider_swap"
+      "ae2cs:craft/shapeless/integrated_interface_part_from_integrated_interface_swap"
     ]
   }
 }
