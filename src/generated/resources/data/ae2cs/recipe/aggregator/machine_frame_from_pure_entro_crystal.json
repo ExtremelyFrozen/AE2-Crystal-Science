@@ -9,7 +9,7 @@
   "energy_cost": 32000,
   "input_a": {
     "count": 4,
-    "item": "ae2cs:purified_entro_crystal"
+    "tag": "ae2cs:pure_crystal/entro_crystal"
   },
   "input_b": {
     "count": 1,

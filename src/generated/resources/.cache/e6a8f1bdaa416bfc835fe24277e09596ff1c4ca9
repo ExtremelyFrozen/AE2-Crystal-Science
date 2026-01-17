@@ -1,15 +1,19 @@
-// 1.21.1	2026-01-15T21:08:30.1942908	Tags for minecraft:block mod id ae2cs
+// 1.21.1	2026-01-17T14:14:28.183666	Tags for minecraft:block mod id ae2cs
+4840a7c0f75ae5cb2c833d1b809f8d32ef3e445e data/ae2cs/tags/block/storage_blocks/pure_crystal/ender_quartz_block.json
+4048baee6bc86847ced6c03200f3d332eb2899b8 data/ae2cs/tags/block/storage_blocks/pure_crystal/irradiated_crystal_block.json
+3f0d816bb9f03ca24cad175b41818418fd430d2f data/ae2cs/tags/block/storage_blocks/pure_crystal/meteor_crystal_block.json
+af80256acc5666b63746688af433565e1e713566 data/ae2cs/tags/block/storage_blocks/pure_crystal/quantum_crystal_block.json
+9ba82fd412c3f91d880ee039c87ab990b3d2208b data/ae2cs/tags/block/storage_blocks/pure_crystal/redstone_crystal_block.json
+92404954f2daf1157dcac4a2f11775509811c99e data/ae2cs/tags/block/storage_blocks/pure_crystal/resonating_crystal_block.json
+5a343c5ba2a150f251b85dd3a04ec0e905949905 data/ae2cs/tags/block/storage_blocks/pure_crystal/rose_quartz_block.json
 0e8f0709d636ec302f83327e36dfa48c29006393 data/c/tags/block/ores.json
 a3a8141d634ad8aaaac56779885575d8800ff2aa data/c/tags/block/ores/certus_quartz.json
 a65451bf3218dcb44cdadf3f0969d31595cf340a data/c/tags/block/ores_in_ground/deepslate.json
 ec5809e397729eed5dfe584f8eddfec528892c45 data/c/tags/block/ores_in_ground/stone.json
 0e8f0709d636ec302f83327e36dfa48c29006393 data/c/tags/block/ore_rates/singular.json
-29143cb9afba50f1e1792955a7f429bb83bf3ae9 data/c/tags/block/storage_blocks.json
-4840a7c0f75ae5cb2c833d1b809f8d32ef3e445e data/c/tags/block/storage_blocks/ender_quartz.json
+a145c46000c195a4973c2ea7a9717b1b0b9a94be data/c/tags/block/storage_blocks.json
 af80256acc5666b63746688af433565e1e713566 data/c/tags/block/storage_blocks/quantum_alloy.json
-92404954f2daf1157dcac4a2f11775509811c99e data/c/tags/block/storage_blocks/resonating.json
 75b56296419e63010f68de2fb01c9d435faff6d8 data/c/tags/block/storage_blocks/silicon.json
-3f0d816bb9f03ca24cad175b41818418fd430d2f data/c/tags/block/storage_blocks/sky_stone_crystal.json
-dad08624a019cfeac441ed510efc6f9c28135620 data/minecraft/tags/block/beacon_base_blocks.json
+0572c8e1b1978c4121840ff2f5dde86c514d352b data/minecraft/tags/block/beacon_base_blocks.json
 a3a8141d634ad8aaaac56779885575d8800ff2aa data/minecraft/tags/block/mineable/pickaxe.json
 0e8f0709d636ec302f83327e36dfa48c29006393 data/minecraft/tags/block/overworld_carver_replaceables.json

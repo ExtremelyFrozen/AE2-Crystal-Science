@@ -8,7 +8,7 @@
   "type": "mekanism:oxidizing",
   "input": {
     "count": 1,
-    "item": "ae2cs:purified_irradiated_crystal"
+    "tag": "ae2cs:pure_crystal/irradiated_crystal"
   },
   "output": {
     "amount": 500,

@@ -7,11 +7,11 @@
   ],
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_purified_rose_quartz": {
+    "has_ae2cs_pure_crystal_rose_quartz": {
       "conditions": {
         "items": [
           {
-            "items": "ae2cs:purified_rose_quartz"
+            "items": "#ae2cs:pure_crystal/rose_quartz"
           }
         ]
       },
@@ -19,7 +19,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2cs:stonecutting/polished_rose_quartz_from_purified_rose_quartz_stonecutting"
+        "recipe": "ae2cs:stonecutting/polished_rose_quartz_from_ae2cs_pure_crystal_rose_quartz_stonecutting"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -27,12 +27,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_purified_rose_quartz"
+      "has_ae2cs_pure_crystal_rose_quartz"
     ]
   ],
   "rewards": {
     "recipes": [
-      "ae2cs:stonecutting/polished_rose_quartz_from_purified_rose_quartz_stonecutting"
+      "ae2cs:stonecutting/polished_rose_quartz_from_ae2cs_pure_crystal_rose_quartz_stonecutting"
     ]
   }
 }

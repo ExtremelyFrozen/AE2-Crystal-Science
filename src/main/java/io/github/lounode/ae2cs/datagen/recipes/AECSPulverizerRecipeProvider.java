@@ -62,7 +62,7 @@ public class AECSPulverizerRecipeProvider extends AECSRecipeProvider
                 .save(recipeOutput);
 
         CrystalPulverizerRecipeBuilder.pulverizing(AECSItems.QUANTUM_CRYSTAL_DUST, 1, 8000)
-                .require(AECSItems.PURE_QUANTUM_CRYSTAL, 1)
+                .require(AECSTags.Items.PURE_QUANTUM_CRYSTAL, 1)
                 .save(recipeOutput, "quantum_crystal_dust_from_crystal");
 
         CrystalPulverizerRecipeBuilder.pulverizing(Blocks.GRAVEL, 1, 8000)

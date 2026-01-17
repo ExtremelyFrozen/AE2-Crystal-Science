@@ -4,6 +4,7 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSItems;
+import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBuilder;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalPulverizerRecipeBuilder;
@@ -40,7 +41,7 @@ public class AECSCompatAGRecipeProvider extends AECSRecipeProvider
         stonecutterResultFromItem(compatOut, RecipeCategory.MISC, AGSingletons.ORIGINATION_PRESS, AECSItems.BLANK_PRINT_PRESS);
 
         CrystalAggregatorRecipeBuilder.aggregating(AGSingletons.EMBER_CRYSTAL, 64, 64000)
-                .require(AECSItems.PURE_EMBER_CRYSTAL, 32)
+                .require(AECSTags.Items.PURE_EMBER_CRYSTAL, 32)
                 .require(AEBlocks.TINY_TNT, 1)
                 .save(compatOut);
 
@@ -57,7 +58,7 @@ public class AECSCompatAGRecipeProvider extends AECSRecipeProvider
                 .save(compatOut);
 
         CrystalPulverizerRecipeBuilder.pulverizing(AGSingletons.EMBER_DUST, 1, 8000)
-                .require(AECSItems.PURE_EMBER_CRYSTAL, 1)
+                .require(AECSTags.Items.PURE_EMBER_CRYSTAL, 1)
                 .save(compatOut, "pulverizer/" + getItemName(AGSingletons.EMBER_DUST) + "_from_pure_crystal");
 
         CrystalPulverizerRecipeBuilder.pulverizing(AGSingletons.EMBER_DUST, 1, 8000)

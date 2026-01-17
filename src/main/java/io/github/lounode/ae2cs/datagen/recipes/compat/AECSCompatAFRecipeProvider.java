@@ -6,6 +6,7 @@ import com.glodblock.github.appflux.common.AFSingletons;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
+import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBuilder;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalPulverizerRecipeBuilder;
@@ -46,7 +47,7 @@ public class AECSCompatAFRecipeProvider extends AECSRecipeProvider
         chargedRecipeWithAggregator(compatOut, AECSItems.PURE_REDSTONE_CRYSTAL, AFSingletons.REDSTONE_CRYSTAL);
 
         CrystalPulverizerRecipeBuilder.pulverizing(AECSItems.REDSTONE_CRYSTAL_DUST.toStack(), 8000)
-                .require(AECSItems.PURE_REDSTONE_CRYSTAL, 1)
+                .require(AECSTags.Items.PURE_REDSTONE_CRYSTAL, 1)
                 .save(compatOut, "pulverizer/" + getItemName(AECSItems.REDSTONE_CRYSTAL_DUST) + "_from_pure_redstone_crystal");
         CrystalPulverizerRecipeBuilder.pulverizing(AECSItems.REDSTONE_CRYSTAL_DUST.toStack(), 8000)
                 .require(AFSingletons.REDSTONE_CRYSTAL, 1)

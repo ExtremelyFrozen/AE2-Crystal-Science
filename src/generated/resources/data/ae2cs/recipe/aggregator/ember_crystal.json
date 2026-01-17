@@ -9,7 +9,7 @@
   "energy_cost": 64000,
   "input_a": {
     "count": 32,
-    "item": "ae2cs:purified_ember_crystal"
+    "tag": "ae2cs:pure_crystal/ember_crystal"
   },
   "input_b": {
     "count": 1,

@@ -31,8 +31,8 @@ public class AECSEtcherRecipeProvider extends AECSRecipeProvider
     protected void buildRecipes(@NotNull RecipeOutput recipeOutput)
     {
         CircuitEtcherRecipeBuilder.etching(AECSItems.RESONATING_PROCESSOR, 9, 14400)
-                .require(AECSTags.Items.STORAGE_BLOCK_RESONATING, 1)
-                .require(AECSTags.Items.STORAGE_BLOCK_SKY_STONE_CRYSTAL, 1)
+                .require(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_RESONATING_CRYSTAL, 1)
+                .require(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_METEOR_CRYSTAL, 1)
                 .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 1)
                 .save(recipeOutput);
 

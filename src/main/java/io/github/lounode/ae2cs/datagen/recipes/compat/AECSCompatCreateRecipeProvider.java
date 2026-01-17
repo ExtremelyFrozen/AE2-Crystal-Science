@@ -6,6 +6,7 @@ import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
+import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -39,7 +40,7 @@ public class AECSCompatCreateRecipeProvider extends AECSRecipeProvider
                 AECSItems.PURE_ROSE_QUARTZ, AECSBlocks.PURE_ROSE_QUARTZ_BLOCK);
 
         // 高纯玫瑰水晶的唯一用处
-        stonecutterResultFromItem(compatOut, RecipeCategory.MISC, AllItems.POLISHED_ROSE_QUARTZ, AECSItems.PURE_ROSE_QUARTZ, 2);
+        stonecutterResultFromTag(compatOut, RecipeCategory.MISC, AllItems.POLISHED_ROSE_QUARTZ, AECSTags.Items.PURE_ROSE_QUARTZ, 2);
 
         MechanicalCraftingRecipeBuilder.shapedRecipe(AECSItems.ROSE_QUARTZ_SEED)
                 .patternLine("a")

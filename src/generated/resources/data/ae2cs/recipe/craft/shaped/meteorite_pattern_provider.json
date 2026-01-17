@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "c:storage_blocks/sky_stone_crystal"
+      "tag": "c:storage_blocks/pure_crystal/meteor_crystal_block"
     },
     "b": {
       "item": "ae2:molecular_assembler"

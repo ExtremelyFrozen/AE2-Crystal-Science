@@ -15,7 +15,7 @@
       "tag": "ae2:smart_cable"
     },
     "e": {
-      "tag": "c:storage_blocks/ender_quartz"
+      "tag": "c:storage_blocks/pure_crystal/ender_quartz_block"
     }
   },
   "pattern": [

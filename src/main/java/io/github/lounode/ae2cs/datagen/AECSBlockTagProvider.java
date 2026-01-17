@@ -28,7 +28,14 @@ public class AECSBlockTagProvider extends BlockTagsProvider
     {
         // 信标基座
         tag(BlockTags.BEACON_BASE_BLOCKS)
-                .add(AECSBlocks.ENDER_BROADCASTER_BLOCK.get());
+                .add(AECSBlocks.ENDER_BROADCASTER_BLOCK.get())
+                .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_ENDER_QUARTZ)
+                .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_RESONATING_CRYSTAL)
+                .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_METEOR_CRYSTAL)
+                .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_REDSTONE_CRYSTAL)
+                .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_QUANTUM_CRYSTAL)
+                .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_ROSE_QUARTZ)
+                .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL);
 
         // 镐挖掘
         tag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -64,19 +71,30 @@ public class AECSBlockTagProvider extends BlockTagsProvider
 
         // 存储方块
         tag(Tags.Blocks.STORAGE_BLOCKS)
-                .addTag(AECSTags.Blocks.STORAGE_BLOCK_SKY_STONE_CRYSTAL)
-                .addTag(AECSTags.Blocks.STORAGE_BLOCK_RESONATING)
-                .addTag(AECSTags.Blocks.STORAGE_BLOCK_ENDER_QUARTZ)
+                .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_ENDER_QUARTZ)
+                .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_RESONATING_CRYSTAL)
+                .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_METEOR_CRYSTAL)
+                .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_REDSTONE_CRYSTAL)
+                .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_QUANTUM_CRYSTAL)
+                .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_ROSE_QUARTZ)
+                .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL)
                 .addTag(AECSTags.Blocks.STORAGE_BLOCK_SILICON);
-        tag(AECSTags.Blocks.STORAGE_BLOCK_SKY_STONE_CRYSTAL)
-                .add(AECSBlocks.PURE_METEOR_CRYSTAL_BLOCK.get());
-        tag(AECSTags.Blocks.STORAGE_BLOCK_RESONATING)
-                .add(AECSBlocks.PURE_RESONATING_CRYSTAL_BLOCK.get());
-        tag(AECSTags.Blocks.STORAGE_BLOCK_ENDER_QUARTZ)
+        tag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_ENDER_QUARTZ)
                 .add(AECSBlocks.PURE_ENDER_QUARTZ_BLOCK.get());
+        tag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_RESONATING_CRYSTAL)
+                .add(AECSBlocks.PURE_RESONATING_CRYSTAL_BLOCK.get());
+        tag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_METEOR_CRYSTAL)
+                .add(AECSBlocks.PURE_METEOR_CRYSTAL_BLOCK.get());
+        tag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_REDSTONE_CRYSTAL)
+                .add(AECSBlocks.PURE_REDSTONE_CRYSTAL_BLOCK.get());
+        tag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_QUANTUM_CRYSTAL)
+                .add(AECSBlocks.PURE_QUANTUM_CRYSTAL_BLOCK.get());
+        tag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_ROSE_QUARTZ)
+                .add(AECSBlocks.PURE_ROSE_QUARTZ_BLOCK.get());
+        tag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL)
+                .add(AECSBlocks.IRRADIATED_CRYSTAL_BLOCK.get());
         tag(AECSTags.Blocks.STORAGE_BLOCK_SILICON)
                 .add(AECSBlocks.SILICON_BLOCK.get());
-
 
         // 联动区域
         tag(AAEConventionTags.QUANTUM_ALLOY_STORAGE_BLOCK_BLOCK)

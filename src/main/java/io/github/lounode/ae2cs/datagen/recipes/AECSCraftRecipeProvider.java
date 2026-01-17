@@ -290,7 +290,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .pattern("aba")
                 .pattern("cdc")
                 .pattern("efe")
-                .define('a', AECSTags.Items.STORAGE_BLOCK_SKY_STONE_CRYSTAL)
+                .define('a', AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_METEOR_CRYSTAL)
                 .define('b', AEBlocks.MOLECULAR_ASSEMBLER)
                 .define('c', AEBlocks.PATTERN_PROVIDER)
                 .define('d', AECSItems.RESONATING_PROCESSOR)
@@ -318,7 +318,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .pattern("ada")
                 .define('a', AEItems.MATTER_BALL)
                 .define('b', AEParts.ME_P2P_TUNNEL)
-                .define('c', AECSTags.Items.STORAGE_BLOCK_RESONATING)
+                .define('c', AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_RESONATING_CRYSTAL)
                 .define('d', AECSItems.RESONATING_PROCESSOR)
                 .unlockedBy(getHasName(AECSItems.RESONATING_PROCESSOR), has(AECSItems.RESONATING_PROCESSOR))
                 .save(recipeOutput, getCrafterPath(AECSBlocks.ENDER_BROADCASTER_BLOCK, true));
@@ -332,7 +332,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .define('b', AEBlocks.WIRELESS_ACCESS_POINT)
                 .define('c', AECSItems.RESONATING_PROCESSOR)
                 .define('d', ConventionTags.SMART_CABLE)
-                .define('e', AECSTags.Items.STORAGE_BLOCK_ENDER_QUARTZ)
+                .define('e', AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_ENDER_QUARTZ)
                 .unlockedBy(getHasName(AECSItems.RESONATING_PROCESSOR), has(AECSItems.RESONATING_PROCESSOR))
                 .save(recipeOutput, getCrafterPath(AECSBlocks.ENDER_EMITTER_BLOCK, true));
 

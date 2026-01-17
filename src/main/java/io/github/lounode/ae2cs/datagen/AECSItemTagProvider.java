@@ -1,13 +1,11 @@
 package io.github.lounode.ae2cs.datagen;
 
 import appeng.datagen.providers.tags.ConventionTags;
-import com.glodblock.github.appflux.util.AFTags;
 import com.glodblock.github.extendedae.util.EAETags;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSTags;
-import io.github.sapporo1101.appgen.util.AGTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
@@ -111,16 +109,28 @@ public class AECSItemTagProvider extends ItemTagsProvider
 
         // 存储方块
         tag(Tags.Items.STORAGE_BLOCKS)
-                .addTag(AECSTags.Items.STORAGE_BLOCK_SKY_STONE_CRYSTAL)
-                .addTag(AECSTags.Items.STORAGE_BLOCK_RESONATING)
-                .addTag(AECSTags.Items.STORAGE_BLOCK_ENDER_QUARTZ)
+                .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_ENDER_QUARTZ)
+                .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_RESONATING_CRYSTAL)
+                .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_METEOR_CRYSTAL)
+                .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_REDSTONE_CRYSTAL)
+                .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_QUANTUM_CRYSTAL)
+                .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_ROSE_QUARTZ)
+                .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL)
                 .addTag(AECSTags.Items.STORAGE_BLOCK_SILICON);
-        tag(AECSTags.Items.STORAGE_BLOCK_SKY_STONE_CRYSTAL)
-                .add(AECSBlocks.PURE_METEOR_CRYSTAL_BLOCK.asItem());
-        tag(AECSTags.Items.STORAGE_BLOCK_RESONATING)
-                .add(AECSBlocks.PURE_RESONATING_CRYSTAL_BLOCK.asItem());
-        tag(AECSTags.Items.STORAGE_BLOCK_ENDER_QUARTZ)
+        tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_ENDER_QUARTZ)
                 .add(AECSBlocks.PURE_ENDER_QUARTZ_BLOCK.asItem());
+        tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_RESONATING_CRYSTAL)
+                .add(AECSBlocks.PURE_RESONATING_CRYSTAL_BLOCK.asItem());
+        tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_METEOR_CRYSTAL)
+                .add(AECSBlocks.PURE_METEOR_CRYSTAL_BLOCK.asItem());
+        tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_REDSTONE_CRYSTAL)
+                .add(AECSBlocks.PURE_REDSTONE_CRYSTAL_BLOCK.asItem());
+        tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_QUANTUM_CRYSTAL)
+                .add(AECSBlocks.PURE_QUANTUM_CRYSTAL_BLOCK.asItem());
+        tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_ROSE_QUARTZ)
+                .add(AECSBlocks.PURE_ROSE_QUARTZ_BLOCK.asItem());
+        tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL)
+                .add(AECSBlocks.IRRADIATED_CRYSTAL_BLOCK.asItem());
         tag(AECSTags.Items.STORAGE_BLOCK_SILICON)
                 .add(AECSBlocks.SILICON_BLOCK.asItem());
 

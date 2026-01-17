@@ -168,7 +168,7 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
 
         // 其他配方
         CrystalAggregatorRecipeBuilder.aggregating(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, 64, 160000)
-                .require(AECSItems.PURE_CERTUS_QUARTZ_CRYSTAL, 32)
+                .require(AECSTags.Items.PURE_CERTUS_QUARTZ_CRYSTAL, 32)
                 .require(AEItems.CERTUS_QUARTZ_CRYSTAL, 32)
                 .save(recipeOutput);
 
@@ -191,25 +191,25 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
 
         CrystalAggregatorRecipeBuilder.aggregating(AEBlocks.DAMAGED_BUDDING_QUARTZ, 1, 16000)
                 .require(AECSItems.CERTUS_QUARTZ_SEED, 1)
-                .require(AECSItems.PURE_RESONATING_CRYSTAL, 1)
+                .require(AECSTags.Items.PURE_RESONATING_CRYSTAL, 1)
                 .require(AEBlocks.QUARTZ_BLOCK, 1)
                 .save(recipeOutput);
 
         CrystalAggregatorRecipeBuilder.aggregating(AEBlocks.CHIPPED_BUDDING_QUARTZ, 1, 16000)
                 .require(AECSItems.CERTUS_QUARTZ_SEED, 1)
-                .require(AECSItems.PURE_RESONATING_CRYSTAL, 1)
+                .require(AECSTags.Items.PURE_RESONATING_CRYSTAL, 1)
                 .require(AEBlocks.DAMAGED_BUDDING_QUARTZ, 1)
                 .save(recipeOutput);
 
         CrystalAggregatorRecipeBuilder.aggregating(AEBlocks.FLAWED_BUDDING_QUARTZ, 1, 16000)
                 .require(AECSItems.CERTUS_QUARTZ_SEED, 1)
-                .require(AECSItems.PURE_RESONATING_CRYSTAL, 1)
+                .require(AECSTags.Items.PURE_RESONATING_CRYSTAL, 1)
                 .require(AEBlocks.CHIPPED_BUDDING_QUARTZ, 1)
                 .save(recipeOutput);
 
         CrystalAggregatorRecipeBuilder.aggregating(AEBlocks.FLAWLESS_BUDDING_QUARTZ, 1, 80000)
                 .require(AECSItems.CERTUS_QUARTZ_SEED, 6)
-                .require(AECSItems.PURE_RESONATING_CRYSTAL, 6)
+                .require(AECSTags.Items.PURE_RESONATING_CRYSTAL, 6)
                 .require(AEBlocks.FLAWED_BUDDING_QUARTZ, 6)
                 .save(recipeOutput);
 

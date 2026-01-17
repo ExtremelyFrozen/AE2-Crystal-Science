@@ -54,7 +54,7 @@ public class AECSCompatEAERecipeProvider extends AECSRecipeProvider
 
         CrystalAggregatorRecipeBuilder.aggregating(EAESingletons.MOSTLY_ENTROIZED_FLUIX_BUDDING, 1, 16000)
                 .require(AECSItems.ENTRO_CRYSTAL_SEED, 1)
-                .require(AECSItems.PURE_RESONATING_CRYSTAL, 1)
+                .require(AECSTags.Items.PURE_RESONATING_CRYSTAL, 1)
                 .require(AEBlocks.FLUIX_BLOCK, 1)
                 .save(compatOut);
 
@@ -82,7 +82,7 @@ public class AECSCompatEAERecipeProvider extends AECSRecipeProvider
                 .save(compatOut, "aggregator/" + getItemName(EAESingletons.MACHINE_FRAME) + "_from_entro_ingot");
 
         CrystalAggregatorRecipeBuilder.aggregating(EAESingletons.MACHINE_FRAME, 1, 32000)
-                .require(AECSItems.PURE_ENTRO_CRYSTAL, 4)
+                .require(AECSTags.Items.PURE_ENTRO_CRYSTAL, 4)
                 .require(AEBlocks.QUARTZ_GLASS, 1)
                 .require(Tags.Items.INGOTS_IRON, 4)
                 .save(compatOut, "aggregator/" + getItemName(EAESingletons.MACHINE_FRAME) + "_from_pure_entro_crystal");

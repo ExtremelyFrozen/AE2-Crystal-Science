@@ -14,9 +14,20 @@ public class AECSTags
     {
         public static final TagKey<Block> ORES_CERTUS_QUARTZ = tag("ores/certus_quartz");
 
-        public static final TagKey<Block> STORAGE_BLOCK_SKY_STONE_CRYSTAL = tag("storage_blocks/sky_stone_crystal");
-        public static final TagKey<Block> STORAGE_BLOCK_RESONATING = tag("storage_blocks/resonating");
-        public static final TagKey<Block> STORAGE_BLOCK_ENDER_QUARTZ = tag("storage_blocks/ender_quartz");
+        public static final TagKey<Block> STORAGE_BLOCK_PURE_CRYSTAL_ENDER_QUARTZ =
+                aecsTag("storage_blocks/pure_crystal/ender_quartz_block");
+        public static final TagKey<Block> STORAGE_BLOCK_PURE_CRYSTAL_RESONATING_CRYSTAL =
+                aecsTag("storage_blocks/pure_crystal/resonating_crystal_block");
+        public static final TagKey<Block> STORAGE_BLOCK_PURE_CRYSTAL_METEOR_CRYSTAL =
+                aecsTag("storage_blocks/pure_crystal/meteor_crystal_block");
+        public static final TagKey<Block> STORAGE_BLOCK_PURE_CRYSTAL_REDSTONE_CRYSTAL =
+                aecsTag("storage_blocks/pure_crystal/redstone_crystal_block");
+        public static final TagKey<Block> STORAGE_BLOCK_PURE_CRYSTAL_QUANTUM_CRYSTAL =
+                aecsTag("storage_blocks/pure_crystal/quantum_crystal_block");
+        public static final TagKey<Block> STORAGE_BLOCK_PURE_CRYSTAL_ROSE_QUARTZ =
+                aecsTag("storage_blocks/pure_crystal/rose_quartz_block");
+        public static final TagKey<Block> STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL =
+                aecsTag("storage_blocks/pure_crystal/irradiated_crystal_block");
         public static final TagKey<Block> STORAGE_BLOCK_SILICON = tag("storage_blocks/silicon");
 
         private static TagKey<Block> tag(String name)
@@ -64,9 +75,20 @@ public class AECSTags
 
         public static final TagKey<Item> ORES_CERTUS_QUARTZ = tag("ores/certus_quartz");
 
-        public static final TagKey<Item> STORAGE_BLOCK_SKY_STONE_CRYSTAL = tag("storage_blocks/sky_stone_crystal");
-        public static final TagKey<Item> STORAGE_BLOCK_RESONATING = tag("storage_blocks/resonating");
-        public static final TagKey<Item> STORAGE_BLOCK_ENDER_QUARTZ = tag("storage_blocks/ender_quartz");
+        public static final TagKey<Item> STORAGE_BLOCK_PURE_CRYSTAL_ENDER_QUARTZ =
+                tag("storage_blocks/pure_crystal/ender_quartz_block");
+        public static final TagKey<Item> STORAGE_BLOCK_PURE_CRYSTAL_RESONATING_CRYSTAL =
+                tag("storage_blocks/pure_crystal/resonating_crystal_block");
+        public static final TagKey<Item> STORAGE_BLOCK_PURE_CRYSTAL_METEOR_CRYSTAL =
+                tag("storage_blocks/pure_crystal/meteor_crystal_block");
+        public static final TagKey<Item> STORAGE_BLOCK_PURE_CRYSTAL_REDSTONE_CRYSTAL =
+                tag("storage_blocks/pure_crystal/redstone_crystal_block");
+        public static final TagKey<Item> STORAGE_BLOCK_PURE_CRYSTAL_QUANTUM_CRYSTAL =
+                tag("storage_blocks/pure_crystal/quantum_crystal_block");
+        public static final TagKey<Item> STORAGE_BLOCK_PURE_CRYSTAL_ROSE_QUARTZ =
+                tag("storage_blocks/pure_crystal/rose_quartz_block");
+        public static final TagKey<Item> STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL =
+                tag("storage_blocks/pure_crystal/irradiated_crystal_block");
         public static final TagKey<Item> STORAGE_BLOCK_SILICON = tag("storage_blocks/silicon");
 
         // 仅引用获取

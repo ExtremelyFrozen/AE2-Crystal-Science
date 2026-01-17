@@ -3,7 +3,7 @@
   "energy_cost": 160000,
   "input_a": {
     "count": 32,
-    "item": "ae2cs:purified_certus_quartz_crystal"
+    "tag": "ae2cs:pure_crystal/certus_quartz"
   },
   "input_b": {
     "count": 32,
