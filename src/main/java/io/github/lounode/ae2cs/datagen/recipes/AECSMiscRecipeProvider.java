@@ -76,7 +76,7 @@ public class AECSMiscRecipeProvider extends AECSRecipeProvider
                 .setMode(InscriberProcessType.INSCRIBE)
                 .save(recipeOutput, getInscriberPath(AECSItems.RESONATING_CIRCUIT_PRINT));
         InscriberRecipeBuilder.inscribe(ConventionTags.SKY_STONE_DUST, AECSItems.RESONATING_PROCESSOR, 1)
-                .setTop(Ingredient.of(AECSTags.Items.GEM_RESONATING))
+                .setTop(Ingredient.of(AECSItems.RESONATING_CIRCUIT_PRINT))
                 .setBottom(Ingredient.of(AEItems.SILICON_PRINT))
                 .setMode(InscriberProcessType.PRESS)
                 .save(recipeOutput, getInscriberPath(AECSItems.RESONATING_PROCESSOR));

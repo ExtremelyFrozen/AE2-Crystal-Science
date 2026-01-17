@@ -7,6 +7,7 @@ navigation:
 item_ids:
   - ae2cs:meteorite_pattern_provider
   - ae2cs:meteorite_pattern_provider_part
+  - ae2cs:meteor_pattern_provider_upgrade
 
 ---
 
@@ -15,6 +16,7 @@ item_ids:
 <Row>
   <BlockImage id="meteorite_pattern_provider" scale="4" />
   <ItemImage id="meteorite_pattern_provider_part" scale="4" />
+  <ItemImage id="meteor_pattern_provider_upgrade" scale="4" />
 </Row>
 
 自装配式样板供应器也是AECS内最强大的机器之一，其不仅拥有63个样板槽位，而且自身就能以不可思议的速度完成任何合成任务。不需要配合分子装配室。

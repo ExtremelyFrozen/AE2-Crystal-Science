@@ -8,7 +8,7 @@
       "tag": "c:dusts/sky_stone"
     },
     "top": {
-      "tag": "c:gems/resonating"
+      "item": "ae2cs:resonating_circuit_print"
     }
   },
   "mode": "press",

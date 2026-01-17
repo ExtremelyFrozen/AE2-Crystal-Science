@@ -11,6 +11,8 @@ item_ids:
   - ae2cs:extended_resonating_pattern_provider_part
   - ae2cs:resonating_pattern
   - ae2cs:resonating_pattern_converter
+  - ae2cs:resonating_pattern_provider_upgrade
+  - ae2cs:extended_resonating_pattern_provider_upgrade
 
 ---
 
@@ -23,6 +25,8 @@ item_ids:
   <BlockImage id="extended_resonating_pattern_provider" scale="4" />
   <ItemImage id="resonating_pattern_provider_part" scale="4" />
   <ItemImage id="extended_resonating_pattern_provider_part" scale="4" />
+  <ItemImage id="resonating_pattern_provider_upgrade" scale="4" />
+  <ItemImage id="extended_resonating_pattern_provider_upgrade" scale="4" />
 </Row>
 
 谐振样板供应器是AECS最为强大的机器之一，其需要配合谐振样板使用，每一个材料都可以隔空，甚至是跨纬度地发配到任何指定位置。并且能主动抽取其面对的容器，不必依靠管道送回产物。
