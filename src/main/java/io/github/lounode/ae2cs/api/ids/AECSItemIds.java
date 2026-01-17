@@ -62,16 +62,16 @@ public class AECSItemIds
     public static final String RESONATING_PATTERN = "resonating_pattern";
     public static final String RESONATING_PATTERN_CONVERTER = "resonating_pattern_converter";
 
-    public static final String METEOR_CRYSTAL_SWORD = "meteor_crystal_sword";
-    public static final String METEOR_CRYSTAL_AXE = "meteor_crystal_axe";
-    public static final String METEOR_CRYSTAL_PICKAXE = "meteor_crystal_pickaxe";
-    public static final String METEOR_CRYSTAL_SHOVEL = "meteor_crystal_shovel";
-    public static final String METEOR_CRYSTAL_HOE = "meteor_crystal_hoe";
     public static final String ENDER_CRYSTAL_SWORD = "ender_crystal_sword";
     public static final String ENDER_CRYSTAL_AXE = "ender_crystal_axe";
     public static final String ENDER_CRYSTAL_PICKAXE = "ender_crystal_pickaxe";
     public static final String ENDER_CRYSTAL_SHOVEL = "ender_crystal_shovel";
     public static final String ENDER_CRYSTAL_HOE = "ender_crystal_hoe";
+    public static final String METEOR_CRYSTAL_SWORD = "meteor_crystal_sword";
+    public static final String METEOR_CRYSTAL_AXE = "meteor_crystal_axe";
+    public static final String METEOR_CRYSTAL_PICKAXE = "meteor_crystal_pickaxe";
+    public static final String METEOR_CRYSTAL_SHOVEL = "meteor_crystal_shovel";
+    public static final String METEOR_CRYSTAL_HOE = "meteor_crystal_hoe";
     public static final String RESONATING_CRYSTAL_SWORD = "resonating_crystal_sword";
     public static final String RESONATING_CRYSTAL_AXE = "resonating_crystal_axe";
     public static final String RESONATING_CRYSTAL_PICKAXE = "resonating_crystal_pickaxe";

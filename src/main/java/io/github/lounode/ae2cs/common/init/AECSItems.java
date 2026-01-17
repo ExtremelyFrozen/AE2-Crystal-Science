@@ -122,17 +122,17 @@ public class AECSItems
     public static final DeferredItem<ResonatingPatternItem> RESONATING_PATTERN = registerOtherItem(AECSItemIds.RESONATING_PATTERN, () -> new ResonatingPatternItem(defaultBuilder()));
     public static final DeferredItem<ResonatingPatternConverterItem> RESONATING_PATTERN_CONVERTER = registerOtherItem(AECSItemIds.RESONATING_PATTERN_CONVERTER, () -> new ResonatingPatternConverterItem(defaultBuilder().stacksTo(1)));
 
-    public static final DeferredItem<MeteorSwordItem> METEOR_CRYSTAL_SWORD = registerOtherItem(AECSItemIds.METEOR_CRYSTAL_SWORD, () -> new MeteorSwordItem(defaultBuilder().stacksTo(1)));
-    public static final DeferredItem<MeteorAxeItem> METEOR_CRYSTAL_AXE = registerOtherItem(AECSItemIds.METEOR_CRYSTAL_AXE, () -> new MeteorAxeItem(defaultBuilder().stacksTo(1)));
-    public static final DeferredItem<MeteorPickaxeItem> METEOR_CRYSTAL_PICKAXE = registerOtherItem(AECSItemIds.METEOR_CRYSTAL_PICKAXE, () -> new MeteorPickaxeItem(defaultBuilder().stacksTo(1)));
-    public static final DeferredItem<MeteorShovelItem> METEOR_CRYSTAL_SHOVEL = registerOtherItem(AECSItemIds.METEOR_CRYSTAL_SHOVEL, () -> new MeteorShovelItem(defaultBuilder().stacksTo(1)));
-    public static final DeferredItem<MeteorHoeItem> METEOR_CRYSTAL_HOE = registerOtherItem(AECSItemIds.METEOR_CRYSTAL_HOE, () -> new MeteorHoeItem(defaultBuilder().stacksTo(1)));
-
     public static final DeferredItem<EnderSwordItem> ENDER_CRYSTAL_SWORD = registerOtherItem(AECSItemIds.ENDER_CRYSTAL_SWORD, () -> new EnderSwordItem(defaultBuilder().stacksTo(1)));
     public static final DeferredItem<EnderAxeItem> ENDER_CRYSTAL_AXE = registerOtherItem(AECSItemIds.ENDER_CRYSTAL_AXE, () -> new EnderAxeItem(defaultBuilder().stacksTo(1)));
     public static final DeferredItem<EnderPickaxeItem> ENDER_CRYSTAL_PICKAXE = registerOtherItem(AECSItemIds.ENDER_CRYSTAL_PICKAXE, () -> new EnderPickaxeItem(defaultBuilder().stacksTo(1)));
     public static final DeferredItem<EnderShovelItem> ENDER_CRYSTAL_SHOVEL = registerOtherItem(AECSItemIds.ENDER_CRYSTAL_SHOVEL, () -> new EnderShovelItem(defaultBuilder().stacksTo(1)));
     public static final DeferredItem<EnderHoeItem> ENDER_CRYSTAL_HOE = registerOtherItem(AECSItemIds.ENDER_CRYSTAL_HOE, () -> new EnderHoeItem(defaultBuilder().stacksTo(1)));
+
+    public static final DeferredItem<MeteorSwordItem> METEOR_CRYSTAL_SWORD = registerOtherItem(AECSItemIds.METEOR_CRYSTAL_SWORD, () -> new MeteorSwordItem(defaultBuilder().stacksTo(1)));
+    public static final DeferredItem<MeteorAxeItem> METEOR_CRYSTAL_AXE = registerOtherItem(AECSItemIds.METEOR_CRYSTAL_AXE, () -> new MeteorAxeItem(defaultBuilder().stacksTo(1)));
+    public static final DeferredItem<MeteorPickaxeItem> METEOR_CRYSTAL_PICKAXE = registerOtherItem(AECSItemIds.METEOR_CRYSTAL_PICKAXE, () -> new MeteorPickaxeItem(defaultBuilder().stacksTo(1)));
+    public static final DeferredItem<MeteorShovelItem> METEOR_CRYSTAL_SHOVEL = registerOtherItem(AECSItemIds.METEOR_CRYSTAL_SHOVEL, () -> new MeteorShovelItem(defaultBuilder().stacksTo(1)));
+    public static final DeferredItem<MeteorHoeItem> METEOR_CRYSTAL_HOE = registerOtherItem(AECSItemIds.METEOR_CRYSTAL_HOE, () -> new MeteorHoeItem(defaultBuilder().stacksTo(1)));
 
     public static final DeferredItem<ResonatingSwordItem> RESONATING_CRYSTAL_SWORD = registerOtherItem(AECSItemIds.RESONATING_CRYSTAL_SWORD, () -> new ResonatingSwordItem(defaultBuilder().stacksTo(1)));
     public static final DeferredItem<ResonatingAxeItem> RESONATING_CRYSTAL_AXE = registerOtherItem(AECSItemIds.RESONATING_CRYSTAL_AXE, () -> new ResonatingAxeItem(defaultBuilder().stacksTo(1)));
