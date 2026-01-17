@@ -2,7 +2,7 @@
 navigation:
   parent: index.md
   title: 高效的水晶发电
-  icon: ae2cs:charged_certus_quartz_ore
+  icon: ae2cs:crystal_vibration_chamber
   position: 40
 item_ids:
   - ae2cs:crystal_vibration_chamber
