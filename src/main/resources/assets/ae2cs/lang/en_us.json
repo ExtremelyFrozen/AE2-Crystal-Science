@@ -167,8 +167,8 @@
   "ae2cs.menu.title.frequency_band_link": "Link to Band",
   "ae2cs.menu.frequency_band_menu.as_sender": "Link as Sender",
   "ae2cs.menu.frequency_band_menu.as_receiver": "Link as Receiver",
-  "ae2cs.menu.frequency_band_menu.connected": "",
-  "ae2cs.menu.frequency_band_menu.not_connected": "",
+  "ae2cs.menu.frequency_band_menu.connected": "✓",
+  "ae2cs.menu.frequency_band_menu.not_connected": "×",
   "ae2cs.menu.frequency_band_menu.confirm": "Confirm",
   "ae2cs.menu.frequency_band_menu.input_password": "Enter password...",
 
