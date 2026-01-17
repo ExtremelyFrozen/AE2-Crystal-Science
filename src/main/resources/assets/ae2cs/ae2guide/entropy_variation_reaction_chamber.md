@@ -6,17 +6,24 @@ navigation:
   position: 110
 item_ids:
   - ae2cs:entropy_variation_reaction_chamber
-
 ---
 
 # 熵变反应仓
 
-## 熵变反应仓
-
-<Row>
-  <BlockImage id="entropy_variation_reaction_chamber" scale="4" />
+<Row gap="16">
+  <BlockImage id="ae2cs:entropy_variation_reaction_chamber" scale="8" />
 </Row>
 
-熵变反应仓可以让你在机器内做到原本只有熵变机械臂才能进行的操作。如果你和我一样是一个不喜欢刷附魔的玩家，那么这会是一个十分简单的获取冰的机器。
+**熵变反应仓** 是 AECS 提供的一种特殊机器，
+用于在机器内部执行 **<ItemLink id="ae2:entropy_manipulator" />** 的相关配方。
 
-机器特性：支持[面配置](side_config.md)功能、自动从AE网络中获取能量、支持通过外部线缆获取能量、可以传递频道。
+---
+
+## 机器特性
+
+熵变反应仓具备以下通用机器特性：
+
+- 支持 **[面配置](side_config.md)** 系统
+- 可自动从所连接的 **ME 网络** 中获取能量
+- 支持通过外部能量线缆获取能量
+- **参与频道传递**

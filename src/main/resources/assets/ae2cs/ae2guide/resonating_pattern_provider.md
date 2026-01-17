@@ -13,41 +13,105 @@ item_ids:
   - ae2cs:resonating_pattern_converter
   - ae2cs:resonating_pattern_provider_upgrade
   - ae2cs:extended_resonating_pattern_provider_upgrade
-
 ---
 
 # 谐振样板供应器
 
-## 供应器
-
-<Row>
-  <BlockImage id="resonating_pattern_provider" scale="4" />
-  <BlockImage id="extended_resonating_pattern_provider" scale="4" />
-  <ItemImage id="resonating_pattern_provider_part" scale="4" />
-  <ItemImage id="extended_resonating_pattern_provider_part" scale="4" />
-  <ItemImage id="resonating_pattern_provider_upgrade" scale="4" />
-  <ItemImage id="extended_resonating_pattern_provider_upgrade" scale="4" />
+<Row gap="16">
+  <BlockImage id="ae2cs:resonating_pattern_provider" scale="2" />
+  <BlockImage id="ae2cs:extended_resonating_pattern_provider" scale="2" />
+  <ItemImage id="ae2cs:resonating_pattern_provider_part" scale="2" />
+  <ItemImage id="ae2cs:extended_resonating_pattern_provider_part" scale="2" />
+  <ItemImage id="ae2cs:resonating_pattern_provider_upgrade" scale="2" />
+  <ItemImage id="ae2cs:extended_resonating_pattern_provider_upgrade" scale="2" />
 </Row>
 
-谐振样板供应器是AECS最为强大的机器之一，其需要配合谐振样板使用，每一个材料都可以隔空，甚至是跨纬度地发配到任何指定位置。并且能主动抽取其面对的容器，不必依靠管道送回产物。
-你可以使用它将材料同时发配到产线上的不同位置，也能用来轻松完成各种奇奇怪怪的魔法祭坛或者是龙之研究注入装置的自动化
-当然，即使不使用谐振样板，它也能当作一个普通的样板供应器使用。
+**谐振样板供应器** 是 AECS 提供的一种高级网络部件，
+用于在样板驱动的自动化制造过程中，对物品的投放位置与投放面进行精确控制。
+它在功能上扩展了常规样板供应器的行为，使物品不再局限于相邻方块或单一方向的输出。
+
+---
+
+## 功能定位
+
+谐振样板供应器用于解决以下自动化需求：
+
+- 将同一配方中的不同材料投放到**不同的目标位置**
+- 在不依赖管道或额外物流结构的情况下，将物品直接送达指定位置
+- 支持跨距离、甚至跨维度的物品发配行为
+
+在不使用谐振样板时，
+该设备的行为与普通样板供应器保持一致。
+
+常见的使用场景包含：
+
+- 龙之研究的注入装置
+- 各类魔法模组的祭坛
+
+---
+
+## 行为特性
+
+谐振样板供应器在网络中的主要行为包括：
+
+- 根据样板内容，从 ME 网络中提取所需材料
+- 将材料发送到样板所指定的目标位置与目标面
+- 可主动从其所面对的容器中抽取处理结果，而不依赖外部管道
+
+该行为使其能够直接对接复杂或非标准的自动化结构。
+
+---
 
 ## 谐振样板
 
-<Row>
-  <ItemImage id="resonating_pattern" scale="4" />
-  <ItemImage id="resonating_pattern_converter" scale="4" />
+<Row gap="16">
+  <ItemImage id="ae2cs:resonating_pattern" scale="2" />
+  <ItemImage id="ae2cs:resonating_pattern_converter" scale="2" />
 </Row>
 
-谐振样板承担着为谐振样板供应器指明材料发配位置的重任。
-你有两种方式获取谐振样板：
-1. 在工作台上将一个<ItemLink id="resonating_crystal_dust" />与一个已编码的处理样板混合
-2. 使用<ItemLink id="resonating_pattern_converter" />
+**谐振样板** 用于为谐振样板供应器指定材料的发配规则。
+每一种材料都可以单独标记其投放位置与投放方向。
 
-无论哪一种方式都会得到一样的结果，不过<ItemLink id="resonating_pattern_converter" />可以一次性转换多个处理样板，且不消耗<ItemLink id="resonating_crystal_dust" />
-将谐振样板拿在手上，shift+滚轮切换当前目标材料，右键任意方块即可标记当前材料的目标发配位置和发配面，再次右键取消标记。
-当前目标材料的标记位置会被渲染为绿色，其他材料的标记位置会被渲染为蓝色。
-没有标记的材料将会按照原版样板供应器的发配方式发送。
+---
 
-需要注意的是，为了防止切换材料时误触，谐振样板不允许使用shift右键清空，而是可以在工作台上合成为一个空白样板
+## 谐振样板的获取
+
+谐振样板可以通过以下方式获得：
+
+1. 在工作台中，将  
+   **<ItemLink id="ae2cs:resonating_crystal_dust" />**  
+   与一个已编码的处理样板进行合成
+2. 使用 **<ItemLink id="ae2cs:resonating_pattern_converter" />**  
+   将处理样板转换为谐振样板
+
+两种方式得到的谐振样板在功能上完全一致。
+其中，谐振样板转换器支持一次性转换多个样板，
+且不会消耗谐振水晶粉。
+
+---
+
+## 目标标记与可视化
+
+将谐振样板拿在手中时，可以对其进行目标标记操作：
+
+- 使用 **Shift + 滚轮** 切换当前选中的目标材料
+- 对任意方块 **右键**，为当前材料设置投放位置与投放面
+- 再次右键可取消该材料的标记
+
+在世界中，不同材料的标记状态会以不同颜色显示：
+
+- 当前选中的材料：**绿色**
+- 其他已标记材料：**蓝色**
+- 未被标记的材料：不显示标记
+
+未被标记的材料会按照普通样板供应器的方式进行投放。
+
+---
+
+## 清空与重置
+
+为避免在切换材料时发生误操作，
+谐振样板不支持通过快捷交互直接清空所有标记。
+
+若需要重置谐振样板，可以将其在工作台中合成为一个空白样板，
+以移除所有已设置的投放目标。
