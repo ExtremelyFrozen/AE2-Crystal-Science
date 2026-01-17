@@ -32,10 +32,48 @@ public class AECSItemTagProvider extends ItemTagsProvider
     @Override
     protected void addTags(HolderLookup.@NotNull Provider provider)
     {
+        // 水晶种子
         tag(AECSTags.Items.CRYSTAL_SEEDS)
                 .add(AECSItems.getCrystalSeeds().stream().map(DeferredItem::get).toArray(Item[]::new));
-        tag(AECSTags.Items.PURIFIED_CRYSTAL)
-                .add(AECSItems.getPureCrystal().stream().map(DeferredItem::get).toArray(Item[]::new));
+
+        // 所有高纯水晶
+        tag(AECSTags.Items.PURE_CRYSTAL)
+                .addTag(AECSTags.Items.PURE_CERTUS_QUARTZ_CRYSTAL)
+                .addTag(AECSTags.Items.PURE_FLUIX_CRYSTAL)
+                .addTag(AECSTags.Items.PURE_NETHER_QUARTZ_CRYSTAL)
+                .addTag(AECSTags.Items.PURE_ENDER_QUARTZ)
+                .addTag(AECSTags.Items.PURE_METEOR_CRYSTAL)
+                .addTag(AECSTags.Items.PURE_RESONATING_CRYSTAL)
+                .addTag(AECSTags.Items.PURE_ENTRO_CRYSTAL)
+                .addTag(AECSTags.Items.PURE_REDSTONE_CRYSTAL)
+                .addTag(AECSTags.Items.PURE_QUANTUM_CRYSTAL)
+                .addTag(AECSTags.Items.PURE_ROSE_QUARTZ)
+                .addTag(AECSTags.Items.PURE_IRRADIATED_CRYSTAL)
+                .addTag(AECSTags.Items.PURE_EMBER_CRYSTAL);
+        tag(AECSTags.Items.PURE_CERTUS_QUARTZ_CRYSTAL)
+                .add(AECSItems.PURE_CERTUS_QUARTZ_CRYSTAL.get());
+        tag(AECSTags.Items.PURE_FLUIX_CRYSTAL)
+                .add(AECSItems.PURE_FLUIX_CRYSTAL.get());
+        tag(AECSTags.Items.PURE_NETHER_QUARTZ_CRYSTAL)
+                .add(AECSItems.PURE_NETHER_QUARTZ_CRYSTAL.get());
+        tag(AECSTags.Items.PURE_ENDER_QUARTZ)
+                .add(AECSItems.PURE_ENDER_QUARTZ.get());
+        tag(AECSTags.Items.PURE_METEOR_CRYSTAL)
+                .add(AECSItems.PURE_METEOR_CRYSTAL.get());
+        tag(AECSTags.Items.PURE_RESONATING_CRYSTAL)
+                .add(AECSItems.PURE_RESONATING_CRYSTAL.get());
+        tag(AECSTags.Items.PURE_ENTRO_CRYSTAL)
+                .add(AECSItems.PURE_ENTRO_CRYSTAL.get());
+        tag(AECSTags.Items.PURE_REDSTONE_CRYSTAL)
+                .add(AECSItems.PURE_REDSTONE_CRYSTAL.get());
+        tag(AECSTags.Items.PURE_QUANTUM_CRYSTAL)
+                .add(AECSItems.PURE_QUANTUM_CRYSTAL.get());
+        tag(AECSTags.Items.PURE_ROSE_QUARTZ)
+                .add(AECSItems.PURE_ROSE_QUARTZ.get());
+        tag(AECSTags.Items.PURE_IRRADIATED_CRYSTAL)
+                .add(AECSItems.PURE_IRRADIATED_CRYSTAL.get());
+        tag(AECSTags.Items.PURE_EMBER_CRYSTAL)
+                .add(AECSItems.PURE_EMBER_CRYSTAL.get());
 
         // 矿
         tag(Tags.Items.ORES)
@@ -124,7 +162,6 @@ public class AECSItemTagProvider extends ItemTagsProvider
                 .add(AECSItems.METEOR_CRYSTAL_HOE.get())
                 .add(AECSItems.RESONATING_CRYSTAL_HOE.get());
 
-
         // 石英水晶对标区
         tag(Tags.Items.GEMS)
                 .addTag(AECSTags.Items.GEM_RESONATING)
@@ -132,24 +169,20 @@ public class AECSItemTagProvider extends ItemTagsProvider
                 .addTag(AECSTags.Items.GEM_ENDER_QUARTZ);
 
         tag(ConventionTags.CERTUS_QUARTZ)
-                .add(AECSItems.PURE_CERTUS_QUARTZ_CRYSTAL.get());
+                .addTag(AECSTags.Items.PURE_CERTUS_QUARTZ_CRYSTAL);
         tag(ConventionTags.ALL_FLUIX)
-                .add(AECSItems.PURE_FLUIX_CRYSTAL.get());
+                .addTag(AECSTags.Items.PURE_FLUIX_CRYSTAL);
         tag(ConventionTags.FLUIX_CRYSTAL)
-                .add(AECSItems.PURE_FLUIX_CRYSTAL.get());
+                .addTag(AECSTags.Items.PURE_FLUIX_CRYSTAL);
         tag(Tags.Items.GEMS_QUARTZ)
-                .add(AECSItems.PURE_NETHER_QUARTZ_CRYSTAL.get());
-        tag(AECSTags.Items.GEM_RESONATING)
-                .add(AECSItems.PURE_RESONATING_CRYSTAL.get());
+                .addTag(AECSTags.Items.PURE_NETHER_QUARTZ_CRYSTAL);
         tag(AECSTags.Items.GEM_ENDER_QUARTZ)
-                .add(AECSItems.PURE_ENDER_QUARTZ.get());
+                .addTag(AECSTags.Items.PURE_ENDER_QUARTZ);
         tag(AECSTags.Items.GEM_SKY_STONE_CRYSTAL)
-                .add(AECSItems.PURE_METEOR_CRYSTAL.get());
+                .addTag(AECSTags.Items.PURE_METEOR_CRYSTAL);
+        tag(AECSTags.Items.GEM_RESONATING)
+                .addTag(AECSTags.Items.PURE_RESONATING_CRYSTAL);
         tag(EAETags.ENTRO_CRYSTAL)
-                .add(AECSItems.PURE_ENTRO_CRYSTAL.get());
-        tag(AFTags.REDSTONE_GEM)
-                .add(AECSItems.PURE_REDSTONE_CRYSTAL.get());
-        tag(AGTags.EMBER_CRYSTAL)
-                .add(AECSItems.PURE_EMBER_CRYSTAL.get());
+                .addTag(AECSTags.Items.PURE_ENTRO_CRYSTAL);
     }
 }

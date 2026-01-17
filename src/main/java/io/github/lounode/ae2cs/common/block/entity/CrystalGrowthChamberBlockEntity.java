@@ -104,7 +104,7 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
             @Override
             public boolean allowExtract(InternalInventory inv, int slot, int amount)
             {
-                return inv.getStackInSlot(slot).is(AECSTags.Items.PURIFIED_CRYSTAL);
+                return inv.getStackInSlot(slot).is(AECSTags.Items.PURE_CRYSTAL);
             }
         });
 
