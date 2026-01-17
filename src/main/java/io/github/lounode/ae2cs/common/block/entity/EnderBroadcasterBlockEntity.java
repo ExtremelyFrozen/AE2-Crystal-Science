@@ -639,6 +639,12 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
 
             this.cleanConnectionPermanent();
             this.connectToBand(targetLink.bandName(), targetLink.asSender());
+
+            Integer expectChannelsPacked = input.get(AECSDataComponents.MEMORY_CARD_BROADCASTER_RECEIVER_EXPECT_CHANNELS.get());
+            if(expectChannelsPacked != null && !targetLink.asSender())
+            {
+                this.setExpectedChannels(expectChannelsPacked);
+            }
         }
     }
 
@@ -656,6 +662,10 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
             boolean asSender = this.connectionType == ConnectionType.AS_SENDER;
 
             builder.set(AECSDataComponents.MEMORY_CARD_BAND_INFO, new MemoryCardBandInfo(bandId, asSender));
+            if(!asSender)
+            {
+                builder.set(AECSDataComponents.MEMORY_CARD_BROADCASTER_RECEIVER_EXPECT_CHANNELS, this.expectedChannels);
+            }
         }
     }
 

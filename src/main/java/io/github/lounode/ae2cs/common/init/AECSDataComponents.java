@@ -44,6 +44,14 @@ public class AECSDataComponents
                     .cacheEncoding()
             );
 
+    // 记录作为接收端时期望的频段数量
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> MEMORY_CARD_BROADCASTER_RECEIVER_EXPECT_CHANNELS =
+            register("meory_card_broadcaster_receiver_expect_channels", b -> b
+                    .persistent(Codec.INT)
+                    .networkSynchronized(ByteBufCodecs.VAR_INT)
+                    .cacheEncoding()
+            );
+
     // 记录发信器信息坐标位置
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<GlobalPos>> ENDER_EMITTER_POS =
             register("ender_emitter_pos", b -> b

@@ -377,7 +377,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
         SimpleCookingRecipeBuilder
                 .smelting(Ingredient.of(input), category, result, experience, cookingTime)
                 .unlockedBy(getHasName(input), has(input))
-                .save(output, "smelt/food/" + getItemName(result) + "_from_" + getItemName(input));
+                .save(output, AE2CrystalScience.makeId("smelt/food/" + getItemName(result) + "_from_" + getItemName(input)));
     }
 
     // 切石样板辅助工具---------------------------------------------------------------
@@ -394,7 +394,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
 
         SingleItemRecipeBuilder.stonecutting(ingredient, category, result, resultCount)
                 .unlockedBy(getHasName(input), has(input))
-                .save(recipeOutput, recipeId);
+                .save(recipeOutput, AE2CrystalScience.makeId(recipeId));
     }
 
     protected static void stonecutterResultFromItem(
@@ -424,7 +424,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
 
         SingleItemRecipeBuilder.stonecutting(ingredient, category, result, resultCount)
                 .unlockedBy(unlockName, has(input))
-                .save(recipeOutput, recipeId);
+                .save(recipeOutput, AE2CrystalScience.makeId(recipeId));
     }
 
     protected static void stonecutterResultFromTag(

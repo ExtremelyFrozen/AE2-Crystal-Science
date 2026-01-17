@@ -151,6 +151,12 @@ public class CrystalAggregatorRecipeBuilder implements RecipeBuilder
     }
 
     @Override
+    public void save(@NotNull RecipeOutput recipeOutput, @NotNull String id)
+    {
+        save(recipeOutput, AE2CrystalScience.parseOrMakeId(id));
+    }
+
+    @Override
     public void save(@NotNull RecipeOutput recipeOutput)
     {
         ResourceLocation path = AE2CrystalScience.makeId("aggregator/" + RecipeBuilder.getDefaultRecipeId(getResult()).getPath());

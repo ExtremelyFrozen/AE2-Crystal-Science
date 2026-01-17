@@ -62,4 +62,14 @@ public class AE2CrystalScience
     {
         return ResourceLocation.fromNamespaceAndPath(AECSConstants.MODID, path);
     }
+
+    public static ResourceLocation parseOrMakeId(String path)
+    {
+        if (path.indexOf(':') >= 0)
+        {
+            return ResourceLocation.tryParse(path);
+        }
+        return AE2CrystalScience.makeId(path);
+    }
+
 }

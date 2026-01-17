@@ -6,6 +6,7 @@ import appeng.recipes.handlers.InscriberProcessType;
 import appeng.recipes.handlers.InscriberRecipeBuilder;
 import appeng.recipes.transform.TransformCircumstance;
 import appeng.recipes.transform.TransformRecipeBuilder;
+import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.common.recipe.ResonatingPatternUpgradeRecipe;
@@ -49,7 +50,7 @@ public class AECSMiscRecipeProvider extends AECSRecipeProvider
 
         // 添加谐振样板配方
         SpecialRecipeBuilder.special(ResonatingPatternUpgradeRecipe::new)
-                .save(recipeOutput, "resonating_pattern_upgrade");
+                .save(recipeOutput, AE2CrystalScience.makeId("resonating_pattern_upgrade"));
 
         // 添加谐振样板拆解
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEItems.BLANK_PATTERN)
