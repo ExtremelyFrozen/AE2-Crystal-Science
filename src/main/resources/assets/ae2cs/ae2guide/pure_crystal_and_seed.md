@@ -34,86 +34,115 @@ item_ids:
   - ae2cs:redstone_crystal_dust
   - ae2cs:quantum_crystal_dust
   - ae2cs:irradiated_crystal_dust
-
 ---
 
 # 高纯水晶与水晶种子
 
+在 AECS 中，高纯水晶是一类**必须通过生产流程获取**的基础材料。
+
+---
+
+## 生产流程概览
+
+大部分高纯水晶的获取流程遵循相同的基本结构：
+
+1. 获取对应材料的粉尘
+2. 使用粉尘合成水晶种子
+3. 通过生长机制将种子转化为高纯水晶
+
+---
+
 ## 粉尘
-<Row>
-  <ItemImage id="ae2:certus_quartz_dust" scale="3" />
-  <ItemImage id="ae2:fluix_dust" scale="3" />
-  <ItemImage id="nether_quartz_dust" scale="3" />
-  <ItemImage id="ae2:ender_dust" scale="3" />
-  <ItemImage id="ae2:sky_dust" scale="3" />
-  <ItemImage id="resonating_crystal_dust" scale="3" />
+
+<Row gap="16">
+  <ItemImage id="ae2:certus_quartz_dust" scale="2" />
+  <ItemImage id="ae2:fluix_dust" scale="2" />
+  <ItemImage id="ae2cs:nether_quartz_dust" scale="2" />
+  <ItemImage id="ae2:ender_dust" scale="2" />
+  <ItemImage id="ae2:sky_dust" scale="2" />
+  <ItemImage id="ae2cs:resonating_crystal_dust" scale="2" />
 </Row>
 
-所有的高纯水晶都必须从水晶种子长成，而对于模组中大部分水晶种子而言，它们都是各自对应的材料粉尘与沙子或者其他材料结合得来的。
-例如：如果想获取一个高纯赛特斯石英，你需要先将一个普通的赛特斯石英磨成粉末。
-你肯定有多种方法能做到这件事，不过在游戏早期，电力尚不充足的情况下，你可以使用AECS提供的新机器——石英磨具：
-这是一种使用即可以用电也可以用木质曲柄驱动的智能机器，支持复杂的面配置和自动输入输出，且与压印器一样容易制作，你可以使用它制作第一个赛特斯石英粉。
-等游戏走到中期，你可以将其替换成晶能粉碎机以增加效率。
-在完成粉尘的获取后，就可以进入AECS的下一步——获取水晶种子。
+粉尘是水晶生产流程的起点。
+大多数水晶种子由对应材料的粉尘与沙子或其他辅助材料合成获得。
+
+在游戏早期，电力供应尚不充足时，可以使用 **<ItemLink id="ae2cs:quartz_grindstone" />** 获取第一批粉尘。
+该设备支持电力或使用 **<ItemLink id="ae2:crank" />** 驱动，适合用于初期资源处理。
+
+随着生产规模扩大，可以使用 **<ItemLink id="ae2cs:crystal_pulverizer" />** 提高粉尘获取效率。
+
+---
 
 ## 水晶种子
-<Row>
-  <ItemImage id="certus_quartz_seed" scale="3" />
-  <ItemImage id="fluix_crystal_seed" scale="3" />
-  <ItemImage id="nether_quartz_seed" scale="3" />
-  <ItemImage id="ender_quartz_seed" scale="3" />
-  <ItemImage id="meteor_seed" scale="3" />
-  <ItemImage id="resonating_seed" scale="3" />
+
+<Row gap="16">
+  <ItemImage id="ae2cs:certus_quartz_seed" scale="2" />
+  <ItemImage id="ae2cs:fluix_crystal_seed" scale="2" />
+  <ItemImage id="ae2cs:nether_quartz_seed" scale="2" />
+  <ItemImage id="ae2cs:ender_quartz_seed" scale="2" />
+  <ItemImage id="ae2cs:meteor_seed" scale="2" />
+  <ItemImage id="ae2cs:resonating_seed" scale="2" />
 </Row>
 
-水晶种子的获取十分简单，对于赛特斯石英、福鲁伊克斯水晶、下界石英这类基础资源来说，只需要将一个粉尘与一块沙子在工作台中混合，就可以得到两个对应的种子。
-而对于末影水晶、陨石水晶、谐振水晶这几种略高级的资源来说，它们的合成就要稍微复杂一些，基本上是一些更复杂的资源混合，随后只能得到一个对应的种子。
-下面是它们的具体配方：
-<RecipeFor id="ender_quartz_seed" /> 
-<RecipeFor id="meteor_seed" /> 
-<RecipeFor id="resonating_seed" /> 
-虽然这些粉尘在工作台中混合只能获得1个对应的种子，但这并不意味着你没有办法对他们进行快速增产。当你制造出第一台晶能聚合器之后，同样数量的粉尘就能被聚合成更多种子。
+水晶种子是高纯水晶的直接前置形态。
+对于赛特斯石英、福鲁伊克斯水晶和下界石英等基础资源，通常可以通过将粉尘与沙子在工作台中合成获得水晶种子。
+
+对于末影水晶、陨石水晶和谐振水晶等高级资源，其水晶种子的合成通常需要更复杂的材料组合，且单次合成只能获得一个种子。
+
+以下配方展示了部分高级水晶种子的合成方式：
+
+<Row gap="16">
+<Recipe id="ae2cs:craft/shapeless/ender_quartz_seed" />
+<Recipe id="ae2cs:craft/shapeless/meteor_seed" />
+<Recipe id="ae2cs:craft/shapeless/resonating_seed" />
+</Row>
+
+当引入 **<ItemLink id="ae2cs:crystal_aggregator" />** 后，可以使用相同数量的粉尘聚合出更多水晶种子，用于提升整体产量。
+
+---
 
 ## 高纯水晶
-<Row>
-  <ItemImage id="purified_certus_quartz_crystal" scale="3" />
-  <ItemImage id="purified_fluix_crystal" scale="3" />
-  <ItemImage id="purified_nether_quartz_crystal" scale="3" />
-  <ItemImage id="purified_ender_quartz" scale="3" />
-  <ItemImage id="purified_meteor_crystal" scale="3" />
-  <ItemImage id="purified_resonating_crystal" scale="3" />
+
+<Row gap="16">
+  <ItemImage id="ae2cs:purified_certus_quartz_crystal" scale="2" />
+  <ItemImage id="ae2cs:purified_fluix_crystal" scale="2" />
+  <ItemImage id="ae2cs:purified_nether_quartz_crystal" scale="2" />
+  <ItemImage id="ae2cs:purified_ender_quartz" scale="2" />
+  <ItemImage id="ae2cs:purified_meteor_crystal" scale="2" />
+  <ItemImage id="ae2cs:purified_resonating_crystal" scale="2" />
 </Row>
 
-那么，恭喜你，得到第一个水晶种子后，你就可以很轻松的获得谐振水晶了，只需将它们扔进水池里面，等待一段时间，它们就会长成高纯水晶。在一般情况下，一个水晶种子需要600游戏刻长成。
-你可以使用<ItemLink id="ae2:growth_accelerator" />加速这个过程。每一台催生器都能为其额外提供1tick生长效率（既每生长1刻实际增长的成长进度）
-或者，你可以制造一台<ItemLink id="crystal_growth_chamber" />批量催生水晶，这台机器可以通过加速卡为其额外提供生长效率，并且同时能获得临近催生器的加速效果。
-在得到你的第一个高纯水晶后，你就成功进入了AECS的世界，我建议你尽快准备一些谐振水晶，以制造AECS的高级机器，相信我，它们会非常有用。
+高纯水晶由水晶种子生长获得，是 AECS 中多种系统的核心材料。
+在默认情况下，一个水晶种子需要约 600 游戏刻完成生长。
+
+水晶种子可以放置在水中自然生长，也可以使用 **<ItemLink id="ae2cs:crystal_growth_chamber" />** 进行集中处理。
+晶体催生仓支持加速卡，并可叠加来自邻近催生器的生长加成，适合用于批量生产高纯水晶。
+
+---
 
 ## 谐振水晶粉
-<ItemImage id="resonating_crystal_dust" scale="3" /> 
-哈哈，我想起来谐振水晶粉末与其他水晶粉末都不一样，作为模组最高级的材料，你需要将一个高纯石英水晶、一个红石块、一个高纯末影水晶放在一起，经过一场爆炸后，才能得到你的第一个谐振水晶粉末。
-<Recipe id="ae2cs:transform/resonating_crystal_dust" /> 
 
+<ItemImage id="ae2cs:resonating_crystal_dust" scale="2" />
+
+谐振水晶粉是一种特殊的高阶材料，其获取方式不同于其他粉尘。
+第一个谐振水晶粉必须通过特定的转换配方获得，而非直接粉碎水晶。
+
+<Recipe id="ae2cs:transform/resonating_crystal_dust" />
+
+---
 
 ## 联动水晶
-<Row>
-  <ItemImage id="purified_entro_crystal" scale="3" />
-  <ItemImage id="purified_redstone_crystal" scale="3" />
-  <ItemImage id="purified_quantum_crystal" scale="3" />
-  <ItemImage id="purified_rose_quartz" scale="3" />
-  <ItemImage id="purified_irradiated_crystal" scale="3" />
-  <ItemImage id="purified_ember_crystal" scale="3" />
+
+<Row gap="16">
+  <ItemImage id="ae2cs:purified_entro_crystal" scale="2" />
+  <ItemImage id="ae2cs:purified_redstone_crystal" scale="2" />
+  <ItemImage id="ae2cs:purified_quantum_crystal" scale="2" />
+  <ItemImage id="ae2cs:purified_rose_quartz" scale="2" />
+  <ItemImage id="ae2cs:purified_irradiated_crystal" scale="2" />
+  <ItemImage id="ae2cs:purified_ember_crystal" scale="2" />
 </Row>
-AECS也为各类常见的模组提供了高纯水晶，这里对它们的作用进行一些介绍，具体获取方式请参考jei/emi：
-  <ItemLink id="purified_entro_crystal" /> 提供与恩特罗水晶一致tag，可参与一部分恩特罗水晶的配方（EAE）
-  <ItemLink id="purified_redstone_crystal" /> 通过充能器或者晶能聚合器可转换为红石水晶（Applied Fluix）
-  <ItemLink id="purified_quantum_crystal" /> 通过晶能粉碎机可粉碎为量子水晶粉，量子水晶粉在晶能聚合器内与任意锭结合获得量子合金（AAE）
-  <ItemLink id="purified_rose_quartz" /> 通过切石机或动力切割机变为2个磨制石英水晶（Create）
-  <ItemLink id="purified_irradiated_crystal" /> 可在化学氧化机中转换为500ml核废料（MEK）
-  <ItemLink id="purified_ember_crystal" /> 在晶能聚合器中与迷你TNT结合获得两份余烬水晶
 
+AECS 还为部分常见模组提供了对应的高纯水晶，用于实现材料层面的联动。
+其具体用途各不相同。
 
-
-
-
-
+相关配方与用途可通过 JEI 或 EMI 查询。
