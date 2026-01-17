@@ -1,7 +1,7 @@
 ---
 navigation:
   parent: index.md
-  title: ME集成接口
+  title: ME Integrated Interface
   icon: ae2cs:integrated_interface
   position: 130
 item_ids:
@@ -13,10 +13,10 @@ item_ids:
   - ae2cs:extended_integrated_interface_upgrade
 ---
 
-# ME集成接口
+# ME Integrated Interface
 
-ME 集成接口源自旧版 AE2 中的ME接口，
-在 AECS 中以独立部件的形式添加。
+The ME Integrated Interface originates from the ME Interface found in older versions of AE2,
+and is reintroduced in AECS as a standalone network component.
 
 <Row gap="16">
   <BlockImage id="ae2cs:integrated_interface" scale="2" />
@@ -29,30 +29,30 @@ ME 集成接口源自旧版 AE2 中的ME接口，
 
 ---
 
-## 功能定位
+## Functional Role
 
-**ME 集成接口** 是 AECS 提供的一类网络部件。
-它在功能上融合了原版 **<ItemLink id="ae2:interface" />** 与  
-**<ItemLink id="ae2:pattern_provider" />** 的行为特性。
-
----
-
-## 普通与扩展版本
-
-ME 集成接口提供普通版与扩展版两种形态：
-
-- **普通 ME 集成接口**
-    - 提供基础数量的可用槽位
-- **扩展 ME 集成接口**
-    - 提供普通版本 **4 倍** 的槽位容量
-
-两种版本在功能逻辑上完全一致。
+The **ME Integrated Interface** is a category of network components provided by AECS.
+Functionally, it combines the behavior of the vanilla **<ItemLink id="ae2:interface" />** and  
+the **<ItemLink id="ae2:pattern_provider" />** into a single device.
 
 ---
 
-## 形态与升级
+## Standard and Extended Variants
 
-ME 集成接口以方块或部件形式存在，
-可安装在对应的网络结构中。
+The ME Integrated Interface is available in two variants: standard and extended.
 
-通过升级物品，可以将普通版本扩展为更高容量的形态。
+- **Standard ME Integrated Interface**
+  - Provides a basic number of available slots
+- **Extended ME Integrated Interface**
+  - Provides **4×** the slot capacity of the standard version
+
+Both variants share identical functional logic.
+
+---
+
+## Forms and Upgrades
+
+The ME Integrated Interface exists in both block and part forms,
+allowing it to be installed into appropriate network structures.
+
+By using upgrade items, the standard version can be expanded into a higher-capacity variant.

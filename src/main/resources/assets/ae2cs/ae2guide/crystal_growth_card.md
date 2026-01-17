@@ -1,31 +1,31 @@
 ---
 navigation:
   parent: index.md
-  title: 晶体催生卡
+  title: Crystal Growth Card
   icon: ae2cs:crystal_growth_card
   position: 230
 item_ids:
   - ae2cs:crystal_growth_card
 ---
 
-# 晶体催生卡
+# Crystal Growth Card
 
 <Row gap="16">
   <ItemImage id="ae2cs:crystal_growth_card" scale="2" />
 </Row>
 
-**晶体催生卡** 是 AECS 提供的一种功能性升级卡，
-用于为邻近的 **<ItemLink id="ae2cs:crystal_growth_chamber" />**
-提供额外的生长加速效果。
+The **Crystal Growth Card** is a functional upgrade card provided by AECS.
+It is used to grant additional growth acceleration to nearby  
+**<ItemLink id="ae2cs:crystal_growth_chamber" />**.
 
 ---
 
-## 放置方式
+## Placement and Usage
 
-晶体催生卡可以被放入多种网络部件中使用，例如：
+Crystal Growth Cards can be installed into various network components, such as:
 
-- 各类 ME 接口
-- 各类 ME 总线
+- Different types of **ME Interfaces**
+- Different types of **ME Buses**
 
-只要该部件位于晶体催生仓临近位置，
-催生卡的加速效果就会对其生效。
+As long as the component containing the card is placed adjacent to a Crystal Growth Chamber,
+the acceleration effect provided by the Growth Card will apply to that chamber.

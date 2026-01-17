@@ -1,7 +1,7 @@
 ---
 navigation:
   parent: index.md
-  title: 石英震荡钟
+  title: Quartz Oscillator Clock
   icon: ae2cs:quartz_oscillator_clock
   position: 180
 item_ids:
@@ -9,50 +9,50 @@ item_ids:
   - ae2cs:quartz_oscillator_clock_part
 ---
 
-# 石英震荡钟
+# Quartz Oscillator Clock
 
 <Row gap="16">
   <BlockImage id="ae2cs:quartz_oscillator_clock" scale="2" />
   <ItemImage id="ae2cs:quartz_oscillator_clock_part" scale="2" />
 </Row>
 
-**石英震荡钟** 是 AECS 提供的一种周期性红石信号发生部件，
-用于在固定节奏下输出稳定、可配置的红石脉冲。
-它适合用于需要精确时序控制的自动化系统。
+The **Quartz Oscillator Clock** is a periodic redstone signal generator provided by AECS.
+It outputs stable, configurable redstone pulses at a fixed rhythm,
+making it suitable for automation systems that require precise timing control.
 
 ---
 
-## 功能定位
+## Functional Role
 
-石英震荡钟用于解决以下需求：
+The Quartz Oscillator Clock is designed to address the following needs:
 
-- 以固定周期重复触发红石信号
-- 为自动化设备提供稳定的时间基准
+- Repeatedly trigger redstone signals at a fixed interval
+- Provide a stable time reference for automated devices
 
-该设备主要作为**控制与调度组件**使用，
-而非能量或物品处理设备。
-
----
-
-## 信号行为
-
-石英震荡钟的红石输出具备以下特性：
-
-- 周期性输出红石信号
-- 每次触发均由两个参数共同决定：
-    - **触发持续时间**：红石信号保持激活的时间
-    - **触发间隔时间**：两次触发之间的等待时间
-
-通过调整这两个参数，
-可以构建从短脉冲到长周期触发的多种时序模式。
+This device is primarily used as a **control and scheduling component**,
+rather than as an energy or item processing machine.
 
 ---
 
-## 网络与频道行为
+## Signal Behavior
 
-石英震荡钟可以连接到 ME 网络中，
-但其网络行为具有以下特点：
+The redstone output of the Quartz Oscillator Clock has the following characteristics:
 
-- **不消耗频道**
-- 可作为网络结构的一部分存在
-- 可参与频道的传递路径
+- Outputs redstone signals periodically
+- Each trigger is defined by two parameters:
+  - **Pulse Width**: the duration for which the redstone signal remains active
+  - **Interval**: the waiting time between consecutive triggers
+
+By adjusting these two parameters,
+a wide range of timing patterns can be created, from short pulses to long-period triggers.
+
+---
+
+## Network and Channel Behavior
+
+The Quartz Oscillator Clock can be connected to the ME network,
+with the following network characteristics:
+
+- **Does not consume channels**
+- Can exist as part of the network structure
+- Can participate in channel transmission paths

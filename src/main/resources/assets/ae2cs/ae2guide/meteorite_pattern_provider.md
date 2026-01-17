@@ -1,7 +1,7 @@
 ---
 navigation:
   parent: index.md
-  title: 自装配式样板供应器
+  title: Meteorite Pattern Provider
   icon: ae2cs:meteorite_pattern_provider
   position: 170
 item_ids:
@@ -10,7 +10,7 @@ item_ids:
   - ae2cs:meteor_pattern_provider_upgrade
 ---
 
-# 自装配式样板供应器
+# Meteorite Pattern Provider
 
 <Row gap="16">
   <BlockImage id="ae2cs:meteorite_pattern_provider" scale="2" />
@@ -18,62 +18,62 @@ item_ids:
   <ItemImage id="ae2cs:meteor_pattern_provider_upgrade" scale="2" />
 </Row>
 
-**自装配式样板供应器** 是 AECS 提供的一种高度集成的网络部件，
-用于在 ME 网络中直接完成 **非处理样板** 驱动的合成任务。
-它将样板管理与合成执行整合在同一设备中，
-不再依赖外部分子装配室。
+The **Meteorite Pattern Provider** is a highly integrated network component provided by AECS.
+It is designed to directly execute crafting tasks driven by **non-processing patterns** within the ME network.
+By combining pattern storage and crafting execution into a single device,
+it no longer relies on external Molecular Assemblers.
 
 ---
 
-## 功能定位
+## Functional Role
 
-自装配式样板供应器主要用于：
+The Meteorite Pattern Provider is primarily used to:
 
-- 集中存放并执行大量合成样板
-- 在网络内部直接完成合成并回收产物
-
----
-
-## 样板容量
-
-自装配式样板供应器提供了大容量的样板存放空间：
-
-- 可容纳 **63 个样板**
-- 既能容纳合成样板，也可以容纳处理样板
+- Centrally store and execute a large number of crafting patterns
+- Complete crafting operations directly within the network and return outputs automatically
 
 ---
 
-## 合成行为
+## Pattern Capacity
 
-当 ME 网络向自装配式样板供应器发送材料时：
+The Meteorite Pattern Provider offers a large pattern storage capacity:
 
-- **合成样板**
-    - 设备会在接收到材料后立即完成合成
-    - 成品会直接送回 ME 网络
-
-- **其他类型样板**
-    - 材料会按照常规路径发送
-    - 行为与普通样板供应器保持一致
+- Can hold up to **63 patterns**
+- Supports both Crafting Patterns and Processing Patterns
 
 ---
 
-## 合成速度与加速
+## Crafting Behavior
 
-自装配式样板供应器的合成处理能力可通过加速卡进行扩展：
+When the ME network sends materials to a Meteorite Pattern Provider:
 
-- 每游戏刻内可执行的合成次数会随加速卡数量提升
-- 在未安装加速卡时，设备即可提供稳定的合成能力
-- 安装加速卡后，可在短时间内处理大量合成请求
+- **Crafting Patterns**
+  - Crafting is completed immediately upon receiving the required materials
+  - Finished products are sent directly back into the ME network
+
+- **Other Pattern Types**
+  - Materials are forwarded along the standard processing path
+  - Behavior remains identical to that of a normal Pattern Provider
 
 ---
 
-## 网络集成与频道行为
+## Crafting Speed and Acceleration
 
-自装配式样板供应器在网络中不仅承担合成功能，
-同时也是一个具有高频道容量的网络节点：
+The crafting throughput of the Meteorite Pattern Provider can be expanded using Acceleration Cards:
 
-- **单个设备可传递最多 32 个频道**
+- The number of crafting operations per game tick increases with each Acceleration Card installed
+- Even without Acceleration Cards, the device provides stable crafting performance
+- With Acceleration Cards installed, it can handle a large number of crafting requests in a short time
 
-利用这一特性，可以通过并联多个自装配式样板供应器，
-在有限空间内构建小型、高效率的合成阵列，
-用于集中处理大量自动合成任务。
+---
+
+## Network Integration and Channel Behavior
+
+In addition to its crafting functionality,
+the Meteorite Pattern Provider also acts as a high-capacity network node:
+
+- **A single device can transmit up to 32 channels**
+
+By placing multiple Meteorite Pattern Providers in parallel,
+it is possible to build compact, high-efficiency crafting arrays within limited space,
+enabling centralized handling of large-scale automated crafting tasks.

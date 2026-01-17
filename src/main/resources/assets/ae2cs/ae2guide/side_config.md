@@ -1,61 +1,61 @@
 ---
 navigation:
   parent: index.md
-  title: 机器的面配置
+  title: Machine Side Configuration
   icon: ae2cs:crystal_aggregator
   position: 50
 ---
 
-# 机器的面配置
+# Machine Side Configuration
 
-AECS 为大多数机器提供了一套统一的**面配置系统**，用于精确控制物品或资源在机器各个面的流向。
-
----
-
-## 面配置界面
-
-![面配置](assets/side_config.png)
-
-打开支持面配置的机器界面后，可以看到对应的面配置视图。
-每一个方块面都可以被单独设置其行为，用于决定该面是否参与输入或输出。
+AECS provides a unified **side configuration system** for most machines, allowing precise control over how items or resources flow through each face of a machine.
 
 ---
 
-## 面状态说明
+## Side Configuration Interface
 
-在面配置界面中，不同颜色代表不同的面行为：
+![Side Configuration](assets/side_config.png)
 
-- **红色**：仅允许输入
-- **蓝色**：仅允许输出
-- **紫色**：允许输入与输出
-- **灰色**：禁止输入与输出
-
-无论面被如何配置，机器始终遵循以下规则：
-
-- 输入槽位不会被物流管道输出
-- 输出槽位不会被物流管道输入
+After opening the interface of a machine that supports side configuration, the corresponding side configuration view will be displayed.
+Each block face can be configured independently to determine whether it participates in input or output operations.
 
 ---
 
-## 主动模式控制
+## Side State Explanation
 
-面配置界面右侧提供了三个控制按钮，用于调整机器的主动行为模式：
+In the side configuration interface, different colors represent different side behaviors:
 
-- **主动输入**
-- **主动输出**
-- **清空面配置**
+- **Red**: Input only
+- **Blue**: Output only
+- **Purple**: Input and output
+- **Gray**: Disabled (no input or output)
 
-当某一主动模式启用时，其对应按钮会保持高亮状态。
+Regardless of how sides are configured, machines always follow these rules:
 
-### 主动输入：
+- Input slots will never be extracted by logistics or pipes
+- Output slots will never accept items from logistics or pipes
 
-- 机器只会从**被允许输入的面**主动抽取资源
+---
 
-### 主动输出：
+## Active Mode Controls
 
-- 机器只会从**被允许输出的面**主动弹出产物
+Three control buttons are available on the right side of the side configuration interface, used to adjust the machine’s active behavior modes:
 
-### 清空面配置：
+- **Auto Import**
+- **Auto Export**
+- **Clear Side Configuration**
 
-- 清空操作会将所有面的状态重置为**禁用**状态，
-用于快速恢复到未配置的初始行为。
+When an active mode is enabled, its corresponding button remains highlighted.
+
+### Auto Import
+
+- The machine will actively pull resources only from **sides that are allowed for input**
+
+### Auto Export
+
+- The machine will actively push outputs only through **sides that are allowed for output**
+
+### Clear Side Configuration
+
+- Clears all side settings and resets every side to the **Disabled** state,  
+  allowing the machine to quickly return to its unconfigured default behavior.

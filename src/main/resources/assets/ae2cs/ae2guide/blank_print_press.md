@@ -1,7 +1,7 @@
 ---
 navigation:
   parent: index.md
-  title: 空白压印模板
+  title: Inscriber Blank Press
   icon: ae2cs:blank_print_press
   position: 220
 item_ids:
@@ -9,19 +9,20 @@ item_ids:
   - ae2cs:ender_blank_print_press
 ---
 
-# 空白压印模板
+# Inscriber Blank Press
 
 <Row gap="16">
   <ItemImage id="ae2cs:blank_print_press" scale="2" />
   <ItemImage id="ae2cs:ender_blank_print_press" scale="2" />
 </Row>
 
-**空白压印模板** 是 AECS 提供的一种用于模板本身存储的工具。
-它可以通过模板合成，也可以在切石机中重新转换为各类模板。
+The **Inscriber Blank Press** is a tool provided by AECS for storing press templates themselves.
+It can be obtained through crafting,
+and can also be converted back into various specific presses using a Stonecutter.
 
 ---
 
-## 模板加工
+## Press Processing
 
-空白压印模板可以在**切石机**中进行加工，
-被制造为不同类型的模板。
+Inscriber Blank Presses can be processed in a **Stonecutter**
+to be turned into different types of Inscriber Presses.

@@ -1,7 +1,7 @@
 ---
 navigation:
   parent: index.md
-  title: Crystal Tools
+  title: 水晶工具
   icon: ae2cs:resonating_crystal_pickaxe
   position: 20
 item_ids:
@@ -22,24 +22,24 @@ item_ids:
   - ae2cs:resonating_crystal_hoe
 ---
 
-# Crystal Tools
+# 水晶工具
 
-In AECS, one of the most direct uses of Purified Crystals is the creation of tools.
-While these tools remain within the bounds of vanilla tool tiers in terms of base stats, their added functionality makes them significantly more practical.
-
----
-
-## Tool Categories Overview
-
-AECS provides three categories of crystal tools, each focusing on a different aspect:
-
-- **Ender Crystal Tools**: Interaction with the ME network
-- **Meteor Crystal Tools**: Base performance
-- **Resonating Crystal Tools**: Combined performance and network capabilities
+在 AECS 中，高纯水晶最直接的用途之一是制造工具。
+这些工具在数值层面仍然属于原版工具体系的范围，但通过附加功能，其具备更高的实用性。
 
 ---
 
-## Ender Crystal Tools
+## 工具分类概览
+
+AECS 提供三类水晶工具，分别对应不同侧重点：
+
+- **末影水晶工具**：与 ME 网络的交互
+- **陨石水晶工具**：基础性能
+- **谐振水晶工具**：综合性能与网络能力
+
+---
+
+## 末影水晶工具
 
 <Row gap="16">
   <ItemImage id="ae2cs:ender_crystal_sword" scale="2" />
@@ -57,17 +57,17 @@ AECS provides three categories of crystal tools, each focusing on a different as
   <RecipeFor id="ender_crystal_hoe" />
 </Row>
 
-Ender Crystal Tools have diamond-tier mining level, mining speed, and durability.
-Their defining feature is the ability to bind to a **<ItemLink id="ae2:wireless_access_point" />**.
+末影水晶工具具有钻石等级的挖掘等级、挖掘速度和耐久度。
+其主要特性在于可以绑定到 **<ItemLink id="ae2:wireless_access_point" />**。
 
-When an Ender Crystal Tool is used to mine blocks or defeat entities, the resulting drops are sent directly into the inventory of the bound ME network.
+当末影水晶工具完成挖掘或击杀行为时，产生的掉落物会被直接发送至其绑定的 ME 网络库存中。
 
-Unlike Wireless Terminals, Ender Crystal Tools do not require the tool itself to be within the effective connection range of a Wireless Access Point.
-As long as the chunk containing the bound Wireless Access Point is loaded, this functionality will work as expected.
+与无线终端不同，末影水晶工具在使用时不要求工具本身处于无线接入点的有效连接范围内。
+只要绑定的无线接入点所在区块处于加载状态，该功能即可正常生效。
 
 ---
 
-## Meteor Crystal Tools
+## 陨石水晶工具
 
 <Row gap="16">
   <ItemImage id="ae2cs:meteor_crystal_sword" scale="2" />
@@ -85,15 +85,15 @@ As long as the chunk containing the bound Wireless Access Point is loaded, this 
   <RecipeFor id="meteor_crystal_hoe" />
 </Row>
 
-Meteor Crystal Tools do not have the ability to send drops directly into the ME network.
-Their design focus is on base performance:
+陨石水晶工具不具备将掉落物直接传输至 ME 网络的能力。
+其设计重点在于基础性能：
 
-- Netherite-tier mining level and mining speed
-- Durability approximately 90% of standard Netherite tools
+- 下界合金等级的挖掘等级与挖掘速度
+- 耐久度约为下界合金工具的 90%
 
 ---
 
-## Resonating Crystal Tools
+## 谐振水晶工具
 
 <Row gap="16">
   <ItemImage id="ae2cs:resonating_crystal_sword" scale="2" />
@@ -111,16 +111,16 @@ Their design focus is on base performance:
   <RecipeFor id="resonating_crystal_hoe" />
 </Row>
 
-Resonating Crystal Tools combine the functionality and attributes of both Ender Crystal Tools and Meteor Crystal Tools:
+谐振水晶工具在功能和属性上结合了末影水晶工具与陨石水晶工具的特性：
 
-- Able to send drops directly into the ME network
-- Netherite-tier mining level
-- Gold-tier mining speed
-- Durability equal to twice that of Meteor Crystal Tools
+- 具备将掉落物直接发送至 ME 网络的能力
+- 具有下界合金等级的挖掘等级
+- 具备金工具的挖掘速度
+- 耐久度为陨石水晶工具的 2 倍
 
-In addition, each Resonating Crystal Tool comes with fixed enchantments:
+此外，每件谐振水晶工具都自带固定附魔：
 
-- Sword, Axe: Sharpness III
-- Pickaxe: Fortune III
-- Shovel: Silk Touch
-- Hoe: Efficiency V  
+- 剑、斧：锋利 III
+- 镐：时运 III
+- 锹：精准采集
+- 锄：效率 V

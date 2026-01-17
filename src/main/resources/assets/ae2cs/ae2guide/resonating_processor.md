@@ -1,7 +1,7 @@
 ---
 navigation:
   parent: index.md
-  title: 谐振处理器
+  title: Resonating Processor
   icon: ae2cs:resonating_processor
   position: 210
 item_ids:
@@ -10,7 +10,7 @@ item_ids:
   - ae2cs:resonating_processor
 ---
 
-# 谐振处理器
+# Resonating Processor
 
 <Row gap="16">
   <ItemImage id="ae2cs:resonating_print_press" scale="2" />
@@ -18,21 +18,22 @@ item_ids:
   <ItemImage id="ae2cs:resonating_processor" scale="2" />
 </Row>
 
-**谐振处理器** 是 AECS 中用于高级机器与网络部件制作的核心材料之一。
-它在定位上是 AECS 体系中的高阶处理器，
-主要用于构建与谐振水晶相关的功能性设备。
+The **Resonating Processor** is one of the core materials used for crafting advanced machines
+and network components in AECS.
+Within the AECS progression, it serves as a high-tier processor,
+primarily used to construct functional devices related to Resonating Crystals.
 
 ---
 
-## 组成与制作流程
+## Components and Crafting Process
 
-其主要步骤包括：
+The production of a Resonating Processor consists of the following steps:
 
-1. 制作 **谐振压印模板**
-2. 通过压印获得 **谐振电路板**
-3. 将电路板进一步加工为 **谐振处理器**
+1. Craft a **Resonating Inscriber Press**
+2. Use the Inscriber to produce a **Resonating Circuit Print**
+3. Further process the circuit print into a **Resonating Processor**
 
-对应配方如下：
+The corresponding recipes are shown below:
 
 <Row gap="16">
   <Recipe id="ae2cs:craft/shaped/resonating_print_press" />

@@ -1,73 +1,73 @@
 ---
 navigation:
   parent: index.md
-  title: 晶体催生仓
+  title: Crystal Growth Chamber
   icon: ae2cs:crystal_growth_chamber
   position: 80
 item_ids:
   - ae2cs:crystal_growth_chamber
 ---
 
-# 晶体催生仓
+# Crystal Growth Chamber
 
 <Row gap="16">
   <BlockImage id="ae2cs:crystal_growth_chamber" scale="8" />
 </Row>
 
-**晶体催生仓** 是 AECS 提供的集中式水晶生长设备，
-用于在受控环境中批量催生水晶种子，
-以替代原版依赖水环境的分散式生长方式。
+The **Crystal Growth Chamber** is a centralized crystal growth machine provided by AECS.
+It is designed to grow Crystal Seeds in bulk within a controlled environment,
+replacing the vanilla, water-based, distributed growth method.
 
 ---
 
-## 功能定位
+## Functional Role
 
-晶体催生仓的设计目标是解决水晶种子在规模化生产中的以下问题：
+The Crystal Growth Chamber is designed to address the following issues encountered when scaling up Crystal Seed production:
 
-- 生长过程分散，难以集中管理
-- 大量实体暴露在水中，存在被破坏或丢失的风险
-- 生长速度受限，难以满足中后期需求
+- Growth processes are scattered and difficult to manage centrally
+- Large numbers of entities exposed in water are at risk of being broken or lost
+- Growth speed is limited and cannot meet mid- to late-game demands
 
-通过将水晶种子集中放入设备内部，
-晶体催生仓能够在有限空间内稳定完成大规模催生。
-
----
-
-## 存储与容量
-
-晶体催生仓内部提供多个独立槽位，用于存放水晶种子：
-
-- 具备 **54 个槽位**
-- 每个槽位可放置 **最多 64 个水晶种子**
-- 单台设备可同时处理数千个水晶种子
-
-所有种子在设备内部统一管理，
-不需要额外的水源或外部环境条件。
+By placing Crystal Seeds inside the machine,
+the Crystal Growth Chamber enables stable, large-scale growth within a compact space.
 
 ---
 
-## 生长机制
+## Storage and Capacity
 
-晶体催生仓在运行时需要持续消耗能量：
+The Crystal Growth Chamber provides multiple internal slots for storing Crystal Seeds:
 
-- 仅在通电状态下进行催生
-- 所有放入的水晶种子都会同时参与生长过程
+- **54 slots** in total
+- Each slot can hold **up to 64 Crystal Seeds**
+- A single machine can process thousands of Crystal Seeds simultaneously
 
-设备支持多种加速方式：
-
-- 可安装 **加速卡** 提升整体生长效率
-- 可通过在设备周围放置 **催生器** 获得额外加速效果
-- 通过周围线缆部件中的 **<ItemLink id="ae2cs:crystal_growth_chamber" />** 获得额外加速效果
-
-这些加速效果可以叠加。
+All seeds are managed internally,
+without requiring any external water source or environmental conditions.
 
 ---
 
-## 机器特性
+## Growth Mechanics
 
-晶体催生仓具备以下通用机器特性：
+The Crystal Growth Chamber requires continuous power while operating:
 
-- 支持 **[面配置](side_config.md)** 系统
-- 可自动从所连接的 **ME 网络** 中获取能量
-- 支持通过外部能量线缆获取能量
-- **参与频道传递**
+- Growth only occurs while the machine is powered
+- All inserted Crystal Seeds participate in the growth process simultaneously
+
+The machine supports multiple acceleration methods:
+
+- **Speed Cards** can be installed to increase overall growth efficiency
+- Additional acceleration can be gained by placing nearby **Growth Accelerators**
+- Extra acceleration can also be obtained from adjacent cable components connected to the **<ItemLink id="ae2cs:crystal_growth_chamber" />**
+
+These acceleration effects can stack with each other.
+
+---
+
+## Machine Characteristics
+
+The Crystal Growth Chamber has the following general machine properties:
+
+- Supports the **[Side Configuration](side_config.md)** system
+- Can automatically draw power from the connected **ME network**
+- Can also receive power via external energy cables
+- **Participates in channel transmission**

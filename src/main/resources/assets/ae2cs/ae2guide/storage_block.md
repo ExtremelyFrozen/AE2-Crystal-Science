@@ -1,7 +1,7 @@
 ---
 navigation:
   parent: index.md
-  title: 存储方块
+  title: Storage Blocks
   icon: ae2cs:resonating_crystal_block
   position: 240
 item_ids:
@@ -15,16 +15,17 @@ item_ids:
   - ae2cs:irradiated_crystal_block
 ---
 
-# 存储方块
+# Storage Blocks
 
-存储方块用于将大量同类材料压缩为方块形式，
-以减少存储占用并便于集中管理。
-AECS 提供的存储方块主要用于水晶与相关材料，
-其行为与原版及 AE 系列模组中的存储方块保持一致。
+Storage Blocks are used to compress large quantities of the same material into block form,
+reducing storage space usage and making centralized management easier.
+The storage blocks provided by AECS are mainly used for crystals and related materials,
+and their behavior is consistent with storage blocks found in vanilla Minecraft
+and other AE-series mods.
 
 ---
 
-## 水晶块
+## Crystal Blocks
 
 <Row gap="16">
   <BlockImage id="ae2cs:ender_quartz_block" scale="2" />
@@ -32,31 +33,31 @@ AECS 提供的存储方块主要用于水晶与相关材料，
   <BlockImage id="ae2cs:resonating_crystal_block" scale="2" />
 </Row>
 
-水晶块用于存储对应类型的高纯水晶材料：
+Crystal Blocks are used to store the corresponding types of purified crystal materials:
 
-- 可在需要时分解回对应的水晶物品
-- 可作为**信标基座**使用
+- Can be decomposed back into the corresponding crystal items when needed
+- Can be used as **Beacon bases**
 
-这些水晶块不具备额外的功能性行为，
-其主要用途在于存储与建筑。
+These crystal blocks do not provide any additional functional behavior.
+Their primary purpose is storage and building.
 
 ---
 
-## 硅块
+## Silicon Block
 
 <Row gap="16">
   <BlockImage id="ae2cs:silicon_block" scale="2" />
 </Row>
 
-硅块用于存储硅材料：
+The Silicon Block is used to store Silicon material:
 
-- 提供压缩存储形式
-- 便于在中后期合成中批量调用
-- 不具备额外交互或功能效果
+- Provides a compressed storage form
+- Convenient for bulk usage in mid- to late-game crafting
+- Does not provide additional interaction or functional effects
 
 ---
 
-## 联动水晶块
+## Integration Crystal Blocks
 
 <Row gap="16">
   <BlockImage id="ae2cs:redstone_crystal_block" scale="2" />
@@ -65,7 +66,11 @@ AECS 提供的存储方块主要用于水晶与相关材料，
   <BlockImage id="ae2cs:irradiated_crystal_block" scale="2" />
 </Row>
 
-联动水晶块用于存储来自其他模组体系的高纯水晶材料：
+Integration Crystal Blocks are used to store purified crystal materials
+that originate from **other mod ecosystems** integrated with AECS:
 
-- 可在需要时分解回对应的水晶物品
-- 可作为**信标基座**使用
+- Can be decomposed back into the corresponding crystal items when needed
+- Can be used as **Beacon bases**
+
+These blocks exist to provide material-level interoperability with other mods,
+and do not introduce additional standalone mechanics.

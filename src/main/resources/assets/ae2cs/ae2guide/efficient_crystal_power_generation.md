@@ -1,33 +1,33 @@
 ---
 navigation:
   parent: index.md
-  title: 高效的水晶发电
+  title: Efficient Crystal Power Generation
   icon: ae2cs:crystal_vibration_chamber
   position: 40
 item_ids:
   - ae2cs:crystal_vibration_chamber
 ---
 
-# 高效的水晶发电
+# Efficient Crystal Power Generation
 
-AECS 为高纯水晶引入了可用于发电的属性，使水晶不仅作为材料参与合成，
-同时也可以作为一种可靠的游戏中期能源来源。
+AECS introduces power-generation properties to Purified Crystals, allowing them to function not only as crafting materials,
+but also as a reliable mid-game energy source.
 
 ---
 
-## 水晶蕴含的能量属性
+## Energy Properties of Crystals
 
-在 AECS 中，每一种高纯水晶都具备以下两项与发电相关的属性：
+In AECS, every type of Purified Crystal has the following two power-related attributes:
 
-- **能量密度**：水晶在燃烧过程中每游戏刻可释放的能量
-- **燃烧时间**：水晶在完全消耗前可持续燃烧的时间
+- **Energy Density**: The amount of energy released per game tick while the crystal is burning
+- **Burn Time**: The total duration the crystal can burn before being fully consumed
 
-这两项属性共同决定了单个水晶在发电时的效率与总能量产出。
+Together, these two attributes determine both the efficiency and the total energy output of a single crystal when used for power generation.
 
-下表列出了所有高纯水晶（包括联动水晶）的默认能量参数，作为参考数据使用。
-相关数值可通过配置进行调整，以适配不同整合包或服务器环境。
+The table below lists the default energy parameters of all Purified Crystals (including Integration Crystals) for reference.
+These values can be adjusted via configuration to better suit different modpacks or server environments.
 
-| 水晶 | 能量密度（AE/t） | 燃烧时间（tick） | 能量总量（AE） |
+| Crystal | Energy Density (AE/t) | Burn Time (ticks) | Total Energy (AE) |
 |:--:|:--:|:--:|:--:|
 | <ItemImage id="ae2cs:purified_certus_quartz_crystal" /> | 500 | 600 | 300,000 |
 | <ItemImage id="ae2cs:purified_fluix_crystal" /> | 1500 | 1200 | 1,800,000 |
@@ -44,36 +44,37 @@ AECS 为高纯水晶引入了可用于发电的属性，使水晶不仅作为材
 
 ---
 
-## 晶能谐振仓
+## Crystal Vibration Chamber
 
 <Row gap="16">
   <BlockImage id="ae2cs:crystal_vibration_chamber" scale="8" />
 </Row>
 
-**<ItemLink id="ae2cs:crystal_vibration_chamber" />** 是 AECS 提供的水晶发电设备，其工作方式与
-**<ItemLink id="ae2:vibration_chamber" />** 类似，但燃料由煤炭替换为高纯水晶。
+The **<ItemLink id="ae2cs:crystal_vibration_chamber" />** is AECS’s dedicated crystal-based power generator.
+It operates in a manner similar to the
+**<ItemLink id="ae2:vibration_chamber" />**, but replaces coal-based fuel with Purified Crystals.
 
 ---
 
-## 发电机制
+## Power Generation Mechanics
 
-晶能谐振仓通过消耗高纯水晶进行发电，其行为特性如下：
+The Crystal Vibration Chamber generates energy by consuming Purified Crystals, with the following behavior:
 
-- 支持最多 **3 张加速卡**
-- 每张加速卡：
-    - 提高燃烧速度
-    - 同步增加燃料消耗速率
+- Supports up to **3 Speed Cards**
+- Each Speed Card:
+  - Increases the burn rate
+  - Simultaneously increases fuel consumption
 
-晶能谐振仓产生的能量可以：
+Energy produced by the Crystal Vibration Chamber can be:
 
-- 直接输入到所连接的 **ME 网络**
-- 通过能量线缆导出，供其他模组系统以 **FE** 形式使用
+- Injected directly into the connected **ME network**
+- Exported via energy cables for use by other mod systems in the form of **FE**
 
 ---
 
-## 发电规模参考
+## Power Output Reference
 
-在默认配置下，使用高纯谐振水晶作为燃料时：
+Under default configuration, when using Purified Resonating Crystals as fuel:
 
-- 每台 **<ItemLink id="ae2cs:crystal_vibration_chamber" />**
-  可提供约 **12,500 FE/t** 的输出能力
+- Each **<ItemLink id="ae2cs:crystal_vibration_chamber" />**
+  can provide approximately **12,500 FE/t** of output

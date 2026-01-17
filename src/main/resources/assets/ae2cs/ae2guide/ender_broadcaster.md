@@ -1,162 +1,164 @@
 ---
 navigation:
   parent: index.md
-  title: 末影广播装置
+  title: Ender Broadcaster
   icon: ae2cs:ender_broadcaster
   position: 190
 item_ids:
   - ae2cs:ender_broadcaster
 ---
 
-# 末影广播装置
+# Ender Broadcaster
 
 <Row gap="16">
   <BlockImage id="ae2cs:ender_broadcaster" scale="8" />
 </Row>
 
-**末影广播装置** 是 AECS 提供的一种高级网络部件，
-用于在 ME 网络中实现基于“频段”的无线频道传输。
-它突破了传统线缆连接在距离与结构上的限制，
-将频道作为可集中管理的网络资源进行统一调度。
+The **Ender Broadcaster** is an advanced network component provided by AECS.
+It enables **band-based wireless channel transmission** within an ME network.
+By breaking the distance and structural limitations of traditional cable connections,
+it treats channels as centrally managed network resources and schedules them in a unified manner.
 
 ---
 
-## 功能定位
+## Functional Role
 
-末影广播装置用于解决大规模 ME 网络中频道传输与分配的问题：
+The Ender Broadcaster is designed to solve channel transmission and allocation challenges in large-scale ME networks:
 
-- 将多个网络节点中的剩余频道集中汇总
-- 在不铺设物理线缆的情况下远程分配频道
-- 支持在不同位置快速扩展或重构网络结构
+- Aggregate unused channels from multiple network nodes
+- Remotely allocate channels without laying physical cables
+- Rapidly expand or restructure network layouts across different locations
 
-其核心概念是 **频段**，
-频道不再直接依附于线缆结构，而是通过频段进行集中管理与分发。
-
----
-
-## 发送端与接收端
-
-末影广播装置在链接频段后，可工作在两种模式之一：
-
-### 发送端
-
-作为发送端时：
-
-- 会将自身所连接线缆中的**可用频道**上传至指定频段
-- 多个发送端可以同时链接到同一个频段
-- 频段内的频道数量会随发送端数量动态变化
-
-一种常见用法是：
-将多个末影广播装置作为发送端连接到 ME 控制器周围，
-并统一链接到同一频段，
-从而将大量频道集中存入频段中备用。
+Its core concept is the **Band**.
+Channels are no longer directly bound to cable structures,
+but are centrally managed and distributed through bands.
 
 ---
 
-### 接收端
+## Sender and Receiver Modes
 
-作为接收端时：
+After linking to a band, an Ender Broadcaster can operate in one of two modes:
 
-- 从指定频段中获取一定数量的频道
-- 获得的频道可直接用于构建或扩展 ME 网络
-- 接收数量可根据需求进行配置
+### Sender
 
-通过这种方式，
-可以在任意位置快速建立与原网络逻辑上相连的网络结构。
+When operating as a sender:
 
----
+- Uploads the **available channels** from its connected cables into the specified band
+- Multiple senders can be linked to the same band simultaneously
+- The total channel capacity of the band changes dynamically with the number of senders
 
-## 频道调度与网络扩展
-
-通过频段机制：
-
-- 频道可以被集中存储、按需分配
-- 网络扩展不再依赖连续的线缆铺设
-- 可以在不同地点建立共享频道池的网络节点
+A common use case is:
+placing multiple Ender Broadcasters as senders around an ME Controller,
+linking them all to the same band,
+and thereby pooling a large number of channels into the band for later use.
 
 ---
 
-## 内存卡支持
+### Receiver
 
-末影广播装置支持使用内存卡进行配置复制：
+When operating as a receiver:
 
-- 可在广播装置之间快速复制链接状态
-- 可同步机器的模式与相关设置
-- 避免对大量设备进行重复的手动配置
+- Retrieves a configurable number of channels from the specified band
+- The acquired channels can be directly used to build or extend an ME network
+- The number of channels received can be adjusted as needed
 
-是否允许内存卡复制，
-由频段本身的设置决定。
-
----
-
-## 频段管理
-
-为了适应多人服务器环境，
-频段提供了完整的管理与权限控制机制。
-
-### 频段属性
-
-每一个频段都具备以下可配置属性：
-
-- **名称**：必须在服务器中全局唯一
-- **密码**：可选，用于限制链接
-- **公开性**：可设置为公开或私有
-- **内存卡支持**：决定是否允许复制链接状态
-
-除名称外，其余设置均可在创建后修改。
+In this way,
+network structures that are logically connected to the original network
+can be quickly established at any location.
 
 ---
 
-### 白名单机制
+## Channel Scheduling and Network Expansion
 
-频段支持玩家白名单，用于权限控制：
+Through the band mechanism:
 
-- 未在白名单中的玩家：
-    - 无法看到私有频段
-    - 无法链接到对应频段
-- 位于白名单中的玩家：
-    - 可以无视密码直接链接频段
-
-白名单机制用于防止频段在多人服务器中被未授权使用。
+- Channels can be centrally stored and allocated on demand
+- Network expansion no longer depends on continuous cable layouts
+- Network nodes can be created at different locations while sharing a common channel pool
 
 ---
 
-## 频段创建与链接流程
+## Memory Card Support
 
-使用末影广播装置时，典型流程如下：
+The Ender Broadcaster supports configuration copying via Memory Cards:
 
-1. 打开任意末影广播装置
-2. 通过侧边栏进入频段管理界面
-3. 创建新频段，设置名称、密码与相关选项
-4. 在频段总览中找到目标频段
-5. 选择当前设备作为**发送端**或**接收端**进行链接
+- Quickly copy link states between broadcasters
+- Synchronize operating modes and related settings
+- Avoid repetitive manual configuration of large numbers of devices
 
-需要注意的是，
-创建频段后，设备不会自动链接，
-必须手动选择链接模式。
+Whether Memory Card copying is allowed
+is determined by the band’s own settings.
 
 ---
 
-## 频段管理界面
+## Band Management
 
-在成功链接频段后，
-可以通过**频段管理界面**对当前频段进行集中查看与配置。
-该界面主要用于频段整体状态的管理，包含以下功能：
+To support multiplayer server environments,
+bands provide a complete set of management and permission controls.
 
-- 查看当前频段可用的频道总量
-- 查看所有已连接发送端的状态与位置信息
-- 修改频段的密码与公开性设置
-- 通过侧边按钮进入白名单管理菜单
+### Band Properties
+
+Each band has the following configurable properties:
+
+- **Name**: must be globally unique on the server
+- **Password**: optional, used to restrict linking
+- **Visibility**: can be set to public or private
+- **Memory Card Support**: determines whether link state copying is allowed
+
+All settings except the name can be modified after creation.
 
 ---
 
-## 白名单管理界面
+### Whitelist System
 
-白名单管理是一个**独立的管理菜单**，
-需要从频段管理界面中通过侧边按钮打开。
+Bands support a player whitelist for permission control:
 
-在白名单管理界面中：
+- Players **not** on the whitelist:
+  - Cannot see private bands
+  - Cannot link to the corresponding bands
+- Players **on** the whitelist:
+  - Can link to the band without entering a password
 
-- 左侧列出当前已加入白名单的玩家
-- 右侧列出当前在线的玩家
-- 通过鼠标点击即可将玩家加入或移出白名单
+The whitelist system prevents unauthorized use of bands on multiplayer servers.
+
+---
+
+## Band Creation and Linking Workflow
+
+A typical workflow when using the Ender Broadcaster is as follows:
+
+1. Open any Ender Broadcaster
+2. Enter the Band Management interface via the sidebar
+3. Create a new band and configure its name, password, and options
+4. Locate the target band in the band overview
+5. Link the current device as either a **Sender** or a **Receiver**
+
+Note that after creating a band,
+devices are not linked automatically;
+the link mode must be selected manually.
+
+---
+
+## Band Management Interface
+
+After successfully linking to a band,
+the **Band Management Interface** can be used to view and configure the current band.
+This interface is primarily used for overall band management and includes:
+
+- Viewing the total number of available channels in the band
+- Viewing the status and location information of all connected senders
+- Modifying the band’s password and visibility settings
+- Accessing the Whitelist Management menu via sidebar buttons
+
+---
+
+## Whitelist Management Interface
+
+Whitelist management is a **separate management menu**
+that is opened via a sidebar button from the Band Management interface.
+
+Within the Whitelist Management interface:
+
+- The left side lists players currently on the whitelist
+- The right side lists players currently online
+- Players can be added to or removed from the whitelist with a mouse click

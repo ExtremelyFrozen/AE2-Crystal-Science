@@ -1,7 +1,7 @@
 ---
 navigation:
   parent: index.md
-  title: 初级样板供应器
+  title: Basic Pattern Provider
   icon: ae2cs:simple_pattern_provider
   position: 160
 item_ids:
@@ -12,7 +12,7 @@ item_ids:
   - ae2cs:pattern_provider_upgrade
 ---
 
-# 初级样板供应器
+# Basic Pattern Provider
 
 <Row gap="16">
   <BlockImage id="ae2cs:simple_pattern_provider" scale="2" />
@@ -20,55 +20,55 @@ item_ids:
   <ItemImage id="ae2cs:pattern_provider_upgrade" scale="2" />
 </Row>
 
-**初级样板供应器** 是 AECS 提供的一种入门级样板供应器，
-用于在较低成本下引入样板驱动的自动化合成能力。
-它在功能上遵循标准样板供应器的基本行为，
-但在容量与制造要求上进行了简化。
+The **Basic Pattern Provider** is an entry-level Pattern Provider offered by AECS.
+It introduces pattern-driven automated crafting at a lower cost.
+Functionally, it follows the core behavior of a standard Pattern Provider,
+with simplified capacity and crafting requirements.
 
 ---
 
-## 功能定位
+## Functional Role
 
-初级样板供应器主要面向自动化体系的早期阶段：
+The Basic Pattern Provider is primarily intended for the early stages of an automation setup:
 
-- 提供基础的样板供应功能
-- 用于替代更高成本的标准样板供应器
-- 作为过渡设备
+- Provides basic Pattern Provider functionality
+- Serves as a lower-cost alternative to the standard Pattern Provider
+- Acts as a transitional device
 
-其行为与普通样板供应器一致，
-差异主要体现在容量与制作方式上。
-
----
-
-## 样板容量
-
-初级样板供应器的样板槽位数量较少：
-
-- 最多可容纳 **5 个样板**
-- 所有样板均参与正常的网络合成调度
+Its behavior is identical to that of a normal Pattern Provider,
+with differences mainly in capacity and crafting methods.
 
 ---
 
-## 制作特点
+## Pattern Capacity
 
-初级样板供应器在制作路径上进行了简化：
+The Basic Pattern Provider has a limited number of pattern slots:
 
-- 制作过程中需要使用 **<ItemLink id="ae2cs:simple_processor" />**
-- 相关电路与处理器的配方结构较为简单
-- 不需要使用压印模板即可完成制作
-
----
-
-## 升级方式
-
-初级样板供应器支持通过升级物品进行扩展：
-
-- 可使用 **<ItemLink id="ae2cs:pattern_provider_upgrade" />**
-- 升级后与普通样板供应器保持一致
+- Can hold up to **5 patterns**
+- All inserted patterns participate in normal network crafting scheduling
 
 ---
 
-## 相关配方
+## Crafting Characteristics
+
+The crafting path of the Basic Pattern Provider is simplified:
+
+- Requires the use of **<ItemLink id="ae2cs:simple_processor" />**
+- Related circuits and processor recipes have a simpler structure
+- Does not require Inscriber Presses to complete crafting
+
+---
+
+## Upgrade Path
+
+The Basic Pattern Provider supports expansion through upgrade items:
+
+- Can be upgraded using the **<ItemLink id="ae2cs:pattern_provider_upgrade" />**
+- After upgrading, it functions identically to a standard Pattern Provider
+
+---
+
+## Related Recipes
 
 <Row gap="16">
   <Recipe id="ae2cs:inscriber/simple_circuit_print" /> 

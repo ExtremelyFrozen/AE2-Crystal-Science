@@ -1,7 +1,7 @@
 ---
 navigation:
   parent: index.md
-  title: 末影发信器
+  title: Ender Emitter
   icon: ae2cs:ender_emitter
   position: 200
 item_ids:
@@ -9,89 +9,91 @@ item_ids:
   - ae2cs:ender_linker
 ---
 
-# 末影发信器
+# Ender Emitter
 
 <Row gap="16">
   <ItemImage id="ae2cs:ender_emitter" scale="8" />
   <ItemImage id="ae2cs:ender_linker" scale="8" />
 </Row>
 
-**末影发信器** 是 AECS 提供的一种短距离无线网络连接部件，
-用于在一定范围内自动建立 ME 网络链接。
-适合用于减少线缆铺设复杂度的场景。
+The **Ender Emitter** is a short-range wireless network connection component provided by AECS.
+It is used to automatically establish ME network links within a limited area,
+making it suitable for scenarios where reducing cable complexity is desirable.
 
 ---
 
-## 功能定位
+## Functional Role
 
-末影发信器主要用于：
+The Ender Emitter is primarily used to:
 
-- 在有限范围内自动连接新放置的网络节点
-- 减少对传统 AE 线缆的依赖
+- Automatically link newly placed network nodes within a limited range
+- Reduce reliance on traditional AE cables
 
-在与 **<ItemLink id="ae2cs:ender_broadcaster" />** 配合使用时，
-可以构建几乎完全不依赖物理线缆的网络布局。
-
----
-
-## 自动链接行为
-
-当末影发信器连接到网络线缆后：
-
-- 会在其作用范围内自动链接新放置的方块或部件
-- 自动链接会持续进行，直到可用频道耗尽
-- 链接过程不需要额外的玩家操作
-
-该行为适合用于需要频繁放置设备的自动化环境。
+When used together with the **<ItemLink id="ae2cs:ender_broadcaster" />**,
+it is possible to construct network layouts that are almost entirely independent of physical cables.
 
 ---
 
-## 自动链接控制
+## Automatic Linking Behavior
 
-为了适应更复杂的网络结构，末影发信器提供了多种控制方式：
+Once the Ender Emitter is connected to a network cable:
 
-- 可选择关闭对**线缆与线缆部件**的自动链接  
-  用于避免对子网结构产生影响
-- 可临时关闭自动链接模式  
-  在需要手动调整网络时使用
+- It will automatically link newly placed blocks or parts within its effective range
+- Automatic linking continues until all available channels are exhausted
+- The linking process requires no additional player interaction
 
-这些选项用于防止自动链接干扰已有的网络规划。
-
----
-
-## 手动链接
-
-即使在完全关闭自动链接模式的情况下，
-末影发信器仍然支持手动建立链接：
-
-- 使用 **<ItemLink id="ae2cs:ender_linker" />**
-- 对发信器 **Shift + 右键** 进行绑定
-- 对目标方块 **右键** 完成链接
-
-该方式用于对网络连接进行精确控制。
+This behavior is well suited for automation environments
+where devices are frequently placed or replaced.
 
 ---
 
-## 链接范围设置
+## Automatic Linking Controls
 
-末影发信器支持对自动链接范围进行配置：
+To better support complex network structures,
+the Ender Emitter provides multiple control options:
 
-- 自动链接仅在设定的范围内生效
-- 超出自动链接范围、但仍处于最大作用范围内的设备：
-    - 不会被自动链接
-    - 仍可通过手动方式进行连接
+- Automatic linking to **cables and cable-like parts** can be disabled  
+  to avoid interfering with sub-network layouts
+- Automatic linking mode can be temporarily disabled  
+  for situations where manual network adjustments are required
 
-通过该机制，可以在同一范围内同时实现
-自动链接与精细化手动控制。
+These options help prevent automatic linking from disrupting existing network designs.
 
 ---
 
-## 多发信器连接
+## Manual Linking
 
-多个末影发信器之间可以相互链接，
-用于实现较远距离的频道传输。
+Even when automatic linking mode is fully disabled,
+the Ender Emitter still supports manual linking:
 
-需要注意的是：
-在更远距离或大规模网络场景下，
-**<ItemLink id="ae2cs:ender_broadcaster" />**
-通常更适合承担频道的集中传输任务。
+- Use the **<ItemLink id="ae2cs:ender_linker" />**
+- **Shift + Right-click** the emitter to bind it
+- **Right-click** the target block to complete the link
+
+This method is intended for precise and controlled network connections.
+
+---
+
+## Link Range Configuration
+
+The Ender Emitter allows configuration of its automatic linking range:
+
+- Automatic linking only applies within the configured range
+- Devices outside the automatic linking range but still within the maximum effective range:
+  - Will not be linked automatically
+  - Can still be connected manually
+
+This mechanism allows automatic linking and fine-grained manual control
+to coexist within the same area.
+
+---
+
+## Multiple Emitter Connections
+
+Multiple Ender Emitters can be linked together
+to enable channel transmission over longer distances.
+
+However, note that:
+for very long distances or large-scale network scenarios,
+the **<ItemLink id="ae2cs:ender_broadcaster" />**
+is generally more suitable for centralized channel transmission.

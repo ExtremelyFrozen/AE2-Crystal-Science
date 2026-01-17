@@ -1,7 +1,7 @@
 ---
 navigation:
   parent: index.md
-  title: 高纯水晶与水晶种子
+  title: Purified Crystals and Crystal Seeds
   icon: ae2cs:purified_certus_quartz_crystal
   position: 10
 item_ids:
@@ -36,23 +36,23 @@ item_ids:
   - ae2cs:irradiated_crystal_dust
 ---
 
-# 高纯水晶与水晶种子
+# Purified Crystals and Crystal Seeds
 
-在 AECS 中，高纯水晶是一类**必须通过生产流程获取**的基础材料。
-
----
-
-## 生产流程概览
-
-大部分高纯水晶的获取流程遵循相同的基本结构：
-
-1. 获取对应材料的粉尘
-2. 使用粉尘合成水晶种子
-3. 通过生长机制将种子转化为高纯水晶
+In AECS, **Purified Crystals** are a class of foundational materials that **must be obtained through production processes**.
 
 ---
 
-## 粉尘
+## Production Overview
+
+Most Purified Crystals follow the same basic production structure:
+
+1. Obtain the corresponding material dust
+2. Craft Crystal Seeds using the dust
+3. Convert the seeds into Purified Crystals through growth mechanics
+
+---
+
+## Dusts
 
 <Row gap="16">
   <ItemImage id="ae2:certus_quartz_dust" scale="2" />
@@ -63,17 +63,17 @@ item_ids:
   <ItemImage id="ae2cs:resonating_crystal_dust" scale="2" />
 </Row>
 
-粉尘是水晶生产流程的起点。
-大多数水晶种子由对应材料的粉尘与沙子或其他辅助材料合成获得。
+Dusts are the starting point of the crystal production chain.
+Most Crystal Seeds are crafted from the corresponding material dust combined with sand or other auxiliary materials.
 
-在游戏早期，电力供应尚不充足时，可以使用 **<ItemLink id="ae2cs:quartz_grindstone" />** 获取第一批粉尘。
-该设备支持电力或使用 **<ItemLink id="ae2:crank" />** 驱动，适合用于初期资源处理。
+In the early game, when power supply is limited, you can use the **<ItemLink id="ae2cs:quartz_grindstone" />** to obtain your first batch of dusts.
+This machine supports both electrical power and **<ItemLink id="ae2:crank" />** operation, making it suitable for early-stage resource processing.
 
-随着生产规模扩大，可以使用 **<ItemLink id="ae2cs:crystal_pulverizer" />** 提高粉尘获取效率。
+As production scales up, the **<ItemLink id="ae2cs:crystal_pulverizer" />** can be used to greatly improve dust production efficiency.
 
 ---
 
-## 水晶种子
+## Crystal Seeds
 
 <Row gap="16">
   <ItemImage id="ae2cs:certus_quartz_seed" scale="2" />
@@ -84,12 +84,12 @@ item_ids:
   <ItemImage id="ae2cs:resonating_seed" scale="2" />
 </Row>
 
-水晶种子是高纯水晶的直接前置形态。
-对于赛特斯石英、福鲁伊克斯水晶和下界石英等基础资源，通常可以通过将粉尘与沙子在工作台中合成获得水晶种子。
+Crystal Seeds are the direct precursor form of Purified Crystals.
+For basic resources such as Certus Quartz, Fluix Crystals, and Nether Quartz, Crystal Seeds can usually be crafted in a crafting grid using dusts and sand.
 
-对于末影水晶、陨石水晶和谐振水晶等高级资源，其水晶种子的合成通常需要更复杂的材料组合，且单次合成只能获得一个种子。
+For advanced resources such as Ender Crystals, Meteor Crystals, and Resonating Crystals, their Crystal Seed recipes typically require more complex material combinations, and each craft yields only a single seed.
 
-以下配方展示了部分高级水晶种子的合成方式：
+The following recipes demonstrate how some advanced Crystal Seeds are crafted:
 
 <Row gap="16">
 <Recipe id="ae2cs:craft/shapeless/ender_quartz_seed" />
@@ -97,11 +97,11 @@ item_ids:
 <Recipe id="ae2cs:craft/shapeless/resonating_seed" />
 </Row>
 
-当引入 **<ItemLink id="ae2cs:crystal_aggregator" />** 后，可以使用相同数量的粉尘聚合出更多水晶种子，用于提升整体产量。
+After unlocking the **<ItemLink id="ae2cs:crystal_aggregator" />**, you can aggregate the same amount of dust into a larger number of Crystal Seeds, significantly increasing overall yield.
 
 ---
 
-## 高纯水晶
+## Purified Crystals
 
 <Row gap="16">
   <ItemImage id="ae2cs:purified_certus_quartz_crystal" scale="2" />
@@ -112,27 +112,27 @@ item_ids:
   <ItemImage id="ae2cs:purified_resonating_crystal" scale="2" />
 </Row>
 
-高纯水晶由水晶种子生长获得，是 AECS 中多种系统的核心材料。
-在默认情况下，一个水晶种子需要约 600 游戏刻完成生长。
+Purified Crystals are obtained by growing Crystal Seeds and serve as core materials for many AECS systems.
+By default, a single Crystal Seed takes approximately 600 game ticks to fully grow.
 
-水晶种子可以放置在水中自然生长，可被邻近催生器加速。
-也可以使用 **<ItemLink id="ae2cs:crystal_growth_chamber" />** 进行集中处理。
-晶体催生仓支持加速卡，并可叠加来自邻近催生器的生长加成，适合用于批量生产高纯水晶。
+Crystal Seeds can be placed in water to grow naturally and can be accelerated by nearby **Growth Accelerators**.
+They can also be processed in bulk using the **<ItemLink id="ae2cs:crystal_growth_chamber" />**.
+The Crystal Growth Chamber supports Speed Cards and can stack growth bonuses from adjacent Growth Accelerators, making it well suited for large-scale Purified Crystal production.
 
 ---
 
-## 谐振水晶粉
+## Resonating Crystal Dust
 
 <ItemImage id="ae2cs:resonating_crystal_dust" scale="2" />
 
-谐振水晶粉是一种特殊的高阶材料，其获取方式不同于其他粉尘。
-第一个谐振水晶粉必须通过特定的转换配方获得，而非直接粉碎水晶。
+Resonating Crystal Dust is a special high-tier material with an acquisition method different from other dusts.
+The first Resonating Crystal Dust must be obtained through a specific transformation recipe, rather than by directly pulverizing crystals.
 
 <Recipe id="ae2cs:transform/resonating_crystal_dust" />
 
 ---
 
-## 联动水晶
+## Integration Crystals
 
 <Row gap="16">
   <ItemImage id="ae2cs:purified_entro_crystal" scale="2" />
@@ -143,7 +143,7 @@ item_ids:
   <ItemImage id="ae2cs:purified_ember_crystal" scale="2" />
 </Row>
 
-AECS 还为部分常见模组提供了对应的高纯水晶，用于实现材料层面的联动。
-其具体用途各不相同。
+AECS also provides Purified Crystal variants for several popular mods, enabling material-level integration.
+Their specific uses vary depending on the crystal type.
 
-相关配方与用途可通过 JEI 或 EMI 查询。
+Related recipes and applications can be viewed via JEI or EMI.

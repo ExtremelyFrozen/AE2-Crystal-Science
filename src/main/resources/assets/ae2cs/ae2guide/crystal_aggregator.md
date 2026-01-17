@@ -1,55 +1,55 @@
 ---
 navigation:
   parent: index.md
-  title: 晶能聚合器
+  title: Crystal Aggregator
   icon: ae2cs:crystal_aggregator
   position: 100
 item_ids:
   - ae2cs:crystal_aggregator
 ---
 
-# 晶能聚合器
+# Crystal Aggregator
 
 <Row gap="16">
   <BlockImage id="ae2cs:crystal_aggregator" scale="8" />
 </Row>
 
-**晶能聚合器** 是 AECS 中最核心的通用型加工设备之一，
-用于执行多种关键合成与转化流程。
-在整个水晶工业体系中，
-它既承担着高级材料生产的职责，
-也是水晶种子规模化增产的重要工具。
+The **Crystal Aggregator** is one of the most core and versatile processing machines in AECS.
+It is responsible for executing a wide range of critical crafting and transformation processes.
+Within the entire crystal industry system,
+it not only handles advanced material production,
+but also serves as a key tool for large-scale Crystal Seed yield expansion.
 
 ---
 
-## 功能定位
+## Functional Role
 
-晶能聚合器主要用于解决以下问题：
+The Crystal Aggregator is primarily used to address the following needs:
 
-- 将多种原料聚合为新的高阶物品
-- 以相同或相近的原料条件，获得**更多数量的水晶种子**
-- 承载大量 AECS 物品与组件的核心制作流程
+- Aggregating multiple raw materials into new high-tier items
+- Producing **a greater number of Crystal Seeds** from the same or similar material inputs
+- Serving as the core crafting platform for a large number of AECS items and components
 
-在模组的整体进度中，
-绝大部分中后期物品都需要通过晶能聚合器完成制造。
-
----
-
-## 水晶种子增产
-
-除常规配方外，晶能聚合器在水晶生产流程中还承担着特殊角色：
-
-- 可将粉尘等基础材料聚合为水晶种子
-- 相较于直接合成方式，能够获得**更高的产出数量**
-- 适合用于高级或稀有水晶种子的批量制备
+In terms of overall mod progression,
+the vast majority of mid- to late-game items must be manufactured using the Crystal Aggregator.
 
 ---
 
-## 机器特性
+## Crystal Seed Yield Expansion
 
-晶能聚合器具备以下通用机器特性：
+In addition to standard recipes, the Crystal Aggregator plays a special role in the crystal production chain:
 
-- 支持 **[面配置](side_config.md)** 系统
-- 可自动从所连接的 **ME 网络** 中获取能量
-- 支持通过外部能量线缆获取能量
-- **参与频道传递**
+- Converts dusts and other base materials into Crystal Seeds
+- Achieves **significantly higher output yields** compared to direct crafting methods
+- Particularly suitable for mass production of advanced or rare Crystal Seeds
+
+---
+
+## Machine Characteristics
+
+The Crystal Aggregator has the following general machine properties:
+
+- Supports the **[Side Configuration](side_config.md)** system
+- Can automatically draw power from the connected **ME network**
+- Can also receive power via external energy cables
+- **Participates in channel transmission**

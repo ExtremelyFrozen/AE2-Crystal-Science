@@ -1,52 +1,52 @@
 ---
 navigation:
   parent: index.md
-  title: 晶能粉碎机
+  title: Crystal Pulverizer
   icon: ae2cs:crystal_pulverizer
   position: 70
 item_ids:
   - ae2cs:crystal_pulverizer
 ---
 
-# 晶能粉碎机
+# Crystal Pulverizer
 
 <Row gap="16">
   <BlockImage id="ae2cs:crystal_pulverizer" scale="8" />
 </Row>
 
-**晶能粉碎机** 是 AECS 提供的中期水晶加工设备，
-用于高效地将矿石或水晶原料转化为对应的粉尘。
-它在功能上继承了石英磨具的加工体系，
-并在运行效率与自动化能力上进行了强化。
+The **Crystal Pulverizer** is a mid-game crystal processing machine provided by AECS.
+It is designed to efficiently convert ores or crystal-based raw materials into their corresponding dusts.
+Functionally, it inherits the processing system of the Quartz Grindstone,
+while significantly improving operating efficiency and automation capabilities.
 
 ---
 
-## 功能定位
+## Functional Role
 
-晶能粉碎机定位为石英磨具的升级替代方案：
+The Crystal Pulverizer is positioned as an upgraded replacement for the Quartz Grindstone:
 
-- 执行的配方类型与石英磨具保持一致
-- 面向中期及之后的自动化生产环境
+- Executes the same recipe types as the Quartz Grindstone
+- Designed for mid-game and later automated production environments
 
-在相同配方条件下，晶能粉碎机能够以更高的处理速度完成粉碎流程。
-
----
-
-## 驱动与效率
-
-晶能粉碎机仅支持**电力驱动**运行，不支持手动方式。
-
-- 安装 **加速卡** 可显著提升单位时间内的处理效率
-
-在安装多张加速卡后，晶能粉碎机能够满足大规模粉尘生产的需求。
+Under identical recipe conditions, the Crystal Pulverizer completes pulverizing operations at a much higher processing speed.
 
 ---
 
-## 机器特性
+## Power and Efficiency
 
-晶能粉碎机具备以下通用机器特性：
+The Crystal Pulverizer supports **electric power only** and does not allow manual operation.
 
-- 支持 **[面配置](side_config.md)** 系统
-- 可自动从所连接的 **ME 网络** 中获取能量
-- 支持通过外部能量线缆获取能量
-- **参与频道传递**
+- Installing **Speed Cards** can greatly increase processing throughput per unit time
+
+With multiple Speed Cards installed, the Crystal Pulverizer is capable of meeting the demands of large-scale dust production.
+
+---
+
+## Machine Characteristics
+
+The Crystal Pulverizer has the following general machine properties:
+
+- Supports the **[Side Configuration](side_config.md)** system
+- Can automatically draw power from the connected **ME network**
+- Can also receive power via external energy cables
+- **Participates in channel transmission**

@@ -1,53 +1,53 @@
 ---
 navigation:
   parent: index.md
-  title: 石英磨具
+  title: Quartz Grindstone
   icon: ae2cs:quartz_grindstone
   position: 60
 item_ids:
   - ae2cs:quartz_grindstone
 ---
 
-# 石英磨具
+# Quartz Grindstone
 
 <Row gap="16">
   <BlockImage id="ae2cs:quartz_grindstone" scale="8" />
 </Row>
 
-**石英磨具** 是 AECS 在游戏早期提供的一种基础加工设备，
-主要用于将各类水晶原料加工为对应的粉尘，
-从而作为水晶种子与后续生产流程的起点。
+The **Quartz Grindstone** is a basic processing device provided by AECS in the early game.
+It is primarily used to process various crystal raw materials into their corresponding dusts,
+serving as the starting point for Crystal Seeds and subsequent production chains.
 
 ---
 
-## 功能定位
+## Functional Role
 
-石英磨具的设计目标是为早期阶段提供一种**低门槛、可替代手工处理**的粉尘获取方式：
+The Quartz Grindstone is designed to provide a **low-threshold, hand-processing alternative** for obtaining dusts in the early stages:
 
-- 可在未建立完整 ME 网络或稳定电力系统前使用
-- 作为后续晶能粉碎机投入使用前的过渡设备
-
----
-
-## 驱动方式
-
-石英磨具支持两种运行方式：
-
-- **电力驱动**  
-  可通过外部能量线缆输入能量运行
-
-- **曲柄驱动**  
-  在缺乏电力条件时，可通过手动方式驱动机器工作
-
-两种方式在加工结果上没有差异。
+- Can be used before establishing a complete ME network or a stable power system
+- Acts as a transitional device before upgrading to the Crystal Pulverizer
 
 ---
 
-## 机器特性
+## Power Options
 
-石英磨具具备以下通用机器特性：
+The Quartz Grindstone supports two operating modes:
 
-- 支持 **[面配置](side_config.md)** 系统
-- 支持通过外部线缆获取能量
-- **不支持加速卡**
-- **不参与频道传递**
+- **Powered Operation**  
+  Can run by receiving energy through external energy cables
+
+- **Crank Operation**  
+  When power is unavailable, the machine can be operated manually using a crank
+
+Both modes produce identical processing results.
+
+---
+
+## Machine Characteristics
+
+The Quartz Grindstone has the following general machine properties:
+
+- Supports the **[Side Configuration](side_config.md)** system
+- Can receive energy via external cables
+- **Does not support Speed Cards**
+- **Does not participate in channel transmission**

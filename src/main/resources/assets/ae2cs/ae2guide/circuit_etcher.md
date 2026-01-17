@@ -1,59 +1,59 @@
 ---
 navigation:
   parent: index.md
-  title: 电路蚀刻器
+  title: Circuit Etcher
   icon: ae2cs:circuit_etcher
   position: 90
 item_ids:
   - ae2cs:circuit_etcher
 ---
 
-# 电路蚀刻器
+# Circuit Etcher
 
 <Row gap="16">
   <BlockImage id="ae2cs:circuit_etcher" scale="8" />
 </Row>
 
-**电路蚀刻器** 是 AECS 提供的一种处理器生产设备，
-用于将块状材料直接加工为对应的处理器成品，
-以简化原有的多步骤制造流程。
+The **Circuit Etcher** is a processor-production machine provided by AECS.
+It is used to directly process block-based materials into finished processors,
+simplifying the original multi-step manufacturing workflow.
 
 ---
 
-## 功能定位
+## Functional Role
 
-在原有流程中，处理器通常需要经历以下步骤：
+In the original workflow, processors typically require the following steps:
 
-1. 使用压印模板制作电路板
-2. 制作硅板
-3. 组合电路板与硅板得到处理器
+1. Use Inscriber Presses to create circuit boards
+2. Produce silicon wafers
+3. Combine circuit boards and silicon wafers to obtain processors
 
-电路蚀刻器将上述步骤整合为一次设备处理，
-实现从**块状材料到处理器成品**的直接转换。
+The Circuit Etcher consolidates all of these steps into a single machine operation,
+enabling a direct conversion from **raw block materials to finished processors**.
 
-该设备主要用于：
+This machine is primarily intended to:
 
-- 降低处理器生产的操作复杂度
-- 减少对压印模板与中间产物的依赖
-- 提升中后期自动化环境中的处理器产量
-
----
-
-## 工作方式
-
-消耗能量处理配方，
-其处理结果与常规制作流程保持一致。
-
-不额外节约材料，
-仅在制造方式上进行了简化。
+- Reduce the operational complexity of processor production
+- Minimize reliance on Inscriber Presses and intermediate products
+- Increase processor throughput in mid- to late-game automated environments
 
 ---
 
-## 机器特性
+## Operating Method
 
-电路蚀刻器具备以下通用机器特性：
+Recipes are processed by consuming energy,
+and the resulting outputs are identical to those produced by the conventional crafting process.
 
-- 支持 **[面配置](side_config.md)** 系统
-- 可自动从所连接的 **ME 网络** 中获取能量
-- 支持通过外部能量线缆获取能量
-- **参与频道传递**
+No additional material savings are provided;
+the simplification is purely in the manufacturing method.
+
+---
+
+## Machine Characteristics
+
+The Circuit Etcher has the following general machine properties:
+
+- Supports the **[Side Configuration](side_config.md)** system
+- Can automatically draw power from the connected **ME network**
+- Can also receive power via external energy cables
+- **Participates in channel transmission**
