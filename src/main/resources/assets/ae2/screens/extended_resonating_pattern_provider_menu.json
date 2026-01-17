@@ -25,7 +25,7 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "block.ae2cs.extended_resonating_pattern_provider"
+        "translate": "ae2cs.menu.title.extended_resonating_pattern_provider"
       },
       "position": {
         "left": 8,

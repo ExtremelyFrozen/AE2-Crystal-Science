@@ -139,6 +139,8 @@
   "gui.ae2cs.storage_inv": "已存储物品",
   "gui.ae2cs.pattern_inv": "样板",
 
+  "ae2cs.menu.title.extended_resonating_pattern_provider": "扩展谐振样板供应器",
+
   "ae2cs.menu.ender_broadcaster.current_band": "当前频段：%s",
   "ae2cs.menu.ender_broadcaster.none": "无",
   "ae2cs.menu.ender_broadcaster.connect_status": "当前状态：%s",

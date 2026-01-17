@@ -5,7 +5,7 @@
     "texture": "ae2cs:textures/gui/frequency_band_link_menu.png",
     "textureWidth": 256,
     "textureHeight": 256,
-    "srcRect": [0, 0, 176, 54]
+    "srcRect": [0, 0, 176, 64]
   },
   "text": {
     "title": {
