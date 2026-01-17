@@ -8,6 +8,7 @@ import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.AECableType;
+import appeng.core.definitions.AEItems;
 import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.util.ConfigInventory;
 import io.github.lounode.ae2cs.api.cap.ProvideCaps;
@@ -38,6 +39,7 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
     private int maxBurnTime = 0;
     private int remainingBurnTime = 0;
     private double energyPerTick = 0;
+    private int speedCards = 0;
 
     public CrystalVibrationChamberBlockEntity(BlockPos pos, BlockState blockState)
     {
@@ -45,12 +47,13 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
                 1000000, false, AccessRestriction.READ);
         this.getMainNode().setIdlePowerUsage(0);
 
-        this.upgrades = UpgradeInventories.forMachine(AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK, 3, this::saveChanges);
+        this.upgrades = UpgradeInventories.forMachine(AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK, 3, this::onUpgradesChange);
 
         ConfigInventory inv = ConfigInventory.storage(1)
                 .slotFilter(input -> input.getPrimaryKey() instanceof PureCrystalItem)
                 .changeListener(this::saveChanges)
                 .build();
+        inv.useRegisteredCapacities();
 
         GenericStackInvComponent component = new GenericStackInvComponent();
         component.addPort(InvPort.WORK, inv);
@@ -115,6 +118,13 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
     }
 
     @Override
+    public void onLoad()
+    {
+        super.onLoad();
+        onUpgradesChange();
+    }
+
+    @Override
     public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops)
     {
         super.addAdditionalDrops(level, pos, drops);
@@ -136,6 +146,12 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
     public IUpgradeInventory getUpgrades()
     {
         return this.upgrades;
+    }
+
+    protected void onUpgradesChange()
+    {
+        this.speedCards = upgrades.getInstalledUpgrades(AEItems.SPEED_CARD);
+        saveChanges();
     }
 
     @Override
@@ -171,9 +187,9 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
         // 执行燃烧逻辑
         if (remainingBurnTime > 0)
         {
-            remainingBurnTime--;
+            remainingBurnTime -= getSpeedupBurnTimeCost();
 
-            injectAEPower(this.energyPerTick, Actionable.MODULATE);
+            injectAEPower(this.getSpeedupEnergyPerTick(), Actionable.MODULATE);
 
             if (remainingBurnTime <= 0)
                 clearBurnState();
@@ -181,6 +197,16 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
 
         // 整备方块状态
         checkActive(remainingBurnTime > 0);
+    }
+
+    private double getSpeedupEnergyPerTick()
+    {
+        return this.energyPerTick * (1 + 0.5 * speedCards);
+    }
+
+    private int getSpeedupBurnTimeCost()
+    {
+        return (1 + speedCards);
     }
 
     private void clearBurnState()
