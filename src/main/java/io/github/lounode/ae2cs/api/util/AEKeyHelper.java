@@ -1,6 +1,7 @@
 package io.github.lounode.ae2cs.api.util;
 
 import appeng.api.stacks.AEKey;
+import io.github.lounode.ae2cs.AE2CrystalScience;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.minecraft.core.HolderLookup;
@@ -33,7 +34,7 @@ public class AEKeyHelper
             }
             catch (Throwable ex)
             {
-                ex.printStackTrace();
+                AE2CrystalScience.LOGGER.error("failed to write key amount map", ex);
                 continue; // 如果发生异常，则打印错误后继续
             }
 

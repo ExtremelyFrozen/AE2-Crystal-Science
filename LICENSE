@@ -1,0 +1,206 @@
+LICENSE
+=======
+
+Applied Energistics: Crystal Science
+
+
+Licensing Overview
+------------------
+
+Applied Energistics: Crystal Science uses a multi-license structure.
+Different parts of the project are licensed under different licenses.
+
+This file describes which licenses apply to which parts of the project,
+as well as the corresponding authorship information.
+Full, unmodified license texts are provided with this project.
+
+
+----------------------------------------------------------------
+1. Source Code
+----------------------------------------------------------------
+
+License:
+GNU Lesser General Public License v3.0 or later
+(LGPL-3.0-or-later)
+
+Applies to:
+- src/main/java/io/github/lounode/ae2cs
+
+Scope Clarification:
+The directory listed above contains two categories of code:
+1) Original code written for this project.
+2) Third-party code that is copied from, modified from Applied Energistics 2 ("AE2").
+
+Unless stated otherwise in the Third-Party Code Notice section below, the default
+license for code in this directory is LGPL-3.0-or-later. For any AE2-derived
+portions, the applicable licensing is determined by the Third-Party Code Notice,
+including any file-level annotations added.
+
+Copyright:
+- Copyright (c) 2026 Frostbite-time
+
+
+Third-Party Code Notice (Applied Energistics 2):
+This project includes portions of source code copied from or modified based on
+Applied Energistics 2 ("AE2"). These AE2-derived portions are licensed under the
+GNU Lesser General Public License v3.0 ("LGPL-3.0") and remain subject to the
+original copyright holders.
+
+AE2 original project:
+- Applied Energistics 2
+
+AE2 original copyright:
+- Copyright (c) 2013 - 2020 AlgorithmX2 et al
+
+AE2 original license:
+- GNU Lesser General Public License v3.0 (Applied Energistics 2)
+
+AE2-derived files in this project (files or folders):
+- src/main/java/io/github/lounode/ae2cs/api/genericinv/
+- src/main/java/io/github/lounode/ae2cs/api/util/PatternHelper.java
+- src/main/java/io/github/lounode/ae2cs/api/util/GenericStackInvHelper.java
+- src/main/java/io/github/lounode/ae2cs/api/util/ForgeEnergyAdapterUpgrade.java
+- src/main/java/io/github/lounode/ae2cs/api/util/AECSGridHelper.java
+- src/main/java/io/github/lounode/ae2cs/client/gui/widgets/AdvancedProgressBar.java
+- src/main/java/io/github/lounode/ae2cs/client/gui/widgets/AECSIconButton.java
+- src/main/java/io/github/lounode/ae2cs/client/gui/widgets/AECSServerSettingToggleButton.java
+- src/main/java/io/github/lounode/ae2cs/client/gui/widgets/AECSSettingToggleButton.java
+- src/main/java/io/github/lounode/ae2cs/client/gui/widgets/AECSSideConfigToggleButton.java
+- src/main/java/io/github/lounode/ae2cs/client/gui/widgets/AECSToggleButton.java
+- src/main/java/io/github/lounode/ae2cs/common/block/entity/IntegratedInterfaceBlockEntity.java
+- src/main/java/io/github/lounode/ae2cs/common/block/IntegratedInterfaceBlock.java
+- src/main/java/io/github/lounode/ae2cs/common/item/tools/AECSToolType.java
+- src/main/java/io/github/lounode/ae2cs/common/item/tools/IntrinsicEnchantment.java
+- src/main/java/io/github/lounode/ae2cs/common/me/logic/IntegratedInterfaceHost.java
+- src/main/java/io/github/lounode/ae2cs/common/me/logic/IntegratedInterfaceLogic.java
+- src/main/java/io/github/lounode/ae2cs/common/me/logic/MultiCraftingTracker.java
+- src/main/java/io/github/lounode/ae2cs/common/me/logic/ResonatingPatternProviderLogic.java
+- src/main/java/io/github/lounode/ae2cs/common/me/logic/PatternProviderTargetCache.java
+- src/main/java/io/github/lounode/ae2cs/common/me/part/
+- src/main/java/io/github/lounode/ae2cs/common/menu/IntegratedInterfaceMenu.java
+- src/main/java/io/github/lounode/ae2cs/common/menu/IntegratedInterfaceSetStockAmountMenu.java
+- src/main/java/io/github/lounode/ae2cs/mixin/PatternAccessTermMenuMixin.java
+- src/main/java/io/github/lounode/ae2cs/client/gui/IntegratedInterfaceSetStockAmountGUI.java
+- src/main/java/io/github/lounode/ae2cs/client/gui/IntegratedInterfaceGUI.java
+
+This includes:
+- Directly copied classes
+- Classes modified from Applied Energistics 2 implementations
+
+
+License Text:
+A complete copy of licenses is provided at:
+
+- LICENSES/LGPL-3.0.txt
+
+
+----------------------------------------------------------------
+2. 2D Textures
+----------------------------------------------------------------
+
+License:
+Creative Commons Attribution-NonCommercial-ShareAlike 3.0
+(CC BY-NC-SA 3.0)
+
+Applies to:
+All texture assets, including but not limited to the following paths:
+
+- src/main/resources/assets/ae2cs/textures/
+
+
+Scope Clarification:
+Most textures of this mod are modified based on the textures of
+Applied Energistics 2 ("AE2"), or are newly created assets inspired by AE2’s textures
+and models.
+
+Unless stated otherwise, assets in the directories above are licensed under
+CC BY-NC-SA 3.0.
+
+
+Copyright:
+- Copyright (c) 2026 MHanHanBing
+
+
+Original Author Attribution and Source Notice (Applied Energistics 2):
+This project includes texture assets related to Applied Energistics 2 ("AE2")
+(including modified assets and inspired creations) and retains AE2’s original
+attribution information as follows:
+
+AE2 original project:
+- Applied Energistics 2
+
+AE2 original copyright (Textures and Models):
+- Copyright (c) 2020, Ridanisaurus Rid
+- Copyright (c) 2013 - 2020 AlgorithmX2 et al
+
+AE2 original asset license (Textures and Models):
+- Creative Commons Attribution-NonCommercial-ShareAlike 3.0 (CC BY-NC-SA 3.0)
+
+
+License Text:
+A complete copy of the CC BY-NC-SA 3.0 license is provided at:
+
+- LICENSES/CC-BY-NC-SA-3.0.txt
+
+
+----------------------------------------------------------------
+3. 3D Models
+----------------------------------------------------------------
+
+License:
+Creative Commons Attribution-NonCommercial-ShareAlike 3.0
+(CC BY-NC-SA 3.0)
+
+Applies to:
+All 3D model assets, including but not limited to the following path:
+
+- src/main/resources/assets/ae2cs/models/block/me_ender_broadcaster
+- src/main/resources/assets/ae2cs/models/block/me_ender_emitter
+
+Copyright:
+- Copyright (c) 2026 TedXenon
+
+
+Notes:
+- All 3D models are original works created specifically for this project
+- The author retains full copyright over these models
+
+
+License Text:
+A complete copy of the CC BY-NC-SA 3.0 license is provided at:
+
+- LICENSES/CC-BY-NC-SA-3.0.txt
+
+
+----------------------------------------------------------------
+4. General Notes
+----------------------------------------------------------------
+
+- This project uses a multi-license structure
+- Licenses applied to different parts of the project do not affect each other
+- When using, modifying, or redistributing this project, you must comply
+  with the license applicable to each respective part
+
+
+----------------------------------------------------------------
+5. Summary
+----------------------------------------------------------------
+
+Source Code:
+- GNU LGPL v3.0 or later
+
+2D Textures:
+- CC BY-NC-SA 3.0
+
+3D Models:
+- CC BY-NC-SA 3.0
+
+
+----------------------------------------------------------------
+6. License Text Location
+----------------------------------------------------------------
+
+The full license texts included with this project are located at:
+
+- LICENSES/LGPL-3.0.txt
+- LICENSES/CC-BY-NC-SA-3.0.txt
