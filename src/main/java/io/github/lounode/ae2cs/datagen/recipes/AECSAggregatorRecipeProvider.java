@@ -102,12 +102,12 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
                 .save(recipeOutput);
 
         CrystalAggregatorRecipeBuilder.aggregating(AECSItems.NETHER_QUARTZ_SEED, 64, 102400)
-                .require(AECSItems.NETHER_QUARTZ_DUST, 16)
+                .require(AECSTags.Items.DUST_QUARTZ, 16)
                 .require(Blocks.SAND, 64)
                 .save(recipeOutput);
 
         CrystalAggregatorRecipeBuilder.aggregating(AECSItems.ENDER_QUARTZ_SEED, 64, 102400)
-                .require(AECSItems.NETHER_QUARTZ_DUST, 16)
+                .require(AECSTags.Items.DUST_QUARTZ, 16)
                 .require(ConventionTags.ENDER_PEARL_DUST, 16)
                 .require(Blocks.END_STONE, 32)
                 .save(recipeOutput);

@@ -1,4 +1,4 @@
-// 1.21.1	2026-01-17T14:14:28.1826547	Tags for minecraft:item mod id ae2cs
+// 1.21.1	2026-01-18T19:32:30.0996202	Tags for minecraft:item mod id ae2cs
 4766d0d973cc666b0ff411c283664e6aa822d41f data/ae2cs/tags/item/crystal_seeds.json
 cacf479eb5a861f904da7eb91800729c4e8bbd06 data/ae2cs/tags/item/pure_crystal.json
 ff5a95ed9fd2b0ca5923de373742fed4a3e891d3 data/ae2cs/tags/item/pure_crystal/certus_quartz.json
@@ -15,9 +15,10 @@ c63ffb2a32e79ab05ec3719a3e773b41d76de537 data/ae2cs/tags/item/pure_crystal/reson
 6c56dad610644fe8e677708603fe5c90c2d926db data/ae2cs/tags/item/pure_crystal/rose_quartz.json
 455101da1fd0b76395891fa33dfde9aeac7c26e2 data/ae2/tags/item/all_fluix.json
 7241586779fec347b1737da9df7899c25f97188c data/ae2/tags/item/inscriber_presses.json
-49c97e13bbe3c0c6ba92f209beb16e5c630b009e data/c/tags/item/dusts.json
+1df9e865dcfa60689f81e2bed4824ddd80e20f88 data/c/tags/item/dusts.json
 17cb1ed9418568b5669876e2046af46959a2cb8a data/c/tags/item/dusts/quantum_alloy.json
 baabaa3d3f64b2c2e2b796437ddc705793790e2e data/c/tags/item/dusts/quartz.json
+1caff180e0e7835bf0a37341eef66f74039d2f85 data/c/tags/item/dusts/redstone_crystal.json
 94eda0b6765fe5c80a97213bc2d15ed91986e34c data/c/tags/item/dusts/resonating.json
 15dc513fa72adf2c902e3eb2dbbce1502e23b18f data/c/tags/item/flours.json
 3d28e15eae88ffa0d8552f418cf3c90d32adcb79 data/c/tags/item/flours/wheat.json

@@ -8,7 +8,7 @@
             "count": {
               "min": 1
             },
-            "items": "ae2cs:nether_quartz_dust"
+            "items": "minecraft:barrier"
           }
         ]
       },

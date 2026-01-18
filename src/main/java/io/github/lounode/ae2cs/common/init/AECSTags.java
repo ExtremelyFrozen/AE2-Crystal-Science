@@ -62,6 +62,7 @@ public class AECSTags
         public static final TagKey<Item> DUST_RESONATING = tag("dusts/resonating");
         public static final TagKey<Item> DUST_QUARTZ = tag("dusts/quartz");
         public static final TagKey<Item> DUST_QUANTUM_ALLOY = tag("dusts/quantum_alloy");
+        public static final TagKey<Item> DUST_REDSTONE_CRYSTAL = tag("dusts/redstone_crystal");
 
         public static final TagKey<Item> GEM_RESONATING = tag("gems/resonating");
         public static final TagKey<Item> GEM_SKY_STONE_CRYSTAL = tag("gems/sky_stone_crystal");

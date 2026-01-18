@@ -99,13 +99,16 @@ public class AECSItemTagProvider extends ItemTagsProvider
         tag(Tags.Items.DUSTS)
                 .addTag(AECSTags.Items.DUST_RESONATING)
                 .addTag(AECSTags.Items.DUST_QUARTZ)
-                .addTag(AECSTags.Items.DUST_QUANTUM_ALLOY);
+                .addTag(AECSTags.Items.DUST_QUANTUM_ALLOY)
+                .addTag(AECSTags.Items.DUST_REDSTONE_CRYSTAL);
         tag(AECSTags.Items.DUST_RESONATING)
                 .add(AECSItems.RESONATING_DUST.get());
         tag(AECSTags.Items.DUST_QUARTZ)
                 .add(AECSItems.NETHER_QUARTZ_DUST.get());
         tag(AECSTags.Items.DUST_QUANTUM_ALLOY)
                 .add(AECSItems.QUANTUM_CRYSTAL_DUST.get());
+        tag(AECSTags.Items.DUST_REDSTONE_CRYSTAL)
+                .add(AECSItems.REDSTONE_CRYSTAL_DUST.get());
 
         // 存储方块
         tag(Tags.Items.STORAGE_BLOCKS)

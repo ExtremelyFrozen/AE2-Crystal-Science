@@ -40,7 +40,7 @@
             "count": {
               "min": 1
             },
-            "items": "ae2cs:redstone_crystal_dust"
+            "items": "minecraft:barrier"
           }
         ]
       },

@@ -53,13 +53,13 @@ public class AECSCompatAFRecipeProvider extends AECSRecipeProvider
                 .require(AFSingletons.REDSTONE_CRYSTAL, 1)
                 .save(compatOut, "pulverizer/" + getItemName(AECSItems.REDSTONE_CRYSTAL_DUST) + "_from_redstone_crystal");
         CrystalPulverizerRecipeBuilder.pulverizing(Items.REDSTONE.getDefaultInstance(), 8000)
-                .require(AECSItems.REDSTONE_CRYSTAL_DUST, 1)
+                .require(AECSTags.Items.DUST_REDSTONE_CRYSTAL, 1)
                 .save(compatOut);
 
         CrystalAggregatorRecipeBuilder.aggregating(AECSItems.REDSTONE_CRYSTAL_SEED.toStack(64), 102400)
                 .require(Tags.Items.DUSTS_GLOWSTONE, 32)
                 .require(Tags.Items.DUSTS_REDSTONE, 16)
-                .require(AECSItems.REDSTONE_CRYSTAL_DUST, 16)
+                .require(AECSTags.Items.DUST_REDSTONE_CRYSTAL, 16)
                 .save(compatOut);
 
         CrystalAggregatorRecipeBuilder.aggregating(AFSingletons.INSULATING_RESIN.getDefaultInstance(), 16000)

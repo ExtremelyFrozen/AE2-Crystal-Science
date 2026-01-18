@@ -89,7 +89,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .save(recipeOutput, getCrafterPath(AECSItems.FLUIX_CRYSTAL_SEED, false));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.NETHER_QUARTZ_SEED, 2)
-                .requires(AECSItems.NETHER_QUARTZ_DUST)
+                .requires(AECSTags.Items.DUST_QUARTZ)
                 .requires(Blocks.SAND)
                 .unlockedBy(getHasName(Blocks.SAND), has(Blocks.SAND))
                 .save(recipeOutput, getCrafterPath(AECSItems.NETHER_QUARTZ_SEED, false));
@@ -104,7 +104,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.ENDER_QUARTZ_SEED, 1)
                 .requires(ConventionTags.ENDER_PEARL_DUST)
-                .requires(AECSItems.NETHER_QUARTZ_DUST)
+                .requires(AECSTags.Items.DUST_QUARTZ)
                 .requires(Blocks.SAND)
                 .requires(Blocks.SAND)
                 .unlockedBy(getHasName(Blocks.SAND), has(Blocks.SAND))

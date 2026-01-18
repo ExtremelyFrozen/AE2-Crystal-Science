@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "ae2cs:nether_quartz_dust"
+      "tag": "c:dusts/quartz"
     },
     {
       "item": "minecraft:sand"

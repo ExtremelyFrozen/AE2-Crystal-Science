@@ -17,7 +17,7 @@
   },
   "input_c": {
     "count": 16,
-    "item": "ae2cs:redstone_crystal_dust"
+    "tag": "c:dusts/redstone_crystal"
   },
   "result": {
     "count": 64,
