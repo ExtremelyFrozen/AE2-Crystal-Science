@@ -1,12 +1,18 @@
+<p align="center">
+  <img src="docs/image/header.png" width="90%" />
+</p>
+
 ## Overview
+
+**Applied Energistics: Crystal Science (AECS)** is an addon for Applied Energistics 2 that brings back the **Purified Crystal** concept and builds a full progression around it.  
+With a production chain of **Dust → Seeds → Growth** and dedicated machines (Grindstone / Pulverizer / Growth Chamber / Aggregator), you can mass-produce purified crystals for mid-to-late game crafting and energy generation.  
+On the other side, AECS adds stronger pattern execution and wireless channel solutions (Meteorite/Resonating Pattern Providers, Ender Emitter & Ender Broadcaster) to build more powerful automation.
 
 <p align="center">
   <img src="docs/image/overview_all_items_blocks.png" width="90%" />
 </p>
 
-**Applied Energistics: Crystal Science (AECS)** is an addon for Applied Energistics 2 that brings back the **Purified Crystal** concept and builds a full progression around it.  
-With a production chain of **Dust → Seeds → Growth** and dedicated machines (Grindstone / Pulverizer / Growth Chamber / Aggregator), you can mass-produce purified crystals for mid-to-late game crafting and energy generation.  
-On the other side, AECS adds stronger pattern execution and wireless channel solutions (Meteorite/Resonating Pattern Providers, Ender Emitter & Ender Broadcaster) to build more powerful automation.
+---
 
 ## Features
 
@@ -95,6 +101,32 @@ On the other side, AECS adds stronger pattern execution and wireless channel sol
   <img src="docs/image/ender_emitter_block.png" width="90%" />
   <img src="docs/image/ender_emitter_usage.png" width="90%" />
 </p>
+
+---
+
+## Other Info
+
+* **Optional Mod Integrations**
+  Some purified crystal recipes are **only added when the corresponding mod is installed**.
+
+  Supported integrations include:
+
+    * **ExtendedAE** – Purified Entro Crystal
+    * **AdvancedAE** – Purified Quantum Crystal
+    * **Applied Fluix** – Purified Redstone Crystal
+    * **Applied Generators** – Purified Ember Crystal
+    * **Create** – Purified Rose Quartz
+    * **Mekanism** – Purified Irradiated Crystal
+
+* **JEI / EMI Support**
+  Full integration with **JEI** and **EMI** is provided.
+
+* **In-Game Guide**
+  The mod includes a **complete and detailed in-game guide powered by GuideME**,
+  covering all systems, machines, crystals.
+  No external wiki is required to get started.
+
+---
 
 ## License
 
