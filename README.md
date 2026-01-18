@@ -4,7 +4,8 @@
 
 ## Overview
 
-**Applied Energistics: Crystal Science (AECS)** is an addon for Applied Energistics 2 that brings back the **Purified Crystal** concept and builds a full progression around it.  
+**Applied Energistics: Crystal Science (AECS)** is an addon for Applied Energistics 2 that brings back the **Purified Crystal** concept and builds a full progression around it.
+
 With a production chain of **Dust → Seeds → Growth** and dedicated machines (Grindstone / Pulverizer / Growth Chamber / Aggregator), you can mass-produce purified crystals for mid-to-late game crafting and energy generation.  
 On the other side, AECS adds stronger pattern execution and wireless channel solutions (Meteorite/Resonating Pattern Providers, Ender Emitter & Ender Broadcaster) to build more powerful automation.
 
