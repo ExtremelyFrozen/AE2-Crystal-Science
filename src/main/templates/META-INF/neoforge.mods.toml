@@ -86,6 +86,68 @@ config="${mod_id}.mixins.json"
     ordering="NONE"
     side="BOTH"
 
+# Applied Energistics
+[[dependencies.${mod_id}]]
+    modId="ae2"
+    type="required"
+    versionRange="[19.2.8,)"
+    ordering="AFTER"
+    side="BOTH"
+# AE2 JEI Integration
+[[dependencies.${mod_id}]]
+    modId="ae2jeiintegration"
+    type="optional"
+    versionRange="*"
+    side="BOTH"
+# Mekanism
+[[dependencies.${mod_id}]]
+    modId="mekanism"
+    type="optional"
+    versionRange="*"
+    side="BOTH"
+# OMNI Cells
+[[dependencies.${mod_id}]]
+    modId="ae2omnicells"
+    type="optional"
+    versionRange="*"
+    side="BOTH"
+# Mega Cells
+[[dependencies.${mod_id}]]
+    modId="megacells"
+    type="optional"
+    versionRange="*"
+    side="BOTH"
+# Extended AE
+[[dependencies.${mod_id}]]
+    modId="extendedae"
+    type="optional"
+    versionRange="*"
+    side="BOTH"
+# Advanced AE
+[[dependencies.${mod_id}]]
+    modId="advanced_ae"
+    type="optional"
+    versionRange="*"
+    side="BOTH"
+# Applied fluix
+[[dependencies.${mod_id}]]
+    modId="appflux"
+    type="optional"
+    versionRange="*"
+    side="BOTH"
+# Applied Generator
+[[dependencies.${mod_id}]]
+    modId="appgen"
+    type="optional"
+    versionRange="*"
+    side="BOTH"
+# Create
+[[dependencies.${mod_id}]]
+    modId="create"
+    type="optional"
+    versionRange="*"
+    side="BOTH"
+
 # Features are specific properties of the game environment, that you may want to declare you require. This example declares
 # that your mod requires GL version 3.2 or higher. Other features will be added. They are side aware so declaring this won't
 # stop your mod loading on the server for example.
