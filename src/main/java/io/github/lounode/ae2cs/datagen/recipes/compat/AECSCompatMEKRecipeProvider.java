@@ -7,6 +7,7 @@ import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBuilder;
+import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalPulverizerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.PressurizedReactionRecipeBuilder;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
@@ -64,6 +65,10 @@ public class AECSCompatMEKRecipeProvider extends AECSRecipeProvider
                         ItemStackIngredient.of(SizedIngredient.of(AECSTags.Items.PURE_IRRADIATED_CRYSTAL, 1)),
                         MekanismChemicals.NUCLEAR_WASTE.asStack(500))
                 .build(compatOut, getOxidizingPath("nuclear_waste"));
+
+        CrystalPulverizerRecipeBuilder.pulverizing(AECSItems.IRRADIATED_CRYSTAL_DUST, 1, 8000)
+                .require(AECSTags.Items.PURE_IRRADIATED_CRYSTAL, 1)
+                .save(compatOut);
     }
 
     protected ResourceLocation getPressurizedReactionPath(String outName)
