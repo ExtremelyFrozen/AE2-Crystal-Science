@@ -100,7 +100,7 @@ On the other side, AECS adds stronger pattern execution and wireless channel sol
 
 This project uses a multi-license structure:
 
-- **Code**: LGPL-3.0-or-later
-- **Assets** (textures, models): CC BY-NC-SA 3.0
+- **Code**: [LGPL-3.0-or-later](https://raw.githubusercontent.com/Frostbite-time/AE2-Crystal-Science/refs/heads/1.21.1/LICENSES/LGPL-3.0.txt)
+- **Assets** (textures, models): [CC BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/)
 
 See [LICENSE](LICENSE) for full details.
