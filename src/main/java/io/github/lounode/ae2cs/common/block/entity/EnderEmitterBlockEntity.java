@@ -459,6 +459,13 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         this.markForClientUpdate();
     }
 
+    @Override
+    public void onLoad()
+    {
+        super.onLoad();
+        onConfigChanged(); // 确保字段与配置始终同步
+    }
+
     // 把重要信息和pengding和linked写表，用于客户端显示
     @Override
     protected void writeToStream(RegistryFriendlyByteBuf data)
