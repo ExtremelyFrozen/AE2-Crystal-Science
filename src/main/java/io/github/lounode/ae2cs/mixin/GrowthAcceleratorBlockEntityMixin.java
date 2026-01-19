@@ -1,6 +1,6 @@
 package io.github.lounode.ae2cs.mixin;
 
-import appeng.blockentity.grid.AENetworkedPoweredBlockEntity;
+import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.blockentity.misc.GrowthAcceleratorBlockEntity;
 import io.github.lounode.ae2cs.common.item.CrystalSeedItem;
 import net.minecraft.core.BlockPos;
@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.List;
 
 @Mixin(value = GrowthAcceleratorBlockEntity.class, remap = false)
-public abstract class GrowthAcceleratorBlockEntityMixin extends AENetworkedPoweredBlockEntity
+public abstract class GrowthAcceleratorBlockEntityMixin extends AENetworkBlockEntity
 {
 
     public GrowthAcceleratorBlockEntityMixin(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState)
