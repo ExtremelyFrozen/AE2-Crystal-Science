@@ -33,10 +33,10 @@ public final class LinkableToolDropEvents
         if (!(src instanceof Player player)) return;
 
         ItemStack tool = player.getMainHandItem();
-        if (!(tool.getItem() instanceof LinkableTool))
+        if (!(ToolLinkableHandler.INSTANCE.canLink(tool)))
         {
             tool = player.getOffhandItem();
-            if (!(tool.getItem() instanceof LinkableTool)) return;
+            if (!(ToolLinkableHandler.INSTANCE.canLink(tool))) return;
         }
 
         tryInsertDrops(player, tool, event.getDrops().iterator());
@@ -54,7 +54,7 @@ public final class LinkableToolDropEvents
         if (!(breaker instanceof Player player)) return;
 
         ItemStack tool = event.getTool();
-        if (!(tool.getItem() instanceof LinkableTool)) return;
+        if (!(ToolLinkableHandler.INSTANCE.canLink(tool))) return;
 
         tryInsertDrops(player, tool, event.getDrops().iterator());
     }

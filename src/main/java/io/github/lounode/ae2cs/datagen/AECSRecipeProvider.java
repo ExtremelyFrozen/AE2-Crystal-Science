@@ -4,18 +4,25 @@ import appeng.recipes.handlers.ChargerRecipeBuilder;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBuilder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.conditions.IConditionBuilder;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class AECSRecipeProvider extends RecipeProvider implements IConditionBuilder
@@ -513,5 +520,35 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     {
         // namespace:path/xxx -> namespace_path_xxx
         return id.getNamespace() + "_" + id.getPath().replace('/', '_');
+    }
+
+    // 其他工具
+    public static ItemStack enchantedItem(HolderLookup.Provider registries, ItemLike item, int count, ResourceKey<Enchantment> enchantKey, int level)
+    {
+        return enchantedItem(registries, item, count, Map.of(enchantKey, level));
+    }
+
+    public static ItemStack enchantedItem(HolderLookup.Provider registries, ItemLike item, int count, Map<ResourceKey<Enchantment>, Integer> enchants)
+    {
+        ItemStack stack = new ItemStack(item, count);
+
+        var mutable = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        for (var e : enchants.entrySet())
+        {
+            var holder = registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(e.getKey());
+            int level = e.getValue() == null ? 1 : e.getValue();
+            if (level > 0) mutable.set(holder, level);
+        }
+
+        if (stack.is(Items.ENCHANTED_BOOK))
+        {
+            stack.set(DataComponents.STORED_ENCHANTMENTS, mutable.toImmutable());
+        }
+        else
+        {
+            stack.set(DataComponents.ENCHANTMENTS, mutable.toImmutable());
+        }
+
+        return stack;
     }
 }

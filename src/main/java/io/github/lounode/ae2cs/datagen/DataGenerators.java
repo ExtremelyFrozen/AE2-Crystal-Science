@@ -38,15 +38,36 @@ public class DataGenerators
     public static void gatherData(GatherDataEvent event)
     {
         LOGGER.info("数据生成启动");
+
         DataGenerator generator = event.getGenerator();
         PackOutput packOutput = generator.getPackOutput();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
-        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
+
+        CompletableFuture<HolderLookup.Provider> baseLookupProvider = event.getLookupProvider();
+
+        var builtin = new DatapackBuiltinEntriesProvider(
+                packOutput,
+                baseLookupProvider,
+                new RegistrySetBuilder()
+                        .add(Registries.ENCHANTMENT, AECSEnchantments::bootstrap)
+                        .add(Registries.CONFIGURED_FEATURE, AECSConfiguredFeatures::bootstrap)
+                        .add(Registries.PLACED_FEATURE, AECSPlacedFeatures::bootstrap)
+                        .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, AECSBiomeModifiers::bootstrap),
+                Set.of(AECSConstants.MODID)
+        );
+        generator.addProvider(event.includeServer(), builtin);
+
+        CompletableFuture<HolderLookup.Provider> lookupProvider = builtin.getRegistryProvider();
 
         // 生成方块战利品表
-        generator.addProvider(event.includeServer(), new LootTableProvider(packOutput, Collections.emptySet(),
-                List.of(new LootTableProvider.SubProviderEntry(AECSBlockLootTableProvider::new, LootContextParamSets.BLOCK)), lookupProvider));
-        // 生成物品和方块模型
+        generator.addProvider(event.includeServer(), new LootTableProvider(
+                packOutput,
+                Collections.emptySet(),
+                List.of(new LootTableProvider.SubProviderEntry(AECSBlockLootTableProvider::new, LootContextParamSets.BLOCK)),
+                lookupProvider
+        ));
+
+        // 生成物品和方块模型 / blockstate（一般不依赖 lookupProvider，但保持原样即可）
         generator.addProvider(event.includeClient(), new AECSItemModelProvider(packOutput, existingFileHelper));
         generator.addProvider(event.includeServer(), new AECSBlockModelProvider(packOutput, existingFileHelper));
         generator.addProvider(event.includeClient(), new AECSBlockStateProvider(packOutput, existingFileHelper));
@@ -54,7 +75,12 @@ public class DataGenerators
         // 生成方块、物品、流体标签
         BlockTagsProvider blockTagsProvider = new AECSBlockTagProvider(packOutput, lookupProvider, existingFileHelper);
         generator.addProvider(event.includeServer(), blockTagsProvider);
-        generator.addProvider(event.includeServer(), new AECSItemTagProvider(packOutput, lookupProvider, blockTagsProvider.contentsGetter(), existingFileHelper));
+        generator.addProvider(event.includeServer(), new AECSItemTagProvider(
+                packOutput,
+                lookupProvider,
+                blockTagsProvider.contentsGetter(),
+                existingFileHelper
+        ));
         generator.addProvider(event.includeServer(), new AECSFluidTagsProvider(packOutput, lookupProvider, existingFileHelper));
 
         // 生成配方表
@@ -74,17 +100,5 @@ public class DataGenerators
         generator.addProvider(event.includeServer(), new AECSCompatMegaCellRecipeProvider(packOutput, lookupProvider));
         generator.addProvider(event.includeServer(), new AECSCompatMEKRecipeProvider(packOutput, lookupProvider));
         generator.addProvider(event.includeServer(), new AECSCompatOCRecipeProvider(packOutput, lookupProvider));
-
-        // 矿石生成
-        generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(
-                packOutput, lookupProvider,
-                new RegistrySetBuilder()
-                        .add(Registries.ENCHANTMENT, AECSEnchantments::bootstrap)
-                        .add(Registries.CONFIGURED_FEATURE, AECSConfiguredFeatures::bootstrap)
-                        .add(Registries.PLACED_FEATURE, AECSPlacedFeatures::bootstrap)
-                        .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, AECSBiomeModifiers::bootstrap),
-                Set.of(AECSConstants.MODID)
-        ));
-
     }
 }

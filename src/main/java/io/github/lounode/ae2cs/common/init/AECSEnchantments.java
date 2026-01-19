@@ -22,7 +22,9 @@ import java.util.Optional;
 
 public final class AECSEnchantments
 {
-    private AECSEnchantments() {}
+    private AECSEnchantments()
+    {
+    }
 
     private static final List<Def> DEFINITIONS = new ArrayList<>();
 
@@ -37,7 +39,9 @@ public final class AECSEnchantments
             int anvilCost,
             List<EquipmentSlotGroup> slots,
             boolean showInEnchantingTable
-    ) {}
+    )
+    {
+    }
 
     /**
      * 末影链接

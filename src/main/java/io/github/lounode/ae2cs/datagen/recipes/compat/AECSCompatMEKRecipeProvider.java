@@ -1,8 +1,10 @@
 package io.github.lounode.ae2cs.datagen.recipes.compat;
 
+import appeng.core.definitions.AEItems;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.init.AECSEnchantments;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
@@ -15,6 +17,7 @@ import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.chemical.SingleChemicalIngredient;
 import mekanism.common.registries.MekanismChemicals;
+import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -41,9 +44,10 @@ public class AECSCompatMEKRecipeProvider extends AECSRecipeProvider
     }
 
     @Override
-    protected void buildRecipes(@NotNull RecipeOutput originalOut)
+    protected void buildRecipes(@NotNull RecipeOutput originalOut, HolderLookup.@NotNull Provider registries)
     {
         var compatOut = originalOut.withConditions(modLoaded(AECSConstants.MEK_ID));
+        super.buildRecipes(compatOut, registries);
 
         packAndUnpack3x3(compatOut, RecipeCategory.MISC, RecipeCategory.MISC,
                 AECSItems.PURE_IRRADIATED_CRYSTAL, AECSBlocks.IRRADIATED_CRYSTAL_BLOCK);
@@ -59,6 +63,13 @@ public class AECSCompatMEKRecipeProvider extends AECSRecipeProvider
                 .require(MekanismTags.Items.DUSTS_SULFUR, 32)
                 .require(AECSTags.Items.DUSTS_URANIUM, 16)
                 .require(AECSItems.IRRADIATED_CRYSTAL_DUST, 16)
+                .save(compatOut);
+
+        CrystalAggregatorRecipeBuilder.aggregating(
+                        enchantedItem(registries, MekanismItems.ATOMIC_DISASSEMBLER, 1, AECSEnchantments.ENDER_LINK, 1), 64000)
+                .require(MekanismItems.ATOMIC_DISASSEMBLER, 1)
+                .require(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_ENDER_QUARTZ, 1)
+                .require(AEItems.SINGULARITY, 1)
                 .save(compatOut);
 
         ItemStackToChemicalRecipeBuilder.oxidizing(

@@ -5,6 +5,7 @@ import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.datagen.providers.tags.ConventionTags;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.init.AECSEnchantments;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
@@ -33,8 +34,10 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
     }
 
     @Override
-    protected void buildRecipes(@NotNull RecipeOutput recipeOutput)
+    protected void buildRecipes(@NotNull RecipeOutput recipeOutput, HolderLookup.@NotNull Provider registries)
     {
+        super.buildRecipes(recipeOutput, registries);
+
         // 谐振样板转换器
         CrystalAggregatorRecipeBuilder.aggregating(AECSItems.RESONATING_PATTERN_CONVERTER, 1, 16000)
                 .require(AEItems.BLANK_PATTERN, 1)
@@ -284,5 +287,13 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
                 .require(Tags.Items.RODS_WOODEN, 3)
                 .require(Tags.Items.INGOTS_GOLD, 4)
                 .save(recipeOutput);
+
+        // 附魔书获取
+        CrystalAggregatorRecipeBuilder.aggregating(
+                        enchantedItem(registries, Items.ENCHANTED_BOOK, 1, AECSEnchantments.ENDER_LINK, 1), 64000)
+                .require(Items.BOOK, 1)
+                .require(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_ENDER_QUARTZ, 1)
+                .require(AEItems.SINGULARITY, 1)
+                .save(recipeOutput, "aggregator/enchanted_book_of_ender_link");
     }
 }

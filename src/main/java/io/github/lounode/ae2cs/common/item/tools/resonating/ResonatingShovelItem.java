@@ -1,7 +1,5 @@
 package io.github.lounode.ae2cs.common.item.tools.resonating;
 
-import appeng.core.localization.GuiText;
-import appeng.core.localization.Tooltips;
 import appeng.hooks.IntrinsicEnchantItem;
 import io.github.lounode.ae2cs.common.item.tools.AECSToolType;
 import io.github.lounode.ae2cs.common.item.tools.IntrinsicEnchantment;
@@ -36,16 +34,6 @@ public class ResonatingShovelItem extends ShovelItem implements LinkableTool, In
                                 @NotNull List<Component> lines, @NotNull TooltipFlag advancedTooltips)
     {
         super.appendHoverText(stack, context, lines, advancedTooltips);
-
-        if (getLinkedPosition(stack) == null)
-        {
-            lines.add(Tooltips.of(GuiText.Unlinked, Tooltips.RED));
-        }
-        else
-        {
-            lines.add(Tooltips.of(GuiText.Linked, Tooltips.GREEN));
-        }
-
         intrinsicEnchantment.appendHoverText(context, lines);
     }
 

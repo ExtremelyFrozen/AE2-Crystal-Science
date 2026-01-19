@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 public interface LinkableTool
 {
     @Nullable
-    default GlobalPos getLinkedPosition(ItemStack item)
+    static GlobalPos getLinkedPositionGlobal(ItemStack item)
     {
         return item.get(AEComponents.WIRELESS_LINK_TARGET);
     }

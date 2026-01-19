@@ -5,12 +5,20 @@ import appeng.api.upgrades.Upgrades;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
+import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSParts;
 import io.github.lounode.ae2cs.common.item.tools.ToolLinkableHandler;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.event.TagsUpdatedEvent;
 
+@EventBusSubscriber(modid = AECSConstants.MODID)
 public class AEPlugin
 {
     private static String INTEGRATED_INTERFACE_GROUP_NAME = "block.ae2cs.integrated_interface";
@@ -66,17 +74,6 @@ public class AEPlugin
         Upgrades.add(AEItems.REDSTONE_CARD, AECSParts.QUARTZ_OSCILLATOR_CLOCK_PART, 1, QUARTZ_OSCILLATOR_CLOCK_GROUP_NAME);
 
         addGrowthCardSupport();
-
-        GridLinkables.register(AECSItems.ENDER_CRYSTAL_SWORD, ToolLinkableHandler.INSTANCE);
-        GridLinkables.register(AECSItems.ENDER_CRYSTAL_AXE, ToolLinkableHandler.INSTANCE);
-        GridLinkables.register(AECSItems.ENDER_CRYSTAL_PICKAXE, ToolLinkableHandler.INSTANCE);
-        GridLinkables.register(AECSItems.ENDER_CRYSTAL_SHOVEL, ToolLinkableHandler.INSTANCE);
-        GridLinkables.register(AECSItems.ENDER_CRYSTAL_HOE, ToolLinkableHandler.INSTANCE);
-        GridLinkables.register(AECSItems.RESONATING_CRYSTAL_SWORD, ToolLinkableHandler.INSTANCE);
-        GridLinkables.register(AECSItems.RESONATING_CRYSTAL_AXE, ToolLinkableHandler.INSTANCE);
-        GridLinkables.register(AECSItems.RESONATING_CRYSTAL_PICKAXE, ToolLinkableHandler.INSTANCE);
-        GridLinkables.register(AECSItems.RESONATING_CRYSTAL_SHOVEL, ToolLinkableHandler.INSTANCE);
-        GridLinkables.register(AECSItems.RESONATING_CRYSTAL_HOE, ToolLinkableHandler.INSTANCE);
     }
 
     private static void addGrowthCardSupport()
@@ -99,5 +96,19 @@ public class AEPlugin
         Upgrades.add(AECSItems.crystalGrowthCard, AECSBlocks.ENDER_INTERFACE_BLOCK, 1, ENDER_INTERFACE_GROUP_NAME);
         Upgrades.add(AECSItems.crystalGrowthCard, AECSParts.EX_ENDER_INTERFACE_PART, 1, EX_ENDER_INTERFACE_GROUP_NAME);
         Upgrades.add(AECSItems.crystalGrowthCard, AECSBlocks.EX_ENDER_INTERFACE_BLOCK, 1, EX_ENDER_INTERFACE_GROUP_NAME);
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onTagsUpdated(TagsUpdatedEvent event)
+    {
+        // 为全部工具添加可链接能力
+        var tagOpt = BuiltInRegistries.ITEM.getTag(Tags.Items.TOOLS);
+        if (tagOpt.isEmpty()) return;
+
+        for (var holder : tagOpt.get())
+        {
+            if (GridLinkables.get(holder.value()) == null)
+                GridLinkables.register(holder.value(), ToolLinkableHandler.INSTANCE);
+        }
     }
 }
