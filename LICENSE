@@ -83,6 +83,9 @@ AE2-derived files in this project (files or folders):
 - src/main/java/io/github/lounode/ae2cs/mixin/PatternAccessTermMenuMixin.java
 - src/main/java/io/github/lounode/ae2cs/client/gui/IntegratedInterfaceSetStockAmountGUI.java
 - src/main/java/io/github/lounode/ae2cs/client/gui/IntegratedInterfaceGUI.java
+- src/main/java/io/github/lounode/ae2cs/common/menu/UpgradeablePatternProviderMenu.java
+- src/main/java/io/github/lounode/ae2cs/client/gui/widgets/UpgradeablePatternProviderLockReason.java
+- src/main/java/io/github/lounode/ae2cs/client/gui/UpgradeablePatternProviderGUI.java
 
 This includes:
 - Directly copied classes

@@ -1,54 +1,14 @@
 package io.github.lounode.ae2cs.client.gui;
 
-import appeng.api.upgrades.Upgrades;
-import appeng.client.gui.implementations.PatternProviderScreen;
 import appeng.client.gui.style.ScreenStyle;
-import appeng.client.gui.widgets.ToolboxPanel;
-import appeng.client.gui.widgets.UpgradesPanel;
-import appeng.core.localization.GuiText;
-import appeng.menu.SlotSemantics;
 import io.github.lounode.ae2cs.common.menu.MeteoritePatternProviderMenu;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class MeteoritePatternProviderGUI extends PatternProviderScreen<MeteoritePatternProviderMenu>
+public class MeteoritePatternProviderGUI extends UpgradeablePatternProviderGUI<MeteoritePatternProviderMenu>
 {
     public MeteoritePatternProviderGUI(MeteoritePatternProviderMenu menu, Inventory playerInventory, Component title, ScreenStyle style)
     {
         super(menu, playerInventory, title, style);
-
-        try
-        {
-            this.widgets.add("upgrades", new UpgradesPanel(
-                    menu.getSlots(SlotSemantics.UPGRADE),
-                    this::getCompatibleUpgrades));
-        }
-        catch (IllegalStateException e)
-        {
-            // 可能有其他模组完成了添加，静默处理
-        }
-
-        try
-        {
-            if (menu.getToolbox().isPresent())
-            {
-                this.widgets.add("toolbox", new ToolboxPanel(style, menu.getToolbox().getName()));
-            }
-        }
-        catch (IllegalStateException e)
-        {
-            // 可能有其他模组完成了添加，静默处理
-        }
-    }
-
-    private List<Component> getCompatibleUpgrades()
-    {
-        var list = new ArrayList<Component>();
-        list.add(GuiText.CompatibleUpgrades.text());
-        list.addAll(Upgrades.getTooltipLinesForMachine(menu.getUpgrades().getUpgradableItem()));
-        return list;
     }
 }
