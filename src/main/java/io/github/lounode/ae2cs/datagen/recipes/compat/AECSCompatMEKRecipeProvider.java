@@ -72,6 +72,13 @@ public class AECSCompatMEKRecipeProvider extends AECSRecipeProvider
                 .require(AEItems.SINGULARITY, 1)
                 .save(compatOut);
 
+        CrystalAggregatorRecipeBuilder.aggregating(
+                        enchantedItem(registries, MekanismItems.MEKA_TOOL, 1, AECSEnchantments.ENDER_LINK, 1), 64000)
+                .require(MekanismItems.MEKA_TOOL, 1)
+                .require(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_ENDER_QUARTZ, 1)
+                .require(AEItems.SINGULARITY, 1)
+                .save(compatOut);
+
         ItemStackToChemicalRecipeBuilder.oxidizing(
                         ItemStackIngredient.of(SizedIngredient.of(AECSTags.Items.PURE_IRRADIATED_CRYSTAL, 1)),
                         MekanismChemicals.NUCLEAR_WASTE.asStack(500))
