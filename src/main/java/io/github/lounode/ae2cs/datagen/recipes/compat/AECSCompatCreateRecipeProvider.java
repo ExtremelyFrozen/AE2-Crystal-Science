@@ -32,9 +32,10 @@ public class AECSCompatCreateRecipeProvider extends AECSRecipeProvider
     }
 
     @Override
-    protected void buildRecipes(@NotNull RecipeOutput originalOut)
+    protected void buildRecipes(@NotNull RecipeOutput originalOut, HolderLookup.@NotNull Provider registries)
     {
         var compatOut = originalOut.withConditions(modLoaded(AECSConstants.CREATE_ID));
+        super.buildRecipes(compatOut, registries);
 
         packAndUnpack3x3(compatOut, RecipeCategory.MISC, RecipeCategory.MISC,
                 AECSItems.PURE_ROSE_QUARTZ, AECSBlocks.PURE_ROSE_QUARTZ_BLOCK);

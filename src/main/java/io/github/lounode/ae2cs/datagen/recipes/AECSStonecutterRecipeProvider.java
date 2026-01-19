@@ -26,8 +26,10 @@ public class AECSStonecutterRecipeProvider extends AECSRecipeProvider
     }
 
     @Override
-    protected void buildRecipes(@NotNull RecipeOutput recipeOutput)
+    protected void buildRecipes(@NotNull RecipeOutput recipeOutput, HolderLookup.@NotNull Provider registries)
     {
+        super.buildRecipes(recipeOutput, registries);
+
         // 木齿轮（已经包含去皮原木）
         stonecutterResultFromTag(recipeOutput, RecipeCategory.MISC, AECSItems.WOODEN_GEAR, ItemTags.LOGS);
 

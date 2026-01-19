@@ -28,8 +28,10 @@ public class AECSEtcherRecipeProvider extends AECSRecipeProvider
     }
 
     @Override
-    protected void buildRecipes(@NotNull RecipeOutput recipeOutput)
+    protected void buildRecipes(@NotNull RecipeOutput recipeOutput, HolderLookup.@NotNull Provider registries)
     {
+        super.buildRecipes(recipeOutput, registries);
+
         CircuitEtcherRecipeBuilder.etching(AECSItems.RESONATING_PROCESSOR, 9, 14400)
                 .require(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_RESONATING_CRYSTAL, 1)
                 .require(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_METEOR_CRYSTAL, 1)

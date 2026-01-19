@@ -34,9 +34,10 @@ public class AECSCompatAGRecipeProvider extends AECSRecipeProvider
     }
 
     @Override
-    protected void buildRecipes(@NotNull RecipeOutput originalOut)
+    protected void buildRecipes(@NotNull RecipeOutput originalOut, HolderLookup.@NotNull Provider registries)
     {
         var compatOut = originalOut.withConditions(modLoaded(AECSConstants.AG_ID));
+        super.buildRecipes(compatOut, registries);
 
         stonecutterResultFromItem(compatOut, RecipeCategory.MISC, AGSingletons.ORIGINATION_PRESS, AECSItems.BLANK_PRINT_PRESS);
 

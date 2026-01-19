@@ -35,9 +35,10 @@ public class AECSCompatAFRecipeProvider extends AECSRecipeProvider
     }
 
     @Override
-    protected void buildRecipes(@NotNull RecipeOutput originalOut)
+    protected void buildRecipes(@NotNull RecipeOutput originalOut, HolderLookup.@NotNull Provider registries)
     {
         var compatOut = originalOut.withConditions(modLoaded(AECSConstants.AF_ID));
+        super.buildRecipes(compatOut, registries);
 
         packAndUnpack3x3(compatOut, RecipeCategory.MISC, RecipeCategory.MISC,
                 AECSItems.PURE_REDSTONE_CRYSTAL, AECSBlocks.PURE_REDSTONE_CRYSTAL_BLOCK);

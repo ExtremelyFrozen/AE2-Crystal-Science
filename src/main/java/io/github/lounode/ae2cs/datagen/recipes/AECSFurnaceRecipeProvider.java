@@ -25,8 +25,10 @@ public class AECSFurnaceRecipeProvider extends AECSRecipeProvider
     }
 
     @Override
-    protected void buildRecipes(@NotNull RecipeOutput recipeOutput)
+    protected void buildRecipes(@NotNull RecipeOutput recipeOutput, HolderLookup.@NotNull Provider registries)
     {
+        super.buildRecipes(recipeOutput, registries);
+
         smeltFood(RecipeCategory.FOOD, AECSItems.FLOUR, Items.BREAD, 0.1f, 200, recipeOutput);
     }
 }

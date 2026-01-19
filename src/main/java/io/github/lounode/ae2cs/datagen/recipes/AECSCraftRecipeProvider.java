@@ -36,8 +36,10 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
     }
 
     @Override
-    protected void buildRecipes(@NotNull RecipeOutput recipeOutput)
+    protected void buildRecipes(@NotNull RecipeOutput recipeOutput, HolderLookup.@NotNull Provider registries)
     {
+        super.buildRecipes(recipeOutput, registries);
+
         // 块配方
         pack2x2(recipeOutput, RecipeCategory.MISC, AECSItems.PURE_CERTUS_QUARTZ_CRYSTAL, AEBlocks.QUARTZ_BLOCK);
         pack2x2(recipeOutput, RecipeCategory.MISC, AECSItems.PURE_FLUIX_CRYSTAL, AEBlocks.FLUIX_BLOCK);

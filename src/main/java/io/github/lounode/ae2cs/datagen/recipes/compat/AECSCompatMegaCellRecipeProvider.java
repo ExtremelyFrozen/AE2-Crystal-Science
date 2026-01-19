@@ -32,9 +32,10 @@ public class AECSCompatMegaCellRecipeProvider extends AECSRecipeProvider
     }
 
     @Override
-    protected void buildRecipes(@NotNull RecipeOutput originalOut)
+    protected void buildRecipes(@NotNull RecipeOutput originalOut, HolderLookup.@NotNull Provider registries)
     {
         var compatOut = originalOut.withConditions(modLoaded(AECSConstants.MEGA_CELL_ID));
+        super.buildRecipes(compatOut, registries);
 
         stonecutterResultFromItem(compatOut, RecipeCategory.MISC, MEGAItems.ACCUMULATION_PROCESSOR_PRESS, AECSItems.BLANK_PRINT_PRESS);
 

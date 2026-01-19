@@ -40,9 +40,10 @@ public class AECSCompatAAERecipeProvider extends AECSRecipeProvider
     }
 
     @Override
-    protected void buildRecipes(@NotNull RecipeOutput originalOut)
+    protected void buildRecipes(@NotNull RecipeOutput originalOut, HolderLookup.@NotNull Provider registries)
     {
         var compatOut = originalOut.withConditions(modLoaded(AECSConstants.AAE_ID));
+        super.buildRecipes(compatOut, registries);
 
         packAndUnpack3x3(compatOut, RecipeCategory.MISC, RecipeCategory.MISC,
                 AECSItems.PURE_QUANTUM_CRYSTAL, AECSBlocks.PURE_QUANTUM_CRYSTAL_BLOCK);

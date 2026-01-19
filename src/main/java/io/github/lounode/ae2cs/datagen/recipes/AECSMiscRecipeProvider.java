@@ -38,8 +38,10 @@ public class AECSMiscRecipeProvider extends AECSRecipeProvider
     }
 
     @Override
-    protected void buildRecipes(@NotNull RecipeOutput recipeOutput)
+    protected void buildRecipes(@NotNull RecipeOutput recipeOutput, HolderLookup.@NotNull Provider registries)
     {
+        super.buildRecipes(recipeOutput, registries);
+
         // 爆炸以获得谐振水晶粉
         TransformRecipeBuilder.transform(recipeOutput, getTransformPath(AECSItems.RESONATING_DUST),
                 AECSItems.RESONATING_DUST, 1,

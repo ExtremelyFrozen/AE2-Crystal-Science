@@ -31,8 +31,10 @@ public class AECSPulverizerRecipeProvider extends AECSRecipeProvider
     }
 
     @Override
-    protected void buildRecipes(@NotNull RecipeOutput recipeOutput)
+    protected void buildRecipes(@NotNull RecipeOutput recipeOutput, HolderLookup.@NotNull Provider registries)
     {
+        super.buildRecipes(recipeOutput, registries);
+
         CrystalPulverizerRecipeBuilder.pulverizing(AECSItems.FLOUR, 2, 8000)
                 .require(Tags.Items.CROPS_WHEAT, 1)
                 .save(recipeOutput);
