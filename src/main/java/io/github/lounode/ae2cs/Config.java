@@ -1,29 +1,31 @@
 package io.github.lounode.ae2cs;
 
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.config.ModConfigEvent;
-import net.neoforged.neoforge.common.ModConfigSpec;
+
+import io.github.lounode.ae2cs.common.block.entity.EnderEmitterBlockEntity;
+import io.github.lounode.ae2cs.common.item.PureCrystalItem;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 
 public class Config
 {
-    public final Config.StartUpConfig startUpConfig = new Config.StartUpConfig();
     public final Config.CommonConfig commonConfig = new Config.CommonConfig();
 
     public static Config INSTANCE;
 
-    private Config(ModContainer container)
+    private Config(ModLoadingContext container, IEventBus modEventBus)
     {
-        container.registerConfig(ModConfig.Type.STARTUP, startUpConfig.spec);
         container.registerConfig(ModConfig.Type.COMMON, commonConfig.spec);
-        container.getEventBus().addListener((ModConfigEvent.Loading evt) ->
+        modEventBus.addListener((ModConfigEvent.Loading evt) ->
         {
             if (evt.getConfig().getSpec() == commonConfig.spec)
             {
                 commonConfig.onLoaded();
             }
         });
-        container.getEventBus().addListener((ModConfigEvent.Reloading evt) ->
+        modEventBus.addListener((ModConfigEvent.Reloading evt) ->
         {
             if (evt.getConfig().getSpec() == commonConfig.spec)
             {
@@ -32,23 +34,23 @@ public class Config
         });
     }
 
-    public static void register(ModContainer container)
+    public static void register(ModLoadingContext container, IEventBus modEventBus)
     {
-        INSTANCE = new Config(container);
+        INSTANCE = new Config(container, modEventBus);
     }
 
-    public static class StartUpConfig
+    public static class CommonConfig
     {
-        public final ModConfigSpec spec;
+        public final ForgeConfigSpec spec;
 
         // 末影发信器自动范围系数
-        public final ModConfigSpec.IntValue enderEmitterAutoAreaFactor;
+        public final ForgeConfigSpec.IntValue enderEmitterAutoAreaFactor;
         // 高纯水晶能量系数
-        public final ModConfigSpec.DoubleValue pureCrystalBurnMultiplier;
+        public final ForgeConfigSpec.DoubleValue pureCrystalBurnMultiplier;
 
-        public StartUpConfig()
+        public CommonConfig()
         {
-            ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+            ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
 
             enderEmitterAutoAreaFactor =
                     builder.comment(
@@ -67,23 +69,11 @@ public class Config
 
             this.spec = builder.build();
         }
-    }
-
-    public static class CommonConfig
-    {
-        public final ModConfigSpec spec;
-
-
-        public CommonConfig()
-        {
-            ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
-
-
-            this.spec = builder.build();
-        }
 
         public void onLoaded()
         {
+            EnderEmitterBlockEntity.autoAreaFactor = enderEmitterAutoAreaFactor.get();
+            PureCrystalItem.energyMultiplier = pureCrystalBurnMultiplier.get();
         }
     }
 }

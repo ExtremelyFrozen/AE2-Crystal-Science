@@ -1,0 +1,7 @@
+// 1.21.1	2026-01-19T13:59:05.4828953	Registries
+b77c42ec1ed1fcbebf0ae1299bb67b2acf7db29c data/ae2cs/enchantment/ender_link.json
+f5ae39b870e75e21a3cc9a1edf56d29cd2085c47 data/ae2cs/neoforge/biome_modifier/add_certus_quartz_ores.json
+e42371af409bafa8f0a4a9baf0998f7d3007a185 data/ae2cs/worldgen/configured_feature/certus_quartz_ore.json
+2e1d44af96fa2d4a06990e8d16ce569d4393b415 data/ae2cs/worldgen/configured_feature/charged_certus_quartz_ore.json
+f6e1f35d87bcae8b79873cdb3f987a5bcf642df8 data/ae2cs/worldgen/placed_feature/certus_quartz_ore_placed.json
+a20b8b4d2852ca01b5af71fecef12663121a116b data/ae2cs/worldgen/placed_feature/charged_certus_quartz_ore_placed.json

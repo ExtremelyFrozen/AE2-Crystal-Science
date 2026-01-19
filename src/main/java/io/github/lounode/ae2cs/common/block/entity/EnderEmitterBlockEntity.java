@@ -63,7 +63,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
 
     public static MinecraftServer boundServer = null;
 
-    public static final int autoAreaFactor = Config.INSTANCE.startUpConfig.enderEmitterAutoAreaFactor.getAsInt();
+    public static int autoAreaFactor = 1;
 
     // 最大可连接距离，半径，计算时使用直线距离
     public static final int maxLinkDistance = 16 * autoAreaFactor;

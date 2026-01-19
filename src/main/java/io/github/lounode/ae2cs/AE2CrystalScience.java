@@ -7,13 +7,14 @@ import io.github.lounode.ae2cs.api.util.PatternAccessTermQuickMoveHelper;
 import io.github.lounode.ae2cs.common.init.*;
 import io.github.lounode.ae2cs.common.me.AEPlugin;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
 @Mod(AECSConstants.MODID)
@@ -21,11 +22,12 @@ public class AE2CrystalScience
 {
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public AE2CrystalScience(IEventBus modEventBus, ModContainer modContainer)
+    public AE2CrystalScience()
     {
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
-        NeoForge.EVENT_BUS.register(this);
-        Config.register(modContainer);
+        MinecraftForge.EVENT_BUS.register(this);
+        Config.register(ModLoadingContext.get(), modEventBus);
 
         AECSItems.register(modEventBus);
         AECSParts.register(modEventBus);
@@ -38,7 +40,7 @@ public class AE2CrystalScience
         AECSRecipeSerializers.register(modEventBus);
 
         AEPlugin.onInit();
-        AEPlugin.onRegister(modEventBus, NeoForge.EVENT_BUS);
+        AEPlugin.onRegister(modEventBus, MinecraftForge.EVENT_BUS);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event)
@@ -60,7 +62,7 @@ public class AE2CrystalScience
 
     public static ResourceLocation makeId(String path)
     {
-        return ResourceLocation.fromNamespaceAndPath(AECSConstants.MODID, path);
+        return new ResourceLocation(AECSConstants.MODID, path);
     }
 
     public static ResourceLocation parseOrMakeId(String path)
