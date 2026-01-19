@@ -71,10 +71,10 @@ public class AECSCompatAAERecipeProvider extends AECSRecipeProvider
                 .require(AAEItems.SHATTERED_SINGULARITY, 1)
                 .save(compatOut);
 
-        CrystalAggregatorRecipeBuilder.aggregating(AAEItems.QUANTUM_PROCESSOR, 64, 102400)
-                .require(AAEItems.QUANTUM_PROCESSOR_PRINT, 64)
-                .require(Tags.Items.DUSTS_REDSTONE, 64)
-                .require(AEItems.SILICON_PRINT, 64)
+        CrystalAggregatorRecipeBuilder.aggregating(AAEItems.QUANTUM_PROCESSOR, 32, 51200)
+                .require(AAEItems.QUANTUM_PROCESSOR_PRINT, 32)
+                .require(Tags.Items.DUSTS_REDSTONE, 32)
+                .require(AEItems.SILICON_PRINT, 32)
                 .save(compatOut);
 
         CircuitEtcherRecipeBuilder.etching(AAEItems.QUANTUM_PROCESSOR, 9, 14400)

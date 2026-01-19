@@ -1,16 +1,16 @@
 {
   "type": "ae2cs:crystal_aggregator_recipe_serializer",
-  "energy_cost": 51200,
+  "energy_cost": 25600,
   "input_a": {
-    "count": 64,
+    "count": 32,
     "tag": "c:dusts/ender_pearl"
   },
   "input_b": {
-    "count": 64,
+    "count": 32,
     "item": "minecraft:sand"
   },
   "result": {
-    "count": 32,
+    "count": 16,
     "id": "minecraft:end_stone"
   }
 }

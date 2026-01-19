@@ -99,10 +99,10 @@ public class AECSCompatEAERecipeProvider extends AECSRecipeProvider
                 .require(EAESingletons.WIRELESS_CONNECTOR, 1)
                 .save(compatOut);
 
-        CrystalAggregatorRecipeBuilder.aggregating(EAESingletons.CONCURRENT_PROCESSOR, 64, 102400)
-                .require(EAESingletons.CONCURRENT_PROCESSOR_PRINT, 64)
-                .require(Tags.Items.DUSTS_REDSTONE, 64)
-                .require(AEItems.SILICON_PRINT, 64)
+        CrystalAggregatorRecipeBuilder.aggregating(EAESingletons.CONCURRENT_PROCESSOR, 32, 51200)
+                .require(EAESingletons.CONCURRENT_PROCESSOR_PRINT, 32)
+                .require(Tags.Items.DUSTS_REDSTONE, 32)
+                .require(AEItems.SILICON_PRINT, 32)
                 .save(compatOut);
 
         CrystalAggregatorRecipeBuilder.aggregating(AECSBlocks.EX_INTEGRATED_INTERFACE_BLOCK.toStack(), 16000)

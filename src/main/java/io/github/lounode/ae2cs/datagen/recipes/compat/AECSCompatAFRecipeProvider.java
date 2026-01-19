@@ -57,10 +57,10 @@ public class AECSCompatAFRecipeProvider extends AECSRecipeProvider
                 .require(AECSTags.Items.DUST_REDSTONE_CRYSTAL, 1)
                 .save(compatOut);
 
-        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.REDSTONE_CRYSTAL_SEED.toStack(64), 102400)
-                .require(Tags.Items.DUSTS_GLOWSTONE, 32)
-                .require(Tags.Items.DUSTS_REDSTONE, 16)
-                .require(AECSTags.Items.DUST_REDSTONE_CRYSTAL, 16)
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.REDSTONE_CRYSTAL_SEED.toStack(32), 51200)
+                .require(Tags.Items.DUSTS_GLOWSTONE, 16)
+                .require(Tags.Items.DUSTS_REDSTONE, 8)
+                .require(AECSTags.Items.DUST_REDSTONE_CRYSTAL, 8)
                 .save(compatOut);
 
         CrystalAggregatorRecipeBuilder.aggregating(AFSingletons.INSULATING_RESIN.getDefaultInstance(), 16000)
@@ -69,10 +69,10 @@ public class AECSCompatAFRecipeProvider extends AECSRecipeProvider
                 .require(Items.SLIME_BALL, 1)
                 .save(compatOut);
 
-        CrystalAggregatorRecipeBuilder.aggregating(AFSingletons.ENERGY_PROCESSOR, 64, 102400)
-                .require(AFSingletons.ENERGY_PROCESSOR_PRINT, 64)
-                .require(Tags.Items.DUSTS_REDSTONE, 64)
-                .require(AEItems.SILICON_PRINT, 64)
+        CrystalAggregatorRecipeBuilder.aggregating(AFSingletons.ENERGY_PROCESSOR, 32, 51200)
+                .require(AFSingletons.ENERGY_PROCESSOR_PRINT, 32)
+                .require(Tags.Items.DUSTS_REDSTONE, 32)
+                .require(AEItems.SILICON_PRINT, 32)
                 .save(compatOut);
 
         CrystalPulverizerRecipeBuilder.pulverizing(AFSingletons.EMERALD_DUST, 1, 8000)

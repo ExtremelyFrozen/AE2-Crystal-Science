@@ -88,37 +88,37 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
                 .save(recipeOutput);
 
         // 种子
-        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.RESONATING_SEED, 64, 102400)
-                .require(AECSTags.Items.DUST_RESONATING, 32)
-                .require(ConventionTags.FLUIX_DUST, 32)
-                .require(ConventionTags.SKY_STONE_DUST, 32)
-                .save(recipeOutput);
-
-        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.CERTUS_QUARTZ_SEED, 64, 102400)
-                .require(AEItems.CERTUS_QUARTZ_DUST, 16)
-                .require(Blocks.SAND, 64)
-                .save(recipeOutput);
-
-        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.FLUIX_CRYSTAL_SEED, 64, 102400)
-                .require(AEItems.FLUIX_DUST, 16)
-                .require(Blocks.SAND, 64)
-                .save(recipeOutput);
-
-        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.NETHER_QUARTZ_SEED, 64, 102400)
-                .require(AECSTags.Items.DUST_QUARTZ, 16)
-                .require(Blocks.SAND, 64)
-                .save(recipeOutput);
-
-        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.ENDER_QUARTZ_SEED, 64, 102400)
-                .require(AECSTags.Items.DUST_QUARTZ, 16)
-                .require(ConventionTags.ENDER_PEARL_DUST, 16)
-                .require(Blocks.END_STONE, 32)
-                .save(recipeOutput);
-
-        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.METEOR_SEED, 64, 102400)
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.RESONATING_SEED, 32, 51200)
+                .require(AECSTags.Items.DUST_RESONATING, 16)
+                .require(ConventionTags.FLUIX_DUST, 16)
                 .require(ConventionTags.SKY_STONE_DUST, 16)
-                .require(ConventionTags.CERTUS_QUARTZ_DUST, 16)
-                .require(Blocks.GRAVEL, 32)
+                .save(recipeOutput);
+
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.CERTUS_QUARTZ_SEED, 32, 51200)
+                .require(AEItems.CERTUS_QUARTZ_DUST, 8)
+                .require(Blocks.SAND, 32)
+                .save(recipeOutput);
+
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.FLUIX_CRYSTAL_SEED, 32, 51200)
+                .require(AEItems.FLUIX_DUST, 8)
+                .require(Blocks.SAND, 32)
+                .save(recipeOutput);
+
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.NETHER_QUARTZ_SEED, 32, 51200)
+                .require(AECSTags.Items.DUST_QUARTZ, 8)
+                .require(Blocks.SAND, 32)
+                .save(recipeOutput);
+
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.ENDER_QUARTZ_SEED, 32, 51200)
+                .require(AECSTags.Items.DUST_QUARTZ, 8)
+                .require(ConventionTags.ENDER_PEARL_DUST, 8)
+                .require(Blocks.END_STONE, 16)
+                .save(recipeOutput);
+
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.METEOR_SEED, 32, 51200)
+                .require(ConventionTags.SKY_STONE_DUST, 8)
+                .require(ConventionTags.CERTUS_QUARTZ_DUST, 8)
+                .require(Blocks.GRAVEL, 16)
                 .unlockedBy(getHasName(Blocks.GRAVEL), has(Blocks.GRAVEL))
                 .save(recipeOutput);
 
@@ -143,53 +143,53 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
                 .save(recipeOutput);
 
         // 处理器聚合配方
-        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.RESONATING_PROCESSOR, 64, 102400)
-                .require(AECSItems.RESONATING_CIRCUIT_PRINT, 64)
-                .require(ConventionTags.SKY_STONE_DUST, 64)
-                .require(AEItems.SILICON_PRINT, 64)
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.RESONATING_PROCESSOR, 32, 51200)
+                .require(AECSItems.RESONATING_CIRCUIT_PRINT, 32)
+                .require(ConventionTags.SKY_STONE_DUST, 32)
+                .require(AEItems.SILICON_PRINT, 32)
                 .save(recipeOutput);
-        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.SIMPLE_PROCESSOR, 64, 102400)
-                .require(AECSItems.SIMPLE_CIRCUIT_PRINT, 64)
-                .require(Tags.Items.DUSTS_REDSTONE, 64)
-                .require(AEItems.SILICON_PRINT, 64)
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.SIMPLE_PROCESSOR, 32, 51200)
+                .require(AECSItems.SIMPLE_CIRCUIT_PRINT, 32)
+                .require(Tags.Items.DUSTS_REDSTONE, 32)
+                .require(AEItems.SILICON_PRINT, 32)
                 .save(recipeOutput);
-        CrystalAggregatorRecipeBuilder.aggregating(AEItems.LOGIC_PROCESSOR, 64, 102400)
-                .require(AEItems.LOGIC_PROCESSOR_PRINT, 64)
-                .require(Tags.Items.DUSTS_REDSTONE, 64)
-                .require(AEItems.SILICON_PRINT, 64)
+        CrystalAggregatorRecipeBuilder.aggregating(AEItems.LOGIC_PROCESSOR, 32, 51200)
+                .require(AEItems.LOGIC_PROCESSOR_PRINT, 32)
+                .require(Tags.Items.DUSTS_REDSTONE, 32)
+                .require(AEItems.SILICON_PRINT, 32)
                 .save(recipeOutput);
-        CrystalAggregatorRecipeBuilder.aggregating(AEItems.CALCULATION_PROCESSOR, 64, 102400)
-                .require(AEItems.CALCULATION_PROCESSOR_PRINT, 64)
-                .require(Tags.Items.DUSTS_REDSTONE, 64)
-                .require(AEItems.SILICON_PRINT, 64)
+        CrystalAggregatorRecipeBuilder.aggregating(AEItems.CALCULATION_PROCESSOR, 32, 51200)
+                .require(AEItems.CALCULATION_PROCESSOR_PRINT, 32)
+                .require(Tags.Items.DUSTS_REDSTONE, 32)
+                .require(AEItems.SILICON_PRINT, 32)
                 .save(recipeOutput);
-        CrystalAggregatorRecipeBuilder.aggregating(AEItems.ENGINEERING_PROCESSOR, 64, 102400)
-                .require(AEItems.ENGINEERING_PROCESSOR_PRINT, 64)
-                .require(Tags.Items.DUSTS_REDSTONE, 64)
-                .require(AEItems.SILICON_PRINT, 64)
+        CrystalAggregatorRecipeBuilder.aggregating(AEItems.ENGINEERING_PROCESSOR, 32, 51200)
+                .require(AEItems.ENGINEERING_PROCESSOR_PRINT, 32)
+                .require(Tags.Items.DUSTS_REDSTONE, 32)
+                .require(AEItems.SILICON_PRINT, 32)
                 .save(recipeOutput);
 
         // 其他配方
-        CrystalAggregatorRecipeBuilder.aggregating(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, 64, 102400)
-                .require(AECSTags.Items.PURE_CERTUS_QUARTZ_CRYSTAL, 32)
-                .require(AEItems.CERTUS_QUARTZ_CRYSTAL, 32)
-                .save(recipeOutput);
-
-        CrystalAggregatorRecipeBuilder.aggregating(AEItems.FLUIX_CRYSTAL, 64, 102400)
+        CrystalAggregatorRecipeBuilder.aggregating(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, 32, 51200)
+                .require(AECSTags.Items.PURE_CERTUS_QUARTZ_CRYSTAL, 16)
                 .require(AEItems.CERTUS_QUARTZ_CRYSTAL, 16)
-                .require(Tags.Items.DUSTS_REDSTONE, 16)
-                .require(Tags.Items.GEMS_QUARTZ, 16)
                 .save(recipeOutput);
 
-        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.RESONATING_DUST, 64, 102400)
-                .require(AECSTags.Items.GEM_SKY_STONE_CRYSTAL, 64)
-                .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 64)
-                .require(AECSTags.Items.GEM_ENDER_QUARTZ, 64)
+        CrystalAggregatorRecipeBuilder.aggregating(AEItems.FLUIX_CRYSTAL, 32, 51200)
+                .require(AEItems.CERTUS_QUARTZ_CRYSTAL, 8)
+                .require(Tags.Items.DUSTS_REDSTONE, 8)
+                .require(Tags.Items.GEMS_QUARTZ, 8)
                 .save(recipeOutput);
 
-        CrystalAggregatorRecipeBuilder.aggregating(Blocks.END_STONE, 32, 51200)
-                .require(ConventionTags.ENDER_PEARL_DUST, 64)
-                .require(Blocks.SAND, 64)
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.RESONATING_DUST, 32, 51200)
+                .require(AECSTags.Items.GEM_SKY_STONE_CRYSTAL, 32)
+                .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 32)
+                .require(AECSTags.Items.GEM_ENDER_QUARTZ, 32)
+                .save(recipeOutput);
+
+        CrystalAggregatorRecipeBuilder.aggregating(Blocks.END_STONE, 16, 25600)
+                .require(ConventionTags.ENDER_PEARL_DUST, 32)
+                .require(Blocks.SAND, 32)
                 .save(recipeOutput);
 
         CrystalAggregatorRecipeBuilder.aggregating(AEBlocks.DAMAGED_BUDDING_QUARTZ, 1, 16000)
