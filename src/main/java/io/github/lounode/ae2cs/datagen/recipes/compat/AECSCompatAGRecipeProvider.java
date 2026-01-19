@@ -41,21 +41,21 @@ public class AECSCompatAGRecipeProvider extends AECSRecipeProvider
 
         stonecutterResultFromItem(compatOut, RecipeCategory.MISC, AGSingletons.ORIGINATION_PRESS, AECSItems.BLANK_PRINT_PRESS);
 
-        CrystalAggregatorRecipeBuilder.aggregating(AGSingletons.EMBER_CRYSTAL, 64, 102400)
-                .require(AECSTags.Items.PURE_EMBER_CRYSTAL, 32)
+        CrystalAggregatorRecipeBuilder.aggregating(AGSingletons.EMBER_CRYSTAL, 32, 51200)
+                .require(AECSTags.Items.PURE_EMBER_CRYSTAL, 16)
                 .require(AEBlocks.TINY_TNT, 1)
                 .save(compatOut);
 
-        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.EMBER_SEED.toStack(64), 102400)
-                .require(AGTags.EMBER_DUST, 16)
-                .require(Items.BLAZE_POWDER, 16)
-                .require(Tags.Items.GUNPOWDERS, 32)
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.EMBER_SEED.toStack(32), 51200)
+                .require(AGTags.EMBER_DUST, 8)
+                .require(Items.BLAZE_POWDER, 8)
+                .require(Tags.Items.GUNPOWDERS, 16)
                 .save(compatOut);
 
-        CrystalAggregatorRecipeBuilder.aggregating(AGSingletons.ORIGINATION_PROCESSOR, 64, 102400)
-                .require(AGSingletons.ORIGINATION_PRINT, 64)
-                .require(Tags.Items.DUSTS_REDSTONE, 64)
-                .require(AEItems.SILICON_PRINT, 64)
+        CrystalAggregatorRecipeBuilder.aggregating(AGSingletons.ORIGINATION_PROCESSOR, 32, 51200)
+                .require(AGSingletons.ORIGINATION_PRINT, 32)
+                .require(Tags.Items.DUSTS_REDSTONE, 32)
+                .require(AEItems.SILICON_PRINT, 32)
                 .save(compatOut);
 
         CrystalPulverizerRecipeBuilder.pulverizing(AGSingletons.EMBER_DUST, 1, 8000)
