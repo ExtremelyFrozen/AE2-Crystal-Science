@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs.datagen;
 
 import com.mojang.logging.LogUtils;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
+import io.github.lounode.ae2cs.common.init.AECSEnchantments;
 import io.github.lounode.ae2cs.datagen.recipes.*;
 import io.github.lounode.ae2cs.datagen.recipes.compat.*;
 import io.github.lounode.ae2cs.datagen.worldgen.AECSBiomeModifiers;
@@ -78,6 +79,7 @@ public class DataGenerators
         generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(
                 packOutput, lookupProvider,
                 new RegistrySetBuilder()
+                        .add(Registries.ENCHANTMENT, AECSEnchantments::bootstrap)
                         .add(Registries.CONFIGURED_FEATURE, AECSConfiguredFeatures::bootstrap)
                         .add(Registries.PLACED_FEATURE, AECSPlacedFeatures::bootstrap)
                         .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, AECSBiomeModifiers::bootstrap),

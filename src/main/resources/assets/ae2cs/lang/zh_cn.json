@@ -117,6 +117,8 @@
   "ae2cs.item.pattern_provider_upgrade.tooltip": "将初级样板供应器升级为样板供应器",
   "ae2cs.item.meteor_pattern_provider_upgrade.tooltip": "将样板供应器升级为自装配式样板供应器",
 
+  "enchantment.ae2cs.ender_link": "末影链接",
+
   "message.ae2_crystal_seeds.tooltip.seed_growth": "生长度：%1$s％",
   "message.ae2cs.tooltip.burn_time": "燃烧时间：%s刻",
   "message.ae2cs.tooltip.energy": "能量密度：%sAE每刻",

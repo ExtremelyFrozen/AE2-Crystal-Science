@@ -117,6 +117,8 @@
   "ae2cs.item.pattern_provider_upgrade.tooltip": "Upgrades a Basic Pattern Provider into a Pattern Provider",
   "ae2cs.item.meteor_pattern_provider_upgrade.tooltip": "Upgrades a Pattern Provider into a Self-Assembling Pattern Provider",
 
+  "enchantment.ae2cs.ender_link": "Ender Link",
+
   "message.ae2_crystal_seeds.tooltip.seed_growth": "Growth: %1$s%%",
   "message.ae2cs.tooltip.burn_time": "Burn Time: %s ticks",
   "message.ae2cs.tooltip.energy": "Energy Density: %s AE/t",
