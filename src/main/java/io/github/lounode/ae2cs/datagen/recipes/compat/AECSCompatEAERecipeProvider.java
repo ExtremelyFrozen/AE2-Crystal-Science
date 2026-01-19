@@ -14,6 +14,7 @@ import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CircuitEtcherRecipeBuilder;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBuilder;
+import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalPulverizerRecipeBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -22,6 +23,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
+import net.pedroksl.advanced_ae.common.definitions.AAEItems;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -50,6 +52,10 @@ public class AECSCompatEAERecipeProvider extends AECSRecipeProvider
                 .require(EAETags.ENTRO_BLOCK, 9)
                 .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 4)
                 .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 4)
+                .save(compatOut);
+
+        CrystalPulverizerRecipeBuilder.pulverizing(EAESingletons.ENTRO_DUST, 1, 8000)
+                .require(EAETags.ENTRO_CRYSTAL, 1)
                 .save(compatOut);
 
         CrystalAggregatorRecipeBuilder.aggregating(EAESingletons.MOSTLY_ENTROIZED_FLUIX_BUDDING, 1, 16000)
