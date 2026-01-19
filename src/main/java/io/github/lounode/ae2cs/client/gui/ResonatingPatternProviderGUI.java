@@ -35,11 +35,17 @@ public class ResonatingPatternProviderGUI extends PatternProviderScreen<Resonati
         {
             // 可能有其他模组完成了添加，静默处理
         }
-        if (menu.getToolbox().isPresent())
+        try
         {
-            this.widgets.add("toolbox", new ToolboxPanel(style, menu.getToolbox().getName()));
+            if (menu.getToolbox().isPresent())
+            {
+                this.widgets.add("toolbox", new ToolboxPanel(style, menu.getToolbox().getName()));
+            }
         }
-
+        catch (IllegalStateException e)
+        {
+            // 可能有其他模组完成了添加，静默处理
+        }
         changePullModeButton = new AECSServerSettingToggleButton<>(AECSSettings.PULL_MODE, PullMode.PULL_OFF);
         addToLeftToolbar(changePullModeButton);
     }
