@@ -6,6 +6,7 @@ import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
+import io.github.lounode.ae2cs.datagen.builder.recipe.CircuitEtcherRecipeBuilder;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBuilder;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalPulverizerRecipeBuilder;
 import io.github.sapporo1101.appgen.common.AGSingletons;
@@ -76,6 +77,12 @@ public class AECSCompatAGRecipeProvider extends AECSRecipeProvider
 
         CrystalPulverizerRecipeBuilder.pulverizing(AGSingletons.NETHERITE_DUST, 1, 8000)
                 .require(Tags.Items.INGOTS_NETHERITE, 1)
+                .save(compatOut);
+
+        CircuitEtcherRecipeBuilder.etching(AGSingletons.ORIGINATION_PROCESSOR, 36, 57600)
+                .require(AGSingletons.EMBER_BLOCK, 9)
+                .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 4)
+                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 4)
                 .save(compatOut);
     }
 }
