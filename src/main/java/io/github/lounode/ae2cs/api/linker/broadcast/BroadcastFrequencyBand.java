@@ -622,7 +622,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         {
             if (conn != null) conn.destroy();
             // 这里我们知道它肯定是BE，但是我们不做强制转换
-            if (!(controllerNode instanceof BlockEntity controllerBE)) return;
+            if (!(controllerNode.getOwner() instanceof BlockEntity controllerBE)) return;
             if (!(controllerBE.getLevel() instanceof ServerLevel level)) return; // 主要用于错开null
             // 防止直接相邻导致的重复连接
             if (level.dimension() == receiverPos.dimension() && BlockPosHelper.isAdjacent(receiverPos.pos(), controllerBE.getBlockPos()))
