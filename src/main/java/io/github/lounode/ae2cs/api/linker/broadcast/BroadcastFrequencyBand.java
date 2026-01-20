@@ -11,6 +11,7 @@ import com.mojang.serialization.DataResult;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.CustomChannelProviderHost;
 import io.github.lounode.ae2cs.api.util.AECSGridHelper;
+import io.github.lounode.ae2cs.util.BlockPosHelper;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
@@ -620,6 +621,13 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         if (needRebuild)
         {
             if (conn != null) conn.destroy();
+            // 这里我们知道它肯定是BE，但是我们不做强制转换
+            if (!(controllerNode instanceof BlockEntity controllerBE)) return;
+            if (!(controllerBE.getLevel() instanceof ServerLevel level)) return; // 主要用于错开null
+            // 防止直接相邻导致的重复连接
+            if (level.dimension() == receiverPos.dimension() && BlockPosHelper.isAdjacent(receiverPos.pos(), controllerBE.getBlockPos()))
+                return;
+
             receiverConnections.put(receiverPos, GridHelper.createConnection(controllerNode, receiverNode));
         }
     }
