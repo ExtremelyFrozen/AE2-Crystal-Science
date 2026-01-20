@@ -102,7 +102,7 @@ public class CrystalSeedItem extends Item
         int ticksExcited = seedItem.getGrowTicks(stack);
         seedItem.setGrowTicks(stack, ticksExcited + ticks);
 
-        if (ticksExcited >= seedItem.getOvergrowTick())
+        if (ticksExcited + ticks >= seedItem.getOvergrowTick())
         {
             ItemStack newStack = new ItemStack(seedItem.getGrowTo());
             newStack.setCount(stack.getCount());
