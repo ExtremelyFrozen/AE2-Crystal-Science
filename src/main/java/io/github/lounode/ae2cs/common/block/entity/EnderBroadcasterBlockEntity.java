@@ -1,6 +1,5 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
-import appeng.api.config.AccessRestriction;
 import appeng.api.networking.*;
 import appeng.api.networking.pathing.ChannelMode;
 import appeng.api.stacks.AEItemKey;
@@ -31,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEntity
+public class EnderBroadcasterBlockEntity extends AENetworkedComponentBlockEntity
         implements CustomChannelProviderHost, BroadcastSenderHost, BroadcastReceiverHost, IUpgradeableObject,
         CustomReturnableSubMenuHost
 {
@@ -99,8 +98,7 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
 
     public EnderBroadcasterBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
     {
-        super(type, pos, state,
-                80000, false, AccessRestriction.WRITE);
+        super(type, pos, state);
         getMainNode().setFlags(GridFlags.DENSE_CAPACITY);
     }
 
