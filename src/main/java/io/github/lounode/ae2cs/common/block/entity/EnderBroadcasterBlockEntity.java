@@ -69,7 +69,7 @@ public class EnderBroadcasterBlockEntity extends AENetworkedComponentBlockEntity
                     if (owner.connectionType != ConnectionType.AS_SENDER) return;
                     if (owner.bandId == null || owner.bandId.isEmpty()) return;
 
-                    if (reason == State.CHANNEL || reason == State.GRID_BOOT)
+                    if (reason == State.CHANNEL || reason == State.GRID_BOOT || reason == State.POWER)
                     {
                         // 标脏，下一tick重新统计
                         // 由于发射端channel仅仅取决于此处连接状态，所以也仅需要在此处进行标脏即可
