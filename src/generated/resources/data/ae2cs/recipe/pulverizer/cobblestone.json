@@ -3,10 +3,10 @@
   "energy_cost": 8000,
   "input": {
     "count": 1,
-    "item": "minecraft:cobblestone"
+    "item": "minecraft:stone"
   },
   "result": {
     "count": 1,
-    "id": "minecraft:gravel"
+    "id": "minecraft:cobblestone"
   }
 }

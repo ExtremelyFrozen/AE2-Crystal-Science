@@ -8,7 +8,7 @@
             "count": {
               "min": 1
             },
-            "items": "minecraft:cobblestone"
+            "items": "minecraft:stone"
           }
         ]
       },
@@ -16,7 +16,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2cs:pulverizer/gravel"
+        "recipe": "ae2cs:pulverizer/cobblestone"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -29,7 +29,7 @@
   ],
   "rewards": {
     "recipes": [
-      "ae2cs:pulverizer/gravel"
+      "ae2cs:pulverizer/cobblestone"
     ]
   }
 }

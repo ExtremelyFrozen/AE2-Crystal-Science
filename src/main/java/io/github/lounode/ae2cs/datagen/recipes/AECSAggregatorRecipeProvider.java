@@ -187,9 +187,10 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
                 .require(AECSTags.Items.GEM_ENDER_QUARTZ, 32)
                 .save(recipeOutput);
 
-        CrystalAggregatorRecipeBuilder.aggregating(Blocks.END_STONE, 16, 25600)
-                .require(ConventionTags.ENDER_PEARL_DUST, 32)
+        CrystalAggregatorRecipeBuilder.aggregating(Blocks.END_STONE, 64, 51200)
+                .require(ConventionTags.ENDER_PEARL_DUST, 16)
                 .require(Blocks.SAND, 32)
+                .require(Blocks.COBBLESTONE, 32)
                 .save(recipeOutput);
 
         CrystalAggregatorRecipeBuilder.aggregating(AEBlocks.DAMAGED_BUDDING_QUARTZ, 1, 16000)
