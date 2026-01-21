@@ -130,7 +130,7 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
 
                 // 尝试塞入可用库存
                 long allInserted = 0;
-                if (gridInv != null && remaining > 0)
+                if (gridInv != null)
                 {
                     long inserted = gridInv.insert(key, remaining, Actionable.MODULATE, actionSource);
                     allInserted += inserted;
@@ -155,10 +155,12 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
                 if (allInserted > 0)
                 {
                     worked = true;
-                    saveChanges();
                 }
             }
         }
+
+        if(worked)
+            saveChanges();
         return worked;
     }
 
@@ -190,8 +192,11 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
 
         // 如果能量不足则返回
         double neededEnergy = getEnergyPerWorkAfterSpeed();
-        if (extractAEPowerFromGrid(neededEnergy, Actionable.SIMULATE) < neededEnergy)
+        if (!tryConsumeEnergyFromGrid(neededEnergy))
             return false;
+
+        // 记录一下当前发送表状态
+        boolean wasEmpty = craftedContents.isEmpty();
 
         // 提供注册表信息，用于后续assemble实际输出
         var level = meteoriteHost.getBlockEntity().getLevel();
@@ -286,26 +291,40 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
             }
         }
 
-        // 提交、扣能量、计数、唤醒ticker
+        // 提交、计数、唤醒ticker
         saveChanges();
-        extractAEPowerFromGrid(neededEnergy, Actionable.MODULATE);
         worksInRound++;
 
-        mainNode.ifPresent((iGrid, iGridNode) -> iGrid.getTickManager().alertDevice(iGridNode));
+        if (wasEmpty && !craftedContents.isEmpty())
+            mainNode.ifPresent((iGrid, iGridNode) -> iGrid.getTickManager().alertDevice(iGridNode));
         return true;
     }
 
     /**
-     * 从网络中取一些能量
+     * 尝试从网络中扣除指定数量的能量，如果不足不扣除
      */
-    private double extractAEPowerFromGrid(double energy, Actionable actionable)
+    private boolean tryConsumeEnergyFromGrid(double energy)
     {
         IGrid grid = getGrid();
-        if (grid == null) return 0;
+        if (grid == null) return false;
         IEnergyService energyService = grid.getEnergyService();
-        if (energyService == null) return 0;
+        if (energyService == null) return false;
 
-        return energyService.extractAEPower(energy, actionable, PowerMultiplier.ONE);
+        double extracted = energyService.extractAEPower(energy, Actionable.MODULATE, PowerMultiplier.ONE);
+        if (extracted + 1.0e-9 >= energy)
+        {
+            return true;
+        }
+
+        try
+        {
+            energyService.injectPower(extracted, Actionable.MODULATE);
+        }
+        catch (Throwable ignored)
+        {
+            // 默许损耗
+        }
+        return false;
     }
 
     @Override
