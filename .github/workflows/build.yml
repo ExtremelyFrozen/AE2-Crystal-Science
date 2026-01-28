@@ -27,8 +27,8 @@ jobs:
         run: |
           set -euo pipefail
 
-          mod_id="$(awk -F= '$1=="mod_id"{print substr($0, index($0,$2))}' gradle.properties | tr -d '\r')"
-          mod_version="$(awk -F= '$1=="mod_version"{print substr($0, index($0,$2))}' gradle.properties | tr -d '\r')"
+          mod_id="$(grep -m1 -E '^\s*mod_id\s*=' gradle.properties | sed -E 's/^\s*mod_id\s*=\s*//; s/\r$//')"
+          mod_version="$(grep -m1 -E '^\s*mod_version\s*=' gradle.properties | sed -E 's/^\s*mod_version\s*=\s*//; s/\r$//')"
 
           if [[ -z "$mod_id" || -z "$mod_version" ]]; then
             echo "mod_id or mod_version not found in gradle.properties" >&2
@@ -37,6 +37,9 @@ jobs:
 
           jar_name="${mod_id}-${mod_version}.jar"
           echo "jar_name=$jar_name" >> "$GITHUB_OUTPUT"
+
+      - name: Allow run gradlew
+        run: chmod +x gradlew
 
       - name: Build with Gradle
         run: ./gradlew build
