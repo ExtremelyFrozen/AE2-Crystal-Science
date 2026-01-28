@@ -1,9 +1,14 @@
-name: Build
+name: Build & Publish
 
 on: [workflow_dispatch]
 
 env:
+  MINECRAFT_VERSION: "1.21.1"
   JAVA_VERSION: "21"
+  LOADER: "neoforge"
+
+  CURSEFORGE_ID: "1435174"
+  MODRINTH_ID: "uJ9afomy"
 
 permissions:
   contents: write
@@ -11,6 +16,8 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: publish
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -70,3 +77,34 @@ jobs:
           name: ${{ steps.props.outputs.jar_name }}
           path: build/libs/${{ steps.props.outputs.jar_name }}
           if-no-files-found: error
+
+      - name: Publish (GitHub / CurseForge / Modrinth)
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          # CurseForge
+          curseforge-id: ${{ env.CURSEFORGE_ID }}
+          curseforge-token: ${{ secrets.PUBLISH_CURSEFORGE_TOKEN }}
+
+          # Modrinth
+          modrinth-id: ${{ env.MODRINTH_ID }}
+          modrinth-token: ${{ secrets.PUBLISH_MODRINTH_TOKEN }}
+
+          # GitHub Release
+          github-tag: v${{ steps.props.outputs.mod_version }}
+          github-token: ${{ secrets.PUBLISH_GITHUB_TOKEN }}
+
+          version: ${{ steps.props.outputs.mod_version }}
+          version-type: release
+          changelog-file: docs/CHANGELOG.md
+
+          files: |
+            build/libs/${{ steps.props.outputs.jar_name }}
+
+          loaders: |
+            ${{ env.LOADER }}
+
+          game-versions: |
+            ${{ env.MINECRAFT_VERSION }}
+
+          java: |
+            ${{ env.JAVA_VERSION }}
