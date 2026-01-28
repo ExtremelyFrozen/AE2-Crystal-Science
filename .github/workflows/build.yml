@@ -51,9 +51,6 @@ jobs:
           echo "mod_version=$mod_version" >> "$GITHUB_OUTPUT"
           echo "jar_name=$jar_name" >> "$GITHUB_OUTPUT"
 
-      - name: Allow run gradlew
-        run: chmod +x gradlew
-
       - name: Build with Gradle
         run: ./gradlew build
 
