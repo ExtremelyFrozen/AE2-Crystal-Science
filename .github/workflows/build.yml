@@ -21,5 +21,36 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Read gradle.properties (mod_id/mod_version)
+        id: props
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mod_id="$(awk -F= '$1=="mod_id"{print substr($0, index($0,$2))}' gradle.properties | tr -d '\r')"
+          mod_version="$(awk -F= '$1=="mod_version"{print substr($0, index($0,$2))}' gradle.properties | tr -d '\r')"
+
+          if [[ -z "$mod_id" || -z "$mod_version" ]]; then
+            echo "mod_id or mod_version not found in gradle.properties" >&2
+            exit 1
+          fi
+
+          jar_name="${mod_id}-${mod_version}.jar"
+          echo "jar_name=$jar_name" >> "$GITHUB_OUTPUT"
+
       - name: Build with Gradle
         run: ./gradlew build
+
+      - name: Verify jar exists
+        shell: bash
+        run: |
+          set -euo pipefail
+          ls -lah build/libs
+          test -f "build/libs/${{ steps.props.outputs.jar_name }}"
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.props.outputs.jar_name }}
+          path: build/libs/${{ steps.props.outputs.jar_name }}
+          if-no-files-found: error
