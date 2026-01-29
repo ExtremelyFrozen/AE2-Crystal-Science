@@ -38,7 +38,7 @@ jobs:
         shell: bash
         run: chmod +x ./gradlew
 
-      - name: Read gradle.properties (mod_id/mod_version)
+      - name: Read gradle.properties (mod_id/mod_version/mod_name)
         id: props
         shell: bash
         run: |
@@ -46,17 +46,29 @@ jobs:
 
           mod_id="$(grep -m1 -E '^\s*mod_id\s*=' gradle.properties | sed -E 's/^\s*mod_id\s*=\s*//; s/\r$//')"
           mod_version="$(grep -m1 -E '^\s*mod_version\s*=' gradle.properties | sed -E 's/^\s*mod_version\s*=\s*//; s/\r$//')"
+          mod_name="$(grep -m1 -E '^\s*mod_name\s*=' gradle.properties | sed -E 's/^\s*mod_name\s*=\s*//; s/\r$//')"
 
-          if [[ -z "$mod_id" || -z "$mod_version" ]]; then
-            echo "mod_id or mod_version not found in gradle.properties" >&2
+          if [[ -z "$mod_id" || -z "$mod_version" || -z "$mod_name" ]]; then
+            echo "mod_id / mod_version / mod_name not found in gradle.properties" >&2
             exit 1
           fi
 
           jar_name="${mod_id}-${mod_version}.jar"
+          display_name="${mod_name}-${mod_version}"
 
-          echo "mod_id=$mod_id" >> "$GITHUB_OUTPUT"
-          echo "mod_version=$mod_version" >> "$GITHUB_OUTPUT"
-          echo "jar_name=$jar_name" >> "$GITHUB_OUTPUT"
+          {
+            echo "mod_id=$mod_id"
+            echo "mod_version=$mod_version"
+            echo "jar_name=$jar_name"
+
+            echo "mod_name<<EOF"
+            echo "$mod_name"
+            echo "EOF"
+
+            echo "display_name<<EOF"
+            echo "$display_name"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Build with Gradle
         run: ./gradlew build
@@ -90,7 +102,7 @@ jobs:
           github-tag: v${{ steps.props.outputs.mod_version }}
           github-token: ${{ secrets.PUBLISH_GITHUB_TOKEN }}
 
-          name: ${{ steps.props.outputs.jar_name }}
+          name: ${{ steps.props.outputs.display_name }}
           version: ${{ steps.props.outputs.mod_version }}
           version-type: release
           changelog-file: docs/CHANGELOG.md
