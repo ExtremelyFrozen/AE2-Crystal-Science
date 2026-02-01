@@ -219,29 +219,28 @@ On the other side, AECS adds stronger pattern execution and wireless channel sol
 
 ## Other Info
 
-* **Optional Mod Integrations**
-  Some purified crystal recipes are **only added when the corresponding mod is installed**.
+### Optional Mod Integrations
+Some purified crystal recipes are **only added when the corresponding mod is installed**.
 
-  Supported integrations include:
+Supported integrations include:
+- **ExtendedAE** – Purified Entro Crystal
+- **AdvancedAE** – Purified Quantum Crystal
+- **Applied Fluix** – Purified Redstone Crystal
+- **Applied Generators** – Purified Ember Crystal
+- **Create** – Purified Rose Quartz
+- **Mekanism** – Purified Irradiated Crystal
 
-    * **ExtendedAE** – Purified Entro Crystal
-    * **AdvancedAE** – Purified Quantum Crystal
-    * **Applied Fluix** – Purified Redstone Crystal
-    * **Applied Generators** – Purified Ember Crystal
-    * **Create** – Purified Rose Quartz
-    * **Mekanism** – Purified Irradiated Crystal
+### JEI / EMI Support
+Full integration with **JEI** and **EMI** is provided.
 
-* **JEI / EMI Support**
-  Full integration with **JEI** and **EMI** is provided.
+### Dark Mode Resource Pack
+Prefer a darker look? Try the dark-mode resource pack:
+- **[AECS Dark Mode](https://www.curseforge.com/minecraft/texture-packs/aecs-dark-mode)**
 
-* **Dark Mode Resource Pack**
-  Prefer a darker look? Try the dark-mode resource pack here:
-  **[AECS Dark Mode](https://www.curseforge.com/minecraft/texture-packs/aecs-dark-mode)**
-
-* **In-Game Guide**
-  The mod includes a **complete and detailed in-game guide powered by GuideME**,
-  covering all systems, machines, crystals.
-  No external wiki is required to get started.
+### In-Game Guide
+The mod includes a **complete and detailed in-game guide powered by GuideME**,
+covering all systems, machines, crystals.  
+No external wiki is required to get started.
 
 ---
 
