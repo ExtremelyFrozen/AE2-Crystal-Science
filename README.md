@@ -122,6 +122,10 @@ On the other side, AECS adds stronger pattern execution and wireless channel sol
 * **JEI / EMI Support**
   Full integration with **JEI** and **EMI** is provided.
 
+* **Dark Mode Resource Pack**
+  Prefer a darker look? Try the dark-mode resource pack here:
+  **[AECS Dark Mode](https://www.curseforge.com/minecraft/texture-packs/aecs-dark-mode)**
+
 * **In-Game Guide**
   The mod includes a **complete and detailed in-game guide powered by GuideME**,
   covering all systems, machines, crystals.

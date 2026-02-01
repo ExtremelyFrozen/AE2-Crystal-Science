@@ -236,7 +236,7 @@ On the other side, AECS adds stronger pattern execution and wireless channel sol
 
 * **Dark Mode Resource Pack**
   Prefer a darker look? Try the dark-mode resource pack here:
-  **[AECS Dark Mode](https://www.curseforge.com/minecraft/texture-packs/aecs-dark-mode)**
+  **[AECS Dark Mode](https://modrinth.com/mod/ae2-crystal-science)**
 
 * **In-Game Guide**
   The mod includes a **complete and detailed in-game guide powered by GuideME**,
