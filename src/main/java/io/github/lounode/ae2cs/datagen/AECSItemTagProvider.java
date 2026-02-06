@@ -5,6 +5,7 @@ import com.glodblock.github.extendedae.util.EAETags;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
+import io.github.lounode.ae2cs.common.init.AECSParts;
 import io.github.lounode.ae2cs.common.init.AECSTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -73,28 +74,6 @@ public class AECSItemTagProvider extends ItemTagsProvider
         tag(AECSTags.Items.PURE_EMBER_CRYSTAL)
                 .add(AECSItems.PURE_EMBER_CRYSTAL.get());
 
-        // 矿
-        tag(Tags.Items.ORES)
-                .addTag(AECSTags.Items.ORES_CERTUS_QUARTZ);
-        // 普通倍率矿石
-        tag(Tags.Items.ORE_RATES_SINGULAR)
-                .addTag(AECSTags.Items.ORES_CERTUS_QUARTZ);
-        // 赛特斯石英矿
-        tag(AECSTags.Items.ORES_CERTUS_QUARTZ)
-                .add(AECSBlocks.CERTUS_QUARTZ_ORE.asItem())
-                .add(AECSBlocks.DEEPSLATE_CERTUS_QUARTZ_ORE.asItem())
-                .add(AECSBlocks.CHARGED_CERTUS_QUARTZ_ORE.asItem())
-                .add(AECSBlocks.DEEPSLATE_CHARGED_CERTUS_QUARTZ_ORE.asItem());
-        // 生成在石头中的矿石
-        tag(Tags.Items.ORES_IN_GROUND_STONE)
-                .add(AECSBlocks.CERTUS_QUARTZ_ORE.asItem())
-                .add(AECSBlocks.CHARGED_CERTUS_QUARTZ_ORE.asItem());
-        // 深板岩层的矿石
-        tag(Tags.Items.ORES_IN_GROUND_DEEPSLATE)
-                .add(AECSBlocks.DEEPSLATE_CERTUS_QUARTZ_ORE.asItem())
-                .add(AECSBlocks.DEEPSLATE_CHARGED_CERTUS_QUARTZ_ORE.asItem());
-
-
         // 粉尘
         tag(Tags.Items.DUSTS)
                 .addTag(AECSTags.Items.DUST_RESONATING)
@@ -109,33 +88,6 @@ public class AECSItemTagProvider extends ItemTagsProvider
                 .add(AECSItems.QUANTUM_CRYSTAL_DUST.get());
         tag(AECSTags.Items.DUST_REDSTONE_CRYSTAL)
                 .add(AECSItems.REDSTONE_CRYSTAL_DUST.get());
-
-        // 存储方块
-        tag(Tags.Items.STORAGE_BLOCKS)
-                .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_ENDER_QUARTZ)
-                .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_RESONATING_CRYSTAL)
-                .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_METEOR_CRYSTAL)
-                .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_REDSTONE_CRYSTAL)
-                .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_QUANTUM_CRYSTAL)
-                .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_ROSE_QUARTZ)
-                .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL)
-                .addTag(AECSTags.Items.STORAGE_BLOCK_SILICON);
-        tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_ENDER_QUARTZ)
-                .add(AECSBlocks.PURE_ENDER_QUARTZ_BLOCK.asItem());
-        tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_RESONATING_CRYSTAL)
-                .add(AECSBlocks.PURE_RESONATING_CRYSTAL_BLOCK.asItem());
-        tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_METEOR_CRYSTAL)
-                .add(AECSBlocks.PURE_METEOR_CRYSTAL_BLOCK.asItem());
-        tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_REDSTONE_CRYSTAL)
-                .add(AECSBlocks.PURE_REDSTONE_CRYSTAL_BLOCK.asItem());
-        tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_QUANTUM_CRYSTAL)
-                .add(AECSBlocks.PURE_QUANTUM_CRYSTAL_BLOCK.asItem());
-        tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_ROSE_QUARTZ)
-                .add(AECSBlocks.PURE_ROSE_QUARTZ_BLOCK.asItem());
-        tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL)
-                .add(AECSBlocks.IRRADIATED_CRYSTAL_BLOCK.asItem());
-        tag(AECSTags.Items.STORAGE_BLOCK_SILICON)
-                .add(AECSBlocks.SILICON_BLOCK.asItem());
 
         // 齿轮
         tag(AECSTags.Items.GEARS)
@@ -197,5 +149,91 @@ public class AECSItemTagProvider extends ItemTagsProvider
                 .addTag(AECSTags.Items.PURE_RESONATING_CRYSTAL);
         tag(EAETags.ENTRO_CRYSTAL)
                 .addTag(AECSTags.Items.PURE_ENTRO_CRYSTAL);
+
+        // 矿
+        tag(Tags.Items.ORES)
+                .addTag(AECSTags.Items.ORES_CERTUS_QUARTZ);
+        // 普通倍率矿石
+        tag(Tags.Items.ORE_RATES_SINGULAR)
+                .addTag(AECSTags.Items.ORES_CERTUS_QUARTZ);
+        // 赛特斯石英矿
+        tag(AECSTags.Items.ORES_CERTUS_QUARTZ)
+                .add(AECSBlocks.CERTUS_QUARTZ_ORE.asItem())
+                .add(AECSBlocks.DEEPSLATE_CERTUS_QUARTZ_ORE.asItem())
+                .add(AECSBlocks.CHARGED_CERTUS_QUARTZ_ORE.asItem())
+                .add(AECSBlocks.DEEPSLATE_CHARGED_CERTUS_QUARTZ_ORE.asItem());
+        // 生成在石头中的矿石
+        tag(Tags.Items.ORES_IN_GROUND_STONE)
+                .add(AECSBlocks.CERTUS_QUARTZ_ORE.asItem())
+                .add(AECSBlocks.CHARGED_CERTUS_QUARTZ_ORE.asItem());
+        // 深板岩层的矿石
+        tag(Tags.Items.ORES_IN_GROUND_DEEPSLATE)
+                .add(AECSBlocks.DEEPSLATE_CERTUS_QUARTZ_ORE.asItem())
+                .add(AECSBlocks.DEEPSLATE_CHARGED_CERTUS_QUARTZ_ORE.asItem());
+
+        // 非接口机器
+        tag(AECSTags.Items.AECS_MACHINE)
+                .add(AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK.asItem())
+                .add(AECSBlocks.CIRCUIT_ETCHER_BLOCK.asItem())
+                .add(AECSBlocks.QUARTZ_GRINDSTONE_BLOCK.asItem())
+                .add(AECSBlocks.CRYSTAL_PULVERIZER_BLOCK.asItem())
+                .add(AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK.asItem())
+                .add(AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK.asItem())
+                .add(AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK.asItem())
+                .add(AECSBlocks.ENDER_BROADCASTER_BLOCK.asItem())
+                .add(AECSBlocks.ENDER_EMITTER_BLOCK.asItem());
+
+        // 接口机器
+        tag(AECSTags.Items.AECS_PART)
+                .add(AECSBlocks.ENDER_INTERFACE_BLOCK.asItem())
+                .add(AECSBlocks.EX_ENDER_INTERFACE_BLOCK.asItem())
+                .add(AECSBlocks.INTEGRATED_INTERFACE_BLOCK.asItem())
+                .add(AECSBlocks.EX_INTEGRATED_INTERFACE_BLOCK.asItem())
+                .add(AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK.asItem())
+                .add(AECSBlocks.EX_RESONATING_PATTERN_PROVIDER_BLOCK.asItem())
+                .add(AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK.asItem())
+                .add(AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK.asItem())
+                .add(AECSBlocks.QUARTZ_OSCILLATOR_CLOCK_BLOCK.asItem());
+        tag(AECSTags.Items.AECS_PART)
+                .add(AECSParts.ENDER_INTERFACE_PART.get())
+                .add(AECSParts.EX_ENDER_INTERFACE_PART.get())
+                .add(AECSParts.INTEGRATE_INTERFACE_PART.get())
+                .add(AECSParts.EX_INTEGRATE_INTERFACE_PART.get())
+                .add(AECSParts.RESONATING_PATTERN_PROVIDER_PART.get())
+                .add(AECSParts.EX_RESONATING_PATTERN_PROVIDER_PART.get())
+                .add(AECSParts.SIMPLE_PATTERN_PROVIDER_PART.get())
+                .add(AECSParts.METEORITE_PATTERN_PROVIDER_PART.get())
+                .add(AECSParts.QUARTZ_OSCILLATOR_CLOCK_PART.get());
+
+        // 高纯水晶块
+        tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL)
+                .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_ENDER_QUARTZ)
+                .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_RESONATING_CRYSTAL)
+                .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_METEOR_CRYSTAL)
+                .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_REDSTONE_CRYSTAL)
+                .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_QUANTUM_CRYSTAL)
+                .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_ROSE_QUARTZ)
+                .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL);
+        tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_ENDER_QUARTZ)
+                .add(AECSBlocks.PURE_ENDER_QUARTZ_BLOCK.asItem());
+        tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_RESONATING_CRYSTAL)
+                .add(AECSBlocks.PURE_RESONATING_CRYSTAL_BLOCK.asItem());
+        tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_METEOR_CRYSTAL)
+                .add(AECSBlocks.PURE_METEOR_CRYSTAL_BLOCK.asItem());
+        tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_REDSTONE_CRYSTAL)
+                .add(AECSBlocks.PURE_REDSTONE_CRYSTAL_BLOCK.asItem());
+        tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_QUANTUM_CRYSTAL)
+                .add(AECSBlocks.PURE_QUANTUM_CRYSTAL_BLOCK.asItem());
+        tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_ROSE_QUARTZ)
+                .add(AECSBlocks.PURE_ROSE_QUARTZ_BLOCK.asItem());
+        tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL)
+                .add(AECSBlocks.IRRADIATED_CRYSTAL_BLOCK.asItem());
+
+        // 存储方块
+        tag(Tags.Items.STORAGE_BLOCKS)
+                .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL)
+                .addTag(AECSTags.Items.STORAGE_BLOCK_SILICON);
+        tag(AECSTags.Items.STORAGE_BLOCK_SILICON)
+                .add(AECSBlocks.SILICON_BLOCK.asItem());
     }
 }

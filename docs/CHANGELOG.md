@@ -1,1 +1,1 @@
-* Adjusted the color of some UI text to support dark-mode resource pack.
+* Add Pickaxe Tag to storage blocks and machine blocks.

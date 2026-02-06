@@ -14,6 +14,7 @@ public class AECSTags
     {
         public static final TagKey<Block> ORES_CERTUS_QUARTZ = tag("ores/certus_quartz");
 
+        public static final TagKey<Block> STORAGE_BLOCK_PURE_CRYSTAL = aecsTag("storage_blocks/pure_crystal");
         public static final TagKey<Block> STORAGE_BLOCK_PURE_CRYSTAL_ENDER_QUARTZ =
                 aecsTag("storage_blocks/pure_crystal/ender_quartz_block");
         public static final TagKey<Block> STORAGE_BLOCK_PURE_CRYSTAL_RESONATING_CRYSTAL =
@@ -29,6 +30,9 @@ public class AECSTags
         public static final TagKey<Block> STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL =
                 aecsTag("storage_blocks/pure_crystal/irradiated_crystal_block");
         public static final TagKey<Block> STORAGE_BLOCK_SILICON = tag("storage_blocks/silicon");
+
+        public static final TagKey<Block> AECS_MACHINE = aecsTag("aecs/machine");
+        public static final TagKey<Block> AECS_PART = aecsTag("aecs/part");
 
         private static TagKey<Block> tag(String name)
         {
@@ -76,6 +80,7 @@ public class AECSTags
 
         public static final TagKey<Item> ORES_CERTUS_QUARTZ = tag("ores/certus_quartz");
 
+        public static final TagKey<Item> STORAGE_BLOCK_PURE_CRYSTAL = aecsTag("storage_blocks/pure_crystal");
         public static final TagKey<Item> STORAGE_BLOCK_PURE_CRYSTAL_ENDER_QUARTZ =
                 tag("storage_blocks/pure_crystal/ender_quartz_block");
         public static final TagKey<Item> STORAGE_BLOCK_PURE_CRYSTAL_RESONATING_CRYSTAL =
@@ -91,6 +96,9 @@ public class AECSTags
         public static final TagKey<Item> STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL =
                 tag("storage_blocks/pure_crystal/irradiated_crystal_block");
         public static final TagKey<Item> STORAGE_BLOCK_SILICON = tag("storage_blocks/silicon");
+
+        public static final TagKey<Item> AECS_MACHINE = aecsTag("aecs/machine");
+        public static final TagKey<Item> AECS_PART = aecsTag("aecs/part");
 
         // 仅引用获取
         public static final TagKey<Item> STORAGE_BLOCK_CERTUS_QUARTZ = tag("storage_blocks/certus_quartz");
