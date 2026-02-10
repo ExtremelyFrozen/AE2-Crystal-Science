@@ -1,6 +1,8 @@
 package io.github.lounode.ae2cs.datagen.recipes.compat;
 
 import appeng.core.definitions.AEItems;
+import com.glodblock.github.appflux.common.AFSingletons;
+import com.glodblock.github.appflux.util.AFTags;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
@@ -11,6 +13,7 @@ import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBuilder;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalPulverizerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.PressurizedReactionRecipeBuilder;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
@@ -24,8 +27,12 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.crafting.CompoundIngredient;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
+import net.pedroksl.advanced_ae.common.definitions.AAEItems;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -87,6 +94,36 @@ public class AECSCompatMEKRecipeProvider extends AECSRecipeProvider
         CrystalPulverizerRecipeBuilder.pulverizing(AECSItems.IRRADIATED_CRYSTAL_DUST, 1, 8000)
                 .require(AECSTags.Items.PURE_IRRADIATED_CRYSTAL, 1)
                 .save(compatOut);
+
+        ItemStackToItemStackRecipeBuilder.crushing(
+                ItemStackIngredient.of(SizedIngredient.of(Tags.Items.GEMS_QUARTZ, 1)),
+                AECSItems.NETHER_QUARTZ_DUST.toStack())
+                .build(compatOut, getCrushingPath("nether_quartz_dust"));
+
+        ItemStackToItemStackRecipeBuilder.crushing(
+                        ItemStackIngredient.of(new SizedIngredient(CompoundIngredient.of(Ingredient.of(AECSTags.Items.PURE_QUANTUM_CRYSTAL), Ingredient.of(AAEItems.QUANTUM_ALLOY)), 1)),
+                        AECSItems.QUANTUM_CRYSTAL_DUST.toStack())
+                .build(compatOut, getCrushingPath("quantum_crystal_dust"));
+
+        ItemStackToItemStackRecipeBuilder.crushing(
+                        ItemStackIngredient.of(new SizedIngredient(CompoundIngredient.of(Ingredient.of(AECSTags.Items.PURE_REDSTONE_CRYSTAL), Ingredient.of(AFTags.REDSTONE_GEM)), 1)),
+                        AECSItems.REDSTONE_CRYSTAL_DUST.toStack())
+                .build(compatOut, getCrushingPath("redstone_crystal_dust"));
+
+        ItemStackToItemStackRecipeBuilder.crushing(
+                        ItemStackIngredient.of(SizedIngredient.of(AECSTags.Items.PURE_RESONATING_CRYSTAL, 1)),
+                        AECSItems.RESONATING_DUST.toStack())
+                .build(compatOut, getCrushingPath("resonating_crystal_dust"));
+
+        ItemStackToItemStackRecipeBuilder.crushing(
+                        ItemStackIngredient.of(SizedIngredient.of(AECSTags.Items.PURE_METEOR_CRYSTAL, 1)),
+                        AEItems.SKY_DUST.stack())
+                .build(compatOut, getCrushingPath("sky_dust"));
+
+        ItemStackToItemStackRecipeBuilder.crushing(
+                        ItemStackIngredient.of(SizedIngredient.of(AECSTags.Items.PURE_IRRADIATED_CRYSTAL, 1)),
+                        AECSItems.IRRADIATED_CRYSTAL_DUST.toStack())
+                .build(compatOut, getCrushingPath("irradiated_crystal_dust"));
     }
 
     protected ResourceLocation getPressurizedReactionPath(String outName)
@@ -97,5 +134,10 @@ public class AECSCompatMEKRecipeProvider extends AECSRecipeProvider
     protected ResourceLocation getOxidizingPath(String outName)
     {
         return AE2CrystalScience.makeId("oxidizing/" + outName);
+    }
+
+    protected ResourceLocation getCrushingPath(String outName)
+    {
+        return AE2CrystalScience.makeId("mek_crushing/" + outName);
     }
 }

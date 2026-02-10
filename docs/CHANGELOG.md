@@ -1,1 +1,1 @@
-* Add Pickaxe Tag to storage blocks and machine blocks.
+* Add some mek crushing recipe
