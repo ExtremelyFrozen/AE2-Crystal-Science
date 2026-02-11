@@ -12,8 +12,8 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
+import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
 import appeng.api.upgrades.IUpgradeInventory;
@@ -26,9 +26,7 @@ import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.me.helpers.MachineSource;
 import io.github.lounode.ae2cs.api.util.AEKeyHelper;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectIterator;
+import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -70,6 +68,20 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
      */
     private int maxWorksInRound = 8;
 
+    /**
+     * 缓存表上限
+     */
+    private static final int OUTPUT_CACHE_LIMIT = 10;
+
+    /**
+     * 快速缓存，用于对同一个样板进行快速判定
+     */
+    private final Reference2ObjectArrayMap<IPatternDetails, List<GenericStack>> outputCache = new Reference2ObjectArrayMap<>(OUTPUT_CACHE_LIMIT);
+
+    /**
+     * 记录缓存顺序，用于顺序清理
+     */
+    private final ReferenceArrayList<IPatternDetails> outputCacheOrder = new ReferenceArrayList<>(OUTPUT_CACHE_LIMIT + 4);
 
     public MeteoritePatternProviderLogic(IManagedGridNode mainNode, MeteoritePatternProviderHost host, int patternInventorySize)
     {
@@ -159,7 +171,7 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
             }
         }
 
-        if(worked)
+        if (worked)
             saveChanges();
         return worked;
     }
@@ -198,97 +210,15 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
         // 记录一下当前发送表状态
         boolean wasEmpty = craftedContents.isEmpty();
 
-        // 提供注册表信息，用于后续assemble实际输出
-        var level = meteoriteHost.getBlockEntity().getLevel();
-        if (level == null)
+        // 这里获取的output包括产物与剩余物（如空桶）
+        List<GenericStack> output = getMolecularAssemblerSupportedPatternOutput(pattern, inputHolder);
+        if (output == null) return false;
+
+        // 将产物与剩余物添加入表
+        for (GenericStack stack : output)
         {
-            return false;
-        }
-
-        // 计算真实输出和剩余物
-        final ItemStack[] grid3x3 = new ItemStack[9];
-        for (int i = 0; i < 9; i++)
-        {
-            grid3x3[i] = ItemStack.EMPTY;
-        }
-        try
-        {
-            pattern.fillCraftingGrid(inputHolder, (slot, stack) -> {
-                if (slot >= 0 && slot < 9)
-                {
-                    grid3x3[slot] = (stack == null) ? ItemStack.EMPTY : stack;
-                }
-            });
-        }
-        catch (RuntimeException e)
-        {
-            // 出现任何异常，此时便不稳定，直接返回false
-            return false;
-        }
-
-        // 压缩边距
-        int minX = 3, minY = 3, maxX = -1, maxY = -1;
-        for (int slot = 0; slot < 9; slot++)
-        {
-            ItemStack stack = grid3x3[slot];
-            if (stack != null && !stack.isEmpty())
-            {
-                int x = slot % 3;
-                int y = slot / 3;
-                if (x < minX) minX = x;
-                if (y < minY) minY = y;
-                if (x > maxX) maxX = x;
-                if (y > maxY) maxY = y;
-            }
-        }
-
-        if (maxX < 0)
-        {
-            return false;
-        }
-
-        final int width = (maxX - minX + 1);
-        final int height = (maxY - minY + 1);
-
-        final List<ItemStack> compressedItems = new ArrayList<>(width * height);
-        for (int y = 0; y < height; y++)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                int srcSlot = (minX + x) + (minY + y) * 3;
-                ItemStack stack = grid3x3[srcSlot];
-                compressedItems.add(stack == null ? ItemStack.EMPTY : stack);
-            }
-        }
-
-        final CraftingInput input = CraftingInput.of(width, height, compressedItems);
-
-
-        ItemStack output = pattern.assemble(input, level);
-        if (output == null || output.isEmpty())
-        {
-            // 若无输出则拒绝
-            return false;
-        }
-
-        NonNullList<ItemStack> remainders = pattern.getRemainingItems(input);
-
-        // 记录产物+剩余物
-        var outputKey = AEItemKey.of(output);
-        if (outputKey != null && output.getCount() > 0)
-        {
-            craftedContents.addTo(outputKey, output.getCount());
-        }
-
-        for (ItemStack stack : remainders)
-        {
-            if (stack == null || stack.isEmpty()) continue;
-
-            var remainingKey = AEItemKey.of(stack);
-            if (remainingKey != null && stack.getCount() > 0)
-            {
-                craftedContents.addTo(remainingKey, stack.getCount());
-            }
+            if (stack == null || stack.what() == null || stack.amount() <= 0) continue;
+            craftedContents.addTo(stack.what(), stack.amount());
         }
 
         // 提交、计数、唤醒ticker
@@ -325,6 +255,113 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
             // 默许损耗
         }
         return false;
+    }
+
+    @Nullable
+    private List<GenericStack> getMolecularAssemblerSupportedPatternOutput(IMolecularAssemblerSupportedPattern pattern, KeyCounter[] inputHolder)
+    {
+        List<GenericStack> cachedOutput = outputCache.get(pattern);
+        if (cachedOutput != null) return cachedOutput;
+
+        // 提供注册表信息，用于后续assemble实际输出
+        var level = meteoriteHost.getBlockEntity().getLevel();
+        if (level == null)
+        {
+            return null;
+        }
+
+        // 计算真实输出和剩余物
+        final ItemStack[] grid3x3 = new ItemStack[9];
+        for (int i = 0; i < 9; i++)
+        {
+            grid3x3[i] = ItemStack.EMPTY;
+        }
+        try
+        {
+            pattern.fillCraftingGrid(inputHolder, (slot, stack) -> {
+                if (slot >= 0 && slot < 9)
+                {
+                    grid3x3[slot] = (stack == null) ? ItemStack.EMPTY : stack;
+                }
+            });
+        }
+        catch (RuntimeException e)
+        {
+            // 出现任何异常，此时便不稳定，直接返回null
+            return null;
+        }
+
+        // 压缩边距
+        int minX = 3, minY = 3, maxX = -1, maxY = -1;
+        for (int slot = 0; slot < 9; slot++)
+        {
+            ItemStack stack = grid3x3[slot];
+            if (stack != null && !stack.isEmpty())
+            {
+                int x = slot % 3;
+                int y = slot / 3;
+                if (x < minX) minX = x;
+                if (y < minY) minY = y;
+                if (x > maxX) maxX = x;
+                if (y > maxY) maxY = y;
+            }
+        }
+
+        if (maxX < 0)
+        {
+            return null;
+        }
+
+        final int width = (maxX - minX + 1);
+        final int height = (maxY - minY + 1);
+
+        final List<ItemStack> compressedItems = new ArrayList<>(width * height);
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                int srcSlot = (minX + x) + (minY + y) * 3;
+                ItemStack stack = grid3x3[srcSlot];
+                compressedItems.add(stack == null ? ItemStack.EMPTY : stack);
+            }
+        }
+
+        final CraftingInput input = CraftingInput.of(width, height, compressedItems);
+
+
+        ItemStack output = pattern.assemble(input, level);
+        if (output == null || output.isEmpty())
+        {
+            // 无输出
+            return null;
+        }
+        NonNullList<ItemStack> remainders = pattern.getRemainingItems(input);
+
+        // 构造结果
+        List<GenericStack> finalOutput = new ArrayList<>();
+        GenericStack outputStack = GenericStack.fromItemStack(output);
+        if (outputStack != null)
+        {
+            finalOutput.add(outputStack);
+        }
+        for (ItemStack stack : remainders)
+        {
+            GenericStack remainingStack = GenericStack.fromItemStack(stack);
+            if (remainingStack != null)
+            {
+                finalOutput.add(remainingStack);
+            }
+        }
+
+        // 写入并清理缓存
+        outputCache.put(pattern, finalOutput);
+        outputCacheOrder.add(pattern);
+        while (outputCache.size() > OUTPUT_CACHE_LIMIT && !outputCacheOrder.isEmpty())
+        {
+            IPatternDetails oldest = outputCacheOrder.removeFirst();
+            outputCache.remove(oldest);
+        }
+        return finalOutput;
     }
 
     @Override

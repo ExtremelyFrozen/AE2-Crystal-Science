@@ -1,7 +1,6 @@
 package io.github.lounode.ae2cs.datagen.recipes.compat;
 
 import appeng.core.definitions.AEItems;
-import com.glodblock.github.appflux.common.AFSingletons;
 import com.glodblock.github.appflux.util.AFTags;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
@@ -28,7 +27,6 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.crafting.CompoundIngredient;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
@@ -94,11 +92,6 @@ public class AECSCompatMEKRecipeProvider extends AECSRecipeProvider
         CrystalPulverizerRecipeBuilder.pulverizing(AECSItems.IRRADIATED_CRYSTAL_DUST, 1, 8000)
                 .require(AECSTags.Items.PURE_IRRADIATED_CRYSTAL, 1)
                 .save(compatOut);
-
-        ItemStackToItemStackRecipeBuilder.crushing(
-                ItemStackIngredient.of(SizedIngredient.of(Tags.Items.GEMS_QUARTZ, 1)),
-                AECSItems.NETHER_QUARTZ_DUST.toStack())
-                .build(compatOut, getCrushingPath("nether_quartz_dust"));
 
         ItemStackToItemStackRecipeBuilder.crushing(
                         ItemStackIngredient.of(new SizedIngredient(CompoundIngredient.of(Ingredient.of(AECSTags.Items.PURE_QUANTUM_CRYSTAL), Ingredient.of(AAEItems.QUANTUM_ALLOY)), 1)),
