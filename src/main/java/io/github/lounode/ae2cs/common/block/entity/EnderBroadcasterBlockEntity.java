@@ -1,6 +1,5 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
-import appeng.api.config.AccessRestriction;
 import appeng.api.networking.*;
 import appeng.api.networking.pathing.ChannelMode;
 import appeng.api.stacks.AEItemKey;
@@ -31,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEntity
+public class EnderBroadcasterBlockEntity extends AENetworkedComponentBlockEntity
         implements CustomChannelProviderHost, BroadcastSenderHost, BroadcastReceiverHost, IUpgradeableObject,
         CustomReturnableSubMenuHost
 {
@@ -70,7 +69,7 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
                     if (owner.connectionType != ConnectionType.AS_SENDER) return;
                     if (owner.bandId == null || owner.bandId.isEmpty()) return;
 
-                    if (reason == State.CHANNEL || reason == State.GRID_BOOT)
+                    if (reason == State.CHANNEL || reason == State.GRID_BOOT || reason == State.POWER)
                     {
                         // 标脏，下一tick重新统计
                         // 由于发射端channel仅仅取决于此处连接状态，所以也仅需要在此处进行标脏即可
@@ -99,8 +98,7 @@ public class EnderBroadcasterBlockEntity extends AENetworkedSelfPoweredBlockEnti
 
     public EnderBroadcasterBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
     {
-        super(type, pos, state,
-                80000, false, AccessRestriction.WRITE);
+        super(type, pos, state);
         getMainNode().setFlags(GridFlags.DENSE_CAPACITY);
     }
 

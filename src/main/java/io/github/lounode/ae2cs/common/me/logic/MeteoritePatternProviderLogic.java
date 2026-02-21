@@ -23,24 +23,25 @@ import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.helpers.patternprovider.PatternProviderLogic;
-import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.me.helpers.MachineSource;
 import io.github.lounode.ae2cs.api.util.AEKeyHelper;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectIterator;
+import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MeteoritePatternProviderLogic extends PatternProviderLogic implements IUpgradeableObject
 {
     private final IManagedGridNode mainNode;
     private final IActionSource actionSource;
+    private final MeteoritePatternProviderHost meteoriteHost;
 
     /**
      * 在没有任何加速卡的情况下，我们每次合成的能量消耗
@@ -67,11 +68,26 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
      */
     private int maxWorksInRound = 8;
 
+    /**
+     * 缓存表上限
+     */
+    private static final int OUTPUT_CACHE_LIMIT = 10;
 
-    public MeteoritePatternProviderLogic(IManagedGridNode mainNode, PatternProviderLogicHost host, int patternInventorySize)
+    /**
+     * 快速缓存，用于对同一个样板进行快速判定
+     */
+    private final Reference2ObjectArrayMap<IPatternDetails, List<GenericStack>> outputCache = new Reference2ObjectArrayMap<>(OUTPUT_CACHE_LIMIT);
+
+    /**
+     * 记录缓存顺序，用于顺序清理
+     */
+    private final ReferenceArrayList<IPatternDetails> outputCacheOrder = new ReferenceArrayList<>(OUTPUT_CACHE_LIMIT + 4);
+
+    public MeteoritePatternProviderLogic(IManagedGridNode mainNode, MeteoritePatternProviderHost host, int patternInventorySize)
     {
         super(mainNode, host, patternInventorySize);
 
+        this.meteoriteHost = host;
         // 进行一些额外设置，并保存重要信息在子类
         this.mainNode = mainNode
                 .setFlags(GridFlags.REQUIRE_CHANNEL, GridFlags.DENSE_CAPACITY)
@@ -126,7 +142,7 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
 
                 // 尝试塞入可用库存
                 long allInserted = 0;
-                if (gridInv != null && remaining > 0)
+                if (gridInv != null)
                 {
                     long inserted = gridInv.insert(key, remaining, Actionable.MODULATE, actionSource);
                     allInserted += inserted;
@@ -151,10 +167,12 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
                 if (allInserted > 0)
                 {
                     worked = true;
-                    saveChanges();
                 }
             }
         }
+
+        if (worked)
+            saveChanges();
         return worked;
     }
 
@@ -171,49 +189,179 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
     @Override
     public boolean pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder)
     {
-        if (canAcceptPattern(patternDetails))
-        {
-            // 如果本轮工作轮数已经超出上限，则直接返回
-            if (worksInRound >= maxWorksInRound) return false;
+        // 如果本轮工作轮数已经超出上限，则直接返回
+        if (worksInRound >= maxWorksInRound) return false;
 
-            // 如果能量不足则返回
-            double neededEnergy = getEnergyPerWorkAfterSpeed();
-            if (extractAEPowerFromGrid(neededEnergy, Actionable.SIMULATE) < neededEnergy)
-                return false;
-
-
-            // 实际执行
-            for (GenericStack result : patternDetails.getOutputs())
-            {
-                if (result == null || result.amount() <= 0) continue;
-
-                craftedContents.addTo(result.what(), result.amount());
-            }
-
-            saveChanges();
-            extractAEPowerFromGrid(neededEnergy, Actionable.MODULATE);
-            worksInRound++;
-            // 每次推送完任务之后立刻唤醒以清空任务
-            mainNode.ifPresent((iGrid, iGridNode) -> iGrid.getTickManager().alertDevice(iGridNode));
-            return true;
-        }
-        else
+        // 检查样板
+        if (!canAcceptPattern(patternDetails))
         {
             return super.pushPattern(patternDetails, inputHolder);
         }
+        if (!(patternDetails instanceof IMolecularAssemblerSupportedPattern pattern))
+        {
+            return super.pushPattern(patternDetails, inputHolder);
+        }
+
+        // 如果能量不足则返回
+        double neededEnergy = getEnergyPerWorkAfterSpeed();
+        if (!tryConsumeEnergyFromGrid(neededEnergy))
+            return false;
+
+        // 记录一下当前发送表状态
+        boolean wasEmpty = craftedContents.isEmpty();
+
+        // 这里获取的output包括产物与剩余物（如空桶）
+        List<GenericStack> output = getMolecularAssemblerSupportedPatternOutput(pattern, inputHolder);
+        if (output == null) return false;
+
+        // 将产物与剩余物添加入表
+        for (GenericStack stack : output)
+        {
+            if (stack == null || stack.what() == null || stack.amount() <= 0) continue;
+            craftedContents.addTo(stack.what(), stack.amount());
+        }
+
+        // 提交、计数、唤醒ticker
+        saveChanges();
+        worksInRound++;
+
+        if (wasEmpty && !craftedContents.isEmpty())
+            mainNode.ifPresent((iGrid, iGridNode) -> iGrid.getTickManager().alertDevice(iGridNode));
+        return true;
     }
 
     /**
-     * 从网络中取一些能量
+     * 尝试从网络中扣除指定数量的能量，如果不足不扣除
      */
-    private double extractAEPowerFromGrid(double energy, Actionable actionable)
+    private boolean tryConsumeEnergyFromGrid(double energy)
     {
         IGrid grid = getGrid();
-        if (grid == null) return 0;
+        if (grid == null) return false;
         IEnergyService energyService = grid.getEnergyService();
-        if (energyService == null) return 0;
+        if (energyService == null) return false;
 
-        return energyService.extractAEPower(energy, actionable, PowerMultiplier.ONE);
+        double extracted = energyService.extractAEPower(energy, Actionable.MODULATE, PowerMultiplier.ONE);
+        if (extracted + 1.0e-9 >= energy)
+        {
+            return true;
+        }
+
+        try
+        {
+            energyService.injectPower(extracted, Actionable.MODULATE);
+        }
+        catch (Throwable ignored)
+        {
+            // 默许损耗
+        }
+        return false;
+    }
+
+    @Nullable
+    private List<GenericStack> getMolecularAssemblerSupportedPatternOutput(IMolecularAssemblerSupportedPattern pattern, KeyCounter[] inputHolder)
+    {
+        List<GenericStack> cachedOutput = outputCache.get(pattern);
+        if (cachedOutput != null) return cachedOutput;
+
+        // 提供注册表信息，用于后续assemble实际输出
+        var level = meteoriteHost.getBlockEntity().getLevel();
+        if (level == null)
+        {
+            return null;
+        }
+
+        // 计算真实输出和剩余物
+        final ItemStack[] grid3x3 = new ItemStack[9];
+        for (int i = 0; i < 9; i++)
+        {
+            grid3x3[i] = ItemStack.EMPTY;
+        }
+        try
+        {
+            pattern.fillCraftingGrid(inputHolder, (slot, stack) -> {
+                if (slot >= 0 && slot < 9)
+                {
+                    grid3x3[slot] = (stack == null) ? ItemStack.EMPTY : stack;
+                }
+            });
+        }
+        catch (RuntimeException e)
+        {
+            // 出现任何异常，此时便不稳定，直接返回null
+            return null;
+        }
+
+        // 压缩边距
+        int minX = 3, minY = 3, maxX = -1, maxY = -1;
+        for (int slot = 0; slot < 9; slot++)
+        {
+            ItemStack stack = grid3x3[slot];
+            if (stack != null && !stack.isEmpty())
+            {
+                int x = slot % 3;
+                int y = slot / 3;
+                if (x < minX) minX = x;
+                if (y < minY) minY = y;
+                if (x > maxX) maxX = x;
+                if (y > maxY) maxY = y;
+            }
+        }
+
+        if (maxX < 0)
+        {
+            return null;
+        }
+
+        final int width = (maxX - minX + 1);
+        final int height = (maxY - minY + 1);
+
+        final List<ItemStack> compressedItems = new ArrayList<>(width * height);
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                int srcSlot = (minX + x) + (minY + y) * 3;
+                ItemStack stack = grid3x3[srcSlot];
+                compressedItems.add(stack == null ? ItemStack.EMPTY : stack);
+            }
+        }
+
+        final CraftingInput input = CraftingInput.of(width, height, compressedItems);
+
+
+        ItemStack output = pattern.assemble(input, level);
+        if (output == null || output.isEmpty())
+        {
+            // 无输出
+            return null;
+        }
+        NonNullList<ItemStack> remainders = pattern.getRemainingItems(input);
+
+        // 构造结果
+        List<GenericStack> finalOutput = new ArrayList<>();
+        GenericStack outputStack = GenericStack.fromItemStack(output);
+        if (outputStack != null)
+        {
+            finalOutput.add(outputStack);
+        }
+        for (ItemStack stack : remainders)
+        {
+            GenericStack remainingStack = GenericStack.fromItemStack(stack);
+            if (remainingStack != null)
+            {
+                finalOutput.add(remainingStack);
+            }
+        }
+
+        // 写入并清理缓存
+        outputCache.put(pattern, finalOutput);
+        outputCacheOrder.add(pattern);
+        while (outputCache.size() > OUTPUT_CACHE_LIMIT && !outputCacheOrder.isEmpty())
+        {
+            IPatternDetails oldest = outputCacheOrder.removeFirst();
+            outputCache.remove(oldest);
+        }
+        return finalOutput;
     }
 
     @Override

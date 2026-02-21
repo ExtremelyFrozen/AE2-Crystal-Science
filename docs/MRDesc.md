@@ -235,7 +235,7 @@ Full integration with **JEI** and **EMI** is provided.
 
 ### Dark Mode Resource Pack
 Prefer a darker look? Try the dark-mode resource pack:
-- **[AECS Dark Mode](https://www.curseforge.com/minecraft/texture-packs/aecs-dark-mode)**
+- **[AECS Dark Mode](https://modrinth.com/resourcepack/aecs-dark-mode)**
 
 ### In-Game Guide
 The mod includes a **complete and detailed in-game guide powered by GuideME**,

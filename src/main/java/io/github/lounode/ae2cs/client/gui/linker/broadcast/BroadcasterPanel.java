@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -66,9 +67,9 @@ public class BroadcasterPanel extends AbstractWidget
         final var font = Minecraft.getInstance().font;
 
         if (isSender)
-            guiGraphics.drawString(font, senderComponent, getX() + 2, getY() + 4, 4276052, false);
+            guiGraphics.drawString(font, senderComponent, getX() + 2, getY() + 4, getTextColor(), false);
         else
-            guiGraphics.drawString(font, receiverComponent, getX() + 2, getY() + 4, 4276052, false);
+            guiGraphics.drawString(font, receiverComponent, getX() + 2, getY() + 4, getTextColor(), false);
     }
 
     @Override
@@ -88,5 +89,12 @@ public class BroadcasterPanel extends AbstractWidget
     @Override
     protected void updateWidgetNarration(@NotNull NarrationElementOutput narrationElementOutput)
     {
+    }
+
+    private int getTextColor()
+    {
+        if (!this.active) return 0x413f54 | Mth.ceil(this.alpha * 255.0F) << 24;
+        else if (this.isHovered()) return 0x517497 | Mth.ceil(this.alpha * 255.0F) << 24;
+        else return 0x878797 | Mth.ceil(this.alpha * 255.0F) << 24;
     }
 }

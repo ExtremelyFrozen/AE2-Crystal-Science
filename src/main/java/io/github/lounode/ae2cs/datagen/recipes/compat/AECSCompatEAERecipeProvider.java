@@ -64,10 +64,10 @@ public class AECSCompatEAERecipeProvider extends AECSRecipeProvider
                 .require(AEBlocks.FLUIX_BLOCK, 1)
                 .save(compatOut);
 
-        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.ENTRO_CRYSTAL_SEED, 4, 16000)
-                .require(EAETags.ENTRO_DUST, 1)
-                .require(AECSTags.Items.DUST_QUARTZ, 3)
-                .require(ConventionTags.SKY_STONE_DUST, 1)
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.ENTRO_CRYSTAL_SEED, 32, 51200)
+                .require(EAETags.ENTRO_DUST, 8)
+                .require(AECSTags.Items.DUST_QUARTZ, 24)
+                .require(ConventionTags.SKY_STONE_DUST, 8)
                 .save(compatOut, "aggregator/" + getItemName(AECSItems.ENTRO_CRYSTAL_SEED) + "_from_dust");
 
         CrystalAggregatorRecipeBuilder.aggregating(AECSItems.ENTRO_CRYSTAL_SEED, 6, 16000)
