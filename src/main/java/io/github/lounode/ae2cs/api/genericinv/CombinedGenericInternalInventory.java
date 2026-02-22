@@ -179,23 +179,13 @@ public class CombinedGenericInternalInventory implements GenericInternalInventor
     }
 
     @Override
-    public boolean isSupportedType(AEKeyType type)
+    public boolean isAllowed(AEKey aeKey)
     {
-        if (type == null) return false;
         for (GenericInternalInventory inv : delegates)
         {
-            if (inv != null && inv.isSupportedType(type)) return true;
+            if (inv != null && inv.isAllowed(aeKey)) return true;
         }
         return false;
-    }
-
-    @Override
-    public boolean isAllowedIn(int slot, AEKey what)
-    {
-        int idx = getIndexForSlot(slot);
-        GenericInternalInventory inv = getInventoryFromIndex(idx);
-        int local = getLocalSlot(slot, idx);
-        return inv.isAllowedIn(local, what);
     }
 
     @Override
@@ -322,13 +312,7 @@ public class CombinedGenericInternalInventory implements GenericInternalInventor
         }
 
         @Override
-        public boolean isSupportedType(AEKeyType type)
-        {
-            return false;
-        }
-
-        @Override
-        public boolean isAllowedIn(int slot, AEKey what)
+        public boolean isAllowed(AEKey aeKey)
         {
             return false;
         }

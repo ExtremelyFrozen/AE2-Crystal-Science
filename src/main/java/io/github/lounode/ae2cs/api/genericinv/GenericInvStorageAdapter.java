@@ -91,15 +91,9 @@ public class GenericInvStorageAdapter implements MEStorage, GenericInternalInven
     }
 
     @Override
-    public boolean isSupportedType(AEKeyType type)
+    public boolean isAllowed(AEKey aeKey)
     {
-        return delegate.isSupportedType(type);
-    }
-
-    @Override
-    public boolean isAllowedIn(int slot, AEKey what)
-    {
-        return delegate.isAllowedIn(slot, what);
+        return delegate.isAllowed(aeKey);
     }
 
     @Override
@@ -164,7 +158,7 @@ public class GenericInvStorageAdapter implements MEStorage, GenericInternalInven
     {
         ObjectsCheck.checkPreconditions(what, amount, mode, source);
 
-        if (amount == 0 || !canInsert() || !isSupportedType(what))
+        if (amount == 0 || !canInsert() || !isAllowed(what))
         {
             return 0;
         }
@@ -172,11 +166,6 @@ public class GenericInvStorageAdapter implements MEStorage, GenericInternalInven
         long inserted = 0;
         for (int slot = 0; slot < size() && inserted < amount; slot++)
         {
-            if (!isAllowedIn(slot, what))
-            {
-                continue;
-            }
-
             long delta = insert(slot, what, amount - inserted, mode);
             if (delta > 0)
             {
