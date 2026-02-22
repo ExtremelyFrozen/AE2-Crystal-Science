@@ -16,14 +16,12 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.util.INBTSerializable;
-import net.neoforged.neoforge.event.tick.ServerTickEvent;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -703,7 +701,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
 
     // ----------------- 持久化 -----------------
     @Override
-    public @UnknownNullability CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider)
+    public @UnknownNullability CompoundTag serializeNBT()
     {
         CompoundTag tag = new CompoundTag();
         tag.putString("name", name);
@@ -741,7 +739,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag compoundTag)
+    public void deserializeNBT(@NotNull CompoundTag compoundTag)
     {
         this.name = compoundTag.getString("name");
         this.password = compoundTag.getString("password");
