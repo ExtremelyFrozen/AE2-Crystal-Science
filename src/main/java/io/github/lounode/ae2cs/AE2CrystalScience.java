@@ -1,7 +1,6 @@
 package io.github.lounode.ae2cs;
 
 import com.mojang.logging.LogUtils;
-import io.github.lounode.ae2cs.api.IngredientReplacer;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.util.PatternAccessTermQuickMoveHelper;
 import io.github.lounode.ae2cs.common.init.*;
@@ -57,7 +56,6 @@ public class AE2CrystalScience
                 () -> {
                     AEPlugin.onCommonSetup();
                     PatternAccessTermQuickMoveHelper.init();
-                    IngredientReplacer.onCommonSetUp();
 
                     if (FMLEnvironment.dist == Dist.CLIENT)
                         AE2CrystalScienceClient.clientCommonSetup();

@@ -5,7 +5,6 @@
     "CableBusBlockEntityMixin",
     "GridNodeMixin",
     "GrowthAcceleratorBlockEntityMixin",
-    "IngredientMixin",
     "PatternAccessTermMenuMixin"
   ],
   "client": [
