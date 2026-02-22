@@ -4,9 +4,9 @@ package io.github.lounode.ae2cs.api.util;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.config.PowerUnit;
+import appeng.api.config.PowerUnits;
 import appeng.api.networking.energy.IAEPowerStorage;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.minecraftforge.energy.IEnergyStorage;
 
 public class ForgeEnergyAdapterUpgrade implements IEnergyStorage
 {
@@ -25,8 +25,8 @@ public class ForgeEnergyAdapterUpgrade implements IEnergyStorage
         if (!canReceive()) return 0;
 
         final Actionable mode = simulate ? Actionable.SIMULATE : Actionable.MODULATE;
-        final double remaining = PowerUnit.AE.convertTo(PowerUnit.FE,
-                this.aePowerStorage.injectAEPower(PowerUnit.FE.convertTo(PowerUnit.AE, amount), mode));
+        final double remaining = PowerUnits.AE.convertTo(PowerUnits.FE,
+                this.aePowerStorage.injectAEPower(PowerUnits.FE.convertTo(PowerUnits.AE, amount), mode));
 
         return (int) (amount - remaining);
     }
@@ -37,8 +37,8 @@ public class ForgeEnergyAdapterUpgrade implements IEnergyStorage
         if (!canExtract()) return 0;
 
         final Actionable mode = simulate ? Actionable.SIMULATE : Actionable.MODULATE;
-        final double extracted = PowerUnit.AE.convertTo(PowerUnit.FE,
-                this.aePowerStorage.extractAEPower(PowerUnit.FE.convertTo(PowerUnit.AE, amount), mode, PowerMultiplier.ONE));
+        final double extracted = PowerUnits.AE.convertTo(PowerUnits.FE,
+                this.aePowerStorage.extractAEPower(PowerUnits.FE.convertTo(PowerUnits.AE, amount), mode, PowerMultiplier.ONE));
 
         return (int) extracted;
     }
@@ -46,13 +46,13 @@ public class ForgeEnergyAdapterUpgrade implements IEnergyStorage
     @Override
     public int getEnergyStored()
     {
-        return (int) Math.floor(PowerUnit.AE.convertTo(PowerUnit.FE, this.aePowerStorage.getAECurrentPower()));
+        return (int) Math.floor(PowerUnits.AE.convertTo(PowerUnits.FE, this.aePowerStorage.getAECurrentPower()));
     }
 
     @Override
     public int getMaxEnergyStored()
     {
-        return (int) Math.floor(PowerUnit.AE.convertTo(PowerUnit.FE, this.aePowerStorage.getAEMaxPower()));
+        return (int) Math.floor(PowerUnits.AE.convertTo(PowerUnits.FE, this.aePowerStorage.getAEMaxPower()));
     }
 
     @Override

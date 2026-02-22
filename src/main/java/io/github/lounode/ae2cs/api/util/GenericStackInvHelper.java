@@ -1,12 +1,12 @@
 package io.github.lounode.ae2cs.api.util;
 
-import appeng.api.AECapabilities;
 import appeng.api.behaviors.ExternalStorageStrategy;
 import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.MEStorage;
+import appeng.capabilities.Capabilities;
 import appeng.helpers.patternprovider.PatternProviderTarget;
 import appeng.me.storage.CompositeStorage;
 import appeng.parts.automation.StackWorldBehaviors;
@@ -44,14 +44,18 @@ public class GenericStackInvHelper
     @Nullable
     public static MEStorage getAdjacentMeStorage(Level level, BlockPos pos, @Nullable BlockEntity be, Direction side)
     {
-        MEStorage storage;
+        MEStorage storage = null;
         if (be != null)
         {
-            storage = level.getCapability(AECapabilities.ME_STORAGE, be.getBlockPos(), be.getBlockState(), be, side);
+            storage = be.getCapability(Capabilities.STORAGE, side).resolve().orElse(null);
         }
         else
         {
-            storage = level.getCapability(AECapabilities.ME_STORAGE, pos, side);
+            BlockEntity targetBE = level.getBlockEntity(pos);
+            if(targetBE != null)
+            {
+                storage = targetBE.getCapability(Capabilities.STORAGE, side).resolve().orElse(null);
+            }
         }
         if (storage != null)
         {
@@ -93,11 +97,15 @@ public class GenericStackInvHelper
     {
         if (be != null)
         {
-            return level.getCapability(AECapabilities.GENERIC_INTERNAL_INV, be.getBlockPos(), be.getBlockState(), be, side);
+            return be.getCapability(Capabilities.GENERIC_INTERNAL_INV, side).resolve().orElse(null);
         }
         else
         {
-            return level.getCapability(AECapabilities.GENERIC_INTERNAL_INV, pos, side);
+            if(level.getBlockEntity(pos) instanceof BlockEntity targetBE)
+            {
+                return targetBE.getCapability(Capabilities.GENERIC_INTERNAL_INV, side).resolve().orElse(null);
+            }
+            return null;
         }
     }
 
@@ -146,7 +154,7 @@ public class GenericStackInvHelper
      */
     public static long insertIntoInv(GenericInternalInventory inv, AEKey what, long amount, Actionable mode)
     {
-        if (amount <= 0 || !inv.canInsert() || !inv.isSupportedType(what))
+        if (amount <= 0 || !inv.canInsert() || !inv.isAllowed(what))
         {
             return 0;
         }
@@ -154,11 +162,6 @@ public class GenericStackInvHelper
         long inserted = 0;
         for (int slot = 0; slot < inv.size() && inserted < amount; slot++)
         {
-            if (!inv.isAllowedIn(slot, what))
-            {
-                continue;
-            }
-
             long delta = inv.insert(slot, what, amount - inserted, mode);
             if (delta > 0)
             {
@@ -175,13 +178,13 @@ public class GenericStackInvHelper
     public static void reinsertToInvPreferSlot(GenericInternalInventory inv, int preferredSlot, AEKey what, long amount)
     {
         long remaining = amount;
-        if (remaining <= 0 || !inv.canInsert() || !inv.isSupportedType(what))
+        if (remaining <= 0 || !inv.canInsert() || !inv.isAllowed(what))
         {
             return;
         }
 
         // 优先回插原槽位
-        if (preferredSlot >= 0 && preferredSlot < inv.size() && inv.isAllowedIn(preferredSlot, what))
+        if (preferredSlot >= 0 && preferredSlot < inv.size())
         {
             long back = inv.insert(preferredSlot, what, remaining, Actionable.MODULATE);
             remaining -= back;

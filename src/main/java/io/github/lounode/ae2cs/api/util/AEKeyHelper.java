@@ -30,7 +30,7 @@ public class AEKeyHelper
             CompoundTag keyTag;
             try
             {
-                keyTag = e.getKey().toTagGeneric(registries);
+                keyTag = e.getKey().toTagGeneric();
             }
             catch (Throwable ex)
             {
@@ -73,7 +73,7 @@ public class AEKeyHelper
 
             // key 为空或解析失败就跳过
             if (!entry.contains("key", Tag.TAG_COMPOUND)) continue;
-            var key = AEKey.fromTagGeneric(registries, entry.getCompound("key"));
+            var key = AEKey.fromTagGeneric(entry.getCompound("key"));
             if (key != null)
             {
                 target.put(key, amount);
