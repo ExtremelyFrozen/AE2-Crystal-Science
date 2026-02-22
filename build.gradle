@@ -3,6 +3,7 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'net.neoforged.moddev.legacyforge' version '2.0.91'
+    id 'dev.vfyjxf.modaccessor' version "1.1"
 }
 
 tasks.named('wrapper', Wrapper).configure {
@@ -49,8 +50,8 @@ base {
     archivesName = mod_id
 }
 
-// Mojang ships Java 17 to end users in 1.20.1, so mods should target Java 17.
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+// This project is configured to compile with Java 21 for Gradle/plugin compatibility.
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 legacyForge {
     // Specify the version of MinecraftForge to use.
@@ -139,12 +140,18 @@ obfuscation {
     createRemappingConfiguration(configurations.localRuntime)
 }
 
+modAccessor {
+    createTransformConfiguration(configurations.compileOnly)
+    accessTransformerFiles = project.files('src/main/resources/META-INF/accesstransformer.cfg')
+}
+
 dependencies {
     compileOnly "org.jetbrains:annotations:26.0.2"
 
     // AE2与GuideME
     modImplementation "curse.maven:guideme-1173950:7127447"
-    modImplementation "curse.maven:applied-energistics-2-223794:7148487"
+    modRuntimeOnly "curse.maven:applied-energistics-2-223794:7148487"
+    accessCompileOnly "curse.maven:applied-energistics-2-223794:7148487"
 
     modCompileOnly "curse.maven:emi-580555:6420945"
     modLocalRuntime "curse.maven:emi-580555:6420945"
