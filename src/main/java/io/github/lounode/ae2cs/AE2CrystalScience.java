@@ -34,7 +34,7 @@ public class AE2CrystalScience
         AECSParts.register(modEventBus);
         AECSBlocks.register(modEventBus);
         AECSBlockEntities.register(modEventBus);
-        AECSDataComponents.register(modEventBus);
+        //AECSDataComponents.register(modEventBus);
         AECSCreativeModeTabs.register(modEventBus);
         AECSMenus.registerMenus(modEventBus);
         AECSRecipeTypes.register(modEventBus);

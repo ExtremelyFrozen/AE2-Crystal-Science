@@ -6,13 +6,7 @@ import io.github.lounode.ae2cs.api.linker.broadcast.MemoryCardBandInfo;
 import io.github.lounode.ae2cs.api.networking.SideConfigField;
 import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.world.item.component.ItemContainerContents;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.UnaryOperator;
 
