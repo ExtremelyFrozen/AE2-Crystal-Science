@@ -2,46 +2,33 @@ package io.github.lounode.ae2cs.network.c2s;
 
 import appeng.menu.AEBaseMenu;
 import appeng.menu.MenuOpener;
-import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 import io.github.lounode.ae2cs.common.menu.submenu.SideConfigMenu;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.jetbrains.annotations.NotNull;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.network.NetworkDirection;
+import net.minecraftforge.network.NetworkEvent;
 
-public record SideConfigMenuOpenPacket() implements CustomPacketPayload
+import java.util.function.Supplier;
+
+public record SideConfigMenuOpenPacket()
 {
-    public static final CustomPacketPayload.Type<SideConfigMenuOpenPacket> TYPE =
-            new CustomPacketPayload.Type<>(AE2CrystalScience.makeId("side_config_menu_open_packet"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, SideConfigMenuOpenPacket> STREAM_CODEC = new StreamCodec<>()
+    public static void encode(SideConfigMenuOpenPacket packet, FriendlyByteBuf buf)
     {
-        @Override
-        public @NotNull SideConfigMenuOpenPacket decode(@NotNull RegistryFriendlyByteBuf registryFriendlyByteBuf)
-        {
-            return new SideConfigMenuOpenPacket();
-        }
-
-        @Override
-        public void encode(@NotNull RegistryFriendlyByteBuf buf, @NotNull SideConfigMenuOpenPacket toggleMagnetPacket)
-        {
-        }
-    };
-
-    @Override
-    public @NotNull Type<? extends CustomPacketPayload> type()
-    {
-        return TYPE;
     }
 
-    private void handleInServer(Player player)
+    public static SideConfigMenuOpenPacket decode(FriendlyByteBuf buf)
     {
-        if (!(player instanceof ServerPlayer sp)) return;
+        return new SideConfigMenuOpenPacket();
+    }
+
+    private void handleInServer(NetworkEvent.Context context)
+    {
+        if (!(context.getSender() instanceof ServerPlayer sp)) return;
 
         MenuType<?> beforeType = null;
         if (sp.containerMenu instanceof AEBaseMenu menu)
@@ -55,20 +42,28 @@ public record SideConfigMenuOpenPacket() implements CustomPacketPayload
         }
     }
 
-    private void handleInClient(Player player)
+    private void handleInClient(NetworkEvent.Context context)
     {
     }
 
-    public static void handle(final SideConfigMenuOpenPacket packet, final IPayloadContext context)
+    public static void handle(SideConfigMenuOpenPacket packet, Supplier<NetworkEvent.Context> cxt)
     {
-        context.enqueueWork(
-                () ->
-                {
-                    if (context.flow().isServerbound())
-                        packet.handleInServer(context.player());
-                    else if (context.flow().isClientbound())
-                        packet.handleInClient(context.player());
-                }
-        );
+        if (packet != null)
+        {
+            NetworkEvent.Context context = cxt.get();
+            NetworkDirection direction = context.getDirection();
+            if (direction == NetworkDirection.PLAY_TO_CLIENT)
+            {
+                context.enqueueWork(() ->
+                        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> packet.handleInClient(context))
+                );
+                context.setPacketHandled(true);
+            }
+            else if (direction == NetworkDirection.PLAY_TO_SERVER)
+            {
+                context.enqueueWork(() -> packet.handleInServer(context));
+                context.setPacketHandled(true);
+            }
+        }
     }
 }
