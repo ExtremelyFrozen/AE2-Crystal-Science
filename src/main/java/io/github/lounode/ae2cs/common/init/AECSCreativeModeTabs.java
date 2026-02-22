@@ -7,10 +7,9 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredBlock;
-import net.neoforged.neoforge.registries.DeferredItem;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.function.Supplier;
 
@@ -25,15 +24,15 @@ public class AECSCreativeModeTabs
                     .icon(() -> new ItemStack(AECSItems.PURE_CERTUS_QUARTZ_CRYSTAL.get()))
                     .title(Component.translatable("creativetab.ae2cs.items"))
                     .displayItems((params, output) -> {
-                        for (DeferredItem<? extends Item> ro : AECSItems.getALL())
+                        for (RegistryObject<? extends Item> ro : AECSItems.getALL())
                         {
                             output.accept(ro.get());
                         }
-                        for (DeferredItem<? extends Item> ro : AECSParts.getAll())
+                        for (RegistryObject<? extends Item> ro : AECSParts.getAll())
                         {
                             output.accept(ro.get());
                         }
-                        for (DeferredBlock<? extends Block> ro : AECSBlocks.getALL())
+                        for (RegistryObject<? extends Block> ro : AECSBlocks.getALL())
                         {
                             output.accept(ro.get());
                         }
