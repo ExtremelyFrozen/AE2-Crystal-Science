@@ -1,7 +1,7 @@
 package io.github.lounode.ae2cs.api.linker.broadcast.networking;
 
 import appeng.menu.guisync.PacketWritable;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,13 +12,13 @@ import java.util.List;
 public record BroadcastBandsField(List<Entry> bands) implements PacketWritable
 {
     // 反序列化构造器：CustomField 会通过反射调用它
-    public BroadcastBandsField(RegistryFriendlyByteBuf buf)
+    public BroadcastBandsField(FriendlyByteBuf buf)
     {
         this(read(buf));
     }
 
     @Override
-    public void writeToPacket(RegistryFriendlyByteBuf buf)
+    public void writeToPacket(FriendlyByteBuf buf)
     {
         buf.writeVarInt(bands.size());
         for (var entry : bands)
@@ -28,7 +28,7 @@ public record BroadcastBandsField(List<Entry> bands) implements PacketWritable
         }
     }
 
-    private static List<Entry> read(RegistryFriendlyByteBuf buf)
+    private static List<Entry> read(FriendlyByteBuf buf)
     {
         int n = buf.readVarInt();
         var list = new ArrayList<Entry>(n);

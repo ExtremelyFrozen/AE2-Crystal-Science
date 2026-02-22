@@ -21,6 +21,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -362,7 +363,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
      * 重新统计全部发送端频道并将链接分配到接收端，由FrequencyBandManager统一管理调用
      * <p>
      *
-     * @see FrequencyBandManager#tick(ServerTickEvent.Post)
+     * @see FrequencyBandManager#tick(TickEvent.ServerTickEvent)
      */
     void recomputeRuntime()
     {

@@ -3,7 +3,7 @@ package io.github.lounode.ae2cs.api.linker.broadcast.networking;
 import appeng.menu.guisync.PacketWritable;
 import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastFrequencyBand;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ public record FrequencyBandDetailInfo(
 ) implements PacketWritable
 {
 
-    public FrequencyBandDetailInfo(RegistryFriendlyByteBuf buf)
+    public FrequencyBandDetailInfo(FriendlyByteBuf buf)
     {
         this(
                 buf.readUtf(),
@@ -37,7 +37,7 @@ public record FrequencyBandDetailInfo(
         );
     }
 
-    private static List<String> readStringList(RegistryFriendlyByteBuf buf)
+    private static List<String> readStringList(FriendlyByteBuf buf)
     {
         int size = buf.readVarInt();
         List<String> list = new ArrayList<>(size);
@@ -48,19 +48,19 @@ public record FrequencyBandDetailInfo(
         return list;
     }
 
-    private static List<GlobalPos> readGlobalPosList(RegistryFriendlyByteBuf buf)
+    private static List<GlobalPos> readGlobalPosList(FriendlyByteBuf buf)
     {
         int size = buf.readVarInt();
         List<GlobalPos> list = new ArrayList<>(size);
         for (int i = 0; i < size; i++)
         {
-            list.add(GlobalPos.STREAM_CODEC.decode(buf));
+            list.add(buf.readGlobalPos());
         }
         return list;
     }
 
     @Override
-    public void writeToPacket(RegistryFriendlyByteBuf buf)
+    public void writeToPacket(FriendlyByteBuf buf)
     {
         buf.writeUtf(name);
         buf.writeBoolean(isEncrypted);
@@ -77,13 +77,13 @@ public record FrequencyBandDetailInfo(
         buf.writeVarInt(senderList.size());
         for (GlobalPos sender : senderList)
         {
-            GlobalPos.STREAM_CODEC.encode(buf, sender);
+            buf.writeGlobalPos(sender);
         }
 
         buf.writeVarInt(receiverList.size());
         for (GlobalPos receiver : receiverList)
         {
-            GlobalPos.STREAM_CODEC.encode(buf, receiver);
+            buf.writeGlobalPos(receiver);
         }
     }
 }

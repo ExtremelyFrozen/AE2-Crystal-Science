@@ -1,26 +1,39 @@
 package io.github.lounode.ae2cs.api.linker.broadcast;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 
 /**
  * 给内存卡复制band信息用
  */
 public record MemoryCardBandInfo(String bandName, boolean asSender)
 {
-    public static final Codec<MemoryCardBandInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.STRING.fieldOf("band_name").forGetter(MemoryCardBandInfo::bandName),
-            Codec.BOOL.fieldOf("as_sender").forGetter(MemoryCardBandInfo::asSender)
-    ).apply(instance, MemoryCardBandInfo::new));
+    public static CompoundTag writeToNBT(MemoryCardBandInfo info)
+    {
+        CompoundTag tag = new CompoundTag();
+        tag.putString("band_name", info.bandName);
+        tag.putBoolean("as_sender", info.asSender);
+        return tag;
+    }
 
-    public static final StreamCodec<FriendlyByteBuf, MemoryCardBandInfo> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.STRING_UTF8,
-            MemoryCardBandInfo::bandName,
-            ByteBufCodecs.BOOL,
-            MemoryCardBandInfo::asSender,
-            MemoryCardBandInfo::new
-    );
+    public static MemoryCardBandInfo readFromNBT(CompoundTag tag)
+    {
+        if (!tag.contains("band_name") || !tag.contains("as_sender"))
+            throw new IllegalArgumentException("Invalid tag format for MemoryCardBandInfo");
+        else
+            return new MemoryCardBandInfo(tag.getString("band_name"), tag.getBoolean("as_sender"));
+    }
+
+    public static void writeToBuf(FriendlyByteBuf buf, MemoryCardBandInfo info)
+    {
+        buf.writeUtf(info.bandName);
+        buf.writeBoolean(info.asSender);
+    }
+
+    public static MemoryCardBandInfo readFromBuf(FriendlyByteBuf buf)
+    {
+        String bandName = buf.readUtf();
+        boolean asSender = buf.readBoolean();
+        return new MemoryCardBandInfo(bandName, asSender);
+    }
 }
