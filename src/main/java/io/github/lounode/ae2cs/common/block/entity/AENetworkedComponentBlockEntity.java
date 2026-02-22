@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs.common.block.entity;
 
 import appeng.blockentity.ClientTickingBlockEntity;
 import appeng.blockentity.ServerTickingBlockEntity;
+import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.blockentity.grid.AENetworkedBlockEntity;
 import appeng.util.SettingsFrom;
 import io.github.lounode.ae2cs.common.machine.IMachineHost;
@@ -21,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class AENetworkedComponentBlockEntity extends AENetworkedBlockEntity implements IMachineHost,
+public class AENetworkedComponentBlockEntity extends AENetworkBlockEntity implements IMachineHost,
         ServerTickingBlockEntity, ClientTickingBlockEntity
 {
     private final MachineComponentContainer machineComponents;

@@ -4,7 +4,7 @@ import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
-import appeng.blockentity.grid.AENetworkedBlockEntity;
+import appeng.blockentity.grid.AENetworkBlockEntity;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.me.logic.QuartzOscillatorClockHost;
 import io.github.lounode.ae2cs.common.me.logic.QuartzOscillatorClockLogic;
@@ -21,7 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.EnumSet;
 import java.util.List;
 
-public class QuartzOscillatorClockBlockEntity extends AENetworkedBlockEntity implements QuartzOscillatorClockHost,
+public class QuartzOscillatorClockBlockEntity extends AENetworkBlockEntity implements QuartzOscillatorClockHost,
         IConfigurableObject, IUpgradeableObject
 {
     private final QuartzOscillatorClockLogic logic;

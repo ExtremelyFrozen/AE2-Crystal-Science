@@ -11,6 +11,7 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.ClientTickingBlockEntity;
 import appeng.blockentity.ServerTickingBlockEntity;
+import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.blockentity.grid.AENetworkedBlockEntity;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.blockentity.networking.ControllerBlockEntity;
@@ -53,7 +54,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 @EventBusSubscriber(modid = AECSConstants.MODID)
-public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements ServerTickingBlockEntity,
+public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements ServerTickingBlockEntity,
         IUpgradeableObject, ClientTickingBlockEntity, IConfigurableObject, ICustomRenderBounding
 {
     /**

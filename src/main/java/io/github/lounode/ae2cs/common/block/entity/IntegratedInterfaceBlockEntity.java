@@ -7,6 +7,7 @@ import appeng.api.orientation.BlockOrientation;
 import appeng.api.stacks.AEItemKey;
 import appeng.block.crafting.PatternProviderBlock;
 import appeng.block.crafting.PushDirection;
+import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.blockentity.grid.AENetworkedBlockEntity;
 import appeng.util.SettingsFrom;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
@@ -34,7 +35,7 @@ import java.util.Set;
  * 同时包含ME样板供应器与ME接口的能力。即旧版ME接口。
  * 接口形态见{@link io.github.lounode.ae2cs.common.me.part.IntegratedInterfacePart}
  */
-public class IntegratedInterfaceBlockEntity extends AENetworkedBlockEntity implements IntegratedInterfaceHost
+public class IntegratedInterfaceBlockEntity extends AENetworkBlockEntity implements IntegratedInterfaceHost
 {
     IntegratedInterfaceLogic logic = createLogic();
     private int priority;
