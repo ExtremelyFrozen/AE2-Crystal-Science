@@ -11,14 +11,15 @@ import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSParts;
 import io.github.lounode.ae2cs.common.item.tools.ToolLinkableHandler;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.neoforged.bus.api.EventPriority;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.event.TagsUpdatedEvent;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.event.TagsUpdatedEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
 
-@EventBusSubscriber(modid = AECSConstants.MODID)
+@Mod.EventBusSubscriber(modid = AECSConstants.MODID)
 public class AEPlugin
 {
     private static String INTEGRATED_INTERFACE_GROUP_NAME = "block.ae2cs.integrated_interface";
@@ -50,28 +51,28 @@ public class AEPlugin
      */
     public static void onCommonSetup()
     {
-        Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK, 4);
-        Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK, 3);
-        Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.CIRCUIT_ETCHER_BLOCK, 4);
-        Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.CRYSTAL_PULVERIZER_BLOCK, 4);
-        Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK, 4);
-        Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK, 4);
-        Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK, 4);
+        Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK.get(), 4);
+        Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK.get(), 3);
+        Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.CIRCUIT_ETCHER_BLOCK.get(), 4);
+        Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.CRYSTAL_PULVERIZER_BLOCK.get(), 4);
+        Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK.get(), 4);
+        Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK.get(), 4);
+        Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK.get(), 4);
 
-        Upgrades.add(AEItems.CRAFTING_CARD, AECSBlocks.INTEGRATED_INTERFACE_BLOCK, 1, INTEGRATED_INTERFACE_GROUP_NAME);
-        Upgrades.add(AEItems.CRAFTING_CARD, AECSParts.INTEGRATE_INTERFACE_PART, 1, INTEGRATED_INTERFACE_GROUP_NAME);
-        Upgrades.add(AEItems.CRAFTING_CARD, AECSParts.ENDER_INTERFACE_PART, 1, ENDER_INTERFACE_GROUP_NAME);
-        Upgrades.add(AEItems.CRAFTING_CARD, AECSBlocks.ENDER_INTERFACE_BLOCK, 1, ENDER_INTERFACE_GROUP_NAME);
-        Upgrades.add(AEItems.CRAFTING_CARD, AECSParts.EX_ENDER_INTERFACE_PART, 1, EX_ENDER_INTERFACE_GROUP_NAME);
-        Upgrades.add(AEItems.CRAFTING_CARD, AECSBlocks.EX_ENDER_INTERFACE_BLOCK, 1, EX_ENDER_INTERFACE_GROUP_NAME);
+        Upgrades.add(AEItems.CRAFTING_CARD, AECSBlocks.INTEGRATED_INTERFACE_BLOCK.get(), 1, INTEGRATED_INTERFACE_GROUP_NAME);
+        Upgrades.add(AEItems.CRAFTING_CARD, AECSParts.INTEGRATE_INTERFACE_PART.get(), 1, INTEGRATED_INTERFACE_GROUP_NAME);
+        Upgrades.add(AEItems.CRAFTING_CARD, AECSParts.ENDER_INTERFACE_PART.get(), 1, ENDER_INTERFACE_GROUP_NAME);
+        Upgrades.add(AEItems.CRAFTING_CARD, AECSBlocks.ENDER_INTERFACE_BLOCK.get(), 1, ENDER_INTERFACE_GROUP_NAME);
+        Upgrades.add(AEItems.CRAFTING_CARD, AECSParts.EX_ENDER_INTERFACE_PART.get(), 1, EX_ENDER_INTERFACE_GROUP_NAME);
+        Upgrades.add(AEItems.CRAFTING_CARD, AECSBlocks.EX_ENDER_INTERFACE_BLOCK.get(), 1, EX_ENDER_INTERFACE_GROUP_NAME);
 
-        Upgrades.add(AEItems.FUZZY_CARD, AECSParts.ENDER_INTERFACE_PART, 1, ENDER_INTERFACE_GROUP_NAME);
-        Upgrades.add(AEItems.FUZZY_CARD, AECSBlocks.ENDER_INTERFACE_BLOCK, 1, ENDER_INTERFACE_GROUP_NAME);
-        Upgrades.add(AEItems.FUZZY_CARD, AECSParts.EX_ENDER_INTERFACE_PART, 1, EX_ENDER_INTERFACE_GROUP_NAME);
-        Upgrades.add(AEItems.FUZZY_CARD, AECSBlocks.EX_ENDER_INTERFACE_BLOCK, 1, EX_ENDER_INTERFACE_GROUP_NAME);
+        Upgrades.add(AEItems.FUZZY_CARD, AECSParts.ENDER_INTERFACE_PART.get(), 1, ENDER_INTERFACE_GROUP_NAME);
+        Upgrades.add(AEItems.FUZZY_CARD, AECSBlocks.ENDER_INTERFACE_BLOCK.get(), 1, ENDER_INTERFACE_GROUP_NAME);
+        Upgrades.add(AEItems.FUZZY_CARD, AECSParts.EX_ENDER_INTERFACE_PART.get(), 1, EX_ENDER_INTERFACE_GROUP_NAME);
+        Upgrades.add(AEItems.FUZZY_CARD, AECSBlocks.EX_ENDER_INTERFACE_BLOCK.get(), 1, EX_ENDER_INTERFACE_GROUP_NAME);
 
-        Upgrades.add(AEItems.REDSTONE_CARD, AECSBlocks.QUARTZ_OSCILLATOR_CLOCK_BLOCK, 1, QUARTZ_OSCILLATOR_CLOCK_GROUP_NAME);
-        Upgrades.add(AEItems.REDSTONE_CARD, AECSParts.QUARTZ_OSCILLATOR_CLOCK_PART, 1, QUARTZ_OSCILLATOR_CLOCK_GROUP_NAME);
+        Upgrades.add(AEItems.REDSTONE_CARD, AECSBlocks.QUARTZ_OSCILLATOR_CLOCK_BLOCK.get(), 1, QUARTZ_OSCILLATOR_CLOCK_GROUP_NAME);
+        Upgrades.add(AEItems.REDSTONE_CARD, AECSParts.QUARTZ_OSCILLATOR_CLOCK_PART.get(), 1, QUARTZ_OSCILLATOR_CLOCK_GROUP_NAME);
 
         addGrowthCardSupport();
     }
@@ -79,36 +80,35 @@ public class AEPlugin
     private static void addGrowthCardSupport()
     {
         // AE原版机器
-        Upgrades.add(AECSItems.crystalGrowthCard, AEParts.STORAGE_BUS, 1);
-        Upgrades.add(AECSItems.crystalGrowthCard, AEParts.IMPORT_BUS, 1);
-        Upgrades.add(AECSItems.crystalGrowthCard, AEParts.EXPORT_BUS, 1);
-        Upgrades.add(AECSItems.crystalGrowthCard, AEParts.INTERFACE, 1, INTERFACE_GROUP_NAME);
-        Upgrades.add(AECSItems.crystalGrowthCard, AEBlocks.INTERFACE, 1, INTERFACE_GROUP_NAME);
+        Upgrades.add(AECSItems.crystalGrowthCard.get(), AEParts.STORAGE_BUS, 1);
+        Upgrades.add(AECSItems.crystalGrowthCard.get(), AEParts.IMPORT_BUS, 1);
+        Upgrades.add(AECSItems.crystalGrowthCard.get(), AEParts.EXPORT_BUS, 1);
+        Upgrades.add(AECSItems.crystalGrowthCard.get(), AEParts.INTERFACE, 1, INTERFACE_GROUP_NAME);
+        Upgrades.add(AECSItems.crystalGrowthCard.get(), AEBlocks.INTERFACE, 1, INTERFACE_GROUP_NAME);
 
         // AECS机器
-        Upgrades.add(AECSItems.crystalGrowthCard, AECSParts.INTEGRATE_INTERFACE_PART, 1, INTEGRATED_INTERFACE_GROUP_NAME);
-        Upgrades.add(AECSItems.crystalGrowthCard, AECSBlocks.INTEGRATED_INTERFACE_BLOCK, 1, INTEGRATED_INTERFACE_GROUP_NAME);
-        Upgrades.add(AECSItems.crystalGrowthCard, AECSParts.METEORITE_PATTERN_PROVIDER_PART, 1, METEORITE_PATTERN_PROVIDER_GROUP_NAME);
-        Upgrades.add(AECSItems.crystalGrowthCard, AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK, 1, METEORITE_PATTERN_PROVIDER_GROUP_NAME);
-        Upgrades.add(AECSItems.crystalGrowthCard, AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK, 1, RESONATING_PATTERN_PROVIDER_GROUP_NAME);
-        Upgrades.add(AECSItems.crystalGrowthCard, AECSParts.RESONATING_PATTERN_PROVIDER_PART, 1, RESONATING_PATTERN_PROVIDER_GROUP_NAME);
-        Upgrades.add(AECSItems.crystalGrowthCard, AECSParts.ENDER_INTERFACE_PART, 1, ENDER_INTERFACE_GROUP_NAME);
-        Upgrades.add(AECSItems.crystalGrowthCard, AECSBlocks.ENDER_INTERFACE_BLOCK, 1, ENDER_INTERFACE_GROUP_NAME);
-        Upgrades.add(AECSItems.crystalGrowthCard, AECSParts.EX_ENDER_INTERFACE_PART, 1, EX_ENDER_INTERFACE_GROUP_NAME);
-        Upgrades.add(AECSItems.crystalGrowthCard, AECSBlocks.EX_ENDER_INTERFACE_BLOCK, 1, EX_ENDER_INTERFACE_GROUP_NAME);
+        Upgrades.add(AECSItems.crystalGrowthCard.get(), AECSParts.INTEGRATE_INTERFACE_PART.get(), 1, INTEGRATED_INTERFACE_GROUP_NAME);
+        Upgrades.add(AECSItems.crystalGrowthCard.get(), AECSBlocks.INTEGRATED_INTERFACE_BLOCK.get(), 1, INTEGRATED_INTERFACE_GROUP_NAME);
+        Upgrades.add(AECSItems.crystalGrowthCard.get(), AECSParts.METEORITE_PATTERN_PROVIDER_PART.get(), 1, METEORITE_PATTERN_PROVIDER_GROUP_NAME);
+        Upgrades.add(AECSItems.crystalGrowthCard.get(), AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK.get(), 1, METEORITE_PATTERN_PROVIDER_GROUP_NAME);
+        Upgrades.add(AECSItems.crystalGrowthCard.get(), AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK.get(), 1, RESONATING_PATTERN_PROVIDER_GROUP_NAME);
+        Upgrades.add(AECSItems.crystalGrowthCard.get(), AECSParts.RESONATING_PATTERN_PROVIDER_PART.get(), 1, RESONATING_PATTERN_PROVIDER_GROUP_NAME);
+        Upgrades.add(AECSItems.crystalGrowthCard.get(), AECSParts.ENDER_INTERFACE_PART.get(), 1, ENDER_INTERFACE_GROUP_NAME);
+        Upgrades.add(AECSItems.crystalGrowthCard.get(), AECSBlocks.ENDER_INTERFACE_BLOCK.get(), 1, ENDER_INTERFACE_GROUP_NAME);
+        Upgrades.add(AECSItems.crystalGrowthCard.get(), AECSParts.EX_ENDER_INTERFACE_PART.get(), 1, EX_ENDER_INTERFACE_GROUP_NAME);
+        Upgrades.add(AECSItems.crystalGrowthCard.get(), AECSBlocks.EX_ENDER_INTERFACE_BLOCK.get(), 1, EX_ENDER_INTERFACE_GROUP_NAME);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onTagsUpdated(TagsUpdatedEvent event)
     {
         // 为全部工具添加可链接能力
-        var tagOpt = BuiltInRegistries.ITEM.getTag(Tags.Items.TOOLS);
+        var tagOpt = ForgeRegistries.ITEMS.tags().getTag(Tags.Items.TOOLS);
         if (tagOpt.isEmpty()) return;
 
-        for (var holder : tagOpt.get())
-        {
-            if (GridLinkables.get(holder.value()) == null)
-                GridLinkables.register(holder.value(), ToolLinkableHandler.INSTANCE);
-        }
+        tagOpt.stream().forEach(item -> {
+            if(GridLinkables.get(item) == null)
+                GridLinkables.register(item, ToolLinkableHandler.INSTANCE);
+        });
     }
 }
