@@ -5,17 +5,17 @@ import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.recipe.circuit_etcher.CircuitEtcherRecipe;
 import io.github.lounode.ae2cs.common.recipe.crystal_aggregator.CrystalAggregatorRecipe;
 import io.github.lounode.ae2cs.common.recipe.crystal_pulverizer.CrystalPulverizerRecipe;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.function.Supplier;
 
 public class AECSRecipeTypes
 {
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES =
-            DeferredRegister.create(Registries.RECIPE_TYPE, AECSConstants.MODID);
+            DeferredRegister.create(ForgeRegistries.RECIPE_TYPES, AECSConstants.MODID);
 
     public static final Supplier<RecipeType<CircuitEtcherRecipe>> CIRCUIT_ETCHER =
             RECIPE_TYPES.register("circuit_etcher_recipe",
