@@ -1,9 +1,5 @@
 package io.github.lounode.ae2cs.common.machine.component;
 
-import com.mojang.serialization.Codec;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,10 +11,6 @@ public enum SidePolicy implements StringRepresentable
     EXTRACT(false, true),
     NONE(false, false),
     ALL(true, true);
-
-
-    public static final Codec<SidePolicy> CODEC = StringRepresentable.fromEnum(SidePolicy::values);
-    public static final StreamCodec<ByteBuf, SidePolicy> STREAM_CODEC = ByteBufCodecs.STRING_UTF8.map(SidePolicy::valueOf, Enum::name);
 
     final boolean allowInsert;
     final boolean allowExtract;
