@@ -260,7 +260,7 @@ public class IntegratedInterfaceGUI extends UpgradeableScreen<IntegratedInterfac
         @Override
         protected Icon getIcon()
         {
-            return isHoveredOrFocused() ? Icon.COG : Icon.COG_DISABLED;
+            return this.isHoveredOrFocused() ? Icon.WRENCH : Icon.WRENCH_DISABLED;
         }
     }
 }
