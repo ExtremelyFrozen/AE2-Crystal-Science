@@ -8,6 +8,6 @@ public class EnderShovelItem extends ShovelItem implements LinkableTool
 {
     public EnderShovelItem(Properties properties)
     {
-        super(AECSToolType.ENDER.getToolTier(), properties.attributes(createAttributes(AECSToolType.ENDER.getToolTier(), 1.5F, -3.0F)));
+        super(AECSToolType.ENDER.getToolTier(), 1.5F, -3.0F, properties);
     }
 }

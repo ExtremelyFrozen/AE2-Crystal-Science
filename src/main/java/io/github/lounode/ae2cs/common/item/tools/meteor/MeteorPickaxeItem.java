@@ -7,6 +7,6 @@ public class MeteorPickaxeItem extends PickaxeItem
 {
     public MeteorPickaxeItem(Properties properties)
     {
-        super(AECSToolType.METEOR.getToolTier(), properties.attributes(createAttributes(AECSToolType.METEOR.getToolTier(), 1.0F, -2.8F)));
+        super(AECSToolType.METEOR.getToolTier(), 1, -2.8F, properties);
     }
 }

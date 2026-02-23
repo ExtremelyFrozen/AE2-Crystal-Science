@@ -4,20 +4,18 @@ import appeng.hooks.IntrinsicEnchantItem;
 import io.github.lounode.ae2cs.common.item.tools.AECSToolType;
 import io.github.lounode.ae2cs.common.item.tools.IntrinsicEnchantment;
 import io.github.lounode.ae2cs.common.item.tools.LinkableTool;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.item.enchantment.ItemEnchantments;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Map;
 
 public class ResonatingShovelItem extends ShovelItem implements LinkableTool, IntrinsicEnchantItem
 {
@@ -25,39 +23,36 @@ public class ResonatingShovelItem extends ShovelItem implements LinkableTool, In
 
     public ResonatingShovelItem(Properties properties)
     {
-        super(AECSToolType.RESONATING.getToolTier(), properties.attributes(createAttributes(AECSToolType.RESONATING.getToolTier(), 1.5F, -3.0F)));
+        super(AECSToolType.RESONATING.getToolTier(), 1.5f, -3.0f, properties);
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context,
-                                @NotNull List<Component> lines, @NotNull TooltipFlag advancedTooltips)
+    public void appendHoverText(@NotNull ItemStack stack,
+                                @Nullable Level level,
+                                @NotNull List<Component> tooltipComponents,
+                                @NotNull TooltipFlag isAdvanced)
     {
-        super.appendHoverText(stack, context, lines, advancedTooltips);
-        intrinsicEnchantment.appendHoverText(context, lines);
+        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+        intrinsicEnchantment.appendHoverText(tooltipComponents);
     }
 
     @Override
-    public int getIntrinsicEnchantLevel(ItemStack stack, Holder<Enchantment> enchantment)
+    public int getIntrinsicEnchantLevel(ItemStack stack, Enchantment enchantment)
     {
         return intrinsicEnchantment.getLevel(enchantment);
     }
 
     @Override
-    public @NotNull ItemEnchantments getAllEnchantments(@NotNull ItemStack stack, HolderLookup.@NotNull RegistryLookup<Enchantment> lookup)
+    public Map<Enchantment, Integer> getAllEnchantments(ItemStack stack)
     {
         // 精准采集只认这一条路径
         // 也许后续可以考虑把精准采集的附魔原生写入，不过这样会影响到tooltip和其他东西
-        ItemEnchantments base = super.getAllEnchantments(stack, lookup);
-        var opt = lookup.get(Enchantments.SILK_TOUCH);
-        if (opt.isEmpty()) return base;
+        Map<Enchantment, Integer> base = super.getAllEnchantments(stack);
 
-        var silk = opt.get();
-        if (base.getLevel(silk) >= 1) return base;
+        if (base.getOrDefault(Enchantments.SILK_TOUCH, 0) >= 1) return base;
 
-        ItemEnchantments.Mutable mutable = new ItemEnchantments.Mutable(base);
-        mutable.set(silk, 1);
-        return mutable.toImmutable();
+        base.put(Enchantments.SILK_TOUCH, 1);
+        return base;
     }
 
     @Override

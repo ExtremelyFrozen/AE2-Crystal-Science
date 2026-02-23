@@ -7,6 +7,6 @@ public class MeteorSwordItem extends SwordItem
 {
     public MeteorSwordItem(Properties properties)
     {
-        super(AECSToolType.METEOR.getToolTier(), properties.attributes(createAttributes(AECSToolType.METEOR.getToolTier(), 3, -2.4F)));
+        super(AECSToolType.METEOR.getToolTier(), 3, -2.4F, properties);
     }
 }

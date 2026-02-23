@@ -8,6 +8,6 @@ public class EnderAxeItem extends AxeItem implements LinkableTool
 {
     public EnderAxeItem(Properties properties)
     {
-        super(AECSToolType.ENDER.getToolTier(), properties.attributes(createAttributes(AECSToolType.ENDER.getToolTier(), 5.0F, -3.0F)));
+        super(AECSToolType.ENDER.getToolTier(), 5.0f, -3.0f, properties);
     }
 }

@@ -7,6 +7,6 @@ public class MeteorHoeItem extends HoeItem
 {
     public MeteorHoeItem(Properties properties)
     {
-        super(AECSToolType.METEOR.getToolTier(), properties.attributes(createAttributes(AECSToolType.METEOR.getToolTier(), -4.0F, 0.0F)));
+        super(AECSToolType.METEOR.getToolTier(), -4, 0.0F, properties);
     }
 }

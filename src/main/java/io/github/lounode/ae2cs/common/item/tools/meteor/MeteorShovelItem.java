@@ -7,6 +7,6 @@ public class MeteorShovelItem extends ShovelItem
 {
     public MeteorShovelItem(Properties properties)
     {
-        super(AECSToolType.METEOR.getToolTier(), properties.attributes(createAttributes(AECSToolType.METEOR.getToolTier(), 1.5F, -3.0F)));
+        super(AECSToolType.METEOR.getToolTier(), 1.5F, -3.0F, properties);
     }
 }

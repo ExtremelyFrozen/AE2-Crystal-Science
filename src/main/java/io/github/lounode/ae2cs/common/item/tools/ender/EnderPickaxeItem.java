@@ -8,6 +8,6 @@ public class EnderPickaxeItem extends PickaxeItem implements LinkableTool
 {
     public EnderPickaxeItem(Properties properties)
     {
-        super(AECSToolType.ENDER.getToolTier(), properties.attributes(createAttributes(AECSToolType.ENDER.getToolTier(), 1.0F, -2.8F)));
+        super(AECSToolType.ENDER.getToolTier(), 1, -2.8F, properties);
     }
 }

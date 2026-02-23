@@ -8,6 +8,6 @@ public class EnderSwordItem extends SwordItem implements LinkableTool
 {
     public EnderSwordItem(Properties properties)
     {
-        super(AECSToolType.ENDER.getToolTier(), properties.attributes(createAttributes(AECSToolType.ENDER.getToolTier(), 3, -2.4F)));
+        super(AECSToolType.ENDER.getToolTier(), 3, -2.4F, properties);
     }
 }

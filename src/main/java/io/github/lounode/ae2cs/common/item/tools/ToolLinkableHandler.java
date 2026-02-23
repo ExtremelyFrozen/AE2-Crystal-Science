@@ -2,7 +2,6 @@ package io.github.lounode.ae2cs.common.item.tools;
 
 import appeng.api.config.Actionable;
 import appeng.api.features.IGridLinkableHandler;
-import appeng.api.ids.AEComponents;
 import appeng.api.implementations.blockentities.IWirelessAccessPoint;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.MEStorage;
@@ -14,7 +13,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.CommonHooks;
 import org.jetbrains.annotations.Nullable;
 
 public class ToolLinkableHandler implements IGridLinkableHandler

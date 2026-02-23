@@ -7,6 +7,6 @@ public class MeteorAxeItem extends AxeItem
 {
     public MeteorAxeItem(Properties properties)
     {
-        super(AECSToolType.METEOR.getToolTier(), properties.attributes(createAttributes(AECSToolType.METEOR.getToolTier(), 5.0F, -3.0F)));
+        super(AECSToolType.METEOR.getToolTier(), 5.0F, -3.0F, properties);
     }
 }
