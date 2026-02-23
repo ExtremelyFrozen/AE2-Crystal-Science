@@ -36,7 +36,7 @@ public class AECSTags
 
         private static TagKey<Block> tag(String name)
         {
-            return BlockTags.create(ResourceLocation.fromNamespaceAndPath("c", name));
+            return BlockTags.create(ResourceLocation.tryBuild("forge", name));
         }
 
         private static TagKey<Block> aecsTag(String name)
@@ -107,7 +107,7 @@ public class AECSTags
 
         private static TagKey<Item> tag(String name)
         {
-            return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", name));
+            return ItemTags.create(ResourceLocation.tryBuild("forge", name));
         }
 
         private static TagKey<Item> aecsTag(String name)
