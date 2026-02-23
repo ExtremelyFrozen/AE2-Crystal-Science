@@ -61,14 +61,14 @@ public class UpgradeItem extends Item
                 }
                 BlockState newState = BlockStateAligner.align(originState, placed);
 
-                CompoundTag originalData = originalBe.saveWithoutMetadata(level.registryAccess());
+                CompoundTag originalData = originalBe.saveWithoutMetadata();
                 level.removeBlockEntity(pos); // 先行移除掉对应的BE，防止物品掉落
                 level.removeBlock(pos, false);
                 level.setBlock(pos, newState, Block.UPDATE_ALL);
                 BlockEntity newBe = level.getBlockEntity(pos);
                 if (newBe != null)
                 {
-                    newBe.loadWithComponents(originalData, level.registryAccess());
+                    newBe.load(originalData);
                     newBe.setChanged();
                 }
                 context.getItemInHand().shrink(1);
@@ -85,11 +85,11 @@ public class UpgradeItem extends Item
                     Direction side = basePart.getSide();
                     CompoundTag contents = new CompoundTag();
                     IPartItem<?> partItem = partReplaceInfo.get(part.getPartItem());
-                    part.writeToNBT(contents, level.registryAccess());
+                    part.writeToNBT(contents);
                     IPart newPart = cable.replacePart(partItem, side, context.getPlayer(), null);
                     if (newPart != null)
                     {
-                        newPart.readFromNBT(contents, level.registryAccess());
+                        newPart.readFromNBT(contents);
                         newPart.addToWorld();
                     }
                     context.getItemInHand().shrink(1);
