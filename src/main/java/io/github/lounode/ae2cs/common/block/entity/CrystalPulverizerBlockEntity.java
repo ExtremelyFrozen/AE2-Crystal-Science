@@ -16,17 +16,17 @@ import io.github.lounode.ae2cs.common.init.AECSRecipeTypes;
 import io.github.lounode.ae2cs.common.machine.component.AppEngInvComponent;
 import io.github.lounode.ae2cs.common.machine.component.InvPort;
 import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
+import io.github.lounode.ae2cs.common.recipe.SizedIngredient;
 import io.github.lounode.ae2cs.common.recipe.crystal_pulverizer.CrystalPulverizerRecipe;
+import io.github.lounode.ae2cs.common.recipe.input.SingleItemStackRecipeInput;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
@@ -187,7 +187,7 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
         // 3) 已经完成：消耗资源并产出
         if (recipeProgress >= activeRecipeEnergyCost)
         {
-            SingleRecipeInput input = new SingleRecipeInput(getInputInv().getStackInSlot(0));
+            SingleItemStackRecipeInput input = SingleItemStackRecipeInput.of(getInputInv().getStackInSlot(0));
             ItemStack result = recipe.assemble(input, level.registryAccess());
             if (result.isEmpty()) // 如果我们拿不到输出，说明配方可能有问题，此时清空状态
             {
@@ -239,7 +239,7 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
         if (getLevel() == null || getLevel().isClientSide()) return;
 
         var level = getLevel();
-        var input = new SingleRecipeInput(getInputInv().getStackInSlot(0));
+        var input = SingleItemStackRecipeInput.of(getInputInv().getStackInSlot(0));
 
         var opt = level.getRecipeManager().getRecipeFor(
                 AECSRecipeTypes.CRYSTAL_PULVERIZER.get(),

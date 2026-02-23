@@ -1,28 +1,37 @@
 package io.github.lounode.ae2cs.datagen.builder.recipe;
 
+import com.google.gson.JsonObject;
 import io.github.lounode.ae2cs.AE2CrystalScience;
+import io.github.lounode.ae2cs.common.recipe.SizedIngredient;
 import io.github.lounode.ae2cs.common.recipe.crystal_pulverizer.CrystalPulverizerRecipe;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.Criterion;
+import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.RequirementsStrategy;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeBuilder;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
 
 public class CrystalPulverizerRecipeBuilder implements RecipeBuilder
 {
@@ -31,10 +40,9 @@ public class CrystalPulverizerRecipeBuilder implements RecipeBuilder
 
     private @Nullable SizedIngredient input = null;
 
-    private final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
+    private final Map<String, CriterionTriggerInstance> criteria = new LinkedHashMap<>();
 
-    // 自动成就解锁：如果没有手写 unlockedBy，则自动从输入推导
-    private final List<ItemPredicate.Builder> autoUnlockPredicates = new ArrayList<>(1);
+    private final List<ItemPredicate.Builder> autoUnlockPredicates = new java.util.ArrayList<>(1);
 
     private CrystalPulverizerRecipeBuilder(ItemStack result, int energyCost)
     {
@@ -52,9 +60,6 @@ public class CrystalPulverizerRecipeBuilder implements RecipeBuilder
         return new CrystalPulverizerRecipeBuilder(new ItemStack(result, count), energyCost);
     }
 
-    /**
-     * 设置输入（带数量）
-     */
     public CrystalPulverizerRecipeBuilder require(Ingredient ing, int count)
     {
         if (ing == null || ing.isEmpty() || count <= 0)
@@ -68,7 +73,6 @@ public class CrystalPulverizerRecipeBuilder implements RecipeBuilder
         return this;
     }
 
-    // 方便方法：item / tag
     public CrystalPulverizerRecipeBuilder require(ItemLike item, int count)
     {
         return require(Ingredient.of(item), count);
@@ -80,7 +84,7 @@ public class CrystalPulverizerRecipeBuilder implements RecipeBuilder
     }
 
     @Override
-    public @NotNull CrystalPulverizerRecipeBuilder unlockedBy(@NotNull String name, @NotNull Criterion<?> criterion)
+    public @NotNull CrystalPulverizerRecipeBuilder unlockedBy(@NotNull String name, @NotNull CriterionTriggerInstance criterion)
     {
         this.criteria.put(name, criterion);
         return this;
@@ -89,7 +93,6 @@ public class CrystalPulverizerRecipeBuilder implements RecipeBuilder
     @Override
     public @NotNull CrystalPulverizerRecipeBuilder group(@Nullable String group)
     {
-        // 配方书分组；此处不写入，保留接口
         return this;
     }
 
@@ -100,7 +103,7 @@ public class CrystalPulverizerRecipeBuilder implements RecipeBuilder
     }
 
     @Override
-    public void save(@NotNull RecipeOutput output, @NotNull ResourceLocation id)
+    public void save(@NotNull Consumer<FinishedRecipe> output, @NotNull ResourceLocation id)
     {
         if (this.input == null || this.input.ingredient().isEmpty() || this.input.count() <= 0)
         {
@@ -115,19 +118,17 @@ public class CrystalPulverizerRecipeBuilder implements RecipeBuilder
             throw new IllegalStateException("CrystalPulverizerRecipe result cannot be empty: " + id);
         }
 
-        Advancement.Builder adv = output.advancement()
+        Advancement.Builder adv = Advancement.Builder.advancement()
                 .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
                 .rewards(AdvancementRewards.Builder.recipe(id))
-                .requirements(AdvancementRequirements.Strategy.OR);
+                .requirements(RequirementsStrategy.OR);
 
-        // 如果手写了 unlockedBy，就按手写的来
         if (!this.criteria.isEmpty())
         {
             this.criteria.forEach(adv::addCriterion);
         }
         else
         {
-            // 否则自动生成：拥有输入即可解锁；推不出来就用结果兜底
             Set<String> usedNames = new HashSet<>();
             if (!this.autoUnlockPredicates.isEmpty())
             {
@@ -135,34 +136,32 @@ public class CrystalPulverizerRecipeBuilder implements RecipeBuilder
                 for (ItemPredicate.Builder p : this.autoUnlockPredicates)
                 {
                     String name = uniqueCriterionName("has_input_" + idx++, usedNames);
-                    adv.addCriterion(name, InventoryChangeTrigger.TriggerInstance.hasItems(p));
+                    adv.addCriterion(name, InventoryChangeTrigger.TriggerInstance.hasItems(p.build()));
                 }
             }
             else
             {
-                adv.addCriterion("has_result",
-                        InventoryChangeTrigger.TriggerInstance.hasItems(this.result.getItem()));
+                adv.addCriterion("has_result", InventoryChangeTrigger.TriggerInstance.hasItems(this.result.getItem()));
             }
         }
 
-        var recipe = new CrystalPulverizerRecipe(this.input, this.result, this.energyCost);
-        output.accept(id, recipe, adv.build(id.withPrefix("recipes/")));
+        var recipe = new CrystalPulverizerRecipe(id, this.input, this.result, this.energyCost);
+        output.accept(new Result(id, recipe, adv, id.withPrefix("recipes/")));
     }
 
     @Override
-    public void save(@NotNull RecipeOutput recipeOutput, @NotNull String id)
+    public void save(@NotNull Consumer<FinishedRecipe> recipeOutput, @NotNull String id)
     {
         save(recipeOutput, AE2CrystalScience.parseOrMakeId(id));
     }
 
     @Override
-    public void save(@NotNull RecipeOutput recipeOutput)
+    public void save(@NotNull Consumer<FinishedRecipe> recipeOutput)
     {
         ResourceLocation path = AE2CrystalScience.makeId("pulverizer/" + RecipeBuilder.getDefaultRecipeId(getResult()).getPath());
         save(recipeOutput, path);
     }
 
-    // 用于自动生成成就解锁条件
     private void addAutoUnlockPredicateForItem(Item item)
     {
         MinMaxBounds.Ints countBound = MinMaxBounds.Ints.atLeast(1);
@@ -174,9 +173,6 @@ public class CrystalPulverizerRecipeBuilder implements RecipeBuilder
         );
     }
 
-    /**
-     * 尽力推导自动解锁：Ingredient 取第一个非空物品作为解锁条件
-     */
     private void tryAddAutoUnlockFromIngredient(Ingredient ing)
     {
         ItemStack[] stacks = ing.getItems();
@@ -203,5 +199,63 @@ public class CrystalPulverizerRecipeBuilder implements RecipeBuilder
             name = base + "_" + i++;
         }
         return name;
+    }
+
+    private static class Result implements FinishedRecipe
+    {
+        private final ResourceLocation id;
+        private final CrystalPulverizerRecipe recipe;
+        private final Advancement.Builder advancement;
+        private final ResourceLocation advancementId;
+
+        private Result(ResourceLocation id, CrystalPulverizerRecipe recipe,
+                       Advancement.Builder advancement, ResourceLocation advancementId)
+        {
+            this.id = id;
+            this.recipe = recipe;
+            this.advancement = advancement;
+            this.advancementId = advancementId;
+        }
+
+        @Override
+        public void serializeRecipeData(JsonObject json)
+        {
+            json.addProperty("type", ForgeRegistries.RECIPE_SERIALIZERS.getKey(recipe.getSerializer()).toString());
+            json.add("input", recipe.input().toJson());
+
+            JsonObject resultJson = new JsonObject();
+            resultJson.addProperty("item", ForgeRegistries.ITEMS.getKey(recipe.result().getItem()).toString());
+            if (recipe.result().getCount() != 1)
+            {
+                resultJson.addProperty("count", recipe.result().getCount());
+            }
+            json.add("result", resultJson);
+
+            json.addProperty("energy_cost", recipe.energyCost());
+        }
+
+        @Override
+        public @NotNull ResourceLocation getId()
+        {
+            return id;
+        }
+
+        @Override
+        public @NotNull RecipeSerializer<?> getType()
+        {
+            return recipe.getSerializer();
+        }
+
+        @Override
+        public @Nullable JsonObject serializeAdvancement()
+        {
+            return advancement.serializeToJson();
+        }
+
+        @Override
+        public @Nullable ResourceLocation getAdvancementId()
+        {
+            return advancementId;
+        }
     }
 }

@@ -1,41 +1,54 @@
 package io.github.lounode.ae2cs.common.recipe.crystal_pulverizer;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
+import io.github.lounode.ae2cs.common.recipe.SizedIngredient;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class CrystalPulverizerRecipeSerializer implements RecipeSerializer<CrystalPulverizerRecipe>
 {
-    public static final MapCodec<CrystalPulverizerRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-            SizedIngredient.FLAT_CODEC.fieldOf("input").forGetter(CrystalPulverizerRecipe::input),
-            ItemStack.CODEC.fieldOf("result").forGetter(CrystalPulverizerRecipe::result),
-            Codec.INT.optionalFieldOf("energy_cost", 200).forGetter(CrystalPulverizerRecipe::energyCost)
-    ).apply(inst, CrystalPulverizerRecipe::new));
-
-    public static final StreamCodec<RegistryFriendlyByteBuf, CrystalPulverizerRecipe> STREAM_CODEC =
-            StreamCodec.composite(
-                    SizedIngredient.STREAM_CODEC, CrystalPulverizerRecipe::input,
-                    ItemStack.STREAM_CODEC, CrystalPulverizerRecipe::result,
-                    ByteBufCodecs.VAR_INT, CrystalPulverizerRecipe::energyCost,
-                    CrystalPulverizerRecipe::new
-            );
-
     @Override
-    public @NotNull MapCodec<CrystalPulverizerRecipe> codec()
+    public @NotNull CrystalPulverizerRecipe fromJson(@NotNull ResourceLocation id, @NotNull JsonObject json)
     {
-        return CODEC;
+        if (!json.has("input"))
+        {
+            throw new JsonSyntaxException("Missing required field 'input'");
+        }
+        SizedIngredient input = SizedIngredient.fromJson(GsonHelper.getAsJsonObject(json, "input"));
+
+        if (!json.has("result"))
+        {
+            throw new JsonSyntaxException("Missing required field 'result'");
+        }
+        ItemStack result = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
+
+        int energyCost = GsonHelper.getAsInt(json, "energy_cost", 200);
+
+        return new CrystalPulverizerRecipe(id, input, result, energyCost);
     }
 
     @Override
-    public @NotNull StreamCodec<RegistryFriendlyByteBuf, CrystalPulverizerRecipe> streamCodec()
+    public @Nullable CrystalPulverizerRecipe fromNetwork(@NotNull ResourceLocation id, @NotNull FriendlyByteBuf buf)
     {
-        return STREAM_CODEC;
+        SizedIngredient input = SizedIngredient.fromNetwork(buf);
+        ItemStack result = buf.readItem();
+        int energyCost = buf.readVarInt();
+
+        return new CrystalPulverizerRecipe(id, input, result, energyCost);
+    }
+
+    @Override
+    public void toNetwork(@NotNull FriendlyByteBuf buf, @NotNull CrystalPulverizerRecipe recipe)
+    {
+        recipe.input().toNetwork(buf);
+        buf.writeItem(recipe.result());
+        buf.writeVarInt(recipe.energyCost());
     }
 }
