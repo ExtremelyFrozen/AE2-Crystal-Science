@@ -11,12 +11,12 @@ import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSAutoModeToggleButton;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSIconButton;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSSideConfigToggleButton;
+import io.github.lounode.ae2cs.common.init.AECSPackets;
 import io.github.lounode.ae2cs.common.menu.submenu.SideConfigMenu;
 import io.github.lounode.ae2cs.network.c2s.SideConfigMenuOpenPacket;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 public class SideConfigGUI extends AEBaseScreen<SideConfigMenu>
@@ -106,7 +106,7 @@ public class SideConfigGUI extends AEBaseScreen<SideConfigMenu>
 
     public static AECSIconButton iconButton()
     {
-        AECSIconButton iconButton = new AECSIconButton(button -> PacketDistributor.sendToServer(new SideConfigMenuOpenPacket()))
+        AECSIconButton iconButton = new AECSIconButton(button -> AECSPackets.INSTANCE.sendToServer(new SideConfigMenuOpenPacket()))
         {
             @Override
             protected @NotNull IButtonIcon getIcon()

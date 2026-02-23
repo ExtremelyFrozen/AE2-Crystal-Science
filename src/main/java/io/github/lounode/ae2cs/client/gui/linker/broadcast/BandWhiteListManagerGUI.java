@@ -273,17 +273,17 @@ public class BandWhiteListManagerGUI extends AEBaseScreen<BandWhiteListManagerMe
      * 在没有滚动条的情况下，我们使用此方法手动进行滚动操作
      */
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY)
+    public boolean mouseScrolled(double mouseX, double mouseY, double wheelDelta)
     {
-        int amount = (int) Math.ceil(Math.abs(deltaY));
+        int amount = (int) Math.ceil(Math.abs(wheelDelta));
         if (amount <= 0)
         {
-            return super.mouseScrolled(mouseX, mouseY, deltaX, deltaY);
+            return super.mouseScrolled(mouseX, mouseY, wheelDelta);
         }
 
         if (isMouseInArea(mouseX, mouseY, WHITELIST_AREA))
         {
-            int dir = deltaY < 0 ? 1 : -1;
+            int dir = wheelDelta < 0 ? 1 : -1;
             int old = whitelistTopRow;
             whitelistTopRow = clampTopRow(whitelistTopRow + dir * amount, totalWhitelistRows, visibleWhitelistRows);
 
@@ -299,7 +299,7 @@ public class BandWhiteListManagerGUI extends AEBaseScreen<BandWhiteListManagerMe
 
         if (isMouseInArea(mouseX, mouseY, OTHER_AREA))
         {
-            int dir = deltaY < 0 ? 1 : -1;
+            int dir = wheelDelta < 0 ? 1 : -1;
             int old = otherTopRow;
             otherTopRow = clampTopRow(otherTopRow + dir * amount, totalOtherRows, visibleOtherRows);
 
@@ -312,6 +312,6 @@ public class BandWhiteListManagerGUI extends AEBaseScreen<BandWhiteListManagerMe
             return true;
         }
 
-        return super.mouseScrolled(mouseX, mouseY, deltaX, deltaY);
+        return super.mouseScrolled(mouseX, mouseY, wheelDelta);
     }
 }

@@ -3,11 +3,11 @@ package io.github.lounode.ae2cs.client.gui.linker.broadcast;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.AESubScreen;
 import appeng.client.gui.style.StyleManager;
-import appeng.client.gui.widgets.AE2Button;
 import appeng.client.gui.widgets.AECheckbox;
 import appeng.client.gui.widgets.AETextField;
 import io.github.lounode.ae2cs.api.linker.broadcast.networking.FrequencyBandLinkInfo;
 import io.github.lounode.ae2cs.common.menu.linker.broadcast.FrequencyBandLinkMenu;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -16,7 +16,7 @@ public class FrequencyBandLinkGUI extends AEBaseScreen<FrequencyBandLinkMenu>
     private AETextField passwordInput;
     private AECheckbox linkAsSenderBox;
     private AECheckbox linkAsReceiverBox;
-    private AE2Button confirmButton;
+    private Button confirmButton;
 
     public FrequencyBandLinkGUI(FrequencyBandLinkMenu menu, Inventory playerInventory, Component title)
     {

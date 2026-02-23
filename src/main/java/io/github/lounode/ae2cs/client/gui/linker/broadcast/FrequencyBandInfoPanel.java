@@ -69,9 +69,9 @@ public class FrequencyBandInfoPanel extends AbstractWidget
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button)
+    public void onClick(double mouseX, double mouseY)
     {
-        super.onClick(mouseX, mouseY, button);
+        super.onClick(mouseX, mouseY);
 
         if (bandId != null && !bandId.isEmpty())
         {

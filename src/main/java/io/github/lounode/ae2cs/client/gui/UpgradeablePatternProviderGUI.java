@@ -9,14 +9,12 @@ import appeng.client.gui.Icon;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.*;
 import appeng.core.localization.GuiText;
-import appeng.core.network.ServerboundPacket;
-import appeng.core.network.serverbound.ConfigButtonPacket;
+import appeng.core.sync.network.NetworkHandler;
 import appeng.menu.SlotSemantics;
 import io.github.lounode.ae2cs.client.gui.widgets.UpgradeablePatternProviderLockReason;
 import io.github.lounode.ae2cs.common.menu.UpgradeablePatternProviderMenu;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,9 +72,8 @@ public class UpgradeablePatternProviderGUI<C extends UpgradeablePatternProviderM
 
     private void selectNextPatternProviderMode()
     {
-        final boolean backwards = isHandlingRightClick();
-        ServerboundPacket message = new ConfigButtonPacket(Settings.PATTERN_ACCESS_TERMINAL, backwards);
-        PacketDistributor.sendToServer(message);
+        boolean backwards = this.isHandlingRightClick();
+        NetworkHandler.instance().sendToServer(new appeng.core.sync.packets.ConfigButtonPacket(Settings.PATTERN_ACCESS_TERMINAL, backwards));
     }
 
     private List<Component> getCompatibleUpgrades()

@@ -20,8 +20,7 @@ import appeng.core.definitions.AEItems;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.InGameTooltip;
-import appeng.core.network.ServerboundPacket;
-import appeng.core.network.serverbound.ConfigButtonPacket;
+import appeng.core.sync.network.NetworkHandler;
 import appeng.menu.SlotSemantics;
 import io.github.lounode.ae2cs.client.gui.icon.AdaptedAE2Icon;
 import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
@@ -36,7 +35,6 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -116,9 +114,8 @@ public class IntegratedInterfaceGUI extends UpgradeableScreen<IntegratedInterfac
 
     private void selectNextPatternProviderMode()
     {
-        final boolean backwards = isHandlingRightClick();
-        ServerboundPacket message = new ConfigButtonPacket(Settings.PATTERN_ACCESS_TERMINAL, backwards);
-        PacketDistributor.sendToServer(message);
+        boolean backwards = this.isHandlingRightClick();
+        NetworkHandler.instance().sendToServer(new appeng.core.sync.packets.ConfigButtonPacket(Settings.PATTERN_ACCESS_TERMINAL, backwards));
     }
 
     @Override

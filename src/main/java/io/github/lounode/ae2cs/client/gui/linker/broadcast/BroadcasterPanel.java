@@ -73,9 +73,9 @@ public class BroadcasterPanel extends AbstractWidget
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button)
+    public void onClick(double mouseX, double mouseY)
     {
-        super.onClick(mouseX, mouseY, button);
+        super.onClick(mouseX, mouseY);
 
         if (globalPos != null)
         {

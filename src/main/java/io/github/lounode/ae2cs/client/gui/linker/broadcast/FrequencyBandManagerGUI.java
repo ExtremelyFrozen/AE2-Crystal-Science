@@ -3,7 +3,6 @@ package io.github.lounode.ae2cs.client.gui.linker.broadcast;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.AESubScreen;
 import appeng.client.gui.style.StyleManager;
-import appeng.client.gui.widgets.AE2Button;
 import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.Scrollbar;
 import io.github.lounode.ae2cs.client.gui.icon.AECSIcon;
@@ -12,6 +11,7 @@ import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSIconButton;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSToggleButton;
 import io.github.lounode.ae2cs.common.menu.linker.broadcast.FrequencyBandManagerMenu;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
@@ -34,7 +34,7 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
     private Component channelUsage = Component.empty();
     private Component bandError = Component.empty();
     private AETextField inputPassword;
-    private AE2Button confirmChangePasswordButton;
+    private Button confirmChangePasswordButton;
 
 
     private AECSToggleButton changePublicButton;
@@ -119,7 +119,7 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
         removeBandButton.setMessage(Component.translatable("ae2cs.menu.frequency_manager.button.remove_band"));
         this.addToLeftToolbar(removeBandButton);
 
-        this.broadcasterScrollbar = widgets.addScrollBar("broadcaster_scrollbar", Scrollbar.BIG);
+        this.broadcasterScrollbar = widgets.addScrollBar("broadcaster_scrollbar", Scrollbar.DEFAULT);
         this.broadcasterScrollbar.setHeight(SCROLL_HEIGHT);
         this.broadcasterScrollbar.setRange(0, 0, 1);
     }

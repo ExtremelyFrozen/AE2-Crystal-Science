@@ -2,7 +2,6 @@ package io.github.lounode.ae2cs.client.gui.linker.broadcast;
 
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.style.StyleManager;
-import appeng.client.gui.widgets.AE2Button;
 import io.github.lounode.ae2cs.client.gui.icon.AECSIcon;
 import io.github.lounode.ae2cs.client.gui.icon.AdaptedAE2Icon;
 import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
@@ -10,6 +9,7 @@ import io.github.lounode.ae2cs.client.gui.widgets.AECSIconButton;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSToggleButton;
 import io.github.lounode.ae2cs.common.block.entity.EnderBroadcasterBlockEntity;
 import io.github.lounode.ae2cs.common.menu.linker.broadcast.EnderBroadcasterMenu;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -23,10 +23,10 @@ public class EnderBroadcasterGUI extends UpgradeableScreen<EnderBroadcasterMenu>
     private final AECSToggleButton toggleBandLinkButton;
     private final AECSIconButton cleanLinkerConnectionButton;
     // 接收端
-    private final AE2Button addReceiver1ChannelsButton;
-    private final AE2Button addReceiver10ChannelsButton;
-    private final AE2Button reduceReceiver1ChannelsButton;
-    private final AE2Button reduceReceiver10ChannelsButton;
+    private final Button addReceiver1ChannelsButton;
+    private final Button addReceiver10ChannelsButton;
+    private final Button reduceReceiver1ChannelsButton;
+    private final Button reduceReceiver10ChannelsButton;
 
 
     public EnderBroadcasterGUI(EnderBroadcasterMenu menu, Inventory inv, Component title)
@@ -84,28 +84,28 @@ public class EnderBroadcasterGUI extends UpgradeableScreen<EnderBroadcasterMenu>
         this.cleanLinkerConnectionButton.setMessage(Component.translatable("ae2cs.menu.ender_broadcaster.button.clean_linker_connection"));
         addToLeftToolbar(cleanLinkerConnectionButton);
 
-        addReceiver1ChannelsButton = new AE2Button(Component.literal("+1"), button -> {
+        addReceiver1ChannelsButton = Button.builder(Component.literal("+1"), button -> {
             int mult = hasShiftDown() ? 5 : 1;
             menu.sendChangeExpectedChannels(1 * mult);
-        });
+        }).build();
         widgets.add("add_receiver_expected_channels_button_1", addReceiver1ChannelsButton);
 
-        addReceiver10ChannelsButton = new AE2Button(Component.literal("+10"), button -> {
+        addReceiver10ChannelsButton = Button.builder(Component.literal("+10"), button -> {
             int mult = hasShiftDown() ? 5 : 1;
             menu.sendChangeExpectedChannels(10 * mult);
-        });
+        }).build();
         widgets.add("add_receiver_expected_channels_button_10", addReceiver10ChannelsButton);
 
-        reduceReceiver1ChannelsButton = new AE2Button(Component.literal("-1"), button -> {
+        reduceReceiver1ChannelsButton = Button.builder(Component.literal("-1"), button -> {
             int mult = hasShiftDown() ? 5 : 1;
             menu.sendChangeExpectedChannels(-1 * mult);
-        });
+        }).build();
         widgets.add("reduce_receiver_expected_channels_button_1", reduceReceiver1ChannelsButton);
 
-        reduceReceiver10ChannelsButton = new AE2Button(Component.literal("-10"), button -> {
+        reduceReceiver10ChannelsButton = Button.builder(Component.literal("-10"), button -> {
             int mult = hasShiftDown() ? 5 : 1;
             menu.sendChangeExpectedChannels(-10 * mult);
-        });
+        }).build();
         widgets.add("reduce_receiver_expected_channels_button_10", reduceReceiver10ChannelsButton);
     }
 

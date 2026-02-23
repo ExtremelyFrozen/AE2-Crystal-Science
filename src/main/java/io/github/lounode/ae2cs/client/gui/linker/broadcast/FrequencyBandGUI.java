@@ -57,7 +57,7 @@ public class FrequencyBandGUI extends AEBaseScreen<FrequencyBandMenu>
         super(menu, inv, title, StyleManager.loadStyleDoc("/screens/frequency_band_menu.json"));
         AESubScreen.addBackButton(menu, "back_button", widgets);
 
-        this.scrollbar = widgets.addScrollBar("scrollbar", Scrollbar.BIG);
+        this.scrollbar = widgets.addScrollBar("scrollbar", Scrollbar.DEFAULT);
         this.searchField = widgets.addTextField("search");
 
         this.scrollbar.setHeight(SCROLL_HEIGHT);
