@@ -16,8 +16,7 @@ public class AEKeyHelper
      * 将 Object2LongMap<AEKey> 序列化到 data[name]（ListTag，每个元素是 CompoundTag）。
      */
     public static void writeKeyAmountMap(CompoundTag data, String name,
-                                         Object2LongMap<AEKey> map,
-                                         HolderLookup.Provider registries)
+                                         Object2LongMap<AEKey> map)
     {
         var list = new ListTag();
 
@@ -53,8 +52,7 @@ public class AEKeyHelper
      * 从 data[name] 反序列化到 target（会先 clear）
      */
     public static void readKeyAmountMap(CompoundTag data, String name,
-                                        Object2LongMap<AEKey> target,
-                                        HolderLookup.Provider registries)
+                                        Object2LongMap<AEKey> target)
     {
         target.clear();
 
@@ -84,11 +82,10 @@ public class AEKeyHelper
     /**
      * 读取并返回一个新 map
      */
-    public static @NotNull Object2LongOpenHashMap<AEKey> readKeyAmountMapNew(CompoundTag data, String name,
-                                                                             HolderLookup.Provider registries)
+    public static @NotNull Object2LongOpenHashMap<AEKey> readKeyAmountMapNew(CompoundTag data, String name)
     {
         var map = new Object2LongOpenHashMap<AEKey>();
-        readKeyAmountMap(data, name, map, registries);
+        readKeyAmountMap(data, name, map);
         return map;
     }
 }

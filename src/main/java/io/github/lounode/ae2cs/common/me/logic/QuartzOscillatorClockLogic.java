@@ -13,6 +13,7 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
+import appeng.util.ConfigManager;
 import io.github.lounode.ae2cs.api.settings.AECSSettings;
 import io.github.lounode.ae2cs.api.settings.SoundMode;
 import net.minecraft.core.BlockPos;
@@ -90,10 +91,9 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
                 .setFlags()
                 .addService(IGridTickable.class, new Ticker());
 
-        this.cm = IConfigManager.builder(this::onConfigManagerChange)
-                .registerSetting(AECSSettings.REDSTONE_CONTROLLED_NO_PULSE, RedstoneMode.IGNORE)
-                .registerSetting(AECSSettings.SOUND_MODE, SoundMode.UNMUTE)
-                .build();
+        this.cm = new ConfigManager(this::onConfigManagerChange);
+        cm.registerSetting(AECSSettings.REDSTONE_CONTROLLED_NO_PULSE, RedstoneMode.IGNORE);
+        cm.registerSetting(AECSSettings.SOUND_MODE, SoundMode.UNMUTE);
 
         this.upgrades = UpgradeInventories.forMachine(is, 1, this::onUpgradesChange);
     }
@@ -233,7 +233,7 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
         // 声效
         if (getConfigManager().getSetting(AECSSettings.SOUND_MODE) == SoundMode.UNMUTE)
         {
-            level.playSound(null, pos, SoundEvents.COPPER_BULB_TURN_ON, SoundSource.BLOCKS);
+            level.playSound(null, pos, SoundEvents.STONE_BUTTON_CLICK_ON, SoundSource.BLOCKS);
         }
     }
 
@@ -261,7 +261,7 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
         // 声效
         if (getConfigManager().getSetting(AECSSettings.SOUND_MODE) == SoundMode.UNMUTE)
         {
-            level.playSound(null, pos, SoundEvents.COPPER_BULB_TURN_OFF, SoundSource.BLOCKS);
+            level.playSound(null, pos, SoundEvents.STONE_BUTTON_CLICK_OFF, SoundSource.BLOCKS);
         }
     }
 
@@ -420,7 +420,7 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
         @Override
         public TickingRequest getTickingRequest(IGridNode node)
         {
-            return new TickingRequest(TickRates.IOPort, false);
+            return new TickingRequest(TickRates.IOPort, false, true);
         }
 
         @Override

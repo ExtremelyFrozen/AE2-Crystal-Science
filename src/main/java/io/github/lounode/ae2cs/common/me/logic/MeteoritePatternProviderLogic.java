@@ -27,11 +27,15 @@ import appeng.me.helpers.MachineSource;
 import io.github.lounode.ae2cs.api.util.AEKeyHelper;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import it.unimi.dsi.fastutil.objects.*;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingInput;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -51,7 +55,7 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
     /**
      * 升级槽
      */
-    public IUpgradeInventory upgrades = UpgradeInventories.forMachine(AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK, 4, this::onUpgradesChange);
+    public IUpgradeInventory upgrades = UpgradeInventories.forMachine(AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK.get(), 4, this::onUpgradesChange);
 
     /**
      * 完成产物表，即将对外输出的物品会被临时存放在此，等待tick中再实际对外发送
@@ -326,8 +330,11 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
             }
         }
 
-        final CraftingInput input = CraftingInput.of(width, height, compressedItems);
-
+        final CraftingContainer input = new TransientCraftingContainer(new DummyMenu(), width, height);
+        for (int i = 0; i < compressedItems.size(); i++)
+        {
+            input.setItem(i, compressedItems.get(i));
+        }
 
         ItemStack output = pattern.assemble(input, level);
         if (output == null || output.isEmpty())
@@ -371,19 +378,19 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
     }
 
     @Override
-    public void writeToNBT(CompoundTag tag, HolderLookup.Provider registries)
+    public void writeToNBT(CompoundTag tag)
     {
-        super.writeToNBT(tag, registries);
-        upgrades.writeToNBT(tag, "upgrades", registries);
-        AEKeyHelper.writeKeyAmountMap(tag, "crafted_contents", craftedContents, registries);
+        super.writeToNBT(tag);
+        upgrades.writeToNBT(tag, "upgrades");
+        AEKeyHelper.writeKeyAmountMap(tag, "crafted_contents", craftedContents);
     }
 
     @Override
-    public void readFromNBT(CompoundTag tag, HolderLookup.Provider registries)
+    public void readFromNBT(CompoundTag tag)
     {
-        super.readFromNBT(tag, registries);
-        upgrades.readFromNBT(tag, "upgrades", registries);
-        AEKeyHelper.readKeyAmountMap(tag, "crafted_contents", craftedContents, registries);
+        super.readFromNBT(tag);
+        upgrades.readFromNBT(tag, "upgrades");
+        AEKeyHelper.readKeyAmountMap(tag, "crafted_contents", craftedContents);
         onUpgradesChange();
     }
 
@@ -412,7 +419,7 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
         @Override
         public TickingRequest getTickingRequest(IGridNode node)
         {
-            return new TickingRequest(TickRates.Interface, !hasWorkToDo() && craftedContents.isEmpty());
+            return new TickingRequest(TickRates.Interface, !hasWorkToDo() && craftedContents.isEmpty(), true);
         }
 
         @Override
@@ -428,6 +435,34 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
             boolean hasWorkToDo = hasWorkToDo() || !craftedContents.isEmpty();
             return hasWorkToDo ? couldDoWork ? TickRateModulation.URGENT : TickRateModulation.SLOWER
                     : TickRateModulation.SLEEP;
+        }
+    }
+
+    /**
+     * 作为参数欺骗TransientCraftingContainer
+     */
+    private static final class DummyMenu extends AbstractContainerMenu
+    {
+        private DummyMenu()
+        {
+            super(null, -1);
+        }
+
+        @Override
+        public boolean stillValid(@NotNull Player player)
+        {
+            return false;
+        }
+
+        @Override
+        public @NotNull ItemStack quickMoveStack(@NotNull Player player, int index)
+        {
+            return ItemStack.EMPTY;
+        }
+
+        @Override
+        public void slotsChanged(@NotNull Container container)
+        {
         }
     }
 }

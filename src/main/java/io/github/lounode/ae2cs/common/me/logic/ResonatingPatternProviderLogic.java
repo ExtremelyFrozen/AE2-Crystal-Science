@@ -34,7 +34,6 @@ import io.github.lounode.ae2cs.common.me.crafting.ResonatingPatternDetails;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -65,7 +64,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
      */
     private final List<PendingSend> resonatingSendList = new ArrayList<>();
 
-    private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK, 1, this::onUpgradesChange);
+    private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK.get(), 1, this::onUpgradesChange);
 
     /**
      * 用于未标记目的地发送材料的round-robin
@@ -119,11 +118,11 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
     }
 
     @Override
-    public void writeToNBT(CompoundTag tag, HolderLookup.Provider registries)
+    public void writeToNBT(CompoundTag tag)
     {
-        super.writeToNBT(tag, registries);
+        super.writeToNBT(tag);
 
-        this.upgrades.writeToNBT(tag, "upgrades", registries);
+        this.upgrades.writeToNBT(tag, "upgrades");
 
         var list = new ListTag();
         for (var p : resonatingSendList)
@@ -132,18 +131,18 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
             e.putString("dim", p.target().pos().dimension().location().toString());
             e.putLong("pos", p.target().pos().pos().asLong());
             e.putByte("face", (byte) p.target().face().get3DDataValue());
-            e.put("stack", GenericStack.writeTag(registries, p.stack()));
+            e.put("stack", GenericStack.writeTag(p.stack()));
             list.add(e);
         }
         tag.put("resonating_send_list", list);
     }
 
     @Override
-    public void readFromNBT(CompoundTag tag, HolderLookup.Provider registries)
+    public void readFromNBT(CompoundTag tag)
     {
-        super.readFromNBT(tag, registries);
+        super.readFromNBT(tag);
 
-        this.upgrades.readFromNBT(tag, "upgrades", registries);
+        this.upgrades.readFromNBT(tag, "upgrades");
 
         resonatingSendList.clear();
         if (!tag.contains("resonating_send_list", Tag.TAG_LIST))
@@ -160,7 +159,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
             var posLong = e.getLong("pos");
             var face = Direction.from3DDataValue(e.getByte("face"));
 
-            var stack = GenericStack.readTag(registries, e.getCompound("stack"));
+            var stack = GenericStack.readTag(e.getCompound("stack"));
             if (stack == null || stack.amount() <= 0)
             {
                 continue;
@@ -168,7 +167,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
 
             try
             {
-                var rl = ResourceLocation.parse(dimStr);
+                var rl = ResourceLocation.tryParse(dimStr);
                 var dimKey = ResourceKey.create(Registries.DIMENSION, rl);
                 var gp = GlobalPos.of(dimKey, BlockPos.of(posLong));
                 resonatingSendList.add(new PendingSend(new EncodedResonatingPattern.Target(gp, face), stack));
@@ -642,7 +641,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
         public TickingRequest getTickingRequest(IGridNode node)
         {
             boolean idle = !hasWorkToDo() && !hasResonatingWorkToDo() && !isEnablePull();
-            return new TickingRequest(TickRates.Interface, idle);
+            return new TickingRequest(TickRates.Interface, idle, true);
         }
 
         @Override

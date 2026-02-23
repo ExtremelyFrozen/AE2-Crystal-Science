@@ -36,6 +36,7 @@ import appeng.helpers.patternprovider.PatternProviderTarget;
 import appeng.helpers.patternprovider.UnlockCraftingEvent;
 import appeng.me.helpers.MachineSource;
 import appeng.util.ConfigInventory;
+import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.PlayerInternalInventory;
 import com.google.common.collect.ImmutableSet;
@@ -99,7 +100,7 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
      * 升级槽 - 允许UI以及右键机器
      */
     private final IUpgradeInventory upgrades =
-            UpgradeInventories.forMachine(AECSBlocks.INTEGRATED_INTERFACE_BLOCK, 1, this::onUpgradesChanged);
+            UpgradeInventories.forMachine(AECSBlocks.INTEGRATED_INTERFACE_BLOCK.get(), 1, this::onUpgradesChanged);
 
     /**
      * 包含了所有样板输入项的集合，用来给阻塞模式快速判断
@@ -196,23 +197,17 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
                 .addService(ICraftingRequester.class, this) // 可以请求合成（合成卡请求）
                 .addService(IGridTickable.class, new Ticker()); // tick行为
 
-        configManager = IConfigManager.builder(this::onConfigChanged)
-                .registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL)
-                .registerSetting(Settings.BLOCKING_MODE, YesNo.NO)
-                .registerSetting(Settings.PATTERN_ACCESS_TERMINAL, YesNo.YES)
-                .registerSetting(Settings.LOCK_CRAFTING_MODE, LockCraftingMode.NONE)
-                .build();
+        configManager = new ConfigManager(this::onConfigChanged);
+        configManager.registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
+        configManager.registerSetting(Settings.BLOCKING_MODE, YesNo.NO);
+        configManager.registerSetting(Settings.PATTERN_ACCESS_TERMINAL, YesNo.YES);
+        configManager.registerSetting(Settings.LOCK_CRAFTING_MODE, LockCraftingMode.NONE);
 
         this.storageSize = storageSize;
         this.patternSize = patternSize;
 
-        this.configInv = ConfigInventory.configStacks(storageSize)
-                .changeListener(this::onConfigRowChanged)
-                .build();
-        this.storage = ConfigInventory.storage(storageSize)
-                .slotFilter(this::isAllowedInStorageSlot)
-                .changeListener(this::onStorageChanged)
-                .build();
+        this.configInv = ConfigInventory.configStacks(null, storageSize, this::onConfigRowChanged, false);
+        this.storage = ConfigInventory.storage(storageSize, this::onStorageChanged);
         this.plannedWork = new GenericStack[storageSize];
 
         this.patternInventory = new AppEngInternalInventory(null, patternSize, 1)
@@ -642,26 +637,6 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         this.craftingTracker.jobStateChange(link);
     }
 
-    private boolean isAllowedInStorageSlot(int slot, AEKey what)
-    {
-        if (slot < configInv.size())
-        {
-            var configured = configInv.getKey(slot);
-            if (configured == null || configured.equals(what))
-            {
-                return true;
-            }
-            if (upgrades.isInstalled(AEItems.FUZZY_CARD))
-            {
-                var fuzzyMode = configManager.getSetting(Settings.FUZZY_MODE);
-                return configured.fuzzyEquals(what, fuzzyMode);
-            }
-            return false;
-        }
-        return true;
-    }
-
-
     private void onConfigChanged()
     {
         this.saveChanges();
@@ -975,7 +950,7 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         {
             // 有工作就醒着，没有工作就可以睡
             boolean idle = !hasStorageWork() && sendList.isEmpty();
-            return new TickingRequest(TickRates.Interface, idle);
+            return new TickingRequest(TickRates.Interface, idle, true);
         }
 
         @Override

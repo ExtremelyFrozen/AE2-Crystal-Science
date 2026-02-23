@@ -19,7 +19,6 @@ import io.github.lounode.ae2cs.api.settings.AECSSettings;
 import io.github.lounode.ae2cs.api.settings.BlackListMode;
 import io.github.lounode.ae2cs.api.settings.ShowRangeMode;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -57,7 +56,7 @@ public class EnderInterfaceLogic extends InterfaceLogic
 
         this.host = host;
 
-        this.absorbConfigInventory = ConfigInventory.configTypes(absorbConfigSlots).changeListener(this::onAbsorbConfigChange).build();
+        this.absorbConfigInventory = ConfigInventory.configTypes(null, absorbConfigSlots, this::onAbsorbConfigChange);
         this.absorbConfigInventory.useRegisteredCapacities();
 
         mainNode.addService(IGridTickable.class, new Ticker());
@@ -126,18 +125,18 @@ public class EnderInterfaceLogic extends InterfaceLogic
     }
 
     @Override
-    public void writeToNBT(CompoundTag tag, HolderLookup.Provider registries)
+    public void writeToNBT(CompoundTag tag)
     {
-        super.writeToNBT(tag, registries);
-        absorbConfigInventory.writeToChildTag(tag, "absorb_config", registries);
+        super.writeToNBT(tag);
+        absorbConfigInventory.writeToChildTag(tag, "absorb_config");
         tag.putInt("range", range);
     }
 
     @Override
-    public void readFromNBT(CompoundTag tag, HolderLookup.Provider registries)
+    public void readFromNBT(CompoundTag tag)
     {
-        super.readFromNBT(tag, registries);
-        absorbConfigInventory.readFromChildTag(tag, "absorb_config", registries);
+        super.readFromNBT(tag);
+        absorbConfigInventory.readFromChildTag(tag, "absorb_config");
         if (tag.contains("range")) range = tag.getInt("range");
         this.onConfigChanged();
         onAbsorbConfigChange();
@@ -238,7 +237,7 @@ public class EnderInterfaceLogic extends InterfaceLogic
         @Override
         public TickingRequest getTickingRequest(IGridNode node)
         {
-            return new TickingRequest(TickRates.Interface, !hasWorkToDo() && !hasAbsorbWork());
+            return new TickingRequest(TickRates.Interface, !hasWorkToDo() && !hasAbsorbWork(), true);
         }
 
         @Override
