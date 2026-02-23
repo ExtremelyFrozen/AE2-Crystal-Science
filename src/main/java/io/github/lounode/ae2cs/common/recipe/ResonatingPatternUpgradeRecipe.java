@@ -1,11 +1,10 @@
 package io.github.lounode.ae2cs.common.recipe;
 
 import appeng.core.definitions.AEItems;
-import io.github.lounode.ae2cs.common.init.AECSDataComponents;
-import io.github.lounode.ae2cs.common.init.AECSItems;
+import io.github.lounode.ae2cs.api.util.PatternHelper;
 import io.github.lounode.ae2cs.common.init.AECSRecipeSerializers;
 import io.github.lounode.ae2cs.common.init.AECSTags;
-import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern;
+import io.github.lounode.ae2cs.common.me.crafting.ResonatingPatternDetails;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -15,10 +14,6 @@ import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 public class ResonatingPatternUpgradeRecipe extends CustomRecipe
 {
@@ -59,7 +54,7 @@ public class ResonatingPatternUpgradeRecipe extends CustomRecipe
     }
 
     @Override
-    public @NotNull ItemStack assemble(CraftingContainer input, RegistryAccess registries)
+    public @NotNull ItemStack assemble(CraftingContainer input, @NotNull RegistryAccess registries)
     {
         ItemStack processingPattern = ItemStack.EMPTY;
 
@@ -76,23 +71,8 @@ public class ResonatingPatternUpgradeRecipe extends CustomRecipe
 
         if (processingPattern.isEmpty()) return ItemStack.EMPTY;
 
-        EncodedProcessingPattern src = processingPattern.get(AEComponents.ENCODED_PROCESSING_PATTERN);
-        if (src == null) return ItemStack.EMPTY;
-
-        ItemStack out = AECSItems.RESONATING_PATTERN.get().getDefaultInstance();
-
-        // targets 与 sparseInputs 同长度，默认全 empty
-        List<Optional<EncodedResonatingPattern.Target>> targets = new ArrayList<>(src.sparseInputs().size());
-        for (int i = 0; i < src.sparseInputs().size(); i++)
-        {
-            targets.add(Optional.empty());
-        }
-
-        out.set(AECSDataComponents.ENCODED_RESONATING_PATTERN.get(),
-                new EncodedResonatingPattern(src.sparseInputs(), src.sparseOutputs(), targets));
-        out.set(AECSDataComponents.RESONATING_PATTERN_SELECTED_INPUT.get(), 0);
-
-        return out;
+        // 将处理样板编码为谐振样板，不成功时内部会返回ItemStack.EMPTY
+        return ResonatingPatternDetails.encode(processingPattern);
     }
 
     @Override
@@ -109,7 +89,7 @@ public class ResonatingPatternUpgradeRecipe extends CustomRecipe
 
     private static boolean isEncodedProcessingPattern(ItemStack stack)
     {
-        return stack.is(AEItems.PROCESSING_PATTERN.asItem()) && stack.has(AEComponents.ENCODED_PROCESSING_PATTERN);
+        return stack.is(AEItems.PROCESSING_PATTERN.asItem()) && PatternHelper.getAEProcessingPattern(stack) != null;
     }
 
     private static boolean isResonatingDust(ItemStack stack)

@@ -1,31 +1,24 @@
 package io.github.lounode.ae2cs.common.me.crafting;
 
 import appeng.api.crafting.IPatternDetails;
-import appeng.api.crafting.PatternDetailsTooltip;
-import appeng.api.ids.AEComponents;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.core.definitions.AEItems;
-import appeng.crafting.pattern.EncodedProcessingPattern;
+import appeng.crafting.pattern.AEProcessingPattern;
 import com.google.common.base.Preconditions;
 import io.github.lounode.ae2cs.api.util.PatternHelper;
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern.Target;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public class ResonatingPatternDetails implements IPatternDetails
 {
@@ -38,19 +31,16 @@ public class ResonatingPatternDetails implements IPatternDetails
 
     private final Input[] inputs;
     private final List<GenericStack> condensedOutputs;
+    private final GenericStack[] outputArray;
 
     public ResonatingPatternDetails(AEItemKey definition)
     {
         this.definition = definition;
 
-        var encoded = definition.get(AECSDataComponents.ENCODED_RESONATING_PATTERN.get());
+        EncodedResonatingPattern encoded = AECSDataComponents.getEncodedResonatingPattern(definition.toStack());
         if (encoded == null)
         {
             throw new IllegalArgumentException("Given item does not encode a resonating pattern: " + definition);
-        }
-        else if (encoded.containsMissingContent())
-        {
-            throw new IllegalArgumentException("Pattern references missing content");
         }
 
         this.sparseInputs = encoded.sparseInputs();
@@ -65,6 +55,7 @@ public class ResonatingPatternDetails implements IPatternDetails
         }
 
         this.condensedOutputs = PatternHelper.condenseStacks(sparseOutputs);
+        this.outputArray = this.condensedOutputs.toArray(new GenericStack[0]);
     }
 
     public static int clampSelected(int selected, int sparseSize)
@@ -92,9 +83,9 @@ public class ResonatingPatternDetails implements IPatternDetails
             targets.add(Optional.empty());
         }
 
-        stack.set(AECSDataComponents.ENCODED_RESONATING_PATTERN.get(),
+        AECSDataComponents.setEncodedResonatingPattern(stack,
                 new EncodedResonatingPattern(sparseInputs, sparseOutputs, targets));
-        stack.set(AECSDataComponents.RESONATING_PATTERN_SELECTED_INPUT.get(), 0);
+        AECSDataComponents.setResonatingPatternSelectedInput(stack, 0);
     }
 
     /**
@@ -105,20 +96,23 @@ public class ResonatingPatternDetails implements IPatternDetails
         if (patternItem.isEmpty() || resonatingPattern.isEmpty()) return false;
 
         if (!patternItem.is(AEItems.PROCESSING_PATTERN.asItem())
-                || !resonatingPattern.is(AECSItems.RESONATING_PATTERN.asItem())
-                || !patternItem.has(AEComponents.ENCODED_PROCESSING_PATTERN))
+                || !resonatingPattern.is(AECSItems.RESONATING_PATTERN.get())
+                || patternItem.getTag() == null
+        )
             return false;
 
-        EncodedProcessingPattern src = patternItem.get(AEComponents.ENCODED_PROCESSING_PATTERN);
-        List<Optional<EncodedResonatingPattern.Target>> targets = new ArrayList<>(src.sparseInputs().size());
-        for (int i = 0; i < src.sparseInputs().size(); i++)
+        AEProcessingPattern src = PatternHelper.getAEProcessingPattern(patternItem);
+        if (src == null) return false;
+
+        List<Optional<EncodedResonatingPattern.Target>> targets = new ArrayList<>(src.getSparseInputs().length);
+        for (int i = 0; i < src.getSparseInputs().length; i++)
         {
             targets.add(Optional.empty());
         }
 
-        resonatingPattern.set(AECSDataComponents.ENCODED_RESONATING_PATTERN.get(),
-                new EncodedResonatingPattern(src.sparseInputs(), src.sparseOutputs(), targets));
-        resonatingPattern.set(AECSDataComponents.RESONATING_PATTERN_SELECTED_INPUT.get(), 0);
+        AECSDataComponents.setEncodedResonatingPattern(resonatingPattern,
+                new EncodedResonatingPattern(List.copyOf(Arrays.asList(src.getSparseInputs())), List.copyOf(Arrays.asList(src.getSparseOutputs())), targets));
+        AECSDataComponents.setResonatingPatternSelectedInput(resonatingPattern, 0);
         return true;
     }
 
@@ -129,8 +123,7 @@ public class ResonatingPatternDetails implements IPatternDetails
     {
         if (patternItem.isEmpty()) return ItemStack.EMPTY;
 
-        if (!patternItem.is(AEItems.PROCESSING_PATTERN.asItem())
-                || !patternItem.has(AEComponents.ENCODED_PROCESSING_PATTERN))
+        if (!patternItem.is(AEItems.PROCESSING_PATTERN.asItem()))
             return ItemStack.EMPTY;
 
         ItemStack resonatingItem = AECSItems.RESONATING_PATTERN.get().getDefaultInstance();
@@ -155,9 +148,9 @@ public class ResonatingPatternDetails implements IPatternDetails
     }
 
     @Override
-    public List<GenericStack> getOutputs()
+    public GenericStack[] getOutputs()
     {
-        return condensedOutputs;
+        return this.outputArray;
     }
 
     public List<GenericStack> getSparseInputs()
@@ -218,21 +211,6 @@ public class ResonatingPatternDetails implements IPatternDetails
         }
     }
 
-    public static PatternDetailsTooltip getInvalidPatternTooltip(ItemStack stack, Level level,
-                                                                 @Nullable Exception cause, TooltipFlag flags)
-    {
-        var tooltip = new PatternDetailsTooltip(PatternDetailsTooltip.OUTPUT_TEXT_PRODUCES);
-
-        var encoded = stack.get(AECSDataComponents.ENCODED_RESONATING_PATTERN.get());
-        if (encoded != null)
-        {
-            encoded.sparseInputs().stream().filter(Objects::nonNull).forEach(tooltip::addInput);
-            encoded.sparseOutputs().stream().filter(Objects::nonNull).forEach(tooltip::addOutput);
-        }
-
-        return tooltip;
-    }
-
     private static class Input implements IInput
     {
         private final GenericStack[] template;
@@ -270,13 +248,13 @@ public class ResonatingPatternDetails implements IPatternDetails
         }
     }
 
-    private static ListTag encodeStackList(GenericStack[] stacks, HolderLookup.Provider registries)
+    private static ListTag encodeStackList(GenericStack[] stacks)
     {
         ListTag tag = new ListTag();
         boolean foundStack = false;
         for (var stack : stacks)
         {
-            tag.add(GenericStack.writeTag(registries, stack));
+            tag.add(GenericStack.writeTag(stack));
             if (stack != null && stack.amount() > 0)
             {
                 foundStack = true;

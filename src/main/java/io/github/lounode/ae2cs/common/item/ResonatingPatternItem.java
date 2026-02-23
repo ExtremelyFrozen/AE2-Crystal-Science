@@ -1,5 +1,7 @@
 package io.github.lounode.ae2cs.common.item;
 
+import appeng.api.crafting.IPatternDetails;
+import appeng.api.stacks.AEItemKey;
 import appeng.crafting.pattern.EncodedPatternItem;
 import appeng.util.InteractionUtil;
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
@@ -18,16 +20,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class ResonatingPatternItem extends EncodedPatternItem<ResonatingPatternDetails>
+public class ResonatingPatternItem extends EncodedPatternItem
 {
     public ResonatingPatternItem(Properties properties)
     {
-        super(properties.stacksTo(1),
-                (what, level) -> new ResonatingPatternDetails(what),
-                ResonatingPatternDetails::getInvalidPatternTooltip);
+        super(properties.stacksTo(1));
     }
 
     /**
@@ -43,7 +44,7 @@ public class ResonatingPatternItem extends EncodedPatternItem<ResonatingPatternD
         // 只处理主手
         if (context.getHand() != InteractionHand.MAIN_HAND) return InteractionResult.PASS;
 
-        var encoded = stack.get(AECSDataComponents.ENCODED_RESONATING_PATTERN.get());
+        EncodedResonatingPattern encoded = AECSDataComponents.getEncodedResonatingPattern(stack);
         if (encoded == null) return InteractionResult.PASS;
 
         // 现在“Shift”留给滚轮切换：Shift+右键方块不做标记，直接放行
@@ -105,7 +106,7 @@ public class ResonatingPatternItem extends EncodedPatternItem<ResonatingPatternD
         }
 
         var updated = encoded.withTarget(selected, nextTarget);
-        stack.set(AECSDataComponents.ENCODED_RESONATING_PATTERN.get(), updated);
+        AECSDataComponents.setEncodedResonatingPattern(stack, updated);
 
         player.displayClientMessage(
                 nextTarget == null
@@ -124,6 +125,32 @@ public class ResonatingPatternItem extends EncodedPatternItem<ResonatingPatternD
         return InteractionResult.CONSUME;
     }
 
+    @Override
+    public @Nullable IPatternDetails decode(ItemStack itemStack, Level level, boolean tryRecovery)
+    {
+        return decode(AEItemKey.of(itemStack), level);
+    }
+
+    @Override
+    public @Nullable IPatternDetails decode(AEItemKey what, Level level)
+    {
+        if (what != null && what.hasTag())
+        {
+            try
+            {
+                return new ResonatingPatternDetails(what);
+            }
+            catch (Exception e)
+            {
+                return null; // 静默处理错误
+            }
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     /**
      * 右键空气：
      * - 仅在无编码时允许拆解
@@ -133,7 +160,7 @@ public class ResonatingPatternItem extends EncodedPatternItem<ResonatingPatternD
     {
         ItemStack stack = player.getItemInHand(hand);
 
-        var encoded = stack.get(AECSDataComponents.ENCODED_RESONATING_PATTERN.get());
+        var encoded = AECSDataComponents.getEncodedResonatingPattern(stack);
         if (encoded == null) // 无编码仍然允许直接拆解
         {
             return super.use(level, player, hand);
@@ -193,7 +220,7 @@ public class ResonatingPatternItem extends EncodedPatternItem<ResonatingPatternD
             return;
         }
 
-        stack.set(AECSDataComponents.RESONATING_PATTERN_SELECTED_INPUT.get(), nextIdx);
+        AECSDataComponents.setResonatingPatternSelectedInput(stack, nextIdx);
 
         int ord = ordinalOfNonEmptyInput(encoded, nextIdx);
         var selectedInfo = buildSelectedInputInfo(encoded, nextIdx);
@@ -300,7 +327,7 @@ public class ResonatingPatternItem extends EncodedPatternItem<ResonatingPatternD
         int n = encoded.sparseInputs().size();
         if (n <= 0) return -1;
 
-        int sel = stack.getOrDefault(AECSDataComponents.RESONATING_PATTERN_SELECTED_INPUT.get(), 0);
+        int sel = AECSDataComponents.getResonatingPatternSelectedInput(stack, 0);
         sel = ResonatingPatternDetails.clampSelected(sel, n);
 
         if (isNonEmptySparseInput(encoded, sel))
@@ -311,7 +338,7 @@ public class ResonatingPatternItem extends EncodedPatternItem<ResonatingPatternD
         int next = findNextNonEmptyInput(encoded, sel - 1);
         if (next >= 0)
         {
-            stack.set(AECSDataComponents.RESONATING_PATTERN_SELECTED_INPUT.get(), next);
+            AECSDataComponents.setResonatingPatternSelectedInput(stack, next);
         }
         return next;
     }

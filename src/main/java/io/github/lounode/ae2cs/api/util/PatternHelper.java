@@ -1,7 +1,12 @@
 package io.github.lounode.ae2cs.api.util;
 
+import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
+import appeng.core.definitions.AEItems;
+import appeng.crafting.pattern.AEProcessingPattern;
+import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -39,5 +44,28 @@ public class PatternHelper
             out.add(new GenericStack(entry.getKey(), entry.getValue()));
         }
         return out;
+    }
+
+    /**
+     * 从itemStack中解析处理样板的信息
+     */
+    public static @Nullable AEProcessingPattern getAEProcessingPattern(ItemStack stack)
+    {
+        if (stack.getItem() != AEItems.PROCESSING_PATTERN.asItem()) return null;
+
+        AEItemKey patternKey = AEItemKey.of(stack);
+
+        if (patternKey != null && patternKey.hasTag())
+        {
+            try
+            {
+                return new AEProcessingPattern(patternKey);
+            }
+            catch (Exception var4)
+            {
+                return null;
+            }
+        }
+        return null;
     }
 }

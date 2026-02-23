@@ -1,7 +1,6 @@
 package io.github.lounode.ae2cs.common.init;
 
 import com.mojang.serialization.Codec;
-import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.linker.broadcast.MemoryCardBandInfo;
 import io.github.lounode.ae2cs.api.networking.SideConfigField;
 import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern;
@@ -16,8 +15,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.UnaryOperator;
-
 public class AECSDataComponents
 {
     public static final String TAG_GROW_PROCESS = "grow_process";
@@ -26,25 +23,10 @@ public class AECSDataComponents
     public static final String TAG_ENDER_EMITTER_DIMENSION = "dimension";
     public static final String TAG_ENDER_EMITTER_POS_VALUE = "pos";
 
+    public static final String TAG_ENCODED_RESONATING_PATTERN = "encoded_resonating_pattern";
+    public static final String TAG_RESONATING_PATTERN_SELECTED_INPUT = "resonating_pattern_selected_input";
+
     public static final String TAG_RESONATING_CONVERTER_INV = "resonating_converter_inv";
-
-    public static final DeferredRegister<DataComponentType<?>> DATA_COMPONENTS =
-            DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, AECSConstants.MODID);
-
-    private static <T> DeferredHolder<DataComponentType<?>, DataComponentType<T>> register(
-            String name, UnaryOperator<DataComponentType.Builder<T>> builder
-    )
-    {
-        return DATA_COMPONENTS.register(name, () -> builder.apply(DataComponentType.builder()).build());
-    }
-
-    // 生长进度
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> GROW_PROCESS =
-            register("grow_process", b -> b
-                    .persistent(Codec.INT)
-                    .networkSynchronized(ByteBufCodecs.VAR_INT)
-                    .cacheEncoding()
-            );
 
     // 频段名称-给内存卡记录用
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<MemoryCardBandInfo>> MEMORY_CARD_BAND_INFO =
@@ -71,26 +53,6 @@ public class AECSDataComponents
             );
 
     /**
-     * 用于存储谐振样板信息
-     */
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<EncodedResonatingPattern>> ENCODED_RESONATING_PATTERN =
-            register("encoded_resonating_pattern", b -> b
-                    .persistent(EncodedResonatingPattern.CODEC)
-                    .networkSynchronized(EncodedResonatingPattern.STREAM_CODEC)
-                    .cacheEncoding()
-            );
-
-    /**
-     * 用于记录当前谐振样板的目标资源索引
-     */
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> RESONATING_PATTERN_SELECTED_INPUT =
-            register("resonating_pattern_selected_input", b -> b
-                    .persistent(Codec.INT)
-                    .networkSynchronized(ByteBufCodecs.VAR_INT)
-                    .cacheEncoding()
-            );
-
-    /**
      * 给内存卡记录当前机器面配置
      */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<SideConfigField>> SIDE_CONFIG_FOR_MEMORY_CARD =
@@ -99,21 +61,6 @@ public class AECSDataComponents
                     .networkSynchronized(SideConfigField.STREAM_CODEC)
                     .cacheEncoding()
             );
-
-    /**
-     * 谐振样板转换器用->用于存放样板物品
-     */
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ItemContainerContents>> RESONATING_CONVERTER_INV =
-            register("resonating_converter_inv", b -> b
-                    .persistent(ItemContainerContents.CODEC)
-                    .networkSynchronized(ItemContainerContents.STREAM_CODEC)
-                    .cacheEncoding());
-
-
-    public static void register(IEventBus eventBus)
-    {
-        DATA_COMPONENTS.register(eventBus);
-    }
 
     public static void setEnderEmitterPos(ItemStack stack, GlobalPos pos)
     {
@@ -147,5 +94,35 @@ public class AECSDataComponents
         BlockPos blockPos = NbtUtils.readBlockPos(posTag.getCompound(TAG_ENDER_EMITTER_POS_VALUE));
         ResourceKey<Level> dimensionKey = ResourceKey.create(Registries.DIMENSION, dimensionId);
         return GlobalPos.of(dimensionKey, blockPos);
+    }
+
+    public static void setEncodedResonatingPattern(ItemStack stack, EncodedResonatingPattern pattern)
+    {
+        stack.getOrCreateTag().put(TAG_ENCODED_RESONATING_PATTERN, EncodedResonatingPattern.writeToNBT(pattern));
+    }
+
+    public static @Nullable EncodedResonatingPattern getEncodedResonatingPattern(ItemStack stack)
+    {
+        CompoundTag root = stack.getTag();
+        if (root == null || !root.contains(TAG_ENCODED_RESONATING_PATTERN, 10))
+        {
+            return null;
+        }
+        return EncodedResonatingPattern.readFromNBT(root.getCompound(TAG_ENCODED_RESONATING_PATTERN));
+    }
+
+    public static void setResonatingPatternSelectedInput(ItemStack stack, int selected)
+    {
+        stack.getOrCreateTag().putInt(TAG_RESONATING_PATTERN_SELECTED_INPUT, selected);
+    }
+
+    public static int getResonatingPatternSelectedInput(ItemStack stack, int fallback)
+    {
+        CompoundTag root = stack.getTag();
+        if (root == null || !root.contains(TAG_RESONATING_PATTERN_SELECTED_INPUT, 3))
+        {
+            return fallback;
+        }
+        return root.getInt(TAG_RESONATING_PATTERN_SELECTED_INPUT);
     }
 }
