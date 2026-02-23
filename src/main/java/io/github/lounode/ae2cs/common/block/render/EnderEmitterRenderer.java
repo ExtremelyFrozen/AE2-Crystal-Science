@@ -23,7 +23,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
@@ -32,7 +32,7 @@ import java.util.List;
 public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlockEntity>
 {
     private static final ResourceLocation WHITE_TEX =
-            ResourceLocation.fromNamespaceAndPath("minecraft", "textures/misc/white.png");
+            ResourceLocation.tryBuild("minecraft", "textures/misc/white.png");
 
     // 相机离 emitter 多近时显示
     private static final double SHOW_RANGE = 96.0;
@@ -311,12 +311,13 @@ public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlo
                                   int packedLight, int packedOverlay,
                                   float nx, float ny, float nz)
     {
-        vc.addVertex(pose, p.x(), p.y(), p.z())
-                .setColor(r, g, b, a)
-                .setUv(u, v)
-                .setOverlay(packedOverlay)
-                .setLight(packedLight)
-                .setNormal(pose, nx, ny, nz);
+        vc.vertex(pose.pose(), p.x(), p.y(), p.z())
+                .color(r, g, b, a)
+                .uv(u, v)
+                .overlayCoords(packedOverlay)
+                .uv2(packedLight)
+                .normal(pose.normal(), nx, ny, nz)
+                .endVertex();
     }
 
     private static void applyAe2Orientation(BlockState state, PoseStack poseStack)
