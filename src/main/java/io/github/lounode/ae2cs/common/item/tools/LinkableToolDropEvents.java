@@ -4,26 +4,34 @@ import appeng.api.config.Actionable;
 import appeng.api.stacks.AEItemKey;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = AECSConstants.MODID)
 public final class LinkableToolDropEvents
 {
+    private static final Map<UUID, RecentBreak> RECENT_BREAKS = new HashMap<>();
+
     private LinkableToolDropEvents()
+    {
+    }
+
+    private record RecentBreak(ResourceKey<Level> dimension, BlockPos pos, long gameTime, boolean offhand)
     {
     }
 
@@ -48,21 +56,95 @@ public final class LinkableToolDropEvents
         tryInsertDrops(player, tool, event.getDrops().iterator());
     }
 
+    // 1.20.1没有BlockDropsEvent，只能取巧
     /**
-     * 破坏方块收集
+     * 确认破坏的方块
      */
     @SubscribeEvent
-    public static void onBlockDrops(BlockDropsEvent event)
+    public static void onBlockBreak(BlockEvent.BreakEvent event)
     {
         if (event.getLevel().isClientSide()) return;
 
-        Entity breaker = event.getBreaker();
-        if (!(breaker instanceof Player player)) return;
+        Player player = event.getPlayer();
+        if (player == null) return;
 
-        ItemStack tool = event.getTool();
-        if (!(ToolLinkableHandler.INSTANCE.canLink(tool))) return;
+        ItemStack tool = player.getMainHandItem();
+        boolean offhand = false;
+        if (!(ToolLinkableHandler.INSTANCE.canLink(tool)))
+        {
+            tool = player.getOffhandItem();
+            offhand = true;
+            if (!(ToolLinkableHandler.INSTANCE.canLink(tool))) return;
+        }
 
-        tryInsertDrops(player, tool, event.getDrops().iterator());
+        var level = player.level();
+
+        RECENT_BREAKS.put(
+                player.getUUID(),
+                new RecentBreak(
+                        level.dimension(),
+                        event.getPos().immutable(),
+                        level.getGameTime(),
+                        offhand
+                )
+        );
+    }
+
+    /**
+     * 收集来自被破坏方块的掉落物
+     */
+    @SubscribeEvent
+    public static void onItemSpawn(EntityJoinLevelEvent event)
+    {
+        if (event.getLevel().isClientSide()) return;
+        if (!(event.getEntity() instanceof ItemEntity itemEntity)) return;
+
+        var level = event.getLevel();
+        long now = level.getGameTime();
+        ResourceKey<Level> dim = level.dimension();
+
+        // 清理超时未收集的掉落物
+        RECENT_BREAKS.entrySet().removeIf(e -> now - e.getValue().gameTime() > 2);
+
+        for (var entry : RECENT_BREAKS.entrySet())
+        {
+            RecentBreak ctx = entry.getValue();
+            if (!ctx.dimension().equals(dim)) continue;
+            if (now - ctx.gameTime() > 2) continue;
+            if (itemEntity.blockPosition().distSqr(ctx.pos()) > 9) continue;
+
+            if (level.getServer() == null) continue;
+            ServerPlayer player = level.getServer().getPlayerList().getPlayer(entry.getKey());
+            if (player == null || player.level() != level) continue;
+
+            ItemStack tool = ctx.offhand() ? player.getOffhandItem() : player.getMainHandItem();
+            if (!ToolLinkableHandler.INSTANCE.canLink(tool)) continue;
+
+            ItemStack stack = itemEntity.getItem();
+            if (stack.isEmpty()) continue;
+
+            long amount = stack.getCount();
+            if (amount <= 0) continue;
+
+            AEItemKey key = AEItemKey.of(stack);
+            if (key == null) continue;
+
+            long inserted = ToolLinkableHandler.insert(player, tool, key, amount, Actionable.MODULATE);
+            if (inserted <= 0) continue;
+
+            long remaining = amount - inserted;
+            if (remaining <= 0)
+            {
+                event.setCanceled(true);
+                itemEntity.discard();
+            }
+            else
+            {
+                stack.setCount((int) remaining);
+                itemEntity.setItem(stack);
+            }
+            return;
+        }
     }
 
     /**
@@ -103,4 +185,5 @@ public final class LinkableToolDropEvents
             }
         }
     }
+
 }

@@ -9,6 +9,8 @@ import appeng.me.helpers.PlayerSource;
 import appeng.util.Platform;
 import io.github.lounode.ae2cs.common.init.AECSEnchantments;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -36,21 +38,37 @@ public class ToolLinkableHandler implements IGridLinkableHandler
     @Override
     public void link(ItemStack itemStack, GlobalPos pos)
     {
-        itemStack.set(AEComponents.WIRELESS_LINK_TARGET, pos);
+        GlobalPos.CODEC.encodeStart(NbtOps.INSTANCE, pos)
+                .result()
+                .ifPresent(tag -> itemStack.getOrCreateTag().put("accessPoint", tag));
     }
 
     @Override
     public void unlink(ItemStack itemStack)
     {
-        itemStack.remove(AEComponents.WIRELESS_LINK_TARGET);
+        itemStack.removeTagKey("accessPoint");
+    }
+
+    @Nullable
+    public static GlobalPos readLinkedTarget(ItemStack stack)
+    {
+        var tag = stack.getTag();
+        if (tag == null) return null;
+
+        Tag accessPointTag = tag.get("accessPoint");
+        if (accessPointTag == null) return null;
+
+        return GlobalPos.CODEC.parse(NbtOps.INSTANCE, accessPointTag)
+                .result()
+                .orElse(null);
     }
 
     @Nullable
     public static MEStorage getLinkMEStorage(ItemStack stack, Player player)
     {
-        if (!(ToolLinkableHandler.INSTANCE.canLink(stack))) return null;
+        if (!ToolLinkableHandler.INSTANCE.canLink(stack)) return null;
 
-        var targetPos = stack.get(AEComponents.WIRELESS_LINK_TARGET);
+        var targetPos = readLinkedTarget(stack);
         if (targetPos == null) return null;
 
         if (!(player.level() instanceof ServerLevel playerLevel)) return null;

@@ -22,7 +22,7 @@ public final class IntrinsicEnchantment
 
     public void appendHoverText(List<Component> tooltipComponents)
     {
-        tooltipComponents.add(GuiText.IntrinsicEnchant.text(enchantment.getFullname(level)))
+        tooltipComponents.add(GuiText.IntrinsicEnchant.text(enchantment.getFullname(level)));
     }
 
     public int getLevel(Enchantment enchantment)
