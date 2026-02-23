@@ -1,11 +1,12 @@
 package io.github.lounode.ae2cs.common.me.part;
 
-import appeng.api.AECapabilities;
+import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
-import appeng.api.parts.RegisterPartCapabilitiesEvent;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.storage.MEStorage;
+import appeng.capabilities.Capabilities;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.menu.locator.MenuLocators;
@@ -17,13 +18,15 @@ import io.github.lounode.ae2cs.common.init.AECSParts;
 import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceHost;
 import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceLogic;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
@@ -65,21 +68,22 @@ public class IntegratedInterfacePart extends AEBasePart implements IntegratedInt
         super(partItem);
     }
 
-    /**
-     * 注册能力
-     */
-    public static void onRegisterCaps(RegisterPartCapabilitiesEvent event)
+    @Override
+    public @NotNull <T> LazyOptional<T> getCapability(Capability<T> capabilityClass)
     {
-        event.register(
-                AECapabilities.GENERIC_INTERNAL_INV,
-                (part, direction) -> part.getLogic().getStorageInv(),
-                IntegratedInterfacePart.class
-        );
-        event.register(
-                AECapabilities.ME_STORAGE,
-                (part, direction) -> part.getLogic().getExposedMEStorage(direction),
-                IntegratedInterfacePart.class
-        );
+        if (capabilityClass == Capabilities.GENERIC_INTERNAL_INV)
+        {
+            GenericInternalInventory inv = getLogic().getStorageInv();
+            return inv == null ? LazyOptional.empty() : LazyOptional.of(() -> inv).cast();
+        }
+
+        if (capabilityClass == Capabilities.STORAGE)
+        {
+            MEStorage storage = getLogic().getExposedMEStorage(getSide());
+            return storage == null ? LazyOptional.empty() : LazyOptional.of(() -> storage).cast();
+        }
+
+        return super.getCapability(capabilityClass);
     }
 
 
@@ -108,7 +112,7 @@ public class IntegratedInterfacePart extends AEBasePart implements IntegratedInt
     }
 
     @Override
-    public boolean onUseWithoutItem(Player player, Vec3 pos)
+    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos)
     {
         if (!player.getCommandSenderWorld().isClientSide())
         {
@@ -173,7 +177,7 @@ public class IntegratedInterfacePart extends AEBasePart implements IntegratedInt
     }
 
     @Override
-    public void importSettings(SettingsFrom mode, DataComponentMap input, @Nullable Player player)
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player)
     {
         super.importSettings(mode, input, player);
         if (mode == SettingsFrom.MEMORY_CARD)
@@ -183,7 +187,7 @@ public class IntegratedInterfacePart extends AEBasePart implements IntegratedInt
     }
 
     @Override
-    public void exportSettings(SettingsFrom mode, DataComponentMap.Builder builder)
+    public void exportSettings(SettingsFrom mode, CompoundTag builder)
     {
         super.exportSettings(mode, builder);
         if (mode == SettingsFrom.MEMORY_CARD)
@@ -193,16 +197,16 @@ public class IntegratedInterfacePart extends AEBasePart implements IntegratedInt
     }
 
     @Override
-    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries)
+    public void writeToNBT(CompoundTag data)
     {
-        super.writeToNBT(data, registries);
+        super.writeToNBT(data);
         data.putInt("priority", this.priority);
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries)
+    public void readFromNBT(CompoundTag data)
     {
-        super.readFromNBT(data, registries);
+        super.readFromNBT(data);
         this.priority = data.getInt("priority");
     }
 

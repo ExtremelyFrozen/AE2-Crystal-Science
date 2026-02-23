@@ -1,15 +1,16 @@
 package io.github.lounode.ae2cs.common.me.part;
 
-import appeng.api.AECapabilities;
+import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
-import appeng.api.parts.RegisterPartCapabilitiesEvent;
+import appeng.api.storage.MEStorage;
+import appeng.capabilities.Capabilities;
 import appeng.core.AppEng;
 import appeng.helpers.InterfaceLogic;
 import appeng.items.parts.PartModels;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
-import appeng.menu.locator.MenuHostLocator;
+import appeng.menu.locator.MenuLocator;
 import appeng.parts.PartModel;
 import appeng.parts.misc.InterfacePart;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -21,13 +22,16 @@ import io.github.lounode.ae2cs.common.me.logic.EnderInterfaceLogic;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.NotNull;
 
 public class EnderInterfacePart extends InterfacePart implements EnderInterfaceHost
 {
@@ -67,21 +71,22 @@ public class EnderInterfacePart extends InterfacePart implements EnderInterfaceH
         super(partItem);
     }
 
-    /**
-     * 注册能力
-     */
-    public static void onRegisterCaps(RegisterPartCapabilitiesEvent event)
+    @Override
+    public @NotNull <T> LazyOptional<T> getCapability(Capability<T> capabilityClass)
     {
-        event.register(
-                AECapabilities.GENERIC_INTERNAL_INV,
-                (part, direction) -> part.getInterfaceLogic().getStorage(),
-                EnderInterfacePart.class
-        );
-        event.register(
-                AECapabilities.ME_STORAGE,
-                (part, direction) -> part.getInterfaceLogic().getInventory(),
-                EnderInterfacePart.class
-        );
+        if (capabilityClass == Capabilities.GENERIC_INTERNAL_INV)
+        {
+            GenericInternalInventory inv = getInterfaceLogic().getStorage();
+            return inv == null ? LazyOptional.empty() : LazyOptional.of(() -> inv).cast();
+        }
+
+        if (capabilityClass == Capabilities.STORAGE)
+        {
+            MEStorage storage = getInterfaceLogic().getInventory();
+            return storage == null ? LazyOptional.empty() : LazyOptional.of(() -> storage).cast();
+        }
+
+        return super.getCapability(capabilityClass);
     }
 
     @Override
@@ -116,7 +121,7 @@ public class EnderInterfacePart extends InterfacePart implements EnderInterfaceH
     }
 
     @Override
-    public void openMenu(Player player, MenuHostLocator locator)
+    public void openMenu(Player player, MenuLocator locator)
     {
         MenuOpener.open(AECSMenus.ENDER_INTERFACE_MENU.get(), player, locator);
     }
@@ -140,7 +145,7 @@ public class EnderInterfacePart extends InterfacePart implements EnderInterfaceH
     }
 
     @Override
-    public void writeToStream(RegistryFriendlyByteBuf data)
+    public void writeToStream(FriendlyByteBuf data)
     {
         super.writeToStream(data);
         data.writeBoolean(this.getEnderInterfaceLogic().isRenderRangeInClient());
@@ -148,7 +153,7 @@ public class EnderInterfacePart extends InterfacePart implements EnderInterfaceH
     }
 
     @Override
-    public boolean readFromStream(RegistryFriendlyByteBuf data)
+    public boolean readFromStream(FriendlyByteBuf data)
     {
         super.readFromStream(data);
         this.getEnderInterfaceLogic().setRenderRangeInClient(data.readBoolean());

@@ -17,10 +17,10 @@ import io.github.lounode.ae2cs.common.me.logic.QuartzOscillatorClockHost;
 import io.github.lounode.ae2cs.common.me.logic.QuartzOscillatorClockLogic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -88,7 +88,7 @@ public class QuartzOscillatorClockPart extends AEBasePart implements QuartzOscil
     }
 
     @Override
-    public boolean onUseWithoutItem(Player player, Vec3 pos)
+    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos)
     {
         if (!player.getCommandSenderWorld().isClientSide())
         {
@@ -204,14 +204,14 @@ public class QuartzOscillatorClockPart extends AEBasePart implements QuartzOscil
     }
 
     @Override
-    public void writeToStream(RegistryFriendlyByteBuf data)
+    public void writeToStream(FriendlyByteBuf data)
     {
         super.writeToStream(data);
         data.writeBoolean(this.pulseActive);
     }
 
     @Override
-    public boolean readFromStream(RegistryFriendlyByteBuf data)
+    public boolean readFromStream(FriendlyByteBuf data)
     {
         boolean redraw = super.readFromStream(data);
 
@@ -226,17 +226,17 @@ public class QuartzOscillatorClockPart extends AEBasePart implements QuartzOscil
     }
 
     @Override
-    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries)
+    public void writeToNBT(CompoundTag data)
     {
-        super.writeToNBT(data, registries);
-        this.logic.writeToNBT(data, registries);
+        super.writeToNBT(data);
+        this.logic.writeToNBT(data);
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries)
+    public void readFromNBT(CompoundTag data)
     {
-        super.readFromNBT(data, registries);
-        this.logic.readFromNBT(data, registries);
+        super.readFromNBT(data);
+        this.logic.readFromNBT(data);
         this.pulseActive = false;
     }
 

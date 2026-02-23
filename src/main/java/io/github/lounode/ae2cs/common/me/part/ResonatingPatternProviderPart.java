@@ -1,16 +1,16 @@
 package io.github.lounode.ae2cs.common.me.part;
 
-import appeng.api.AECapabilities;
+import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
-import appeng.api.parts.RegisterPartCapabilitiesEvent;
 import appeng.api.stacks.AEItemKey;
+import appeng.capabilities.Capabilities;
 import appeng.core.AppEng;
 import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.items.parts.PartModels;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
-import appeng.menu.locator.MenuHostLocator;
+import appeng.menu.locator.MenuLocator;
 import appeng.parts.PartModel;
 import appeng.parts.crafting.PatternProviderPart;
 import io.github.lounode.ae2cs.AE2CrystalScience;
@@ -21,6 +21,9 @@ import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderLogic;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.NotNull;
 
 public class ResonatingPatternProviderPart extends PatternProviderPart implements ResonatingPatternProviderHost
 {
@@ -59,16 +62,16 @@ public class ResonatingPatternProviderPart extends PatternProviderPart implement
         super(partItem);
     }
 
-    /**
-     * 注册能力
-     */
-    public static void onRegisterCaps(RegisterPartCapabilitiesEvent event)
+    @Override
+    public @NotNull <T> LazyOptional<T> getCapability(Capability<T> capabilityClass)
     {
-        event.register(
-                AECapabilities.GENERIC_INTERNAL_INV,
-                (part, direction) -> part.getLogic().getReturnInv(),
-                ResonatingPatternProviderPart.class
-        );
+        if (capabilityClass == Capabilities.GENERIC_INTERNAL_INV)
+        {
+            GenericInternalInventory inv = getLogic().getReturnInv();
+            return inv == null ? LazyOptional.empty() : LazyOptional.of(() -> inv).cast();
+        }
+
+        return super.getCapability(capabilityClass);
     }
 
     @Override
@@ -102,7 +105,7 @@ public class ResonatingPatternProviderPart extends PatternProviderPart implement
     }
 
     @Override
-    public void openMenu(Player player, MenuHostLocator locator)
+    public void openMenu(Player player, MenuLocator locator)
     {
         MenuOpener.open(AECSMenus.RESONATING_PATTERN_PROVIDER_MENU.get(), player, locator);
     }
