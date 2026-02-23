@@ -36,13 +36,13 @@ public class EnderLinkerItem extends Item
 
         if (player.isShiftKeyDown() && level.getBlockEntity(context.getClickedPos()) instanceof EnderEmitterBlockEntity)
         {
-            stack.set(AECSDataComponents.ENDER_EMITTER_POS, GlobalPos.of(level.dimension(), context.getClickedPos()));
+            AECSDataComponents.setEnderEmitterPos(stack, GlobalPos.of(level.dimension(), context.getClickedPos()));
             player.displayClientMessage(Component.translatable("ae2cs.msg.item.ender_linker.bing_to_emitter"), true);
         }
         else if (!player.isShiftKeyDown() &&
                 GridHelper.getNodeHost(level, context.getClickedPos()) != null)
         {
-            GlobalPos linkerPos = stack.get(AECSDataComponents.ENDER_EMITTER_POS);
+            GlobalPos linkerPos = AECSDataComponents.getEnderEmitterPos(stack);
             if (linkerPos == null || !linkerPos.dimension().equals(level.dimension()))
                 return InteractionResult.SUCCESS;
 

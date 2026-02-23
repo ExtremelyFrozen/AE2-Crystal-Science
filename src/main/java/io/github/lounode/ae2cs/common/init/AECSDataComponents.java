@@ -5,14 +5,26 @@ import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.linker.broadcast.MemoryCardBandInfo;
 import io.github.lounode.ae2cs.api.networking.SideConfigField;
 import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.UnaryOperator;
 
 public class AECSDataComponents
 {
     public static final String TAG_GROW_PROCESS = "grow_process";
+
+    public static final String TAG_ENDER_EMITTER_POS = "ender_emitter_pos";
+    public static final String TAG_ENDER_EMITTER_DIMENSION = "dimension";
+    public static final String TAG_ENDER_EMITTER_POS_VALUE = "pos";
 
     public static final DeferredRegister<DataComponentType<?>> DATA_COMPONENTS =
             DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, AECSConstants.MODID);
@@ -99,5 +111,39 @@ public class AECSDataComponents
     public static void register(IEventBus eventBus)
     {
         DATA_COMPONENTS.register(eventBus);
+    }
+
+    public static void setEnderEmitterPos(ItemStack stack, GlobalPos pos)
+    {
+        CompoundTag root = stack.getOrCreateTag();
+        CompoundTag posTag = new CompoundTag();
+        posTag.putString(TAG_ENDER_EMITTER_DIMENSION, pos.dimension().location().toString());
+        posTag.put(TAG_ENDER_EMITTER_POS_VALUE, NbtUtils.writeBlockPos(pos.pos()));
+        root.put(TAG_ENDER_EMITTER_POS, posTag);
+    }
+
+    public static @Nullable GlobalPos getEnderEmitterPos(ItemStack stack)
+    {
+        CompoundTag root = stack.getTag();
+        if (root == null || !root.contains(TAG_ENDER_EMITTER_POS, 10))
+        {
+            return null;
+        }
+
+        CompoundTag posTag = root.getCompound(TAG_ENDER_EMITTER_POS);
+        if (!posTag.contains(TAG_ENDER_EMITTER_DIMENSION, 8) || !posTag.contains(TAG_ENDER_EMITTER_POS_VALUE, 10))
+        {
+            return null;
+        }
+
+        ResourceLocation dimensionId = ResourceLocation.tryParse(posTag.getString(TAG_ENDER_EMITTER_DIMENSION));
+        if (dimensionId == null)
+        {
+            return null;
+        }
+
+        BlockPos blockPos = NbtUtils.readBlockPos(posTag.getCompound(TAG_ENDER_EMITTER_POS_VALUE));
+        ResourceKey<Level> dimensionKey = ResourceKey.create(Registries.DIMENSION, dimensionId);
+        return GlobalPos.of(dimensionKey, blockPos);
     }
 }
