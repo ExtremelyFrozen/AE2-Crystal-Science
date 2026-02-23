@@ -8,6 +8,7 @@ import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSRecipeSerializers;
 import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern;
+import io.github.lounode.ae2cs.common.me.crafting.ResonatingPatternDetails;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -77,23 +78,7 @@ public class ResonatingPatternUpgradeRecipe extends CustomRecipe
 
         if (processingPattern.isEmpty()) return ItemStack.EMPTY;
 
-        EncodedProcessingPattern src = processingPattern.get(AEComponents.ENCODED_PROCESSING_PATTERN);
-        if (src == null) return ItemStack.EMPTY;
-
-        ItemStack out = AECSItems.RESONATING_PATTERN.get().getDefaultInstance();
-
-        // targets 与 sparseInputs 同长度，默认全 empty
-        List<Optional<EncodedResonatingPattern.Target>> targets = new ArrayList<>(src.sparseInputs().size());
-        for (int i = 0; i < src.sparseInputs().size(); i++)
-        {
-            targets.add(Optional.empty());
-        }
-
-        out.set(AECSDataComponents.ENCODED_RESONATING_PATTERN.get(),
-                new EncodedResonatingPattern(src.sparseInputs(), src.sparseOutputs(), targets));
-        out.set(AECSDataComponents.RESONATING_PATTERN_SELECTED_INPUT.get(), 0);
-
-        return out;
+        return ResonatingPatternDetails.encode(processingPattern);
     }
 
     @Override
