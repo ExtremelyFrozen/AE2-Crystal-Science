@@ -1,7 +1,6 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
 import appeng.api.behaviors.GenericInternalInventory;
-import appeng.api.ids.AEComponents;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.orientation.BlockOrientation;
 import appeng.api.stacks.AEItemKey;
@@ -17,7 +16,6 @@ import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceHost;
 import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceLogic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -179,40 +177,36 @@ public class IntegratedInterfaceBlockEntity extends AENetworkBlockEntity impleme
     }
 
     @Override
-    public void exportSettings(SettingsFrom mode, DataComponentMap.Builder builder,
-                               @Nullable Player player)
+    public void exportSettings(SettingsFrom mode, CompoundTag builder, @Nullable Player player)
     {
         super.exportSettings(mode, builder, player);
 
         if (mode == SettingsFrom.MEMORY_CARD)
         {
-            logic.exportSettings(builder);
-
-            var pushDirection = getPushDirection();
-            builder.set(AEComponents.EXPORTED_PUSH_DIRECTION, pushDirection);
+            this.logic.exportSettings(builder);
+            PushDirection pushDirection = this.getPushDirection();
+            builder.putByte("push_direction", (byte) pushDirection.ordinal());
         }
     }
 
     @Override
-    public void importSettings(SettingsFrom mode, DataComponentMap input,
-                               @Nullable Player player)
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player)
     {
         super.importSettings(mode, input, player);
 
         if (mode == SettingsFrom.MEMORY_CARD)
         {
-            logic.importSettings(input, player);
-
-            // 恢复目标面
-            PushDirection pushDirection = input.get(AEComponents.EXPORTED_PUSH_DIRECTION);
-            if (pushDirection != null)
+            this.logic.importSettings(input, player);
+            if (input.contains(PatternProviderBlock.PUSH_DIRECTION.getName(), 1))
             {
-                var level = getLevel();
-                if (level != null)
+                byte pushDirection = input.getByte(PatternProviderBlock.PUSH_DIRECTION.getName());
+                if (pushDirection >= 0 && pushDirection < PushDirection.values().length)
                 {
-                    level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(
-                            PatternProviderBlock.PUSH_DIRECTION,
-                            pushDirection));
+                    Level level = this.getLevel();
+                    if (level != null)
+                    {
+                        level.setBlockAndUpdate(this.getBlockPos(), this.getBlockState().setValue(PatternProviderBlock.PUSH_DIRECTION, PushDirection.values()[pushDirection]));
+                    }
                 }
             }
         }

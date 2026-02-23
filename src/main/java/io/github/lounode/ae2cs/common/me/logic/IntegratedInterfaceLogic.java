@@ -3,7 +3,6 @@ package io.github.lounode.ae2cs.common.me.logic;
 import appeng.api.config.*;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.PatternDetailsHelper;
-import appeng.api.ids.AEComponents;
 import appeng.api.implementations.blockentities.ICraftingMachine;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
@@ -44,20 +43,18 @@ import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeableObject,
         ICraftingProvider, ICraftingRequester
@@ -1255,63 +1252,44 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         }
     }
 
-    public void exportSettings(DataComponentMap.Builder builder)
+    public void exportSettings(CompoundTag builder)
     {
-        builder.set(AEComponents.EXPORTED_PATTERNS, patternInventory.toItemContainerContents());
+        this.patternInventory.writeToNBT(builder, "patterns");
     }
 
-    public void importSettings(DataComponentMap input, @Nullable Player player)
+    public void importSettings(CompoundTag input, @Nullable Player player)
     {
-        ItemContainerContents patterns = input.getOrDefault(AEComponents.EXPORTED_PATTERNS, ItemContainerContents.EMPTY);
-
-        if (player != null && !player.level().isClientSide)
+        if (player != null && input.contains("patterns") && !player.level().isClientSide)
         {
-            clearPatternInventory(player);
-
-            AppEngInternalInventory desiredPatterns = new AppEngInternalInventory(patternInventory.size());
-            desiredPatterns.fromItemContainerContents(patterns);
-
-            // 从玩家背包将空白样板恢复出来
+            this.clearPatternInventory(player);
+            AppEngInternalInventory desiredPatterns = new AppEngInternalInventory(this.patternInventory.size());
+            desiredPatterns.readFromNBT(input, "patterns");
             Inventory playerInv = player.getInventory();
-            int blankPatternsAvailable = player.getAbilities().instabuild ? Integer.MAX_VALUE
-                    : playerInv.countItem(AEItems.BLANK_PATTERN.asItem());
+            int blankPatternsAvailable = player.getAbilities().instabuild ? Integer.MAX_VALUE : playerInv.countItem(AEItems.BLANK_PATTERN.asItem());
             int blankPatternsUsed = 0;
-            for (int i = 0; i < desiredPatterns.size(); i++)
+
+            for (int i = 0; i < desiredPatterns.size(); ++i)
             {
-                if (desiredPatterns.getStackInSlot(i).isEmpty())
+                IPatternDetails pattern = PatternDetailsHelper.decodePattern(desiredPatterns.getStackInSlot(i), this.host.getBlockEntity().getLevel(), true);
+                if (pattern != null)
                 {
-                    continue;
-                }
-
-                IPatternDetails pattern = PatternDetailsHelper.decodePattern(desiredPatterns.getStackInSlot(i),
-                        host.getBlockEntity().getLevel());
-                if (pattern == null)
-                {
-                    continue;
-                }
-
-                ++blankPatternsUsed;
-                if (blankPatternsAvailable >= blankPatternsUsed)
-                {
-                    if (!patternInventory.addItems(pattern.getDefinition().toStack()).isEmpty())
+                    ++blankPatternsUsed;
+                    if (blankPatternsAvailable >= blankPatternsUsed && !this.patternInventory.addItems(pattern.getDefinition().toStack()).isEmpty())
                     {
-                        AELog.warn("Failed to add pattern to pattern provider");
-                        blankPatternsUsed--;
+                        AELog.warn("Failed to add pattern to pattern provider", new Object[0]);
+                        --blankPatternsUsed;
                     }
                 }
             }
 
             if (blankPatternsUsed > 0 && !player.getAbilities().instabuild)
             {
-                new PlayerInternalInventory(playerInv)
-                        .removeItems(blankPatternsUsed, AEItems.BLANK_PATTERN.stack(), null);
+                (new PlayerInternalInventory(playerInv)).removeItems(blankPatternsUsed, AEItems.BLANK_PATTERN.stack(), (Predicate) null);
             }
 
-            // 如果无法恢复所有样板，则发出警告
             if (blankPatternsUsed > blankPatternsAvailable)
             {
-                player.sendSystemMessage(
-                        PlayerMessages.MissingBlankPatterns.text(blankPatternsUsed - blankPatternsAvailable));
+                player.sendSystemMessage(PlayerMessages.MissingBlankPatterns.text(new Object[]{blankPatternsUsed - blankPatternsAvailable}));
             }
         }
     }
@@ -1365,7 +1343,7 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
                     this.host.getBlockEntity().getBlockPos());
         }
 
-        for(int i = 0; i < this.getStorageInv().size(); i++)
+        for (int i = 0; i < this.getStorageInv().size(); i++)
         {
             GenericStack stack = this.getStorageInv().getStack(i);
 

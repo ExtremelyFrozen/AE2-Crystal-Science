@@ -11,7 +11,6 @@ import io.github.lounode.ae2cs.api.CustomChannelProviderHost;
 import io.github.lounode.ae2cs.api.linker.broadcast.*;
 import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
-import io.github.lounode.ae2cs.common.init.AECSDataComponents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
@@ -621,13 +620,17 @@ public class EnderBroadcasterBlockEntity extends AENetworkedComponentBlockEntity
     // ---------------- 内存卡 ----------------
 
     @Override
-    public void importSettings(SettingsFrom mode, DataComponentMap input, @Nullable Player player)
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player)
     {
         super.importSettings(mode, input, player);
 
         if (mode == SettingsFrom.MEMORY_CARD)
         {
-            MemoryCardBandInfo targetLink = input.get(AECSDataComponents.MEMORY_CARD_BAND_INFO.get());
+            MemoryCardBandInfo targetLink = null;
+            if (input.contains("memory_card_band_info"))
+            {
+                targetLink = MemoryCardBandInfo.readFromNBT(input.getCompound("memory_card_band_info"));
+            }
             if (targetLink == null) return;
 
             BroadcastFrequencyBand band = FrequencyBandManager.getBand(targetLink.bandName());
@@ -636,7 +639,11 @@ public class EnderBroadcasterBlockEntity extends AENetworkedComponentBlockEntity
             this.cleanConnectionPermanent();
             this.connectToBand(targetLink.bandName(), targetLink.asSender());
 
-            Integer expectChannelsPacked = input.get(AECSDataComponents.MEMORY_CARD_BROADCASTER_RECEIVER_EXPECT_CHANNELS.get());
+            Integer expectChannelsPacked = null;
+            if (input.contains("memory_card_broadcaster_receiver_expected_channels"))
+            {
+                expectChannelsPacked = input.getInt("memory_card_broadcaster_receiver_expected_channels");
+            }
             if (expectChannelsPacked != null && !targetLink.asSender())
             {
                 this.setExpectedChannels(expectChannelsPacked);
@@ -645,7 +652,7 @@ public class EnderBroadcasterBlockEntity extends AENetworkedComponentBlockEntity
     }
 
     @Override
-    public void exportSettings(SettingsFrom mode, DataComponentMap.Builder builder, @Nullable Player player)
+    public void exportSettings(SettingsFrom mode, CompoundTag builder, @Nullable Player player)
     {
         super.exportSettings(mode, builder, player);
 
@@ -657,10 +664,10 @@ public class EnderBroadcasterBlockEntity extends AENetworkedComponentBlockEntity
 
             boolean asSender = this.connectionType == ConnectionType.AS_SENDER;
 
-            builder.set(AECSDataComponents.MEMORY_CARD_BAND_INFO, new MemoryCardBandInfo(bandId, asSender));
+            builder.put("memory_card_band_info", MemoryCardBandInfo.writeToNBT(new MemoryCardBandInfo(bandId, asSender)));
             if (!asSender)
             {
-                builder.set(AECSDataComponents.MEMORY_CARD_BROADCASTER_RECEIVER_EXPECT_CHANNELS, this.expectedChannels);
+                builder.putInt("memory_card_broadcaster_receiver_expected_channels", this.expectedChannels);
             }
         }
     }
