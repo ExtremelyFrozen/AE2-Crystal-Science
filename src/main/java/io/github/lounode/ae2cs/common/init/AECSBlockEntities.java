@@ -5,7 +5,6 @@ import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.ClientTickingBlockEntity;
 import appeng.blockentity.ServerTickingBlockEntity;
 import com.google.common.base.Preconditions;
-import io.github.lounode.ae2cs.api.cap.ProvidedCapsHelper;
 import io.github.lounode.ae2cs.api.ids.AECSBlockIds;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.block.entity.*;
@@ -345,21 +344,6 @@ public class AECSBlockEntities
         }
         return result;
     }
-
-    public static List<BlockEntityType<?>> getAnnotatedWith(Class<?> markerClass)
-    {
-        var result = new ArrayList<BlockEntityType<?>>();
-        for (var type : ALL)
-        {
-            Class<?> cls = type.getBlockEntityClass();
-            if (ProvidedCapsHelper.getProvidedClasses(cls).contains(markerClass))
-            {
-                result.add(type.get());
-            }
-        }
-        return result;
-    }
-
 
     /**
      * 包装类型
