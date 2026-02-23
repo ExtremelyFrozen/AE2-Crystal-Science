@@ -530,11 +530,7 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     {
         ArrayList<IGridNode> nodes = new ArrayList<>();
 
-        IInWorldGridNodeHost nodeHost = null;
-        if (level.getBlockEntity(pos) instanceof BlockEntity nodeBE)
-        {
-            nodeHost = nodeBE.getCapability(Capabilities.IN_WORLD_GRID_NODE_HOST).resolve().orElse(null);
-        }
+        IInWorldGridNodeHost nodeHost = GridHelper.getNodeHost(level, pos);
         if (nodeHost == null) return nodes;
 
         // 无线连接拒绝控制器
@@ -615,11 +611,7 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
             if (emitter.level == null) return false;
             IGridNode emitterNode = emitter.getMainNode().getNode();
             if (emitterNode == null || !emitterNode.isActive()) return false;
-            IInWorldGridNodeHost targetNodeHost = null;
-            if (emitter.level.getBlockEntity(pos) instanceof BlockEntity targetNodeBE)
-            {
-                targetNodeHost = targetNodeBE.getCapability(Capabilities.IN_WORLD_GRID_NODE_HOST).resolve().orElse(null);
-            }
+            IInWorldGridNodeHost targetNodeHost = GridHelper.getNodeHost(emitter.level, pos);
             valid = (forceAuto || emitter.isAutoMode())
                     && emitterNode.getUsedChannels() < emitter.getMaxLinkChannels()
                     && (!(targetNodeHost instanceof CableBusBlockEntity) || emitter.allowAutoLinkCableLike())
