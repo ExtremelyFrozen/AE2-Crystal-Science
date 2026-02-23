@@ -1,9 +1,7 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
-import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.stacks.AEItemKey;
 import appeng.blockentity.crafting.PatternProviderBlockEntity;
-import appeng.capabilities.Capabilities;
 import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
@@ -18,14 +16,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ResonatingPatternProviderBlockEntity extends PatternProviderBlockEntity implements ResonatingPatternProviderHost
 {
-    private LazyOptional<GenericInternalInventory> genericInvOpt = LazyOptional.empty();
 
     public ResonatingPatternProviderBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState)
     {
@@ -43,30 +36,6 @@ public class ResonatingPatternProviderBlockEntity extends PatternProviderBlockEn
     public boolean isExtended()
     {
         return getType() == AECSBlockEntities.EX_RESONATING_PATTERN_PROVIDER_BLOCK_ENTITY.get();
-    }
-
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable net.minecraft.core.Direction side)
-    {
-        if (cap == Capabilities.GENERIC_INTERNAL_INV)
-        {
-            if (!genericInvOpt.isPresent())
-            {
-                genericInvOpt = LazyOptional.of(() -> getLogic().getReturnInv());
-            }
-            return genericInvOpt.cast();
-        }
-
-        return super.getCapability(cap, side);
-    }
-
-    @Override
-    public void invalidateCaps()
-    {
-        super.invalidateCaps();
-
-        if (genericInvOpt.isPresent()) genericInvOpt.invalidate();
-        genericInvOpt = LazyOptional.empty();
     }
 
     @Override

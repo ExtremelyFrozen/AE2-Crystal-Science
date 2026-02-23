@@ -1,9 +1,6 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
-import appeng.api.behaviors.GenericInternalInventory;
-import appeng.api.storage.MEStorage;
 import appeng.blockentity.misc.InterfaceBlockEntity;
-import appeng.capabilities.Capabilities;
 import appeng.helpers.InterfaceLogic;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
@@ -19,15 +16,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class EnderInterfaceBlockEntity extends InterfaceBlockEntity implements EnderInterfaceHost
 {
-    private LazyOptional<GenericInternalInventory> genericInvOpt = LazyOptional.empty();
-    private LazyOptional<MEStorage> storageOpt = LazyOptional.empty();
 
     public EnderInterfaceBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState)
     {
@@ -46,42 +37,6 @@ public class EnderInterfaceBlockEntity extends InterfaceBlockEntity implements E
         int slotSize = 9;
         int absorbConfigSlots = isExtended() ? 36 : 18;
         return new EnderInterfaceLogic(getMainNode(), this, getItemFromBlockEntity().asItem(), slotSize, absorbConfigSlots);
-    }
-
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable net.minecraft.core.Direction side)
-    {
-        if (cap == Capabilities.GENERIC_INTERNAL_INV)
-        {
-            if (!genericInvOpt.isPresent())
-            {
-                genericInvOpt = LazyOptional.of(() -> getInterfaceLogic().getStorage());
-            }
-            return genericInvOpt.cast();
-        }
-
-        if (cap == Capabilities.STORAGE)
-        {
-            if (!storageOpt.isPresent())
-            {
-                storageOpt = LazyOptional.of(() -> getInterfaceLogic().getInventory());
-            }
-            return storageOpt.cast();
-        }
-
-        return super.getCapability(cap, side);
-    }
-
-    @Override
-    public void invalidateCaps()
-    {
-        super.invalidateCaps();
-
-        if (genericInvOpt.isPresent()) genericInvOpt.invalidate();
-        genericInvOpt = LazyOptional.empty();
-
-        if (storageOpt.isPresent()) storageOpt.invalidate();
-        storageOpt = LazyOptional.empty();
     }
 
     @Override

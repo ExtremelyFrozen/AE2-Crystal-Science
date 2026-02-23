@@ -1,10 +1,8 @@
 package io.github.lounode.ae2cs.common.me.part;
 
-import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEItemKey;
-import appeng.capabilities.Capabilities;
 import appeng.core.AppEng;
 import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.items.parts.PartModels;
@@ -19,9 +17,6 @@ import io.github.lounode.ae2cs.common.init.AECSParts;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import org.jetbrains.annotations.NotNull;
 
 public class SimplePatternProviderPart extends PatternProviderPart
 {
@@ -43,18 +38,6 @@ public class SimplePatternProviderPart extends PatternProviderPart
     public SimplePatternProviderPart(IPartItem<?> partItem)
     {
         super(partItem);
-    }
-
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(Capability<T> capabilityClass)
-    {
-        if (capabilityClass == Capabilities.GENERIC_INTERNAL_INV)
-        {
-            GenericInternalInventory inv = getLogic().getReturnInv();
-            return inv == null ? LazyOptional.empty() : LazyOptional.of(() -> inv).cast();
-        }
-
-        return super.getCapability(capabilityClass);
     }
 
     @Override

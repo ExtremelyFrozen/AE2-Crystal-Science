@@ -1,10 +1,7 @@
 package io.github.lounode.ae2cs.common.me.part;
 
-import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.MEStorage;
-import appeng.capabilities.Capabilities;
 import appeng.core.AppEng;
 import appeng.helpers.InterfaceLogic;
 import appeng.items.parts.PartModels;
@@ -29,9 +26,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import org.jetbrains.annotations.NotNull;
 
 public class EnderInterfacePart extends InterfacePart implements EnderInterfaceHost
 {
@@ -69,24 +63,6 @@ public class EnderInterfacePart extends InterfacePart implements EnderInterfaceH
     public EnderInterfacePart(IPartItem<?> partItem)
     {
         super(partItem);
-    }
-
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(Capability<T> capabilityClass)
-    {
-        if (capabilityClass == Capabilities.GENERIC_INTERNAL_INV)
-        {
-            GenericInternalInventory inv = getInterfaceLogic().getStorage();
-            return inv == null ? LazyOptional.empty() : LazyOptional.of(() -> inv).cast();
-        }
-
-        if (capabilityClass == Capabilities.STORAGE)
-        {
-            MEStorage storage = getInterfaceLogic().getInventory();
-            return storage == null ? LazyOptional.empty() : LazyOptional.of(() -> storage).cast();
-        }
-
-        return super.getCapability(capabilityClass);
     }
 
     @Override
