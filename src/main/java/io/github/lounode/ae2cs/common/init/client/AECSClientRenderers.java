@@ -5,12 +5,12 @@ import io.github.lounode.ae2cs.common.block.render.EnderBroadcasterRender;
 import io.github.lounode.ae2cs.common.block.render.EnderEmitterRenderer;
 import io.github.lounode.ae2cs.common.block.render.EnderInterfaceRender;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
-@EventBusSubscriber(modid = AECSConstants.MODID, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = AECSConstants.MODID, value = Dist.CLIENT)
 public class AECSClientRenderers
 {
 

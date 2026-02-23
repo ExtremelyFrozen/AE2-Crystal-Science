@@ -3,29 +3,36 @@ package io.github.lounode.ae2cs.common.init.client;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ModelEvent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
-@EventBusSubscriber(modid = AECSConstants.MODID, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = AECSConstants.MODID, value = Dist.CLIENT)
 public final class AECSAdditionalModels
 {
 
+    private static final String VARIANT_STANDALONE = "standalone";
+
+    private static ModelResourceLocation standalone(ResourceLocation id)
+    {
+        return new ModelResourceLocation(id, VARIANT_STANDALONE);
+    }
+
     // 广播装置
     public static final ModelResourceLocation BROADCASTER_OFF_CORE =
-            ModelResourceLocation.standalone(AE2CrystalScience.makeId("block/me_ender_broadcaster/off_core"));
+            standalone(AE2CrystalScience.makeId("block/me_ender_broadcaster/off_core"));
     public static final ModelResourceLocation BROADCASTER_SENDER_CORE_MODEL =
-            ModelResourceLocation.standalone(AE2CrystalScience.makeId("block/me_ender_broadcaster/sender_core"));
+            standalone(AE2CrystalScience.makeId("block/me_ender_broadcaster/sender_core"));
     public static final ModelResourceLocation BROADCASTER_RECEIVER_CORE_MODEL =
-            ModelResourceLocation.standalone(AE2CrystalScience.makeId("block/me_ender_broadcaster/receiver_core"));
+            standalone(AE2CrystalScience.makeId("block/me_ender_broadcaster/receiver_core"));
 
     // 发信器
     public static final ModelResourceLocation EMITTER_TOP_ON_MODEL =
-            ModelResourceLocation.standalone(AE2CrystalScience.makeId("block/me_ender_emitter/on_top"));
-
+            standalone(AE2CrystalScience.makeId("block/me_ender_emitter/on_top"));
     public static final ModelResourceLocation EMITTER_TOP_OFF_MODEL =
-            ModelResourceLocation.standalone(AE2CrystalScience.makeId("block/me_ender_emitter/off_top"));
+            standalone(AE2CrystalScience.makeId("block/me_ender_emitter/off_top"));
 
     @SubscribeEvent
     public static void onRegisterAdditionalModels(ModelEvent.RegisterAdditional event)
