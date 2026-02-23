@@ -26,6 +26,8 @@ public class AECSDataComponents
     public static final String TAG_ENDER_EMITTER_DIMENSION = "dimension";
     public static final String TAG_ENDER_EMITTER_POS_VALUE = "pos";
 
+    public static final String TAG_RESONATING_CONVERTER_INV = "resonating_converter_inv";
+
     public static final DeferredRegister<DataComponentType<?>> DATA_COMPONENTS =
             DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, AECSConstants.MODID);
 

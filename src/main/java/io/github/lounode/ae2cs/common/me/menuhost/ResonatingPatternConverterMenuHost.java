@@ -3,77 +3,67 @@ package io.github.lounode.ae2cs.common.me.menuhost;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.inventories.InternalInventory;
 import appeng.core.definitions.AEItems;
-import appeng.items.contents.StackDependentSupplier;
-import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
-import appeng.util.inv.SupplierInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
 import io.github.lounode.ae2cs.common.init.AECSItems;
-import io.github.lounode.ae2cs.common.item.ResonatingPatternConverterItem;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.ItemContainerContents;
+import org.jetbrains.annotations.Nullable;
 
-public class ResonatingPatternConverterMenuHost extends ItemMenuHost<ResonatingPatternConverterItem>
+public class ResonatingPatternConverterMenuHost extends ItemMenuHost implements InternalInventoryHost
 {
-    private final SupplierInternalInventory<InternalInventory> inventory;
+    private final AppEngInternalInventory inventory = new AppEngInternalInventory(18);
 
-    public ResonatingPatternConverterMenuHost(ResonatingPatternConverterItem item, Player player, ItemMenuHostLocator locator)
+    public ResonatingPatternConverterMenuHost(Player player, @Nullable Integer slot, ItemStack is)
     {
-        super(item, player, locator);
+        super(player, slot, is);
 
-        this.inventory = new SupplierInternalInventory<>(
-                new StackDependentSupplier<>(
-                        this::getItemStack,
-                        stack -> createInventory(player, stack)));
-    }
-
-    private static InternalInventory createInventory(Player player, ItemStack stack)
-    {
-        AppEngInternalInventory inventory = new AppEngInternalInventory(new InternalInventoryHost()
+        // 初始化仓库
+        CompoundTag nbt = is.getTag();
+        if (nbt != null)
         {
-            @Override
-            public void saveChangedInventory(AppEngInternalInventory inv)
-            {
-                stack.set(AECSDataComponents.RESONATING_CONVERTER_INV, inv.toItemContainerContents());
-            }
-
-            @Override
-            public boolean isClientSide()
-            {
-                return player.level().isClientSide();
-            }
-        }, 18);
-        inventory.fromItemContainerContents(stack.getOrDefault(AECSDataComponents.RESONATING_CONVERTER_INV, ItemContainerContents.EMPTY));
-
-        for (int i = 0; i < inventory.size(); i++)
-        {
-            inventory.setMaxStackSize(i, 1);
+            this.inventory.readFromNBT(nbt, AECSDataComponents.TAG_RESONATING_CONVERTER_INV);
         }
-
+        for (int i = 0; i < this.inventory.size(); i++)
+        {
+            this.inventory.setMaxStackSize(i, 1);
+        }
         inventory.setFilter(new IAEItemFilter()
         {
             @Override
             public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack)
             {
                 return IAEItemFilter.super.allowInsert(inv, slot, stack) &&
-                        (stack.getItem() == AECSItems.RESONATING_PATTERN.asItem()
+                        (stack.getItem() == AECSItems.RESONATING_PATTERN.get()
                                 || stack.getItem() == AEItems.PROCESSING_PATTERN.asItem());
             }
         });
-        return inventory;
+
+        setPowerDrainPerTick(0);
+    }
+
+    @Override
+    public void saveChanges()
+    {
+        CompoundTag nbt = this.getItemStack().getOrCreateTag();
+        this.inventory.writeToNBT(nbt, AECSDataComponents.TAG_RESONATING_CONVERTER_INV);
+    }
+
+    @Override
+    public void onChangeInventory(InternalInventory internalInventory, int i)
+    {
+        CompoundTag nbt = this.getItemStack().getOrCreateTag();
+        if (internalInventory == this.inventory)
+        {
+            this.inventory.writeToNBT(nbt, AECSDataComponents.TAG_RESONATING_CONVERTER_INV);
+        }
     }
 
     public InternalInventory getInventory()
     {
         return inventory;
-    }
-
-    @Override
-    protected double getPowerDrainPerTick()
-    {
-        return 0;
     }
 }

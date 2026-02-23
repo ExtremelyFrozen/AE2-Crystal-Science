@@ -8,7 +8,6 @@ import io.github.lounode.ae2cs.api.genericinv.CombinedGenericInternalInventory;
 import io.github.lounode.ae2cs.api.genericinv.GenericStackInvWrapper;
 import io.github.lounode.ae2cs.common.machine.MachineComponentContainer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -155,7 +154,7 @@ public final class GenericStackInvComponent extends BaseMachineComponent
     {
         for (var inv : ports.values())
         {
-            for(int i = 0; i< inv.size(); i++)
+            for (int i = 0; i < inv.size(); i++)
             {
                 GenericStack gs = inv.getStack(i);
                 if (gs == null) continue;

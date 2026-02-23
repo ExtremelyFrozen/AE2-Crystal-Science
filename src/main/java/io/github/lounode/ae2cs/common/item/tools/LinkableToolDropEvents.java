@@ -57,6 +57,7 @@ public final class LinkableToolDropEvents
     }
 
     // 1.20.1没有BlockDropsEvent，只能取巧
+
     /**
      * 确认破坏的方块
      */

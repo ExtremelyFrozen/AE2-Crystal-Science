@@ -3,7 +3,6 @@ package io.github.lounode.ae2cs.common.item;
 import appeng.api.implementations.menuobjects.IMenuItem;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.menu.MenuOpener;
-import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.menu.locator.MenuLocator;
 import appeng.menu.locator.MenuLocators;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
@@ -17,7 +16,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,9 +50,9 @@ public class ResonatingPatternConverterItem extends Item implements IMenuItem
     }
 
     @Override
-    public @Nullable ItemMenuHost<?> getMenuHost(Player player, ItemMenuHostLocator locator, @Nullable BlockHitResult hitResult)
+    public @Nullable ItemMenuHost getMenuHost(Player player, int invSlot, ItemStack itemStack, @Nullable BlockPos blockPos)
     {
-        return new ResonatingPatternConverterMenuHost(this, player, locator);
+        return new ResonatingPatternConverterMenuHost(player, invSlot, itemStack);
     }
 
     public MenuType<?> getMenuType()

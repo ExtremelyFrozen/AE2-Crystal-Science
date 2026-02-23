@@ -22,16 +22,13 @@ import io.github.lounode.ae2cs.common.machine.MachineComponentContainer;
 import io.github.lounode.ae2cs.common.machine.MachineContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -280,7 +277,7 @@ public class SideConfigComponent extends BaseMachineComponent
 
             // 利用AE2对外部进行物品能力进行包装，简化部分操作
             IItemHandler otherItemHandler = null;
-            if(level.getBlockEntity(otherPos) instanceof BlockEntity otherBE)
+            if (level.getBlockEntity(otherPos) instanceof BlockEntity otherBE)
             {
                 otherItemHandler = otherBE.getCapability(ForgeCapabilities.ITEM_HANDLER, otherSide).resolve().orElse(null);
             }

@@ -11,7 +11,6 @@ import appeng.me.energy.StoredEnergyAmount;
 import io.github.lounode.ae2cs.api.util.ForgeEnergyAdapterUpgrade;
 import io.github.lounode.ae2cs.common.machine.MachineComponentContainer;
 import io.github.lounode.ae2cs.common.machine.MachineContext;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
 public class EnergyComponent extends NetworkMachineComponent implements IAEPowerStorage
