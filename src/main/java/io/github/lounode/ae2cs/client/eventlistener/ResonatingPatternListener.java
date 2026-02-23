@@ -3,7 +3,7 @@ package io.github.lounode.ae2cs.client.eventlistener;
 import appeng.util.InteractionUtil;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
-import io.github.lounode.ae2cs.common.init.AECSPacket;
+import io.github.lounode.ae2cs.common.init.AECSPackets;
 import io.github.lounode.ae2cs.common.item.ResonatingPatternItem;
 import io.github.lounode.ae2cs.network.c2s.ScrollResonatingPatternSelectPacket;
 import net.minecraft.client.Minecraft;
@@ -39,6 +39,6 @@ public class ResonatingPatternListener
         event.setCanceled(true);
 
         boolean next = dy < 0;
-        AECSPacket.INSTANCE.sendToServer(new ScrollResonatingPatternSelectPacket(next));
+        AECSPackets.INSTANCE.sendToServer(new ScrollResonatingPatternSelectPacket(next));
     }
 }

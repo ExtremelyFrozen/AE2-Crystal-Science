@@ -3,38 +3,40 @@ package io.github.lounode.ae2cs.common.init;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.network.c2s.ScrollResonatingPatternSelectPacket;
 import io.github.lounode.ae2cs.network.c2s.SideConfigMenuOpenPacket;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
-import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
 
-@EventBusSubscriber(modid = AECSConstants.MODID)
+@Mod.EventBusSubscriber(modid = AECSConstants.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class AECSPackets
 {
-    @SubscribeEvent
-    public static void register(final RegisterPayloadHandlersEvent event)
+
+    private static final String PROTOCOL_VERSION = "1";
+    public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
+            ResourceLocation.tryBuild(AECSConstants.MODID, "simple_channel"),
+            () -> PROTOCOL_VERSION,
+            PROTOCOL_VERSION::equals,
+            PROTOCOL_VERSION::equals
+    );
+    private static int packetId = 1;
+
+    static
     {
-        //设置当前网络版本
-        final PayloadRegistrar registrar = event.registrar("1");
-
-
-        registrar.playBidirectional(
-                ScrollResonatingPatternSelectPacket.TYPE,
-                ScrollResonatingPatternSelectPacket.STREAM_CODEC,
-                new DirectionalPayloadHandler<>(
-                        ScrollResonatingPatternSelectPacket::handle,
-                        ScrollResonatingPatternSelectPacket::handle
-                )
+        INSTANCE.registerMessage(
+                packetId++,
+                ScrollResonatingPatternSelectPacket.class,
+                ScrollResonatingPatternSelectPacket::encode,
+                ScrollResonatingPatternSelectPacket::decode,
+                ScrollResonatingPatternSelectPacket::handle
         );
 
-        registrar.playBidirectional(
-                SideConfigMenuOpenPacket.TYPE,
-                SideConfigMenuOpenPacket.STREAM_CODEC,
-                new DirectionalPayloadHandler<>(
-                        SideConfigMenuOpenPacket::handle,
-                        SideConfigMenuOpenPacket::handle
-                )
+        INSTANCE.registerMessage(
+                packetId++,
+                SideConfigMenuOpenPacket.class,
+                SideConfigMenuOpenPacket::encode,
+                SideConfigMenuOpenPacket::decode,
+                SideConfigMenuOpenPacket::handle
         );
     }
 }
