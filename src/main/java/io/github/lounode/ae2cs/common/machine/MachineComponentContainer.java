@@ -6,9 +6,8 @@ import io.github.lounode.ae2cs.common.machine.component.GenericStackInvComponent
 import io.github.lounode.ae2cs.common.machine.component.IMachineComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -115,32 +114,32 @@ public final class MachineComponentContainer
         components.forEach(component -> component.onClientTick(ctx));
     }
 
-    public void importSettings(MachineContext ctx, DataComponentMap input, @Nullable Player player)
+    public void importSettings(MachineContext ctx, CompoundTag input, @Nullable Player player)
     {
         components.forEach(component -> component.importSettings(ctx, input, player));
     }
 
-    public void exportSettings(MachineContext ctx, DataComponentMap.Builder builder, @Nullable Player player)
+    public void exportSettings(MachineContext ctx, CompoundTag builder, @Nullable Player player)
     {
         components.forEach(component -> component.exportSettings(ctx, builder, player));
     }
 
-    public void writeNbt(CompoundTag tag, HolderLookup.Provider r)
+    public void writeNbt(CompoundTag tag)
     {
-        components.forEach(component -> component.writeNbt(tag, r));
+        components.forEach(component -> component.writeNbt(tag));
     }
 
-    public void readNbt(CompoundTag tag, HolderLookup.Provider r)
+    public void readNbt(CompoundTag tag)
     {
-        components.forEach(component -> component.readNbt(tag, r));
+        components.forEach(component -> component.readNbt(tag));
     }
 
-    public void writeStream(RegistryFriendlyByteBuf data)
+    public void writeStream(FriendlyByteBuf data)
     {
         components.forEach(component -> component.writeStream(data));
     }
 
-    public boolean readStream(RegistryFriendlyByteBuf data)
+    public boolean readStream(FriendlyByteBuf data)
     {
         boolean changed = false;
 

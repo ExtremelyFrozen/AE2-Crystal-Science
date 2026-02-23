@@ -8,13 +8,12 @@ import io.github.lounode.ae2cs.common.machine.IMachineHost;
 import io.github.lounode.ae2cs.common.machine.MachineComponentContainer;
 import io.github.lounode.ae2cs.common.machine.MachineContext;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
@@ -50,10 +49,24 @@ public class AENetworkedComponentBlockEntity extends AENetworkBlockEntity implem
         this.saveChanges();
     }
 
+    /**
+     * 同步1.21.1的AENetworkBlockEntity相关实现
+     */
+    @Override
+    public void markForClientUpdate()
+    {
+        this.requestModelDataUpdate();
+
+        if (this.level != null && !this.isRemoved() && !notLoaded())
+        {
+            this.level.sendBlockUpdated(this.worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
+        }
+    }
+
     @Override
     public void invalidCap()
     {
-        this.invalidateCapabilities();
+        this.invalidateCaps();
     }
 
     @Override
@@ -85,42 +98,42 @@ public class AENetworkedComponentBlockEntity extends AENetworkBlockEntity implem
     }
 
     @Override
-    public void importSettings(SettingsFrom mode, DataComponentMap input, @Nullable Player player)
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player)
     {
         super.importSettings(mode, input, player);
         machineComponents.importSettings(new MachineContext(this, level, worldPosition, getBlockState()), input, player);
     }
 
     @Override
-    public void exportSettings(SettingsFrom mode, DataComponentMap.Builder builder, @Nullable Player player)
+    public void exportSettings(SettingsFrom mode, CompoundTag builder, @Nullable Player player)
     {
         super.exportSettings(mode, builder, player);
         machineComponents.exportSettings(new MachineContext(this, level, worldPosition, getBlockState()), builder, player);
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries)
+    public void saveAdditional(CompoundTag data)
     {
-        super.saveAdditional(data, registries);
-        machineComponents.writeNbt(data, registries);
+        super.saveAdditional(data);
+        machineComponents.writeNbt(data);
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries)
+    public void loadTag(CompoundTag data)
     {
-        super.loadTag(data, registries);
-        machineComponents.readNbt(data, registries);
+        super.loadTag(data);
+        machineComponents.readNbt(data);
     }
 
     @Override
-    protected void writeToStream(RegistryFriendlyByteBuf data)
+    protected void writeToStream(FriendlyByteBuf data)
     {
         super.writeToStream(data);
         machineComponents.writeStream(data);
     }
 
     @Override
-    protected boolean readFromStream(RegistryFriendlyByteBuf data)
+    protected boolean readFromStream(FriendlyByteBuf data)
     {
         boolean result = super.readFromStream(data);
         result |= machineComponents.readStream(data);
