@@ -4,7 +4,9 @@ import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.item.CrystalSeedItem;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -17,12 +19,10 @@ public class AE2CrystalScienceClient
     {
     }
 
-    // TODO 这里，我不太确定1.20.1的注册表结构是应该使用内建表还是Forge表
-    // TODO 后续自行修改即可
     public static void clientCommonSetup()
     {
-        Set<CrystalSeedItem> seeds = BuiltInRegistries.ITEM.stream()
-                .filter(i -> AECSConstants.MODID.equals(BuiltInRegistries.ITEM.getKey(i).getNamespace()))
+        Set<CrystalSeedItem> seeds = ForgeRegistries.ITEMS.getValues().stream()
+                .filter(i -> AECSConstants.MODID.equals(ForgeRegistries.ITEMS.getKey(i).getNamespace()))
                 .filter(i -> i instanceof CrystalSeedItem)
                 .map(item -> (CrystalSeedItem) item)
                 .collect(Collectors.toSet());
