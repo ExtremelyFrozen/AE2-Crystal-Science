@@ -1,6 +1,5 @@
 package io.github.lounode.ae2cs.common.item;
 
-import io.github.lounode.ae2cs.Config;
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;

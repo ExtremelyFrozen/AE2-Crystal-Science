@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -51,15 +52,16 @@ public class CrystalVibrationChamberBlock extends AEBaseEntityBlock<CrystalVibra
     }
 
     @Override
-    protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult)
+    public @NotNull InteractionResult use(BlockState state, Level level, BlockPos pos,
+                                          Player player, InteractionHand hand, BlockHitResult hitResult)
     {
-        super.useWithoutItem(state, level, pos, player, hitResult);
+        super.use(state, level, pos, player, hand, hitResult);
         if (!level.isClientSide() && !player.isShiftKeyDown())
         {
             if (level.getBlockEntity(pos) instanceof CrystalVibrationChamberBlockEntity be)
                 MenuOpener.open(AECSMenus.CRYSTAL_VIBRATION_CHAMBER_MENU.get(), player, MenuLocators.forBlockEntity(be));
         }
-        return InteractionResult.SUCCESS_NO_ITEM_USED;
+        return InteractionResult.SUCCESS;
     }
 
     /**

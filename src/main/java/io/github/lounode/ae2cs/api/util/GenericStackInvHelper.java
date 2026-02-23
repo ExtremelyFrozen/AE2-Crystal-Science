@@ -52,7 +52,7 @@ public class GenericStackInvHelper
         else
         {
             BlockEntity targetBE = level.getBlockEntity(pos);
-            if(targetBE != null)
+            if (targetBE != null)
             {
                 storage = targetBE.getCapability(Capabilities.STORAGE, side).resolve().orElse(null);
             }
@@ -101,7 +101,7 @@ public class GenericStackInvHelper
         }
         else
         {
-            if(level.getBlockEntity(pos) instanceof BlockEntity targetBE)
+            if (level.getBlockEntity(pos) instanceof BlockEntity targetBE)
             {
                 return targetBE.getCapability(Capabilities.GENERIC_INTERNAL_INV, side).resolve().orElse(null);
             }

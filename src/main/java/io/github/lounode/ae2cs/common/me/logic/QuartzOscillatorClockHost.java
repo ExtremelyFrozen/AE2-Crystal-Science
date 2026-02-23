@@ -3,7 +3,7 @@ package io.github.lounode.ae2cs.common.me.logic;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
-import appeng.menu.locator.MenuHostLocator;
+import appeng.menu.locator.MenuLocator;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
@@ -21,7 +21,7 @@ public interface QuartzOscillatorClockHost extends IUpgradeableObject
 
     void saveChanges();
 
-    default void openMenu(Player player, MenuHostLocator locator)
+    default void openMenu(Player player, MenuLocator locator)
     {
         MenuOpener.open(AECSMenus.QUARTZ_OSCILLATOR_CLOCK_MENU.get(), player, locator);
     }

@@ -6,6 +6,7 @@ import io.github.lounode.ae2cs.common.block.entity.QuartzOscillatorClockBlockEnt
 import io.github.lounode.ae2cs.common.me.logic.QuartzOscillatorClockHost;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
@@ -35,15 +36,16 @@ public class QuartzOscillatorClockBlock extends AEBaseEntityBlock<QuartzOscillat
     }
 
     @Override
-    protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult)
+    public @NotNull InteractionResult use(BlockState state, Level level, BlockPos pos,
+                                          Player player, InteractionHand hand, BlockHitResult hitResult)
     {
-        super.useWithoutItem(state, level, pos, player, hitResult);
+        super.use(state, level, pos, player, hand, hitResult);
         if (!level.isClientSide() && !player.isShiftKeyDown())
         {
             if (level.getBlockEntity(pos) instanceof QuartzOscillatorClockBlockEntity be)
                 be.openMenu(player, MenuLocators.forBlockEntity(be));
         }
-        return InteractionResult.SUCCESS_NO_ITEM_USED;
+        return InteractionResult.SUCCESS;
     }
 
     @Override

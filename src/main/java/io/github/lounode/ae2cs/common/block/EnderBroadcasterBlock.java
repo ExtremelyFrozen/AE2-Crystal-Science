@@ -6,6 +6,7 @@ import appeng.menu.locator.MenuLocators;
 import io.github.lounode.ae2cs.common.block.entity.EnderBroadcasterBlockEntity;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -26,15 +27,16 @@ public class EnderBroadcasterBlock extends AEBaseEntityBlock<EnderBroadcasterBlo
     }
 
     @Override
-    protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult)
+    public @NotNull InteractionResult use(BlockState state, Level level, BlockPos pos,
+                                          Player player, InteractionHand hand, BlockHitResult hitResult)
     {
-        super.useWithoutItem(state, level, pos, player, hitResult);
+        super.use(state, level, pos, player, hand, hitResult);
         if (!level.isClientSide() && !player.isShiftKeyDown())
         {
             if (level.getBlockEntity(pos) instanceof EnderBroadcasterBlockEntity be)
                 MenuOpener.open(AECSMenus.ENDER_BROADCASTER_MENU.get(), player, MenuLocators.forBlockEntity(be));
         }
-        return InteractionResult.SUCCESS_NO_ITEM_USED;
+        return InteractionResult.SUCCESS;
     }
 
     /**

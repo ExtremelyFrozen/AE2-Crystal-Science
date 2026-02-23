@@ -10,6 +10,7 @@ import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -57,20 +58,21 @@ public class EnderEmitterBlock extends AEBaseEntityBlock<EnderEmitterBlockEntity
     }
 
     @Override
-    protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult)
+    public @NotNull InteractionResult use(BlockState state, Level level, BlockPos pos,
+                                          Player player, InteractionHand hand, BlockHitResult hitResult)
     {
         if (state.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.UPPER)
         {
             pos = pos.below();
             state = level.getBlockState(pos);
         }
-        super.useWithoutItem(state, level, pos, player, hitResult);
+        super.use(state, level, pos, player, hand, hitResult);
         if (!level.isClientSide() && !player.isShiftKeyDown())
         {
             if (level.getBlockEntity(pos) instanceof EnderEmitterBlockEntity be)
                 MenuOpener.open(AECSMenus.ENDER_EMITTER_MENU.get(), player, MenuLocators.forBlockEntity(be));
         }
-        return InteractionResult.SUCCESS_NO_ITEM_USED;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
@@ -101,16 +103,14 @@ public class EnderEmitterBlock extends AEBaseEntityBlock<EnderEmitterBlockEntity
     }
 
     @Override
-    public @NotNull BlockState playerWillDestroy(Level level, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Player player)
+    public void playerWillDestroy(Level level, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Player player)
     {
         if (!level.isClientSide
-                && (player.isCreative() || !player.hasCorrectToolForDrops(state, level, pos)))
+                && (player.isCreative() || !player.hasCorrectToolForDrops(state)))
         {
             // 放置另一半方块掉落
             preventDropFromBottomPart(level, pos, state, player);
         }
-
-        return super.playerWillDestroy(level, pos, state, player);
     }
 
 
@@ -126,8 +126,8 @@ public class EnderEmitterBlock extends AEBaseEntityBlock<EnderEmitterBlockEntity
 
 
     @Override
-    protected @NotNull BlockState updateShape(BlockState state, Direction facing, @NotNull BlockState facingState,
-                                              @NotNull LevelAccessor level, @NotNull BlockPos currentPos, @NotNull BlockPos facingPos)
+    public @NotNull BlockState updateShape(BlockState state, Direction facing, @NotNull BlockState facingState,
+                                           @NotNull LevelAccessor level, @NotNull BlockPos currentPos, @NotNull BlockPos facingPos)
     {
         DoubleBlockHalf half = state.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF);
 

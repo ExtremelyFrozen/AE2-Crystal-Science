@@ -10,7 +10,6 @@ import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSParts;
 import io.github.lounode.ae2cs.common.item.tools.ToolLinkableHandler;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -107,7 +106,7 @@ public class AEPlugin
         if (tagOpt.isEmpty()) return;
 
         tagOpt.stream().forEach(item -> {
-            if(GridLinkables.get(item) == null)
+            if (GridLinkables.get(item) == null)
                 GridLinkables.register(item, ToolLinkableHandler.INSTANCE);
         });
     }

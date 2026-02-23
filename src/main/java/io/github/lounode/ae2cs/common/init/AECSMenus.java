@@ -3,7 +3,6 @@ package io.github.lounode.ae2cs.common.init;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.implementations.PatternProviderMenu;
-import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
 import io.github.lounode.ae2cs.common.block.entity.*;

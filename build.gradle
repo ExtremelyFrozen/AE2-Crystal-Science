@@ -150,7 +150,7 @@ dependencies {
 
     // AE2与GuideME
     modImplementation "curse.maven:guideme-1173950:7127447"
-    modRuntimeOnly "curse.maven:applied-energistics-2-223794:7148487"
+    modImplementation "curse.maven:applied-energistics-2-223794:7148487"
     accessCompileOnly "curse.maven:applied-energistics-2-223794:7148487"
 
     modCompileOnly "curse.maven:emi-580555:6420945"

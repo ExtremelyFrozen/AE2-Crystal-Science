@@ -15,7 +15,7 @@ import appeng.helpers.IPriorityHost;
 import appeng.helpers.patternprovider.PatternContainer;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
-import appeng.menu.locator.MenuHostLocator;
+import appeng.menu.locator.MenuLocator;
 import appeng.util.ConfigInventory;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 import net.minecraft.ChatFormatting;
@@ -73,7 +73,7 @@ public interface IntegratedInterfaceHost extends IConfigurableObject, IPriorityH
     /**
      * 打开集成接口界面
      */
-    default void openMenu(Player player, MenuHostLocator locator)
+    default void openMenu(Player player, MenuLocator locator)
     {
         MenuOpener.open(AECSMenus.INTEGRATED_INTERFACE_MENU.get(), player, locator);
     }
