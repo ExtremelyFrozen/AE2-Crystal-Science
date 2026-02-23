@@ -1,9 +1,8 @@
 package io.github.lounode.ae2cs.client.gui.widgets;
 
 import appeng.api.config.Setting;
-import appeng.core.network.ServerboundPacket;
-import appeng.core.network.serverbound.ConfigButtonPacket;
-import net.neoforged.neoforge.network.PacketDistributor;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.ConfigButtonPacket;
 
 public class AECSServerSettingToggleButton<T extends Enum<T>> extends AECSSettingToggleButton<T>
 {
@@ -14,7 +13,6 @@ public class AECSServerSettingToggleButton<T extends Enum<T>> extends AECSSettin
 
     private static <T extends Enum<T>> void sendToServer(AECSSettingToggleButton<T> button, boolean backwards)
     {
-        ServerboundPacket message = new ConfigButtonPacket(button.getSetting(), backwards);
-        PacketDistributor.sendToServer(message);
+        NetworkHandler.instance().sendToServer(new ConfigButtonPacket(button.getSetting(), backwards));
     }
 }
