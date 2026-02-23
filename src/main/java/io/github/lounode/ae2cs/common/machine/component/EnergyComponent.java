@@ -42,16 +42,16 @@ public class EnergyComponent extends NetworkMachineComponent implements IAEPower
     }
 
     @Override
-    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries)
+    public void writeNbt(CompoundTag tag)
     {
-        super.writeNbt(tag, registries);
+        super.writeNbt(tag);
         tag.putDouble("stored_energy", this.storedEnergy.getAmount());
     }
 
     @Override
-    public void readNbt(CompoundTag tag, HolderLookup.Provider registries)
+    public void readNbt(CompoundTag tag)
     {
-        super.readNbt(tag, registries);
+        super.readNbt(tag);
         this.storedEnergy.setStored(tag.getDouble("stored_energy"));
     }
 

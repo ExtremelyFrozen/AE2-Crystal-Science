@@ -23,14 +23,15 @@ import io.github.lounode.ae2cs.common.machine.MachineContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -278,7 +279,11 @@ public class SideConfigComponent extends BaseMachineComponent
             Direction otherSide = dir.getOpposite();
 
             // 利用AE2对外部进行物品能力进行包装，简化部分操作
-            IItemHandler otherItemHandler = level.getCapability(Capabilities.ItemHandler.BLOCK, otherPos, otherSide);
+            IItemHandler otherItemHandler = null;
+            if(level.getBlockEntity(otherPos) instanceof BlockEntity otherBE)
+            {
+                otherItemHandler = otherBE.getCapability(ForgeCapabilities.ITEM_HANDLER, otherSide).resolve().orElse(null);
+            }
             if (otherItemHandler == null) continue;
             PlatformInventoryWrapper otherInv = new PlatformInventoryWrapper(otherItemHandler);
 
@@ -548,7 +553,7 @@ public class SideConfigComponent extends BaseMachineComponent
     }
 
     @Override
-    public void importSettings(MachineContext ctx, DataComponentMap input, @Nullable Player player)
+    public void importSettings(MachineContext ctx, CompoundTag input, @Nullable Player player)
     {
         super.importSettings(ctx, input, player);
 
@@ -571,7 +576,7 @@ public class SideConfigComponent extends BaseMachineComponent
     }
 
     @Override
-    public void exportSettings(MachineContext ctx, DataComponentMap.Builder builder, @Nullable Player player)
+    public void exportSettings(MachineContext ctx, CompoundTag builder, @Nullable Player player)
     {
         super.exportSettings(ctx, builder, player);
 
@@ -588,7 +593,7 @@ public class SideConfigComponent extends BaseMachineComponent
     }
 
     @Override
-    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries)
+    public void writeNbt(CompoundTag tag)
     {
         tag.putBoolean("side_config_auto_import", this.autoImport);
         tag.putBoolean("side_config_auto_export", this.autoExport);
@@ -605,7 +610,7 @@ public class SideConfigComponent extends BaseMachineComponent
     }
 
     @Override
-    public void readNbt(CompoundTag tag, HolderLookup.Provider registries)
+    public void readNbt(CompoundTag tag)
     {
         this.autoImport = tag.getBoolean("side_config_auto_import");
         this.autoExport = tag.getBoolean("side_config_auto_export");

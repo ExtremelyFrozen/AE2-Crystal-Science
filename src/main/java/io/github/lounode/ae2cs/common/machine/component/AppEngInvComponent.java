@@ -140,15 +140,15 @@ public class AppEngInvComponent extends BaseMachineComponent
     }
 
     @Override
-    public void writeNbt(CompoundTag tag, HolderLookup.Provider r)
+    public void writeNbt(CompoundTag tag)
     {
-        for (var e : ports.entrySet()) e.getValue().writeToNBT(tag, "inv_" + e.getKey().name().toLowerCase(), r);
+        for (var e : ports.entrySet()) e.getValue().writeToNBT(tag, "inv_" + e.getKey().name().toLowerCase());
     }
 
     @Override
-    public void readNbt(CompoundTag tag, HolderLookup.Provider r)
+    public void readNbt(CompoundTag tag)
     {
-        for (var e : ports.entrySet()) e.getValue().readFromNBT(tag, "inv_" + e.getKey().name().toLowerCase(), r);
+        for (var e : ports.entrySet()) e.getValue().readFromNBT(tag, "inv_" + e.getKey().name().toLowerCase());
     }
 
     @Override
