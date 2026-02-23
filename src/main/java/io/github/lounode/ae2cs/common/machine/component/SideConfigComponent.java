@@ -554,7 +554,7 @@ public class SideConfigComponent extends BaseMachineComponent
     {
         super.importSettings(ctx, input, player);
 
-        SideConfigField configField = input.get(AECSDataComponents.SIDE_CONFIG_FOR_MEMORY_CARD.get());
+        SideConfigField configField = AECSDataComponents.getSideConfigForMemoryCard(input);
         if (configField != null)
         {
             this.autoImport = configField.autoImport();
@@ -578,7 +578,7 @@ public class SideConfigComponent extends BaseMachineComponent
         super.exportSettings(ctx, builder, player);
 
         SideConfigField configField = new SideConfigField(this.policies.clone(), this.autoImport, this.autoExport);
-        builder.set(AECSDataComponents.SIDE_CONFIG_FOR_MEMORY_CARD, configField);
+        AECSDataComponents.setSideConfigForMemoryCard(builder, configField);
     }
 
     @Override

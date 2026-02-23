@@ -1,7 +1,5 @@
 package io.github.lounode.ae2cs.common.init;
 
-import com.mojang.serialization.Codec;
-import io.github.lounode.ae2cs.api.linker.broadcast.MemoryCardBandInfo;
 import io.github.lounode.ae2cs.api.networking.SideConfigField;
 import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern;
 import net.minecraft.core.BlockPos;
@@ -15,6 +13,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
+
+/**
+ * 原1.21.1放置数据组件的类，现用于存放其相关的NBT字段以及用于读写的辅助方法
+ */
 public class AECSDataComponents
 {
     public static final String TAG_GROW_PROCESS = "grow_process";
@@ -27,40 +29,7 @@ public class AECSDataComponents
     public static final String TAG_RESONATING_PATTERN_SELECTED_INPUT = "resonating_pattern_selected_input";
 
     public static final String TAG_RESONATING_CONVERTER_INV = "resonating_converter_inv";
-
-    // 频段名称-给内存卡记录用
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<MemoryCardBandInfo>> MEMORY_CARD_BAND_INFO =
-            register("band_name", b -> b
-                    .persistent(MemoryCardBandInfo.CODEC)
-                    .networkSynchronized(MemoryCardBandInfo.STREAM_CODEC)
-                    .cacheEncoding()
-            );
-
-    // 记录作为接收端时期望的频段数量
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> MEMORY_CARD_BROADCASTER_RECEIVER_EXPECT_CHANNELS =
-            register("meory_card_broadcaster_receiver_expect_channels", b -> b
-                    .persistent(Codec.INT)
-                    .networkSynchronized(ByteBufCodecs.VAR_INT)
-                    .cacheEncoding()
-            );
-
-    // 记录发信器信息坐标位置
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<GlobalPos>> ENDER_EMITTER_POS =
-            register("ender_emitter_pos", b -> b
-                    .persistent(GlobalPos.CODEC)
-                    .networkSynchronized(GlobalPos.STREAM_CODEC)
-                    .cacheEncoding()
-            );
-
-    /**
-     * 给内存卡记录当前机器面配置
-     */
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<SideConfigField>> SIDE_CONFIG_FOR_MEMORY_CARD =
-            register("side_config_for_memory_card", b -> b
-                    .persistent(SideConfigField.CODEC)
-                    .networkSynchronized(SideConfigField.STREAM_CODEC)
-                    .cacheEncoding()
-            );
+    public static final String TAG_SIDE_CONFIG_FOR_MEMORY_CARD = "side_config_for_memory_card";
 
     public static void setEnderEmitterPos(ItemStack stack, GlobalPos pos)
     {
@@ -124,5 +93,19 @@ public class AECSDataComponents
             return fallback;
         }
         return root.getInt(TAG_RESONATING_PATTERN_SELECTED_INPUT);
+    }
+
+    public static void setSideConfigForMemoryCard(CompoundTag tag, SideConfigField value)
+    {
+        tag.put(TAG_SIDE_CONFIG_FOR_MEMORY_CARD, SideConfigField.writeToNBT(value));
+    }
+
+    public static @Nullable SideConfigField getSideConfigForMemoryCard(CompoundTag tag)
+    {
+        if (!tag.contains(TAG_SIDE_CONFIG_FOR_MEMORY_CARD, 10))
+        {
+            return null;
+        }
+        return SideConfigField.readFromNBT(tag.getCompound(TAG_SIDE_CONFIG_FOR_MEMORY_CARD));
     }
 }
