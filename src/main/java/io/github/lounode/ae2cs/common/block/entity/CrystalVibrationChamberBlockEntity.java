@@ -11,7 +11,6 @@ import appeng.api.util.AECableType;
 import appeng.core.definitions.AEItems;
 import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.util.ConfigInventory;
-import io.github.lounode.ae2cs.api.cap.ProvideCaps;
 import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
@@ -26,13 +25,20 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.EnumMap;
 import java.util.List;
 
-@ProvideCaps(GenericInternalInventory.class)
 public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBlockEntity implements IUpgradeableObject,
         CustomReturnableSubMenuHost
 {
+    private LazyOptional<GenericInternalInventory> genericInvOpt = LazyOptional.empty();
+    private final EnumMap<Direction, LazyOptional<GenericInternalInventory>> sidedGenericInvOpts = new EnumMap<>(Direction.class);
+
     private final IUpgradeInventory upgrades;
 
     private int maxBurnTime = 0;
@@ -63,6 +69,58 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
     public GenericStackInv getInv()
     {
         return getMachineComponents().getService(GenericStackInvComponent.class).port(InvPort.WORK);
+    }
+
+    @Override
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side)
+    {
+        if (cap == appeng.capabilities.Capabilities.GENERIC_INTERNAL_INV)
+        {
+            if (side == null)
+            {
+                if (!genericInvOpt.isPresent())
+                {
+                    GenericInternalInventory inv = resolveGenericInv(null);
+                    genericInvOpt = inv == null ? LazyOptional.empty() : LazyOptional.of(() -> inv);
+                }
+                return genericInvOpt.cast();
+            }
+
+            var opt = sidedGenericInvOpts.get(side);
+            if (opt == null)
+            {
+                GenericInternalInventory inv = resolveGenericInv(side);
+                opt = inv == null ? LazyOptional.empty() : LazyOptional.of(() -> inv);
+                sidedGenericInvOpts.put(side, opt);
+            }
+            return opt.cast();
+        }
+
+        return super.getCapability(cap, side);
+    }
+
+    @Override
+    public void invalidateCaps()
+    {
+        super.invalidateCaps();
+
+        if (genericInvOpt.isPresent()) genericInvOpt.invalidate();
+        genericInvOpt = LazyOptional.empty();
+
+        for (var opt : sidedGenericInvOpts.values())
+        {
+            if (opt.isPresent()) opt.invalidate();
+        }
+        sidedGenericInvOpts.clear();
+    }
+
+    private @Nullable GenericInternalInventory resolveGenericInv(@Nullable Direction side)
+    {
+        if (getMachineComponents().hasService(SideConfigComponent.class))
+        {
+            return getMachineComponents().getService(SideConfigComponent.class).genericInvForSide(side);
+        }
+        return getMachineComponents().getService(GenericStackInvComponent.class).combined();
     }
 
     public int getMaxBurnTime()

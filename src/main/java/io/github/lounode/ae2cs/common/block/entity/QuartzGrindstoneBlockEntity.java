@@ -5,10 +5,10 @@ import appeng.api.config.Actionable;
 import appeng.api.implementations.blockentities.ICrankable;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.upgrades.IUpgradeableObject;
+import appeng.capabilities.Capabilities;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
-import io.github.lounode.ae2cs.api.cap.ProvideCaps;
 import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSRecipeTypes;
@@ -19,20 +19,30 @@ import io.github.lounode.ae2cs.common.recipe.SizedIngredient;
 import io.github.lounode.ae2cs.common.recipe.crystal_pulverizer.CrystalPulverizerRecipe;
 import io.github.lounode.ae2cs.common.recipe.input.SingleItemStackRecipeInput;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.EnumMap;
 import java.util.Optional;
 
-@ProvideCaps(IItemHandler.class)
 public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEntity implements ICrankable,
         IUpgradeableObject, CustomReturnableSubMenuHost
 {
+    private LazyOptional<IItemHandler> itemHandlerOpt = LazyOptional.empty();
+    private final EnumMap<Direction, LazyOptional<IItemHandler>> sidedItemHandlerOpts = new EnumMap<>(net.minecraft.core.Direction.class);
+    private LazyOptional<ICrankable> crankableOpt = LazyOptional.empty();
+
     /**
      * 基础能量消耗，每tick 200AE，即能量消耗和速率上限均更低的晶能粉碎机
      */
@@ -155,6 +165,70 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
     public AppEngInternalInventory getOutputInv()
     {
         return getMachineComponents().getService(AppEngInvComponent.class).port(InvPort.OUTPUT);
+    }
+
+    @Override
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable net.minecraft.core.Direction side)
+    {
+        if (cap == Capabilities.CRANKABLE && side == net.minecraft.core.Direction.UP)
+        {
+            if (!crankableOpt.isPresent())
+            {
+                crankableOpt = LazyOptional.of(() -> this);
+            }
+            return crankableOpt.cast();
+        }
+
+        if (cap == ForgeCapabilities.ITEM_HANDLER)
+        {
+            if (side == null)
+            {
+                if (!itemHandlerOpt.isPresent())
+                {
+                    IItemHandler handler = resolveItemHandler(null);
+                    itemHandlerOpt = handler == null ? LazyOptional.empty() : LazyOptional.of(() -> handler);
+                }
+                return itemHandlerOpt.cast();
+            }
+
+            var opt = sidedItemHandlerOpts.get(side);
+            if (opt == null)
+            {
+                IItemHandler handler = resolveItemHandler(side);
+                opt = handler == null ? LazyOptional.empty() : LazyOptional.of(() -> handler);
+                sidedItemHandlerOpts.put(side, opt);
+            }
+            return opt.cast();
+        }
+
+        return super.getCapability(cap, side);
+    }
+
+    @Override
+    public void invalidateCaps()
+    {
+        super.invalidateCaps();
+
+        if (itemHandlerOpt.isPresent()) itemHandlerOpt.invalidate();
+        itemHandlerOpt = LazyOptional.empty();
+        for (var opt : sidedItemHandlerOpts.values())
+        {
+            if (opt.isPresent()) opt.invalidate();
+        }
+        sidedItemHandlerOpts.clear();
+
+        if (crankableOpt.isPresent()) crankableOpt.invalidate();
+        crankableOpt = LazyOptional.empty();
+    }
+
+    private @Nullable IItemHandler resolveItemHandler(@Nullable net.minecraft.core.Direction side)
+    {
+        if (getMachineComponents().hasService(SideConfigComponent.class))
+        {
+            var inv = getMachineComponents().getService(SideConfigComponent.class).appEngInvForSide(side);
+            return inv == null ? null : inv.toItemHandler();
+        }
+        return getMachineComponents().getService(AppEngInvComponent.class).combined().toItemHandler();
     }
 
     public int getRecipeProgress()

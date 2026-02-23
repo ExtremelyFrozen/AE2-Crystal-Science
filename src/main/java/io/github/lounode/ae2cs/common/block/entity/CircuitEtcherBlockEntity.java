@@ -7,7 +7,6 @@ import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.core.definitions.AEItems;
 import appeng.util.inv.AppEngInternalInventory;
-import io.github.lounode.ae2cs.api.cap.ProvideCaps;
 import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
@@ -20,21 +19,30 @@ import io.github.lounode.ae2cs.common.recipe.SizedIngredient;
 import io.github.lounode.ae2cs.common.recipe.circuit_etcher.CircuitEtcherRecipe;
 import io.github.lounode.ae2cs.common.recipe.input.ThreeItemStackRecipeInput;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Optional;
 
-@ProvideCaps(IItemHandler.class)
 public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity implements IUpgradeableObject,
         CustomReturnableSubMenuHost
 {
+    private LazyOptional<IItemHandler> itemHandlerOpt = LazyOptional.empty();
+    private final EnumMap<Direction, LazyOptional<IItemHandler>> sidedItemHandlerOpts = new EnumMap<>(net.minecraft.core.Direction.class);
+
     /**
      * 基础能量消耗，每tick 200AE，每多一个加速卡，则此数值翻倍，同时机器运行速率也翻倍。
      * <p>
@@ -123,6 +131,59 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
     public AppEngInternalInventory getOutputInv()
     {
         return getMachineComponents().getService(AppEngInvComponent.class).port(InvPort.OUTPUT);
+    }
+
+    @Override
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable net.minecraft.core.Direction side)
+    {
+        if (cap == ForgeCapabilities.ITEM_HANDLER)
+        {
+            if (side == null)
+            {
+                if (!itemHandlerOpt.isPresent())
+                {
+                    IItemHandler handler = resolveItemHandler(null);
+                    itemHandlerOpt = handler == null ? LazyOptional.empty() : LazyOptional.of(() -> handler);
+                }
+                return itemHandlerOpt.cast();
+            }
+
+            var opt = sidedItemHandlerOpts.get(side);
+            if (opt == null)
+            {
+                IItemHandler handler = resolveItemHandler(side);
+                opt = handler == null ? LazyOptional.empty() : LazyOptional.of(() -> handler);
+                sidedItemHandlerOpts.put(side, opt);
+            }
+            return opt.cast();
+        }
+
+        return super.getCapability(cap, side);
+    }
+
+    @Override
+    public void invalidateCaps()
+    {
+        super.invalidateCaps();
+
+        if (itemHandlerOpt.isPresent()) itemHandlerOpt.invalidate();
+        itemHandlerOpt = LazyOptional.empty();
+
+        for (var opt : sidedItemHandlerOpts.values())
+        {
+            if (opt.isPresent()) opt.invalidate();
+        }
+        sidedItemHandlerOpts.clear();
+    }
+
+    private @Nullable IItemHandler resolveItemHandler(@Nullable net.minecraft.core.Direction side)
+    {
+        if (getMachineComponents().hasService(SideConfigComponent.class))
+        {
+            var inv = getMachineComponents().getService(SideConfigComponent.class).appEngInvForSide(side);
+            return inv == null ? null : inv.toItemHandler();
+        }
+        return getMachineComponents().getService(AppEngInvComponent.class).combined().toItemHandler();
     }
 
     public int getRecipeProgress()

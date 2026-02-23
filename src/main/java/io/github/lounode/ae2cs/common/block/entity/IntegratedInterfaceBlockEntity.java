@@ -1,11 +1,15 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
+import appeng.api.behaviors.GenericInternalInventory;
+import appeng.api.ids.AEComponents;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.orientation.BlockOrientation;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.storage.MEStorage;
 import appeng.block.crafting.PatternProviderBlock;
 import appeng.block.crafting.PushDirection;
 import appeng.blockentity.grid.AENetworkBlockEntity;
+import appeng.capabilities.Capabilities;
 import appeng.util.SettingsFrom;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
@@ -13,14 +17,19 @@ import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceHost;
 import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceLogic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
@@ -32,6 +41,9 @@ import java.util.Set;
 public class IntegratedInterfaceBlockEntity extends AENetworkBlockEntity implements IntegratedInterfaceHost
 {
     IntegratedInterfaceLogic logic = createLogic();
+    private LazyOptional<GenericInternalInventory> genericInvOpt = LazyOptional.empty();
+    private LazyOptional<MEStorage> storageOpt = LazyOptional.empty();
+    private final EnumMap<Direction, LazyOptional<MEStorage>> sidedStorageOpts = new EnumMap<>(Direction.class);
     private int priority;
 
     public IntegratedInterfaceBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState)
@@ -39,32 +51,59 @@ public class IntegratedInterfaceBlockEntity extends AENetworkBlockEntity impleme
         super(type, pos, blockState);
     }
 
-    /**
-     * 注册AE节点和能量能力
-     */
-    public static void onRegisterCaps(RegisterCapabilitiesEvent event)
+    @Override
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side)
     {
-        event.registerBlockEntity(
-                AECapabilities.GENERIC_INTERNAL_INV,
-                AECSBlockEntities.INTEGRATED_INTERFACE_BLOCK_ENTITY.get(),
-                (be, direction) -> be.getLogic().getStorageInv()
-        );
-        event.registerBlockEntity(
-                AECapabilities.ME_STORAGE,
-                AECSBlockEntities.INTEGRATED_INTERFACE_BLOCK_ENTITY.get(),
-                (be, direction) -> be.getLogic().getExposedMEStorage(direction)
-        );
+        if (cap == Capabilities.GENERIC_INTERNAL_INV)
+        {
+            if (!genericInvOpt.isPresent())
+            {
+                genericInvOpt = LazyOptional.of(() -> getLogic().getStorageInv());
+            }
+            return genericInvOpt.cast();
+        }
 
-        event.registerBlockEntity(
-                AECapabilities.GENERIC_INTERNAL_INV,
-                AECSBlockEntities.EX_INTEGRATED_INTERFACE_BLOCK_ENTITY.get(),
-                (be, direction) -> be.getLogic().getStorageInv()
-        );
-        event.registerBlockEntity(
-                AECapabilities.ME_STORAGE,
-                AECSBlockEntities.EX_INTEGRATED_INTERFACE_BLOCK_ENTITY.get(),
-                (be, direction) -> be.getLogic().getExposedMEStorage(direction)
-        );
+        if (cap == Capabilities.STORAGE)
+        {
+            if (side == null)
+            {
+                if (!storageOpt.isPresent())
+                {
+                    MEStorage storage = getLogic().getExposedMEStorage(null);
+                    storageOpt = storage == null ? LazyOptional.empty() : LazyOptional.of(() -> storage);
+                }
+                return storageOpt.cast();
+            }
+
+            var opt = sidedStorageOpts.get(side);
+            if (opt == null)
+            {
+                MEStorage storage = getLogic().getExposedMEStorage(side);
+                opt = storage == null ? LazyOptional.empty() : LazyOptional.of(() -> storage);
+                sidedStorageOpts.put(side, opt);
+            }
+            return opt.cast();
+        }
+
+        return super.getCapability(cap, side);
+    }
+
+    @Override
+    public void invalidateCaps()
+    {
+        super.invalidateCaps();
+
+        if (genericInvOpt.isPresent()) genericInvOpt.invalidate();
+        genericInvOpt = LazyOptional.empty();
+
+        if (storageOpt.isPresent()) storageOpt.invalidate();
+        storageOpt = LazyOptional.empty();
+
+        for (var opt : sidedStorageOpts.values())
+        {
+            if (opt.isPresent()) opt.invalidate();
+        }
+        sidedStorageOpts.clear();
     }
 
     @Override

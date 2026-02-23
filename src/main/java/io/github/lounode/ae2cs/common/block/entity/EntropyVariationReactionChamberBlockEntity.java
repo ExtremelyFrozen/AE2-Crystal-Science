@@ -20,7 +20,6 @@ import appeng.recipes.entropy.EntropyMode;
 import appeng.recipes.entropy.EntropyRecipe;
 import appeng.util.ConfigInventory;
 import appeng.util.ConfigManager;
-import io.github.lounode.ae2cs.api.cap.ProvideCaps;
 import io.github.lounode.ae2cs.api.settings.AECSSettings;
 import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
@@ -29,6 +28,7 @@ import io.github.lounode.ae2cs.common.machine.component.GenericStackInvComponent
 import io.github.lounode.ae2cs.common.machine.component.InvPort;
 import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
@@ -44,16 +44,22 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Optional;
 
-@ProvideCaps(GenericInternalInventory.class)
 public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfPoweredBlockEntity implements
         IUpgradeableObject, IConfigurableObject, CustomReturnableSubMenuHost
 {
+    private LazyOptional<GenericInternalInventory> genericInvOpt = LazyOptional.empty();
+    private final EnumMap<Direction, LazyOptional<GenericInternalInventory>> sidedGenericInvOpts = new EnumMap<>(net.minecraft.core.Direction.class);
+
     /**
      * 基础能量消耗，每tick 200AE，每多一个加速卡，则此数值翻倍，同时机器运行速率也翻倍。
      * <p>
@@ -137,6 +143,58 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
     public GenericStackInv getOutputInv()
     {
         return getMachineComponents().getService(GenericStackInvComponent.class).port(InvPort.OUTPUT);
+    }
+
+    @Override
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable net.minecraft.core.Direction side)
+    {
+        if (cap == appeng.capabilities.Capabilities.GENERIC_INTERNAL_INV)
+        {
+            if (side == null)
+            {
+                if (!genericInvOpt.isPresent())
+                {
+                    GenericInternalInventory inv = resolveGenericInv(null);
+                    genericInvOpt = inv == null ? LazyOptional.empty() : LazyOptional.of(() -> inv);
+                }
+                return genericInvOpt.cast();
+            }
+
+            var opt = sidedGenericInvOpts.get(side);
+            if (opt == null)
+            {
+                GenericInternalInventory inv = resolveGenericInv(side);
+                opt = inv == null ? LazyOptional.empty() : LazyOptional.of(() -> inv);
+                sidedGenericInvOpts.put(side, opt);
+            }
+            return opt.cast();
+        }
+
+        return super.getCapability(cap, side);
+    }
+
+    @Override
+    public void invalidateCaps()
+    {
+        super.invalidateCaps();
+
+        if (genericInvOpt.isPresent()) genericInvOpt.invalidate();
+        genericInvOpt = LazyOptional.empty();
+
+        for (var opt : sidedGenericInvOpts.values())
+        {
+            if (opt.isPresent()) opt.invalidate();
+        }
+        sidedGenericInvOpts.clear();
+    }
+
+    private @Nullable GenericInternalInventory resolveGenericInv(@Nullable net.minecraft.core.Direction side)
+    {
+        if (getMachineComponents().hasService(SideConfigComponent.class))
+        {
+            return getMachineComponents().getService(SideConfigComponent.class).genericInvForSide(side);
+        }
+        return getMachineComponents().getService(GenericStackInvComponent.class).combined();
     }
 
     public int getRecipeProgress()

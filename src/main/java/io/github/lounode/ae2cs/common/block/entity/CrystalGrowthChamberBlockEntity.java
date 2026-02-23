@@ -14,7 +14,6 @@ import appeng.core.definitions.AEItems;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
-import io.github.lounode.ae2cs.api.cap.ProvideCaps;
 import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
 import io.github.lounode.ae2cs.common.init.*;
 import io.github.lounode.ae2cs.common.item.CrystalSeedItem;
@@ -27,14 +26,22 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.EnumMap;
 import java.util.List;
 
-@ProvideCaps(IItemHandler.class)
 public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlockEntity implements IUpgradeableObject,
         CustomReturnableSubMenuHost
 {
+    private LazyOptional<IItemHandler> itemHandlerOpt = LazyOptional.empty();
+    private final EnumMap<Direction, LazyOptional<IItemHandler>> sidedItemHandlerOpts = new EnumMap<>(Direction.class);
+
     /**
      * 晶体催生仓提供的基础生长值
      */
@@ -130,6 +137,59 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
     public InternalInventory getInternalInventory()
     {
         return getMachineComponents().getService(AppEngInvComponent.class).port(InvPort.WORK);
+    }
+
+    @Override
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side)
+    {
+        if (cap == ForgeCapabilities.ITEM_HANDLER)
+        {
+            if (side == null)
+            {
+                if (!itemHandlerOpt.isPresent())
+                {
+                    IItemHandler handler = resolveItemHandler(null);
+                    itemHandlerOpt = handler == null ? LazyOptional.empty() : LazyOptional.of(() -> handler);
+                }
+                return itemHandlerOpt.cast();
+            }
+
+            var opt = sidedItemHandlerOpts.get(side);
+            if (opt == null)
+            {
+                IItemHandler handler = resolveItemHandler(side);
+                opt = handler == null ? LazyOptional.empty() : LazyOptional.of(() -> handler);
+                sidedItemHandlerOpts.put(side, opt);
+            }
+            return opt.cast();
+        }
+
+        return super.getCapability(cap, side);
+    }
+
+    @Override
+    public void invalidateCaps()
+    {
+        super.invalidateCaps();
+
+        if (itemHandlerOpt.isPresent()) itemHandlerOpt.invalidate();
+        itemHandlerOpt = LazyOptional.empty();
+
+        for (var opt : sidedItemHandlerOpts.values())
+        {
+            if (opt.isPresent()) opt.invalidate();
+        }
+        sidedItemHandlerOpts.clear();
+    }
+
+    private @Nullable IItemHandler resolveItemHandler(@Nullable Direction side)
+    {
+        if (getMachineComponents().hasService(SideConfigComponent.class))
+        {
+            var inv = getMachineComponents().getService(SideConfigComponent.class).appEngInvForSide(side);
+            return inv == null ? null : inv.toItemHandler();
+        }
+        return getMachineComponents().getService(AppEngInvComponent.class).combined().toItemHandler();
     }
 
     public void checkActive(boolean active)
