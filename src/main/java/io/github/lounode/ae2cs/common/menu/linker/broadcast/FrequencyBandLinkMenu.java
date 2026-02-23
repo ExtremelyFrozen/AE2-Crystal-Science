@@ -5,7 +5,7 @@ import appeng.api.networking.pathing.ControllerState;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.guisync.GuiSync;
-import appeng.menu.locator.MenuHostLocator;
+import appeng.menu.locator.MenuLocator;
 import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastFrequencyBand;
 import io.github.lounode.ae2cs.api.linker.broadcast.FrequencyBandManager;
 import io.github.lounode.ae2cs.api.linker.broadcast.networking.FrequencyBandLinkInfo;
@@ -106,7 +106,7 @@ public class FrequencyBandLinkMenu extends AEBaseMenu implements CustomReturnabl
         super.broadcastChanges();
     }
 
-    public static void open(ServerPlayer player, MenuHostLocator locator, String selectedBand)
+    public static void open(ServerPlayer player, MenuLocator locator, String selectedBand)
     {
         MenuOpener.open(AECSMenus.FREQUENCY_BAND_LINK_MENU.get(), player, locator);
 

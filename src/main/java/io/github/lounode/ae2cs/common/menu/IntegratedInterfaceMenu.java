@@ -60,7 +60,7 @@ public class IntegratedInterfaceMenu extends UpgradeableMenu<IntegratedInterface
     {
         for (int i = 0; i < getHost().getTerminalPatternInventory().size(); ++i)
         {
-            this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.PROVIDER_PATTERN, getHost().getTerminalPatternInventory(), i), SlotSemantics.ENCODED_PATTERN);
+            this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_PATTERN, getHost().getTerminalPatternInventory(), i), SlotSemantics.ENCODED_PATTERN);
         }
         InternalInventory configWrap = getHost().getConfigInv().createMenuWrapper();
         for (int i = 0; i < getHost().getConfigInv().size(); ++i)

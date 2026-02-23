@@ -7,7 +7,7 @@ import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
-import appeng.menu.locator.MenuHostLocator;
+import appeng.menu.locator.MenuLocator;
 import appeng.menu.slot.InaccessibleSlot;
 import appeng.util.inv.AppEngInternalInventory;
 import com.google.common.primitives.Ints;
@@ -65,7 +65,7 @@ public class IntegratedInterfaceSetStockAmountMenu extends AEBaseMenu implements
     /**
      * Opens the screen to enter the stocked amount for the given player.
      */
-    public static void open(ServerPlayer player, MenuHostLocator locator,
+    public static void open(ServerPlayer player, MenuLocator locator,
                             int slot,
                             AEKey whatToStock, int initialAmount)
     {

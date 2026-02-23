@@ -1,12 +1,12 @@
 package io.github.lounode.ae2cs.common.menu;
 
-import appeng.api.ids.AEComponents;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.util.IConfigManager;
 import appeng.core.definitions.AEItems;
 import appeng.menu.SlotSemantics;
 import appeng.menu.implementations.UpgradeableMenu;
 import appeng.menu.slot.AppEngSlot;
+import io.github.lounode.ae2cs.api.util.PatternHelper;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.me.crafting.ResonatingPatternDetails;
 import io.github.lounode.ae2cs.common.me.menuhost.ResonatingPatternConverterMenuHost;
@@ -42,7 +42,7 @@ public class ResonatingPatternConverterMenu extends UpgradeableMenu<ResonatingPa
                 if (stack.isEmpty()) continue;
 
                 // 谐振样板直接转移至右侧，也许以后可以加一个用于清空位置信息的功能，不过我现在懒得写了
-                if (stack.getItem() == AECSItems.RESONATING_PATTERN.asItem())
+                if (stack.getItem() == AECSItems.RESONATING_PATTERN.get())
                 {
                     ItemStack remaining = insertToRange(inv, stack, LEFT_BOUNDARY, inv.size(), false);
                     if (remaining.isEmpty())
@@ -52,7 +52,7 @@ public class ResonatingPatternConverterMenu extends UpgradeableMenu<ResonatingPa
                     continue;
                 }
 
-                if (stack.getItem() == AEItems.PROCESSING_PATTERN.asItem() && stack.has(AEComponents.ENCODED_PROCESSING_PATTERN))
+                if (stack.getItem() == AEItems.PROCESSING_PATTERN.asItem() && PatternHelper.getAEProcessingPattern(stack) != null)
                 {
                     ItemStack resonating = ResonatingPatternDetails.encode(stack);
                     if (resonating.isEmpty()) continue;

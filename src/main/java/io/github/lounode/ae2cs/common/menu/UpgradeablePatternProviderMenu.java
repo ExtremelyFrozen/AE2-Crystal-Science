@@ -53,7 +53,7 @@ public class UpgradeablePatternProviderMenu extends AEBaseMenu
         var patternInv = logic.getPatternInv();
         for (int x = 0; x < patternInv.size(); x++)
         {
-            this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.PROVIDER_PATTERN,
+            this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_PATTERN,
                             patternInv, x),
                     SlotSemantics.ENCODED_PATTERN);
         }
