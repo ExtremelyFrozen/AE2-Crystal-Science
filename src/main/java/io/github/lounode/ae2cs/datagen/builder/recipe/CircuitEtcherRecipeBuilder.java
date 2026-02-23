@@ -1,11 +1,13 @@
 package io.github.lounode.ae2cs.datagen.builder.recipe;
 
+import com.google.gson.JsonObject;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.common.recipe.SizedIngredient;
 import io.github.lounode.ae2cs.common.recipe.circuit_etcher.CircuitEtcherRecipe;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.Criterion;
+import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.RequirementsStrategy;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
@@ -17,7 +19,9 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,7 +37,7 @@ public class CircuitEtcherRecipeBuilder implements RecipeBuilder
     private final int energyCost;
     private final List<SizedIngredient> inputs = new ArrayList<>(3);
 
-    private final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
+    private final Map<String, CriterionTriggerInstance> criteria = new LinkedHashMap<>();
 
     // 用来自动写配方成就，在没有手写unlockBy条件时，会自动启用
     private final List<ItemPredicate.Builder> autoUnlockPredicates = new ArrayList<>(3);
@@ -89,7 +93,7 @@ public class CircuitEtcherRecipeBuilder implements RecipeBuilder
     }
 
     @Override
-    public @NotNull CircuitEtcherRecipeBuilder unlockedBy(@NotNull String name, @NotNull Criterion<?> criterion)
+    public @NotNull CircuitEtcherRecipeBuilder unlockedBy(@NotNull String name, @NotNull CriterionTriggerInstance criterion)
     {
         this.criteria.put(name, criterion);
         return this;
@@ -111,10 +115,10 @@ public class CircuitEtcherRecipeBuilder implements RecipeBuilder
     @Override
     public void save(Consumer<FinishedRecipe> output, @NotNull ResourceLocation id)
     {
-        Advancement.Builder adv = output.advancement()
+        Advancement.Builder adv = Advancement.Builder.advancement()
                 .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
                 .rewards(AdvancementRewards.Builder.recipe(id))
-                .requirements(AdvancementRequirements.Strategy.OR);
+                .requirements(RequirementsStrategy.OR);
 
         // 如果手写了 unlockedBy，就按手写的来
         if (!this.criteria.isEmpty())
@@ -131,7 +135,7 @@ public class CircuitEtcherRecipeBuilder implements RecipeBuilder
             for (ItemPredicate.Builder p : this.autoUnlockPredicates)
             {
                 String name = uniqueCriterionName("has_input_" + idx++, usedNames);
-                adv.addCriterion(name, InventoryChangeTrigger.TriggerInstance.hasItems(p));
+                adv.addCriterion(name, InventoryChangeTrigger.TriggerInstance.hasItems(p.build()));
             }
 
             if (this.autoUnlockPredicates.isEmpty())
@@ -146,8 +150,8 @@ public class CircuitEtcherRecipeBuilder implements RecipeBuilder
         SizedIngredient b = inputs.size() > 1 ? inputs.get(1) : EMPTY;
         SizedIngredient c = inputs.size() > 2 ? inputs.get(2) : EMPTY;
 
-        var recipe = new CircuitEtcherRecipe(a, b, c, result, energyCost);
-        output.accept(id, recipe, adv.build(id.withPrefix("recipes/")));
+        var recipe = new CircuitEtcherRecipe(id, a, b, c, result, energyCost);
+        output.accept(new Result(id, recipe, adv, id.withPrefix("recipes/")));
     }
 
     @Override
@@ -205,5 +209,65 @@ public class CircuitEtcherRecipeBuilder implements RecipeBuilder
             name = base + "_" + i++;
         }
         return name;
+    }
+
+    private static class Result implements FinishedRecipe
+    {
+        private final ResourceLocation id;
+        private final CircuitEtcherRecipe recipe;
+        private final Advancement.Builder advancement;
+        private final ResourceLocation advancementId;
+
+        private Result(ResourceLocation id, CircuitEtcherRecipe recipe,
+                       Advancement.Builder advancement, ResourceLocation advancementId)
+        {
+            this.id = id;
+            this.recipe = recipe;
+            this.advancement = advancement;
+            this.advancementId = advancementId;
+        }
+
+        @Override
+        public void serializeRecipeData(JsonObject json)
+        {
+            json.addProperty("type", ForgeRegistries.RECIPE_SERIALIZERS.getKey(recipe.getSerializer()).toString());
+            json.add("input_a", recipe.inputA().toJson());
+            json.add("input_b", recipe.inputB().toJson());
+            json.add("input_c", recipe.inputC().toJson());
+
+            JsonObject resultJson = new JsonObject();
+            resultJson.addProperty("item", ForgeRegistries.ITEMS.getKey(recipe.result().getItem()).toString());
+            if (recipe.result().getCount() != 1)
+            {
+                resultJson.addProperty("count", recipe.result().getCount());
+            }
+            json.add("result", resultJson);
+
+            json.addProperty("energy_cost", recipe.energyCost());
+        }
+
+        @Override
+        public @NotNull ResourceLocation getId()
+        {
+            return id;
+        }
+
+        @Override
+        public @NotNull RecipeSerializer<?> getType()
+        {
+            return recipe.getSerializer();
+        }
+
+        @Override
+        public @Nullable JsonObject serializeAdvancement()
+        {
+            return advancement.serializeToJson();
+        }
+
+        @Override
+        public @Nullable ResourceLocation getAdvancementId()
+        {
+            return advancementId;
+        }
     }
 }
