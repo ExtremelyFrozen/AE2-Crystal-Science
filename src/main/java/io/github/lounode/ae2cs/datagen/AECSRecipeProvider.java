@@ -20,6 +20,7 @@ import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.conditions.IConditionBuilder;
+import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -523,6 +524,11 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     }
 
     // 其他工具
+    public static ItemStack enchantedItem(HolderLookup.Provider registries, ItemLike item, int count, RegistryObject<Enchantment> enchantment, int level)
+    {
+        return enchantedItem(registries, item, count, Map.of(ResourceKey.create(Registries.ENCHANTMENT, enchantment.getId()), level));
+    }
+
     public static ItemStack enchantedItem(HolderLookup.Provider registries, ItemLike item, int count, ResourceKey<Enchantment> enchantKey, int level)
     {
         return enchantedItem(registries, item, count, Map.of(enchantKey, level));

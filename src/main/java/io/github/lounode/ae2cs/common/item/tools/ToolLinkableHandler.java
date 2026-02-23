@@ -9,7 +9,6 @@ import appeng.me.helpers.PlayerSource;
 import appeng.util.Platform;
 import io.github.lounode.ae2cs.common.init.AECSEnchantments;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -30,13 +29,7 @@ public class ToolLinkableHandler implements IGridLinkableHandler
             return true;
         else
         {
-            var lookup = CommonHooks.resolveLookup(Registries.ENCHANTMENT);
-            if (lookup == null) return false;
-            var enderLinkOpt = lookup.get(AECSEnchantments.ENDER_LINK);
-            if (enderLinkOpt.isEmpty()) return false;
-            var enderLink = enderLinkOpt.get();
-
-            return stack.getEnchantmentLevel(enderLink) > 0;
+            return stack.getEnchantmentLevel(AECSEnchantments.ENDER_LINK.get()) > 0;
         }
     }
 

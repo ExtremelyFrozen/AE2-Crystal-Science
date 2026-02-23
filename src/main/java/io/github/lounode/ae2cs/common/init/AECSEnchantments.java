@@ -1,151 +1,77 @@
 package io.github.lounode.ae2cs.common.init;
 
-import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
-import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstrapContext;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.entity.EquipmentSlotGroup;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.neoforged.neoforge.common.Tags;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.NotNull;
 
 public final class AECSEnchantments
 {
-    private AECSEnchantments()
-    {
-    }
+    public static final DeferredRegister<Enchantment> ENCHANTMENTS =
+            DeferredRegister.create(ForgeRegistries.ENCHANTMENTS, AECSConstants.MODID);
 
-    private static final List<Def> DEFINITIONS = new ArrayList<>();
-
-    private record Def(
-            ResourceKey<Enchantment> key,
-            TagKey<Item> supportedItemsTag,
-            String descriptionKey,
-            int weight,
-            int maxLevel,
-            Enchantment.Cost minCost,
-            Enchantment.Cost maxCost,
-            int anvilCost,
-            List<EquipmentSlotGroup> slots,
-            boolean showInEnchantingTable
-    )
-    {
-    }
+    private static final EnchantmentCategory TOOLS_CATEGORY =
+            EnchantmentCategory.create("ae2cs_tools", item -> item.builtInRegistryHolder().is(Tags.Items.TOOLS));
 
     /**
      * 末影链接
      */
-    public static final ResourceKey<Enchantment> ENDER_LINK = defineHiddenMarker(
+    public static final RegistryObject<Enchantment> ENDER_LINK = ENCHANTMENTS.register(
             "ender_link",
-            Tags.Items.TOOLS
+            () -> new Enchantment(Enchantment.Rarity.VERY_RARE, TOOLS_CATEGORY, new EquipmentSlot[]{EquipmentSlot.MAINHAND})
+            {
+                @Override
+                public int getMaxLevel()
+                {
+                    return 1;
+                }
+
+                @Override
+                public int getMinCost(int level)
+                {
+                    return 1;
+                }
+
+                @Override
+                public int getMaxCost(int level)
+                {
+                    return 1;
+                }
+
+                @Override
+                public boolean isTradeable()
+                {
+                    return false;
+                }
+
+                @Override
+                public boolean isDiscoverable()
+                {
+                    return false;
+                }
+
+                @Override
+                public boolean canApplyAtEnchantingTable(@NotNull ItemStack stack)
+                {
+                    return false;
+                }
+            }
     );
 
-    private static ResourceKey<Enchantment> defineHiddenMarker(String path, TagKey<Item> supportedItemsTag)
+    private AECSEnchantments()
     {
-        return define(
-                path,
-                supportedItemsTag,
-                null,
-                1,
-                1,
-                new Enchantment.Cost(1, 0),
-                new Enchantment.Cost(1, 0),
-                1,
-                List.of(EquipmentSlotGroup.ANY),
-                false
-        );
     }
 
-    private static ResourceKey<Enchantment> define(
-            String path,
-            TagKey<Item> supportedItemsTag,
-            String descriptionKey,
-            int weight,
-            int maxLevel,
-            Enchantment.Cost minCost,
-            Enchantment.Cost maxCost,
-            int anvilCost,
-            List<EquipmentSlotGroup> slots,
-            boolean showInEnchantingTable
-    )
+    public static void register(IEventBus eventBus)
     {
-        ResourceKey<Enchantment> key = ResourceKey.create(Registries.ENCHANTMENT, AE2CrystalScience.makeId(path));
-
-        String finalDescKey = (descriptionKey == null || descriptionKey.isBlank())
-                ? ("enchantment." + AECSConstants.MODID + "." + path)
-                : descriptionKey;
-
-        DEFINITIONS.add(new Def(
-                key,
-                supportedItemsTag,
-                finalDescKey,
-                weight,
-                maxLevel,
-                minCost,
-                maxCost,
-                anvilCost,
-                slots == null ? List.of(EquipmentSlotGroup.ANY) : slots,
-                showInEnchantingTable
-        ));
-
-        return key;
+        ENCHANTMENTS.register(eventBus);
     }
 
-    public static void bootstrap(BootstrapContext<Enchantment> ctx)
-    {
-        HolderGetter<Item> items = ctx.lookup(Registries.ITEM);
-
-        for (Def def : DEFINITIONS)
-        {
-            register(ctx, items, def);
-        }
-    }
-
-    private static void register(BootstrapContext<Enchantment> ctx, HolderGetter<Item> items, Def def)
-    {
-        HolderSet<Item> supportedItems = items.getOrThrow(def.supportedItemsTag());
-
-        Optional<HolderSet<Item>> primaryItems = def.showInEnchantingTable()
-                ? Optional.empty()
-                : Optional.of(emptyPrimary());
-
-        Enchantment enchantment = new Enchantment(
-                Component.translatable(def.descriptionKey()),
-                new Enchantment.EnchantmentDefinition(
-                        supportedItems,
-                        primaryItems,
-                        def.weight(),
-                        def.maxLevel(),
-                        def.minCost(),
-                        def.maxCost(),
-                        def.anvilCost(),
-                        def.slots()
-                ),
-                HolderSet.empty(),
-                DataComponentMap.builder().build()
-        );
-
-        ctx.register(def.key(), enchantment);
-    }
-
-    private static HolderSet<Item> emptyPrimary()
-    {
-        return HolderSet.direct(List.of());
-    }
-
-    public static ResourceLocation id(ResourceKey<Enchantment> key)
-    {
-        return key.location();
-    }
 }
