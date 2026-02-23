@@ -29,7 +29,7 @@ public class ResonatingPatternListener
         ItemStack stack = player.getMainHandItem();
         if (!(stack.getItem() instanceof ResonatingPatternItem)) return;
 
-        var encoded = stack.get(AECSDataComponents.ENCODED_RESONATING_PATTERN.get());
+        var encoded = AECSDataComponents.getEncodedResonatingPattern(stack);
         if (encoded == null) return;
 
         double dy = event.getScrollDelta();

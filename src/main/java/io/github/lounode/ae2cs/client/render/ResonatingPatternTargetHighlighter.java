@@ -12,16 +12,16 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.FastColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import org.joml.Matrix4f;
 
-import static net.neoforged.neoforge.client.event.RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS;
+import static net.minecraftforge.client.event.RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS;
+
 
 /**
  * 在手持谐振样板时渲染目标面
@@ -29,7 +29,7 @@ import static net.neoforged.neoforge.client.event.RenderLevelStageEvent.Stage.AF
  * - 未选中：蓝色半透明
  * - 渲染所有存在目标的 sparse input
  */
-@EventBusSubscriber(modid = AECSConstants.MODID, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = AECSConstants.MODID, value = Dist.CLIENT)
 public class ResonatingPatternTargetHighlighter
 {
     // 选中：绿色 + 半透明
@@ -66,7 +66,7 @@ public class ResonatingPatternTargetHighlighter
         if (stack.isEmpty())
             return;
 
-        EncodedResonatingPattern encoded = stack.get(AECSDataComponents.ENCODED_RESONATING_PATTERN.get());
+        EncodedResonatingPattern encoded = AECSDataComponents.getEncodedResonatingPattern(stack);
         if (encoded == null)
             return;
 
@@ -74,7 +74,7 @@ public class ResonatingPatternTargetHighlighter
         if (size <= 0)
             return;
 
-        int sel = stack.getOrDefault(AECSDataComponents.RESONATING_PATTERN_SELECTED_INPUT.get(), 0);
+        int sel = AECSDataComponents.getResonatingPatternSelectedInput(stack, 0);
         sel = ResonatingPatternDetails.clampSelected(sel, size);
 
         Level level = player.level();
@@ -128,11 +128,11 @@ public class ResonatingPatternTargetHighlighter
     private static ItemStack getHeldResonatingPattern(LocalPlayer player)
     {
         ItemStack main = player.getMainHandItem();
-        if (main.get(AECSDataComponents.ENCODED_RESONATING_PATTERN.get()) != null)
+        if (AECSDataComponents.getEncodedResonatingPattern(main) != null)
             return main;
 
         ItemStack off = player.getOffhandItem();
-        if (off.get(AECSDataComponents.ENCODED_RESONATING_PATTERN.get()) != null)
+        if (AECSDataComponents.getEncodedResonatingPattern(off) != null)
             return off;
 
         return ItemStack.EMPTY;
@@ -177,11 +177,9 @@ public class ResonatingPatternTargetHighlighter
                                      float x3, float y3, float z3,
                                      int r, int g, int b, int a)
     {
-        int argb = FastColor.ARGB32.color(a, r, g, b);
-
-        vc.addVertex(mat, x0, y0, z0).setColor(argb);
-        vc.addVertex(mat, x1, y1, z1).setColor(argb);
-        vc.addVertex(mat, x2, y2, z2).setColor(argb);
-        vc.addVertex(mat, x3, y3, z3).setColor(argb);
+        vc.vertex(mat, x0, y0, z0).color(r, g, b, a).endVertex();
+        vc.vertex(mat, x1, y1, z1).color(r, g, b, a).endVertex();
+        vc.vertex(mat, x2, y2, z2).color(r, g, b, a).endVertex();
+        vc.vertex(mat, x3, y3, z3).color(r, g, b, a).endVertex();
     }
 }
