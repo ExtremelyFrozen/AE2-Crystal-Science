@@ -10,7 +10,6 @@ import io.github.lounode.ae2cs.common.me.logic.QuartzOscillatorClockHost;
 import io.github.lounode.ae2cs.common.me.logic.QuartzOscillatorClockLogic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -106,17 +105,17 @@ public class QuartzOscillatorClockBlockEntity extends AENetworkBlockEntity imple
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries)
+    public void saveAdditional(CompoundTag data)
     {
-        super.saveAdditional(data, registries);
-        this.logic.writeToNBT(data, registries);
+        super.saveAdditional(data);
+        this.logic.writeToNBT(data);
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries)
+    public void loadTag(CompoundTag data)
     {
-        super.loadTag(data, registries);
-        this.logic.readFromNBT(data, registries);
+        super.loadTag(data);
+        this.logic.readFromNBT(data);
     }
 
     @Override

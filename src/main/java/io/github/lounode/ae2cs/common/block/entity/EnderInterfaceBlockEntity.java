@@ -1,22 +1,21 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
-import appeng.api.AECapabilities;
 import appeng.blockentity.misc.InterfaceBlockEntity;
 import appeng.helpers.InterfaceLogic;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
-import appeng.menu.locator.MenuHostLocator;
+import appeng.menu.locator.MenuLocator;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 import io.github.lounode.ae2cs.common.me.logic.EnderInterfaceHost;
 import io.github.lounode.ae2cs.common.me.logic.EnderInterfaceLogic;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 public class EnderInterfaceBlockEntity extends InterfaceBlockEntity implements EnderInterfaceHost
 {
@@ -68,7 +67,7 @@ public class EnderInterfaceBlockEntity extends InterfaceBlockEntity implements E
     }
 
     @Override
-    public void openMenu(Player player, MenuHostLocator locator)
+    public void openMenu(Player player, MenuLocator locator)
     {
         MenuOpener.open(AECSMenus.ENDER_INTERFACE_MENU.get(), player, locator);
     }
@@ -98,8 +97,21 @@ public class EnderInterfaceBlockEntity extends InterfaceBlockEntity implements E
             this.markForClientUpdate();
     }
 
+    /**
+     * 来自高版本移植
+     */
+    public void markForClientUpdate()
+    {
+        this.requestModelDataUpdate();
+
+        if (this.level != null && !this.isRemoved() && !notLoaded())
+        {
+            this.level.sendBlockUpdated(this.worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
+        }
+    }
+
     @Override
-    protected void writeToStream(RegistryFriendlyByteBuf data)
+    protected void writeToStream(FriendlyByteBuf data)
     {
         super.writeToStream(data);
         data.writeBoolean(this.getEnderInterfaceLogic().isRenderRangeInClient());
@@ -107,7 +119,7 @@ public class EnderInterfaceBlockEntity extends InterfaceBlockEntity implements E
     }
 
     @Override
-    protected boolean readFromStream(RegistryFriendlyByteBuf data)
+    protected boolean readFromStream(FriendlyByteBuf data)
     {
         super.readFromStream(data);
         this.getEnderInterfaceLogic().setRenderRangeInClient(data.readBoolean());

@@ -19,6 +19,7 @@ import appeng.recipes.AERecipeTypes;
 import appeng.recipes.entropy.EntropyMode;
 import appeng.recipes.entropy.EntropyRecipe;
 import appeng.util.ConfigInventory;
+import appeng.util.ConfigManager;
 import io.github.lounode.ae2cs.api.cap.ProvideCaps;
 import io.github.lounode.ae2cs.api.settings.AECSSettings;
 import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
@@ -28,15 +29,15 @@ import io.github.lounode.ae2cs.common.machine.component.GenericStackInvComponent
 import io.github.lounode.ae2cs.common.machine.component.InvPort;
 import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -65,7 +66,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
     /**
      * 升级仓
      */
-    private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK,
+    private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK.get(),
             4, this::saveChanges);
 
     private final IConfigManager configManager;
@@ -74,7 +75,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
      * 当前执行的配方
      */
     @Nullable
-    private RecipeHolder<EntropyRecipe> activeRecipe;
+    private EntropyRecipe activeRecipe;
 
     /**
      * 当前执行配方的id，在重新加载时保证机器运行进展不会因为配方检查被刷新掉
@@ -104,20 +105,19 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
         super(blockEntityType, pos, blockState,
                 80000, false, AccessRestriction.WRITE);
 
-        configManager = IConfigManager.builder(this::onConfigChange)
-                .registerSetting(AECSSettings.ENTROPY_CHANGE_MODE, EntropyMode.HEAT)
-                .build();
+        configManager = new ConfigManager(this::onConfigChange);
+        configManager.registerSetting(AECSSettings.ENTROPY_CHANGE_MODE, EntropyMode.HEAT);
 
         getMainNode().setIdlePowerUsage(0);
         actionSource = IActionSource.ofMachine(this);
 
-        ConfigInventory inputInv = ConfigInventory.storage(1)
-                .changeListener(() -> {
+        ConfigInventory inputInv = ConfigInventory.storage(1,
+                () -> {
                     needRefreshRecipeState = true;
                     setChanged();
-                }).build();
-        ConfigInventory outputInv = ConfigInventory.storage(4)
-                .changeListener(this::setChanged).build();
+                }
+        );
+        ConfigInventory outputInv = ConfigInventory.storage(4, this::setChanged);
         inputInv.useRegisteredCapacities();
         outputInv.useRegisteredCapacities();
 
@@ -204,7 +204,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
         }
 
         Level level = getLevel();
-        EntropyRecipe recipe = activeRecipe.value();
+        EntropyRecipe recipe = activeRecipe;
 
         // 2) 若未完成：推进进度 + 扣能量
         if (recipeProgress < activeRecipeEnergyCost)
@@ -293,8 +293,8 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
         }
 
 
-        var holder = findRecipe(level, getEntropyMode(), inputBlockState, inputFluidState);
-        if (holder == null)
+        var recipe = findRecipe(level, getEntropyMode(), inputBlockState, inputFluidState);
+        if (recipe == null)
         {
             // 没有配方，清空进度
             activeRecipe = null;
@@ -304,14 +304,14 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
         }
 
         // 配方未变：保持进度，仅刷新 match/time
-        if (activeRecipe != null && activeRecipe.id().equals(holder.id()))
+        if (activeRecipe != null && activeRecipe.getId().equals(recipe.getId()))
         {
             activeRecipeEnergyCost = RECIPE_DEFAULT_COST_ENERGY;
             return;
         }
 
         // 配方变了：切换配方，重置进度
-        activeRecipe = holder;
+        activeRecipe = recipe;
         activeRecipeEnergyCost = RECIPE_DEFAULT_COST_ENERGY;
         recipeProgress = 0;
     }
@@ -321,70 +321,76 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
      */
     private boolean consumeInputs(EntropyRecipe recipe)
     {
-        EntropyRecipe.Input required = recipe.getInput();
+        // 现有实现：input 由 nullable block/fluid 表示
+        Block inBlock = recipe.getInputBlock();
+        Fluid inFluid = recipe.getInputFluid();
 
         // 模拟抽取
-        boolean canConsume = required.block().map(blockInput -> {
-            Item blockItem = blockInput.block().asItem();
+        boolean canConsume = true;
+
+        if (inBlock != null)
+        {
+            Item blockItem = inBlock.asItem();
             if (blockItem != Items.AIR)
             {
-                return getInputInv().extract(0, AEItemKey.of(blockItem), 1, Actionable.SIMULATE) >= 1;
+                canConsume = getInputInv().extract(0, AEItemKey.of(blockItem), 1, Actionable.SIMULATE) >= 1;
             }
-            else
-                return true;
-        }).orElse(true);
-        canConsume = canConsume && required.fluid().map(fluidInput -> {
-            Fluid fluid = fluidInput.fluid();
-            if (fluid != Fluids.EMPTY)
+        }
+
+        if (canConsume && inFluid != null)
+        {
+            if (inFluid != Fluids.EMPTY)
             {
-                return getInputInv().extract(0, AEFluidKey.of(fluid), 1000, Actionable.SIMULATE) >= 1000;
+                canConsume = getInputInv().extract(0, AEFluidKey.of(inFluid), 1000, Actionable.SIMULATE) >= 1000;
             }
-            else
-                return true;
-        }).orElse(true);
+        }
+
         if (!canConsume) return false;
 
         // 实际抽取
-        required.block().ifPresent(blockInput -> {
-            Item blockItem = blockInput.block().asItem();
+        if (inBlock != null)
+        {
+            Item blockItem = inBlock.asItem();
             if (blockItem != Items.AIR)
             {
                 getInputInv().extract(0, AEItemKey.of(blockItem), 1, Actionable.MODULATE);
             }
-        });
-        required.fluid().ifPresent(fluidInput -> {
-            Fluid fluid = fluidInput.fluid();
-            if (fluid != Fluids.EMPTY)
+        }
+
+        if (inFluid != null)
+        {
+            if (inFluid != Fluids.EMPTY)
             {
-                getInputInv().extract(0, AEFluidKey.of(fluid), 1000, Actionable.MODULATE);
+                getInputInv().extract(0, AEFluidKey.of(inFluid), 1000, Actionable.MODULATE);
             }
-        });
+        }
+
         return true;
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries)
+    public void saveAdditional(CompoundTag data)
     {
-        super.saveAdditional(data, registries);
-        this.configManager.writeToNBT(data, registries);
-        upgrades.writeToNBT(data, "upgrades", registries);
+        super.saveAdditional(data);
+        this.configManager.writeToNBT(data);
+        upgrades.writeToNBT(data, "upgrades");
         data.putInt("recipe_progress", recipeProgress);
         if (activeRecipe != null)
         {
-            data.putString("active_recipe_id", activeRecipe.id().toString());
+            data.putString("active_recipe_id", activeRecipe.getId().toString());
         }
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries)
+    public void loadTag(CompoundTag data)
     {
-        super.loadTag(data, registries);
-        this.configManager.readFromNBT(data, registries);
-        upgrades.readFromNBT(data, "upgrades", registries);
+        super.loadTag(data);
+        this.configManager.readFromNBT(data);
+        upgrades.readFromNBT(data, "upgrades");
         recipeProgress = data.getInt("recipe_progress");
         if (data.contains("active_recipe_id"))
         {
-            activeRecipeId = ResourceLocation.parse(data.getString("active_recipe_id"));
+            activeRecipeId = ResourceLocation.tryParse(data.getString("active_recipe_id"));
         }
     }
 
@@ -394,8 +400,8 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
         super.onLoad();
         if (activeRecipeId != null && level != null)
         {
-            Optional<RecipeHolder<?>> opt = level.getRecipeManager().byKey(activeRecipeId);
-            opt.ifPresent(recipeHolder -> activeRecipe = (RecipeHolder<EntropyRecipe>) recipeHolder);
+            Optional<? extends Recipe<?>> opt = level.getRecipeManager().byKey(activeRecipeId);
+            opt.ifPresent(recipeHolder -> activeRecipe = (EntropyRecipe) recipeHolder);
         }
         if (level != null && !level.isClientSide())
         {
@@ -430,15 +436,14 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
      * 用来找出对应的配方
      */
     @Nullable
-    private static RecipeHolder<EntropyRecipe> findRecipe(Level level, EntropyMode mode, BlockState blockState,
-                                                          FluidState fluidState)
+    private static EntropyRecipe findRecipe(Level level, EntropyMode mode, BlockState blockState,
+                                            FluidState fluidState)
     {
-        for (var holder : level.getRecipeManager().byType(AERecipeTypes.ENTROPY))
+        for (var recipe : level.getRecipeManager().byType(AERecipeTypes.ENTROPY).values())
         {
-            var recipe = holder.value();
             if (recipe.matches(mode, blockState, fluidState))
             {
-                return holder;
+                return recipe;
             }
         }
         return null;
@@ -450,27 +455,34 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
     private static List<GenericStack> getRecipeOutput(EntropyRecipe recipe)
     {
         List<GenericStack> outputList = new ArrayList<>();
-        EntropyRecipe.Output output = recipe.getOutput();
-        output.block().ifPresent(blockOutput -> {
-            Item blockItem = blockOutput.block().asItem();
+
+        Block outBlock = recipe.getOutputBlock();
+        if (outBlock != null)
+        {
+            Item blockItem = outBlock.asItem();
             if (blockItem != Items.AIR)
             {
                 outputList.add(new GenericStack(AEItemKey.of(blockItem), 1));
             }
-        });
-        output.fluid().ifPresent(fluidOutput -> {
-            Fluid fluid = fluidOutput.fluid();
-            if (fluid != Fluids.EMPTY)
+        }
+
+        Fluid outFluid = recipe.getOutputFluid();
+        if (outFluid != null)
+        {
+            if (outFluid != Fluids.EMPTY)
             {
-                outputList.add(new GenericStack(AEFluidKey.of(fluid), 1000));
+                outputList.add(new GenericStack(AEFluidKey.of(outFluid), 1000));
             }
-        });
-        output.drops().forEach(outputDrop -> {
-            if (!outputDrop.isEmpty())
+        }
+
+        for (ItemStack drop : recipe.getDrops())
+        {
+            if (!drop.isEmpty())
             {
-                outputList.add(new GenericStack(AEItemKey.of(outputDrop), outputDrop.getCount()));
+                outputList.add(new GenericStack(AEItemKey.of(drop), drop.getCount()));
             }
-        });
+        }
+
         return outputList;
     }
 }

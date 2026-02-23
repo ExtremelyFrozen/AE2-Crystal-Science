@@ -15,10 +15,8 @@ import io.github.lounode.ae2cs.common.init.AECSDataComponents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -670,9 +668,9 @@ public class EnderBroadcasterBlockEntity extends AENetworkedComponentBlockEntity
     // ---------------- NBT ----------------
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries)
+    public void saveAdditional(CompoundTag data)
     {
-        super.saveAdditional(data, registries);
+        super.saveAdditional(data);
         data.putString("band_id", bandId);
         data.putString("connection_type", connectionType.name());
         data.putBoolean("enabled_custom_channel", enabledCustomChannel);
@@ -681,9 +679,9 @@ public class EnderBroadcasterBlockEntity extends AENetworkedComponentBlockEntity
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries)
+    public void loadTag(CompoundTag data)
     {
-        super.loadTag(data, registries);
+        super.loadTag(data);
         bandId = data.getString("band_id");
 
         String t = data.getString("connection_type");
@@ -695,7 +693,7 @@ public class EnderBroadcasterBlockEntity extends AENetworkedComponentBlockEntity
     }
 
     @Override
-    protected void writeToStream(RegistryFriendlyByteBuf data)
+    protected void writeToStream(FriendlyByteBuf data)
     {
         super.writeToStream(data);
         data.writeUtf(bandId);
@@ -704,7 +702,7 @@ public class EnderBroadcasterBlockEntity extends AENetworkedComponentBlockEntity
     }
 
     @Override
-    protected boolean readFromStream(RegistryFriendlyByteBuf data)
+    protected boolean readFromStream(FriendlyByteBuf data)
     {
         super.readFromStream(data);
         this.bandId = data.readUtf();
@@ -716,7 +714,7 @@ public class EnderBroadcasterBlockEntity extends AENetworkedComponentBlockEntity
     @Override
     public ItemStack getMainMenuIcon()
     {
-        return AECSBlocks.ENDER_BROADCASTER_BLOCK.toStack();
+        return new ItemStack(AECSBlocks.ENDER_BROADCASTER_BLOCK.get());
     }
 
     public enum ConnectionType

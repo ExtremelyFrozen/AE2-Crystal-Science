@@ -348,20 +348,20 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
         level.updateNeighbourForOutputSignal(pos, block);
     }
 
-    public void writeToNBT(CompoundTag tag, HolderLookup.Provider registries)
+    public void writeToNBT(CompoundTag tag)
     {
-        this.upgrades.writeToNBT(tag, "upgrades", registries);
-        this.cm.writeToNBT(tag, registries);
+        this.upgrades.writeToNBT(tag, "upgrades");
+        this.cm.writeToNBT(tag);
 
         tag.putInt("pulse_width_ticks", pulseWidthTicks);
         tag.putInt("current_hold", this.currentHold);
         tag.putInt("current_countdown", this.currentCountDown);
     }
 
-    public void readFromNBT(CompoundTag tag, HolderLookup.Provider registries)
+    public void readFromNBT(CompoundTag tag)
     {
-        this.upgrades.readFromNBT(tag, "upgrades", registries);
-        this.cm.readFromNBT(tag, registries);
+        this.upgrades.readFromNBT(tag, "upgrades");
+        this.cm.readFromNBT(tag);
 
         this.pulseWidthTicks = tag.getInt("pulse_width_ticks");
         this.currentHold = Math.max(1, tag.getInt("current_hold"));

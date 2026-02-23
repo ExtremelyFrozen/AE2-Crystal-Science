@@ -6,7 +6,7 @@ import appeng.blockentity.crafting.PatternProviderBlockEntity;
 import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
-import appeng.menu.locator.MenuHostLocator;
+import appeng.menu.locator.MenuLocator;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
@@ -58,7 +58,7 @@ public class ResonatingPatternProviderBlockEntity extends PatternProviderBlockEn
     }
 
     @Override
-    public void openMenu(Player player, MenuHostLocator locator)
+    public void openMenu(Player player, MenuLocator locator)
     {
         MenuOpener.open(AECSMenus.RESONATING_PATTERN_PROVIDER_MENU.get(), player, locator);
     }
@@ -72,13 +72,13 @@ public class ResonatingPatternProviderBlockEntity extends PatternProviderBlockEn
     @Override
     public AEItemKey getTerminalIcon()
     {
-        return AEItemKey.of(AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK);
+        return AEItemKey.of(AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK.get());
     }
 
     @Override
     public ItemStack getMainMenuIcon()
     {
-        return AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK.toStack();
+        return new ItemStack(AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK.get());
     }
 
     @Override

@@ -23,12 +23,10 @@ import io.github.lounode.ae2cs.common.machine.component.InvPort;
 import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -63,7 +61,7 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
     private int growthNum = 0;
 
     // 升级卡仓 4卡槽 包含四个加速卡
-    private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK, 4, this::onUpgradesChanged);
+    private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK.get(), 4, this::onUpgradesChanged);
 
     private int workTickCountDown = 10;
 
@@ -153,17 +151,17 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
 
     // inv的save与load均已由AEBaseInvBlockEntity处理
     @Override
-    public void saveAdditional(CompoundTag tag, HolderLookup.Provider registries)
+    public void saveAdditional(CompoundTag tag)
     {
-        super.saveAdditional(tag, registries);
-        this.upgrades.writeToNBT(tag, "interface_upgrades", registries);
+        super.saveAdditional(tag);
+        this.upgrades.writeToNBT(tag, "interface_upgrades");
     }
 
     @Override
-    public void loadTag(CompoundTag tag, HolderLookup.Provider registries)
+    public void loadTag(CompoundTag tag)
     {
-        super.loadTag(tag, registries);
-        this.upgrades.readFromNBT(tag, "interface_upgrades", registries);
+        super.loadTag(tag);
+        this.upgrades.readFromNBT(tag, "interface_upgrades");
     }
 
     // load完成之后，且level被注入后
@@ -233,7 +231,7 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
             }
             else if (level.getBlockEntity(getBlockPos().relative(dir)) instanceof IUpgradeableObject upgradeableObject)
             {
-                if (upgradeableObject.isUpgradedWith(AECSItems.crystalGrowthCard))
+                if (upgradeableObject.isUpgradedWith(AECSItems.crystalGrowthCard.get()))
                     growthNum++;
             }
         }

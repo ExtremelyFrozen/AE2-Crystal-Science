@@ -22,7 +22,6 @@ import io.github.lounode.ae2cs.common.machine.component.InvPort;
 import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -47,12 +46,12 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
                 1000000, false, AccessRestriction.READ);
         this.getMainNode().setIdlePowerUsage(0);
 
-        this.upgrades = UpgradeInventories.forMachine(AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK, 3, this::onUpgradesChange);
+        this.upgrades = UpgradeInventories.forMachine(AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK.get(), 3, this::onUpgradesChange);
 
-        ConfigInventory inv = ConfigInventory.storage(1)
-                .slotFilter(input -> input.getPrimaryKey() instanceof PureCrystalItem)
-                .changeListener(this::saveChanges)
-                .build();
+        ConfigInventory inv = ConfigInventory.storage(
+                input -> input.getPrimaryKey() instanceof PureCrystalItem,
+                1,
+                this::saveChanges);
         inv.useRegisteredCapacities();
 
         GenericStackInvComponent component = new GenericStackInvComponent();
@@ -98,20 +97,20 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries)
+    public void saveAdditional(CompoundTag data)
     {
-        super.saveAdditional(data, registries);
-        this.upgrades.writeToNBT(data, "upgrades", registries);
+        super.saveAdditional(data);
+        this.upgrades.writeToNBT(data, "upgrades");
         data.putInt("max_burn_time", this.maxBurnTime);
         data.putInt("burn_time", this.remainingBurnTime);
         data.putDouble("energy_per_tick", this.energyPerTick);
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries)
+    public void loadTag(CompoundTag data)
     {
-        super.loadTag(data, registries);
-        this.upgrades.readFromNBT(data, "upgrades", registries);
+        super.loadTag(data);
+        this.upgrades.readFromNBT(data, "upgrades");
         this.maxBurnTime = data.getInt("max_burn_time");
         this.remainingBurnTime = data.getInt("burn_time");
         this.energyPerTick = data.getDouble("energy_per_tick");

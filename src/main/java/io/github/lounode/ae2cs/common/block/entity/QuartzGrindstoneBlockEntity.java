@@ -19,14 +19,12 @@ import io.github.lounode.ae2cs.common.recipe.SizedIngredient;
 import io.github.lounode.ae2cs.common.recipe.crystal_pulverizer.CrystalPulverizerRecipe;
 import io.github.lounode.ae2cs.common.recipe.input.SingleItemStackRecipeInput;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -44,7 +42,7 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
      * 当前执行的配方
      */
     @Nullable
-    private RecipeHolder<CrystalPulverizerRecipe> activeRecipe;
+    private CrystalPulverizerRecipe activeRecipe;
 
     /**
      * 当前执行配方的id，在重新加载时保证机器运行进展不会因为配方检查被刷新掉
@@ -192,7 +190,7 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
         }
 
         Level level = getLevel();
-        CrystalPulverizerRecipe recipe = activeRecipe.value();
+        CrystalPulverizerRecipe recipe = activeRecipe;
 
         // 2) 若未完成：推进进度 + 扣能量
         if (recipeProgress < activeRecipeEnergyCost)
@@ -277,8 +275,7 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
             return;
         }
 
-        var holder = opt.get();
-        var recipe = holder.value();
+        var recipe = opt.get();
 
         boolean match = recipe.matches(input, level);
         if (!match)
@@ -291,14 +288,14 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
         }
 
         // 配方未变：保持进度，仅刷新 match/time
-        if (activeRecipe != null && activeRecipe.id().equals(holder.id()))
+        if (activeRecipe != null && activeRecipe.getId().equals(recipe.getId()))
         {
             activeRecipeEnergyCost = recipe.energyCost();
             return;
         }
 
         // 配方变了：切换配方，重置进度
-        activeRecipe = holder;
+        activeRecipe = recipe;
         activeRecipeEnergyCost = recipe.energyCost();
         recipeProgress = 0;
     }
@@ -336,25 +333,25 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries)
+    public void saveAdditional(CompoundTag data)
     {
-        super.saveAdditional(data, registries);
+        super.saveAdditional(data);
         data.putInt("recipe_progress", recipeProgress);
         if (activeRecipe != null)
         {
-            data.putString("active_recipe_id", activeRecipe.id().toString());
+            data.putString("active_recipe_id", activeRecipe.getId().toString());
         }
         // 配方时间会由后续的update根据配方更新
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries)
+    public void loadTag(CompoundTag data)
     {
-        super.loadTag(data, registries);
+        super.loadTag(data);
         recipeProgress = data.getInt("recipe_progress");
         if (data.contains("active_recipe_id"))
         {
-            activeRecipeId = ResourceLocation.parse(data.getString("active_recipe_id"));
+            activeRecipeId = ResourceLocation.tryParse(data.getString("active_recipe_id"));
         }
     }
 
@@ -364,8 +361,8 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
         super.onLoad();
         if (activeRecipeId != null && level != null)
         {
-            Optional<RecipeHolder<?>> opt = level.getRecipeManager().byKey(activeRecipeId);
-            opt.ifPresent(recipeHolder -> activeRecipe = (RecipeHolder<CrystalPulverizerRecipe>) recipeHolder);
+            Optional<? extends Recipe<?>> opt = level.getRecipeManager().byKey(activeRecipeId);
+            opt.ifPresent(recipeHolder -> activeRecipe = (CrystalPulverizerRecipe) recipeHolder);
         }
         updateActiveRecipe();
     }

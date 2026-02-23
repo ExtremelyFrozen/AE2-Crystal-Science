@@ -1,6 +1,5 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
-import appeng.api.AECapabilities;
 import appeng.api.networking.*;
 import appeng.api.networking.pathing.ChannelMode;
 import appeng.api.networking.pathing.ControllerState;
@@ -14,7 +13,9 @@ import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.blockentity.networking.ControllerBlockEntity;
+import appeng.capabilities.Capabilities;
 import appeng.parts.CableBusContainer;
+import appeng.util.ConfigManager;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.render.ICustomRenderBounding;
 import io.github.lounode.ae2cs.api.settings.AECSSettings;
@@ -27,31 +28,33 @@ import io.github.lounode.ae2cs.util.ChunkHelper;
 import io.github.lounode.ae2cs.util.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.level.BlockEvent;
+import net.minecraftforge.event.level.BlockEvent;
+import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.event.server.ServerStoppedEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-@EventBusSubscriber(modid = AECSConstants.MODID)
+@Mod.EventBusSubscriber(modid = AECSConstants.MODID)
 public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements ServerTickingBlockEntity,
         IUpgradeableObject, ClientTickingBlockEntity, IConfigurableObject, ICustomRenderBounding
 {
@@ -91,11 +94,10 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     {
         super(blockEntityType, pos, blockState);
         getMainNode().setFlags(GridFlags.DENSE_CAPACITY);
-        configManager = IConfigManager.builder(this::onConfigChanged)
-                .registerSetting(AECSSettings.AUTO_LINK_MODE, AutoLinkMode.ENABLE)
-                .registerSetting(AECSSettings.AUTO_LINK_CABLE_MODE, AutoLinkCableMode.ENABLE)
-                .registerSetting(AECSSettings.SHOW_RANGE_MODE, ShowRangeMode.HIDE_RANGE)
-                .build();
+        configManager = new ConfigManager(this::onConfigChanged);
+        configManager.registerSetting(AECSSettings.AUTO_LINK_MODE, AutoLinkMode.ENABLE);
+        configManager.registerSetting(AECSSettings.AUTO_LINK_CABLE_MODE, AutoLinkCableMode.ENABLE);
+        configManager.registerSetting(AECSSettings.SHOW_RANGE_MODE, ShowRangeMode.HIDE_RANGE);
     }
 
     public boolean isActive()
@@ -131,6 +133,19 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
             this.linkDistance = newLinkDistance;
             markForClientUpdate();
             setChanged();
+        }
+    }
+
+    /**
+     * 来自高版本移植
+     */
+    public void markForClientUpdate()
+    {
+        this.requestModelDataUpdate();
+
+        if (this.level != null && !this.isRemoved() && !notLoaded())
+        {
+            this.level.sendBlockUpdated(this.worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
         }
     }
 
@@ -399,10 +414,10 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries)
+    public void saveAdditional(CompoundTag data)
     {
-        super.saveAdditional(data, registries);
-        configManager.writeToNBT(data, registries);
+        super.saveAdditional(data);
+        configManager.writeToNBT(data);
         data.putInt("link_distance", this.linkDistance);
 
         ListTag linkPositions = new ListTag();
@@ -410,9 +425,7 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
         {
             try
             {
-                Tag t = BlockPos.CODEC
-                        .encodeStart(NbtOps.INSTANCE, pos)
-                        .getOrThrow();
+                Tag t = NbtUtils.writeBlockPos(pos);
                 linkPositions.add(t);
             }
             catch (Throwable e)
@@ -425,10 +438,10 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries)
+    public void loadTag(CompoundTag data)
     {
-        super.loadTag(data, registries);
-        this.configManager.readFromNBT(data, registries);
+        super.loadTag(data);
+        this.configManager.readFromNBT(data);
         this.linkDistance = data.getInt("link_distance");
 
         linkedPositions.clear();
@@ -440,11 +453,8 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
         {
             try
             {
-                BlockPos.CODEC
-                        .parse(NbtOps.INSTANCE, t)
-                        .resultOrPartial(msg -> {
-                        })
-                        .ifPresent(pos -> linkedPositions.add(pos.immutable()));
+                BlockPos pos = NbtUtils.readBlockPos((CompoundTag) t);
+                linkedPositions.add(pos);
             }
             catch (Throwable e)
             {
@@ -467,7 +477,7 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
 
     // 把重要信息和pengding和linked写表，用于客户端显示
     @Override
-    protected void writeToStream(RegistryFriendlyByteBuf data)
+    protected void writeToStream(FriendlyByteBuf data)
     {
         super.writeToStream(data);
         data.writeBoolean(this.autoMode);
@@ -478,17 +488,17 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
         data.writeInt(this.pendingLinkPositions.size());
         for (BlockPos pos : this.pendingLinkPositions)
         {
-            BlockPos.STREAM_CODEC.encode(data, pos);
+            data.writeBlockPos(pos);
         }
         data.writeInt(this.linkedPositions.size());
         for (BlockPos pos : this.linkedPositions)
         {
-            BlockPos.STREAM_CODEC.encode(data, pos);
+            data.writeBlockPos(pos);
         }
     }
 
     @Override
-    protected boolean readFromStream(RegistryFriendlyByteBuf data)
+    protected boolean readFromStream(FriendlyByteBuf data)
     {
         super.readFromStream(data);
         this.autoMode = data.readBoolean();
@@ -500,14 +510,14 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
         int pendingSize = data.readInt();
         for (int i = 0; i < pendingSize; i++)
         {
-            BlockPos pos = BlockPos.STREAM_CODEC.decode(data);
+            BlockPos pos = data.readBlockPos();
             this.pendingLinkPositions.add(pos);
         }
         this.linkedPositions.clear();
         int linkSize = data.readInt();
         for (int i = 0; i < linkSize; i++)
         {
-            BlockPos pos = BlockPos.STREAM_CODEC.decode(data);
+            BlockPos pos = data.readBlockPos();
             this.linkedPositions.add(pos);
         }
         return true;
@@ -520,7 +530,11 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     {
         ArrayList<IGridNode> nodes = new ArrayList<>();
 
-        IInWorldGridNodeHost nodeHost = level.getCapability(AECapabilities.IN_WORLD_GRID_NODE_HOST, pos);
+        IInWorldGridNodeHost nodeHost = null;
+        if (level.getBlockEntity(pos) instanceof BlockEntity nodeBE)
+        {
+            nodeHost = nodeBE.getCapability(Capabilities.IN_WORLD_GRID_NODE_HOST).resolve().orElse(null);
+        }
         if (nodeHost == null) return nodes;
 
         // 无线连接拒绝控制器
@@ -601,7 +615,11 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
             if (emitter.level == null) return false;
             IGridNode emitterNode = emitter.getMainNode().getNode();
             if (emitterNode == null || !emitterNode.isActive()) return false;
-            IInWorldGridNodeHost targetNodeHost = emitter.level.getCapability(AECapabilities.IN_WORLD_GRID_NODE_HOST, pos);
+            IInWorldGridNodeHost targetNodeHost = null;
+            if (emitter.level.getBlockEntity(pos) instanceof BlockEntity targetNodeBE)
+            {
+                targetNodeHost = targetNodeBE.getCapability(Capabilities.IN_WORLD_GRID_NODE_HOST).resolve().orElse(null);
+            }
             valid = (forceAuto || emitter.isAutoMode())
                     && emitterNode.getUsedChannels() < emitter.getMaxLinkChannels()
                     && (!(targetNodeHost instanceof CableBusBlockEntity) || emitter.allowAutoLinkCableLike())
@@ -753,13 +771,13 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     }
 
     @SubscribeEvent
-    public static void onServerStarting(net.neoforged.neoforge.event.server.ServerStartingEvent e)
+    public static void onServerStarting(ServerStartingEvent e)
     {
         ensureBound(e.getServer());
     }
 
     @SubscribeEvent
-    public static void onServerStopped(net.neoforged.neoforge.event.server.ServerStoppedEvent e)
+    public static void onServerStopped(ServerStoppedEvent e)
     {
         EMITTER_CHUNK_POSITIONS.clear();
         boundServer = null;
