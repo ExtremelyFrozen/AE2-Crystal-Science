@@ -122,12 +122,6 @@ public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlo
     }
 
     @Override
-    public @NotNull AABB getRenderBoundingBox(EnderEmitterBlockEntity be)
-    {
-        return be.getCustomBoundingBox(be.getBlockPos());
-    }
-
-    @Override
     public int getViewDistance()
     {
         return 96;

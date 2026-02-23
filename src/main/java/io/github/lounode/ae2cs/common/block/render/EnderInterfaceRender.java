@@ -57,10 +57,4 @@ public class EnderInterfaceRender implements BlockEntityRenderer<EnderInterfaceB
                 red, green, blue, alpha
         );
     }
-
-    @Override
-    public @NotNull AABB getRenderBoundingBox(@NotNull EnderInterfaceBlockEntity blockEntity)
-    {
-        return blockEntity.getCustomBoundingBox(blockEntity.getBlockPos());
-    }
 }

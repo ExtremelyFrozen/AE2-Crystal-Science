@@ -13,7 +13,6 @@ import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.blockentity.networking.ControllerBlockEntity;
-import appeng.capabilities.Capabilities;
 import appeng.parts.CableBusContainer;
 import appeng.util.ConfigManager;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
@@ -183,6 +182,12 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
             return ICustomRenderBounding.super.getCustomBoundingBox(centerPos);
         else
             return new AABB(centerPos).inflate(0, 1, 0);
+    }
+
+    @Override
+    public AABB getRenderBoundingBox()
+    {
+        return this.getCustomBoundingBox(this.getBlockPos());
     }
 
     @Override
