@@ -2,16 +2,17 @@ package io.github.lounode.ae2cs.common.recipe.circuit_etcher;
 
 import io.github.lounode.ae2cs.common.init.AECSRecipeSerializers;
 import io.github.lounode.ae2cs.common.init.AECSRecipeTypes;
+import io.github.lounode.ae2cs.common.recipe.SizedIngredient;
 import io.github.lounode.ae2cs.common.recipe.input.ThreeItemStackRecipeInput;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.List;
 
 public class CircuitEtcherRecipe implements Recipe<ThreeItemStackRecipeInput>
 {
+    private final ResourceLocation id;
     private final SizedIngredient inputA;
     private final SizedIngredient inputB;
     private final SizedIngredient inputC;
@@ -28,9 +30,10 @@ public class CircuitEtcherRecipe implements Recipe<ThreeItemStackRecipeInput>
     // 真正所需的输入的缓存
     private final List<SizedIngredient> effective;
 
-    public CircuitEtcherRecipe(SizedIngredient inputA, SizedIngredient inputB, SizedIngredient inputC,
+    public CircuitEtcherRecipe(ResourceLocation id, SizedIngredient inputA, SizedIngredient inputB, SizedIngredient inputC,
                                ItemStack result, int energyCost)
     {
+        this.id = id;
         this.inputA = inputA;
         this.inputB = inputB;
         this.inputC = inputC;
@@ -156,13 +159,13 @@ public class CircuitEtcherRecipe implements Recipe<ThreeItemStackRecipeInput>
     }
 
     @Override
-    public @NotNull ItemStack assemble(@NotNull ThreeItemStackRecipeInput in, HolderLookup.@NotNull Provider registries)
+    public @NotNull ItemStack assemble(@NotNull ThreeItemStackRecipeInput threeItemStackRecipeInput, @NotNull RegistryAccess registryAccess)
     {
         return result.copy();
     }
 
     @Override
-    public @NotNull ItemStack getResultItem(HolderLookup.@NotNull Provider registries)
+    public @NotNull ItemStack getResultItem(@NotNull RegistryAccess registryAccess)
     {
         return result;
     }
@@ -173,6 +176,12 @@ public class CircuitEtcherRecipe implements Recipe<ThreeItemStackRecipeInput>
         NonNullList<Ingredient> list = NonNullList.create();
         for (var si : effective) list.add(si.ingredient());
         return list;
+    }
+
+    @Override
+    public @NotNull ResourceLocation getId()
+    {
+        return this.id;
     }
 
     @Override

@@ -1,28 +1,28 @@
 package io.github.lounode.ae2cs.datagen.builder.recipe;
 
 import io.github.lounode.ae2cs.AE2CrystalScience;
+import io.github.lounode.ae2cs.common.recipe.SizedIngredient;
 import io.github.lounode.ae2cs.common.recipe.circuit_etcher.CircuitEtcherRecipe;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeBuilder;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class CircuitEtcherRecipeBuilder implements RecipeBuilder
 {
@@ -109,7 +109,7 @@ public class CircuitEtcherRecipeBuilder implements RecipeBuilder
     }
 
     @Override
-    public void save(RecipeOutput output, @NotNull ResourceLocation id)
+    public void save(Consumer<FinishedRecipe> output, @NotNull ResourceLocation id)
     {
         Advancement.Builder adv = output.advancement()
                 .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
@@ -151,13 +151,13 @@ public class CircuitEtcherRecipeBuilder implements RecipeBuilder
     }
 
     @Override
-    public void save(@NotNull RecipeOutput recipeOutput, @NotNull String id)
+    public void save(@NotNull Consumer<FinishedRecipe> recipeOutput, @NotNull String id)
     {
         save(recipeOutput, AE2CrystalScience.parseOrMakeId(id));
     }
 
     @Override
-    public void save(@NotNull RecipeOutput recipeOutput)
+    public void save(@NotNull Consumer<FinishedRecipe> recipeOutput)
     {
         ResourceLocation path = AE2CrystalScience.makeId("circuit_etcher/" + RecipeBuilder.getDefaultRecipeId(getResult()).getPath());
         save(recipeOutput, path);

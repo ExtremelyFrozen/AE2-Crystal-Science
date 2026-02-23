@@ -1,17 +1,16 @@
 package io.github.lounode.ae2cs.common.recipe;
 
-import appeng.api.ids.AEComponents;
 import appeng.core.definitions.AEItems;
-import appeng.crafting.pattern.EncodedProcessingPattern;
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSRecipeSerializers;
 import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -24,18 +23,18 @@ import java.util.Optional;
 public class ResonatingPatternUpgradeRecipe extends CustomRecipe
 {
 
-    public ResonatingPatternUpgradeRecipe(CraftingBookCategory category)
+    public ResonatingPatternUpgradeRecipe(ResourceLocation id, CraftingBookCategory category)
     {
-        super(category);
+        super(id, category);
     }
 
     @Override
-    public boolean matches(CraftingInput input, @NotNull Level level)
+    public boolean matches(CraftingContainer input, @NotNull Level level)
     {
         ItemStack pattern = ItemStack.EMPTY;
         ItemStack crystal = ItemStack.EMPTY;
 
-        for (int i = 0; i < input.size(); i++)
+        for (int i = 0; i < input.getItems().size(); i++)
         {
             var s = input.getItem(i);
             if (s.isEmpty()) continue;
@@ -60,11 +59,11 @@ public class ResonatingPatternUpgradeRecipe extends CustomRecipe
     }
 
     @Override
-    public @NotNull ItemStack assemble(CraftingInput input, HolderLookup.@NotNull Provider registries)
+    public @NotNull ItemStack assemble(CraftingContainer input, RegistryAccess registries)
     {
         ItemStack processingPattern = ItemStack.EMPTY;
 
-        for (int i = 0; i < input.size(); i++)
+        for (int i = 0; i < input.getItems().size(); i++)
         {
             var s = input.getItem(i);
             if (s.isEmpty()) continue;
