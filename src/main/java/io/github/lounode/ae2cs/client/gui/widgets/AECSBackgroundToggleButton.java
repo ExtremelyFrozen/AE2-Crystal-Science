@@ -2,6 +2,8 @@ package io.github.lounode.ae2cs.client.gui.widgets;
 
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.Blitter;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.lounode.ae2cs.client.gui.icon.AdaptedAE2Icon;
 import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
 import net.minecraft.client.Minecraft;
@@ -185,42 +187,62 @@ public class AECSBackgroundToggleButton<E extends Enum<E>> extends AECSIconButto
             return;
         }
 
-        var icon = this.getIcon();
-        var item = this.getItemOverlay();
+        IButtonIcon icon = this.getIcon();
+        Blitter iconBlitter = icon != null ? icon.getBlitter() : null;
+        if (iconBlitter != null && !this.active)
+        {
+            iconBlitter.opacity(0.5F);
+        }
 
         if (this.isHalfSize())
         {
             this.width = 8;
             this.height = 8;
         }
+        else
+        {
+            this.width = 16;
+            this.height = 16;
+        }
 
-        var yOffset = isHovered() ? 1 : 0;
+        RenderSystem.disableDepthTest();
+        RenderSystem.enableBlend();
+
+        if (this.isFocused())
+        {
+            guiGraphics.fill(this.getX() - 1, this.getY() - 1, this.getX() + this.width + 1, this.getY(), -1);
+            guiGraphics.fill(this.getX() - 1, this.getY(), this.getX(), this.getY() + this.height, -1);
+            guiGraphics.fill(this.getX() + this.width, this.getY(), this.getX() + this.width + 1, this.getY() + this.height, -1);
+            guiGraphics.fill(this.getX() - 1, this.getY() + this.height, this.getX() + this.width + 1, this.getY() + this.height + 1, -1);
+        }
 
         final BackgroundSet bgSet = getBackgroundSet();
 
         if (this.isHalfSize())
         {
+            PoseStack pose = guiGraphics.pose();
+            pose.pushPose();
+            pose.translate(this.getX(), this.getY(), 0.0F);
+            pose.scale(0.5F, 0.5F, 1.0F);
+
             if (!isDisableBackground())
             {
                 bgSet.normal().getBlitter()
-                        .dest(getX(), getY())
-                        .zOffset(10)
+                        .dest(0, 0)
                         .blit(guiGraphics);
             }
 
+            var item = this.getItemOverlay();
             if (item != null)
             {
-                guiGraphics.renderItem(new net.minecraft.world.item.ItemStack(item), getX(), getY(), 0, 20);
+                guiGraphics.renderItem(new ItemStack(item), 0, 0);
             }
-            else if (icon != null)
+            else if (iconBlitter != null)
             {
-                Blitter blitter = icon.getBlitter();
-                if (!this.active)
-                {
-                    blitter.opacity(0.5f);
-                }
-                blitter.dest(getX(), getY()).zOffset(20).blit(guiGraphics);
+                iconBlitter.dest(0, 0).blit(guiGraphics);
             }
+
+            pose.popPose();
         }
         else
         {
@@ -231,22 +253,21 @@ public class AECSBackgroundToggleButton<E extends Enum<E>> extends AECSIconButto
                         : bgSet.normal();
 
                 bgIcon.getBlitter()
-                        .dest(getX() - 1, getY() + yOffset, 18, 20)
-                        .zOffset(2)
+                        .dest(getX(), getY())
                         .blit(guiGraphics);
             }
 
+            var item = this.getItemOverlay();
             if (item != null)
             {
-                guiGraphics.renderItem(new ItemStack(item), getX(), getY() + 1 + yOffset, 0, 3);
+                guiGraphics.renderItem(new ItemStack(item), getX(), getY());
             }
-            else if (icon != null)
+            else if (iconBlitter != null)
             {
-                icon.getBlitter()
-                        .dest(getX(), getY() + 1 + yOffset)
-                        .zOffset(3)
-                        .blit(guiGraphics);
+                iconBlitter.dest(getX(), getY()).blit(guiGraphics);
             }
         }
+
+        RenderSystem.enableDepthTest();
     }
 }

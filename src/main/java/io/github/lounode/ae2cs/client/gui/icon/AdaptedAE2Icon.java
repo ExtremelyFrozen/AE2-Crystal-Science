@@ -21,9 +21,10 @@ public class AdaptedAE2Icon
 
     public static final AE2IconAdapter CLEAR = new AE2IconAdapter(Icon.CLEAR);
 
+    // TODO 验证TOOLBAR_BUTTON_BACKGROUND与新版本AE的TOOLBAR_BUTTON_BACKGROUND_FOCUS、TOOLBAR_BUTTON_BACKGROUND_HOVER之间的关系
     public static final AE2IconAdapter TOOLBAR_BUTTON_BACKGROUND = new AE2IconAdapter(Icon.TOOLBAR_BUTTON_BACKGROUND);
-    public static final AE2IconAdapter TOOLBAR_BUTTON_BACKGROUND_FOCUS = new AE2IconAdapter(Icon.TOOLBAR_BUTTON_BACKGROUND_FOCUS);
-    public static final AE2IconAdapter TOOLBAR_BUTTON_BACKGROUND_HOVER = new AE2IconAdapter(Icon.TOOLBAR_BUTTON_BACKGROUND_HOVER);
+    public static final AE2IconAdapter TOOLBAR_BUTTON_BACKGROUND_FOCUS = new AE2IconAdapter(Icon.TOOLBAR_BUTTON_BACKGROUND);
+    public static final AE2IconAdapter TOOLBAR_BUTTON_BACKGROUND_HOVER = new AE2IconAdapter(Icon.TOOLBAR_BUTTON_BACKGROUND);
 
     public static final AE2IconAdapter ARROW_UP = new AE2IconAdapter(Icon.ARROW_UP);
     public static final AE2IconAdapter ARROW_DOWN = new AE2IconAdapter(Icon.ARROW_DOWN);
