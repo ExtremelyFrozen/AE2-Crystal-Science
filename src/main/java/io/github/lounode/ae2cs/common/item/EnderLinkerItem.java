@@ -1,6 +1,6 @@
 package io.github.lounode.ae2cs.common.item;
 
-import appeng.api.AECapabilities;
+import appeng.api.networking.GridHelper;
 import io.github.lounode.ae2cs.common.block.entity.EnderEmitterBlockEntity;
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
 import net.minecraft.core.GlobalPos;
@@ -30,7 +30,7 @@ public class EnderLinkerItem extends Item
         if (player == null) return InteractionResult.PASS;
         if (level.isClientSide())
         {
-            if (player.isShiftKeyDown()) return InteractionResult.SUCCESS_NO_ITEM_USED;
+            if (player.isShiftKeyDown()) return InteractionResult.SUCCESS;
             else return InteractionResult.PASS;
         }
 
@@ -40,11 +40,11 @@ public class EnderLinkerItem extends Item
             player.displayClientMessage(Component.translatable("ae2cs.msg.item.ender_linker.bing_to_emitter"), true);
         }
         else if (!player.isShiftKeyDown() &&
-                level.getCapability(AECapabilities.IN_WORLD_GRID_NODE_HOST, context.getClickedPos()) != null)
+                GridHelper.getNodeHost(level, context.getClickedPos()) != null)
         {
             GlobalPos linkerPos = stack.get(AECSDataComponents.ENDER_EMITTER_POS);
             if (linkerPos == null || !linkerPos.dimension().equals(level.dimension()))
-                return InteractionResult.SUCCESS_NO_ITEM_USED;
+                return InteractionResult.SUCCESS;
 
             if (level.getBlockEntity(linkerPos.pos()) instanceof EnderEmitterBlockEntity emitter)
             {
@@ -68,7 +68,7 @@ public class EnderLinkerItem extends Item
                     }
                 }
             }
-            return InteractionResult.SUCCESS_NO_ITEM_USED;
+            return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }

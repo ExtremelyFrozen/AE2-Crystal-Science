@@ -4,9 +4,11 @@ import appeng.api.implementations.menuobjects.IMenuItem;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.ItemMenuHostLocator;
+import appeng.menu.locator.MenuLocator;
 import appeng.menu.locator.MenuLocators;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 import io.github.lounode.ae2cs.common.me.menuhost.ResonatingPatternConverterMenuHost;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -37,7 +39,7 @@ public class ResonatingPatternConverterItem extends Item implements IMenuItem
 
         if (!player.level().isClientSide() && checkPreconditions(is))
         {
-            ItemMenuHostLocator locator = MenuLocators.forHand(player, hand);
+            MenuLocator locator = MenuLocators.forHand(player, hand);
 
             // 如果成功打开，我们返回成功
             if (MenuOpener.open(getMenuType(), player, locator))

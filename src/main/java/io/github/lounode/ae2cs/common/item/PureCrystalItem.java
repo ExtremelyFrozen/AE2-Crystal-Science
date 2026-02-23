@@ -29,7 +29,7 @@ public class PureCrystalItem extends Item
 
     public PureCrystalItem(Item.Properties properties, double energyPerTick, int burnTime)
     {
-        super(properties.component(AECSDataComponents.GROW_PROCESS, 0));
+        super(properties);
         this.energyPerTick = energyPerTick;
         this.burnTime = burnTime;
     }

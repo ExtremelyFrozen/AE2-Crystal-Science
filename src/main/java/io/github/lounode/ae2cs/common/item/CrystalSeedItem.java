@@ -2,17 +2,16 @@ package io.github.lounode.ae2cs.common.item;
 
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
 import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -31,18 +30,18 @@ public class CrystalSeedItem extends Item
 
     public CrystalSeedItem(Properties properties, Supplier<? extends Item> growTo, int overGrowTick)
     {
-        super(properties.component(AECSDataComponents.GROW_PROCESS, 0));
+        super(properties);
         this.growTo = growTo;
         this.overGrowTick = overGrowTick;
     }
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack,
-                                @NotNull TooltipContext context,
+                                @Nullable Level level,
                                 @NotNull List<Component> tooltipComponents,
-                                @NotNull TooltipFlag tooltipFlag)
+                                @NotNull TooltipFlag isAdvanced)
     {
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
         tooltipComponents.add(
                 Component.translatable("message.ae2_crystal_seeds.tooltip.seed_growth", String.format("%.2f", getGrowProcess(stack) * 100))
                         .withStyle(ChatFormatting.GRAY));
@@ -55,7 +54,8 @@ public class CrystalSeedItem extends Item
     {
         if (stack.getItem() instanceof CrystalSeedItem)
         {
-            return stack.getOrDefault(AECSDataComponents.GROW_PROCESS, 0);
+            CompoundTag tag = stack.getTag();
+            return tag != null ? tag.getInt(AECSDataComponents.TAG_GROW_PROCESS) : 0;
         }
         return 0;
     }
@@ -65,7 +65,7 @@ public class CrystalSeedItem extends Item
      */
     public void setGrowTicks(ItemStack stack, int tick)
     {
-        stack.set(AECSDataComponents.GROW_PROCESS, tick);
+        stack.getOrCreateTag().putInt(AECSDataComponents.TAG_GROW_PROCESS, tick);
     }
 
     /**
@@ -111,21 +111,13 @@ public class CrystalSeedItem extends Item
         return stack;
     }
 
-    @EventBusSubscriber
-    public static class EventHandler
+    @Override
+    public boolean onEntityItemUpdate(ItemStack stack, ItemEntity itemEntity)
     {
-        /**
-         * 处理水中生长的情况
-         */
-        @SubscribeEvent
-        public static void onItemEntityTick(EntityTickEvent.Post event)
+        if (!itemEntity.level().isClientSide && itemEntity.isInWater())
         {
-            Entity entity = event.getEntity();
-            if (!(entity instanceof ItemEntity itemEntity)) return;
-            if (!itemEntity.isInWater()) return;
-
-            ItemStack stack = itemEntity.getItem();
             itemEntity.setItem(grow(stack, 1));
         }
+        return super.onEntityItemUpdate(stack, itemEntity);
     }
 }

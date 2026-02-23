@@ -12,6 +12,8 @@ import java.util.function.UnaryOperator;
 
 public class AECSDataComponents
 {
+    public static final String TAG_GROW_PROCESS = "grow_process";
+
     public static final DeferredRegister<DataComponentType<?>> DATA_COMPONENTS =
             DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, AECSConstants.MODID);
 
