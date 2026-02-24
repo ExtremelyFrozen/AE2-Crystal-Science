@@ -119,7 +119,7 @@ public class CircuitEtcherRecipeCategory extends BasicEmiRecipe
 
         int xOut = 85;
         int yOut = y0 + dy + 1;
-        widgets.addSlot(this.outputs.getFirst(), xOut, yOut).recipeContext(this).drawBack(false);
+        widgets.addSlot(this.outputs.get(0), xOut, yOut).recipeContext(this).drawBack(false);
 
         widgets.addDrawable(0, 0, 0, 0, energyRateBar::renderWidget);
         widgets.addDrawable(0, 0, 0, 0, workingProgressBar::renderWidget);

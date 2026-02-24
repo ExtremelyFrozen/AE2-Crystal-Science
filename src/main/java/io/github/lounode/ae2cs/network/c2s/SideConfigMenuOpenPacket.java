@@ -28,7 +28,8 @@ public record SideConfigMenuOpenPacket()
 
     private void handleInServer(NetworkEvent.Context context)
     {
-        if (!(context.getSender() instanceof ServerPlayer sp)) return;
+        ServerPlayer sp = context.getSender();
+        if (sp == null) return;
 
         MenuType<?> beforeType = null;
         if (sp.containerMenu instanceof AEBaseMenu menu)

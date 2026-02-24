@@ -196,7 +196,7 @@ public class CircuitEtcherRecipeBuilder implements RecipeBuilder
 
         if (!items.isEmpty())
         {
-            addAutoUnlockPredicateForItem(items.getFirst());
+            addAutoUnlockPredicateForItem(items.get(0));
         }
     }
 

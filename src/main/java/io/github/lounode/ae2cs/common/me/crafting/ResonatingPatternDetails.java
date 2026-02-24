@@ -75,7 +75,7 @@ public class ResonatingPatternDetails implements IPatternDetails
         {
             throw new IllegalArgumentException("At least one input must be non-null.");
         }
-        Objects.requireNonNull(sparseOutputs.getFirst(), "The first (primary) output must be non-null.");
+        Objects.requireNonNull(sparseOutputs.get(0), "The first (primary) output must be non-null.");
 
         var targets = new ArrayList<Optional<Target>>(sparseInputs.size());
         for (int i = 0; i < sparseInputs.size(); i++)

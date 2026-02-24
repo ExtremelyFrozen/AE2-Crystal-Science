@@ -101,7 +101,8 @@ public class GenericStackInvHelper
         }
         else
         {
-            if (level.getBlockEntity(pos) instanceof BlockEntity targetBE)
+            BlockEntity targetBE = level.getBlockEntity(pos);
+            if (targetBE != null)
             {
                 return targetBE.getCapability(Capabilities.GENERIC_INTERNAL_INV, side).resolve().orElse(null);
             }

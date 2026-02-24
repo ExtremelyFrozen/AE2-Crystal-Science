@@ -179,7 +179,7 @@ public class CrystalAggregatorRecipeBuilder implements RecipeBuilder
 
         if (!items.isEmpty())
         {
-            addAutoUnlockPredicateForItem(items.getFirst());
+            addAutoUnlockPredicateForItem(items.get(0));
         }
     }
 

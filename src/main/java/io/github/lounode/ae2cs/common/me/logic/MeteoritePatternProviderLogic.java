@@ -365,7 +365,7 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
         outputCacheOrder.add(pattern);
         while (outputCache.size() > OUTPUT_CACHE_LIMIT && !outputCacheOrder.isEmpty())
         {
-            IPatternDetails oldest = outputCacheOrder.removeFirst();
+            IPatternDetails oldest = outputCacheOrder.remove(0);
             outputCache.remove(oldest);
         }
         return finalOutput;

@@ -148,8 +148,8 @@ modAccessor {
 dependencies {
     compileOnly "org.jetbrains:annotations:26.0.2"
 
-    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.3"))
-    implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.5.3"))
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
+    implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.4.1"))
 
     // AE2与GuideME
     modImplementation "curse.maven:guideme-1173950:7127447"
@@ -246,6 +246,7 @@ publishing {
 }
 
 tasks.withType(JavaCompile).configureEach {
+    options.release = 17
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
 

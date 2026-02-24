@@ -277,7 +277,8 @@ public class SideConfigComponent extends BaseMachineComponent
 
             // 利用AE2对外部进行物品能力进行包装，简化部分操作
             IItemHandler otherItemHandler = null;
-            if (level.getBlockEntity(otherPos) instanceof BlockEntity otherBE)
+            BlockEntity otherBE = level.getBlockEntity(otherPos);
+            if(otherBE != null)
             {
                 otherItemHandler = otherBE.getCapability(ForgeCapabilities.ITEM_HANDLER, otherSide).resolve().orElse(null);
             }

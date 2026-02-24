@@ -43,11 +43,11 @@ public class CrystalGrowthCategory extends BasicEmiRecipe
 
         int xIn = 22;
         int yIn = 21;
-        widgets.addSlot(this.inputs.getFirst(), xIn, yIn).drawBack(false);
+        widgets.addSlot(this.inputs.get(0), xIn, yIn).drawBack(false);
 
         int xOut = 85;
         int yOut = yIn;
-        widgets.addSlot(this.outputs.getFirst(), xOut, yOut).recipeContext(this).drawBack(false);
+        widgets.addSlot(this.outputs.get(0), xOut, yOut).recipeContext(this).drawBack(false);
 
         widgets.addFillingArrow(53, 22, 5000);
     }
