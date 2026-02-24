@@ -10,13 +10,12 @@ import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.client.gui.icon.AECSBlitter;
 import io.github.lounode.ae2cs.client.gui.widgets.AdvancedProgressBar;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.recipe.SizedIngredient;
 import io.github.lounode.ae2cs.common.recipe.crystal_aggregator.CrystalAggregatorRecipe;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
 import java.util.List;
 
@@ -46,11 +45,10 @@ public class CrystalAggregatorRecipeCategory extends BasicEmiRecipe
 
     private final CrystalAggregatorRecipe recipe;
 
-    public CrystalAggregatorRecipeCategory(RecipeHolder<CrystalAggregatorRecipe> holder)
+    public CrystalAggregatorRecipeCategory(CrystalAggregatorRecipe holder)
     {
-        super(RECIPE_TYPE, holder.id(), 135, 58);
-        var recipe = holder.value();
-        this.recipe = recipe;
+        super(RECIPE_TYPE, holder.getId(), 135, 58);
+        this.recipe = holder;
 
         List<SizedIngredient> req = recipe.required();
         for (int i = 0; i < 3; i++)

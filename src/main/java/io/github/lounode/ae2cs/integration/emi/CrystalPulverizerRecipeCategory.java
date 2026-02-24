@@ -15,7 +15,6 @@ import net.minecraft.Util;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.List;
 
@@ -45,11 +44,10 @@ public class CrystalPulverizerRecipeCategory extends BasicEmiRecipe
 
     private final CrystalPulverizerRecipe recipe;
 
-    public CrystalPulverizerRecipeCategory(RecipeHolder<CrystalPulverizerRecipe> holder)
+    public CrystalPulverizerRecipeCategory(CrystalPulverizerRecipe holder)
     {
-        super(RECIPE_TYPE, holder.id(), 135, 58);
-        var recipe = holder.value();
-        this.recipe = recipe;
+        super(RECIPE_TYPE, holder.getId(), 135, 58);
+        this.recipe = holder;
 
         this.inputs.add(EmiIngredient.of(recipe.input().ingredient(), recipe.input().count()));
 

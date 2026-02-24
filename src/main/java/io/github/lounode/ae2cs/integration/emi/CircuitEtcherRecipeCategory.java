@@ -10,13 +10,12 @@ import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.client.gui.icon.AECSBlitter;
 import io.github.lounode.ae2cs.client.gui.widgets.AdvancedProgressBar;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.recipe.SizedIngredient;
 import io.github.lounode.ae2cs.common.recipe.circuit_etcher.CircuitEtcherRecipe;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
 import java.util.List;
 
@@ -46,13 +45,11 @@ public class CircuitEtcherRecipeCategory extends BasicEmiRecipe
 
     private final CircuitEtcherRecipe recipe;
 
-    public CircuitEtcherRecipeCategory(RecipeHolder<CircuitEtcherRecipe> holder)
+    public CircuitEtcherRecipeCategory(CircuitEtcherRecipe holder)
     {
-        super(RECIPE_TYPE, holder.id(), 135, 58);
-        var recipe = holder.value();
-        this.recipe = recipe;
+        super(RECIPE_TYPE, holder.getId(), 135, 58);
+        this.recipe = holder;
 
-        // inputs：最多 3 个（按您 JEI 的逻辑）
         List<SizedIngredient> req = recipe.required();
         for (int i = 0; i < 3; i++)
         {
