@@ -4,10 +4,10 @@
   "mixins": [
     "CableBusBlockEntityMixin",
     "GridNodeMixin",
-    "GrowthAcceleratorBlockEntityMixin",
+    "GrowthAcceleratorBlockEntityMixin"
   ],
   "client": [
-    "IBlockEntityRendererExtensionMixin"
+    "LevelRendererMixin"
   ],
   "server": [
   ],

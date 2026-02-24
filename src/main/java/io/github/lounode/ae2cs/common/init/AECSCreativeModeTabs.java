@@ -1,6 +1,8 @@
 package io.github.lounode.ae2cs.common.init;
 
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
+import io.github.lounode.ae2cs.api.util.RegistryBlock;
+import io.github.lounode.ae2cs.api.util.RegistryItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -9,7 +11,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
 
 import java.util.function.Supplier;
 
@@ -24,15 +25,15 @@ public class AECSCreativeModeTabs
                     .icon(() -> new ItemStack(AECSItems.PURE_CERTUS_QUARTZ_CRYSTAL.get()))
                     .title(Component.translatable("creativetab.ae2cs.items"))
                     .displayItems((params, output) -> {
-                        for (RegistryObject<? extends Item> ro : AECSItems.getALL())
+                        for (RegistryItem<? extends Item> ro : AECSItems.getALL())
                         {
                             output.accept(ro.get());
                         }
-                        for (RegistryObject<? extends Item> ro : AECSParts.getAll())
+                        for (RegistryItem<? extends Item> ro : AECSParts.getAll())
                         {
                             output.accept(ro.get());
                         }
-                        for (RegistryObject<? extends Block> ro : AECSBlocks.getALL())
+                        for (RegistryBlock<? extends Block> ro : AECSBlocks.getALL())
                         {
                             output.accept(ro.get());
                         }

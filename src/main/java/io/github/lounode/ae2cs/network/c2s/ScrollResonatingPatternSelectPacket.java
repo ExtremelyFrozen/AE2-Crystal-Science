@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs.network.c2s;
 
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
 import io.github.lounode.ae2cs.common.item.ResonatingPatternItem;
+import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
@@ -33,7 +34,7 @@ public record ScrollResonatingPatternSelectPacket(boolean next)
         var stack = sp.getMainHandItem();
         if (!(stack.getItem() instanceof ResonatingPatternItem)) return;
 
-        var encoded = stack.get(AECSDataComponents.ENCODED_RESONATING_PATTERN.get());
+        EncodedResonatingPattern encoded = AECSDataComponents.getEncodedResonatingPattern(stack);
         if (encoded == null) return;
 
         ResonatingPatternItem.scrollSelectedInputAndToast(sp, stack, encoded, this.next());
