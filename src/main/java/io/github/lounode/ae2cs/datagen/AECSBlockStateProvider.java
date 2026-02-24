@@ -8,6 +8,7 @@ import appeng.block.crafting.PatternProviderBlock;
 import com.google.gson.JsonPrimitive;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
+import io.github.lounode.ae2cs.api.util.RegistryBlock;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import net.minecraft.core.Direction;
@@ -20,7 +21,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.Nullable;
 
 public class AECSBlockStateProvider extends BlockStateProvider
@@ -36,7 +36,7 @@ public class AECSBlockStateProvider extends BlockStateProvider
     @Override
     protected void registerStatesAndModels()
     {
-        for (RegistryObject<? extends Block> block : AECSBlocks.getCrystalBlocks())
+        for (RegistryBlock<? extends Block> block : AECSBlocks.getCrystalBlocks())
         {
             blockWithItem(block);
         }
@@ -65,7 +65,7 @@ public class AECSBlockStateProvider extends BlockStateProvider
         simpleBlockWithItem(AECSBlocks.EX_ENDER_INTERFACE_BLOCK.get(), cubeAllWithTexture(AECSBlocks.EX_ENDER_INTERFACE_BLOCK.get(), AE2CrystalScience.makeId("block/ender_interface/extended")));
     }
 
-    private void blockWithItem(RegistryObject<? extends Block> deferredBlock)
+    private void blockWithItem(RegistryBlock<? extends Block> deferredBlock)
     {
         simpleBlockWithItem(deferredBlock.get(), cubeAll(deferredBlock.get()));
     }

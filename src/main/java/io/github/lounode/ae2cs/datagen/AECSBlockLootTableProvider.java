@@ -1,6 +1,7 @@
 package io.github.lounode.ae2cs.datagen;
 
 import appeng.core.definitions.AEItems;
+import io.github.lounode.ae2cs.api.util.RegistryBlock;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
@@ -27,7 +28,7 @@ public class AECSBlockLootTableProvider extends BlockLootSubProvider
     @Override
     protected void generate()
     {
-        for (RegistryObject<? extends Block> block : AECSBlocks.getALL())
+        for (RegistryBlock<? extends Block> block : AECSBlocks.getALL())
         {
             if (AECSBlocks.getNotSelfDrop().contains(block)) continue;
             dropSelf(block.get());

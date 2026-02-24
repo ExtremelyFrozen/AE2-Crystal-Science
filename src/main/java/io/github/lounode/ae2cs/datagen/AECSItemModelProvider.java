@@ -1,6 +1,7 @@
 package io.github.lounode.ae2cs.datagen;
 
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
+import io.github.lounode.ae2cs.api.util.RegistryItem;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.item.CrystalSeedItem;
 import io.github.lounode.ae2cs.common.item.PureCrystalItem;
@@ -14,7 +15,6 @@ import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.ModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Objects;
 
@@ -29,15 +29,15 @@ public class AECSItemModelProvider extends ItemModelProvider
     @Override
     protected void registerModels()
     {
-        for (RegistryObject<CrystalSeedItem> item : AECSItems.getCrystalSeeds())
+        for (RegistryItem<CrystalSeedItem> item : AECSItems.getCrystalSeeds())
         {
             crystalSeedItem(item.get());
         }
-        for (RegistryObject<PureCrystalItem> item : AECSItems.getPureCrystal())
+        for (RegistryItem<PureCrystalItem> item : AECSItems.getPureCrystal())
         {
             basicItem(item.get());
         }
-        for (RegistryObject<? extends Item> item : AECSItems.getOthers())
+        for (RegistryItem<? extends Item> item : AECSItems.getOthers())
         {
             basicItem(item.get());
         }

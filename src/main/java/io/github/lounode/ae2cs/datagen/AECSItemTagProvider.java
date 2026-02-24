@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs.datagen;
 
 import appeng.datagen.providers.tags.ConventionTags;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
+import io.github.lounode.ae2cs.api.util.RegistryItem;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSParts;
@@ -14,7 +15,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.RegistryObject;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,7 +32,7 @@ public class AECSItemTagProvider extends ItemTagsProvider
     {
         // 水晶种子
         tag(AECSTags.Items.CRYSTAL_SEEDS)
-                .add(AECSItems.getCrystalSeeds().stream().map(RegistryObject::get).toArray(Item[]::new));
+                .add(AECSItems.getCrystalSeeds().stream().map(RegistryItem::get).toArray(Item[]::new));
 
         // 所有高纯水晶
         tag(AECSTags.Items.PURE_CRYSTAL)
