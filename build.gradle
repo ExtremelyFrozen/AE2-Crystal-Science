@@ -159,6 +159,7 @@ dependencies {
     modCompileOnly "curse.maven:emi-580555:6420945"
     modLocalRuntime "curse.maven:emi-580555:6420945"
 
+    modCompileOnly "mezz.jei:jei-1.20.1-common-api:15.20.0.129"
     modCompileOnly "mezz.jei:jei-1.20.1-forge-api:15.20.0.129"
     //modLocalRuntime "mezz.jei:jei-1.20.1-forge:15.20.0.129"
 
