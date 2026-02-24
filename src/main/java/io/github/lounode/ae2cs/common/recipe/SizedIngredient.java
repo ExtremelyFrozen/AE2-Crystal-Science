@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 /**
  * 对于1.21.1 SizedIngredient的移植。
  * <p>
- * 为其添加了1.20.1可用的序列化和反序列化方法
+ * 为其添加了1.20.1可用的序列化和反序列化方法，并删除原CODEC和STREAM_CODEC部分
  */
 public final class SizedIngredient
 {

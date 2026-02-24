@@ -27,14 +27,16 @@ Applies to:
 - src/main/java/io/github/lounode/ae2cs
 
 Scope Clarification:
-The directory listed above contains two categories of code:
-1) Original code written for this project.
-2) Third-party code that is copied from, modified from Applied Energistics 2 ("AE2").
+The directory listed above contains three categories of code:
 
-Unless stated otherwise in the Third-Party Code Notice section below, the default
-license for code in this directory is LGPL-3.0-or-later. For any AE2-derived
-portions, the applicable licensing is determined by the Third-Party Code Notice,
-including any file-level annotations added.
+1. Original code written for this project.
+2. Third-party code that is copied from, modified from Applied Energistics 2 ("AE2").
+3. Third-party code that is copied from, modified from NeoForge (1.21.1).
+
+Unless stated otherwise in the Third-Party Code Notice sections below, the default
+license for code in this directory is LGPL-3.0-or-later. For any third-party-derived
+portions, the applicable licensing is determined by the corresponding Third-Party Code
+Notice, including any file-level annotations added.
 
 Copyright:
 - Copyright (c) 2026 Frostbite-time
@@ -91,12 +93,37 @@ This includes:
 - Directly copied classes
 - Classes modified from Applied Energistics 2 implementations
 
+Third-Party Code Notice (NeoForge 1.21.1):
+This project includes portions of source code copied from or modified based on
+NeoForge (1.21.1). These NeoForge-derived portions are licensed under the
+GNU Lesser General Public License v2.1 only ("LGPL-2.1-only") and remain subject
+to the original copyright holders.
+
+NeoForge original project:
+
+- NeoForge (NeoForged)
+
+NeoForge original copyright:
+
+- Copyright (c) NeoForged and contributors
+
+NeoForge original license:
+
+- GNU Lesser General Public License v2.1 only (LGPL-2.1-only)
+
+NeoForge-derived files in this project (files):
+
+- src/main/java/io/github/lounode/ae2cs/common/recipe/SizedIngredient.java
+
+This includes:
+- Directly copied code
+- Code adapted from NeoForge implementations
 
 License Text:
 A complete copy of licenses is provided at:
 
 - LICENSES/LGPL-3.0.txt
-
+- LICENSES/LGPL-2.1.txt
 
 ----------------------------------------------------------------
 2. 2D Textures
@@ -191,7 +218,9 @@ A complete copy of the CC BY-NC-SA 3.0 license is provided at:
 ----------------------------------------------------------------
 
 Source Code:
-- GNU LGPL v3.0 or later
+
+- GNU LGPL v3.0 or later (default)
+- Some files: GNU LGPL v2.1 only (NeoForge-derived portions)
 
 2D Textures:
 - CC BY-NC-SA 3.0
@@ -207,4 +236,5 @@ Source Code:
 The full license texts included with this project are located at:
 
 - LICENSES/LGPL-3.0.txt
+- LICENSES/LGPL-2.1.txt
 - LICENSES/CC-BY-NC-SA-3.0.txt
