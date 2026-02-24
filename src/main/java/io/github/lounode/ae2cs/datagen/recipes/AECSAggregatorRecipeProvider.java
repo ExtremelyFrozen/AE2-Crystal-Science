@@ -12,13 +12,14 @@ import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.common.Tags;
+import net.minecraftforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
 {
@@ -34,9 +35,8 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
     }
 
     @Override
-    protected void buildRecipes(@NotNull RecipeOutput recipeOutput, HolderLookup.@NotNull Provider registries)
+    protected void buildRecipes(@NotNull Consumer<FinishedRecipe> recipeOutput)
     {
-        super.buildRecipes(recipeOutput, registries);
 
         // 谐振样板转换器
         CrystalAggregatorRecipeBuilder.aggregating(AECSItems.RESONATING_PATTERN_CONVERTER, 1, 16000)
@@ -291,7 +291,7 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
 
         // 附魔书获取
         CrystalAggregatorRecipeBuilder.aggregating(
-                        enchantedItem(registries, Items.ENCHANTED_BOOK, 1, AECSEnchantments.ENDER_LINK, 1), 64000)
+                        enchantedItem(Items.ENCHANTED_BOOK, 1, AECSEnchantments.ENDER_LINK.get(), 1), 64000)
                 .require(Items.BOOK, 1)
                 .require(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_ENDER_QUARTZ, 1)
                 .require(AEItems.SINGULARITY, 1)

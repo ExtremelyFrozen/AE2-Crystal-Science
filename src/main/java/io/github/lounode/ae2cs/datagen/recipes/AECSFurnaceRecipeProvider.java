@@ -4,12 +4,13 @@ import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 public class AECSFurnaceRecipeProvider extends AECSRecipeProvider
 {
@@ -25,10 +26,8 @@ public class AECSFurnaceRecipeProvider extends AECSRecipeProvider
     }
 
     @Override
-    protected void buildRecipes(@NotNull RecipeOutput recipeOutput, HolderLookup.@NotNull Provider registries)
+    protected void buildRecipes(@NotNull Consumer<FinishedRecipe> recipeOutput)
     {
-        super.buildRecipes(recipeOutput, registries);
-
         smeltFood(RecipeCategory.FOOD, AECSItems.FLOUR, Items.BREAD, 0.1f, 200, recipeOutput);
     }
 }

@@ -9,6 +9,7 @@ import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModelsHelper;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.ids.AECSPartIds;
+import io.github.lounode.ae2cs.api.util.RegistryItem;
 import io.github.lounode.ae2cs.common.me.part.*;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -23,63 +24,63 @@ import java.util.function.Supplier;
 public class AECSParts
 {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, AECSConstants.MODID);
-    private static final List<RegistryObject<? extends PartItem<?>>> ALL = new ArrayList<>();
+    private static final List<RegistryItem<? extends PartItem<?>>> ALL = new ArrayList<>();
 
-    public static final RegistryObject<PartItem<EnderInterfacePart>> ENDER_INTERFACE_PART = registerPart(
+    public static final RegistryItem<PartItem<EnderInterfacePart>> ENDER_INTERFACE_PART = registerPart(
             AECSPartIds.ENDER_INTERFACE,
             EnderInterfacePart.class,
             EnderInterfacePart::new
     );
 
-    public static final RegistryObject<PartItem<EnderInterfacePart>> EX_ENDER_INTERFACE_PART = registerPart(
+    public static final RegistryItem<PartItem<EnderInterfacePart>> EX_ENDER_INTERFACE_PART = registerPart(
             AECSPartIds.EX_ENDER_INTERFACE,
             EnderInterfacePart.class,
             EnderInterfacePart::new
     );
 
-    public static final RegistryObject<PartItem<IntegratedInterfacePart>> INTEGRATE_INTERFACE_PART = registerPart(
+    public static final RegistryItem<PartItem<IntegratedInterfacePart>> INTEGRATE_INTERFACE_PART = registerPart(
             AECSPartIds.INTEGRATED_INTERFACE,
             IntegratedInterfacePart.class,
             IntegratedInterfacePart::new
     );
 
-    public static final RegistryObject<PartItem<IntegratedInterfacePart>> EX_INTEGRATE_INTERFACE_PART = registerPart(
+    public static final RegistryItem<PartItem<IntegratedInterfacePart>> EX_INTEGRATE_INTERFACE_PART = registerPart(
             AECSPartIds.EX_INTEGRATED_INTERFACE,
             IntegratedInterfacePart.class,
             IntegratedInterfacePart::new
     );
 
-    public static final RegistryObject<PartItem<ResonatingPatternProviderPart>> RESONATING_PATTERN_PROVIDER_PART = registerPart(
+    public static final RegistryItem<PartItem<ResonatingPatternProviderPart>> RESONATING_PATTERN_PROVIDER_PART = registerPart(
             AECSPartIds.RESONATING_PATTERN_PROVIDER,
             ResonatingPatternProviderPart.class,
             ResonatingPatternProviderPart::new
     );
 
-    public static final RegistryObject<PartItem<ResonatingPatternProviderPart>> EX_RESONATING_PATTERN_PROVIDER_PART = registerPart(
+    public static final RegistryItem<PartItem<ResonatingPatternProviderPart>> EX_RESONATING_PATTERN_PROVIDER_PART = registerPart(
             AECSPartIds.EX_RESONATING_PATTERN_PROVIDER,
             ResonatingPatternProviderPart.class,
             ResonatingPatternProviderPart::new
     );
 
-    public static final RegistryObject<PartItem<SimplePatternProviderPart>> SIMPLE_PATTERN_PROVIDER_PART = registerPart(
+    public static final RegistryItem<PartItem<SimplePatternProviderPart>> SIMPLE_PATTERN_PROVIDER_PART = registerPart(
             AECSPartIds.SIMPLE_PATTERN_PROVIDER,
             SimplePatternProviderPart.class,
             SimplePatternProviderPart::new
     );
 
-    public static final RegistryObject<PartItem<MeteoritePatternProviderPart>> METEORITE_PATTERN_PROVIDER_PART = registerPart(
+    public static final RegistryItem<PartItem<MeteoritePatternProviderPart>> METEORITE_PATTERN_PROVIDER_PART = registerPart(
             AECSPartIds.METEORITE_PATTERN_PROVIDER,
             MeteoritePatternProviderPart.class,
             MeteoritePatternProviderPart::new
     );
 
-    public static final RegistryObject<PartItem<QuartzOscillatorClockPart>> QUARTZ_OSCILLATOR_CLOCK_PART = registerPart(
+    public static final RegistryItem<PartItem<QuartzOscillatorClockPart>> QUARTZ_OSCILLATOR_CLOCK_PART = registerPart(
             AECSPartIds.QUARTZ_OSCILLATOR_CLOCK,
             QuartzOscillatorClockPart.class,
             QuartzOscillatorClockPart::new
     );
 
-    public static List<RegistryObject<? extends PartItem<?>>> getAll()
+    public static List<RegistryItem<? extends PartItem<?>>> getAll()
     {
         return Collections.unmodifiableList(ALL);
     }
@@ -87,7 +88,7 @@ public class AECSParts
     /**
      * 等价于 AE2 的 createPart
      */
-    public static <T extends IPart> RegistryObject<PartItem<T>> registerPart(
+    public static <T extends IPart> RegistryItem<PartItem<T>> registerPart(
             String idPath,
             Class<T> partClass,
             Function<IPartItem<T>, T> partFactory
@@ -96,7 +97,7 @@ public class AECSParts
         return registerPart(idPath, partClass, partFactory, AECSItems::defaultBuilder);
     }
 
-    public static <T extends IPart> RegistryObject<PartItem<T>> registerPart(
+    public static <T extends IPart> RegistryItem<PartItem<T>> registerPart(
             String idPath,
             Class<T> partClass,
             Function<IPartItem<T>, T> partFactory,
@@ -107,14 +108,15 @@ public class AECSParts
 
         RegistryObject<PartItem<T>> obj = ITEMS.register(idPath,
                 () -> new PartItem<>(props.get(), partClass, partFactory));
-        ALL.add(obj);
-        return obj;
+        RegistryItem<PartItem<T>> registryItem = new RegistryItem<>(obj);
+        ALL.add(registryItem);
+        return registryItem;
     }
 
     /**
      * 等价于 AE2 的 createCustomPartItem
      */
-    public static <T extends IPart> RegistryObject<PartItem<T>> registerCustomPartItem(
+    public static <T extends IPart> RegistryItem<PartItem<T>> registerCustomPartItem(
             String idPath,
             Class<T> partClass,
             Function<Item.Properties, PartItem<T>> itemFactory
@@ -123,7 +125,7 @@ public class AECSParts
         return registerCustomPartItem(idPath, partClass, itemFactory, AECSItems::defaultBuilder);
     }
 
-    public static <T extends IPart> RegistryObject<PartItem<T>> registerCustomPartItem(
+    public static <T extends IPart> RegistryItem<PartItem<T>> registerCustomPartItem(
             String idPath,
             Class<T> partClass,
             Function<Item.Properties, PartItem<T>> itemFactory,
@@ -133,8 +135,9 @@ public class AECSParts
         PartModels.registerModels(PartModelsHelper.createModels(partClass));
 
         RegistryObject<PartItem<T>> obj = ITEMS.register(idPath, () -> itemFactory.apply(props.get()));
-        ALL.add(obj);
-        return obj;
+        RegistryItem<PartItem<T>> registryItem = new RegistryItem<>(obj);
+        ALL.add(registryItem);
+        return registryItem;
     }
 
     /**
@@ -158,7 +161,7 @@ public class AECSParts
     {
         PartModels.registerModels(PartModelsHelper.createModels(partClass));
 
-        EnumMap<AEColor, RegistryObject<ColoredPartItem<T>>> map = new EnumMap<>(AEColor.class);
+        EnumMap<AEColor, RegistryItem<ColoredPartItem<T>>> map = new EnumMap<>(AEColor.class);
 
         for (AEColor color : AEColor.values())
         {
@@ -167,8 +170,10 @@ public class AECSParts
             RegistryObject<ColoredPartItem<T>> obj = ITEMS.register(idPath,
                     () -> new ColoredPartItem<>(props.get(), partClass, partFactory, color));
 
-            map.put(color, obj);
-            ALL.add(obj);
+            RegistryItem<ColoredPartItem<T>> registryItem = new RegistryItem<>(obj);
+
+            map.put(color, registryItem);
+            ALL.add(registryItem);
         }
 
         return new ColoredPartSet<>(map);
@@ -179,19 +184,19 @@ public class AECSParts
      */
     public static final class ColoredPartSet<T extends IPart>
     {
-        private final EnumMap<AEColor, RegistryObject<ColoredPartItem<T>>> byColor;
+        private final EnumMap<AEColor, RegistryItem<ColoredPartItem<T>>> byColor;
 
-        private ColoredPartSet(EnumMap<AEColor, RegistryObject<ColoredPartItem<T>>> byColor)
+        private ColoredPartSet(EnumMap<AEColor, RegistryItem<ColoredPartItem<T>>> byColor)
         {
             this.byColor = byColor;
         }
 
-        public RegistryObject<ColoredPartItem<T>> get(AEColor color)
+        public RegistryItem<ColoredPartItem<T>> get(AEColor color)
         {
             return byColor.get(color);
         }
 
-        public Collection<RegistryObject<ColoredPartItem<T>>> values()
+        public Collection<RegistryItem<ColoredPartItem<T>>> values()
         {
             return Collections.unmodifiableCollection(byColor.values());
         }

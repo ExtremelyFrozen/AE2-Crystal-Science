@@ -4,29 +4,30 @@ import appeng.recipes.handlers.ChargerRecipeBuilder;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBuilder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
-import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
-public class AECSRecipeProvider extends RecipeProvider implements IConditionBuilder
+public abstract class AECSRecipeProvider extends RecipeProvider implements IConditionBuilder
 {
 
-    public AECSRecipeProvider(PackOutput output)
+    public AECSRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries)
     {
         super(output);
     }
@@ -42,7 +43,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     /**
      * 1x1 双向互换
      */
-    protected static void swap1x1(RecipeOutput out, RecipeCategory category, ItemLike a, ItemLike b)
+    protected static void swap1x1(Consumer<FinishedRecipe> out, RecipeCategory category, ItemLike a, ItemLike b)
     {
         swap1x1(out, category, category, a, b);
     }
@@ -50,7 +51,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     /**
      * 允许为两个方向分别指定RecipeCategory
      */
-    protected static void swap1x1(RecipeOutput out,
+    protected static void swap1x1(Consumer<FinishedRecipe> out,
                                   RecipeCategory aToBCategory,
                                   RecipeCategory bToACategory,
                                   ItemLike a,
@@ -70,7 +71,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     }
 
     protected static void pack2x2(
-            RecipeOutput recipeOutput,
+            Consumer<FinishedRecipe> recipeOutput,
             RecipeCategory category,
             ItemLike input,
             ItemLike output
@@ -85,7 +86,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     }
 
     protected static void unpackTo4(
-            RecipeOutput recipeOutput,
+            Consumer<FinishedRecipe> recipeOutput,
             RecipeCategory category,
             ItemLike input,
             ItemLike output
@@ -98,7 +99,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     }
 
     protected static void packAndUnpack2x2(
-            RecipeOutput recipeOutput,
+            Consumer<FinishedRecipe> recipeOutput,
             RecipeCategory packCategory,
             RecipeCategory unpackCategory,
             ItemLike loose,
@@ -111,7 +112,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
 
 
     protected static void pack3x3(
-            RecipeOutput recipeOutput,
+            Consumer<FinishedRecipe> recipeOutput,
             RecipeCategory category,
             ItemLike input,
             ItemLike output
@@ -127,7 +128,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     }
 
     protected static void unpackTo9(
-            RecipeOutput recipeOutput,
+            Consumer<FinishedRecipe> recipeOutput,
             RecipeCategory category,
             ItemLike input,
             ItemLike output
@@ -140,7 +141,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     }
 
     protected static void packAndUnpack3x3(
-            RecipeOutput recipeOutput,
+            Consumer<FinishedRecipe> recipeOutput,
             RecipeCategory packCategory,
             RecipeCategory unpackCategory,
             ItemLike loose,
@@ -156,7 +157,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     //               |
     //               |
     protected static void toolPickaxeFromItem(
-            RecipeOutput recipeOutput,
+            Consumer<FinishedRecipe> recipeOutput,
             RecipeCategory category,
             ItemLike result,
             ItemLike material
@@ -173,7 +174,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     }
 
     protected static void toolPickaxeFromTag(
-            RecipeOutput recipeOutput,
+            Consumer<FinishedRecipe> recipeOutput,
             RecipeCategory category,
             ItemLike result,
             TagKey<Item> material
@@ -196,7 +197,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     //          #|
     //           |
     protected static void toolAxeFromItem(
-            RecipeOutput recipeOutput,
+            Consumer<FinishedRecipe> recipeOutput,
             RecipeCategory category,
             ItemLike result,
             ItemLike material
@@ -213,7 +214,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     }
 
     protected static void toolAxeFromTag(
-            RecipeOutput recipeOutput,
+            Consumer<FinishedRecipe> recipeOutput,
             RecipeCategory category,
             ItemLike result,
             TagKey<Item> material
@@ -236,7 +237,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     //           #
     //           |
     protected static void toolSwordFromItem(
-            RecipeOutput recipeOutput,
+            Consumer<FinishedRecipe> recipeOutput,
             RecipeCategory category,
             ItemLike result,
             ItemLike material
@@ -253,7 +254,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     }
 
     protected static void toolSwordFromTag(
-            RecipeOutput recipeOutput,
+            Consumer<FinishedRecipe> recipeOutput,
             RecipeCategory category,
             ItemLike result,
             TagKey<Item> material
@@ -276,7 +277,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     //          |
     //          |
     protected static void toolHoeFromItem(
-            RecipeOutput recipeOutput,
+            Consumer<FinishedRecipe> recipeOutput,
             RecipeCategory category,
             ItemLike result,
             ItemLike material
@@ -293,7 +294,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     }
 
     protected static void toolHoeFromTag(
-            RecipeOutput recipeOutput,
+            Consumer<FinishedRecipe> recipeOutput,
             RecipeCategory category,
             ItemLike result,
             TagKey<Item> material
@@ -316,7 +317,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     //            |
     //            |
     protected static void toolShovelFromItem(
-            RecipeOutput recipeOutput,
+            Consumer<FinishedRecipe> recipeOutput,
             RecipeCategory category,
             ItemLike result,
             ItemLike material
@@ -333,7 +334,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     }
 
     protected static void toolShovelFromTag(
-            RecipeOutput recipeOutput,
+            Consumer<FinishedRecipe> recipeOutput,
             RecipeCategory category,
             ItemLike result,
             TagKey<Item> material
@@ -354,7 +355,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
 
     // 锻造台辅助方法---------------------------------------------------------------
     protected static void smithingTransform(
-            RecipeOutput out,
+            Consumer<FinishedRecipe> out,
             RecipeCategory category,
             ItemLike template,
             ItemLike base,
@@ -377,7 +378,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
 
 
     // 熔炉样板辅助工具---------------------------------------------------------------
-    protected static void smeltFood(RecipeCategory category, ItemLike input, ItemLike result, float experience, int cookingTime, RecipeOutput output)
+    protected static void smeltFood(RecipeCategory category, ItemLike input, ItemLike result, float experience, int cookingTime, Consumer<FinishedRecipe> output)
     {
         SimpleCookingRecipeBuilder
                 .smelting(Ingredient.of(input), category, result, experience, cookingTime)
@@ -387,7 +388,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
 
     // 切石样板辅助工具---------------------------------------------------------------
     protected static void stonecutterResultFromItem(
-            RecipeOutput recipeOutput,
+            Consumer<FinishedRecipe> recipeOutput,
             RecipeCategory category,
             ItemLike result,
             ItemLike input,
@@ -403,7 +404,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     }
 
     protected static void stonecutterResultFromItem(
-            RecipeOutput recipeOutput,
+            Consumer<FinishedRecipe> recipeOutput,
             RecipeCategory category,
             ItemLike result,
             ItemLike input
@@ -413,7 +414,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     }
 
     protected static void stonecutterResultFromTag(
-            RecipeOutput recipeOutput,
+            Consumer<FinishedRecipe> recipeOutput,
             RecipeCategory category,
             ItemLike result,
             TagKey<Item> input,
@@ -433,7 +434,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     }
 
     protected static void stonecutterResultFromTag(
-            RecipeOutput recipeOutput,
+            Consumer<FinishedRecipe> recipeOutput,
             RecipeCategory category,
             ItemLike result,
             TagKey<Item> input
@@ -443,13 +444,13 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     }
 
     // AE充能配方-------------------------------------------------------------------
-    protected static void chargedRecipe(RecipeOutput consumer, ItemLike input, ItemLike output)
+    protected static void chargedRecipe(Consumer<FinishedRecipe> consumer, ItemLike input, ItemLike output)
     {
         ResourceLocation id = AE2CrystalScience.makeId("charged/" + getItemName(input) + "_from_" + getItemName(output));
         ChargerRecipeBuilder.charge(consumer, id, input, output);
     }
 
-    protected static void chargedRecipe(RecipeOutput consumer, TagKey<Item> input, ItemLike output)
+    protected static void chargedRecipe(Consumer<FinishedRecipe> consumer, TagKey<Item> input, ItemLike output)
     {
         String tagId = sanitize(input.location());
 
@@ -457,7 +458,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
         ChargerRecipeBuilder.charge(consumer, id, input, output);
     }
 
-    protected static void chargedRecipeWithAggregator(RecipeOutput consumer, ItemLike input, ItemLike output)
+    protected static void chargedRecipeWithAggregator(Consumer<FinishedRecipe> consumer, ItemLike input, ItemLike output)
     {
         chargedRecipe(consumer, input, output);
         ResourceLocation id = AE2CrystalScience.makeId("aggregator/" + getItemName(input) + "_from_" + getItemName(output));
@@ -466,7 +467,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
                 .save(consumer, id);
     }
 
-    protected static void chargedRecipeWithAggregator(RecipeOutput consumer, TagKey<Item> input, ItemLike output)
+    protected static void chargedRecipeWithAggregator(Consumer<FinishedRecipe> consumer, TagKey<Item> input, ItemLike output)
     {
         chargedRecipe(consumer, input, output);
         String tagId = sanitize(input.location());
@@ -521,35 +522,31 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     }
 
     // 其他工具
-    public static ItemStack enchantedItem(HolderLookup.Provider registries, ItemLike item, int count, RegistryObject<Enchantment> enchantment, int level)
+    public static ItemStack enchantedItem(ItemLike item, int count, Enchantment enchantKey, int level)
     {
-        return enchantedItem(registries, item, count, Map.of(enchantment.get(), level));
+        return enchantedItem(item, count, Map.of(enchantKey, level));
     }
 
-    public static ItemStack enchantedItem(HolderLookup.Provider registries, ItemLike item, int count, Enchantment enchantKey, int level)
-    {
-        return enchantedItem(registries, item, count, Map.of(enchantKey, level));
-    }
-
-    public static ItemStack enchantedItem(HolderLookup.Provider registries, ItemLike item, int count, Map<Enchantment, Integer> enchants)
+    public static ItemStack enchantedItem(ItemLike item, int count, Map<Enchantment, Integer> enchants)
     {
         ItemStack stack = new ItemStack(item, count);
 
-        var mutable = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
         for (var e : enchants.entrySet())
         {
-            var holder = registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(e.getKey());
             int level = e.getValue() == null ? 1 : e.getValue();
-            if (level > 0) mutable.set(holder, level);
-        }
+            if (level <= 0)
+            {
+                continue;
+            }
 
-        if (stack.is(Items.ENCHANTED_BOOK))
-        {
-            stack.set(DataComponents.STORED_ENCHANTMENTS, mutable.toImmutable());
-        }
-        else
-        {
-            stack.set(DataComponents.ENCHANTMENTS, mutable.toImmutable());
+            if (stack.is(Items.ENCHANTED_BOOK))
+            {
+                EnchantedBookItem.addEnchantment(stack, new EnchantmentInstance(e.getKey(), level));
+            }
+            else
+            {
+                stack.enchant(e.getKey(), level);
+            }
         }
 
         return stack;
