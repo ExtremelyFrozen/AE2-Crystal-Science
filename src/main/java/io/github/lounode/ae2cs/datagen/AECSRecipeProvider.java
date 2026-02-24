@@ -17,6 +17,8 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.crafting.ConditionalRecipe;
+import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
 import org.jetbrains.annotations.NotNull;
 
@@ -475,6 +477,25 @@ public abstract class AECSRecipeProvider extends RecipeProvider implements ICond
         CrystalAggregatorRecipeBuilder.aggregating(new ItemStack(output, 64), 102400)
                 .require(input, 64)
                 .save(consumer, id);
+    }
+
+    protected static Consumer<FinishedRecipe> withConditions(Consumer<FinishedRecipe> consumer, ICondition... conditions)
+    {
+        if (conditions == null || conditions.length == 0)
+        {
+            return consumer;
+        }
+
+        return recipe -> {
+            ConditionalRecipe.Builder builder = ConditionalRecipe.builder();
+            for (ICondition condition : conditions)
+            {
+                builder.addCondition(condition);
+            }
+
+            builder.addRecipe(out -> out.accept(recipe))
+                    .build(consumer, recipe.getId());
+        };
     }
 
 

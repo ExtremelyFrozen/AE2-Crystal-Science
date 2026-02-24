@@ -12,13 +12,14 @@ import io.github.lounode.ae2cs.datagen.builder.recipe.CircuitEtcherRecipeBuilder
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
-import net.neoforged.neoforge.common.Tags;
+import net.minecraftforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 public class AECSCompatOCRecipeProvider extends AECSRecipeProvider
 {
@@ -34,54 +35,53 @@ public class AECSCompatOCRecipeProvider extends AECSRecipeProvider
     }
 
     @Override
-    protected void buildRecipes(@NotNull RecipeOutput originalOut, HolderLookup.@NotNull Provider registries)
+    protected void buildRecipes(@NotNull Consumer<FinishedRecipe> originalOut)
     {
-        var compatOut = originalOut.withConditions(modLoaded(AECSConstants.OMNI_CELL_ID));
-        super.buildRecipes(compatOut, registries);
+        var compatOut = withConditions(originalOut, modLoaded(AECSConstants.OMNI_CELL_ID));
 
-        stonecutterResultFromItem(compatOut, RecipeCategory.MISC, OCItems.OMNI_LINK_PRINT_PRESS, AECSItems.ENDER_BLANK_PRINT_PRESS);
-        stonecutterResultFromItem(compatOut, RecipeCategory.MISC, OCItems.COMPLEX_LINK_PRINT_PRESS, AECSItems.ENDER_BLANK_PRINT_PRESS);
-        stonecutterResultFromItem(compatOut, RecipeCategory.MISC, OCItems.MULTIDIMENSIONAL_EXPANSION_PRINT_PRESS, AECSItems.ENDER_BLANK_PRINT_PRESS);
+        stonecutterResultFromItem(compatOut, RecipeCategory.MISC, OCItems.OMNI_LINK_PRINT_PRESS.get(), AECSItems.ENDER_BLANK_PRINT_PRESS);
+        stonecutterResultFromItem(compatOut, RecipeCategory.MISC, OCItems.COMPLEX_LINK_PRINT_PRESS.get(), AECSItems.ENDER_BLANK_PRINT_PRESS);
+        stonecutterResultFromItem(compatOut, RecipeCategory.MISC, OCItems.MULTIDIMENSIONAL_EXPANSION_PRINT_PRESS.get(), AECSItems.ENDER_BLANK_PRINT_PRESS);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSItems.ENDER_BLANK_PRINT_PRESS)
                 .pattern(" a ")
                 .pattern("aba")
                 .pattern(" a ")
-                .define('a', OCBlocks.ENDER_INGOT_BLOCK)
+                .define('a', OCBlocks.ENDER_INGOT_BLOCK.get())
                 .define('b', ConventionTags.INSCRIBER_PRESSES)
-                .unlockedBy(getHasName(OCBlocks.ENDER_INGOT_BLOCK), has(OCBlocks.ENDER_INGOT_BLOCK))
+                .unlockedBy(getHasName(OCBlocks.ENDER_INGOT_BLOCK.get()), has(OCBlocks.ENDER_INGOT_BLOCK.get()))
                 .save(compatOut, getCrafterPath(AECSItems.ENDER_BLANK_PRINT_PRESS, true));
 
-        CircuitEtcherRecipeBuilder.etching(OCItems.OMNI_LINK_PROCESSOR, 9, 14400)
-                .require(OCBlocks.ENDER_INGOT_BLOCK, 1)
+        CircuitEtcherRecipeBuilder.etching(OCItems.OMNI_LINK_PROCESSOR.get(), 9, 14400)
+                .require(OCBlocks.ENDER_INGOT_BLOCK.get(), 1)
                 .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 1)
                 .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 1)
                 .save(compatOut);
 
-        CircuitEtcherRecipeBuilder.etching(OCItems.COMPLEX_LINK_PROCESSOR, 9, 14400)
-                .require(OCBlocks.NETHERITE_SCRAP_BLOCK, 1)
+        CircuitEtcherRecipeBuilder.etching(OCItems.COMPLEX_LINK_PROCESSOR.get(), 9, 14400)
+                .require(OCBlocks.NETHERITE_SCRAP_BLOCK.get(), 1)
                 .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 1)
                 .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 1)
                 .save(compatOut);
 
-        CircuitEtcherRecipeBuilder.etching(OCItems.MULTIDIMENSIONAL_EXPANSION_PROCESSOR, 9, 14400)
-                .require(OCBlocks.SINGULARITY_BLOCK, 1)
+        CircuitEtcherRecipeBuilder.etching(OCItems.MULTIDIMENSIONAL_EXPANSION_PROCESSOR.get(), 9, 14400)
+                .require(OCBlocks.SINGULARITY_BLOCK.get(), 1)
                 .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 1)
                 .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 1)
                 .save(compatOut);
 
-        CrystalAggregatorRecipeBuilder.aggregating(OCItems.OMNI_LINK_PROCESSOR, 32, 51200)
-                .require(OCItems.OMNI_LINK_CIRCUIT_PRINT, 32)
+        CrystalAggregatorRecipeBuilder.aggregating(OCItems.OMNI_LINK_PROCESSOR.get(), 32, 51200)
+                .require(OCItems.OMNI_LINK_CIRCUIT_PRINT.get(), 32)
                 .require(Tags.Items.DUSTS_REDSTONE, 32)
                 .require(AEItems.SILICON_PRINT, 32)
                 .save(compatOut);
-        CrystalAggregatorRecipeBuilder.aggregating(OCItems.COMPLEX_LINK_PROCESSOR, 32, 51200)
-                .require(OCItems.COMPLEX_LINK_CIRCUIT_PRINT, 32)
+        CrystalAggregatorRecipeBuilder.aggregating(OCItems.COMPLEX_LINK_PROCESSOR.get(), 32, 51200)
+                .require(OCItems.COMPLEX_LINK_CIRCUIT_PRINT.get(), 32)
                 .require(Tags.Items.DUSTS_REDSTONE, 32)
                 .require(AEItems.SILICON_PRINT, 32)
                 .save(compatOut);
-        CrystalAggregatorRecipeBuilder.aggregating(OCItems.MULTIDIMENSIONAL_EXPANSION_PROCESSOR, 32, 51200)
-                .require(OCItems.MULTIDIMENSIONAL_EXPANSION_CIRCUIT_PRINT, 32)
+        CrystalAggregatorRecipeBuilder.aggregating(OCItems.MULTIDIMENSIONAL_EXPANSION_PROCESSOR.get(), 32, 51200)
+                .require(OCItems.MULTIDIMENSIONAL_EXPANSION_CIRCUIT_PRINT.get(), 32)
                 .require(Tags.Items.DUSTS_REDSTONE, 32)
                 .require(AEItems.SILICON_PRINT, 32)
                 .save(compatOut);

@@ -12,11 +12,12 @@ import io.github.lounode.ae2cs.datagen.builder.recipe.CircuitEtcherRecipeBuilder
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 public class AECSCompatMegaCellRecipeProvider extends AECSRecipeProvider
 {
@@ -32,10 +33,9 @@ public class AECSCompatMegaCellRecipeProvider extends AECSRecipeProvider
     }
 
     @Override
-    protected void buildRecipes(@NotNull RecipeOutput originalOut, HolderLookup.@NotNull Provider registries)
+    protected void buildRecipes(@NotNull Consumer<FinishedRecipe> originalOut)
     {
-        var compatOut = originalOut.withConditions(modLoaded(AECSConstants.MEGA_CELL_ID));
-        super.buildRecipes(compatOut, registries);
+        var compatOut = withConditions(originalOut, modLoaded(AECSConstants.MEGA_CELL_ID));
 
         stonecutterResultFromItem(compatOut, RecipeCategory.MISC, MEGAItems.ACCUMULATION_PROCESSOR_PRESS, AECSItems.BLANK_PRINT_PRESS);
 

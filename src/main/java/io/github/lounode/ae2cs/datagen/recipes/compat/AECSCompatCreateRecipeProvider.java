@@ -10,13 +10,14 @@ import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 public class AECSCompatCreateRecipeProvider extends AECSRecipeProvider
 {
@@ -32,10 +33,9 @@ public class AECSCompatCreateRecipeProvider extends AECSRecipeProvider
     }
 
     @Override
-    protected void buildRecipes(@NotNull RecipeOutput originalOut, HolderLookup.@NotNull Provider registries)
+    protected void buildRecipes(@NotNull Consumer<FinishedRecipe> originalOut)
     {
-        var compatOut = originalOut.withConditions(modLoaded(AECSConstants.CREATE_ID));
-        super.buildRecipes(compatOut, registries);
+        var compatOut = withConditions(originalOut, modLoaded(AECSConstants.CREATE_ID));
 
         packAndUnpack3x3(compatOut, RecipeCategory.MISC, RecipeCategory.MISC,
                 AECSItems.PURE_ROSE_QUARTZ, AECSBlocks.PURE_ROSE_QUARTZ_BLOCK);

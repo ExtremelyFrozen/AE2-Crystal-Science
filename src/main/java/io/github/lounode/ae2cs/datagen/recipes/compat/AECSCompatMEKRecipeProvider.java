@@ -14,26 +14,23 @@ import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalPulverizerRecipeBui
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.PressurizedReactionRecipeBuilder;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import mekanism.api.recipes.ingredients.FluidStackIngredient;
-import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import mekanism.api.recipes.ingredients.chemical.SingleChemicalIngredient;
-import mekanism.common.registries.MekanismChemicals;
+import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator;
+import mekanism.common.recipe.ingredient.creator.GasStackIngredientCreator;
+import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator;
+import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.neoforged.neoforge.common.crafting.CompoundIngredient;
-import net.neoforged.neoforge.common.crafting.SizedIngredient;
-import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import net.pedroksl.advanced_ae.common.definitions.AAEItems;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 public class AECSCompatMEKRecipeProvider extends AECSRecipeProvider
 {
@@ -49,18 +46,17 @@ public class AECSCompatMEKRecipeProvider extends AECSRecipeProvider
     }
 
     @Override
-    protected void buildRecipes(@NotNull RecipeOutput originalOut, HolderLookup.@NotNull Provider registries)
+    protected void buildRecipes(@NotNull Consumer<FinishedRecipe> originalOut)
     {
-        var compatOut = originalOut.withConditions(modLoaded(AECSConstants.MEK_ID));
-        super.buildRecipes(compatOut, registries);
+        var compatOut = withConditions(originalOut, modLoaded(AECSConstants.MEK_ID));
 
         packAndUnpack3x3(compatOut, RecipeCategory.MISC, RecipeCategory.MISC,
                 AECSItems.PURE_IRRADIATED_CRYSTAL, AECSBlocks.IRRADIATED_CRYSTAL_BLOCK);
 
         PressurizedReactionRecipeBuilder.reaction(
-                        ItemStackIngredient.of(SizedIngredient.of(AECSItems.NETHER_QUARTZ_SEED, 1)),
-                        FluidStackIngredient.of(SizedFluidIngredient.of(MekanismTags.Fluids.SULFURIC_ACID, 1000)),
-                        ChemicalStackIngredient.of(new SingleChemicalIngredient(MekanismChemicals.FISSILE_FUEL), 1000),
+                        ItemStackIngredientCreator.INSTANCE.from(AECSItems.NETHER_QUARTZ_SEED, 1),
+                        FluidStackIngredientCreator.INSTANCE.from(MekanismTags.Fluids.SULFURIC_ACID, 1000),
+                        GasStackIngredientCreator.INSTANCE.from(MekanismGases.FISSILE_FUEL, 1000),
                         400, AECSItems.IRRADIATED_SEED.toStack())
                 .build(compatOut, getPressurizedReactionPath("irradiated_seed_first"));
 
@@ -71,22 +67,22 @@ public class AECSCompatMEKRecipeProvider extends AECSRecipeProvider
                 .save(compatOut);
 
         CrystalAggregatorRecipeBuilder.aggregating(
-                        enchantedItem(registries, MekanismItems.ATOMIC_DISASSEMBLER, 1, AECSEnchantments.ENDER_LINK, 1), 64000)
+                        enchantedItem(MekanismItems.ATOMIC_DISASSEMBLER, 1, AECSEnchantments.ENDER_LINK.get(), 1), 64000)
                 .require(MekanismItems.ATOMIC_DISASSEMBLER, 1)
                 .require(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_ENDER_QUARTZ, 1)
                 .require(AEItems.SINGULARITY, 1)
                 .save(compatOut);
 
         CrystalAggregatorRecipeBuilder.aggregating(
-                        enchantedItem(registries, MekanismItems.MEKA_TOOL, 1, AECSEnchantments.ENDER_LINK, 1), 64000)
+                        enchantedItem(MekanismItems.MEKA_TOOL, 1, AECSEnchantments.ENDER_LINK.get(), 1), 64000)
                 .require(MekanismItems.MEKA_TOOL, 1)
                 .require(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_ENDER_QUARTZ, 1)
                 .require(AEItems.SINGULARITY, 1)
                 .save(compatOut);
 
         ItemStackToChemicalRecipeBuilder.oxidizing(
-                        ItemStackIngredient.of(SizedIngredient.of(AECSTags.Items.PURE_IRRADIATED_CRYSTAL, 1)),
-                        MekanismChemicals.NUCLEAR_WASTE.asStack(500))
+                        ItemStackIngredientCreator.INSTANCE.from(AECSTags.Items.PURE_IRRADIATED_CRYSTAL, 1),
+                        MekanismGases.NUCLEAR_WASTE.getStack(500))
                 .build(compatOut, getOxidizingPath("nuclear_waste"));
 
         CrystalPulverizerRecipeBuilder.pulverizing(AECSItems.IRRADIATED_CRYSTAL_DUST, 1, 8000)
@@ -94,27 +90,27 @@ public class AECSCompatMEKRecipeProvider extends AECSRecipeProvider
                 .save(compatOut);
 
         ItemStackToItemStackRecipeBuilder.crushing(
-                        ItemStackIngredient.of(new SizedIngredient(CompoundIngredient.of(Ingredient.of(AECSTags.Items.PURE_QUANTUM_CRYSTAL), Ingredient.of(AAEItems.QUANTUM_ALLOY)), 1)),
+                        ItemStackIngredientCreator.INSTANCE.from(Stream.of(ItemStackIngredientCreator.INSTANCE.from(AECSTags.Items.PURE_QUANTUM_CRYSTAL), ItemStackIngredientCreator.INSTANCE.from(AAEItems.QUANTUM_ALLOY))),
                         AECSItems.QUANTUM_CRYSTAL_DUST.toStack())
                 .build(compatOut, getCrushingPath("quantum_crystal_dust"));
 
         ItemStackToItemStackRecipeBuilder.crushing(
-                        ItemStackIngredient.of(new SizedIngredient(CompoundIngredient.of(Ingredient.of(AECSTags.Items.PURE_REDSTONE_CRYSTAL), Ingredient.of(AFTags.REDSTONE_GEM)), 1)),
+                        ItemStackIngredientCreator.INSTANCE.from(Stream.of(ItemStackIngredientCreator.INSTANCE.from(AECSTags.Items.PURE_REDSTONE_CRYSTAL), ItemStackIngredientCreator.INSTANCE.from(AFTags.REDSTONE_GEM))),
                         AECSItems.REDSTONE_CRYSTAL_DUST.toStack())
                 .build(compatOut, getCrushingPath("redstone_crystal_dust"));
 
         ItemStackToItemStackRecipeBuilder.crushing(
-                        ItemStackIngredient.of(SizedIngredient.of(AECSTags.Items.PURE_RESONATING_CRYSTAL, 1)),
+                        ItemStackIngredientCreator.INSTANCE.from(AECSTags.Items.PURE_RESONATING_CRYSTAL, 1),
                         AECSItems.RESONATING_DUST.toStack())
                 .build(compatOut, getCrushingPath("resonating_crystal_dust"));
 
         ItemStackToItemStackRecipeBuilder.crushing(
-                        ItemStackIngredient.of(SizedIngredient.of(AECSTags.Items.PURE_METEOR_CRYSTAL, 1)),
+                        ItemStackIngredientCreator.INSTANCE.from(AECSTags.Items.PURE_METEOR_CRYSTAL, 1),
                         AEItems.SKY_DUST.stack())
                 .build(compatOut, getCrushingPath("sky_dust"));
 
         ItemStackToItemStackRecipeBuilder.crushing(
-                        ItemStackIngredient.of(SizedIngredient.of(AECSTags.Items.PURE_IRRADIATED_CRYSTAL, 1)),
+                        ItemStackIngredientCreator.INSTANCE.from(AECSTags.Items.PURE_IRRADIATED_CRYSTAL, 1),
                         AECSItems.IRRADIATED_CRYSTAL_DUST.toStack())
                 .build(compatOut, getCrushingPath("irradiated_crystal_dust"));
     }
