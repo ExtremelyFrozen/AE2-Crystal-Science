@@ -1,0 +1,23 @@
+{
+  "type": "ae2cs:crystal_aggregator_recipe_serializer",
+  "energy_cost": 16000,
+  "input_a": {
+    "count": 3,
+    "ingredient": {
+      "tag": "forge:rods/wooden"
+    }
+  },
+  "input_b": {
+    "count": 4,
+    "ingredient": {
+      "tag": "forge:ingots/gold"
+    }
+  },
+  "input_c": {
+    "count": 1,
+    "ingredient": []
+  },
+  "result": {
+    "item": "minecraft:bell"
+  }
+}

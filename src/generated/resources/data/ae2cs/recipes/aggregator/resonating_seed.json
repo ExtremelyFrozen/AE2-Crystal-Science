@@ -1,0 +1,26 @@
+{
+  "type": "ae2cs:crystal_aggregator_recipe_serializer",
+  "energy_cost": 51200,
+  "input_a": {
+    "count": 16,
+    "ingredient": {
+      "tag": "forge:dusts/resonating"
+    }
+  },
+  "input_b": {
+    "count": 16,
+    "ingredient": {
+      "tag": "forge:dusts/fluix"
+    }
+  },
+  "input_c": {
+    "count": 16,
+    "ingredient": {
+      "item": "ae2:sky_dust"
+    }
+  },
+  "result": {
+    "count": 32,
+    "item": "ae2cs:resonating_seed"
+  }
+}

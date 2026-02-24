@@ -1,0 +1,15 @@
+{
+  "type": "ae2:inscriber",
+  "ingredients": {
+    "middle": {
+      "tag": "forge:gems/resonating"
+    },
+    "top": {
+      "item": "ae2cs:resonating_print_press"
+    }
+  },
+  "mode": "inscribe",
+  "result": {
+    "item": "ae2cs:resonating_circuit_print"
+  }
+}

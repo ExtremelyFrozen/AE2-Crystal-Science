@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "tag": "forge:gems/resonating"
+    },
+    "b": {
+      "item": "ae2:energy_acceptor"
+    },
+    "c": {
+      "tag": "forge:ingots/iron"
+    },
+    "d": {
+      "item": "ae2cs:resonating_processor"
+    },
+    "e": {
+      "tag": "forge:gems/sky_stone_crystal"
+    },
+    "f": {
+      "item": "ae2:vibration_chamber"
+    }
+  },
+  "pattern": [
+    "aba",
+    "cdc",
+    "efe"
+  ],
+  "result": {
+    "item": "ae2cs:crystal_vibration_chamber"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "ae2cs:meteorite_pattern_provider"
+    },
+    {
+      "tag": "forge:ingots"
+    }
+  ],
+  "result": {
+    "item": "ae2cs:meteor_pattern_provider_upgrade"
+  }
+}

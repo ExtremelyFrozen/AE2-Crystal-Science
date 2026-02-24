@@ -1,0 +1,23 @@
+{
+  "type": "ae2cs:crystal_aggregator_recipe_serializer",
+  "energy_cost": 16000,
+  "input_a": {
+    "count": 1,
+    "ingredient": {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "input_b": {
+    "count": 1,
+    "ingredient": {
+      "item": "minecraft:amethyst_shard"
+    }
+  },
+  "input_c": {
+    "count": 1,
+    "ingredient": []
+  },
+  "result": {
+    "item": "minecraft:crying_obsidian"
+  }
+}

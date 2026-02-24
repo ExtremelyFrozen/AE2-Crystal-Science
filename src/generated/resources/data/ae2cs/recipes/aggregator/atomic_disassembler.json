@@ -1,0 +1,38 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "ae2cs:crystal_aggregator_recipe_serializer",
+        "energy_cost": 64000,
+        "input_a": {
+          "count": 1,
+          "ingredient": {
+            "item": "mekanism:atomic_disassembler"
+          }
+        },
+        "input_b": {
+          "count": 1,
+          "ingredient": {
+            "tag": "forge:storage_blocks/pure_crystal/ender_quartz_block"
+          }
+        },
+        "input_c": {
+          "count": 1,
+          "ingredient": {
+            "item": "ae2:singularity"
+          }
+        },
+        "result": {
+          "item": "mekanism:atomic_disassembler"
+        }
+      }
+    }
+  ]
+}

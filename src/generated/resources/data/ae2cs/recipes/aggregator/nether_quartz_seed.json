@@ -1,0 +1,24 @@
+{
+  "type": "ae2cs:crystal_aggregator_recipe_serializer",
+  "energy_cost": 51200,
+  "input_a": {
+    "count": 8,
+    "ingredient": {
+      "tag": "forge:dusts/quartz"
+    }
+  },
+  "input_b": {
+    "count": 32,
+    "ingredient": {
+      "item": "minecraft:sand"
+    }
+  },
+  "input_c": {
+    "count": 1,
+    "ingredient": []
+  },
+  "result": {
+    "count": 32,
+    "item": "ae2cs:nether_quartz_seed"
+  }
+}

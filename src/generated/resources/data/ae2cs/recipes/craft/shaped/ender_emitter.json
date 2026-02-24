@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "tag": "forge:ingots/iron"
+    },
+    "b": {
+      "item": "ae2:wireless_access_point"
+    },
+    "c": {
+      "item": "ae2cs:resonating_processor"
+    },
+    "d": {
+      "tag": "ae2:smart_cable"
+    },
+    "e": {
+      "tag": "forge:storage_blocks/pure_crystal/ender_quartz_block"
+    }
+  },
+  "pattern": [
+    "aba",
+    " c ",
+    "ded"
+  ],
+  "result": {
+    "item": "ae2cs:ender_emitter"
+  },
+  "show_notification": true
+}

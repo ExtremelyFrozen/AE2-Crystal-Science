@@ -1,0 +1,28 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "create"
+        }
+      ],
+      "recipe": {
+        "type": "create:mechanical_crafting",
+        "acceptMirrored": true,
+        "key": {
+          "a": {
+            "item": "create:polished_rose_quartz"
+          }
+        },
+        "pattern": [
+          "a"
+        ],
+        "result": {
+          "item": "ae2cs:rose_quartz_seed"
+        }
+      }
+    }
+  ]
+}

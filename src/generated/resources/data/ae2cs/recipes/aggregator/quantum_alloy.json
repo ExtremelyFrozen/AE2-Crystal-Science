@@ -1,0 +1,36 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "advanced_ae"
+        }
+      ],
+      "recipe": {
+        "type": "ae2cs:crystal_aggregator_recipe_serializer",
+        "energy_cost": 16000,
+        "input_a": {
+          "count": 1,
+          "ingredient": {
+            "tag": "forge:dusts/quantum_alloy"
+          }
+        },
+        "input_b": {
+          "count": 1,
+          "ingredient": {
+            "tag": "forge:ingots"
+          }
+        },
+        "input_c": {
+          "count": 1,
+          "ingredient": []
+        },
+        "result": {
+          "item": "advanced_ae:quantum_alloy"
+        }
+      }
+    }
+  ]
+}

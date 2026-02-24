@@ -1,0 +1,22 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "appflux"
+        }
+      ],
+      "recipe": {
+        "type": "ae2:charger",
+        "ingredient": {
+          "item": "ae2cs:purified_redstone_crystal"
+        },
+        "result": {
+          "item": "appflux:redstone_crystal"
+        }
+      }
+    }
+  ]
+}

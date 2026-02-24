@@ -1,0 +1,31 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "mekanism:crushing",
+        "input": [
+          {
+            "ingredient": {
+              "tag": "ae2cs:pure_crystal/quantum_crystal"
+            }
+          },
+          {
+            "ingredient": {
+              "item": "advanced_ae:quantum_alloy"
+            }
+          }
+        ],
+        "output": {
+          "item": "ae2cs:quantum_crystal_dust"
+        }
+      }
+    }
+  ]
+}

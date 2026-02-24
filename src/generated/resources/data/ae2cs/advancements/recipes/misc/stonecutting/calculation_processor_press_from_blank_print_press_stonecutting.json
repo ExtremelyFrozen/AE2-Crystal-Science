@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_blank_print_press": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2cs:blank_print_press"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "ae2cs:stonecutting/calculation_processor_press_from_blank_print_press_stonecutting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_blank_print_press",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "ae2cs:stonecutting/calculation_processor_press_from_blank_print_press_stonecutting"
+    ]
+  },
+  "sends_telemetry_event": false
+}

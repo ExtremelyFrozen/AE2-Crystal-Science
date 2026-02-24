@@ -1,0 +1,13 @@
+{
+  "type": "ae2cs:crystal_pulverizer_recipe_serializer",
+  "energy_cost": 8000,
+  "input": {
+    "count": 1,
+    "ingredient": {
+      "item": "ae2:sky_stone_block"
+    }
+  },
+  "result": {
+    "item": "ae2:sky_dust"
+  }
+}

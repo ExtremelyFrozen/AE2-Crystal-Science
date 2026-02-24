@@ -1,3 +1,3 @@
-// 1.21.1	2026-01-17T12:44:14.3348325	AECS Furnace Recipes
-a1115a7a1777b3ca83e1f7a50ed89bb12316dfe1 data/ae2cs/advancement/recipes/food/smelt/food/bread_from_flour.json
-518578bc8f8e9515e1469722a63c6b44b26244c9 data/ae2cs/recipe/smelt/food/bread_from_flour.json
+// 1.20.1	2026-02-24T21:46:06.8263862	AECS Furnace Recipes
+e25a5fa59e3a75b299036155b5375d6567bbb358 data/ae2cs/advancements/recipes/food/smelt/food/bread_from_flour.json
+6a64edb98799dd8b330bbd9be1fa16f7d530ba8d data/ae2cs/recipes/smelt/food/bread_from_flour.json

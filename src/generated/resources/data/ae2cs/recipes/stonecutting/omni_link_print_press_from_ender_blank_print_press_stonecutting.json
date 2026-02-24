@@ -1,0 +1,21 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ae2omnicells"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:stonecutting",
+        "count": 1,
+        "ingredient": {
+          "item": "ae2cs:ender_blank_print_press"
+        },
+        "result": "ae2omnicells:omni_link_print_press"
+      }
+    }
+  ]
+}

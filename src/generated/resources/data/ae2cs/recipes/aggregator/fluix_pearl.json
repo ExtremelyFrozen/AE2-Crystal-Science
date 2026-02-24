@@ -1,0 +1,23 @@
+{
+  "type": "ae2cs:crystal_aggregator_recipe_serializer",
+  "energy_cost": 16000,
+  "input_a": {
+    "count": 1,
+    "ingredient": {
+      "item": "minecraft:ender_pearl"
+    }
+  },
+  "input_b": {
+    "count": 4,
+    "ingredient": {
+      "tag": "forge:dusts/fluix"
+    }
+  },
+  "input_c": {
+    "count": 1,
+    "ingredient": []
+  },
+  "result": {
+    "item": "ae2:fluix_pearl"
+  }
+}

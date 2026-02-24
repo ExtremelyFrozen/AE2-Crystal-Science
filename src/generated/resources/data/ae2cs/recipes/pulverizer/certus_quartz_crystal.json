@@ -1,0 +1,14 @@
+{
+  "type": "ae2cs:crystal_pulverizer_recipe_serializer",
+  "energy_cost": 8000,
+  "input": {
+    "count": 1,
+    "ingredient": {
+      "tag": "forge:ores/certus_quartz"
+    }
+  },
+  "result": {
+    "count": 6,
+    "item": "ae2:certus_quartz_crystal"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "appflux"
+        }
+      ],
+      "recipe": {
+        "type": "ae2cs:crystal_aggregator_recipe_serializer",
+        "energy_cost": 16000,
+        "input_a": {
+          "count": 1,
+          "ingredient": {
+            "item": "minecraft:cactus"
+          }
+        },
+        "input_b": {
+          "count": 1,
+          "ingredient": {
+            "tag": "forge:silicon"
+          }
+        },
+        "input_c": {
+          "count": 1,
+          "ingredient": {
+            "item": "minecraft:slime_ball"
+          }
+        },
+        "result": {
+          "item": "appflux:insulating_resin"
+        }
+      }
+    }
+  ]
+}

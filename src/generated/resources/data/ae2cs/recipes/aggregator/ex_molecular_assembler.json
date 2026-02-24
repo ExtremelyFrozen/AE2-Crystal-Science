@@ -1,0 +1,38 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "expatternprovider"
+        }
+      ],
+      "recipe": {
+        "type": "ae2cs:crystal_aggregator_recipe_serializer",
+        "energy_cost": 16000,
+        "input_a": {
+          "count": 4,
+          "ingredient": {
+            "item": "ae2:molecular_assembler"
+          }
+        },
+        "input_b": {
+          "count": 4,
+          "ingredient": {
+            "item": "ae2cs:resonating_processor"
+          }
+        },
+        "input_c": {
+          "count": 2,
+          "ingredient": {
+            "item": "ae2:speed_card"
+          }
+        },
+        "result": {
+          "item": "expatternprovider:ex_molecular_assembler"
+        }
+      }
+    }
+  ]
+}

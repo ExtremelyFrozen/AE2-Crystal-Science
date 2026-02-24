@@ -1,0 +1,34 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ae2omnicells"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "category": "misc",
+        "key": {
+          "a": {
+            "item": "ae2omnicells:ender_ingot_block"
+          },
+          "b": {
+            "tag": "ae2:inscriber_presses"
+          }
+        },
+        "pattern": [
+          " a ",
+          "aba",
+          " a "
+        ],
+        "result": {
+          "item": "ae2cs:ender_blank_print_press"
+        },
+        "show_notification": true
+      }
+    }
+  ]
+}

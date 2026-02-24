@@ -1,0 +1,26 @@
+{
+  "type": "ae2cs:crystal_aggregator_recipe_serializer",
+  "energy_cost": 51200,
+  "input_a": {
+    "count": 32,
+    "ingredient": {
+      "tag": "forge:gems/sky_stone_crystal"
+    }
+  },
+  "input_b": {
+    "count": 32,
+    "ingredient": {
+      "tag": "forge:storage_blocks/redstone"
+    }
+  },
+  "input_c": {
+    "count": 32,
+    "ingredient": {
+      "tag": "forge:gems/ender_quartz"
+    }
+  },
+  "result": {
+    "count": 32,
+    "item": "ae2cs:resonating_crystal_dust"
+  }
+}

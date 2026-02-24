@@ -1,0 +1,24 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "mekanism:crushing",
+        "input": {
+          "ingredient": {
+            "tag": "ae2cs:pure_crystal/resonating_crystal"
+          }
+        },
+        "output": {
+          "item": "ae2cs:resonating_crystal_dust"
+        }
+      }
+    }
+  ]
+}

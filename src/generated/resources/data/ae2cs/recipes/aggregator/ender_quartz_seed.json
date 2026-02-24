@@ -1,0 +1,26 @@
+{
+  "type": "ae2cs:crystal_aggregator_recipe_serializer",
+  "energy_cost": 51200,
+  "input_a": {
+    "count": 8,
+    "ingredient": {
+      "tag": "forge:dusts/quartz"
+    }
+  },
+  "input_b": {
+    "count": 8,
+    "ingredient": {
+      "tag": "forge:dusts/ender_pearl"
+    }
+  },
+  "input_c": {
+    "count": 16,
+    "ingredient": {
+      "item": "minecraft:end_stone"
+    }
+  },
+  "result": {
+    "count": 32,
+    "item": "ae2cs:ender_quartz_seed"
+  }
+}

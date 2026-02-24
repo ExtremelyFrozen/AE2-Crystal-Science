@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "ae2cs:quartz_oscillator_clock"
+    }
+  ],
+  "result": {
+    "item": "ae2cs:quartz_oscillator_clock_part"
+  }
+}

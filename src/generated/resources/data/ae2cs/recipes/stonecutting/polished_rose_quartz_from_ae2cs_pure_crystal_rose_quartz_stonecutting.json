@@ -1,0 +1,21 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "create"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:stonecutting",
+        "count": 2,
+        "ingredient": {
+          "tag": "ae2cs:pure_crystal/rose_quartz"
+        },
+        "result": "create:polished_rose_quartz"
+      }
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "type": "ae2cs:crystal_aggregator_recipe_serializer",
+  "energy_cost": 16000,
+  "input_a": {
+    "count": 4,
+    "ingredient": {
+      "tag": "forge:gems/ender_quartz"
+    }
+  },
+  "input_b": {
+    "count": 1,
+    "ingredient": {
+      "item": "ae2:interface"
+    }
+  },
+  "input_c": {
+    "count": 1,
+    "ingredient": {
+      "item": "ae2cs:resonating_processor"
+    }
+  },
+  "result": {
+    "item": "ae2cs:ender_interface"
+  }
+}

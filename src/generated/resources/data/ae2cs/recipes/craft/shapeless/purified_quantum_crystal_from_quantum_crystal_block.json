@@ -1,0 +1,26 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "advanced_ae"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "category": "misc",
+        "ingredients": [
+          {
+            "item": "ae2cs:quantum_crystal_block"
+          }
+        ],
+        "result": {
+          "count": 9,
+          "item": "ae2cs:purified_quantum_crystal"
+        }
+      }
+    }
+  ]
+}

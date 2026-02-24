@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_simple_circuit_print": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2cs:simple_circuit_print"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "ae2cs:craft/shaped/blank_print_press"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_simple_circuit_print",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "ae2cs:craft/shaped/blank_print_press"
+    ]
+  },
+  "sends_telemetry_event": false
+}

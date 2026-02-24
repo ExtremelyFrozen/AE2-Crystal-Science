@@ -1,0 +1,38 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "expatternprovider"
+        }
+      ],
+      "recipe": {
+        "type": "ae2cs:crystal_aggregator_recipe_serializer",
+        "energy_cost": 16000,
+        "input_a": {
+          "count": 1,
+          "ingredient": {
+            "item": "expatternprovider:ex_pattern_provider"
+          }
+        },
+        "input_b": {
+          "count": 1,
+          "ingredient": {
+            "item": "ae2cs:resonating_processor"
+          }
+        },
+        "input_c": {
+          "count": 1,
+          "ingredient": {
+            "item": "expatternprovider:ex_interface"
+          }
+        },
+        "result": {
+          "item": "ae2cs:extended_integrated_interface"
+        }
+      }
+    }
+  ]
+}

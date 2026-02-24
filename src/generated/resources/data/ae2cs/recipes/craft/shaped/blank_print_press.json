@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "ae2cs:simple_circuit_print"
+    },
+    "b": {
+      "tag": "ae2:inscriber_presses"
+    }
+  },
+  "pattern": [
+    " a ",
+    "aba",
+    " a "
+  ],
+  "result": {
+    "item": "ae2cs:blank_print_press"
+  },
+  "show_notification": true
+}

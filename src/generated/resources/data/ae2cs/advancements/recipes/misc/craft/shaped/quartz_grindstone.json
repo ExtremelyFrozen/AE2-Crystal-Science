@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "ae2cs:craft/shaped/quartz_grindstone"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_wooden_gear": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ae2cs:wooden_gear"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_wooden_gear",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "ae2cs:craft/shaped/quartz_grindstone"
+    ]
+  },
+  "sends_telemetry_event": false
+}

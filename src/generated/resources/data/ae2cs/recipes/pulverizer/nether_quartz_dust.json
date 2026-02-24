@@ -1,0 +1,13 @@
+{
+  "type": "ae2cs:crystal_pulverizer_recipe_serializer",
+  "energy_cost": 8000,
+  "input": {
+    "count": 1,
+    "ingredient": {
+      "tag": "forge:gems/quartz"
+    }
+  },
+  "result": {
+    "item": "ae2cs:nether_quartz_dust"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "ae2:inscriber",
+  "ingredients": {
+    "middle": {
+      "tag": "forge:gems/quartz"
+    }
+  },
+  "mode": "press",
+  "result": {
+    "item": "ae2cs:simple_circuit_print"
+  }
+}

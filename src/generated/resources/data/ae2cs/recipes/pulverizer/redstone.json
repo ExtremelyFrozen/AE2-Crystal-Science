@@ -1,0 +1,26 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "appflux"
+        }
+      ],
+      "recipe": {
+        "type": "ae2cs:crystal_pulverizer_recipe_serializer",
+        "energy_cost": 8000,
+        "input": {
+          "count": 1,
+          "ingredient": {
+            "tag": "forge:dusts/redstone_crystal"
+          }
+        },
+        "result": {
+          "item": "minecraft:redstone"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "type": "ae2cs:crystal_aggregator_recipe_serializer",
+  "energy_cost": 320000,
+  "input_a": {
+    "count": 32,
+    "ingredient": {
+      "item": "ae2:matter_ball"
+    }
+  },
+  "input_b": {
+    "count": 1,
+    "ingredient": {
+      "item": "ae2:fluix_pearl"
+    }
+  },
+  "input_c": {
+    "count": 1,
+    "ingredient": {
+      "tag": "forge:dusts/resonating"
+    }
+  },
+  "result": {
+    "item": "ae2:singularity"
+  }
+}

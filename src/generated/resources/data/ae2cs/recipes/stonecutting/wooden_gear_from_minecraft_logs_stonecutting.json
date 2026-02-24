@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 1,
+  "ingredient": {
+    "tag": "minecraft:logs"
+  },
+  "result": "ae2cs:wooden_gear"
+}

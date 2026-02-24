@@ -1,0 +1,13 @@
+{
+  "type": "ae2cs:crystal_pulverizer_recipe_serializer",
+  "energy_cost": 8000,
+  "input": {
+    "count": 1,
+    "ingredient": {
+      "tag": "forge:gems/ender_quartz"
+    }
+  },
+  "result": {
+    "item": "ae2:ender_dust"
+  }
+}

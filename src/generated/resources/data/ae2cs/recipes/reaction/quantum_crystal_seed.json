@@ -1,0 +1,48 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "advanced_ae"
+        }
+      ],
+      "recipe": {
+        "type": "advanced_ae:reaction",
+        "energy": 80000,
+        "fluid": {
+          "fluidStack": {
+            "Amount": 1000,
+            "FluidName": "advanced_ae:quantum_infusion_source"
+          }
+        },
+        "input_items": [
+          {
+            "amount": 1,
+            "ingredient": {
+              "item": "ae2:sky_dust"
+            }
+          },
+          {
+            "amount": 1,
+            "ingredient": {
+              "tag": "forge:dusts/quantum_alloy"
+            }
+          },
+          {
+            "amount": 1,
+            "ingredient": {
+              "tag": "forge:dusts/quartz"
+            }
+          }
+        ],
+        "output": {
+          "#": 4,
+          "#c": "ae2:i",
+          "id": "ae2cs:quantum_crystal_seed"
+        }
+      }
+    }
+  ]
+}

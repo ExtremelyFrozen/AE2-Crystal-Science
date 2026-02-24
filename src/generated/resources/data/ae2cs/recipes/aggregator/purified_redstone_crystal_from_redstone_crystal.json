@@ -1,0 +1,35 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "appflux"
+        }
+      ],
+      "recipe": {
+        "type": "ae2cs:crystal_aggregator_recipe_serializer",
+        "energy_cost": 102400,
+        "input_a": {
+          "count": 64,
+          "ingredient": {
+            "item": "ae2cs:purified_redstone_crystal"
+          }
+        },
+        "input_b": {
+          "count": 1,
+          "ingredient": []
+        },
+        "input_c": {
+          "count": 1,
+          "ingredient": []
+        },
+        "result": {
+          "count": 64,
+          "item": "appflux:redstone_crystal"
+        }
+      }
+    }
+  ]
+}

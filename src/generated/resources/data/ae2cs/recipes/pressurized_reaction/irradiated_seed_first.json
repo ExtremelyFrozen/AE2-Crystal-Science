@@ -1,0 +1,33 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "mekanism"
+        }
+      ],
+      "recipe": {
+        "type": "mekanism:reaction",
+        "duration": 400,
+        "fluidInput": {
+          "amount": 1000,
+          "tag": "forge:sulfuric_acid"
+        },
+        "gasInput": {
+          "amount": 1000,
+          "gas": "mekanism:fissile_fuel"
+        },
+        "itemInput": {
+          "ingredient": {
+            "item": "ae2cs:nether_quartz_seed"
+          }
+        },
+        "itemOutput": {
+          "item": "ae2cs:irradiated_seed"
+        }
+      }
+    }
+  ]
+}

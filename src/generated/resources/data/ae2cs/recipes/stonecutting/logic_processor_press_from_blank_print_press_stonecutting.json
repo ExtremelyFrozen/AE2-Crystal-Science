@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 1,
+  "ingredient": {
+    "item": "ae2cs:blank_print_press"
+  },
+  "result": "ae2:logic_processor_press"
+}

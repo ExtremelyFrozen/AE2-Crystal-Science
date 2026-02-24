@@ -1,0 +1,39 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ae2omnicells"
+        }
+      ],
+      "recipe": {
+        "type": "ae2cs:circuit_etcher_recipe_serializer",
+        "energy_cost": 14400,
+        "input_a": {
+          "count": 1,
+          "ingredient": {
+            "item": "ae2omnicells:netherite_scrap_block"
+          }
+        },
+        "input_b": {
+          "count": 1,
+          "ingredient": {
+            "tag": "forge:storage_blocks/redstone"
+          }
+        },
+        "input_c": {
+          "count": 1,
+          "ingredient": {
+            "tag": "forge:storage_blocks/silicon"
+          }
+        },
+        "result": {
+          "count": 9,
+          "item": "ae2omnicells:complex_link_processor"
+        }
+      }
+    }
+  ]
+}
