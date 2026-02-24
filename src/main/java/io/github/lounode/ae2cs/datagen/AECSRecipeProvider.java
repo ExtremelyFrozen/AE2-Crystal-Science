@@ -16,6 +16,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
@@ -522,15 +523,15 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     // 其他工具
     public static ItemStack enchantedItem(HolderLookup.Provider registries, ItemLike item, int count, RegistryObject<Enchantment> enchantment, int level)
     {
-        return enchantedItem(registries, item, count, Map.of(ResourceKey.create(Registries.ENCHANTMENT, enchantment.getId()), level));
+        return enchantedItem(registries, item, count, Map.of(enchantment.get(), level));
     }
 
-    public static ItemStack enchantedItem(HolderLookup.Provider registries, ItemLike item, int count, ResourceKey<Enchantment> enchantKey, int level)
+    public static ItemStack enchantedItem(HolderLookup.Provider registries, ItemLike item, int count, Enchantment enchantKey, int level)
     {
         return enchantedItem(registries, item, count, Map.of(enchantKey, level));
     }
 
-    public static ItemStack enchantedItem(HolderLookup.Provider registries, ItemLike item, int count, Map<ResourceKey<Enchantment>, Integer> enchants)
+    public static ItemStack enchantedItem(HolderLookup.Provider registries, ItemLike item, int count, Map<Enchantment, Integer> enchants)
     {
         ItemStack stack = new ItemStack(item, count);
 
