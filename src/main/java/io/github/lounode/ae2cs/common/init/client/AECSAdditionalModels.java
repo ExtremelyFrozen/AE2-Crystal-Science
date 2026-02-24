@@ -12,27 +12,19 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = AECSConstants.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public final class AECSAdditionalModels
 {
-
-    private static final String VARIANT_STANDALONE = "standalone";
-
-    private static ModelResourceLocation standalone(ResourceLocation id)
-    {
-        return new ModelResourceLocation(id, VARIANT_STANDALONE);
-    }
-
     // 广播装置
-    public static final ModelResourceLocation BROADCASTER_OFF_CORE =
-            standalone(AE2CrystalScience.makeId("block/me_ender_broadcaster/off_core"));
-    public static final ModelResourceLocation BROADCASTER_SENDER_CORE_MODEL =
-            standalone(AE2CrystalScience.makeId("block/me_ender_broadcaster/sender_core"));
-    public static final ModelResourceLocation BROADCASTER_RECEIVER_CORE_MODEL =
-            standalone(AE2CrystalScience.makeId("block/me_ender_broadcaster/receiver_core"));
+    public static final ResourceLocation BROADCASTER_OFF_CORE =
+            AE2CrystalScience.makeId("block/me_ender_broadcaster/off_core");
+    public static final ResourceLocation BROADCASTER_SENDER_CORE_MODEL =
+            AE2CrystalScience.makeId("block/me_ender_broadcaster/sender_core");
+    public static final ResourceLocation BROADCASTER_RECEIVER_CORE_MODEL =
+            AE2CrystalScience.makeId("block/me_ender_broadcaster/receiver_core");
 
     // 发信器
-    public static final ModelResourceLocation EMITTER_TOP_ON_MODEL =
-            standalone(AE2CrystalScience.makeId("block/me_ender_emitter/on_top"));
-    public static final ModelResourceLocation EMITTER_TOP_OFF_MODEL =
-            standalone(AE2CrystalScience.makeId("block/me_ender_emitter/off_top"));
+    public static final ResourceLocation EMITTER_TOP_ON_MODEL =
+            AE2CrystalScience.makeId("block/me_ender_emitter/on_top");
+    public static final ResourceLocation EMITTER_TOP_OFF_MODEL =
+            AE2CrystalScience.makeId("block/me_ender_emitter/off_top");
 
     @SubscribeEvent
     public static void onRegisterAdditionalModels(ModelEvent.RegisterAdditional event)

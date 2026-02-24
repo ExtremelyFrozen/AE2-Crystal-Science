@@ -70,7 +70,7 @@ public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlo
             renderLinkStatus(be, partialTick, poseStack, buffer);
         }
 
-        // ② 原本的顶部模型渲染（保持原逻辑）
+        // 顶部模型渲染
         var state = be.getBlockState();
         var modelRenderer = Minecraft.getInstance().getBlockRenderer().getModelRenderer();
 
