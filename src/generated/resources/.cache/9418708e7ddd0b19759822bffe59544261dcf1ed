@@ -1,12 +1,9 @@
-// 1.20.1	2026-02-24T21:46:06.8364189	Item Models: ae2cs
+// 1.20.1	2026-02-25T01:44:41.9100448	Item Models: ae2cs
 a1a1b082687a7d6da6275a26110f9bf64a570d98 assets/ae2cs/models/item/blank_print_press.json
 b12dd22e280360c8a0e60dab4f633579f285ac71 assets/ae2cs/models/item/certus_quartz_seed.json
 9b0a0f5bbd61b4a4cf3d2083524df9fe42b70ac5 assets/ae2cs/models/item/certus_quartz_seed_1.json
 9359cf66e98b5af14ae724e4097a9a8916b30c0e assets/ae2cs/models/item/certus_quartz_seed_2.json
 1570b95df480888a30c13108138c62bb0d14dbaa assets/ae2cs/models/item/crystal_growth_card.json
-ba939f800bb2945acb32801eca94bb8e4609e4e0 assets/ae2cs/models/item/ember_seed.json
-218a8b7e0d1f427fc1a388c2a8f9d807c173406e assets/ae2cs/models/item/ember_seed_1.json
-d876586e605bd52dbe3e2c88c6027cc45e0f2290 assets/ae2cs/models/item/ember_seed_2.json
 70878d0fb94352701a30c7484552ced144ad2788 assets/ae2cs/models/item/ender_blank_print_press.json
 41e8b60e9dae0f60b4926f5ca62beb634bf0bb39 assets/ae2cs/models/item/ender_crystal_axe.json
 e1cfd11b998b6a0be487de7b36639d3df66bc468 assets/ae2cs/models/item/ender_crystal_hoe.json
@@ -18,9 +15,6 @@ a27e976b77bd604722b80f92bdf79493492686f6 assets/ae2cs/models/item/ender_interfac
 4944357a5ba894f31854c2e88b03cf939c6aef78 assets/ae2cs/models/item/ender_quartz_seed.json
 e690802c065070aeb0e53b86359205b75a794e3a assets/ae2cs/models/item/ender_quartz_seed_1.json
 3146902611d5c602263cd4bd91b61cbd33ae91b2 assets/ae2cs/models/item/ender_quartz_seed_2.json
-bba58d5e963d385d1af977ea45e345f6f3373894 assets/ae2cs/models/item/entro_crystal_seed.json
-8b9728d16d4068dedacd6909bc261b78d78f903c assets/ae2cs/models/item/entro_crystal_seed_1.json
-707d8abe96ef2bb92dccb737a1bedc597aa27faf assets/ae2cs/models/item/entro_crystal_seed_2.json
 5b183a1728a2a5c9c06ea76183f97358ae7a4132 assets/ae2cs/models/item/extended_ender_interface_upgrade.json
 97b80ab6fcf30f0e41d067c21d4c2cae14e8f342 assets/ae2cs/models/item/extended_integrated_interface_upgrade.json
 e9c7cda57382d561c1a81de077c82f2974efd02e assets/ae2cs/models/item/extended_resonating_pattern_provider_upgrade.json
@@ -48,9 +42,7 @@ e1618e7acf41bf4384edd758e542283f11ad47de assets/ae2cs/models/item/nether_quartz_
 8d318277a399c6bfa9f9fc497a3a87ddb6c652a2 assets/ae2cs/models/item/nether_quartz_seed_2.json
 5ed9bd2a0b3bb8080bf38db3c7786330379fa91e assets/ae2cs/models/item/pattern_provider_upgrade.json
 4f1abc4dfef9cf4d01a7da05660ece42fc4c4326 assets/ae2cs/models/item/purified_certus_quartz_crystal.json
-7ae7ab2ea8c81e7f04119e167982ad1b55ba47d3 assets/ae2cs/models/item/purified_ember_crystal.json
 466e97868eab6e4952e9cf646b6089582ca46d0a assets/ae2cs/models/item/purified_ender_quartz.json
-987744301605f07d2cd6c14e17b22fa492041717 assets/ae2cs/models/item/purified_entro_crystal.json
 7875a7540cf56ba47264eb70962bab1c7b747e99 assets/ae2cs/models/item/purified_fluix_crystal.json
 1a2bd47f90628fe85380d6ee6e6f48e43f5a66d4 assets/ae2cs/models/item/purified_irradiated_crystal.json
 35782645b711c98338e05c47c418e889b03eb16b assets/ae2cs/models/item/purified_meteor_crystal.json

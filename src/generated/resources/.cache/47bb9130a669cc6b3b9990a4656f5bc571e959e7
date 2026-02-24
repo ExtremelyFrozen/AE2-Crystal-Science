@@ -1,12 +1,10 @@
-// 1.20.1	2026-02-24T21:46:06.8023613	Tags for minecraft:item mod id ae2cs
+// 1.20.1	2026-02-25T01:44:41.9068996	Tags for minecraft:item mod id ae2cs
 8461367d79af390e8bbe618e6d8cbba3b55fc07b data/ae2cs/tags/items/aecs/machine.json
 12c9e97166339a6b0dbe206590c44ded81b940f8 data/ae2cs/tags/items/aecs/part.json
-4766d0d973cc666b0ff411c283664e6aa822d41f data/ae2cs/tags/items/crystal_seeds.json
-cacf479eb5a861f904da7eb91800729c4e8bbd06 data/ae2cs/tags/items/pure_crystal.json
+18d6db070d3856c6a1ad0c526f7be73a469d5b7c data/ae2cs/tags/items/crystal_seeds.json
+1317942353d32646155d0469e7995534f0f01fc9 data/ae2cs/tags/items/pure_crystal.json
 ff5a95ed9fd2b0ca5923de373742fed4a3e891d3 data/ae2cs/tags/items/pure_crystal/certus_quartz.json
-14632e78525ca124086d9b847da0fbffac7db5db data/ae2cs/tags/items/pure_crystal/ember_crystal.json
 dbf59d5c44a7056c239184be004d8430056dcd9d data/ae2cs/tags/items/pure_crystal/ender_quartz.json
-4823321b67311a6b12f65875ce68b67bd4f7027a data/ae2cs/tags/items/pure_crystal/entro_crystal.json
 aa354fd2b45b2069e03a7e12110a723600a4611d data/ae2cs/tags/items/pure_crystal/fluix.json
 f4f9942b5501cfe3364ff6b16a26789bc5bd579f data/ae2cs/tags/items/pure_crystal/irradiated_crystal.json
 074a522de3d8fc121d3e2c0b8c77f11798d559ac data/ae2cs/tags/items/pure_crystal/meteor_crystal.json
