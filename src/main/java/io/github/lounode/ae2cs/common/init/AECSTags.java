@@ -56,12 +56,10 @@ public class AECSTags
         public static final TagKey<Item> PURE_ENDER_QUARTZ = aecsTag("pure_crystal/ender_quartz");
         public static final TagKey<Item> PURE_METEOR_CRYSTAL = aecsTag("pure_crystal/meteor_crystal");
         public static final TagKey<Item> PURE_RESONATING_CRYSTAL = aecsTag("pure_crystal/resonating_crystal");
-        public static final TagKey<Item> PURE_ENTRO_CRYSTAL = aecsTag("pure_crystal/entro_crystal");
         public static final TagKey<Item> PURE_REDSTONE_CRYSTAL = aecsTag("pure_crystal/redstone_crystal");
         public static final TagKey<Item> PURE_QUANTUM_CRYSTAL = aecsTag("pure_crystal/quantum_crystal");
         public static final TagKey<Item> PURE_ROSE_QUARTZ = aecsTag("pure_crystal/rose_quartz");
         public static final TagKey<Item> PURE_IRRADIATED_CRYSTAL = aecsTag("pure_crystal/irradiated_crystal");
-        public static final TagKey<Item> PURE_EMBER_CRYSTAL = aecsTag("pure_crystal/ember_crystal");
 
         public static final TagKey<Item> DUST_RESONATING = tag("dusts/resonating");
         public static final TagKey<Item> DUST_QUARTZ = tag("dusts/quartz");

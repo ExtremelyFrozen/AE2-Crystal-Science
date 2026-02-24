@@ -63,9 +63,6 @@ public class AECSItems
     public static final RegistryItem<PureCrystalItem> PURE_RESONATING_CRYSTAL =
             registerPureCrystalItem(AECSItemIds.PURE_RESONATING_CRYSTAL,
                     () -> new PureCrystalItem(defaultBuilder(), 2500d, 2400));
-    public static final RegistryItem<PureCrystalItem> PURE_ENTRO_CRYSTAL =
-            registerPureCrystalItem(AECSItemIds.PURE_ENTRO_CRYSTAL,
-                    () -> new PureCrystalItem(defaultBuilder(), 2000d, 2400));
     public static final RegistryItem<PureCrystalItem> PURE_REDSTONE_CRYSTAL =
             registerPureCrystalItem(AECSItemIds.PURE_REDSTONE_CRYSTAL,
                     () -> new PureCrystalItem(defaultBuilder(), 1800d, 2000));
@@ -78,9 +75,6 @@ public class AECSItems
     public static final RegistryItem<PureCrystalItem> PURE_IRRADIATED_CRYSTAL =
             registerPureCrystalItem(AECSItemIds.PURE_IRRADIATED_CRYSTAL,
                     () -> new PureCrystalItem(defaultBuilder(), 2900d, 2400));
-    public static final RegistryItem<PureCrystalItem> PURE_EMBER_CRYSTAL =
-            registerPureCrystalItem(AECSItemIds.PURE_EMBER_CRYSTAL,
-                    () -> new PureCrystalItem(defaultBuilder(), 2000d, 3600));
 
     public static final RegistryItem<CrystalSeedItem> CERTUS_QUARTZ_SEED = registerCrystalSeedItem(AECSItemIds.CERTUS_QUARTZ_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_CERTUS_QUARTZ_CRYSTAL));
     public static final RegistryItem<CrystalSeedItem> FLUIX_CRYSTAL_SEED = registerCrystalSeedItem(AECSItemIds.FLUIX_CRYSTAL_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_FLUIX_CRYSTAL));
@@ -88,12 +82,10 @@ public class AECSItems
     public static final RegistryItem<CrystalSeedItem> ENDER_QUARTZ_SEED = registerCrystalSeedItem(AECSItemIds.ENDER_QUARTZ_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_ENDER_QUARTZ));
     public static final RegistryItem<CrystalSeedItem> METEOR_SEED = registerCrystalSeedItem(AECSItemIds.METEOR_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_METEOR_CRYSTAL));
     public static final RegistryItem<CrystalSeedItem> RESONATING_SEED = registerCrystalSeedItem(AECSItemIds.RESONATING_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_RESONATING_CRYSTAL));
-    public static final RegistryItem<CrystalSeedItem> ENTRO_CRYSTAL_SEED = registerCrystalSeedItem(AECSItemIds.ENTRO_CRYSTAL_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_ENTRO_CRYSTAL));
     public static final RegistryItem<CrystalSeedItem> REDSTONE_CRYSTAL_SEED = registerCrystalSeedItem(AECSItemIds.REDSTONE_CRYSTAL_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_REDSTONE_CRYSTAL));
     public static final RegistryItem<CrystalSeedItem> QUANTUM_CRYSTAL_SEED = registerCrystalSeedItem(AECSItemIds.QUANTUM_CRYSTAL_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_QUANTUM_CRYSTAL));
     public static final RegistryItem<CrystalSeedItem> ROSE_QUARTZ_SEED = registerCrystalSeedItem(AECSItemIds.ROSE_QUARTZ_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_ROSE_QUARTZ));
     public static final RegistryItem<CrystalSeedItem> IRRADIATED_SEED = registerCrystalSeedItem(AECSItemIds.IRRADIATED_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_IRRADIATED_CRYSTAL));
-    public static final RegistryItem<CrystalSeedItem> EMBER_SEED = registerCrystalSeedItem(AECSItemIds.EMBER_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_EMBER_CRYSTAL));
 
     public static final RegistryItem<Item> NETHER_QUARTZ_DUST = registerOtherItem(AECSItemIds.NETHER_QUARTZ_DUST, () -> new Item(defaultBuilder()));
     public static final RegistryItem<Item> RESONATING_DUST = registerOtherItem(AECSItemIds.RESONATING_DUST, () -> new Item(defaultBuilder()));

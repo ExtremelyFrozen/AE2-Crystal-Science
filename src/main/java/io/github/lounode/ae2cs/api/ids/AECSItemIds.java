@@ -9,12 +9,10 @@ public class AECSItemIds
     public static final String PURE_ENDER_QUARTZ = "purified_ender_quartz";
     public static final String PURE_METEOR_CRYSTAL = "purified_meteor_crystal";
     public static final String PURE_RESONATING_CRYSTAL = "purified_resonating_crystal";
-    public static final String PURE_ENTRO_CRYSTAL = "purified_entro_crystal";
     public static final String PURE_REDSTONE_CRYSTAL = "purified_redstone_crystal";
     public static final String PURE_QUANTUM_CRYSTAL = "purified_quantum_crystal";
     public static final String PURE_ROSE_QUARTZ = "purified_rose_quartz";
     public static final String PURE_IRRADIATED_CRYSTAL = "purified_irradiated_crystal";
-    public static final String PURE_EMBER_CRYSTAL = "purified_ember_crystal";
 
     // 种子
     public static final String CERTUS_QUARTZ_SEED = "certus_quartz_seed";
@@ -23,12 +21,10 @@ public class AECSItemIds
     public static final String ENDER_QUARTZ_SEED = "ender_quartz_seed";
     public static final String METEOR_SEED = "meteor_seed";
     public static final String RESONATING_SEED = "resonating_seed";
-    public static final String ENTRO_CRYSTAL_SEED = "entro_crystal_seed";
     public static final String REDSTONE_CRYSTAL_SEED = "redstone_crystal_seed";
     public static final String QUANTUM_CRYSTAL_SEED = "quantum_crystal_seed";
     public static final String ROSE_QUARTZ_SEED = "rose_quartz_seed";
     public static final String IRRADIATED_SEED = "irradiated_seed";
-    public static final String EMBER_SEED = "ember_seed";
 
     // 粉尘
     public static final String NETHER_QUARTZ_DUST = "nether_quartz_dust";
