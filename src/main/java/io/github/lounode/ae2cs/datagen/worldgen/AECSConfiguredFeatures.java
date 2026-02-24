@@ -3,7 +3,7 @@ package io.github.lounode.ae2cs.datagen.worldgen;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
@@ -22,7 +22,7 @@ public class AECSConfiguredFeatures
     public static final ResourceKey<ConfiguredFeature<?, ?>> CHARGED_CERTUS_QUARTZ_ORE = ResourceKey.create(
             Registries.CONFIGURED_FEATURE, AE2CrystalScience.makeId("charged_certus_quartz_ore"));
 
-    public static void bootstrap(BootstrapContext<ConfiguredFeature<?, ?>> context)
+    public static void bootstrap(BootstapContext<ConfiguredFeature<?, ?>> context)
     {
         RuleTest stoneRule = new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES);
         RuleTest deepslateRule = new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);

@@ -4,7 +4,7 @@ import io.github.lounode.ae2cs.AE2CrystalScience;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
@@ -24,7 +24,7 @@ public class AECSPlacedFeatures
     private static final int CERTUS_MIN_Y = -59;
     private static final int CERTUS_MAX_Y = 72;
 
-    public static void bootstrap(BootstrapContext<PlacedFeature> context)
+    public static void bootstrap(BootstapContext<PlacedFeature> context)
     {
         HolderGetter<ConfiguredFeature<?, ?>> cfgLookup = context.lookup(Registries.CONFIGURED_FEATURE);
 
