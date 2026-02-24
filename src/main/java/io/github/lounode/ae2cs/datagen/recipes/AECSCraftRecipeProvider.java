@@ -99,7 +99,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.RESONATING_SEED)
                 .requires(AECSTags.Items.DUST_RESONATING)
                 .requires(ConventionTags.FLUIX_DUST)
-                .requires(ConventionTags.SKY_STONE_DUST)
+                .requires(AEItems.SKY_DUST)
                 .requires(Tags.Items.DUSTS_REDSTONE)
                 .unlockedBy(getHasName(AECSItems.RESONATING_DUST), has(AECSTags.Items.DUST_RESONATING))
                 .save(recipeOutput, getCrafterPath(AECSItems.RESONATING_SEED, false));
@@ -113,7 +113,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .save(recipeOutput, getCrafterPath(AECSItems.ENDER_QUARTZ_SEED, false));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.METEOR_SEED)
-                .requires(ConventionTags.SKY_STONE_DUST)
+                .requires(AEItems.SKY_DUST)
                 .requires(ConventionTags.CERTUS_QUARTZ_DUST)
                 .requires(Blocks.GRAVEL)
                 .requires(Blocks.GRAVEL)

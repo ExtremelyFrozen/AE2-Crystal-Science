@@ -1,15 +1,13 @@
 package io.github.lounode.ae2cs.datagen.recipes;
 
 import appeng.core.definitions.AEItems;
-import appeng.datagen.providers.tags.ConventionTags;
 import appeng.recipes.handlers.InscriberProcessType;
 import appeng.recipes.handlers.InscriberRecipeBuilder;
 import appeng.recipes.transform.TransformCircumstance;
 import appeng.recipes.transform.TransformRecipeBuilder;
-import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.common.init.AECSItems;
+import io.github.lounode.ae2cs.common.init.AECSRecipeSerializers;
 import io.github.lounode.ae2cs.common.init.AECSTags;
-import io.github.lounode.ae2cs.common.recipe.ResonatingPatternUpgradeRecipe;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -51,8 +49,8 @@ public class AECSMiscRecipeProvider extends AECSRecipeProvider
                 AECSItems.PURE_ENDER_QUARTZ);
 
         // 添加谐振样板配方
-        SpecialRecipeBuilder.special(ResonatingPatternUpgradeRecipe::new)
-                .save(recipeOutput, AE2CrystalScience.makeId("resonating_pattern_upgrade"));
+        SpecialRecipeBuilder.special(AECSRecipeSerializers.RESONATING_PATTERN_UPGRADE.get())
+                .save(recipeOutput, "aecs_resonating_pattern_upgrade");
 
         // 添加谐振样板拆解
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEItems.BLANK_PATTERN)
@@ -77,7 +75,7 @@ public class AECSMiscRecipeProvider extends AECSRecipeProvider
                 .setTop(Ingredient.of(AECSItems.RESONATING_PRINT_PRESS))
                 .setMode(InscriberProcessType.INSCRIBE)
                 .save(recipeOutput, getInscriberPath(AECSItems.RESONATING_CIRCUIT_PRINT));
-        InscriberRecipeBuilder.inscribe(ConventionTags.SKY_STONE_DUST, AECSItems.RESONATING_PROCESSOR, 1)
+        InscriberRecipeBuilder.inscribe(AEItems.SKY_DUST, AECSItems.RESONATING_PROCESSOR, 1)
                 .setTop(Ingredient.of(AECSItems.RESONATING_CIRCUIT_PRINT))
                 .setBottom(Ingredient.of(AEItems.SILICON_PRINT))
                 .setMode(InscriberProcessType.PRESS)

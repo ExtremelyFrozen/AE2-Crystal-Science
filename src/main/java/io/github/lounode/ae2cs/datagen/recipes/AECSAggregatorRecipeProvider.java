@@ -91,7 +91,7 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
         CrystalAggregatorRecipeBuilder.aggregating(AECSItems.RESONATING_SEED, 32, 51200)
                 .require(AECSTags.Items.DUST_RESONATING, 16)
                 .require(ConventionTags.FLUIX_DUST, 16)
-                .require(ConventionTags.SKY_STONE_DUST, 16)
+                .require(AEItems.SKY_DUST, 16)
                 .save(recipeOutput);
 
         CrystalAggregatorRecipeBuilder.aggregating(AECSItems.CERTUS_QUARTZ_SEED, 32, 51200)
@@ -116,7 +116,7 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
                 .save(recipeOutput);
 
         CrystalAggregatorRecipeBuilder.aggregating(AECSItems.METEOR_SEED, 32, 51200)
-                .require(ConventionTags.SKY_STONE_DUST, 8)
+                .require(AEItems.SKY_DUST, 8)
                 .require(ConventionTags.CERTUS_QUARTZ_DUST, 8)
                 .require(Blocks.GRAVEL, 16)
                 .unlockedBy(getHasName(Blocks.GRAVEL), has(Blocks.GRAVEL))
@@ -145,7 +145,7 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
         // 处理器聚合配方
         CrystalAggregatorRecipeBuilder.aggregating(AECSItems.RESONATING_PROCESSOR, 32, 51200)
                 .require(AECSItems.RESONATING_CIRCUIT_PRINT, 32)
-                .require(ConventionTags.SKY_STONE_DUST, 32)
+                .require(AEItems.SKY_DUST, 32)
                 .require(AEItems.SILICON_PRINT, 32)
                 .save(recipeOutput);
         CrystalAggregatorRecipeBuilder.aggregating(AECSItems.SIMPLE_PROCESSOR, 32, 51200)
@@ -233,12 +233,6 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
                 .require(ConventionTags.FLUIX_DUST, 4)
                 .save(recipeOutput);
 
-        CrystalAggregatorRecipeBuilder.aggregating(Blocks.HEAVY_CORE, 1, 160000)
-                .require(Items.WIND_CHARGE, 4)
-                .require(Items.HEART_OF_THE_SEA, 1)
-                .require(Blocks.ANVIL, 1)
-                .save(recipeOutput);
-
         CrystalAggregatorRecipeBuilder.aggregating(Items.HEART_OF_THE_SEA, 1, 80000)
                 .require(Items.NAUTILUS_SHELL, 4)
                 .require(Items.ENDER_EYE, 1)
@@ -257,7 +251,7 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
                 .save(recipeOutput);
 
         CrystalAggregatorRecipeBuilder.aggregating(Items.GUNPOWDER, 9, 14400)
-                .require(Tags.Items.GUNPOWDERS, 1)
+                .require(Tags.Items.GUNPOWDER, 1)
                 .require(Tags.Items.DYES_GRAY, 1)
                 .require(Items.SUGAR, 8)
                 .save(recipeOutput);
