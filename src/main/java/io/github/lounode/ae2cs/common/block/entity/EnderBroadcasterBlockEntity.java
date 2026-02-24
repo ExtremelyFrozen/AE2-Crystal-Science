@@ -320,7 +320,6 @@ public class EnderBroadcasterBlockEntity extends AENetworkedComponentBlockEntity
             IManagedGridNode virtualManagedNode = GridHelper.createManagedNode(this, VIRTUAL_NODE_LISTENER)
                     .setInWorldNode(false)
                     .setIdlePowerUsage(10.0) // 这里可以消耗掉一些能量，模拟发送频道消耗能量
-                    .setVisualRepresentation((AEItemKey) null) // 也许以后可以做一个技术性物品代表这个虚拟节点
                     .setTagName("sender_virtual_" + i)
                     .setFlags(GridFlags.REQUIRE_CHANNEL);
 
