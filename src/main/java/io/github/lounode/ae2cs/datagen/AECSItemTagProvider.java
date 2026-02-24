@@ -1,7 +1,6 @@
 package io.github.lounode.ae2cs.datagen;
 
 import appeng.datagen.providers.tags.ConventionTags;
-import com.glodblock.github.extendedae.util.EAETags;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
@@ -13,9 +12,9 @@ import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.registries.DeferredItem;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.RegistryObject;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +32,7 @@ public class AECSItemTagProvider extends ItemTagsProvider
     {
         // 水晶种子
         tag(AECSTags.Items.CRYSTAL_SEEDS)
-                .add(AECSItems.getCrystalSeeds().stream().map(DeferredItem::get).toArray(Item[]::new));
+                .add(AECSItems.getCrystalSeeds().stream().map(RegistryObject::get).toArray(Item[]::new));
 
         // 所有高纯水晶
         tag(AECSTags.Items.PURE_CRYSTAL)
@@ -147,8 +146,6 @@ public class AECSItemTagProvider extends ItemTagsProvider
                 .addTag(AECSTags.Items.PURE_METEOR_CRYSTAL);
         tag(AECSTags.Items.GEM_RESONATING)
                 .addTag(AECSTags.Items.PURE_RESONATING_CRYSTAL);
-        tag(EAETags.ENTRO_CRYSTAL)
-                .addTag(AECSTags.Items.PURE_ENTRO_CRYSTAL);
 
         // 矿
         tag(Tags.Items.ORES)
@@ -158,42 +155,42 @@ public class AECSItemTagProvider extends ItemTagsProvider
                 .addTag(AECSTags.Items.ORES_CERTUS_QUARTZ);
         // 赛特斯石英矿
         tag(AECSTags.Items.ORES_CERTUS_QUARTZ)
-                .add(AECSBlocks.CERTUS_QUARTZ_ORE.asItem())
-                .add(AECSBlocks.DEEPSLATE_CERTUS_QUARTZ_ORE.asItem())
-                .add(AECSBlocks.CHARGED_CERTUS_QUARTZ_ORE.asItem())
-                .add(AECSBlocks.DEEPSLATE_CHARGED_CERTUS_QUARTZ_ORE.asItem());
+                .add(AECSBlocks.CERTUS_QUARTZ_ORE.get().asItem())
+                .add(AECSBlocks.DEEPSLATE_CERTUS_QUARTZ_ORE.get().asItem())
+                .add(AECSBlocks.CHARGED_CERTUS_QUARTZ_ORE.get().asItem())
+                .add(AECSBlocks.DEEPSLATE_CHARGED_CERTUS_QUARTZ_ORE.get().asItem());
         // 生成在石头中的矿石
         tag(Tags.Items.ORES_IN_GROUND_STONE)
-                .add(AECSBlocks.CERTUS_QUARTZ_ORE.asItem())
-                .add(AECSBlocks.CHARGED_CERTUS_QUARTZ_ORE.asItem());
+                .add(AECSBlocks.CERTUS_QUARTZ_ORE.get().asItem())
+                .add(AECSBlocks.CHARGED_CERTUS_QUARTZ_ORE.get().asItem());
         // 深板岩层的矿石
         tag(Tags.Items.ORES_IN_GROUND_DEEPSLATE)
-                .add(AECSBlocks.DEEPSLATE_CERTUS_QUARTZ_ORE.asItem())
-                .add(AECSBlocks.DEEPSLATE_CHARGED_CERTUS_QUARTZ_ORE.asItem());
+                .add(AECSBlocks.DEEPSLATE_CERTUS_QUARTZ_ORE.get().asItem())
+                .add(AECSBlocks.DEEPSLATE_CHARGED_CERTUS_QUARTZ_ORE.get().asItem());
 
         // 非接口机器
         tag(AECSTags.Items.AECS_MACHINE)
-                .add(AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK.asItem())
-                .add(AECSBlocks.CIRCUIT_ETCHER_BLOCK.asItem())
-                .add(AECSBlocks.QUARTZ_GRINDSTONE_BLOCK.asItem())
-                .add(AECSBlocks.CRYSTAL_PULVERIZER_BLOCK.asItem())
-                .add(AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK.asItem())
-                .add(AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK.asItem())
-                .add(AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK.asItem())
-                .add(AECSBlocks.ENDER_BROADCASTER_BLOCK.asItem())
-                .add(AECSBlocks.ENDER_EMITTER_BLOCK.asItem());
+                .add(AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK.get().asItem())
+                .add(AECSBlocks.CIRCUIT_ETCHER_BLOCK.get().asItem())
+                .add(AECSBlocks.QUARTZ_GRINDSTONE_BLOCK.get().asItem())
+                .add(AECSBlocks.CRYSTAL_PULVERIZER_BLOCK.get().asItem())
+                .add(AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK.get().asItem())
+                .add(AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK.get().asItem())
+                .add(AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK.get().asItem())
+                .add(AECSBlocks.ENDER_BROADCASTER_BLOCK.get().asItem())
+                .add(AECSBlocks.ENDER_EMITTER_BLOCK.get().asItem());
 
         // 接口机器
         tag(AECSTags.Items.AECS_PART)
-                .add(AECSBlocks.ENDER_INTERFACE_BLOCK.asItem())
-                .add(AECSBlocks.EX_ENDER_INTERFACE_BLOCK.asItem())
-                .add(AECSBlocks.INTEGRATED_INTERFACE_BLOCK.asItem())
-                .add(AECSBlocks.EX_INTEGRATED_INTERFACE_BLOCK.asItem())
-                .add(AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK.asItem())
-                .add(AECSBlocks.EX_RESONATING_PATTERN_PROVIDER_BLOCK.asItem())
-                .add(AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK.asItem())
-                .add(AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK.asItem())
-                .add(AECSBlocks.QUARTZ_OSCILLATOR_CLOCK_BLOCK.asItem());
+                .add(AECSBlocks.ENDER_INTERFACE_BLOCK.get().asItem())
+                .add(AECSBlocks.EX_ENDER_INTERFACE_BLOCK.get().asItem())
+                .add(AECSBlocks.INTEGRATED_INTERFACE_BLOCK.get().asItem())
+                .add(AECSBlocks.EX_INTEGRATED_INTERFACE_BLOCK.get().asItem())
+                .add(AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK.get().asItem())
+                .add(AECSBlocks.EX_RESONATING_PATTERN_PROVIDER_BLOCK.get().asItem())
+                .add(AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK.get().asItem())
+                .add(AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK.get().asItem())
+                .add(AECSBlocks.QUARTZ_OSCILLATOR_CLOCK_BLOCK.get().asItem());
         tag(AECSTags.Items.AECS_PART)
                 .add(AECSParts.ENDER_INTERFACE_PART.get())
                 .add(AECSParts.EX_ENDER_INTERFACE_PART.get())
@@ -215,25 +212,25 @@ public class AECSItemTagProvider extends ItemTagsProvider
                 .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_ROSE_QUARTZ)
                 .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL);
         tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_ENDER_QUARTZ)
-                .add(AECSBlocks.PURE_ENDER_QUARTZ_BLOCK.asItem());
+                .add(AECSBlocks.PURE_ENDER_QUARTZ_BLOCK.get().asItem());
         tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_RESONATING_CRYSTAL)
-                .add(AECSBlocks.PURE_RESONATING_CRYSTAL_BLOCK.asItem());
+                .add(AECSBlocks.PURE_RESONATING_CRYSTAL_BLOCK.get().asItem());
         tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_METEOR_CRYSTAL)
-                .add(AECSBlocks.PURE_METEOR_CRYSTAL_BLOCK.asItem());
+                .add(AECSBlocks.PURE_METEOR_CRYSTAL_BLOCK.get().asItem());
         tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_REDSTONE_CRYSTAL)
-                .add(AECSBlocks.PURE_REDSTONE_CRYSTAL_BLOCK.asItem());
+                .add(AECSBlocks.PURE_REDSTONE_CRYSTAL_BLOCK.get().asItem());
         tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_QUANTUM_CRYSTAL)
-                .add(AECSBlocks.PURE_QUANTUM_CRYSTAL_BLOCK.asItem());
+                .add(AECSBlocks.PURE_QUANTUM_CRYSTAL_BLOCK.get().asItem());
         tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_ROSE_QUARTZ)
-                .add(AECSBlocks.PURE_ROSE_QUARTZ_BLOCK.asItem());
+                .add(AECSBlocks.PURE_ROSE_QUARTZ_BLOCK.get().asItem());
         tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL)
-                .add(AECSBlocks.IRRADIATED_CRYSTAL_BLOCK.asItem());
+                .add(AECSBlocks.IRRADIATED_CRYSTAL_BLOCK.get().asItem());
 
         // 存储方块
         tag(Tags.Items.STORAGE_BLOCKS)
                 .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL)
                 .addTag(AECSTags.Items.STORAGE_BLOCK_SILICON);
         tag(AECSTags.Items.STORAGE_BLOCK_SILICON)
-                .add(AECSBlocks.SILICON_BLOCK.asItem());
+                .add(AECSBlocks.SILICON_BLOCK.get().asItem());
     }
 }

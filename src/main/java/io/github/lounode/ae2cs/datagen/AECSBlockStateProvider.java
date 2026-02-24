@@ -18,9 +18,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import net.neoforged.neoforge.client.model.generators.*;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.registries.DeferredBlock;
+import net.minecraftforge.client.model.generators.*;
+import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.Nullable;
 
 public class AECSBlockStateProvider extends BlockStateProvider
@@ -36,7 +36,7 @@ public class AECSBlockStateProvider extends BlockStateProvider
     @Override
     protected void registerStatesAndModels()
     {
-        for (DeferredBlock<? extends Block> block : AECSBlocks.getCrystalBlocks())
+        for (RegistryObject<? extends Block> block : AECSBlocks.getCrystalBlocks())
         {
             blockWithItem(block);
         }
@@ -65,7 +65,7 @@ public class AECSBlockStateProvider extends BlockStateProvider
         simpleBlockWithItem(AECSBlocks.EX_ENDER_INTERFACE_BLOCK.get(), cubeAllWithTexture(AECSBlocks.EX_ENDER_INTERFACE_BLOCK.get(), AE2CrystalScience.makeId("block/ender_interface/extended")));
     }
 
-    private void blockWithItem(DeferredBlock<? extends Block> deferredBlock)
+    private void blockWithItem(RegistryObject<? extends Block> deferredBlock)
     {
         simpleBlockWithItem(deferredBlock.get(), cubeAll(deferredBlock.get()));
     }
@@ -134,12 +134,12 @@ public class AECSBlockStateProvider extends BlockStateProvider
      */
     public ModelBuilder<BlockModelBuilder> genSixFaceModel(Block block, String modNameSpace, String modelPathSuffix, String texturePath)
     {
-        ResourceLocation bottom = ResourceLocation.fromNamespaceAndPath(modNameSpace, texturePath + "/bottom");
-        ResourceLocation top = ResourceLocation.fromNamespaceAndPath(modNameSpace, texturePath + "/top");
-        ResourceLocation front = ResourceLocation.fromNamespaceAndPath(modNameSpace, texturePath + "/front");
-        ResourceLocation back = ResourceLocation.fromNamespaceAndPath(modNameSpace, texturePath + "/back");
-        ResourceLocation left = ResourceLocation.fromNamespaceAndPath(modNameSpace, texturePath + "/left");
-        ResourceLocation right = ResourceLocation.fromNamespaceAndPath(modNameSpace, texturePath + "/right");
+        ResourceLocation bottom = ResourceLocation.tryBuild(modNameSpace, texturePath + "/bottom");
+        ResourceLocation top = ResourceLocation.tryBuild(modNameSpace, texturePath + "/top");
+        ResourceLocation front = ResourceLocation.tryBuild(modNameSpace, texturePath + "/front");
+        ResourceLocation back = ResourceLocation.tryBuild(modNameSpace, texturePath + "/back");
+        ResourceLocation left = ResourceLocation.tryBuild(modNameSpace, texturePath + "/left");
+        ResourceLocation right = ResourceLocation.tryBuild(modNameSpace, texturePath + "/right");
         return models().cube(
                         "block/" + path(block).getPath() + modelPathSuffix,
                         bottom, top,

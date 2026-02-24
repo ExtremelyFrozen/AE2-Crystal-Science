@@ -1,18 +1,15 @@
 package io.github.lounode.ae2cs.datagen;
 
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
-import net.neoforged.neoforge.client.model.generators.BlockModelProvider;
-import net.neoforged.neoforge.client.model.generators.ModelProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.minecraftforge.client.model.generators.BlockModelBuilder;
+import net.minecraftforge.client.model.generators.BlockModelProvider;
+import net.minecraftforge.client.model.generators.ModelProvider;
+import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
-/**
- * 这个类我们在1.20.1版本使用，1.21.1版本中无用，此处仅留存文件，以便随时启用
- */
 public class AECSBlockModelProvider extends BlockModelProvider
 {
     public AECSBlockModelProvider(PackOutput output, ExistingFileHelper existingFileHelper)
@@ -36,18 +33,18 @@ public class AECSBlockModelProvider extends BlockModelProvider
         allowExternalModel("ae2:block/drive/drive_cell");
         allowExternalTexture(texture);
 
-        return withExistingParent(name, ResourceLocation.parse("ae2:block/drive/drive_cell"))
+        return withExistingParent(name, ResourceLocation.tryParse("ae2:block/drive/drive_cell"))
                 .texture("cell", texture);
     }
 
     private String getItemName(ItemLike item)
     {
-        return BuiltInRegistries.ITEM.getKey(item.asItem()).getPath();
+        return ForgeRegistries.ITEMS.getKey(item.asItem()).getPath();
     }
 
     private void allowExternalModel(String path)
     {
-        ResourceLocation rl = ResourceLocation.parse(path);
+        ResourceLocation rl = ResourceLocation.tryParse(path);
         if (!rl.getNamespace().equals(AECSConstants.MODID))
         {
             this.existingFileHelper.trackGenerated(rl, ModelProvider.MODEL); // 注意这里是 MODEL
@@ -59,7 +56,7 @@ public class AECSBlockModelProvider extends BlockModelProvider
      */
     private void allowExternalTexture(String path)
     {
-        ResourceLocation rl = ResourceLocation.parse(path);
+        ResourceLocation rl = ResourceLocation.tryParse(path);
         if (!rl.getNamespace().equals(AECSConstants.MODID))
         {
             this.existingFileHelper.trackGenerated(rl, ModelProvider.TEXTURE);

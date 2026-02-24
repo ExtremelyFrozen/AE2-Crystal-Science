@@ -4,17 +4,17 @@ import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.item.CrystalSeedItem;
 import io.github.lounode.ae2cs.common.item.PureCrystalItem;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
-import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
-import net.neoforged.neoforge.client.model.generators.ModelFile;
-import net.neoforged.neoforge.client.model.generators.ModelProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.registries.DeferredItem;
+import net.minecraftforge.client.model.generators.ItemModelBuilder;
+import net.minecraftforge.client.model.generators.ItemModelProvider;
+import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.client.model.generators.ModelProvider;
+import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Objects;
 
@@ -29,15 +29,15 @@ public class AECSItemModelProvider extends ItemModelProvider
     @Override
     protected void registerModels()
     {
-        for (DeferredItem<CrystalSeedItem> item : AECSItems.getCrystalSeeds())
+        for (RegistryObject<CrystalSeedItem> item : AECSItems.getCrystalSeeds())
         {
             crystalSeedItem(item.get());
         }
-        for (DeferredItem<PureCrystalItem> item : AECSItems.getPureCrystal())
+        for (RegistryObject<PureCrystalItem> item : AECSItems.getPureCrystal())
         {
             basicItem(item.get());
         }
-        for (DeferredItem<? extends Item> item : AECSItems.getOthers())
+        for (RegistryObject<? extends Item> item : AECSItems.getOthers())
         {
             basicItem(item.get());
         }
@@ -46,7 +46,7 @@ public class AECSItemModelProvider extends ItemModelProvider
 
     private String getItemName(ItemLike item)
     {
-        return BuiltInRegistries.ITEM.getKey(item.asItem()).getPath();
+        return ForgeRegistries.ITEMS.getKey(item.asItem()).getPath();
     }
 
     /**
@@ -54,7 +54,7 @@ public class AECSItemModelProvider extends ItemModelProvider
      */
     private void allowExternalTexture(String path)
     {
-        ResourceLocation rl = ResourceLocation.parse(path);
+        ResourceLocation rl = ResourceLocation.tryParse(path);
         if (!rl.getNamespace().equals(AECSConstants.MODID))
         {
             this.existingFileHelper.trackGenerated(rl, ModelProvider.TEXTURE);
@@ -63,30 +63,30 @@ public class AECSItemModelProvider extends ItemModelProvider
 
     public ItemModelBuilder crystalSeedItem(Item item)
     {
-        return crystalSeedItem(Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(item)));
+        return crystalSeedItem(Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(item)));
     }
 
     public ItemModelBuilder crystalSeedItem(ResourceLocation item)
     {
         var main = getBuilder(item.toString())
                 .parent(new ModelFile.UncheckedModelFile("item/generated"))
-                .texture("layer0", ResourceLocation.fromNamespaceAndPath(item.getNamespace(), "item/" + item.getPath() + "_0"))
+                .texture("layer0", ResourceLocation.tryBuild(item.getNamespace(), "item/" + item.getPath() + "_0"))
                 .override()
-                .predicate(ResourceLocation.fromNamespaceAndPath(modid, "age"), 0.333f)
+                .predicate(ResourceLocation.tryBuild(modid, "age"), 0.333f)
                 .model(new ModelFile.UncheckedModelFile(
-                        ResourceLocation.fromNamespaceAndPath(item.getNamespace(), "item/" + item.getPath() + "_1")))
+                        ResourceLocation.tryBuild(item.getNamespace(), "item/" + item.getPath() + "_1")))
                 .end()
                 .override()
-                .predicate(ResourceLocation.fromNamespaceAndPath(modid, "age"), 0.666f)
+                .predicate(ResourceLocation.tryBuild(modid, "age"), 0.666f)
                 .model(new ModelFile.UncheckedModelFile(
-                        ResourceLocation.fromNamespaceAndPath(item.getNamespace(), "item/" + item.getPath() + "_2")))
+                        ResourceLocation.tryBuild(item.getNamespace(), "item/" + item.getPath() + "_2")))
                 .end();
         var age333 = getBuilder(item + "_1")
                 .parent(new ModelFile.UncheckedModelFile("item/generated"))
-                .texture("layer0", ResourceLocation.fromNamespaceAndPath(item.getNamespace(), "item/" + item.getPath() + "_1"));
+                .texture("layer0", ResourceLocation.tryBuild(item.getNamespace(), "item/" + item.getPath() + "_1"));
         var age666 = getBuilder(item + "_2")
                 .parent(new ModelFile.UncheckedModelFile("item/generated"))
-                .texture("layer0", ResourceLocation.fromNamespaceAndPath(item.getNamespace(), "item/" + item.getPath() + "_2"));
+                .texture("layer0", ResourceLocation.tryBuild(item.getNamespace(), "item/" + item.getPath() + "_2"));
         return main;
     }
 
