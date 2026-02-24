@@ -53,7 +53,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-@Mod.EventBusSubscriber(modid = AECSConstants.MODID)
+@Mod.EventBusSubscriber(modid = AECSConstants.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements ServerTickingBlockEntity,
         IUpgradeableObject, ClientTickingBlockEntity, IConfigurableObject, ICustomRenderBounding
 {

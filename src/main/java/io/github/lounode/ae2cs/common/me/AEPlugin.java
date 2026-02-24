@@ -5,20 +5,15 @@ import appeng.api.upgrades.Upgrades;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
-import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSParts;
 import io.github.lounode.ae2cs.common.item.tools.ToolLinkableHandler;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.TagsUpdatedEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
 
-@Mod.EventBusSubscriber(modid = AECSConstants.MODID)
 public class AEPlugin
 {
     private static String INTEGRATED_INTERFACE_GROUP_NAME = "block.ae2cs.integrated_interface";
@@ -42,7 +37,7 @@ public class AEPlugin
      */
     public static void onRegister(IEventBus modEventBus, IEventBus gameEventBus)
     {
-
+        gameEventBus.addListener(AEPlugin::onTagsUpdated);
     }
 
     /**
@@ -98,7 +93,6 @@ public class AEPlugin
         Upgrades.add(AECSItems.crystalGrowthCard.get(), AECSBlocks.EX_ENDER_INTERFACE_BLOCK.get(), 1, EX_ENDER_INTERFACE_GROUP_NAME);
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onTagsUpdated(TagsUpdatedEvent event)
     {
         // 为全部工具添加可链接能力

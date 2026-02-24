@@ -30,7 +30,7 @@ public record ScrollResonatingPatternSelectPacket(boolean next)
     private void handleInServer(NetworkEvent.Context context)
     {
         ServerPlayer sp = context.getSender();
-        if(sp == null) return;
+        if (sp == null) return;
 
         var stack = sp.getMainHandItem();
         if (!(stack.getItem() instanceof ResonatingPatternItem)) return;

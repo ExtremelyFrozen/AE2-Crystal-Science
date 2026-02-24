@@ -29,7 +29,7 @@ import static net.minecraftforge.client.event.RenderLevelStageEvent.Stage.AFTER_
  * - 未选中：蓝色半透明
  * - 渲染所有存在目标的 sparse input
  */
-@Mod.EventBusSubscriber(modid = AECSConstants.MODID, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = AECSConstants.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ResonatingPatternTargetHighlighter
 {
     // 选中：绿色 + 半透明

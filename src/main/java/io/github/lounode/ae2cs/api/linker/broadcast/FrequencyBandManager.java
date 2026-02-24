@@ -25,7 +25,7 @@ import java.util.*;
 /**
  * 用于管理当前服务端内所有频段（持久化 + 运行时重算调度）
  */
-@Mod.EventBusSubscriber(modid = AECSConstants.MODID)
+@Mod.EventBusSubscriber(modid = AECSConstants.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class FrequencyBandManager extends SavedData
 {
     /**

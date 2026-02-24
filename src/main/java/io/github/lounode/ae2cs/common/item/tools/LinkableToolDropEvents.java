@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
-@Mod.EventBusSubscriber(modid = AECSConstants.MODID)
+@Mod.EventBusSubscriber(modid = AECSConstants.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class LinkableToolDropEvents
 {
     private static final Map<UUID, RecentBreak> RECENT_BREAKS = new HashMap<>();

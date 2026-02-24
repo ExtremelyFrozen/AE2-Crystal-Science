@@ -4,11 +4,9 @@ import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.network.c2s.ScrollResonatingPatternSelectPacket;
 import io.github.lounode.ae2cs.network.c2s.SideConfigMenuOpenPacket;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
-@Mod.EventBusSubscriber(modid = AECSConstants.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class AECSPackets
 {
 
