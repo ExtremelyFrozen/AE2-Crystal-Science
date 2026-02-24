@@ -2,8 +2,7 @@
   "$schema": "schema.json",
   "includes": [
     "common/common.json",
-    "common/player_inventory.json",
-    "common/toolbox.json"
+    "common/player_inventory.json"
   ],
   "background": {
     "texture": "ae2cs:textures/gui/entropy_variation_reaction_chamber_menu.png",

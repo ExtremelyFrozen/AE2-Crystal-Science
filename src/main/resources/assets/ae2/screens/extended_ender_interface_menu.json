@@ -2,8 +2,7 @@
   "$schema": "schema.json",
   "includes": [
     "common/common.json",
-    "common/player_inventory.json",
-    "common/toolbox.json"
+    "common/player_inventory.json"
   ],
   "background": {
     "texture": "ae2cs:textures/gui/extended_ender_interface_menu.png",
