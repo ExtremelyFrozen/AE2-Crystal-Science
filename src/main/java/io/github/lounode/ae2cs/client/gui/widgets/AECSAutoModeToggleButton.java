@@ -1,6 +1,6 @@
 package io.github.lounode.ae2cs.client.gui.widgets;
 
-import io.github.lounode.ae2cs.client.gui.icon.AECSIcon;
+import io.github.lounode.ae2cs.client.gui.icon.AdaptedAE2Icon;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,14 +30,14 @@ public class AECSAutoModeToggleButton extends AECSBackgroundToggleButton<AECSAut
         mapTooltipLines(State.ENABLED, List.of(title, Component.translatable("ae2cs.auto_mode.enabled")));
 
         mapBackground(State.DISABLED, new BackgroundSet(
-                AECSIcon.BUTTON_ORIGINAL_DARK,
-                AECSIcon.BUTTON_ORIGINAL_DARK,
-                AECSIcon.BUTTON_ORIGINAL_DARK_HOVER
+                AdaptedAE2Icon.TOOLBAR_BUTTON_BACKGROUND,
+                AdaptedAE2Icon.TOOLBAR_BUTTON_BACKGROUND,
+                AdaptedAE2Icon.TOOLBAR_BUTTON_BACKGROUND
         ));
         mapBackground(State.ENABLED, new BackgroundSet(
-                AECSIcon.BUTTON_ORIGINAL_LIGHT,
-                AECSIcon.BUTTON_ORIGINAL_LIGHT,
-                AECSIcon.BUTTON_ORIGINAL_LIGHT_HOVER
+                AdaptedAE2Icon.TOOLBAR_BUTTON_BACKGROUND,
+                AdaptedAE2Icon.TOOLBAR_BUTTON_BACKGROUND,
+                AdaptedAE2Icon.TOOLBAR_BUTTON_BACKGROUND
         ));
 
         setOnValueChanged(state -> this.onChangedBool.accept(state == State.ENABLED));

@@ -29,27 +29,39 @@
   "widgets": {
     "top_side_button": {
       "left": 39,
-      "top": 20
+      "top": 20,
+      "width": 18,
+      "height": 18
     },
     "bottom_side_button": {
       "left": 39,
-      "top": 64
+      "top": 64,
+      "width": 18,
+      "height": 18
     },
     "left_side_button": {
       "left": 18,
-      "top": 42
+      "top": 42,
+      "width": 18,
+      "height": 18
     },
     "right_side_button": {
       "left": 60,
-      "top": 42
+      "top": 42,
+      "width": 18,
+      "height": 18
     },
     "front_side_button": {
       "left": 39,
-      "top": 42
+      "top": 42,
+      "width": 18,
+      "height": 18
     },
     "back_side_button": {
       "left": 18,
-      "top": 64
+      "top": 64,
+      "width": 18,
+      "height": 18
     }
   }
 }

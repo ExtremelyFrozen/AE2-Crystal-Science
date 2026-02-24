@@ -2,7 +2,6 @@ package io.github.lounode.ae2cs.common.block.entity;
 
 import appeng.api.networking.*;
 import appeng.api.networking.pathing.ChannelMode;
-import appeng.api.stacks.AEItemKey;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEBlocks;

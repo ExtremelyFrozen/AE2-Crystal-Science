@@ -3,8 +3,6 @@ package io.github.lounode.ae2cs.client.gui.widgets;
 import appeng.client.gui.Icon;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.widgets.ITooltip;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -57,62 +55,16 @@ public abstract class AECSIconButton extends Button implements ITooltip
             return;
         }
 
-        IButtonIcon icon = this.getIcon();
-        Blitter blitter = icon != null ? icon.getBlitter() : null;
-        if (blitter != null && !this.active)
-        {
-            blitter.opacity(0.5F);
-        }
+        var icon = this.getIcon();
+        var item = this.getItemOverlay();
 
         if (this.halfSize)
         {
             this.width = 8;
             this.height = 8;
         }
-        else
-        {
-            this.width = 16;
-            this.height = 16;
-        }
-
-        RenderSystem.disableDepthTest();
-        RenderSystem.enableBlend();
-
-        if (this.isFocused())
-        {
-            guiGraphics.fill(this.getX() - 1, this.getY() - 1, this.getX() + this.width + 1, this.getY(), -1);
-            guiGraphics.fill(this.getX() - 1, this.getY(), this.getX(), this.getY() + this.height, -1);
-            guiGraphics.fill(this.getX() + this.width, this.getY(), this.getX() + this.width + 1, this.getY() + this.height, -1);
-            guiGraphics.fill(this.getX() - 1, this.getY() + this.height, this.getX() + this.width + 1, this.getY() + this.height + 1, -1);
-        }
 
         if (this.halfSize)
-        {
-            PoseStack pose = guiGraphics.pose();
-            pose.pushPose();
-            pose.translate(this.getX(), this.getY(), 0.0F);
-            pose.scale(0.5F, 0.5F, 1.0F);
-
-            if (!disableBackground)
-            {
-                Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter()
-                        .dest(0, 0)
-                        .blit(guiGraphics);
-            }
-
-            Item item = this.getItemOverlay();
-            if (item != null)
-            {
-                guiGraphics.renderItem(new ItemStack(item), 0, 0);
-            }
-            else if (blitter != null)
-            {
-                blitter.dest(0, 0).blit(guiGraphics);
-            }
-
-            pose.popPose();
-        }
-        else
         {
             if (!disableBackground)
             {
@@ -121,18 +73,42 @@ public abstract class AECSIconButton extends Button implements ITooltip
                         .blit(guiGraphics);
             }
 
-            Item item = this.getItemOverlay();
             if (item != null)
             {
-                guiGraphics.renderItem(new ItemStack(item), getX(), getY());
+                guiGraphics.renderItem(new ItemStack(item), getX(), getY(), 0, 20);
             }
-            else if (blitter != null)
+            else if (icon != null)
             {
+                Blitter blitter = icon.getBlitter();
+                if (!this.active)
+                {
+                    blitter.opacity(0.5f);
+                }
                 blitter.dest(getX(), getY()).blit(guiGraphics);
             }
         }
+        else
+        {
+            if (!disableBackground)
+            {
+                Icon bgIcon = Icon.TOOLBAR_BUTTON_BACKGROUND;
 
-        RenderSystem.enableDepthTest();
+                bgIcon.getBlitter()
+                        .dest(getX(), getY(), this.width, this.height)
+                        .blit(guiGraphics);
+            }
+
+            if (item != null)
+            {
+                guiGraphics.renderItem(new ItemStack(item), getX() + (this.width - 16) / 2, getY() + (this.height - 16) / 2, 0, 3);
+            }
+            else if (icon != null)
+            {
+                icon.getBlitter()
+                        .dest(getX(), getY())
+                        .blit(guiGraphics);
+            }
+        }
     }
 
     /**
