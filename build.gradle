@@ -172,6 +172,7 @@ dependencies {
     // OMNI CELL
     modImplementation "curse.maven:omni-cells-1359517:7169531"
     // MEGA CELL
+    modImplementation "curse.maven:cloth-config-348521:5729105"
     modImplementation "curse.maven:mega-cells-622112:6175008"
     // EAE
     modImplementation "curse.maven:ex-pattern-provider-892005:7472662"
