@@ -1,6 +1,6 @@
 {
   "$schema": "schema.json",
-  "includes": ["common/common.json", "common/player_inventory.json"],
+  "includes": ["common/common.json", "aecs_util/aecs_player_inventory.json"],
   "background": {
     "texture": "ae2cs:textures/gui/ender_emitter_menu.png",
     "textureWidth": 256,

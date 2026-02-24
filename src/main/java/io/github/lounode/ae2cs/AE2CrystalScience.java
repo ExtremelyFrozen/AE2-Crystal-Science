@@ -40,6 +40,7 @@ public class AE2CrystalScience
         AECSRecipeTypes.register(modEventBus);
         AECSRecipeSerializers.register(modEventBus);
         AECSEnchantments.register(modEventBus);
+        AECSPackets.register();
 
         AEPlugin.onInit();
         AEPlugin.onRegister(modEventBus, MinecraftForge.EVENT_BUS);

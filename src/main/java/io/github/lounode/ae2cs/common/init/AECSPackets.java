@@ -19,7 +19,7 @@ public class AECSPackets
     );
     private static int packetId = 1;
 
-    static
+    public static void register()
     {
         INSTANCE.registerMessage(
                 packetId++,
