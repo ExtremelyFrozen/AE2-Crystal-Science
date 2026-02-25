@@ -4,6 +4,7 @@ import appeng.core.definitions.AEItems;
 import appeng.datagen.providers.tags.ConventionTags;
 import com.wintercogs.ae2omnicells.common.init.OCBlocks;
 import com.wintercogs.ae2omnicells.common.init.OCItems;
+import com.wintercogs.ae2omnicells.common.init.OCTags;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSTags;
@@ -84,6 +85,11 @@ public class AECSCompatOCRecipeProvider extends AECSRecipeProvider
                 .require(OCItems.MULTIDIMENSIONAL_EXPANSION_CIRCUIT_PRINT, 32)
                 .require(Tags.Items.DUSTS_REDSTONE, 32)
                 .require(AEItems.SILICON_PRINT, 32)
+                .save(compatOut);
+        CrystalAggregatorRecipeBuilder.aggregating(OCItems.ENDER_INGOT, 64, 102400)
+                .require(OCTags.ENDER_PEARL_DUST, 32)
+                .require(Tags.Items.INGOTS_IRON, 32)
+                .require(ConventionTags.CERTUS_QUARTZ_DUST, 32)
                 .save(compatOut);
     }
 }
