@@ -8,6 +8,7 @@ import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
+import io.github.lounode.ae2cs.datagen.builder.recipe.CircuitEtcherRecipeBuilder;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBuilder;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalPulverizerRecipeBuilder;
 import net.minecraft.core.HolderLookup;
@@ -73,6 +74,12 @@ public class AECSCompatAFRecipeProvider extends AECSRecipeProvider
                 .require(AFItemAndBlock.ENERGY_PROCESSOR_PRINT, 32)
                 .require(Tags.Items.DUSTS_REDSTONE, 32)
                 .require(AEItems.SILICON_PRINT, 32)
+                .save(compatOut);
+
+        CircuitEtcherRecipeBuilder.etching(AFItemAndBlock.ENERGY_PROCESSOR, 9, 14400)
+                .require(AFItemAndBlock.CHARGED_REDSTONE, 9)
+                .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 1)
+                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 1)
                 .save(compatOut);
     }
 }

@@ -1,5 +1,6 @@
-// 1.20.1	2026-02-24T21:46:06.8428045	AECS OMNI CELLS Compat Recipes
+// 1.20.1	2026-02-25T22:20:07.8355547	AECS OMNI CELLS Compat Recipes
 79291eff6331501abe90cc4c84726bede9309047 data/ae2cs/recipes/aggregator/complex_link_processor.json
+d763f7bd7c2f0e87d3332f15377abeb62d8c417b data/ae2cs/recipes/aggregator/ender_ingot.json
 26a4de14c69a2722650892aa307e12998c460967 data/ae2cs/recipes/aggregator/multidimensional_expansion_processor.json
 eb08c1a9e7005f7faa0eda8f525c481f1ebe8bd6 data/ae2cs/recipes/aggregator/omni_link_processor.json
 0555acd950f20475960cf44379e2c2fddf4eaed4 data/ae2cs/recipes/circuit_etcher/complex_link_processor.json

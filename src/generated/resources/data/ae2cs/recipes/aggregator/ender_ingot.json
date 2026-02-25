@@ -1,0 +1,39 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ae2omnicells"
+        }
+      ],
+      "recipe": {
+        "type": "ae2cs:crystal_aggregator_recipe_serializer",
+        "energy_cost": 102400,
+        "input_a": {
+          "count": 32,
+          "ingredient": {
+            "tag": "forge:dusts/ender_pearl"
+          }
+        },
+        "input_b": {
+          "count": 32,
+          "ingredient": {
+            "tag": "forge:ingots/iron"
+          }
+        },
+        "input_c": {
+          "count": 32,
+          "ingredient": {
+            "tag": "forge:dusts/certus_quartz"
+          }
+        },
+        "result": {
+          "count": 64,
+          "item": "ae2omnicells:ender_ingot"
+        }
+      }
+    }
+  ]
+}
