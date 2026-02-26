@@ -1,1 +1,1 @@
-* Add a recipe for omni cells ender ingot.
+* When quick-moving, prioritize moving upgrade cards into the upgrade slots first.
