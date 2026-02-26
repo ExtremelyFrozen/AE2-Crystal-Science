@@ -26,6 +26,7 @@ import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.me.helpers.MachineSource;
 import io.github.lounode.ae2cs.api.util.AEKeyHelper;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.util.KeyCounterHelper;
 import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -278,7 +279,13 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
         }
         try
         {
-            pattern.fillCraftingGrid(inputHolder, (slot, stack) -> {
+            KeyCounter[] inputHolderCopy = new KeyCounter[inputHolder.length];
+            for (int i = 0; i < inputHolder.length; i++)
+            {
+                KeyCounter kc = inputHolder[i];
+                inputHolderCopy[i] = (kc == null) ? new KeyCounter() : KeyCounterHelper.deepCopy(kc);
+            }
+            pattern.fillCraftingGrid(inputHolderCopy, (slot, stack) -> {
                 if (slot >= 0 && slot < 9)
                 {
                     grid3x3[slot] = (stack == null) ? ItemStack.EMPTY : stack;
