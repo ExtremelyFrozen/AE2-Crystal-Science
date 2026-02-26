@@ -26,6 +26,7 @@ import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.me.helpers.MachineSource;
 import io.github.lounode.ae2cs.api.util.AEKeyHelper;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.util.KeyCounterHelper;
 import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -282,7 +283,13 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
         }
         try
         {
-            pattern.fillCraftingGrid(inputHolder, (slot, stack) -> {
+            KeyCounter[] inputHolderCopy = new KeyCounter[inputHolder.length];
+            for (int i = 0; i < inputHolder.length; i++)
+            {
+                KeyCounter kc = inputHolder[i];
+                inputHolderCopy[i] = (kc == null) ? new KeyCounter() : KeyCounterHelper.deepCopy(kc);
+            }
+            pattern.fillCraftingGrid(inputHolderCopy, (slot, stack) -> {
                 if (slot >= 0 && slot < 9)
                 {
                     grid3x3[slot] = (stack == null) ? ItemStack.EMPTY : stack;
@@ -295,45 +302,12 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
             return null;
         }
 
-        // 压缩边距
-        int minX = 3, minY = 3, maxX = -1, maxY = -1;
-        for (int slot = 0; slot < 9; slot++)
+        // 1.20.1逻辑中不得压缩边距，否则会导致后续assemble无法正确产出产物
+        final CraftingContainer input = new TransientCraftingContainer(new DummyMenu(), 3, 3);
+        for (int i = 0; i < grid3x3.length; i++)
         {
-            ItemStack stack = grid3x3[slot];
-            if (stack != null && !stack.isEmpty())
-            {
-                int x = slot % 3;
-                int y = slot / 3;
-                if (x < minX) minX = x;
-                if (y < minY) minY = y;
-                if (x > maxX) maxX = x;
-                if (y > maxY) maxY = y;
-            }
-        }
-
-        if (maxX < 0)
-        {
-            return null;
-        }
-
-        final int width = (maxX - minX + 1);
-        final int height = (maxY - minY + 1);
-
-        final List<ItemStack> compressedItems = new ArrayList<>(width * height);
-        for (int y = 0; y < height; y++)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                int srcSlot = (minX + x) + (minY + y) * 3;
-                ItemStack stack = grid3x3[srcSlot];
-                compressedItems.add(stack == null ? ItemStack.EMPTY : stack);
-            }
-        }
-
-        final CraftingContainer input = new TransientCraftingContainer(new DummyMenu(), width, height);
-        for (int i = 0; i < compressedItems.size(); i++)
-        {
-            input.setItem(i, compressedItems.get(i));
+            ItemStack stack = grid3x3[i];
+            input.setItem(i, stack == null ? ItemStack.EMPTY : stack);
         }
 
         ItemStack output = pattern.assemble(input, level);

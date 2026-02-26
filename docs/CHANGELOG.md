@@ -1,1 +1,1 @@
-* init 1.20.1 version
+* Fit MeteoritePatternProviderLogic to 1.20.1
