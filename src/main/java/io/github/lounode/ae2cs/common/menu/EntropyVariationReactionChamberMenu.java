@@ -33,12 +33,6 @@ public class EntropyVariationReactionChamberMenu extends UpgradeableMenu<Entropy
     public EntropyVariationReactionChamberMenu(MenuType<?> menuType, int id, Inventory ip, EntropyVariationReactionChamberBlockEntity host)
     {
         super(menuType, id, ip, host);
-    }
-
-    @Override
-    protected void setupInventorySlots()
-    {
-        super.setupInventorySlots();
 
         InternalInventory inputInv = getHost().getInputInv().createMenuWrapper();
         InternalInventory outputInv = getHost().getOutputInv().createMenuWrapper();
@@ -59,7 +53,6 @@ public class EntropyVariationReactionChamberMenu extends UpgradeableMenu<Entropy
             };
             this.addSlot(outputSlot, SlotSemantics.MACHINE_OUTPUT);
         }
-
     }
 
     @Override

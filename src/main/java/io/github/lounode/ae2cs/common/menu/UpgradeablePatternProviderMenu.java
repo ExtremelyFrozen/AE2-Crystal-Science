@@ -50,6 +50,11 @@ public class UpgradeablePatternProviderMenu extends AEBaseMenu
 
         this.logic = host.getLogic();
 
+        if (host instanceof IUpgradeableObject upgradeableHost)
+        {
+            setupUpgrades(upgradeableHost.getUpgrades());
+        }
+
         var patternInv = logic.getPatternInv();
         for (int x = 0; x < patternInv.size(); x++)
         {
@@ -65,11 +70,6 @@ public class UpgradeablePatternProviderMenu extends AEBaseMenu
             {
                 this.addSlot(new AppEngSlot(returnInv, i), SlotSemantics.STORAGE);
             }
-        }
-
-        if (host instanceof IUpgradeableObject upgradeableHost)
-        {
-            setupUpgrades(upgradeableHost.getUpgrades());
         }
     }
 

@@ -23,6 +23,15 @@ public class ResonatingPatternConverterMenu extends UpgradeableMenu<ResonatingPa
     {
         super(menuType, id, playerInventory, host);
 
+        InternalInventory inv = getHost().getInventory();
+        for (int i = 0; i < inv.size(); i++)
+        {
+            if (i < LEFT_BOUNDARY)
+                this.addSlot(new AppEngSlot(inv, i), SlotSemantics.MACHINE_INPUT);
+            else
+                this.addSlot(new AppEngSlot(inv, i), SlotSemantics.MACHINE_OUTPUT);
+        }
+
         registerClientAction(converterPattern, this::onConverterPattern);
     }
 
@@ -71,21 +80,6 @@ public class ResonatingPatternConverterMenu extends UpgradeableMenu<ResonatingPa
     @Override
     protected void loadSettingsFromHost(IConfigManager cm)
     {
-    }
-
-    @Override
-    protected void setupInventorySlots()
-    {
-        super.setupInventorySlots();
-
-        InternalInventory inv = getHost().getInventory();
-        for (int i = 0; i < inv.size(); i++)
-        {
-            if (i < LEFT_BOUNDARY)
-                this.addSlot(new AppEngSlot(inv, i), SlotSemantics.MACHINE_INPUT);
-            else
-                this.addSlot(new AppEngSlot(inv, i), SlotSemantics.MACHINE_OUTPUT);
-        }
     }
 
     // 辅助方法

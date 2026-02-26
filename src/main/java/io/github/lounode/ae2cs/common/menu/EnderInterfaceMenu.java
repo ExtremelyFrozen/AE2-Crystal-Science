@@ -31,6 +31,13 @@ public class EnderInterfaceMenu extends InterfaceMenu
     public EnderInterfaceMenu(MenuType<? extends InterfaceMenu> menuType, int id, Inventory ip, EnderInterfaceHost host)
     {
         super(menuType, id, ip, host);
+
+        InternalInventory absorbConfigWarp = getEnderInterfaceHost().getEnderInterfaceLogic().getAbsorbConfigInventory().createMenuWrapper();
+        for (int i = 0; i < absorbConfigWarp.size(); i++)
+        {
+            addSlot(new FakeSlot(absorbConfigWarp, i), SlotSemantics.PROCESSING_INPUTS);
+        }
+
         extended = host.isExtended();
 
         registerClientAction(changeAbsorbRange, Integer.class, this::onChangeAbsorbRange);
@@ -60,18 +67,6 @@ public class EnderInterfaceMenu extends InterfaceMenu
     {
         int originalValue = getEnderInterfaceHost().getEnderInterfaceLogic().getRange();
         getEnderInterfaceHost().getEnderInterfaceLogic().setRange(originalValue + delta);
-    }
-
-    @Override
-    protected void setupInventorySlots()
-    {
-        super.setupInventorySlots();
-
-        InternalInventory absorbConfigWarp = getEnderInterfaceHost().getEnderInterfaceLogic().getAbsorbConfigInventory().createMenuWrapper();
-        for (int i = 0; i < absorbConfigWarp.size(); i++)
-        {
-            addSlot(new FakeSlot(absorbConfigWarp, i), SlotSemantics.PROCESSING_INPUTS);
-        }
     }
 
     private EnderInterfaceHost getEnderInterfaceHost()

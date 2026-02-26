@@ -46,18 +46,6 @@ public class IntegratedInterfaceMenu extends UpgradeableMenu<IntegratedInterface
     {
         super(AECSMenus.INTEGRATED_INTERFACE_MENU.get(), id, ip, host);
 
-        this.logic = host.getLogic();
-        this.extended = host.isExtended();
-        this.pageSize = extended ? 4 : 1;
-
-        registerClientAction(ACTION_OPEN_SET_AMOUNT, Integer.class, this::openSetAmountMenu);
-    }
-
-    // 放除了升级槽之外的其他真实库存
-    // 注：玩家槽位已经由UpgradeableMenu处理，不必再写
-    @Override
-    protected void setupInventorySlots()
-    {
         for (int i = 0; i < getHost().getTerminalPatternInventory().size(); ++i)
         {
             this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.PROVIDER_PATTERN, getHost().getTerminalPatternInventory(), i), SlotSemantics.ENCODED_PATTERN);
@@ -77,6 +65,12 @@ public class IntegratedInterfaceMenu extends UpgradeableMenu<IntegratedInterface
         {
             togglePage(pageIndex);
         }
+
+        this.logic = host.getLogic();
+        this.extended = host.isExtended();
+        this.pageSize = extended ? 4 : 1;
+
+        registerClientAction(ACTION_OPEN_SET_AMOUNT, Integer.class, this::openSetAmountMenu);
     }
 
     @Override

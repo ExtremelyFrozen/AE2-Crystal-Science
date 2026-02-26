@@ -22,12 +22,6 @@ public class QuartzGrindstoneMenu extends UpgradeableMenu<QuartzGrindstoneBlockE
     public QuartzGrindstoneMenu(int id, Inventory ip, QuartzGrindstoneBlockEntity host)
     {
         super(AECSMenus.QUARTZ_GRINDSTONE_MENU.get(), id, ip, host);
-    }
-
-    @Override
-    protected void setupInventorySlots()
-    {
-        super.setupInventorySlots();
 
         AppEngInternalInventory inputInv = getHost().getInputInv();
         AppEngInternalInventory workingInv = getHost().getWorkingInv();
@@ -54,7 +48,6 @@ public class QuartzGrindstoneMenu extends UpgradeableMenu<QuartzGrindstoneBlockE
             };
             this.addSlot(outputSlot, SlotSemantics.MACHINE_OUTPUT);
         }
-
     }
 
     @Override

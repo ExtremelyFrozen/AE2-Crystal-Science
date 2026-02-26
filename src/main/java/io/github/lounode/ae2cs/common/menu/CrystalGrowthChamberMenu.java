@@ -16,13 +16,7 @@ public class CrystalGrowthChamberMenu extends UpgradeableMenu<CrystalGrowthChamb
     public CrystalGrowthChamberMenu(int id, Inventory playerInv, @NotNull CrystalGrowthChamberBlockEntity host)
     {
         super(AECSMenus.CRYSTAL_GROWTH_CHAMBER_MENU.get(), id, playerInv, host);
-    }
 
-    // 放除了升级槽之外的其他真实库存
-    // 注：玩家槽位已经由UpgradeableMenu处理，不必再写
-    @Override
-    protected void setupInventorySlots()
-    {
         for (int i = 0; i < getHost().getInternalInventory().size(); ++i)
         {
             this.addSlot(new AppEngSlot(getHost().getInternalInventory(), i), SlotSemantics.MACHINE_INPUT);

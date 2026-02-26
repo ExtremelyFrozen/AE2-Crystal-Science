@@ -33,21 +33,15 @@ public class CrystalVibrationChamberMenu extends UpgradeableMenu<CrystalVibratio
     public CrystalVibrationChamberMenu(int id, Inventory playerInv, @NotNull CrystalVibrationChamberBlockEntity host)
     {
         super(AECSMenus.CRYSTAL_VIBRATION_CHAMBER_MENU.get(), id, playerInv, host);
+
+        InternalInventory wrapInv = getHost().getInv().createMenuWrapper();
+        this.addSlot(new AppEngSlot(wrapInv, 0), SlotSemantics.MACHINE_INPUT);
     }
 
     @Override
     protected void loadSettingsFromHost(IConfigManager cm)
     {
 
-    }
-
-    // 放除了升级槽之外的其他真实库存
-    // 注：玩家槽位已经由UpgradeableMenu处理，不必再写
-    @Override
-    protected void setupInventorySlots()
-    {
-        InternalInventory wrapInv = getHost().getInv().createMenuWrapper();
-        this.addSlot(new AppEngSlot(wrapInv, 0), SlotSemantics.MACHINE_INPUT);
     }
 
     @Override
