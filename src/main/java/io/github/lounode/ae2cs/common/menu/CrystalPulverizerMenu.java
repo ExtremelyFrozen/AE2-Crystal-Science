@@ -28,12 +28,6 @@ public class CrystalPulverizerMenu extends UpgradeableMenu<CrystalPulverizerBloc
     public CrystalPulverizerMenu(int id, Inventory ip, CrystalPulverizerBlockEntity host)
     {
         super(AECSMenus.CRYSTAL_PULVERIZER_MENU.get(), id, ip, host);
-    }
-
-    @Override
-    protected void setupInventorySlots()
-    {
-        super.setupInventorySlots();
 
         AppEngInternalInventory inputInv = getHost().getInputInv();
         AppEngInternalInventory outputInv = getHost().getOutputInv();
@@ -54,7 +48,6 @@ public class CrystalPulverizerMenu extends UpgradeableMenu<CrystalPulverizerBloc
             };
             this.addSlot(outputSlot, SlotSemantics.MACHINE_OUTPUT);
         }
-
     }
 
     @Override

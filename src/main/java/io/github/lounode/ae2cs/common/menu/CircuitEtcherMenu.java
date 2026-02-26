@@ -28,12 +28,6 @@ public class CircuitEtcherMenu extends UpgradeableMenu<CircuitEtcherBlockEntity>
     public CircuitEtcherMenu(int id, Inventory ip, CircuitEtcherBlockEntity host)
     {
         super(AECSMenus.CIRCUIT_ETCHER_MENU.get(), id, ip, host);
-    }
-
-    @Override
-    protected void setupInventorySlots()
-    {
-        super.setupInventorySlots();
 
         AppEngInternalInventory inputInv = getHost().getInputInv();
         AppEngInternalInventory outputInv = getHost().getOutputInv();
@@ -54,7 +48,6 @@ public class CircuitEtcherMenu extends UpgradeableMenu<CircuitEtcherBlockEntity>
             };
             this.addSlot(outputSlot, SlotSemantics.MACHINE_OUTPUT);
         }
-
     }
 
     @Override
