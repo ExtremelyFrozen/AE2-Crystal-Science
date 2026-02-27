@@ -501,7 +501,8 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
         {
             if (recipe.matches(mode, blockState, fluidState))
             {
-                return recipe;
+                if(!getRecipeOutput(recipe).isEmpty())
+                    return recipe;
             }
         }
         return null;
