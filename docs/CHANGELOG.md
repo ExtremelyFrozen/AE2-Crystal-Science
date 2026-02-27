@@ -1,1 +1,1 @@
-* When quick-moving, prioritize moving upgrade cards into the upgrade slots first.
+* Prevent EntropyVariationReaction execute empty output recipe
