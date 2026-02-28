@@ -52,6 +52,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid = AECSConstants.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements ServerTickingBlockEntity,
@@ -67,7 +68,7 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     public static int autoAreaFactor = 1;
 
     // 最大可连接距离，半径，计算时使用直线距离
-    public static final int maxLinkDistance = 16 * autoAreaFactor;
+    public static final Supplier<Integer> maxLinkDistance = () -> 16 * autoAreaFactor;
 
     // 客户端 + 服务端字段
     private final IConfigManager configManager;
@@ -126,7 +127,7 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
 
     public void setLinkDistance(int newLinkDistance)
     {
-        newLinkDistance = Math.max(0, Math.min(newLinkDistance, maxLinkDistance));
+        newLinkDistance = Math.max(0, Math.min(newLinkDistance, maxLinkDistance.get()));
         if (newLinkDistance != this.linkDistance)
         {
             this.linkDistance = newLinkDistance;
@@ -608,7 +609,7 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
         if (emitter.getBlockPos().equals(pos)) return false;
 
         // 如果是手动连接，仅检查手动方法
-        boolean valid = byManual && VecHelper.closerThanChebyshev(emitter.worldPosition, pos, maxLinkDistance);
+        boolean valid = byManual && VecHelper.closerThanChebyshev(emitter.worldPosition, pos, maxLinkDistance.get());
 
         // 自动连接额外检查
         if (!valid)
@@ -670,7 +671,7 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
         List<BlockPos> availablePositions = new ArrayList<>(linkPositions.size());
         for (BlockPos linkPos : linkPositions)
         {
-            if (VecHelper.closerThanChebyshev(linkPos, targetPos, maxLinkDistance))
+            if (VecHelper.closerThanChebyshev(linkPos, targetPos, maxLinkDistance.get()))
             {
                 availablePositions.add(linkPos);
             }

@@ -53,7 +53,7 @@ public class EnderEmitterMenu extends UpgradeableMenu<EnderEmitterBlockEntity>
     public void broadcastChanges()
     {
         this.linkDistance = getHost().getLinkDistance();
-        this.maxLinkDistance = EnderEmitterBlockEntity.maxLinkDistance;
+        this.maxLinkDistance = EnderEmitterBlockEntity.maxLinkDistance.get();
 
         super.broadcastChanges();
     }

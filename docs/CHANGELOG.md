@@ -1,1 +1,1 @@
-* Prevent EntropyVariationReaction execute empty output recipe
+* Fix config of ender emitter max distance
