@@ -111,7 +111,7 @@ public class ResonatingPatternDetails implements IPatternDetails
         }
 
         AECSDataComponents.setEncodedResonatingPattern(resonatingPattern,
-                new EncodedResonatingPattern(List.copyOf(Arrays.asList(src.getSparseInputs())), List.copyOf(Arrays.asList(src.getSparseOutputs())), targets));
+                new EncodedResonatingPattern(new ArrayList<>(Arrays.asList(src.getSparseInputs())), new ArrayList<>(Arrays.asList(src.getSparseOutputs())), targets));
         AECSDataComponents.setResonatingPatternSelectedInput(resonatingPattern, 0);
         return true;
     }

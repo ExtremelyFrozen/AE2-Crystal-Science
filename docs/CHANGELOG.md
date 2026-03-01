@@ -1,1 +1,1 @@
-* Fix config of ender emitter max distance
+* Fix resonating pattern cannot be converted.
