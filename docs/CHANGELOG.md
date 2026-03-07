@@ -1,1 +1,1 @@
-* Prevent EntropyVariationReaction execute empty output recipe
+* Fix the mod version number so it can be used for version comparison.
