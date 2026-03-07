@@ -47,7 +47,7 @@ repositories {
 }
 
 base {
-    archivesName = mod_id
+    archivesName = "${mod_id}-${minecraft_version}-forge"
 }
 
 // This project is configured to compile with Java 21 for Gradle/plugin compatibility.

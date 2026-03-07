@@ -1,1 +1,1 @@
-* Fix resonating pattern cannot be converted.
+* Fix the mod version number so it can be used for version comparison.
