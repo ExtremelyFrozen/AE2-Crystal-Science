@@ -275,7 +275,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
                 var adjPos = be.getBlockPos().relative(dir);
                 var adjSide = dir.getOpposite();
 
-                var adapter = PatternProviderTarget.get(level, adjPos, null, adjSide, actionSource);
+                var adapter = PatternProviderTarget.get(level, adjPos, level.getBlockEntity(adjPos), adjSide, actionSource);
                 if (adapter == null) continue;
 
                 if (this.isBlocking() && adapter.containsPatternInput(this.patternInputs))
@@ -564,7 +564,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
         var pos = target.pos().pos();
         if (!isTargetChunkLoaded(targetLevel, pos)) return null;
 
-        return PatternProviderTarget.get(targetLevel, pos, null, target.face(), actionSource);
+        return PatternProviderTarget.get(targetLevel, pos, targetLevel.getBlockEntity(pos), target.face(), actionSource);
     }
 
     private boolean hasResonatingWorkToDo()
