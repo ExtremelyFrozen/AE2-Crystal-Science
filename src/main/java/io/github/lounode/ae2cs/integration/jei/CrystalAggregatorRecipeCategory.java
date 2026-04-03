@@ -2,7 +2,6 @@ package io.github.lounode.ae2cs.integration.jei;
 
 import appeng.menu.interfaces.IProgressProvider;
 import io.github.lounode.ae2cs.AE2CrystalScience;
-import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.client.gui.icon.AECSBlitter;
 import io.github.lounode.ae2cs.client.gui.widgets.AdvancedProgressBar;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
@@ -21,6 +20,7 @@ import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,10 +28,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
-public class CrystalAggregatorRecipeCategory implements IRecipeCategory<CrystalAggregatorRecipe>
+public class CrystalAggregatorRecipeCategory implements IRecipeCategory<RecipeHolder<CrystalAggregatorRecipe>>
 {
-    public static RecipeType<CrystalAggregatorRecipe> RECIPE_TYPE = RecipeType.create(AECSConstants.MODID, "crystal_aggregator",
-            CrystalAggregatorRecipe.class);
+    public static RecipeType<RecipeHolder<CrystalAggregatorRecipe>> RECIPE_TYPE = RecipeType.createRecipeHolderType(AE2CrystalScience.makeId("crystal_aggregator"));
 
     private static final Rect2i energyTooltipArea = new Rect2i(109, 21, 6, 18);
 
@@ -86,7 +85,7 @@ public class CrystalAggregatorRecipeCategory implements IRecipeCategory<CrystalA
     }
 
     @Override
-    public @NotNull RecipeType<CrystalAggregatorRecipe> getRecipeType()
+    public @NotNull RecipeType<RecipeHolder<CrystalAggregatorRecipe>> getRecipeType()
     {
         return RECIPE_TYPE;
     }
@@ -104,7 +103,7 @@ public class CrystalAggregatorRecipeCategory implements IRecipeCategory<CrystalA
     }
 
     @Override
-    public void draw(@NotNull CrystalAggregatorRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView,
+    public void draw(@NotNull RecipeHolder<CrystalAggregatorRecipe> recipe, @NotNull IRecipeSlotsView recipeSlotsView,
                      @NotNull GuiGraphics guiGraphics, double mouseX, double mouseY)
     {
         IRecipeCategory.super.draw(recipe, recipeSlotsView, guiGraphics, mouseX, mouseY);
@@ -126,24 +125,24 @@ public class CrystalAggregatorRecipeCategory implements IRecipeCategory<CrystalA
     }
 
     @Override
-    public void getTooltip(@NotNull ITooltipBuilder tooltip, @NotNull CrystalAggregatorRecipe recipe,
+    public void getTooltip(@NotNull ITooltipBuilder tooltip, @NotNull RecipeHolder<CrystalAggregatorRecipe> recipe,
                            @NotNull IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY)
     {
         IRecipeCategory.super.getTooltip(tooltip, recipe, recipeSlotsView, mouseX, mouseY);
         if (energyTooltipArea.contains((int) mouseX, (int) mouseY))
         {
-            tooltip.add(Component.translatable("ae2cs.integration.jei.recipe_category.energy_cost.tooltip", recipe.energyCost()));
+            tooltip.add(Component.translatable("ae2cs.integration.jei.recipe_category.energy_cost.tooltip", recipe.value().energyCost()));
         }
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, @NotNull CrystalAggregatorRecipe recipe, @NotNull IFocusGroup focuses)
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, @NotNull RecipeHolder<CrystalAggregatorRecipe> recipe, @NotNull IFocusGroup focuses)
     {
         int xIn = 30;
         int y0 = 3;
         int dy = 18;
 
-        List<SizedIngredient> ingredients = recipe.required();
+        List<SizedIngredient> ingredients = recipe.value().required();
         for (int i = 0; i < 3; i++)
         {
             IRecipeSlotBuilder slotBuilder = builder.addInputSlot(xIn, y0 + i * dy);
@@ -155,7 +154,7 @@ public class CrystalAggregatorRecipeCategory implements IRecipeCategory<CrystalA
 
         int xOut = 86;
         int yOut = y0 + dy + 1;
-        builder.addOutputSlot(xOut, yOut).addItemStack(recipe.result().copy());
+        builder.addOutputSlot(xOut, yOut).addItemStack(recipe.value().result().copy());
     }
 
     private int getAnimMsInCycle()

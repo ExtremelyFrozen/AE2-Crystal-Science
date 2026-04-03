@@ -51,30 +51,27 @@ public class JeiPlugin implements IModPlugin
         if (level == null) return;
 
         {
-            List<CircuitEtcherRecipe> recipes = level.getRecipeManager()
+            List<RecipeHolder<CircuitEtcherRecipe>> recipes = level.getRecipeManager()
                     .getAllRecipesFor(AECSRecipeTypes.CIRCUIT_ETCHER.get())
                     .stream()
-                    .map(RecipeHolder::value)
                     .toList();
 
             registration.addRecipes(CircuitEtcherRecipeCategory.RECIPE_TYPE, recipes);
         }
 
         {
-            List<CrystalAggregatorRecipe> recipes = level.getRecipeManager()
+            List<RecipeHolder<CrystalAggregatorRecipe>> recipes = level.getRecipeManager()
                     .getAllRecipesFor(AECSRecipeTypes.CRYSTAL_AGGREGATOR.get())
                     .stream()
-                    .map(RecipeHolder::value)
                     .toList();
 
             registration.addRecipes(CrystalAggregatorRecipeCategory.RECIPE_TYPE, recipes);
         }
 
         {
-            List<CrystalPulverizerRecipe> recipes = level.getRecipeManager()
+            List<RecipeHolder<CrystalPulverizerRecipe>> recipes = level.getRecipeManager()
                     .getAllRecipesFor(AECSRecipeTypes.CRYSTAL_PULVERIZER.get())
                     .stream()
-                    .map(RecipeHolder::value)
                     .toList();
 
             registration.addRecipes(CrystalPulverizerRecipeCategory.RECIPE_TYPE, recipes);

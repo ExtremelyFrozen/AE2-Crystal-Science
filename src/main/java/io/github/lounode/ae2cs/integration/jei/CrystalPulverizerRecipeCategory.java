@@ -2,7 +2,6 @@ package io.github.lounode.ae2cs.integration.jei;
 
 import appeng.menu.interfaces.IProgressProvider;
 import io.github.lounode.ae2cs.AE2CrystalScience;
-import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.client.gui.icon.AECSBlitter;
 import io.github.lounode.ae2cs.client.gui.widgets.AdvancedProgressBar;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
@@ -20,15 +19,15 @@ import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 
-public class CrystalPulverizerRecipeCategory implements IRecipeCategory<CrystalPulverizerRecipe>
+public class CrystalPulverizerRecipeCategory implements IRecipeCategory<RecipeHolder<CrystalPulverizerRecipe>>
 {
-    public static RecipeType<CrystalPulverizerRecipe> RECIPE_TYPE = RecipeType.create(AECSConstants.MODID, "crystal_pulverizer",
-            CrystalPulverizerRecipe.class);
+    public static RecipeType<RecipeHolder<CrystalPulverizerRecipe>> RECIPE_TYPE = RecipeType.createRecipeHolderType(AE2CrystalScience.makeId("crystal_pulverizer"));
 
     private static final Rect2i energyTooltipArea = new Rect2i(109, 21, 6, 18);
 
@@ -83,7 +82,7 @@ public class CrystalPulverizerRecipeCategory implements IRecipeCategory<CrystalP
     }
 
     @Override
-    public @NotNull RecipeType<CrystalPulverizerRecipe> getRecipeType()
+    public @NotNull RecipeType<RecipeHolder<CrystalPulverizerRecipe>> getRecipeType()
     {
         return RECIPE_TYPE;
     }
@@ -101,7 +100,7 @@ public class CrystalPulverizerRecipeCategory implements IRecipeCategory<CrystalP
     }
 
     @Override
-    public void draw(@NotNull CrystalPulverizerRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView,
+    public void draw(@NotNull RecipeHolder<CrystalPulverizerRecipe> recipe, @NotNull IRecipeSlotsView recipeSlotsView,
                      @NotNull GuiGraphics guiGraphics, double mouseX, double mouseY)
     {
         IRecipeCategory.super.draw(recipe, recipeSlotsView, guiGraphics, mouseX, mouseY);
@@ -123,26 +122,26 @@ public class CrystalPulverizerRecipeCategory implements IRecipeCategory<CrystalP
     }
 
     @Override
-    public void getTooltip(@NotNull ITooltipBuilder tooltip, @NotNull CrystalPulverizerRecipe recipe,
+    public void getTooltip(@NotNull ITooltipBuilder tooltip, @NotNull RecipeHolder<CrystalPulverizerRecipe> recipe,
                            @NotNull IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY)
     {
         IRecipeCategory.super.getTooltip(tooltip, recipe, recipeSlotsView, mouseX, mouseY);
         if (energyTooltipArea.contains((int) mouseX, (int) mouseY))
         {
-            tooltip.add(Component.translatable("ae2cs.integration.jei.recipe_category.energy_cost.tooltip", recipe.energyCost()));
+            tooltip.add(Component.translatable("ae2cs.integration.jei.recipe_category.energy_cost.tooltip", recipe.value().energyCost()));
         }
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, @NotNull CrystalPulverizerRecipe recipe, @NotNull IFocusGroup focuses)
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, @NotNull RecipeHolder<CrystalPulverizerRecipe> recipe, @NotNull IFocusGroup focuses)
     {
         int xIn = 23;
         int yIn = 22;
-        builder.addInputSlot(xIn, yIn).addItemStacks(Arrays.asList(recipe.input().getItems()));
+        builder.addInputSlot(xIn, yIn).addItemStacks(Arrays.asList(recipe.value().input().getItems()));
 
         int xOut = 86;
         int yOut = yIn;
-        builder.addOutputSlot(xOut, yOut).addItemStack(recipe.result().copy());
+        builder.addOutputSlot(xOut, yOut).addItemStack(recipe.value().result().copy());
     }
 
     private int getAnimMsInCycle()
