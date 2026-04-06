@@ -179,6 +179,9 @@ dependencies {
     modCompileOnly "mezz.jei:jei-1.20.1-forge-api:15.20.0.129"
     //modLocalRuntime "mezz.jei:jei-1.20.1-forge:15.20.0.129"
 
+    modCompileOnly "maven.modrinth:jade:11.13.2+forge"
+    modLocalRuntime "maven.modrinth:jade:11.13.2+forge"
+
     // 联动前置
     modImplementation "curse.maven:glodium-957920:5226922"
     modImplementation "curse.maven:geckolib-388172:7025129"

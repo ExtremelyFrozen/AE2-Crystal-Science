@@ -159,6 +159,18 @@
   "ae2cs.menu.ender_broadcaster.button.open_frequency_manager_menu": "打开频段管理菜单\n在此查看和修改频段信息，以及所有频段链接的端",
   "ae2cs.menu.ender_broadcaster.button.clean_linker_connection": "清空链接\n将机器与频段的链接断开",
 
+  "jade.ae2cs.ender_emitter.channels": "频道 已用/总可用：%s/%s",
+  "jade.ae2cs.ender_broadcaster.mode": "模式：%s",
+  "jade.ae2cs.ender_broadcaster.mode.sender": "发射端",
+  "jade.ae2cs.ender_broadcaster.mode.receiver": "接收端",
+  "jade.ae2cs.ender_broadcaster.mode.none": "未连接",
+  "jade.ae2cs.ender_broadcaster.band": "频段：%s",
+  "jade.ae2cs.ender_broadcaster.band.none": "无",
+  "jade.ae2cs.ender_broadcaster.sender_channels": "频段频道 已用/总可用：%s/%s",
+  "jade.ae2cs.ender_broadcaster.receiver_channels": "频道 已用/总可用：%s/%s",
+  "jade.ae2cs.ender_broadcaster.no_connection": "频段状态：未连接",
+  "config.jade.plugin_ae2cs.jade/ender_channels" : "末影频段信息",
+
   "ae2cs.menu.title.frequency_bands": "频段菜单",
   "ae2cs.menu.widgets.frequency_info_panel.encrypted": "已加密",
 

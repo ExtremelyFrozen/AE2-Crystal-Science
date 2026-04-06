@@ -344,7 +344,7 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
         this.recentAddedPosCountdown = 2;
     }
 
-    private int getMaxLinkChannels()
+    public int getMaxLinkChannels()
     {
         IGrid grid = getMainNode().getGrid();
         if (grid == null) return 0;
@@ -362,6 +362,12 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
         {
             return mode.getAdHocNetworkChannels();
         }
+    }
+
+    public int getUsedLinkChannels()
+    {
+        IGridNode node = getMainNode().getNode();
+        return node == null ? 0 : node.getUsedChannels();
     }
 
     @Override

@@ -159,6 +159,18 @@
   "ae2cs.menu.ender_broadcaster.button.open_frequency_manager_menu": "Open Band Manager\nView/edit band info and all linked endpoints",
   "ae2cs.menu.ender_broadcaster.button.clean_linker_connection": "Clear Link\nDisconnect this machine from the band",
 
+  "jade.ae2cs.ender_emitter.channels": "Channels Used/Total: %s/%s",
+  "jade.ae2cs.ender_broadcaster.mode": "Mode: %s",
+  "jade.ae2cs.ender_broadcaster.mode.sender": "Sender",
+  "jade.ae2cs.ender_broadcaster.mode.receiver": "Receiver",
+  "jade.ae2cs.ender_broadcaster.mode.none": "Not Connected",
+  "jade.ae2cs.ender_broadcaster.band": "Band: %s",
+  "jade.ae2cs.ender_broadcaster.band.none": "None",
+  "jade.ae2cs.ender_broadcaster.sender_channels": "Band Channels Used/Total: %s/%s",
+  "jade.ae2cs.ender_broadcaster.receiver_channels": "Channels Used/Total: %s/%s",
+  "jade.ae2cs.ender_broadcaster.no_connection": "Band Status: Not Connected",
+  "config.jade.plugin_ae2cs.jade/ender_channels": "Ender Channel Info",
+
   "ae2cs.menu.title.frequency_bands": "Frequency Bands",
   "ae2cs.menu.widgets.frequency_info_panel.encrypted": "Encrypted",
 
