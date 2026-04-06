@@ -2,8 +2,8 @@ plugins {
     id 'idea'
     id 'java-library'
     id 'maven-publish'
-    id 'net.neoforged.moddev.legacyforge' version '2.0.91'
-    id 'dev.vfyjxf.modaccessor' version "1.1"
+    id 'net.neoforged.moddev.legacyforge' version '2.0.141'
+    id "net.minecraftforge.accesstransformers" version "5.0.3"
 }
 
 tasks.named('wrapper', Wrapper).configure {
@@ -50,8 +50,7 @@ base {
     archivesName = "${mod_id}-${minecraft_version}-forge"
 }
 
-// This project is configured to compile with Java 21 for Gradle/plugin compatibility.
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 legacyForge {
     // Specify the version of MinecraftForge to use.
@@ -157,11 +156,6 @@ obfuscation {
     createRemappingConfiguration(configurations.localRuntime)
 }
 
-modAccessor {
-    createTransformConfiguration(configurations.compileOnly)
-    accessTransformerFiles = project.files('src/main/resources/META-INF/accesstransformer.cfg')
-}
-
 dependencies {
     compileOnly "org.jetbrains:annotations:26.0.2"
 
@@ -171,8 +165,12 @@ dependencies {
 
     // AE2与GuideME
     modImplementation "curse.maven:guideme-1173950:7127447"
-    modImplementation "curse.maven:applied-energistics-2-223794:7148487"
-    accessCompileOnly "curse.maven:applied-energistics-2-223794:7148487"
+    modImplementation("curse.maven:applied-energistics-2-223794:7148487"){
+        accessTransformers.configure(it) {
+            config = project.file('src/main/resources/META-INF/accesstransformer.cfg')
+        }
+    }
+
 
     modCompileOnly "curse.maven:emi-580555:6420945"
     modLocalRuntime "curse.maven:emi-580555:6420945"
