@@ -5,8 +5,4 @@ package io.github.lounode.ae2cs.api.linker.broadcast;
  */
 public interface BroadcastReceiverHost extends BandLinkHost
 {
-    /**
-     * 此接收端期望被分配多少频道
-     */
-    int getExpectedChannels();
 }

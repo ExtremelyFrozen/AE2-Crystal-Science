@@ -161,6 +161,7 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
                     Component.translatable("ae2cs.menu.frequency_manager_menu.band_error.controller_conflict");
             case SENDER_ERROR -> Component.translatable("ae2cs.menu.frequency_manager_menu.band_error.sender_error");
             case NO_SENDER -> Component.translatable("ae2cs.menu.frequency_manager_menu.band_error.no_sender");
+            case CHANNEL_OVERFLOW -> Component.translatable("ae2cs.menu.frequency_manager_menu.band_error.channel_overflow");
         };
         setTextContent("band_name", bandName);
         setTextContent("channel_usage", channelUsage);

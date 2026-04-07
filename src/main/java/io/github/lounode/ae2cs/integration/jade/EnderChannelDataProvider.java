@@ -22,6 +22,7 @@ public final class EnderChannelDataProvider implements IBlockComponentProvider, 
 
     private static final String USED_CHANNELS = "used_channels";
     private static final String TOTAL_CHANNELS = "total_channels";
+    private static final String LOCAL_USED_CHANNELS = "local_used_channels";
     private static final String MODE = "mode";
     private static final String BAND_NAME = "band_name";
     private static final int MODE_EMITTER = 0;
@@ -89,15 +90,18 @@ public final class EnderChannelDataProvider implements IBlockComponentProvider, 
     private static void appendReceiverData(CompoundTag data, EnderBroadcasterBlockEntity broadcaster)
     {
         var node = broadcaster.getMainNode().getNode();
-        if (node == null)
+        data.putLong(LOCAL_USED_CHANNELS, node == null ? 0 : node.getUsedChannels());
+
+        BroadcastFrequencyBand band = FrequencyBandManager.getBand(broadcaster.getBandName());
+        if (band == null)
         {
             data.putLong(USED_CHANNELS, 0);
             data.putLong(TOTAL_CHANNELS, 0);
             return;
         }
 
-        data.putLong(USED_CHANNELS, node.getUsedChannels());
-        data.putLong(TOTAL_CHANNELS, node.getMaxChannels());
+        data.putLong(USED_CHANNELS, band.getUsedChannels());
+        data.putLong(TOTAL_CHANNELS, band.getUsableChannels());
     }
 
     @Override
@@ -127,11 +131,16 @@ public final class EnderChannelDataProvider implements IBlockComponentProvider, 
 
         tooltip.add(switch (mode)
         {
-            case MODE_BROADCASTER_RECEIVER -> Component.translatable("jade.ae2cs.ender_broadcaster.receiver_channels", used, total);
+            case MODE_BROADCASTER_RECEIVER -> Component.translatable("jade.ae2cs.ender_broadcaster.band_channels", used, total);
             case MODE_BROADCASTER_SENDER -> Component.translatable("jade.ae2cs.ender_broadcaster.sender_channels", used, total);
             case MODE_BROADCASTER_NONE -> Component.translatable("jade.ae2cs.ender_broadcaster.no_connection");
             default -> Component.translatable("jade.ae2cs.ender_emitter.channels", used, total);
         });
+
+        if (mode == MODE_BROADCASTER_RECEIVER)
+        {
+            tooltip.add(Component.translatable("jade.ae2cs.ender_broadcaster.receiver_local_channels", data.getLong(LOCAL_USED_CHANNELS)));
+        }
     }
 
     @Override

@@ -28,6 +28,8 @@ import java.util.*;
 @Mod.EventBusSubscriber(modid = AECSConstants.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class FrequencyBandManager extends SavedData
 {
+    public static int overflowRetryInterval = 40;
+
     /**
      * SavedData存放的文件夹
      */
@@ -203,6 +205,18 @@ public class FrequencyBandManager extends SavedData
         }
     }
 
+    public static void clearOverflowState(String bandName)
+    {
+        FrequencyBandManager manager = resolveManager();
+        if (manager == null) return;
+
+        BroadcastFrequencyBand band = manager.frequencyBands.get(bandName);
+        if (band != null)
+        {
+            band.clearOverflowState();
+        }
+    }
+
     /**
      * 统一调用服务端的频段链接重算
      */
@@ -233,6 +247,26 @@ public class FrequencyBandManager extends SavedData
                 }
                 // 最后移除掉已经tick过的元素
                 it.remove();
+            }
+        }
+
+        if (overflowRetryInterval > 0 && now % overflowRetryInterval == 0)
+        {
+            for (BroadcastFrequencyBand band : manager.frequencyBands.values())
+            {
+                if (band.getErrorState() != BroadcastFrequencyBand.BandError.CHANNEL_OVERFLOW)
+                {
+                    continue;
+                }
+
+                String bandName = band.getName();
+                if (manager.dirtyRuntimeAt.getLong(bandName) != Long.MIN_VALUE)
+                {
+                    continue;
+                }
+
+                band.clearOverflowState();
+                manager.dirtyRuntimeAt.put(bandName, now);
             }
         }
     }
