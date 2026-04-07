@@ -283,6 +283,11 @@
 
   "ae2cs.msg.frequency_manager.you_not_owner": "Only the owner can change this option",
 
+  "ae2cs.msg.resonating_provider.marked": "Marked default input %s/%s -> (%s, %s, %s) %s",
+  "ae2cs.msg.resonating_provider.unmarked": "Cleared default input %s/%s",
+  "ae2cs.msg.resonating_provider.selected_marked": "Selected default input %s/%s -> (%s, %s, %s) %s",
+  "ae2cs.msg.resonating_provider.selected_unmarked": "Selected default input %s/%s (unmarked)",
+
   "ae2cs.msg.item.ender_linker.bing_to_emitter": "Bound to this emitter",
   "ae2cs.msg.item.ender_linker.success_to_link": "Successfully linked this device to the bound emitter",
   "ae2cs.msg.item.ender_linker.failed_to_link": "Link failed. The emitter may be out of channels or out of range.",
@@ -303,6 +308,8 @@
   "ae2cs.machine_settings.pull_mode.title": "Pull From Target Inventory",
   "ae2cs.machine_settings.pull_mode.on.desc": "Will pull from the target inventory",
   "ae2cs.machine_settings.pull_mode.off.desc": "Will not pull from the target inventory",
+  "ae2cs.menu.resonating_pattern_provider.show_marked_faces.on.desc": "Show all marked target faces",
+  "ae2cs.menu.resonating_pattern_provider.show_marked_faces.off.desc": "Hide all marked target faces",
 
   "ae2cs.machine_settings.entropy_change_mode.title": "Entropy Mode",
   "ae2cs.machine_settings.entropy_change_mode.increase.desc": "Increase",

@@ -283,6 +283,11 @@
 
   "ae2cs.msg.frequency_manager.you_not_owner": "只有所有者才能修改此选项",
 
+  "ae2cs.msg.resonating_provider.marked": "已标记默认输入 %s/%s -> (%s, %s, %s) 面：%s",
+  "ae2cs.msg.resonating_provider.unmarked": "已清除默认输入 %s/%s 的标记",
+  "ae2cs.msg.resonating_provider.selected_marked": "当前默认输入 %s/%s -> (%s, %s, %s) 面：%s",
+  "ae2cs.msg.resonating_provider.selected_unmarked": "当前默认输入 %s/%s（未标记）",
+
   "ae2cs.msg.item.ender_linker.bing_to_emitter": "已绑定到该发信器",
   "ae2cs.msg.item.ender_linker.success_to_link": "成功将此设备连接到绑定的发信器",
   "ae2cs.msg.item.ender_linker.failed_to_link": "绑定失败，相关发信器可能没有多余频道或超出最大连接距离",
@@ -303,6 +308,8 @@
   "ae2cs.machine_settings.pull_mode.title": "抽取目标面容器",
   "ae2cs.machine_settings.pull_mode.on.desc": "当前会抽取目标面容器",
   "ae2cs.machine_settings.pull_mode.off.desc": "当前不会抽取目标面容器",
+  "ae2cs.menu.resonating_pattern_provider.show_marked_faces.on.desc": "显示所有已标记的目标面",
+  "ae2cs.menu.resonating_pattern_provider.show_marked_faces.off.desc": "隐藏所有已标记的目标面",
 
   "ae2cs.machine_settings.entropy_change_mode.title": "熵变模式",
   "ae2cs.machine_settings.entropy_change_mode.increase.desc": "熵增",

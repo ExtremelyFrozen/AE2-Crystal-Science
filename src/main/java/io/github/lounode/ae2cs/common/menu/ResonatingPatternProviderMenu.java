@@ -4,6 +4,7 @@ import appeng.api.upgrades.IUpgradeInventory;
 import appeng.menu.guisync.GuiSync;
 import io.github.lounode.ae2cs.api.settings.AECSSettings;
 import io.github.lounode.ae2cs.api.settings.PullMode;
+import io.github.lounode.ae2cs.api.settings.ShowRangeMode;
 import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderHost;
 import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderLogic;
 import net.minecraft.world.entity.player.Inventory;
@@ -18,6 +19,9 @@ public class ResonatingPatternProviderMenu extends UpgradeablePatternProviderMen
     @GuiSync(10)
     public PullMode pullMode;
 
+    @GuiSync(11)
+    public ShowRangeMode showMarkedFacesMode;
+
     public ResonatingPatternProviderMenu(MenuType<? extends UpgradeablePatternProviderMenu> menuType, int id, Inventory playerInventory, ResonatingPatternProviderHost host)
     {
         super(menuType, id, playerInventory, host);
@@ -29,6 +33,7 @@ public class ResonatingPatternProviderMenu extends UpgradeablePatternProviderMen
     public void broadcastChanges()
     {
         pullMode = this.logic.getConfigManager().getSetting(AECSSettings.PULL_MODE);
+        showMarkedFacesMode = this.logic.getConfigManager().getSetting(AECSSettings.SHOW_RANGE_MODE);
         super.broadcastChanges();
     }
 
@@ -36,5 +41,10 @@ public class ResonatingPatternProviderMenu extends UpgradeablePatternProviderMen
     public IUpgradeInventory getUpgrades()
     {
         return logic.getUpgrades();
+    }
+
+    public ResonatingPatternProviderHost getProviderHost()
+    {
+        return (ResonatingPatternProviderHost) getTarget();
     }
 }

@@ -4,9 +4,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
+import io.github.lounode.ae2cs.common.item.IResonatingTargetModeItem;
 import io.github.lounode.ae2cs.common.init.client.AECSRenderTypes;
 import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern;
+import io.github.lounode.ae2cs.common.me.crafting.ResonatingProviderDefaults;
 import io.github.lounode.ae2cs.common.me.crafting.ResonatingPatternDetails;
+import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderHost;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -22,6 +25,9 @@ import org.joml.Matrix4f;
 
 import static net.minecraftforge.client.event.RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS;
 
+import java.util.List;
+import java.util.Optional;
+
 
 /**
  * 在手持谐振样板时渲染目标面
@@ -32,6 +38,8 @@ import static net.minecraftforge.client.event.RenderLevelStageEvent.Stage.AFTER_
 @Mod.EventBusSubscriber(modid = AECSConstants.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ResonatingPatternTargetHighlighter
 {
+    private static ResonatingPatternProviderHost trackedProvider;
+
     // 选中：绿色 + 半透明
     private static final int SEL_R = 0;
     private static final int SEL_G = 255;
@@ -62,21 +70,30 @@ public class ResonatingPatternTargetHighlighter
         if (player == null)
             return;
 
-        ItemStack stack = getHeldResonatingPattern(player);
+        if (trackedProvider != null && trackedProvider.getResonatingLogic().isRenderMarkedFacesInClient())
+        {
+            renderTargets(event, player, new TargetRenderData(trackedProvider.getDefaultInputTargets(), trackedProvider.getDefaultSelectedInput()));
+        }
+
+        ItemStack stack = getHeldTargetModeItem(player);
         if (stack.isEmpty())
             return;
 
-        EncodedResonatingPattern encoded = AECSDataComponents.getEncodedResonatingPattern(stack);
-        if (encoded == null)
+        TargetRenderData renderData = getRenderData(stack);
+        renderTargets(event, player, renderData);
+    }
+
+    public static void setTrackedProvider(ResonatingPatternProviderHost host)
+    {
+        trackedProvider = host;
+    }
+
+    private static void renderTargets(RenderLevelStageEvent event, LocalPlayer player, TargetRenderData renderData)
+    {
+        if (renderData == null || renderData.targets().isEmpty())
             return;
 
-        int size = encoded.sparseInputs().size();
-        if (size <= 0)
-            return;
-
-        int sel = AECSDataComponents.getResonatingPatternSelectedInput(stack, 0);
-        sel = ResonatingPatternDetails.clampSelected(sel, size);
-
+        Minecraft mc = Minecraft.getInstance();
         Level level = player.level();
         var cam = event.getCamera();
         var camPos = cam.getPosition();
@@ -86,56 +103,89 @@ public class ResonatingPatternTargetHighlighter
         MultiBufferSource.BufferSource bufferSource = mc.renderBuffers().bufferSource();
         VertexConsumer vc = bufferSource.getBuffer(AECSRenderTypes.RESONATING_MARK_FACE);
 
-        // 渲染所有存在目标的输入
-        for (int i = 0; i < size; i++)
+        for (int i = 0; i < renderData.targets().size(); i++)
         {
-            var opt = encoded.targetOfSparseInput(i);
+            var opt = renderData.targets().get(i);
             if (opt.isEmpty())
                 continue;
 
             EncodedResonatingPattern.Target t = opt.get();
-
-            // 跨维度不渲染
             if (!level.dimension().equals(t.pos().dimension()))
                 continue;
 
             BlockPos pos = t.pos().pos();
-            // 未加载不渲染
             if (!level.hasChunkAt(pos))
                 continue;
 
-            boolean selected = (i == sel);
+            boolean selected = (i == renderData.selected());
 
             poseStack.pushPose();
-            // 移到相机坐标系
             poseStack.translate(pos.getX() - camPos.x, pos.getY() - camPos.y, pos.getZ() - camPos.z);
-
-            if (selected)
-            {
-                drawFaceQuad(poseStack, vc, t.face(), EPS, SEL_R, SEL_G, SEL_B, A);
-            }
-            else
-            {
-                drawFaceQuad(poseStack, vc, t.face(), EPS, UNS_R, UNS_G, UNS_B, A);
-            }
-
+            drawFaceQuad(poseStack, vc, t.face(), EPS,
+                    selected ? SEL_R : UNS_R,
+                    selected ? SEL_G : UNS_G,
+                    selected ? SEL_B : UNS_B,
+                    A);
             poseStack.popPose();
         }
 
         bufferSource.endBatch(AECSRenderTypes.RESONATING_MARK_FACE);
     }
 
-    private static ItemStack getHeldResonatingPattern(LocalPlayer player)
+    private static ItemStack getHeldTargetModeItem(LocalPlayer player)
     {
         ItemStack main = player.getMainHandItem();
-        if (AECSDataComponents.getEncodedResonatingPattern(main) != null)
+        if (supportsRender(main))
             return main;
 
         ItemStack off = player.getOffhandItem();
-        if (AECSDataComponents.getEncodedResonatingPattern(off) != null)
+        if (supportsRender(off))
             return off;
 
         return ItemStack.EMPTY;
+    }
+
+    private static boolean supportsRender(ItemStack stack)
+    {
+        return AECSDataComponents.getEncodedResonatingPattern(stack) != null
+                || stack.getItem() instanceof IResonatingTargetModeItem;
+    }
+
+    private static TargetRenderData getRenderData(ItemStack stack)
+    {
+        EncodedResonatingPattern encoded = AECSDataComponents.getEncodedResonatingPattern(stack);
+        if (encoded != null)
+        {
+            int size = encoded.sparseInputs().size();
+            if (size <= 0)
+            {
+                return null;
+            }
+
+            int sel = AECSDataComponents.getResonatingPatternSelectedInput(stack, 0);
+            sel = ResonatingPatternDetails.clampSelected(sel, size);
+
+            List<Optional<EncodedResonatingPattern.Target>> targets = new java.util.ArrayList<>(size);
+            for (int i = 0; i < size; i++)
+            {
+                targets.add(encoded.targetOfSparseInput(i));
+            }
+            return new TargetRenderData(targets, sel);
+        }
+
+        if (stack.getItem() instanceof IResonatingTargetModeItem)
+        {
+            return new TargetRenderData(
+                    ResonatingProviderDefaults.readTargets(stack),
+                    ResonatingProviderDefaults.getSelectedInput(stack)
+            );
+        }
+
+        return null;
+    }
+
+    private record TargetRenderData(List<Optional<EncodedResonatingPattern.Target>> targets, int selected)
+    {
     }
 
     private static void drawFaceQuad(PoseStack poseStack, VertexConsumer vc, Direction face, float eps,
