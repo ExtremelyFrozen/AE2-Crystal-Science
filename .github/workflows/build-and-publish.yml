@@ -3,7 +3,7 @@ name: Build & Publish
 on: [workflow_dispatch]
 
 env:
-  BUILD_JAVA: "21"
+  BUILD_JAVA: "17"
   RUNTIME_JAVA: "17"
   LOADER: "forge"
 
