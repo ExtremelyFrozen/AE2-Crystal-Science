@@ -66,7 +66,13 @@ public class EnderEmitterBlock extends AEBaseEntityBlock<EnderEmitterBlockEntity
             pos = pos.below();
             state = level.getBlockState(pos);
         }
-        super.use(state, level, pos, player, hand, hitResult);
+
+        InteractionResult result = super.use(state, level, pos, player, hand, hitResult);
+        if (result.consumesAction())
+        {
+            return result;
+        }
+
         if (!level.isClientSide() && !player.isShiftKeyDown())
         {
             if (level.getBlockEntity(pos) instanceof EnderEmitterBlockEntity be)
