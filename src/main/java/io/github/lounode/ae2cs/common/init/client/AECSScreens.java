@@ -51,6 +51,8 @@ public class AECSScreens
             MenuScreens.<EnderEmitterMenu, EnderEmitterGUI>register(AECSMenus.ENDER_EMITTER_MENU.get(),
                     (menu, inv, title) -> new EnderEmitterGUI(menu, inv, title,
                             StyleManager.loadStyleDoc("/screens/ender_emitter_menu.json")));
+            MenuScreens.register(AECSMenus.ENDER_EMITTER_FREQUENCY_BAND_MENU.get(), EnderEmitterFrequencyBandGUI::new);
+            MenuScreens.register(AECSMenus.ENDER_EMITTER_FREQUENCY_BAND_LINK_MENU.get(), EnderEmitterFrequencyBandLinkGUI::new);
 
             MenuScreens.<EnderInterfaceMenu, EnderInterfaceGUI>register(AECSMenus.ENDER_INTERFACE_MENU.get(),
                     (menu, inv, title) -> new EnderInterfaceGUI(menu, inv, title,

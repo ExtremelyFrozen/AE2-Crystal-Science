@@ -125,6 +125,11 @@ public class EnderEmitterBlock extends AEBaseEntityBlock<EnderEmitterBlockEntity
     {
         if (!level.isClientSide && state.is(this) && !newState.is(this))
         {
+            BlockPos basePos = state.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.UPPER ? pos.below() : pos;
+            if (level.getBlockEntity(basePos) instanceof EnderEmitterBlockEntity be)
+            {
+                be.cleanConnectionPermanent();
+            }
             removeOtherHalfNoDrops(level, pos, state);
         }
         super.onRemove(state, level, pos, newState, movedByPiston);
