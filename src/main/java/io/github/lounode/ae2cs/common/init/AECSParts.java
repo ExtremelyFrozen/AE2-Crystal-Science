@@ -10,6 +10,7 @@ import appeng.items.parts.PartModelsHelper;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.ids.AECSPartIds;
 import io.github.lounode.ae2cs.api.util.RegistryItem;
+import io.github.lounode.ae2cs.common.item.SimplePatternProviderPartItem;
 import io.github.lounode.ae2cs.common.item.ResonatingPatternProviderPartItem;
 import io.github.lounode.ae2cs.common.me.part.*;
 import net.minecraft.world.item.Item;
@@ -63,10 +64,10 @@ public class AECSParts
             ResonatingPatternProviderPartItem::new
     );
 
-    public static final RegistryItem<PartItem<SimplePatternProviderPart>> SIMPLE_PATTERN_PROVIDER_PART = registerPart(
+    public static final RegistryItem<PartItem<SimplePatternProviderPart>> SIMPLE_PATTERN_PROVIDER_PART = registerCustomPartItem(
             AECSPartIds.SIMPLE_PATTERN_PROVIDER,
             SimplePatternProviderPart.class,
-            SimplePatternProviderPart::new
+            SimplePatternProviderPartItem::new
     );
 
     public static final RegistryItem<PartItem<MeteoritePatternProviderPart>> METEORITE_PATTERN_PROVIDER_PART = registerPart(
