@@ -37,13 +37,9 @@ public final class EnderEmitterDataProvider implements IBlockComponentProvider
             tooltip.add(Component.translatable("jade.ae2cs.ender_emitter.band", emitter.getBandName()));
             tooltip.add(Component.translatable("jade.ae2cs.ender_emitter.band_channels",
                     emitter.getBandUsedChannelsForClient(), emitter.getBandTotalChannelsForClient()));
-            tooltip.add(Component.translatable("jade.ae2cs.ender_emitter.linked_channels", emitter.getUsedChannelsForClient()));
-        }
-        else
-        {
-            tooltip.add(Component.translatable("jade.ae2cs.ender_emitter.linked_channels", emitter.getUsedChannelsForClient()));
         }
 
+        tooltip.add(Component.translatable("jade.ae2cs.ender_emitter.linked_channels", emitter.getUsedChannelsForClient()));
         tooltip.add(Component.translatable("jade.ae2cs.ender_emitter.range",
                 emitter.getLinkDistance(), emitter.getMaxLinkDistanceForClient()));
     }

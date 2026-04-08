@@ -261,6 +261,7 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
         if (level == null) return;
         IGridNode selfNode = getMainNode().getNode();
         if (selfNode == null) return;
+        refreshClientDisplayState(selfNode);
         if (active != selfNode.isActive())
         {
             active = selfNode.isActive();
@@ -380,6 +381,36 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
         if (pendingSize != pendingLinkPositions.size())
         {
             setChanged();
+            markForClientUpdate();
+        }
+    }
+
+    private void refreshClientDisplayState(IGridNode selfNode)
+    {
+        int newUsedChannels = Math.max(0, selfNode.getUsedChannels());
+        int newTotalChannels = Math.max(0, selfNode.getMaxChannels());
+        long newBandUsedChannels = 0;
+        long newBandTotalChannels = 0;
+
+        if (!bandId.isEmpty())
+        {
+            BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
+            if (band != null)
+            {
+                newBandUsedChannels = band.getUsedChannels();
+                newBandTotalChannels = band.getUsableChannels();
+            }
+        }
+
+        if (this.usedChannelsForClient != newUsedChannels
+                || this.totalChannelsForClient != newTotalChannels
+                || this.bandUsedChannelsForClient != newBandUsedChannels
+                || this.bandTotalChannelsForClient != newBandTotalChannels)
+        {
+            this.usedChannelsForClient = newUsedChannels;
+            this.totalChannelsForClient = newTotalChannels;
+            this.bandUsedChannelsForClient = newBandUsedChannels;
+            this.bandTotalChannelsForClient = newBandTotalChannels;
             markForClientUpdate();
         }
     }
