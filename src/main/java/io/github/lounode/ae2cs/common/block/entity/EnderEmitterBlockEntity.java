@@ -30,6 +30,7 @@ import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
 import io.github.lounode.ae2cs.api.util.GlobalChunkPos;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
+import io.github.lounode.ae2cs.common.item.ResonatingMemoryCardHelper;
 import io.github.lounode.ae2cs.util.ChunkHelper;
 import io.github.lounode.ae2cs.util.VecHelper;
 import net.minecraft.core.BlockPos;
@@ -767,16 +768,24 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable net.minecraft.world.entity.player.Player player)
     {
         super.importSettings(mode, input, player);
-        if (mode == SettingsFrom.MEMORY_CARD && input.contains("memory_card_band_info"))
+        if (mode == SettingsFrom.MEMORY_CARD)
         {
-            MemoryCardBandInfo targetLink = MemoryCardBandInfo.readFromNBT(input.getCompound("memory_card_band_info"));
-            if (targetLink == null || targetLink.asSender()) return;
+            if (input.contains("memory_card_link_distance", Tag.TAG_INT))
+            {
+                setLinkDistance(input.getInt("memory_card_link_distance"));
+            }
 
-            BroadcastFrequencyBand band = FrequencyBandManager.getBand(targetLink.bandName());
-            if (band == null || !band.isAllowedMemoryCardCopy()) return;
+            if (input.contains("memory_card_band_info", Tag.TAG_COMPOUND))
+            {
+                MemoryCardBandInfo targetLink = MemoryCardBandInfo.readFromNBT(input.getCompound("memory_card_band_info"));
+                if (targetLink == null || targetLink.asSender()) return;
 
-            cleanConnectionPermanent();
-            connectToBand(targetLink.bandName());
+                BroadcastFrequencyBand band = FrequencyBandManager.getBand(targetLink.bandName());
+                if (band == null || !band.isAllowedMemoryCardCopy()) return;
+
+                cleanConnectionPermanent();
+                connectToBand(targetLink.bandName());
+            }
         }
     }
 
@@ -784,12 +793,17 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     public void exportSettings(SettingsFrom mode, CompoundTag builder, @Nullable net.minecraft.world.entity.player.Player player)
     {
         super.exportSettings(mode, builder, player);
-        if (mode == SettingsFrom.MEMORY_CARD && !bandId.isEmpty())
+        if (mode == SettingsFrom.MEMORY_CARD)
         {
-            BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
-            if (band == null || !band.isAllowedMemoryCardCopy()) return;
+            builder.putInt("memory_card_link_distance", this.linkDistance);
 
-            builder.put("memory_card_band_info", MemoryCardBandInfo.writeToNBT(new MemoryCardBandInfo(bandId, false)));
+            if (!bandId.isEmpty())
+            {
+                BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
+                if (band == null || !band.isAllowedMemoryCardCopy()) return;
+
+                builder.put("memory_card_band_info", MemoryCardBandInfo.writeToNBT(new MemoryCardBandInfo(bandId, false)));
+            }
         }
     }
 
@@ -917,6 +931,15 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
         if (levelAccessor instanceof ServerLevelAccessor sla)
         {
             addPosToRecentEmitter(sla.getLevel(), event.getPos());
+        }
+
+        if (!event.getLevel().isClientSide() && event.getEntity() instanceof net.minecraft.world.entity.player.Player player)
+        {
+            BlockEntity be = event.getLevel().getBlockEntity(event.getPos());
+            if (be != null)
+            {
+                ResonatingMemoryCardHelper.tryApplyToBlockEntity(player, be);
+            }
         }
     }
 

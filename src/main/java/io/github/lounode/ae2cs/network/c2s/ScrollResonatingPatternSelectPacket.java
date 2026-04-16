@@ -1,6 +1,7 @@
 package io.github.lounode.ae2cs.network.c2s;
 
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
+import io.github.lounode.ae2cs.common.item.IScrollCycleItem;
 import io.github.lounode.ae2cs.common.item.IResonatingTargetModeItem;
 import io.github.lounode.ae2cs.common.item.ResonatingPatternItem;
 import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern;
@@ -46,6 +47,12 @@ public record ScrollResonatingPatternSelectPacket(boolean next)
         if (stack.getItem() instanceof IResonatingTargetModeItem selectable)
         {
             selectable.scrollSelectedInputAndToast(sp, stack, this.next());
+            return;
+        }
+
+        if (stack.getItem() instanceof IScrollCycleItem cycleItem)
+        {
+            cycleItem.scrollSelection(sp, stack, this.next());
         }
     }
 

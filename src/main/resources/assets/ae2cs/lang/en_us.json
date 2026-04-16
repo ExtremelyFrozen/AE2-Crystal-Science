@@ -303,6 +303,9 @@
   "ae2cs.item.simple_pattern_provider.target.pos": "Target: (%s, %s, %s)",
   "ae2cs.item.simple_pattern_provider.target.side": "Side: %s",
   "ae2cs.item.simple_pattern_provider.target.side.block": "Block",
+  "item.ae2cs.resonating_memory_card": "Resonating Memory Card",
+  "ae2cs.item.resonating_memory_card.slot": "Slot: %s/%s",
+  "ae2cs.msg.resonating_memory_card.slot": "Selected memory slot %s/%s",
 
   "ae2cs.msg.item.ender_linker.bing_to_emitter": "Bound to this emitter",
   "ae2cs.msg.item.ender_linker.success_to_link": "Successfully linked this device to the bound emitter",

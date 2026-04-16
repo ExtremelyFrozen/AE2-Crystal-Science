@@ -303,6 +303,9 @@
   "ae2cs.item.simple_pattern_provider.target.pos": "目标：(%s, %s, %s)",
   "ae2cs.item.simple_pattern_provider.target.side": "面：%s",
   "ae2cs.item.simple_pattern_provider.target.side.block": "方块",
+  "item.ae2cs.resonating_memory_card": "谐振内存卡",
+  "ae2cs.item.resonating_memory_card.slot": "槽位：%s/%s",
+  "ae2cs.msg.resonating_memory_card.slot": "当前内存槽位 %s/%s",
 
   "ae2cs.msg.item.ender_linker.bing_to_emitter": "已绑定到该发信器",
   "ae2cs.msg.item.ender_linker.success_to_link": "成功将此设备连接到绑定的发信器",

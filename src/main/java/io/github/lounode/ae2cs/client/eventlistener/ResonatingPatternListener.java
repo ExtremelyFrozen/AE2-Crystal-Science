@@ -4,6 +4,7 @@ import appeng.util.InteractionUtil;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
 import io.github.lounode.ae2cs.common.init.AECSPackets;
+import io.github.lounode.ae2cs.common.item.IScrollCycleItem;
 import io.github.lounode.ae2cs.common.item.IResonatingTargetModeItem;
 import io.github.lounode.ae2cs.common.item.ResonatingPatternItem;
 import io.github.lounode.ae2cs.network.c2s.ScrollResonatingPatternSelectPacket;
@@ -28,7 +29,9 @@ public class ResonatingPatternListener
         if (!InteractionUtil.isInAlternateUseMode(player)) return;
 
         ItemStack stack = player.getMainHandItem();
-        if (!(stack.getItem() instanceof ResonatingPatternItem) && !(stack.getItem() instanceof IResonatingTargetModeItem)) return;
+        if (!(stack.getItem() instanceof ResonatingPatternItem)
+                && !(stack.getItem() instanceof IResonatingTargetModeItem)
+                && !(stack.getItem() instanceof IScrollCycleItem)) return;
 
         if (stack.getItem() instanceof ResonatingPatternItem)
         {
