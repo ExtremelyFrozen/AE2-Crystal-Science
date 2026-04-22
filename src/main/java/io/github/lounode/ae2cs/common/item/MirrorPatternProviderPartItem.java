@@ -1,26 +1,26 @@
 package io.github.lounode.ae2cs.common.item;
 
-import net.minecraft.world.InteractionResult;
+import appeng.items.parts.PartItem;
+import io.github.lounode.ae2cs.common.me.part.MirrorPatternProviderPart;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
-public class SimplePatternProviderBlockItem extends BlockItem
+import java.util.List;
+
+public class MirrorPatternProviderPartItem extends PartItem<MirrorPatternProviderPart>
 {
-    public SimplePatternProviderBlockItem(Block block, Properties properties)
+    public MirrorPatternProviderPartItem(Properties properties)
     {
-        super(block, properties);
+        super(properties, MirrorPatternProviderPart.class, MirrorPatternProviderPart::new);
     }
 
     @Override
@@ -48,16 +48,14 @@ public class SimplePatternProviderBlockItem extends BlockItem
         var target = SimplePatternProviderMirrorHelper.getTarget(stack);
         if (target == null)
         {
-            tooltipComponents.add(Component.translatable("ae2cs.item.simple_pattern_provider.mode.normal").withStyle(net.minecraft.ChatFormatting.GRAY));
+            tooltipComponents.add(Component.translatable("ae2cs.item.mirror_pattern_provider.target.unbound").withStyle(net.minecraft.ChatFormatting.GRAY));
+            return;
         }
-        else
-        {
-            tooltipComponents.add(Component.translatable("ae2cs.item.simple_pattern_provider.mode.mirror").withStyle(net.minecraft.ChatFormatting.AQUA));
-            var pos = target.pos().pos();
-            tooltipComponents.add(Component.translatable("ae2cs.item.simple_pattern_provider.target.pos", pos.getX(), pos.getY(), pos.getZ()).withStyle(net.minecraft.ChatFormatting.GRAY));
-            tooltipComponents.add(Component.translatable("ae2cs.item.simple_pattern_provider.target.side",
-                    target.side() == null ? Component.translatable("ae2cs.item.simple_pattern_provider.target.side.block") : Component.literal(target.side().getName()))
-                    .withStyle(net.minecraft.ChatFormatting.GRAY));
-        }
+
+        var pos = target.pos().pos();
+        tooltipComponents.add(Component.translatable("ae2cs.item.mirror_pattern_provider.target.pos", pos.getX(), pos.getY(), pos.getZ()).withStyle(net.minecraft.ChatFormatting.GRAY));
+        tooltipComponents.add(Component.translatable("ae2cs.item.mirror_pattern_provider.target.side",
+                target.side() == null ? Component.translatable("ae2cs.item.mirror_pattern_provider.target.side.block") : Component.literal(target.side().getName()))
+                .withStyle(net.minecraft.ChatFormatting.GRAY));
     }
 }

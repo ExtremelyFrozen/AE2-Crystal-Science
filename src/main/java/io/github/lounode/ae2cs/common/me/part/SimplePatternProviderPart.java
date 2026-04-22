@@ -11,18 +11,14 @@ import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocator;
 import appeng.parts.PartModel;
 import appeng.parts.crafting.PatternProviderPart;
-import appeng.util.SettingsFrom;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 import io.github.lounode.ae2cs.common.init.AECSParts;
-import io.github.lounode.ae2cs.common.me.logic.MirroredSimplePatternProviderHost;
-import io.github.lounode.ae2cs.common.me.logic.MirroredSimplePatternProviderLogic;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 
-public class SimplePatternProviderPart extends PatternProviderPart implements MirroredSimplePatternProviderHost
+public class SimplePatternProviderPart extends PatternProviderPart
 {
     public static final ResourceLocation MODEL_BASE = AE2CrystalScience.makeId(
             "part/simple_pattern_provider/base");
@@ -64,24 +60,12 @@ public class SimplePatternProviderPart extends PatternProviderPart implements Mi
     @Override
     protected PatternProviderLogic createLogic()
     {
-        return new MirroredSimplePatternProviderLogic(getMainNode(), this, 5);
+        return new PatternProviderLogic(getMainNode(), this, 5);
     }
 
     @Override
     public void openMenu(Player player, MenuLocator locator)
     {
-        var targetRef = getMirroringLogic().getMirrorTarget();
-        if (targetRef != null)
-        {
-            MenuLocator targetLocator = targetRef.toMenuLocator(getBlockEntity().getLevel());
-            var mirrorTarget = getMirroringLogic().resolveMirrorTargetHost();
-            if (mirrorTarget != null && targetLocator != null)
-            {
-                mirrorTarget.openMenu(player, targetLocator);
-                return;
-            }
-        }
-
         MenuOpener.open(AECSMenus.SIMPLE_PATTERN_PROVIDER_MENU.get(), player, locator);
     }
 
@@ -101,32 +85,5 @@ public class SimplePatternProviderPart extends PatternProviderPart implements Mi
     public ItemStack getMainMenuIcon()
     {
         return new ItemStack(AECSParts.SIMPLE_PATTERN_PROVIDER_PART.get());
-    }
-
-    @Override
-    public MirroredSimplePatternProviderLogic getMirroringLogic()
-    {
-        return (MirroredSimplePatternProviderLogic) getLogic();
-    }
-
-    @Override
-    public void importSettings(SettingsFrom mode, net.minecraft.nbt.CompoundTag input, @Nullable Player player)
-    {
-        super.importSettings(mode, input, player);
-        if (mode == SettingsFrom.DISMANTLE_ITEM)
-        {
-            getMirroringLogic().readMirrorSettings(input);
-            saveChanges();
-        }
-    }
-
-    @Override
-    public void exportSettings(SettingsFrom mode, net.minecraft.nbt.CompoundTag output)
-    {
-        super.exportSettings(mode, output);
-        if (mode == SettingsFrom.DISMANTLE_ITEM)
-        {
-            getMirroringLogic().writeMirrorSettings(output);
-        }
     }
 }

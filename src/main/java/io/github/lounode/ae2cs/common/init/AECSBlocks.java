@@ -7,7 +7,7 @@ import io.github.lounode.ae2cs.api.ids.AECSBlockIds;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.util.RegistryBlock;
 import io.github.lounode.ae2cs.common.block.*;
-import io.github.lounode.ae2cs.common.item.SimplePatternProviderBlockItem;
+import io.github.lounode.ae2cs.common.item.MirrorPatternProviderBlockItem;
 import io.github.lounode.ae2cs.common.item.ResonatingPatternProviderBlockItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -190,8 +190,14 @@ public class AECSBlocks
      * 初级样板供应器
      */
     public static final RegistryBlock<PatternProviderBlock> SIMPLE_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.SIMPLE_PATTERN_PROVIDER,
-            PatternProviderBlock::new,
-            block -> new SimplePatternProviderBlockItem(block.get(), new Item.Properties()));
+            PatternProviderBlock::new);
+
+    /**
+     * 镜像样板供应器
+     */
+    public static final RegistryBlock<MirrorPatternProviderBlock> MIRROR_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.MIRROR_PATTERN_PROVIDER,
+            MirrorPatternProviderBlock::new,
+            block -> new MirrorPatternProviderBlockItem(block.get(), new Item.Properties()));
 
     /**
      * 陨石样板供应器

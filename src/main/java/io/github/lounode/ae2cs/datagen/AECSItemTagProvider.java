@@ -183,6 +183,7 @@ public class AECSItemTagProvider extends ItemTagsProvider
                 .add(AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK.get().asItem())
                 .add(AECSBlocks.EX_RESONATING_PATTERN_PROVIDER_BLOCK.get().asItem())
                 .add(AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK.get().asItem())
+                .add(AECSBlocks.MIRROR_PATTERN_PROVIDER_BLOCK.get().asItem())
                 .add(AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK.get().asItem())
                 .add(AECSBlocks.QUARTZ_OSCILLATOR_CLOCK_BLOCK.get().asItem());
         tag(AECSTags.Items.AECS_PART)
@@ -193,6 +194,7 @@ public class AECSItemTagProvider extends ItemTagsProvider
                 .add(AECSParts.RESONATING_PATTERN_PROVIDER_PART.get())
                 .add(AECSParts.EX_RESONATING_PATTERN_PROVIDER_PART.get())
                 .add(AECSParts.SIMPLE_PATTERN_PROVIDER_PART.get())
+                .add(AECSParts.MIRROR_PATTERN_PROVIDER_PART.get())
                 .add(AECSParts.METEORITE_PATTERN_PROVIDER_PART.get())
                 .add(AECSParts.QUARTZ_OSCILLATOR_CLOCK_PART.get());
 

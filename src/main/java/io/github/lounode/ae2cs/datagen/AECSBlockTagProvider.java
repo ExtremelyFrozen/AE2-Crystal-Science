@@ -58,6 +58,7 @@ public class AECSBlockTagProvider extends BlockTagsProvider
                 .add(AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK.get())
                 .add(AECSBlocks.EX_RESONATING_PATTERN_PROVIDER_BLOCK.get())
                 .add(AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK.get())
+                .add(AECSBlocks.MIRROR_PATTERN_PROVIDER_BLOCK.get())
                 .add(AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK.get())
                 .add(AECSBlocks.QUARTZ_OSCILLATOR_CLOCK_BLOCK.get());
 

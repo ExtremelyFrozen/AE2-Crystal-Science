@@ -1,11 +1,11 @@
 package io.github.lounode.ae2cs.integration.jade;
 
 import appeng.block.networking.CableBusBlock;
+import io.github.lounode.ae2cs.common.block.MirrorPatternProviderBlock;
 import io.github.lounode.ae2cs.common.block.EnderBroadcasterBlock;
 import io.github.lounode.ae2cs.common.block.EnderEmitterBlock;
-import io.github.lounode.ae2cs.common.block.entity.SimplePatternProviderBlockEntity;
+import io.github.lounode.ae2cs.common.block.entity.MirrorPatternProviderBlockEntity;
 import io.github.lounode.ae2cs.common.block.entity.EnderBroadcasterBlockEntity;
-import appeng.block.crafting.PatternProviderBlock;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import snownee.jade.api.IWailaClientRegistration;
 import snownee.jade.api.IWailaCommonRegistration;
@@ -19,8 +19,8 @@ public class AECSJadePlugin implements IWailaPlugin
     public void register(IWailaCommonRegistration registration)
     {
         registration.registerBlockDataProvider(EnderBroadcasterDataProvider.INSTANCE, EnderBroadcasterBlockEntity.class);
-        registration.registerBlockDataProvider(SimplePatternProviderDataProvider.INSTANCE, SimplePatternProviderBlockEntity.class);
-        registration.registerBlockDataProvider(SimplePatternProviderDataProvider.INSTANCE, CableBusBlockEntity.class);
+        registration.registerBlockDataProvider(MirrorPatternProviderDataProvider.INSTANCE, MirrorPatternProviderBlockEntity.class);
+        registration.registerBlockDataProvider(MirrorPatternProviderDataProvider.INSTANCE, CableBusBlockEntity.class);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class AECSJadePlugin implements IWailaPlugin
     {
         registration.registerBlockComponent(EnderEmitterDataProvider.INSTANCE, EnderEmitterBlock.class);
         registration.registerBlockComponent(EnderBroadcasterDataProvider.INSTANCE, EnderBroadcasterBlock.class);
-        registration.registerBlockComponent(SimplePatternProviderDataProvider.INSTANCE, PatternProviderBlock.class);
-        registration.registerBlockComponent(SimplePatternProviderDataProvider.INSTANCE, CableBusBlock.class);
+        registration.registerBlockComponent(MirrorPatternProviderDataProvider.INSTANCE, MirrorPatternProviderBlock.class);
+        registration.registerBlockComponent(MirrorPatternProviderDataProvider.INSTANCE, CableBusBlock.class);
     }
 }

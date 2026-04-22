@@ -3,7 +3,7 @@ package io.github.lounode.ae2cs.common.item;
 import appeng.api.parts.IPartHost;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import io.github.lounode.ae2cs.common.me.logic.MirroredPatternProviderTarget;
-import io.github.lounode.ae2cs.common.me.logic.MirroredSimplePatternProviderHost;
+import io.github.lounode.ae2cs.common.me.logic.MirrorPatternProviderHost;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
@@ -34,11 +34,11 @@ public final class SimplePatternProviderMirrorHelper
             return InteractionResult.PASS;
         }
 
-        if (targetHost instanceof MirroredSimplePatternProviderHost mirrored && mirrored.getMirroringLogic().isMirroring())
+        if (targetHost instanceof MirrorPatternProviderHost)
         {
             if (!context.getLevel().isClientSide())
             {
-                player.displayClientMessage(Component.translatable("ae2cs.msg.simple_pattern_provider.mirror.invalid_target").withStyle(ChatFormatting.RED), true);
+                player.displayClientMessage(Component.translatable("ae2cs.msg.mirror_pattern_provider.invalid_target").withStyle(ChatFormatting.RED), true);
             }
             return InteractionResult.CONSUME;
         }
@@ -65,7 +65,7 @@ public final class SimplePatternProviderMirrorHelper
         {
             var tag = stack.getOrCreateTag();
             MirroredPatternProviderTarget.write(target, tag);
-            player.displayClientMessage(Component.translatable("ae2cs.msg.simple_pattern_provider.mirror.bound",
+            player.displayClientMessage(Component.translatable("ae2cs.msg.mirror_pattern_provider.bound",
                     context.getClickedPos().getX(), context.getClickedPos().getY(), context.getClickedPos().getZ()).withStyle(ChatFormatting.GRAY), true);
         }
         return InteractionResult.CONSUME;
@@ -81,7 +81,7 @@ public final class SimplePatternProviderMirrorHelper
         if (!player.level().isClientSide())
         {
             MirroredPatternProviderTarget.write(null, stack.getOrCreateTag());
-            player.displayClientMessage(Component.translatable("ae2cs.msg.simple_pattern_provider.mirror.cleared").withStyle(ChatFormatting.GRAY), true);
+            player.displayClientMessage(Component.translatable("ae2cs.msg.mirror_pattern_provider.cleared").withStyle(ChatFormatting.GRAY), true);
         }
         return InteractionResult.sidedSuccess(player.level().isClientSide());
     }
