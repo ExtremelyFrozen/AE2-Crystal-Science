@@ -37,6 +37,10 @@ public class AECSItemModelProvider extends ItemModelProvider
         {
             basicItem(item.get());
         }
+        for (DeferredItem<? extends Item> item : AECSItems.getTools())
+        {
+            handheldItem(item.get());
+        }
         for (DeferredItem<? extends Item> item : AECSItems.getOthers())
         {
             basicItem(item.get());
