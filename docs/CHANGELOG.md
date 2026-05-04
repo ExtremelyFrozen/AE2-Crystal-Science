@@ -1,1 +1,1 @@
-* Fix tool using postures
+* Add jr_jp language(by code-onigiri)
