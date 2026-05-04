@@ -28,7 +28,7 @@ public final class SimplePatternProviderMirrorHelper
         Player player = context.getPlayer();
         if (player == null || player.isShiftKeyDown()) return InteractionResult.PASS;
 
-        PatternProviderLogicHost targetHost = resolveClickedTargetHost(context);
+        PatternProviderLogicHost targetHost = PatternProviderBindingHelper.resolveClickedPatternProvider(context);
         if (targetHost == null)
         {
             return InteractionResult.PASS;
@@ -91,17 +91,4 @@ public final class SimplePatternProviderMirrorHelper
         return MirroredPatternProviderTarget.read(stack.getOrCreateTag());
     }
 
-    private static PatternProviderLogicHost resolveClickedTargetHost(UseOnContext context)
-    {
-        var be = context.getLevel().getBlockEntity(context.getClickedPos());
-        if (be instanceof IPartHost partHost)
-        {
-            var selected = partHost.selectPartWorld(context.getClickLocation());
-            if (selected.part instanceof PatternProviderLogicHost host)
-            {
-                return host;
-            }
-        }
-        return be instanceof PatternProviderLogicHost host ? host : null;
-    }
 }

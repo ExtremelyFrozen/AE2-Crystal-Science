@@ -114,6 +114,8 @@ public class AECSItems
 
     public static final RegistryItem<Item> crystalGrowthCard = registerOtherItem(AECSItemIds.CRYSTAL_GROWTH_CARD, () -> Upgrades.createUpgradeCardItem(defaultBuilder()));
     public static final RegistryItem<EnderLinkerItem> enderLink = registerOtherItem(AECSItemIds.ENDER_LINKER, () -> new EnderLinkerItem(defaultBuilder()));
+    public static final RegistryItem<ResonatingLinkerItem> RESONATING_LINKER = registerOtherItem(AECSItemIds.RESONATING_LINKER, () -> new ResonatingLinkerItem(defaultBuilder()));
+    public static final RegistryItem<MirrorLinkerItem> MIRROR_LINKER = registerOtherItem(AECSItemIds.MIRROR_LINKER, () -> new MirrorLinkerItem(defaultBuilder()));
     public static final RegistryItem<ResonatingMemoryCardItem> RESONATING_MEMORY_CARD = registerOtherItem(AECSItemIds.RESONATING_MEMORY_CARD, () -> new ResonatingMemoryCardItem(defaultBuilder()));
     public static final RegistryItem<ResonatingPatternItem> RESONATING_PATTERN = registerOtherItem(AECSItemIds.RESONATING_PATTERN, () -> new ResonatingPatternItem(defaultBuilder()));
     public static final RegistryItem<ResonatingPatternConverterItem> RESONATING_PATTERN_CONVERTER = registerOtherItem(AECSItemIds.RESONATING_PATTERN_CONVERTER, () -> new ResonatingPatternConverterItem(defaultBuilder().stacksTo(1)));

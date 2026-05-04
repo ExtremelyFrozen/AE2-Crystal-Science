@@ -159,6 +159,8 @@ AECS provides multi-tier extensions to AE's Pattern Provider ecosystem:
 
 <Row gap="16">
   <ItemImage id="ae2cs:ender_linker" scale="2" />
+  <ItemImage id="ae2cs:resonating_linker" scale="2" />
+  <ItemImage id="ae2cs:mirror_linker" scale="2" />
   <ItemImage id="ae2cs:resonating_memory_card" scale="2" />
   <ItemImage id="ae2cs:ender_crystal_pickaxe" scale="2" />
   <ItemImage id="ae2cs:meteor_crystal_pickaxe" scale="2" />
@@ -169,6 +171,12 @@ AECS also provides multiple network and utility tools.
 
 - **<ItemLink id="ae2cs:ender_linker" />**  
   Used to manually manage Ender Emitter wireless links.
+
+- **<ItemLink id="ae2cs:resonating_linker" />**  
+  Stores one full set of resonating routing data and writes it into Resonating Pattern Providers.
+
+- **<ItemLink id="ae2cs:mirror_linker" />**  
+  Stores a mirror target and applies it to one or many connected Mirror Pattern Providers.
 
 - **<ItemLink id="ae2cs:resonating_memory_card" />**  
   A nine-slot memory card that can automatically apply saved configurations to newly placed AE devices.

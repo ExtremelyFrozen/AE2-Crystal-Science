@@ -159,6 +159,8 @@ AECS 为 AE 的样板供应体系提供了多层级扩展：
 
 <Row gap="16">
   <ItemImage id="ae2cs:ender_linker" scale="2" />
+  <ItemImage id="ae2cs:resonating_linker" scale="2" />
+  <ItemImage id="ae2cs:mirror_linker" scale="2" />
   <ItemImage id="ae2cs:resonating_memory_card" scale="2" />
   <ItemImage id="ae2cs:ender_crystal_pickaxe" scale="2" />
   <ItemImage id="ae2cs:meteor_crystal_pickaxe" scale="2" />
@@ -169,6 +171,12 @@ AECS 提供多套网络与交互工具。
 
 - **<ItemLink id="ae2cs:ender_linker" />**  
   用于手动管理末影发信器的无线连接。
+
+- **<ItemLink id="ae2cs:resonating_linker" />**  
+  用于保存一整套谐振发配逻辑，并将其写入谐振样板供应器。
+
+- **<ItemLink id="ae2cs:mirror_linker" />**  
+  用于保存镜像目标，并将其写入一个或多个相互邻接的镜像样板供应器。
 
 - **<ItemLink id="ae2cs:resonating_memory_card" />**  
   带有 9 个独立槽位的内存卡，可自动将配置应用到新放置的 AE 设备。

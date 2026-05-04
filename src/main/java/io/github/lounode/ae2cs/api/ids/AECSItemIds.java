@@ -55,6 +55,8 @@ public class AECSItemIds
 
     public static final String CRYSTAL_GROWTH_CARD = "crystal_growth_card";
     public static final String ENDER_LINKER = "ender_linker";
+    public static final String RESONATING_LINKER = "resonating_linker";
+    public static final String MIRROR_LINKER = "mirror_linker";
     public static final String RESONATING_MEMORY_CARD = "resonating_memory_card";
     public static final String RESONATING_PATTERN = "resonating_pattern";
     public static final String RESONATING_PATTERN_CONVERTER = "resonating_pattern_converter";
