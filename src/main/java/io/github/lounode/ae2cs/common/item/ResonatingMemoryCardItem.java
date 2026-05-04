@@ -93,6 +93,15 @@ public class ResonatingMemoryCardItem extends MemoryCardItem implements IScrollC
         return name.isEmpty() ? GuiText.Blank.getTranslationKey() : name;
     }
 
+    public static Component getSelectedSlotName(ItemStack stack)
+    {
+        if (!(stack.getItem() instanceof ResonatingMemoryCardItem card))
+        {
+            return Component.translatable(GuiText.Blank.getTranslationKey());
+        }
+        return Component.translatable(card.getSettingsName(stack));
+    }
+
     @Override
     public CompoundTag getData(ItemStack is)
     {
@@ -139,6 +148,8 @@ public class ResonatingMemoryCardItem extends MemoryCardItem implements IScrollC
         super.appendHoverText(stack, level, lines, advancedTooltips);
         lines.add(Component.translatable("ae2cs.item.resonating_memory_card.slot", getSelectedSlot(stack) + 1, SLOT_COUNT)
                 .withStyle(ChatFormatting.GRAY));
+        lines.add(Component.translatable("ae2cs.item.resonating_memory_card.target", getSelectedSlotName(stack))
+                .withStyle(ChatFormatting.GRAY));
     }
 
     @Override
@@ -147,7 +158,7 @@ public class ResonatingMemoryCardItem extends MemoryCardItem implements IScrollC
         int current = getSelectedSlot(stack);
         int target = Math.floorMod(current + (next ? 1 : -1), SLOT_COUNT);
         stack.getOrCreateTag().putInt(TAG_SELECTED_SLOT, target);
-        player.displayClientMessage(Component.translatable("ae2cs.msg.resonating_memory_card.slot", target + 1, SLOT_COUNT)
+        player.displayClientMessage(Component.translatable("ae2cs.msg.resonating_memory_card.slot", target + 1, SLOT_COUNT, getSelectedSlotName(stack))
                 .withStyle(ChatFormatting.GRAY), true);
     }
 

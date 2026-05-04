@@ -111,6 +111,7 @@ AECS 的多数系统围绕 **高纯水晶（Purified Crystal）** 构建。
 
 <Row gap="16">
   <BlockImage id="ae2cs:simple_pattern_provider" scale="2" />
+  <BlockImage id="ae2cs:mirror_pattern_provider" scale="2" />
   <BlockImage id="ae2cs:meteorite_pattern_provider" scale="2" />
   <BlockImage id="ae2cs:resonating_pattern_provider" scale="2" />
 </Row>
@@ -119,6 +120,9 @@ AECS 为 AE 的样板供应体系提供了多层级扩展：
 
 - **<ItemLink id="ae2cs:simple_pattern_provider" />**  
   低成本样板供应器，适用于早期自动化。
+
+- **<ItemLink id="ae2cs:mirror_pattern_provider" />**  
+  镜像其他样板供应器样板列表的专用设备，适用于复用现有配方布局。
 
 - **<ItemLink id="ae2cs:meteorite_pattern_provider" />**  
   内置高速合成能力的样板供应器，可在不依赖分子装配室的情况下完成合成。
@@ -154,12 +158,23 @@ AECS 为 AE 的样板供应体系提供了多层级扩展：
 ## 工具与玩家交互
 
 <Row gap="16">
+  <ItemImage id="ae2cs:ender_linker" scale="2" />
+  <ItemImage id="ae2cs:resonating_memory_card" scale="2" />
   <ItemImage id="ae2cs:ender_crystal_pickaxe" scale="2" />
   <ItemImage id="ae2cs:meteor_crystal_pickaxe" scale="2" />
   <ItemImage id="ae2cs:resonating_crystal_pickaxe" scale="2" />
 </Row>
 
-AECS 提供多套基于高纯水晶的工具，水晶工具具备掉落物自动传输进ME网络的功能。
+AECS 提供多套网络与交互工具。
+
+- **<ItemLink id="ae2cs:ender_linker" />**  
+  用于手动管理末影发信器的无线连接。
+
+- **<ItemLink id="ae2cs:resonating_memory_card" />**  
+  带有 9 个独立槽位的内存卡，可自动将配置应用到新放置的 AE 设备。
+
+- 水晶工具具备掉落物自动传输进 ME 网络的功能。
+
 
 ---
 

@@ -5,6 +5,7 @@ import appeng.api.parts.IPartHost;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.util.SettingsFrom;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -48,6 +49,10 @@ public final class ResonatingMemoryCardHelper
         }
 
         aeBe.importSettings(SettingsFrom.MEMORY_CARD, data, player);
+        player.displayClientMessage(Component.translatable("ae2cs.msg.resonating_memory_card.auto_apply",
+                ResonatingMemoryCardItem.getSelectedSlot(card) + 1,
+                ResonatingMemoryCardItem.SLOT_COUNT,
+                ResonatingMemoryCardItem.getSelectedSlotName(card)).withStyle(net.minecraft.ChatFormatting.GRAY), true);
     }
 
     public static void tryApplyToPart(Player player, IPart part)
@@ -65,5 +70,9 @@ public final class ResonatingMemoryCardHelper
         }
 
         part.importSettings(SettingsFrom.MEMORY_CARD, data, player);
+        player.displayClientMessage(Component.translatable("ae2cs.msg.resonating_memory_card.auto_apply",
+                ResonatingMemoryCardItem.getSelectedSlot(card) + 1,
+                ResonatingMemoryCardItem.SLOT_COUNT,
+                ResonatingMemoryCardItem.getSelectedSlotName(card)).withStyle(net.minecraft.ChatFormatting.GRAY), true);
     }
 }

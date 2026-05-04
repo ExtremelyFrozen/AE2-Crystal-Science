@@ -65,7 +65,7 @@ public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlo
         if (level == null) return;
 
         // link status：必须放在 orientation 之外，否则线框/光束会被旋转
-        if (be.isShowLinkStatus())
+        if (shouldRenderLinkStatus(be))
         {
             renderLinkStatus(be, partialTick, poseStack, buffer);
         }
@@ -118,7 +118,7 @@ public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlo
     public boolean shouldRenderOffScreen(@NotNull EnderEmitterBlockEntity be)
     {
         // link status 打开时，允许离屏渲染（否则 BER 根本不会被调用）
-        return be.isShowLinkStatus();
+        return shouldRenderLinkStatus(be);
     }
 
     @Override
@@ -208,6 +208,11 @@ public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlo
         {
             poseStack.popPose();
         }
+    }
+
+    private static boolean shouldRenderLinkStatus(EnderEmitterBlockEntity be)
+    {
+        return be.shouldRenderLinkStatusForClient();
     }
 
     /**

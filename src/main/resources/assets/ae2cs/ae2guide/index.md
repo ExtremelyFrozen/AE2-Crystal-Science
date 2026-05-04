@@ -111,6 +111,7 @@ The **<ItemLink id="ae2cs:crystal_vibration_chamber" />** converts crystal energ
 
 <Row gap="16">
   <BlockImage id="ae2cs:simple_pattern_provider" scale="2" />
+  <BlockImage id="ae2cs:mirror_pattern_provider" scale="2" />
   <BlockImage id="ae2cs:meteorite_pattern_provider" scale="2" />
   <BlockImage id="ae2cs:resonating_pattern_provider" scale="2" />
 </Row>
@@ -119,6 +120,9 @@ AECS provides multi-tier extensions to AE's Pattern Provider ecosystem:
 
 - **<ItemLink id="ae2cs:simple_pattern_provider" />**  
   A low-cost Pattern Provider suitable for early-game automation.
+
+- **<ItemLink id="ae2cs:mirror_pattern_provider" />**  
+  A dedicated provider that mirrors another provider's pattern list while still executing crafts locally.
 
 - **<ItemLink id="ae2cs:meteorite_pattern_provider" />**  
   A Pattern Provider with built-in high-speed crafting, capable of crafting without relying on Molecular Assemblers.
@@ -154,12 +158,23 @@ AECS provides multi-tier extensions to AE's Pattern Provider ecosystem:
 ## Tools and Player Interaction
 
 <Row gap="16">
+  <ItemImage id="ae2cs:ender_linker" scale="2" />
+  <ItemImage id="ae2cs:resonating_memory_card" scale="2" />
   <ItemImage id="ae2cs:ender_crystal_pickaxe" scale="2" />
   <ItemImage id="ae2cs:meteor_crystal_pickaxe" scale="2" />
   <ItemImage id="ae2cs:resonating_crystal_pickaxe" scale="2" />
 </Row>
 
-AECS provides multiple tool sets based on Purified Crystals. Crystal tools can automatically transfer drops into the ME network.
+AECS also provides multiple network and utility tools.
+
+- **<ItemLink id="ae2cs:ender_linker" />**  
+  Used to manually manage Ender Emitter wireless links.
+
+- **<ItemLink id="ae2cs:resonating_memory_card" />**  
+  A nine-slot memory card that can automatically apply saved configurations to newly placed AE devices.
+
+- Crystal tools can automatically transfer drops into the ME network.
+
 
 ---
 

@@ -53,11 +53,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.DistExecutor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -213,10 +215,21 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
         return this.linkedPositions.isEmpty() ? List.of() : List.copyOf(this.linkedPositions);
     }
 
+    public boolean shouldRenderLinkStatusForClient()
+    {
+        if (isShowLinkStatus())
+        {
+            return true;
+        }
+
+        return DistExecutor.unsafeCallWhenOn(Dist.CLIENT,
+                () -> () -> io.github.lounode.ae2cs.common.item.EnderLinkerItem.isHoldingLinker(net.minecraft.client.Minecraft.getInstance().player));
+    }
+
     @Override
     public boolean enableCustomRenderBounding()
     {
-        return isShowLinkStatus();
+        return shouldRenderLinkStatusForClient();
     }
 
     @Override
