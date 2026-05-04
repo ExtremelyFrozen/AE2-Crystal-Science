@@ -76,10 +76,10 @@ public class AECSCompatAFRecipeProvider extends AECSRecipeProvider
                 .require(AEItems.SILICON_PRINT, 32)
                 .save(compatOut);
 
-        CircuitEtcherRecipeBuilder.etching(AFItemAndBlock.ENERGY_PROCESSOR, 9, 14400)
-                .require(AFItemAndBlock.CHARGED_REDSTONE, 9)
-                .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 1)
-                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 1)
+        CircuitEtcherRecipeBuilder.etching(AFItemAndBlock.ENERGY_PROCESSOR, 36, 14400)
+                .require(AFItemAndBlock.CHARGED_REDSTONE, 36)
+                .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 4)
+                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 4)
                 .save(compatOut);
     }
 }

@@ -53,22 +53,22 @@ public class AECSCompatOCRecipeProvider extends AECSRecipeProvider
                 .unlockedBy(getHasName(OCBlocks.ENDER_INGOT_BLOCK.get()), has(OCBlocks.ENDER_INGOT_BLOCK.get()))
                 .save(compatOut, getCrafterPath(AECSItems.ENDER_BLANK_PRINT_PRESS, true));
 
-        CircuitEtcherRecipeBuilder.etching(OCItems.OMNI_LINK_PROCESSOR.get(), 9, 14400)
-                .require(OCBlocks.ENDER_INGOT_BLOCK.get(), 1)
-                .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 1)
-                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 1)
+        CircuitEtcherRecipeBuilder.etching(OCItems.OMNI_LINK_PROCESSOR.get(), 36, 14400)
+                .require(OCBlocks.ENDER_INGOT_BLOCK.get(), 4)
+                .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 4)
+                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 4)
                 .save(compatOut);
 
-        CircuitEtcherRecipeBuilder.etching(OCItems.COMPLEX_LINK_PROCESSOR.get(), 9, 14400)
-                .require(OCBlocks.NETHERITE_SCRAP_BLOCK.get(), 1)
-                .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 1)
-                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 1)
+        CircuitEtcherRecipeBuilder.etching(OCItems.COMPLEX_LINK_PROCESSOR.get(), 36, 14400)
+                .require(OCBlocks.NETHERITE_SCRAP_BLOCK.get(), 4)
+                .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 4)
+                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 4)
                 .save(compatOut);
 
-        CircuitEtcherRecipeBuilder.etching(OCItems.MULTIDIMENSIONAL_EXPANSION_PROCESSOR.get(), 9, 14400)
-                .require(OCBlocks.SINGULARITY_BLOCK.get(), 1)
-                .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 1)
-                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 1)
+        CircuitEtcherRecipeBuilder.etching(OCItems.MULTIDIMENSIONAL_EXPANSION_PROCESSOR.get(), 36, 14400)
+                .require(OCBlocks.SINGULARITY_BLOCK.get(), 4)
+                .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 4)
+                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 4)
                 .save(compatOut);
 
         CrystalAggregatorRecipeBuilder.aggregating(OCItems.OMNI_LINK_PROCESSOR.get(), 32, 51200)

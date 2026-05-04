@@ -76,10 +76,10 @@ public class AECSCompatAAERecipeProvider extends AECSRecipeProvider
                 .require(AEItems.SILICON_PRINT, 32)
                 .save(compatOut);
 
-        CircuitEtcherRecipeBuilder.etching(AAEItems.QUANTUM_PROCESSOR, 9, 14400)
-                .require(AAEConventionTags.QUANTUM_ALLOY_STORAGE_BLOCK_ITEM, 1)
-                .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 1)
-                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 1)
+        CircuitEtcherRecipeBuilder.etching(AAEItems.QUANTUM_PROCESSOR, 36, 14400)
+                .require(AAEConventionTags.QUANTUM_ALLOY_STORAGE_BLOCK_ITEM, 4)
+                .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 4)
+                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 4)
                 .save(compatOut);
     }
 

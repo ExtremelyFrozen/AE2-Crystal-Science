@@ -39,10 +39,10 @@ public class AECSCompatMegaCellRecipeProvider extends AECSRecipeProvider
 
         stonecutterResultFromItem(compatOut, RecipeCategory.MISC, MEGAItems.ACCUMULATION_PROCESSOR_PRESS, AECSItems.BLANK_PRINT_PRESS);
 
-        CircuitEtcherRecipeBuilder.etching(MEGAItems.ACCUMULATION_PROCESSOR, 9, 14400)
-                .require(AECSTags.Items.STORAGE_BLOCK_SKY_STEEL, 1)
-                .require(AEBlocks.FLUIX_BLOCK, 1)
-                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 1)
+        CircuitEtcherRecipeBuilder.etching(MEGAItems.ACCUMULATION_PROCESSOR, 36, 14400)
+                .require(AECSTags.Items.STORAGE_BLOCK_SKY_STEEL, 4)
+                .require(AEBlocks.FLUIX_BLOCK, 4)
+                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 4)
                 .save(compatOut);
 
         CrystalAggregatorRecipeBuilder.aggregating(MEGAItems.ACCUMULATION_PROCESSOR, 32, 51200)
