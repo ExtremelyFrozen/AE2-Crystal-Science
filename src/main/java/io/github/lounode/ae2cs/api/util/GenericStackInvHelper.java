@@ -16,6 +16,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.IdentityHashMap;
@@ -47,14 +48,14 @@ public class GenericStackInvHelper
         MEStorage storage = null;
         if (be != null)
         {
-            storage = be.getCapability(Capabilities.STORAGE, side).resolve().orElse(null);
+            storage = safeResolve(be.getCapability(Capabilities.STORAGE, side));
         }
         else
         {
             BlockEntity targetBE = level.getBlockEntity(pos);
             if (targetBE != null)
             {
-                storage = targetBE.getCapability(Capabilities.STORAGE, side).resolve().orElse(null);
+                storage = safeResolve(targetBE.getCapability(Capabilities.STORAGE, side));
             }
         }
         if (storage != null)
@@ -97,15 +98,28 @@ public class GenericStackInvHelper
     {
         if (be != null)
         {
-            return be.getCapability(Capabilities.GENERIC_INTERNAL_INV, side).resolve().orElse(null);
+            return safeResolve(be.getCapability(Capabilities.GENERIC_INTERNAL_INV, side));
         }
         else
         {
             BlockEntity targetBE = level.getBlockEntity(pos);
             if (targetBE != null)
             {
-                return targetBE.getCapability(Capabilities.GENERIC_INTERNAL_INV, side).resolve().orElse(null);
+                return safeResolve(targetBE.getCapability(Capabilities.GENERIC_INTERNAL_INV, side));
             }
+            return null;
+        }
+    }
+
+    @Nullable
+    private static <T> T safeResolve(LazyOptional<T> capability)
+    {
+        try
+        {
+            return capability.resolve().orElse(null);
+        }
+        catch (IllegalStateException ignored)
+        {
             return null;
         }
     }
