@@ -1,1 +1,1 @@
-* Add jr_jp language(by code-onigiri)
+* Add jr_jp GuideME(by code-onigiri)
