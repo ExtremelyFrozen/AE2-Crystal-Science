@@ -10,6 +10,7 @@ public class AECSBlockIds
     public static final String QUANTUM_CRYSTAL_BLOCK = "quantum_crystal_block";
     public static final String ROSE_QUARTZ_BLOCK = "rose_quartz_block";
     public static final String IRRADIATED_CRYSTAL_BLOCK = "irradiated_crystal_block";
+    public static final String LINK_CRYSTAL_BLOCK = "link_crystal_block";
     public static final String SILICON_BLOCK = "silicon_block";
 
     // 矿石

@@ -50,6 +50,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -76,6 +77,8 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
     private List<java.util.Optional<EncodedResonatingPattern.Target>> defaultInputTargets = ResonatingProviderDefaults.emptyTargets();
     private int defaultSelectedInput = 0;
     private boolean renderMarkedFacesInClient = false;
+    @Nullable
+    private Set<AEKey> cachedPullableOutputs;
 
     public ResonatingPatternProviderLogic(IManagedGridNode mainNode, PatternProviderLogicHost host)
     {
@@ -168,6 +171,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
     public void readFromNBT(CompoundTag tag)
     {
         super.readFromNBT(tag);
+        invalidatePullableOutputsCache();
 
         this.upgrades.readFromNBT(tag, "upgrades");
 
@@ -488,6 +492,8 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
         if (!mainNode.isActive()) return false;
 
         var returnInv = getReturnInv();
+        var pullableOutputs = getPullableOutputs();
+        if (pullableOutputs.isEmpty()) return false;
 
         var sides = getActiveSidesFiltered();
         if (sides.isEmpty()) return false;
@@ -511,6 +517,8 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
                 if (scanned++ >= maxKeysPerTick) return false;
 
                 var key = stack.getKey();
+                if (key == null || !pullableOutputs.contains(key)) continue;
+
                 long available = stack.getLongValue();
                 if (available <= 0) continue;
 
@@ -533,6 +541,40 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
             }
         }
         return false;
+    }
+
+    private Set<AEKey> getPullableOutputs()
+    {
+        if (cachedPullableOutputs != null)
+        {
+            return cachedPullableOutputs;
+        }
+
+        Set<AEKey> outputs = new HashSet<>();
+        for (IPatternDetails patternDetails : getAvailablePatterns())
+        {
+            for (GenericStack output : patternDetails.getOutputs())
+            {
+                if (output != null && output.what() != null)
+                {
+                    outputs.add(output.what());
+                }
+            }
+        }
+        cachedPullableOutputs = outputs;
+        return outputs;
+    }
+
+    @Override
+    public void updatePatterns()
+    {
+        super.updatePatterns();
+        invalidatePullableOutputsCache();
+    }
+
+    private void invalidatePullableOutputsCache()
+    {
+        cachedPullableOutputs = null;
     }
 
 

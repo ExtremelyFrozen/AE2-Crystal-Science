@@ -35,7 +35,8 @@ public class AECSBlockTagProvider extends BlockTagsProvider
                 .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_REDSTONE_CRYSTAL)
                 .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_QUANTUM_CRYSTAL)
                 .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_ROSE_QUARTZ)
-                .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL);
+                .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL)
+                .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_LINK_CRYSTAL);
 
         // 非接口机器
         tag(AECSTags.Blocks.AECS_MACHINE)
@@ -85,6 +86,8 @@ public class AECSBlockTagProvider extends BlockTagsProvider
                 .add(AECSBlocks.PURE_ROSE_QUARTZ_BLOCK.get());
         tag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL)
                 .add(AECSBlocks.IRRADIATED_CRYSTAL_BLOCK.get());
+        tag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_LINK_CRYSTAL)
+                .add(AECSBlocks.PURE_LINK_CRYSTAL_BLOCK.get());
 
         // 矿
         tag(Tags.Blocks.ORES)

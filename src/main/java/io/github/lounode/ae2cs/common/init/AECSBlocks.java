@@ -56,6 +56,7 @@ public class AECSBlocks
     public static final RegistryBlock<Block> PURE_QUANTUM_CRYSTAL_BLOCK = registerCrystalBlock(AECSBlockIds.QUANTUM_CRYSTAL_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
     public static final RegistryBlock<Block> PURE_ROSE_QUARTZ_BLOCK = registerCrystalBlock(AECSBlockIds.ROSE_QUARTZ_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
     public static final RegistryBlock<Block> IRRADIATED_CRYSTAL_BLOCK = registerCrystalBlock(AECSBlockIds.IRRADIATED_CRYSTAL_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
+    public static final RegistryBlock<Block> PURE_LINK_CRYSTAL_BLOCK = registerCrystalBlock(AECSBlockIds.LINK_CRYSTAL_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
 
     /**
      * 硅块

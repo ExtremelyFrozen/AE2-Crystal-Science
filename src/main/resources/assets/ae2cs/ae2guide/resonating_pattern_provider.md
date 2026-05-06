@@ -56,9 +56,22 @@ The primary behaviors of the Resonating Pattern Provider within the network incl
 
 - Extracting required materials from the ME network based on the encoded pattern
 - Sending materials to the target positions and faces specified by the pattern
-- Actively pulling processing results from the container it faces, without relying on external pipes
+- Actively recovering outputs that match the currently installed patterns from nearby inventories, without relying on external pipes
 
 These behaviors allow it to interface directly with complex or non-standard automation structures.
+
+---
+
+## Output Recovery
+
+The Resonating Pattern Provider can actively recover completed outputs,
+but it does not blindly pull every item from nearby inventories.
+
+- It only recovers outputs that match the patterns currently installed in the provider
+- This is useful for sending finished processing results back into the provider's return inventory
+- Unrelated items in the nearby inventories are ignored
+
+This keeps output recovery focused on the recipes the provider is actually handling.
 
 ---
 

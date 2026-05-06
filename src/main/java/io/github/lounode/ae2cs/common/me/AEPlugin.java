@@ -91,6 +91,12 @@ public class AEPlugin
         Upgrades.add(AECSItems.crystalGrowthCard.get(), AECSBlocks.ENDER_INTERFACE_BLOCK.get(), 1, ENDER_INTERFACE_GROUP_NAME);
         Upgrades.add(AECSItems.crystalGrowthCard.get(), AECSParts.EX_ENDER_INTERFACE_PART.get(), 1, EX_ENDER_INTERFACE_GROUP_NAME);
         Upgrades.add(AECSItems.crystalGrowthCard.get(), AECSBlocks.EX_ENDER_INTERFACE_BLOCK.get(), 1, EX_ENDER_INTERFACE_GROUP_NAME);
+
+        Upgrades.add(AECSItems.OVERLOAD_CARD.get(), AECSBlocks.CIRCUIT_ETCHER_BLOCK.get(), 1);
+        Upgrades.add(AECSItems.OVERLOAD_CARD.get(), AECSBlocks.CRYSTAL_PULVERIZER_BLOCK.get(), 1);
+        Upgrades.add(AECSItems.OVERLOAD_CARD.get(), AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK.get(), 1);
+        Upgrades.add(AECSItems.OVERLOAD_CARD.get(), AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK.get(), 1);
+        Upgrades.add(AECSItems.OVERLOAD_CARD.get(), AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK.get(), 4);
     }
 
     public static void onTagsUpdated(TagsUpdatedEvent event)

@@ -52,6 +52,8 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
         packAndUnpack3x3(recipeOutput, RecipeCategory.MISC, RecipeCategory.MISC,
                 AECSItems.PURE_ENDER_QUARTZ, AECSBlocks.PURE_ENDER_QUARTZ_BLOCK);
         packAndUnpack3x3(recipeOutput, RecipeCategory.MISC, RecipeCategory.MISC,
+                AECSItems.PURE_LINK_CRYSTAL, AECSBlocks.PURE_LINK_CRYSTAL_BLOCK);
+        packAndUnpack3x3(recipeOutput, RecipeCategory.MISC, RecipeCategory.MISC,
                 AEItems.SILICON, AECSBlocks.SILICON_BLOCK);
 
         // 工具配方

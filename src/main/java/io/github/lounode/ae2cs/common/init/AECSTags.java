@@ -29,6 +29,8 @@ public class AECSTags
                 aecsTag("storage_blocks/pure_crystal/rose_quartz_block");
         public static final TagKey<Block> STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL =
                 aecsTag("storage_blocks/pure_crystal/irradiated_crystal_block");
+        public static final TagKey<Block> STORAGE_BLOCK_PURE_CRYSTAL_LINK_CRYSTAL =
+                aecsTag("storage_blocks/pure_crystal/link_crystal_block");
         public static final TagKey<Block> STORAGE_BLOCK_SILICON = tag("storage_blocks/silicon");
 
         public static final TagKey<Block> AECS_MACHINE = aecsTag("aecs/machine");
@@ -60,15 +62,18 @@ public class AECSTags
         public static final TagKey<Item> PURE_QUANTUM_CRYSTAL = aecsTag("pure_crystal/quantum_crystal");
         public static final TagKey<Item> PURE_ROSE_QUARTZ = aecsTag("pure_crystal/rose_quartz");
         public static final TagKey<Item> PURE_IRRADIATED_CRYSTAL = aecsTag("pure_crystal/irradiated_crystal");
+        public static final TagKey<Item> PURE_LINK_CRYSTAL = aecsTag("pure_crystal/link_crystal");
 
         public static final TagKey<Item> DUST_RESONATING = tag("dusts/resonating");
         public static final TagKey<Item> DUST_QUARTZ = tag("dusts/quartz");
         public static final TagKey<Item> DUST_QUANTUM_ALLOY = tag("dusts/quantum_alloy");
         public static final TagKey<Item> DUST_REDSTONE_CRYSTAL = tag("dusts/redstone_crystal");
+        public static final TagKey<Item> DUST_LINK_CRYSTAL = tag("dusts/link_crystal");
 
         public static final TagKey<Item> GEM_RESONATING = tag("gems/resonating");
         public static final TagKey<Item> GEM_SKY_STONE_CRYSTAL = tag("gems/sky_stone_crystal");
         public static final TagKey<Item> GEM_ENDER_QUARTZ = tag("gems/ender_quartz");
+        public static final TagKey<Item> GEM_LINK_CRYSTAL = tag("gems/link_crystal");
 
         public static final TagKey<Item> GEARS = tag("gears");
         public static final TagKey<Item> GEARS_WOOD = tag("gears/wood");
@@ -93,6 +98,8 @@ public class AECSTags
                 tag("storage_blocks/pure_crystal/rose_quartz_block");
         public static final TagKey<Item> STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL =
                 tag("storage_blocks/pure_crystal/irradiated_crystal_block");
+        public static final TagKey<Item> STORAGE_BLOCK_PURE_CRYSTAL_LINK_CRYSTAL =
+                tag("storage_blocks/pure_crystal/link_crystal_block");
         public static final TagKey<Item> STORAGE_BLOCK_SILICON = tag("storage_blocks/silicon");
 
         public static final TagKey<Item> AECS_MACHINE = aecsTag("aecs/machine");

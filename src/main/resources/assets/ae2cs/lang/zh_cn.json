@@ -8,6 +8,7 @@
   "block.ae2cs.quantum_crystal_block": "量子水晶块",
   "block.ae2cs.rose_quartz_block": "玫瑰石英块",
   "block.ae2cs.irradiated_crystal_block": "辐射水晶块",
+  "block.ae2cs.link_crystal_block": "链接水晶块",
   "block.ae2cs.silicon_block": "硅块",
   "block.ae2cs.certus_quartz_ore": "赛特斯石英矿石",
   "block.ae2cs.deepslate_certus_quartz_ore": "深层赛特斯石英矿石",
@@ -54,6 +55,7 @@
   "item.ae2cs.purified_quantum_crystal": "高纯量子水晶",
   "item.ae2cs.purified_rose_quartz": "高纯玫瑰石英",
   "item.ae2cs.purified_irradiated_crystal": "高纯辐射水晶",
+  "item.ae2cs.purified_link_crystal": "高纯链接水晶",
   "item.ae2cs.certus_quartz_seed": "赛特斯石英水晶种子",
   "item.ae2cs.fluix_crystal_seed": "福鲁伊克斯种子",
   "item.ae2cs.nether_quartz_seed": "下界石英种子",
@@ -64,11 +66,13 @@
   "item.ae2cs.quantum_crystal_seed": "量子水晶种子",
   "item.ae2cs.rose_quartz_seed": "玫瑰石英种子",
   "item.ae2cs.irradiated_seed": "辐射水晶种子",
+  "item.ae2cs.link_crystal_seed": "链接水晶种子",
   "item.ae2cs.nether_quartz_dust": "下界石英粉",
   "item.ae2cs.resonating_crystal_dust": "谐振水晶粉",
   "item.ae2cs.redstone_crystal_dust": "红石水晶粉",
   "item.ae2cs.quantum_crystal_dust": "量子水晶粉",
   "item.ae2cs.irradiated_crystal_dust": "辐射水晶粉",
+  "item.ae2cs.link_crystal_dust": "链接水晶粉",
   "item.ae2cs.resonating_print_press": "谐振压印模板",
   "item.ae2cs.resonating_circuit_print": "谐振电路板",
   "item.ae2cs.resonating_processor": "谐振处理器",
@@ -85,6 +89,7 @@
   "item.ae2cs.pattern_provider_upgrade": "样板供应器升级",
   "item.ae2cs.meteor_pattern_provider_upgrade": "自装配式样板供应器升级",
   "item.ae2cs.crystal_growth_card": "晶体催生卡",
+  "item.ae2cs.overload_card": "陨石超频卡",
   "item.ae2cs.ender_linker": "末影连接工具",
   "item.ae2cs.resonating_linker": "谐振连接工具",
   "item.ae2cs.mirror_linker": "镜像连接工具",
@@ -116,6 +121,7 @@
   "ae2cs.item.extended_resonating_pattern_provider_upgrade.tooltip": "将谐振样板供应器升级为扩展谐振样板供应器",
   "ae2cs.item.pattern_provider_upgrade.tooltip": "将初级样板供应器升级为样板供应器",
   "ae2cs.item.meteor_pattern_provider_upgrade.tooltip": "将样板供应器升级为自装配式样板供应器",
+  "ae2cs.item.overload_card.tooltip": "为自装配样板供应器提供高并行，或将AECS加工机器加速到4 tick完成",
 
   "enchantment.ae2cs.ender_link": "末影链接",
 
@@ -245,7 +251,7 @@
   "ae2cs.menu.ender_interface.show_range_desc": "切换是否显示掉落物吸收范围",
 
   "ae2cs.menu.resonating_provider.pull_mode_title": "拉取模式",
-  "ae2cs.menu.resonating_provider.pull_mode_desc": "切换是否从周围容器主动收取物品",
+  "ae2cs.menu.resonating_provider.pull_mode_desc": "切换是否只从周围容器主动收取当前样板产物",
 
   "ae2cs.menu.ender_emitter.button.try_sacn_all": "主动扫描\n对周围所有可连接设备进行一次连接尝试",
   "ae2cs.menu.ender_emitter.button.destroy_all": "断开连接\n断开当前发信器的全部无线连接",
@@ -333,9 +339,9 @@
   "ae2cs.machine_settings.black_list_mode.white_list.desc": "当前为白名单模式",
   "ae2cs.machine_settings.black_list_mode.black_list.desc": "当前为黑名单模式",
 
-  "ae2cs.machine_settings.pull_mode.title": "抽取目标面容器",
-  "ae2cs.machine_settings.pull_mode.on.desc": "当前会抽取目标面容器",
-  "ae2cs.machine_settings.pull_mode.off.desc": "当前不会抽取目标面容器",
+  "ae2cs.machine_settings.pull_mode.title": "回收样板产物",
+  "ae2cs.machine_settings.pull_mode.on.desc": "当前会从周围容器回收本机样板产物",
+  "ae2cs.machine_settings.pull_mode.off.desc": "当前不会从周围容器回收本机样板产物",
   "ae2cs.menu.resonating_pattern_provider.show_marked_faces.on.desc": "显示所有已标记的目标面",
   "ae2cs.menu.resonating_pattern_provider.show_marked_faces.off.desc": "隐藏所有已标记的目标面",
 

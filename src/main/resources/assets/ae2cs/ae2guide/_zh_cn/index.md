@@ -161,6 +161,7 @@ AECS 为 AE 的样板供应体系提供了多层级扩展：
   <ItemImage id="ae2cs:ender_linker" scale="2" />
   <ItemImage id="ae2cs:resonating_linker" scale="2" />
   <ItemImage id="ae2cs:mirror_linker" scale="2" />
+  <ItemImage id="ae2cs:overload_card" scale="2" />
   <ItemImage id="ae2cs:resonating_memory_card" scale="2" />
   <ItemImage id="ae2cs:ender_crystal_pickaxe" scale="2" />
   <ItemImage id="ae2cs:meteor_crystal_pickaxe" scale="2" />
@@ -177,6 +178,9 @@ AECS 提供多套网络与交互工具。
 
 - **<ItemLink id="ae2cs:mirror_linker" />**  
   用于保存镜像目标，并将其写入一个或多个相互邻接的镜像样板供应器。
+
+- **<ItemLink id="ae2cs:overload_card" />**  
+  为自装配样板供应器提供极高并行，或将 AECS 加工机器压到 4 tick 完成一次加工。
 
 - **<ItemLink id="ae2cs:resonating_memory_card" />**  
   带有 9 个独立槽位的内存卡，可自动将配置应用到新放置的 AE 设备。

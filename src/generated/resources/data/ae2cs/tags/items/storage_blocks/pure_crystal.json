@@ -6,6 +6,7 @@
     "#forge:storage_blocks/pure_crystal/redstone_crystal_block",
     "#forge:storage_blocks/pure_crystal/quantum_crystal_block",
     "#forge:storage_blocks/pure_crystal/rose_quartz_block",
-    "#forge:storage_blocks/pure_crystal/irradiated_crystal_block"
+    "#forge:storage_blocks/pure_crystal/irradiated_crystal_block",
+    "#forge:storage_blocks/pure_crystal/link_crystal_block"
   ]
 }
