@@ -1,1 +1,1 @@
-* Add jr_jp GuideME(by code-onigiri)
+* Add `relocation_not_supported` for some ender broadcaster and ender emitter.

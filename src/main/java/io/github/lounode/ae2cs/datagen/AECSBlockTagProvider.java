@@ -61,6 +61,11 @@ public class AECSBlockTagProvider extends BlockTagsProvider
                 .add(AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK.get())
                 .add(AECSBlocks.QUARTZ_OSCILLATOR_CLOCK_BLOCK.get());
 
+        // 防CarryOn和纸箱
+        tag(Tags.Blocks.RELOCATION_NOT_SUPPORTED)
+                .add(AECSBlocks.ENDER_BROADCASTER_BLOCK.get())
+                .add(AECSBlocks.ENDER_EMITTER_BLOCK.get());
+
         // 高纯水晶块
         tag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL)
                 .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_ENDER_QUARTZ)
