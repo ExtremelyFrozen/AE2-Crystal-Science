@@ -110,7 +110,7 @@ public class MirrorPatternProviderPart extends PatternProviderPart implements Mi
     public void importSettings(SettingsFrom mode, net.minecraft.nbt.CompoundTag input, @Nullable Player player)
     {
         super.importSettings(mode, input, player);
-        if (mode == SettingsFrom.DISMANTLE_ITEM)
+        if (mode == SettingsFrom.DISMANTLE_ITEM || mode == SettingsFrom.MEMORY_CARD)
         {
             getMirroringLogic().readMirrorSettings(input);
             saveChanges();
@@ -121,7 +121,7 @@ public class MirrorPatternProviderPart extends PatternProviderPart implements Mi
     public void exportSettings(SettingsFrom mode, net.minecraft.nbt.CompoundTag output)
     {
         super.exportSettings(mode, output);
-        if (mode == SettingsFrom.DISMANTLE_ITEM)
+        if (mode == SettingsFrom.DISMANTLE_ITEM || mode == SettingsFrom.MEMORY_CARD)
         {
             getMirroringLogic().writeMirrorSettings(output);
         }

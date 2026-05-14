@@ -143,7 +143,17 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
 
     public boolean isConnectedToBand()
     {
-        return !bandId.isEmpty();
+        return bandId != null && !bandId.isEmpty();
+    }
+
+    @Override
+    public Set<Direction> getGridConnectableSides(appeng.api.orientation.BlockOrientation orientation)
+    {
+        if (isConnectedToBand())
+        {
+            return EnumSet.noneOf(Direction.class);
+        }
+        return EnumSet.allOf(Direction.class);
     }
 
     public long getBandUsedChannelsForClient()
@@ -561,6 +571,7 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
         }
 
         this.bandId = newBand.getName();
+        onGridConnectableSidesChanged();
         markForClientUpdate();
         setChanged();
     }
@@ -588,6 +599,7 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
         setEnabledCustomChannel(false);
         setMaxChannels(0);
         lastBandReceiverUsedChannels = 0;
+        onGridConnectableSidesChanged();
         markForClientUpdate();
         setChanged();
     }
@@ -767,6 +779,7 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
         this.autoMode = configManager.getSetting(AECSSettings.AUTO_LINK_MODE) == AutoLinkMode.ENABLE;
         this.allowAutoLinkCableLike = configManager.getSetting(AECSSettings.AUTO_LINK_CABLE_MODE) == AutoLinkCableMode.ENABLE;
         this.showLinkStatus = configManager.getSetting(AECSSettings.SHOW_RANGE_MODE) == ShowRangeMode.SHOW_RANGE;
+        onGridConnectableSidesChanged();
         this.markForClientUpdate();
     }
 

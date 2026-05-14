@@ -76,7 +76,7 @@ public class MirrorPatternProviderBlockEntity extends PatternProviderBlockEntity
     public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player)
     {
         super.importSettings(mode, input, player);
-        if (mode == SettingsFrom.DISMANTLE_ITEM)
+        if (mode == SettingsFrom.DISMANTLE_ITEM || mode == SettingsFrom.MEMORY_CARD)
         {
             getMirroringLogic().readMirrorSettings(input);
             setChanged();
@@ -87,7 +87,7 @@ public class MirrorPatternProviderBlockEntity extends PatternProviderBlockEntity
     public void exportSettings(SettingsFrom mode, CompoundTag output, @Nullable Player player)
     {
         super.exportSettings(mode, output, player);
-        if (mode == SettingsFrom.DISMANTLE_ITEM)
+        if (mode == SettingsFrom.DISMANTLE_ITEM || mode == SettingsFrom.MEMORY_CARD)
         {
             getMirroringLogic().writeMirrorSettings(output);
         }
