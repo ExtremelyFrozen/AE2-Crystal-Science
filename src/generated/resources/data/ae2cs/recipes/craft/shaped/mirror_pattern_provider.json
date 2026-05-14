@@ -3,25 +3,28 @@
   "category": "misc",
   "key": {
     "a": {
-      "item": "ae2:quantum_ring"
+      "item": "ae2cs:purified_link_crystal"
     },
     "b": {
-      "item": "ae2:me_p2p_tunnel"
+      "tag": "forge:gears/wood"
     },
     "c": {
-      "item": "ae2:quantum_entangled_singularity"
+      "item": "ae2cs:simple_processor"
     },
     "d": {
+      "item": "ae2:pattern_provider"
+    },
+    "e": {
       "item": "ae2cs:resonating_processor"
     }
   },
   "pattern": [
     "aba",
-    "bcb",
-    "ada"
+    "cdc",
+    "aea"
   ],
   "result": {
-    "item": "ae2cs:ender_broadcaster"
+    "item": "ae2cs:mirror_pattern_provider"
   },
   "show_notification": true
 }

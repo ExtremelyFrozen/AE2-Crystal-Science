@@ -15,7 +15,7 @@
       "tag": "ae2:smart_cable"
     },
     "e": {
-      "tag": "forge:storage_blocks/pure_crystal/ender_quartz_block"
+      "item": "ae2cs:ender_broadcaster"
     }
   },
   "pattern": [

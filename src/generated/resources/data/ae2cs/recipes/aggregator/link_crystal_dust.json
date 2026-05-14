@@ -1,0 +1,26 @@
+{
+  "type": "ae2cs:crystal_aggregator_recipe_serializer",
+  "energy_cost": 16000,
+  "input_a": {
+    "count": 8,
+    "ingredient": {
+      "tag": "forge:dusts/quartz"
+    }
+  },
+  "input_b": {
+    "count": 16,
+    "ingredient": {
+      "item": "minecraft:chain"
+    }
+  },
+  "input_c": {
+    "count": 8,
+    "ingredient": {
+      "tag": "forge:dusts/ender_pearl"
+    }
+  },
+  "result": {
+    "count": 8,
+    "item": "ae2cs:link_crystal_dust"
+  }
+}
