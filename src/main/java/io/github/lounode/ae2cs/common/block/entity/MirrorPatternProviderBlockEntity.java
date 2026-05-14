@@ -9,8 +9,10 @@ import appeng.util.SettingsFrom;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.me.logic.MirrorPatternProviderLogic;
 import io.github.lounode.ae2cs.common.me.logic.MirrorPatternProviderHost;
+import io.github.lounode.ae2cs.common.me.logic.MirroredPatternProviderTarget;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -89,5 +91,33 @@ public class MirrorPatternProviderBlockEntity extends PatternProviderBlockEntity
         {
             getMirroringLogic().writeMirrorSettings(output);
         }
+    }
+
+    @Override
+    public void markForLogicClientUpdate()
+    {
+        if (level != null && !level.isClientSide())
+        {
+            this.markForUpdate();
+        }
+    }
+
+    @Override
+    protected void writeToStream(FriendlyByteBuf data)
+    {
+        super.writeToStream(data);
+        var target = getMirroringLogic().getMirrorTarget();
+        data.writeBoolean(target != null);
+        if (target != null)
+        {
+            target.write(data);
+        }
+    }
+
+    @Override
+    protected boolean readFromStream(FriendlyByteBuf data)
+    {
+        getMirroringLogic().setMirrorTarget(data.readBoolean() ? MirroredPatternProviderTarget.read(data) : null);
+        return true;
     }
 }

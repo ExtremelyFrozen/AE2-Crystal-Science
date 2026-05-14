@@ -27,7 +27,6 @@ import appeng.util.ConfigManager;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.settings.AECSSettings;
 import io.github.lounode.ae2cs.api.settings.PullMode;
-import io.github.lounode.ae2cs.api.settings.ShowRangeMode;
 import io.github.lounode.ae2cs.api.util.GenericStackInvHelper;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern;
@@ -76,7 +75,6 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
     private int localRoundRobinIndex = 0;
     private List<java.util.Optional<EncodedResonatingPattern.Target>> defaultInputTargets = ResonatingProviderDefaults.emptyTargets();
     private int defaultSelectedInput = 0;
-    private boolean renderMarkedFacesInClient = false;
     @Nullable
     private Set<AEKey> cachedPullableOutputs;
 
@@ -96,23 +94,12 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
         if (getConfigManager() instanceof ConfigManager cm)
         {
             cm.registerSetting(AECSSettings.PULL_MODE, PullMode.PULL_OFF);
-            cm.registerSetting(AECSSettings.SHOW_RANGE_MODE, ShowRangeMode.HIDE_RANGE);
         }
     }
 
     public boolean isEnablePull()
     {
         return getConfigManager().getSetting(AECSSettings.PULL_MODE) == PullMode.PULL_ON;
-    }
-
-    public boolean isRenderMarkedFacesInClient()
-    {
-        return renderMarkedFacesInClient;
-    }
-
-    public void setRenderMarkedFacesInClient(boolean renderMarkedFacesInClient)
-    {
-        this.renderMarkedFacesInClient = renderMarkedFacesInClient;
     }
 
     @Override
@@ -125,16 +112,8 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
     protected void configChanged(IConfigManager manager, Setting<?> setting)
     {
         super.configChanged(manager, setting);
-        if (setting == AECSSettings.PULL_MODE || setting == AECSSettings.SHOW_RANGE_MODE)
+        if (setting == AECSSettings.PULL_MODE)
         {
-            if (setting == AECSSettings.SHOW_RANGE_MODE)
-            {
-                this.renderMarkedFacesInClient = getConfigManager().getSetting(AECSSettings.SHOW_RANGE_MODE) == ShowRangeMode.SHOW_RANGE;
-                if (host instanceof ResonatingPatternProviderHost resonatingHost)
-                {
-                    resonatingHost.markForLogicClientUpdate();
-                }
-            }
             host.saveChanges();
             this.mainNode.ifPresent((grid, node) -> grid.getTickManager().alertDevice(node));
         }
@@ -452,21 +431,17 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
 
     public void writeVisualSync(FriendlyByteBuf data)
     {
-        data.writeBoolean(renderMarkedFacesInClient);
         data.writeVarInt(defaultSelectedInput);
         ResonatingProviderDefaults.writeTargets(data, defaultInputTargets);
     }
 
     public boolean readVisualSync(FriendlyByteBuf data)
     {
-        boolean newRender = data.readBoolean();
         int newSelected = ResonatingProviderDefaults.clampSelected(data.readVarInt());
         var newTargets = ResonatingProviderDefaults.readTargets(data);
 
-        boolean changed = newRender != this.renderMarkedFacesInClient
-                || newSelected != this.defaultSelectedInput
+        boolean changed = newSelected != this.defaultSelectedInput
                 || !newTargets.equals(this.defaultInputTargets);
-        this.renderMarkedFacesInClient = newRender;
         this.defaultSelectedInput = newSelected;
         this.defaultInputTargets = newTargets;
         return changed;

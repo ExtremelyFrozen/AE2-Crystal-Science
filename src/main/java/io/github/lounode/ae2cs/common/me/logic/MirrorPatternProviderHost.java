@@ -6,6 +6,8 @@ public interface MirrorPatternProviderHost extends PatternProviderLogicHost
 {
     MirrorPatternProviderLogic getMirroringLogic();
 
+    void markForLogicClientUpdate();
+
     @Override
     default boolean isVisibleInTerminal() {
         return false;

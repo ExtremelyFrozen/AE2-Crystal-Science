@@ -14,7 +14,7 @@ public class AECSRenderTypes
 
     public static final RenderType RESONATING_MARK_FACE = RenderType.create(
             "ae2cs_resonating_mark_face",
-            DefaultVertexFormat.POSITION_COLOR,
+            DefaultVertexFormat.POSITION_COLOR_NORMAL,
             VertexFormat.Mode.QUADS,
             256,
             false,

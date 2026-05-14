@@ -14,7 +14,9 @@ import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.common.init.AECSParts;
 import io.github.lounode.ae2cs.common.me.logic.MirrorPatternProviderHost;
 import io.github.lounode.ae2cs.common.me.logic.MirrorPatternProviderLogic;
+import io.github.lounode.ae2cs.common.me.logic.MirroredPatternProviderTarget;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -122,6 +124,35 @@ public class MirrorPatternProviderPart extends PatternProviderPart implements Mi
         if (mode == SettingsFrom.DISMANTLE_ITEM)
         {
             getMirroringLogic().writeMirrorSettings(output);
+        }
+    }
+
+    @Override
+    public void writeToStream(FriendlyByteBuf data)
+    {
+        super.writeToStream(data);
+        var target = getMirroringLogic().getMirrorTarget();
+        data.writeBoolean(target != null);
+        if (target != null)
+        {
+            target.write(data);
+        }
+    }
+
+    @Override
+    public boolean readFromStream(FriendlyByteBuf data)
+    {
+        boolean redraw = super.readFromStream(data);
+        getMirroringLogic().setMirrorTarget(data.readBoolean() ? MirroredPatternProviderTarget.read(data) : null);
+        return redraw || true;
+    }
+
+    @Override
+    public void markForLogicClientUpdate()
+    {
+        if (this.getBlockEntity().getLevel() != null && !this.getBlockEntity().getLevel().isClientSide())
+        {
+            this.getHost().markForUpdate();
         }
     }
 }

@@ -45,6 +45,10 @@ public class MirrorPatternProviderLogic extends PatternProviderLogic
         this.cachedTarget = new WeakReference<>(null);
         updatePatterns();
         host.saveChanges();
+        if (host instanceof MirrorPatternProviderHost mirrorHost)
+        {
+            mirrorHost.markForLogicClientUpdate();
+        }
     }
 
     public @Nullable PatternProviderLogicHost resolveMirrorTargetHost()
@@ -158,5 +162,9 @@ public class MirrorPatternProviderLogic extends PatternProviderLogic
         this.mirrorTarget = MirroredPatternProviderTarget.read(tag);
         this.cachedTarget = new WeakReference<>(null);
         updatePatterns();
+        if (host instanceof MirrorPatternProviderHost mirrorHost)
+        {
+            mirrorHost.markForLogicClientUpdate();
+        }
     }
 }
