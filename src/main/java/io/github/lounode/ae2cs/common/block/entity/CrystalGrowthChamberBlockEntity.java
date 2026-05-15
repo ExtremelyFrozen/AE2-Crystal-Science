@@ -9,6 +9,7 @@ import appeng.api.storage.MEStorage;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
+import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.util.inv.AppEngInternalInventory;
@@ -190,6 +191,9 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
         --workTickCountDown;
         if (workTickCountDown > 0) return;
 
+        if (level.getRandom().nextFloat() < 0.1F)
+            updateGrowthNum();
+
         checkActive(getAECurrentPower() > 0);
 
         int speedCard = upgrades.getInstalledUpgrades(AEItems.SPEED_CARD);
@@ -234,6 +238,12 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
             else if (level.getBlockEntity(getBlockPos().relative(dir)) instanceof IUpgradeableObject upgradeableObject)
             {
                 if (upgradeableObject.isUpgradedWith(AECSItems.crystalGrowthCard))
+                    growthNum++;
+            }
+            else if (level.getBlockEntity(getBlockPos().relative(dir)) instanceof CableBusBlockEntity cabe)
+            {
+                if (cabe.getCableBus().getPart(dir.getOpposite()) instanceof IUpgradeableObject upgradeableObject &&
+                        upgradeableObject.isUpgradedWith(AECSItems.crystalGrowthCard))
                     growthNum++;
             }
         }

@@ -1,1 +1,1 @@
-* Fix: display integration interface group names correctly
+* Fix: Crystal Growth Cards are now much more reliable.
