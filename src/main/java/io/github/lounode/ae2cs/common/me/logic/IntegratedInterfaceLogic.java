@@ -243,7 +243,7 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         };
 
         this.actionSource = new MachineSource(mainNode::getNode);
-        this.craftingTracker = new MultiCraftingTracker(this, 9);
+        this.craftingTracker = new MultiCraftingTracker(this, storageSize);
 
         // 为GenericStackInv的单槽位容量使用AE默认注册容量
         this.configInv.useRegisteredCapacities();
