@@ -10,7 +10,6 @@ import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
-import appeng.core.localization.GuiText;
 import appeng.helpers.IPriorityHost;
 import appeng.helpers.patternprovider.PatternContainer;
 import appeng.menu.ISubMenu;
@@ -18,20 +17,13 @@ import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuHostLocator;
 import appeng.util.ConfigInventory;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.LinkedHashSet;
-import java.util.List;
 
 public interface IntegratedInterfaceHost extends IConfigurableObject, IPriorityHost, IUpgradeableObject, PatternContainer
 {
@@ -159,57 +151,6 @@ public interface IntegratedInterfaceHost extends IConfigurableObject, IPriorityH
     @Override
     default PatternContainerGroup getTerminalGroup()
     {
-        BlockEntity blockEntity = getBlockEntity();
-        Level hostLevel = blockEntity.getLevel();
-
-        // 如果由自定义名称，则使用自定义名称
-        if (this instanceof Nameable nameable && nameable.hasCustomName())
-        {
-            Component name = nameable.getCustomName();
-            return new PatternContainerGroup(
-                    this.getTerminalIcon(),
-                    name,
-                    List.of());
-        }
-
-        var groups = new LinkedHashSet<PatternContainerGroup>();
-        for (var side : getTargets())
-        {
-            var sidePos = blockEntity.getBlockPos().relative(side);
-            var group = PatternContainerGroup.fromMachine(hostLevel, sidePos, side.getOpposite());
-            if (group != null)
-            {
-                groups.add(group);
-            }
-        }
-
-        // 如果附近有了一个组，使用它的组
-        if (groups.size() == 1)
-        {
-            return groups.iterator().next();
-        }
-
-        List<Component> tooltip = List.of();
-        // 如果有多个组，一起显示出来
-        if (groups.size() > 1)
-        {
-            tooltip = new ArrayList<>();
-            tooltip.add(GuiText.AdjacentToDifferentMachines.text().withStyle(ChatFormatting.BOLD));
-            for (var group : groups)
-            {
-                tooltip.add(group.name());
-                for (var line : group.tooltip())
-                {
-                    tooltip.add(Component.literal("  ").append(line));
-                }
-            }
-        }
-
-        // 如果没有任何东西，则自己显示
-        var hostIcon = getTerminalIcon();
-        return new PatternContainerGroup(
-                hostIcon,
-                hostIcon.getDisplayName(),
-                tooltip);
+        return getLogic().getTerminalGroup();
     }
 }

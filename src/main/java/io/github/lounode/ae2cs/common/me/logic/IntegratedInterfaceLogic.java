@@ -5,6 +5,7 @@ import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.ids.AEComponents;
 import appeng.api.implementations.blockentities.ICraftingMachine;
+import appeng.api.implementations.blockentities.PatternContainerGroup;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -17,6 +18,7 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
@@ -29,10 +31,13 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.core.AELog;
 import appeng.core.definitions.AEItems;
+import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.settings.TickRates;
 import appeng.crafting.pattern.EncodedPatternItem;
+import appeng.helpers.InterfaceLogicHost;
 import appeng.helpers.externalstorage.GenericStackInv;
+import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.helpers.patternprovider.PatternProviderTarget;
 import appeng.helpers.patternprovider.UnlockCraftingEvent;
 import appeng.me.helpers.MachineSource;
@@ -42,13 +47,16 @@ import appeng.util.inv.PlayerInternalInventory;
 import com.google.common.collect.ImmutableSet;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -296,7 +304,7 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
 
         // 首先尝试给ICraftingMachine推送合成
         // 如果没有，则再找可能的目标，并加入possibleTargets
-        for (Direction direction : host.getTargets())
+        for (Direction direction : getActiveSides())
         {
             BlockPos adjPos = blockEntity.getBlockPos().relative(direction);
             Direction adjBeSide = direction.getOpposite();
@@ -503,6 +511,33 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
     public boolean isBlocking()
     {
         return this.configManager.getSetting(Settings.BLOCKING_MODE) == YesNo.YES;
+    }
+
+    /**
+     * 过滤掉同网络直连的 AE 机器目标面，保持与原版样板供应器一致。
+     */
+    private Set<Direction> getActiveSides()
+    {
+        EnumSet<Direction> sides = EnumSet.copyOf(host.getTargets());
+
+        IGridNode node = mainNode.getNode();
+        if (node != null)
+        {
+            for (var entry : node.getInWorldConnections().entrySet())
+            {
+                IGridNode otherNode = entry.getValue().getOtherSide(node);
+                Object otherOwner = otherNode.getOwner();
+                if (otherOwner instanceof PatternProviderLogicHost
+                        || otherOwner instanceof IntegratedInterfaceHost
+                        || (otherOwner instanceof InterfaceLogicHost
+                        && Objects.equals(otherNode.getGrid(), mainNode.getGrid())))
+                {
+                    sides.remove(entry.getKey());
+                }
+            }
+        }
+
+        return sides;
     }
 
     /**
@@ -969,6 +1004,65 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
     public @Nullable IGridNode getActionableNode()
     {
         return mainNode.getNode();
+    }
+
+    /**
+     * 获取样板管理终端中显示的分组，使用与推送相同的有效目标面。
+     */
+    public PatternContainerGroup getTerminalGroup()
+    {
+        BlockEntity blockEntity = host.getBlockEntity();
+        Level hostLevel = blockEntity.getLevel();
+
+        // 如果有自定义名称，则使用自定义名称
+        if (this.host instanceof Nameable nameable && nameable.hasCustomName())
+        {
+            Component name = nameable.getCustomName();
+            return new PatternContainerGroup(
+                    this.host.getTerminalIcon(),
+                    name,
+                    List.of());
+        }
+
+        var groups = new LinkedHashSet<PatternContainerGroup>();
+        for (Direction side : getActiveSides())
+        {
+            BlockPos sidePos = blockEntity.getBlockPos().relative(side);
+            PatternContainerGroup group = PatternContainerGroup.fromMachine(hostLevel, sidePos, side.getOpposite());
+            if (group != null)
+            {
+                groups.add(group);
+            }
+        }
+
+        // 如果附近有了一个组，使用它的组
+        if (groups.size() == 1)
+        {
+            return groups.iterator().next();
+        }
+
+        List<Component> tooltip = List.of();
+        // 如果有多个组，一起显示出来
+        if (groups.size() > 1)
+        {
+            tooltip = new ArrayList<>();
+            tooltip.add(GuiText.AdjacentToDifferentMachines.text().withStyle(ChatFormatting.BOLD));
+            for (PatternContainerGroup group : groups)
+            {
+                tooltip.add(group.name());
+                for (Component line : group.tooltip())
+                {
+                    tooltip.add(Component.literal("  ").append(line));
+                }
+            }
+        }
+
+        // 如果没有任何东西，则自己显示
+        AEItemKey hostIcon = this.host.getTerminalIcon();
+        return new PatternContainerGroup(
+                hostIcon,
+                hostIcon.getDisplayName(),
+                tooltip);
     }
 
     private class Ticker implements IGridTickable

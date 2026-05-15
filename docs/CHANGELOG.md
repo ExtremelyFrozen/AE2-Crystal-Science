@@ -1,1 +1,1 @@
-* Add `relocation_not_supported` for some ender broadcaster and ender emitter.
+* Fix: display integration interface group names correctly
