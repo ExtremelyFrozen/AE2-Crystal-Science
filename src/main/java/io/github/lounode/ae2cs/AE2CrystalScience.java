@@ -6,7 +6,7 @@ import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.util.PatternAccessTermQuickMoveHelper;
 import io.github.lounode.ae2cs.common.init.*;
 import io.github.lounode.ae2cs.common.me.AEPlugin;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -58,16 +58,16 @@ public class AE2CrystalScience
         LOGGER.info("AE2CrystalScience - Server started");
     }
 
-    public static ResourceLocation makeId(String path)
+    public static Identifier makeId(String path)
     {
-        return ResourceLocation.fromNamespaceAndPath(AECSConstants.MODID, path);
+        return Identifier.fromNamespaceAndPath(AECSConstants.MODID, path);
     }
 
-    public static ResourceLocation parseOrMakeId(String path)
+    public static Identifier parseOrMakeId(String path)
     {
         if (path.indexOf(':') >= 0)
         {
-            return ResourceLocation.tryParse(path);
+            return Identifier.tryParse(path);
         }
         return AE2CrystalScience.makeId(path);
     }

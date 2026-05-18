@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 
 import java.util.Objects;
@@ -29,7 +29,7 @@ public record GlobalPosJson(String dimensionId, int x, int y, int z)
             throw new IllegalStateException("dimensionId is blank");
         }
 
-        ResourceLocation id = ResourceLocation.tryParse(dimensionId);
+        Identifier id = Identifier.tryParse(dimensionId);
         if (id == null)
         {
             throw new IllegalStateException("Invalid dimensionId: " + dimensionId);

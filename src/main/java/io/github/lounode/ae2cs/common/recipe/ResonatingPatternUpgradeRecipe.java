@@ -18,16 +18,12 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 public class ResonatingPatternUpgradeRecipe extends CustomRecipe
 {
 
     public ResonatingPatternUpgradeRecipe(CraftingBookCategory category)
     {
-        super(category);
+        super();
     }
 
     @Override
@@ -61,7 +57,7 @@ public class ResonatingPatternUpgradeRecipe extends CustomRecipe
     }
 
     @Override
-    public @NotNull ItemStack assemble(CraftingInput input, HolderLookup.@NotNull Provider registries)
+    public @NotNull ItemStack assemble(CraftingInput input)
     {
         ItemStack processingPattern = ItemStack.EMPTY;
 
@@ -81,14 +77,14 @@ public class ResonatingPatternUpgradeRecipe extends CustomRecipe
         return ResonatingPatternDetails.encode(processingPattern);
     }
 
-    @Override
-    public boolean canCraftInDimensions(int width, int height)
-    {
-        return width * height >= 2;
-    }
+//    @Override
+//    public boolean canCraftInDimensions(int width, int height)
+//    {
+//        return width * height >= 2;
+//    }
 
     @Override
-    public @NotNull RecipeSerializer<?> getSerializer()
+    public @NotNull RecipeSerializer<ResonatingPatternUpgradeRecipe> getSerializer()
     {
         return AECSRecipeSerializers.RESONATING_PATTERN_UPGRADE.get();
     }

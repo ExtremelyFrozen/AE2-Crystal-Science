@@ -18,13 +18,13 @@ import io.github.lounode.ae2cs.common.init.AECSMenus;
 import io.github.lounode.ae2cs.common.init.AECSParts;
 import io.github.lounode.ae2cs.common.me.logic.MeteoritePatternProviderHost;
 import io.github.lounode.ae2cs.common.me.logic.MeteoritePatternProviderLogic;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 public class MeteoritePatternProviderPart extends PatternProviderPart implements MeteoritePatternProviderHost
 {
-    public static final ResourceLocation MODEL_BASE = AE2CrystalScience.makeId(
+    public static final Identifier MODEL_BASE = AE2CrystalScience.makeId(
             "part/meteorite_pattern_provider/base");
 
     @PartModels

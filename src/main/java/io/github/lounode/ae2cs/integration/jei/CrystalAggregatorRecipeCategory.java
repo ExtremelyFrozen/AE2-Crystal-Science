@@ -14,10 +14,11 @@ import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.recipe.IFocusGroup;
-import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.Util;
-import net.minecraft.client.gui.GuiGraphics;
+import mezz.jei.api.recipe.types.IRecipeHolderType;
+import mezz.jei.api.recipe.types.IRecipeType;
+import net.minecraft.util.Util;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -30,7 +31,7 @@ import java.util.List;
 
 public class CrystalAggregatorRecipeCategory implements IRecipeCategory<RecipeHolder<CrystalAggregatorRecipe>>
 {
-    public static RecipeType<RecipeHolder<CrystalAggregatorRecipe>> RECIPE_TYPE = RecipeType.createRecipeHolderType(AE2CrystalScience.makeId("crystal_aggregator"));
+    public static IRecipeType<RecipeHolder<CrystalAggregatorRecipe>> RECIPE_TYPE = IRecipeHolderType.create(AE2CrystalScience.makeId("crystal_aggregator"));
 
     private static final Rect2i energyTooltipArea = new Rect2i(109, 21, 6, 18);
 
@@ -85,7 +86,7 @@ public class CrystalAggregatorRecipeCategory implements IRecipeCategory<RecipeHo
     }
 
     @Override
-    public @NotNull RecipeType<RecipeHolder<CrystalAggregatorRecipe>> getRecipeType()
+    public @NotNull IRecipeType<RecipeHolder<CrystalAggregatorRecipe>> getRecipeType()
     {
         return RECIPE_TYPE;
     }
@@ -104,7 +105,7 @@ public class CrystalAggregatorRecipeCategory implements IRecipeCategory<RecipeHo
 
     @Override
     public void draw(@NotNull RecipeHolder<CrystalAggregatorRecipe> recipe, @NotNull IRecipeSlotsView recipeSlotsView,
-                     @NotNull GuiGraphics guiGraphics, double mouseX, double mouseY)
+                     @NotNull GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY)
     {
         IRecipeCategory.super.draw(recipe, recipeSlotsView, guiGraphics, mouseX, mouseY);
         background.draw(guiGraphics);
@@ -148,13 +149,13 @@ public class CrystalAggregatorRecipeCategory implements IRecipeCategory<RecipeHo
             IRecipeSlotBuilder slotBuilder = builder.addInputSlot(xIn, y0 + i * dy);
             if (ingredients.size() > i)
             {
-                slotBuilder.addItemStacks(Arrays.asList(ingredients.get(i).getItems()));
+                slotBuilder.add(ingredients.get(i).ingredient());
             }
         }
 
         int xOut = 86;
         int yOut = y0 + dy + 1;
-        builder.addOutputSlot(xOut, yOut).addItemStack(recipe.value().result().copy());
+        builder.addOutputSlot(xOut, yOut).add(recipe.value().result().copy());
     }
 
     private int getAnimMsInCycle()

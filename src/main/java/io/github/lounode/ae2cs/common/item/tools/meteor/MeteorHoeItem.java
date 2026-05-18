@@ -1,12 +1,11 @@
 package io.github.lounode.ae2cs.common.item.tools.meteor;
 
 import io.github.lounode.ae2cs.common.item.tools.AECSToolType;
-import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.Item;
 
-public class MeteorHoeItem extends HoeItem
-{
-    public MeteorHoeItem(Properties properties)
-    {
-        super(AECSToolType.METEOR.getToolTier(), properties.attributes(createAttributes(AECSToolType.METEOR.getToolTier(), -4.0F, 0.0F)));
+public class MeteorHoeItem extends Item {
+    public MeteorHoeItem(Properties properties) {
+        super(properties.hoe(AECSToolType.METEOR.getToolMaterial(), -4.0F, 0.0F)
+                .repairable(AECSToolType.METEOR.getRepairIngredient()));
     }
 }

@@ -11,7 +11,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -37,7 +36,7 @@ public class IntegratedInterfaceBlock extends AEBaseEntityBlock<IntegratedInterf
         builder.add(PatternProviderBlock.PUSH_DIRECTION);
     }
 
-    @Override
+//    @Override
     public void neighborChanged(@NotNull BlockState state,
                                 @NotNull Level level,
                                 @NotNull BlockPos pos,
@@ -54,13 +53,13 @@ public class IntegratedInterfaceBlock extends AEBaseEntityBlock<IntegratedInterf
     }
 
     @Override
-    protected @NotNull ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
+    protected @NotNull InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
                                                        Player player, InteractionHand hand, BlockHitResult hit)
     {
         if (InteractionUtil.canWrenchRotate(heldItem))
         {
             setSide(level, pos, hit.getDirection());
-            return ItemInteractionResult.sidedSuccess(level.isClientSide());
+            return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
         }
         return super.useItemOn(heldItem, state, level, pos, player, hand, hit);
     }
@@ -76,7 +75,7 @@ public class IntegratedInterfaceBlock extends AEBaseEntityBlock<IntegratedInterf
             {
                 be.openMenu(player, MenuLocators.forBlockEntity(be));
             }
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
         }
         return InteractionResult.PASS;
     }

@@ -4,10 +4,7 @@ import io.github.lounode.ae2cs.common.init.AECSRecipeSerializers;
 import io.github.lounode.ae2cs.common.init.AECSRecipeTypes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jetbrains.annotations.NotNull;
@@ -56,32 +53,40 @@ public class CrystalPulverizerRecipe implements Recipe<SingleRecipeInput>
     }
 
     @Override
-    public @NotNull ItemStack assemble(@NotNull SingleRecipeInput singleRecipeInput, HolderLookup.@NotNull Provider provider)
+    public @NotNull ItemStack assemble(@NotNull SingleRecipeInput singleRecipeInput)
     {
         return result.copy();
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height)
-    {
-        return width * height >= 1;
+    public boolean showNotification() {
+        return false;
     }
 
     @Override
-    public @NotNull ItemStack getResultItem(HolderLookup.@NotNull Provider provider)
-    {
-        return result;
+    public String group() {
+        return "";
     }
 
     @Override
-    public @NotNull RecipeSerializer<?> getSerializer()
+    public @NotNull RecipeSerializer<CrystalPulverizerRecipe> getSerializer()
     {
         return AECSRecipeSerializers.CRYSTAL_PULVERIZER.get();
     }
 
     @Override
-    public @NotNull RecipeType<?> getType()
+    public @NotNull RecipeType<CrystalPulverizerRecipe> getType()
     {
         return AECSRecipeTypes.CRYSTAL_PULVERIZER.get();
+    }
+
+    @Override
+    public PlacementInfo placementInfo() {
+        return null;
+    }
+
+    @Override
+    public RecipeBookCategory recipeBookCategory() {
+        return null;
     }
 }

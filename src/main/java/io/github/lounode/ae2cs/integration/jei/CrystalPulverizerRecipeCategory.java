@@ -13,21 +13,20 @@ import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.recipe.IFocusGroup;
-import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.Util;
-import net.minecraft.client.gui.GuiGraphics;
+import mezz.jei.api.recipe.types.IRecipeHolderType;
+import mezz.jei.api.recipe.types.IRecipeType;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-
 public class CrystalPulverizerRecipeCategory implements IRecipeCategory<RecipeHolder<CrystalPulverizerRecipe>>
 {
-    public static RecipeType<RecipeHolder<CrystalPulverizerRecipe>> RECIPE_TYPE = RecipeType.createRecipeHolderType(AE2CrystalScience.makeId("crystal_pulverizer"));
+    public static IRecipeType<RecipeHolder<CrystalPulverizerRecipe>> RECIPE_TYPE = IRecipeHolderType.create(AE2CrystalScience.makeId("crystal_pulverizer"));
 
     private static final Rect2i energyTooltipArea = new Rect2i(109, 21, 6, 18);
 
@@ -82,7 +81,7 @@ public class CrystalPulverizerRecipeCategory implements IRecipeCategory<RecipeHo
     }
 
     @Override
-    public @NotNull RecipeType<RecipeHolder<CrystalPulverizerRecipe>> getRecipeType()
+    public @NotNull IRecipeType<RecipeHolder<CrystalPulverizerRecipe>> getRecipeType()
     {
         return RECIPE_TYPE;
     }
@@ -101,7 +100,7 @@ public class CrystalPulverizerRecipeCategory implements IRecipeCategory<RecipeHo
 
     @Override
     public void draw(@NotNull RecipeHolder<CrystalPulverizerRecipe> recipe, @NotNull IRecipeSlotsView recipeSlotsView,
-                     @NotNull GuiGraphics guiGraphics, double mouseX, double mouseY)
+                     @NotNull GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY)
     {
         IRecipeCategory.super.draw(recipe, recipeSlotsView, guiGraphics, mouseX, mouseY);
         background.draw(guiGraphics);
@@ -137,11 +136,11 @@ public class CrystalPulverizerRecipeCategory implements IRecipeCategory<RecipeHo
     {
         int xIn = 23;
         int yIn = 22;
-        builder.addInputSlot(xIn, yIn).addItemStacks(Arrays.asList(recipe.value().input().getItems()));
+        builder.addInputSlot(xIn, yIn).add(recipe.value().input().ingredient());
 
         int xOut = 86;
         int yOut = yIn;
-        builder.addOutputSlot(xOut, yOut).addItemStack(recipe.value().result().copy());
+        builder.addOutputSlot(xOut, yOut).add(recipe.value().result().copy());
     }
 
     private int getAnimMsInCycle()

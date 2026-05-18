@@ -12,7 +12,7 @@ import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -109,7 +109,7 @@ public class CrystalAggregatorRecipeBuilder implements RecipeBuilder
     }
 
     @Override
-    public void save(RecipeOutput output, @NotNull ResourceLocation id)
+    public void save(RecipeOutput output, @NotNull Identifier id)
     {
         Advancement.Builder adv = output.advancement()
                 .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
@@ -159,7 +159,7 @@ public class CrystalAggregatorRecipeBuilder implements RecipeBuilder
     @Override
     public void save(@NotNull RecipeOutput recipeOutput)
     {
-        ResourceLocation path = AE2CrystalScience.makeId("aggregator/" + RecipeBuilder.getDefaultRecipeId(getResult()).getPath());
+        Identifier path = AE2CrystalScience.makeId("aggregator/" + RecipeBuilder.getDefaultRecipeId(getResult()).getPath());
         save(recipeOutput, path);
     }
 

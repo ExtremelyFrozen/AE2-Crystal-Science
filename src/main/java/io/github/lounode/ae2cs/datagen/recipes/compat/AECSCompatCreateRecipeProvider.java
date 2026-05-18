@@ -12,7 +12,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,7 +49,7 @@ public class AECSCompatCreateRecipeProvider extends AECSRecipeProvider
                 .build(compatOut, getMechanicalCraftingPath(AECSItems.ROSE_QUARTZ_SEED));
     }
 
-    protected static ResourceLocation getMechanicalCraftingPath(ItemLike output)
+    protected static Identifier getMechanicalCraftingPath(ItemLike output)
     {
         return AE2CrystalScience.makeId(getPrefixedItemName("mechanical_crafting", output));
     }

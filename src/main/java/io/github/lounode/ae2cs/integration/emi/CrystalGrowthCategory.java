@@ -9,7 +9,7 @@ import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.item.CrystalSeedItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.ItemLike;
 
 public class CrystalGrowthCategory extends BasicEmiRecipe
@@ -24,7 +24,7 @@ public class CrystalGrowthCategory extends BasicEmiRecipe
         }
     };
 
-    public static final ResourceLocation BG = AE2CrystalScience.makeId("textures/gui/recipe/crystal_growth.png");
+    public static final Identifier BG = AE2CrystalScience.makeId("textures/gui/recipe/crystal_growth.png");
     private static final int W = 135;
     private static final int H = 58;
 
@@ -52,7 +52,7 @@ public class CrystalGrowthCategory extends BasicEmiRecipe
         widgets.addFillingArrow(53, 22, 5000);
     }
 
-    public static ResourceLocation getGrowthId(CrystalSeedItem item)
+    public static Identifier getGrowthId(CrystalSeedItem item)
     {
         return AE2CrystalScience.makeId("crystal_growth/" + getItemName(item) + "_from_" + getItemName(item.getGrowTo()));
     }

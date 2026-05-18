@@ -1,10 +1,11 @@
 package io.github.lounode.ae2cs.client.gui.widgets;
 
-import appeng.client.gui.Icon;
+import appeng.util.Icon;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.widgets.ITooltip;
+import io.github.lounode.ae2cs.client.gui.icon.AE2IconAdapter;
 import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.sounds.SoundManager;
@@ -48,7 +49,7 @@ public abstract class AECSIconButton extends Button implements ITooltip
     }
 
     @Override
-    public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partial)
+    public void extractContents(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partial)
     {
         if (!this.visible)
         {
@@ -70,15 +71,15 @@ public abstract class AECSIconButton extends Button implements ITooltip
         {
             if (!disableBackground)
             {
-                Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter()
+                new AE2IconAdapter(Icon.TOOLBAR_BUTTON_BACKGROUND)
+                        .getBlitter()
                         .dest(getX(), getY())
-                        .zOffset(10)
                         .blit(guiGraphics);
             }
 
             if (item != null)
             {
-                guiGraphics.renderItem(new ItemStack(item), getX(), getY(), 0, 20);
+                guiGraphics.item(new ItemStack(item), getX(), getY(), 20);
             }
             else if (icon != null)
             {
@@ -87,7 +88,7 @@ public abstract class AECSIconButton extends Button implements ITooltip
                 {
                     blitter.opacity(0.5f);
                 }
-                blitter.dest(getX(), getY()).zOffset(20).blit(guiGraphics);
+                blitter.dest(getX(), getY()).blit(guiGraphics);
             }
         }
         else
@@ -98,21 +99,19 @@ public abstract class AECSIconButton extends Button implements ITooltip
                         : isFocused() ? Icon.TOOLBAR_BUTTON_BACKGROUND_FOCUS
                         : Icon.TOOLBAR_BUTTON_BACKGROUND;
 
-                bgIcon.getBlitter()
+                new AE2IconAdapter(bgIcon).getBlitter()
                         .dest(getX() - 1, getY() + yOffset, 18, 20)
-                        .zOffset(2)
                         .blit(guiGraphics);
             }
 
             if (item != null)
             {
-                guiGraphics.renderItem(new ItemStack(item), getX(), getY() + 1 + yOffset, 0, 3);
+                guiGraphics.item(new ItemStack(item), getX(), getY() + 1 + yOffset, 3);
             }
             else if (icon != null)
             {
                 icon.getBlitter()
                         .dest(getX(), getY() + 1 + yOffset)
-                        .zOffset(3)
                         .blit(guiGraphics);
             }
         }

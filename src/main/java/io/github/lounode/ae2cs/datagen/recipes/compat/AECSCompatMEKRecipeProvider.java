@@ -25,7 +25,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.CompoundIngredient;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
@@ -119,17 +119,17 @@ public class AECSCompatMEKRecipeProvider extends AECSRecipeProvider
                 .build(compatOut, getCrushingPath("irradiated_crystal_dust"));
     }
 
-    protected ResourceLocation getPressurizedReactionPath(String outName)
+    protected Identifier getPressurizedReactionPath(String outName)
     {
         return AE2CrystalScience.makeId("pressurized_reaction/" + outName);
     }
 
-    protected ResourceLocation getOxidizingPath(String outName)
+    protected Identifier getOxidizingPath(String outName)
     {
         return AE2CrystalScience.makeId("oxidizing/" + outName);
     }
 
-    protected ResourceLocation getCrushingPath(String outName)
+    protected Identifier getCrushingPath(String outName)
     {
         return AE2CrystalScience.makeId("mek_crushing/" + outName);
     }

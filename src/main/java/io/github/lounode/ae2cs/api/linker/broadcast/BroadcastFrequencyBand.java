@@ -21,7 +21,9 @@ import net.minecraft.nbt.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.util.ValueIOSerializable ;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +41,7 @@ import java.util.function.Supplier;
  * - online*：运行时（由端上报在线/离线）
  * - recomputeRuntime：由 FrequencyBandManager 统一触发
  */
-public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
+public class BroadcastFrequencyBand
 {
     /**
      * 当AE使用无线频段时，我们统计可用频段总数时直接返回此值
@@ -702,8 +704,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
     }
 
     // ----------------- 持久化 -----------------
-    @Override
-    public @UnknownNullability CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider)
+    public @UnknownNullability CompoundTag toTag()
     {
         CompoundTag tag = new CompoundTag();
         tag.putString("name", name);
@@ -740,67 +741,69 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         return tag;
     }
 
-    @Override
-    public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag compoundTag)
+    public static BroadcastFrequencyBand fromTag(@NotNull CompoundTag compoundTag)
     {
-        this.name = compoundTag.getString("name");
-        this.password = compoundTag.getString("password");
-        this.owner = UUID.fromString(compoundTag.getString("owner"));
-        this.isPublic = compoundTag.getBoolean("is_public");
-        this.allowedMemoryCardCopy = compoundTag.getBoolean("allowed_memory_card_copy");
+        var name = compoundTag.getStringOr("name","");
+        var password = compoundTag.getStringOr("password","");
+        var owner = UUID.fromString(compoundTag.getStringOr("owner",""));
+        var isPublic = compoundTag.getBooleanOr("is_public",false);
+        var allowedMemoryCardCopy = compoundTag.getBooleanOr("allowed_memory_card_copy",false);
 
-        this.whiteList.clear();
-        this.declaredSenders.clear();
-        this.declaredReceivers.clear();
+        var band = new BroadcastFrequencyBand(name, password, owner, isPublic, allowedMemoryCardCopy);
 
-        this.onlineSenderNodes.clear();
-        this.onlineReceiverNodes.clear();
-        this.onlineReceiverHosts.clear();
-        this.receiverAllocated.clear();
-        for (IGridConnection conn : receiverConnections.values())
+        band.whiteList.clear();
+        band.declaredSenders.clear();
+        band.declaredReceivers.clear();
+
+        band.onlineSenderNodes.clear();
+        band.onlineReceiverNodes.clear();
+        band.onlineReceiverHosts.clear();
+        band.receiverAllocated.clear();
+        for (IGridConnection conn : band.receiverConnections.values())
         {
             if (conn != null) conn.destroy();
         }
-        this.receiverConnections.clear();
-        this.bindGrid = null;
-        this.controllerNode = null;
+        band.receiverConnections.clear();
+        band.bindGrid = null;
+        band.controllerNode = null;
 
-        ListTag whiteListTag = compoundTag.getList("white_list", 8);
+        ListTag whiteListTag = compoundTag.getList("white_list").orElse(new ListTag());
         for (Tag t : whiteListTag)
         {
             if (t instanceof StringTag stringTag)
             {
                 try
                 {
-                    UUID id = UUID.fromString(stringTag.getAsString());
-                    this.whiteList.add(id);
+                    UUID id = UUID.fromString(stringTag.toString());
+                    band.whiteList.add(id);
                 }
                 catch (Throwable e)
                 {
-                    AE2CrystalScience.LOGGER.error("Failed to convert String to UUID: " + stringTag.getAsString(), e);
+                    AE2CrystalScience.LOGGER.error("Failed to convert String to UUID: " + stringTag.toString(), e);
                 }
             }
         }
 
-        ListTag senderListTag = compoundTag.getList("sender_list", 10);
+        ListTag senderListTag = compoundTag.getList("sender_list").orElse(new ListTag());
         for (Tag t : senderListTag)
         {
             DataResult<GlobalPos> parsed = GlobalPos.CODEC.parse(NbtOps.INSTANCE, t);
             parsed.result().ifPresentOrElse(
-                    this.declaredSenders::add,
+                    band.declaredSenders::add,
                     () -> AE2CrystalScience.LOGGER.error("Failed to parse GlobalPos from sender_list entry: {}", t)
             );
         }
 
-        ListTag receiverListTag = compoundTag.getList("receiver_list", 10);
+        ListTag receiverListTag = compoundTag.getList("receiver_list").orElse(new ListTag());
         for (Tag t : receiverListTag)
         {
             DataResult<GlobalPos> parsed = GlobalPos.CODEC.parse(NbtOps.INSTANCE, t);
             parsed.result().ifPresentOrElse(
-                    this.declaredReceivers::add,
+                    band.declaredReceivers::add,
                     () -> AE2CrystalScience.LOGGER.error("Failed to parse GlobalPos from receiver_list entry: {}", t)
             );
         }
+        return band;
     }
 
     public static enum BandError

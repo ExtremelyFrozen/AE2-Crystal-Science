@@ -15,7 +15,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.Tags;
 import net.pedroksl.advanced_ae.common.definitions.AAEFluids;
@@ -84,7 +84,7 @@ public class AECSCompatAAERecipeProvider extends AECSRecipeProvider
                 .save(compatOut);
     }
 
-    protected static ResourceLocation getReactionPath(ItemLike output)
+    protected static Identifier getReactionPath(ItemLike output)
     {
         return AE2CrystalScience.makeId(getPrefixedItemName("reaction", output));
     }

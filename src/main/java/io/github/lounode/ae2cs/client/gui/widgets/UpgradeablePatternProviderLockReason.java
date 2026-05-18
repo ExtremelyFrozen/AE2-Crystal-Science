@@ -1,20 +1,23 @@
 package io.github.lounode.ae2cs.client.gui.widgets;
 
-import appeng.api.client.AEKeyRendering;
 import appeng.api.config.LockCraftingMode;
 import appeng.api.stacks.AmountFormat;
 import appeng.client.Point;
+import appeng.client.api.AEKeyRenderer;
+import appeng.client.api.AEKeyRendering;
 import appeng.client.gui.ICompositeWidget;
-import appeng.client.gui.Icon;
+import appeng.util.Icon;
 import appeng.client.gui.Tooltip;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.InGameTooltip;
 import io.github.lounode.ae2cs.client.gui.UpgradeablePatternProviderGUI;
+import io.github.lounode.ae2cs.client.gui.icon.AE2IconAdapter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
@@ -61,27 +64,27 @@ public class UpgradeablePatternProviderLockReason implements ICompositeWidget
     }
 
     @Override
-    public void drawForegroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse)
+    public void drawForegroundLayer(GuiGraphicsExtractor guiGraphics, Rect2i bounds, Point mouse)
     {
         var menu = screen.getMenu();
 
-        Icon icon;
+        AE2IconAdapter icon;
         Component lockStatusText;
         if (menu.getCraftingLockedReason() == LockCraftingMode.NONE)
         {
-            icon = Icon.UNLOCKED;
+            icon = new AE2IconAdapter (Icon.UNLOCKED);
             lockStatusText = GuiText.CraftingLockIsUnlocked.text()
-                    .setStyle(Style.EMPTY.withColor(Mth.color(125 / 255f, 169 / 255f, 210 / 255f)));
+                    .setStyle(Style.EMPTY.withColor(ARGB.color(255,125 , 169, 210)));
         }
         else
         {
-            icon = Icon.LOCKED;
+            icon = new AE2IconAdapter (Icon.LOCKED);
             lockStatusText = GuiText.CraftingLockIsLocked.text()
-                    .setStyle(Style.EMPTY.withColor(Mth.color(193 / 255f, 66 / 255f, 75 / 255f)));
+                    .setStyle(Style.EMPTY.withColor(ARGB.color(255,193 , 66, 75)));
         }
 
         icon.getBlitter().dest(x, y).blit(guiGraphics);
-        guiGraphics.drawString(Minecraft.getInstance().font, lockStatusText, x + 15, y + 5, -1, false);
+        guiGraphics.text(Minecraft.getInstance().font, lockStatusText, x + 15, y + 5, -1, false);
     }
 
     @Nullable
@@ -102,7 +105,7 @@ public class UpgradeablePatternProviderLockReason implements ICompositeWidget
                 Component stackAmount;
                 if (stack != null)
                 {
-                    stackName = AEKeyRendering.getDisplayName(stack.what());
+                    stackName = AEKeyRendering.getTooltip().getDisplayName(stack.what());
                     stackAmount = Component.literal(stack.what().formatAmount(stack.amount(), AmountFormat.FULL));
                 }
                 else

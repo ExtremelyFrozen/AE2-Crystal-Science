@@ -18,13 +18,13 @@ import io.github.lounode.ae2cs.common.init.AECSMenus;
 import io.github.lounode.ae2cs.common.init.AECSParts;
 import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderHost;
 import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderLogic;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 public class ResonatingPatternProviderPart extends PatternProviderPart implements ResonatingPatternProviderHost
 {
-    public static final ResourceLocation MODEL_BASE = AE2CrystalScience.makeId(
+    public static final Identifier MODEL_BASE = AE2CrystalScience.makeId(
             "part/resonating_pattern_provider/base");
 
     @PartModels
@@ -39,7 +39,7 @@ public class ResonatingPatternProviderPart extends PatternProviderPart implement
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
             AppEng.makeId("part/interface_has_channel"));
 
-    public static final ResourceLocation MODEL_EXTENDED = AE2CrystalScience.makeId(
+    public static final Identifier MODEL_EXTENDED = AE2CrystalScience.makeId(
             "part/resonating_pattern_provider/extended");
 
     @PartModels

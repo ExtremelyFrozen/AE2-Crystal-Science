@@ -9,7 +9,6 @@ import io.github.lounode.ae2cs.common.init.AECSMenus;
 import io.github.lounode.ae2cs.common.me.menuhost.ResonatingPatternConverterMenuHost;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
@@ -31,7 +30,7 @@ public class ResonatingPatternConverterItem extends Item implements IMenuItem
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand)
+    public @NotNull InteractionResult use(@NotNull Level level, Player player, @NotNull InteractionHand hand)
     {
         ItemStack is = player.getItemInHand(hand);
 
@@ -42,11 +41,11 @@ public class ResonatingPatternConverterItem extends Item implements IMenuItem
             // 如果成功打开，我们返回成功
             if (MenuOpener.open(getMenuType(), player, locator))
             {
-                return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()), is);
+                return InteractionResult.SUCCESS;
             }
         }
 
-        return new InteractionResultHolder<>(InteractionResult.FAIL, is);
+        return InteractionResult.FAIL;
     }
 
     @Override

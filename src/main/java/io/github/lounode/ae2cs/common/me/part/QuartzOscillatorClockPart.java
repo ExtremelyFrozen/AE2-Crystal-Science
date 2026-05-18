@@ -2,16 +2,13 @@ package io.github.lounode.ae2cs.common.me.part;
 
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.core.AppEng;
-import appeng.items.parts.PartModels;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.AEBasePart;
-import appeng.parts.PartModel;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.common.me.logic.QuartzOscillatorClockHost;
 import io.github.lounode.ae2cs.common.me.logic.QuartzOscillatorClockLogic;
@@ -20,10 +17,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
@@ -32,22 +31,22 @@ import java.util.List;
 public class QuartzOscillatorClockPart extends AEBasePart implements QuartzOscillatorClockHost, IUpgradeableObject,
         IConfigurableObject
 {
-    public static final ResourceLocation MODEL_BASE_OFF = AE2CrystalScience.makeId(
+    public static final Identifier MODEL_BASE_OFF = AE2CrystalScience.makeId(
             "part/quartz_oscillator_clock/base_off");
-    public static final ResourceLocation MODEL_BASE_ON = AE2CrystalScience.makeId(
+    public static final Identifier MODEL_BASE_ON = AE2CrystalScience.makeId(
             "part/quartz_oscillator_clock/base_on");
 
-    @PartModels
-    public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE_OFF,
-            AppEng.makeId("part/interface_off"));
-
-    @PartModels
-    public static final PartModel MODELS_ON = new PartModel(MODEL_BASE_ON,
-            AppEng.makeId("part/interface_on"));
-
-    @PartModels
-    public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE_OFF,
-            AppEng.makeId("part/interface_has_channel"));
+//    @PartModels
+//    public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE_OFF,
+//            AppEng.makeId("part/interface_off"));
+//
+//    @PartModels
+//    public static final PartModel MODELS_ON = new PartModel(MODEL_BASE_ON,
+//            AppEng.makeId("part/interface_on"));
+//
+//    @PartModels
+//    public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE_OFF,
+//            AppEng.makeId("part/interface_has_channel"));
 
 
     private final QuartzOscillatorClockLogic logic;
@@ -64,16 +63,16 @@ public class QuartzOscillatorClockPart extends AEBasePart implements QuartzOscil
         this.logic = createLogic();
     }
 
-    @Override
-    public IPartModel getStaticModels()
-    {
-        if (this.pulseActive)
-            return MODELS_ON;
-        else if (this.isActive() && this.isPowered())
-            return MODELS_HAS_CHANNEL;
-        else
-            return MODELS_OFF;
-    }
+//    @Override
+//    public IPartModel getStaticModels()
+//    {
+//        if (this.pulseActive)
+//            return MODELS_ON;
+//        else if (this.isActive() && this.isPowered())
+//            return MODELS_HAS_CHANNEL;
+//        else
+//            return MODELS_OFF;
+//    }
 
     protected QuartzOscillatorClockLogic createLogic()
     {
@@ -90,7 +89,7 @@ public class QuartzOscillatorClockPart extends AEBasePart implements QuartzOscil
     @Override
     public boolean onUseWithoutItem(Player player, Vec3 pos)
     {
-        if (!player.getCommandSenderWorld().isClientSide())
+        if (!player.level().isClientSide())
         {
             openMenu(player, MenuLocators.forPart(this));
         }
@@ -156,7 +155,7 @@ public class QuartzOscillatorClockPart extends AEBasePart implements QuartzOscil
         }
 
         var level = be.getLevel();
-        if (level == null || level.isClientSide)
+        if (level == null || level.isClientSide())
         {
             this.pulseActive = active;
             return;
@@ -226,17 +225,17 @@ public class QuartzOscillatorClockPart extends AEBasePart implements QuartzOscil
     }
 
     @Override
-    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries)
+    public void writeToNBT(ValueOutput data)
     {
-        super.writeToNBT(data, registries);
-        this.logic.writeToNBT(data, registries);
+        super.writeToNBT(data);
+        this.logic.writeToNBT(data);
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries)
+    public void readFromNBT(ValueInput input)
     {
-        super.readFromNBT(data, registries);
-        this.logic.readFromNBT(data, registries);
+        super.readFromNBT(input);
+        this.logic.readFromNBT(input);
         this.pulseActive = false;
     }
 

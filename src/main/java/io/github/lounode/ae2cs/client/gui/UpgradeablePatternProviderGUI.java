@@ -5,7 +5,7 @@ import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.api.upgrades.Upgrades;
 import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.Icon;
+import appeng.util.Icon;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.*;
 import appeng.core.localization.GuiText;
@@ -76,7 +76,7 @@ public class UpgradeablePatternProviderGUI<C extends UpgradeablePatternProviderM
     {
         final boolean backwards = isHandlingRightClick();
         ServerboundPacket message = new ConfigButtonPacket(Settings.PATTERN_ACCESS_TERMINAL, backwards);
-        PacketDistributor.sendToServer(message);
+        PacketDistributor.sendToAllPlayers(message);
     }
 
     private List<Component> getCompatibleUpgrades()

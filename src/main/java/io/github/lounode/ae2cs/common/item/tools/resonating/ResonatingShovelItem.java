@@ -7,45 +7,45 @@ import io.github.lounode.ae2cs.common.item.tools.LinkableTool;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
-import java.util.List;
+import java.util.function.Consumer;
 
-public class ResonatingShovelItem extends ShovelItem implements LinkableTool, IntrinsicEnchantItem
-{
+public class ResonatingShovelItem extends Item implements LinkableTool, IntrinsicEnchantItem {
     private final IntrinsicEnchantment intrinsicEnchantment = new IntrinsicEnchantment(Enchantments.SILK_TOUCH, 1);
 
-    public ResonatingShovelItem(Properties properties)
-    {
-        super(AECSToolType.RESONATING.getToolTier(), properties.attributes(createAttributes(AECSToolType.RESONATING.getToolTier(), 1.5F, -3.0F)));
+    public ResonatingShovelItem(Properties properties) {
+        super(properties.shovel(AECSToolType.RESONATING.getToolMaterial(), 1.5F, -3.0F)
+                .repairable(AECSToolType.RESONATING.getRepairIngredient()));
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context,
-                                @NotNull List<Component> lines, @NotNull TooltipFlag advancedTooltips)
-    {
-        super.appendHoverText(stack, context, lines, advancedTooltips);
-        intrinsicEnchantment.appendHoverText(context, lines);
+                                @NotNull TooltipDisplay display, @NonNull Consumer<Component> builder,
+                                @NotNull TooltipFlag advancedTooltips) {
+        super.appendHoverText(stack, context, display, builder, advancedTooltips);
+        intrinsicEnchantment.appendHoverText(context, builder);
     }
 
     @Override
-    public int getIntrinsicEnchantLevel(ItemStack stack, Holder<Enchantment> enchantment)
-    {
+    public int getIntrinsicEnchantLevel(ItemInstance instance, Holder<Enchantment> enchantment) {
         return intrinsicEnchantment.getLevel(enchantment);
     }
 
     @Override
-    public @NotNull ItemEnchantments getAllEnchantments(@NotNull ItemStack stack, HolderLookup.@NotNull RegistryLookup<Enchantment> lookup)
-    {
+    public @NotNull ItemEnchantments getAllEnchantments(@NotNull ItemStack stack, HolderLookup.@NotNull RegistryLookup<Enchantment> lookup) {
         // 精准采集只认这一条路径
         // 也许后续可以考虑把精准采集的附魔原生写入，不过这样会影响到tooltip和其他东西
         ItemEnchantments base = super.getAllEnchantments(stack, lookup);
@@ -61,8 +61,7 @@ public class ResonatingShovelItem extends ShovelItem implements LinkableTool, In
     }
 
     @Override
-    public boolean isFoil(@NotNull ItemStack stack)
-    {
+    public boolean isFoil(@NotNull ItemStack stack) {
         return true;
     }
 }

@@ -12,7 +12,7 @@ import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult ;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -61,16 +61,16 @@ public class ResonatingPatternItem extends EncodedPatternItem<ResonatingPatternD
         int n = encoded.sparseInputs().size();
         if (n <= 0)
         {
-            player.displayClientMessage(Component.translatable("ae2cs.msg.resonating_pattern.no_inputs")
-                    .withStyle(ChatFormatting.RED), true);
+            player.sendOverlayMessage(Component.translatable("ae2cs.msg.resonating_pattern.no_inputs")
+                    .withStyle(ChatFormatting.RED));
             return InteractionResult.CONSUME;
         }
 
         int validCount = countNonEmptyInputs(encoded);
         if (validCount <= 0)
         {
-            player.displayClientMessage(Component.translatable("ae2cs.msg.resonating_pattern.no_valid_inputs")
-                    .withStyle(ChatFormatting.RED), true);
+            player.sendOverlayMessage(Component.translatable("ae2cs.msg.resonating_pattern.no_valid_inputs")
+                    .withStyle(ChatFormatting.RED));
             return InteractionResult.CONSUME;
         }
 
@@ -78,8 +78,8 @@ public class ResonatingPatternItem extends EncodedPatternItem<ResonatingPatternD
         int selected = resolveSelectedNonEmpty(stack, encoded);
         if (selected < 0)
         {
-            player.displayClientMessage(Component.translatable("ae2cs.msg.resonating_pattern.no_valid_inputs")
-                    .withStyle(ChatFormatting.RED), true);
+            player.sendOverlayMessage(Component.translatable("ae2cs.msg.resonating_pattern.no_valid_inputs")
+                    .withStyle(ChatFormatting.RED));
             return InteractionResult.CONSUME;
         }
 
@@ -107,7 +107,7 @@ public class ResonatingPatternItem extends EncodedPatternItem<ResonatingPatternD
         var updated = encoded.withTarget(selected, nextTarget);
         stack.set(AECSDataComponents.ENCODED_RESONATING_PATTERN.get(), updated);
 
-        player.displayClientMessage(
+        player.sendOverlayMessage(
                 nextTarget == null
                         ? Component.translatable("ae2cs.msg.resonating_pattern.unmarked",
                                 ord, validCount, selectedInfo)
@@ -116,8 +116,7 @@ public class ResonatingPatternItem extends EncodedPatternItem<ResonatingPatternD
                                 ord, validCount, selectedInfo,
                                 clickedPos.getX(), clickedPos.getY(), clickedPos.getZ(),
                                 face.getName())
-                        .withStyle(ChatFormatting.GREEN),
-                true
+                        .withStyle(ChatFormatting.GREEN)
         );
 
         // 拦截后续方块交互
@@ -129,7 +128,7 @@ public class ResonatingPatternItem extends EncodedPatternItem<ResonatingPatternD
      * - 仅在无编码时允许拆解
      */
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand)
+    public @NotNull InteractionResult use(Level level, Player player, InteractionHand hand)
     {
         ItemStack stack = player.getItemInHand(hand);
 
@@ -164,32 +163,32 @@ public class ResonatingPatternItem extends EncodedPatternItem<ResonatingPatternD
         int n = encoded.sparseInputs().size();
         if (n <= 0)
         {
-            player.displayClientMessage(Component.translatable("ae2cs.msg.resonating_pattern.no_inputs")
-                    .withStyle(ChatFormatting.RED), true);
+            player.sendOverlayMessage(Component.translatable("ae2cs.msg.resonating_pattern.no_inputs")
+                    .withStyle(ChatFormatting.RED));
             return;
         }
 
         int validCount = countNonEmptyInputs(encoded);
         if (validCount <= 0)
         {
-            player.displayClientMessage(Component.translatable("ae2cs.msg.resonating_pattern.no_valid_inputs")
-                    .withStyle(ChatFormatting.RED), true);
+            player.sendOverlayMessage(Component.translatable("ae2cs.msg.resonating_pattern.no_valid_inputs")
+                    .withStyle(ChatFormatting.RED));
             return;
         }
 
         int cur = resolveSelectedNonEmpty(stack, encoded);
         if (cur < 0)
         {
-            player.displayClientMessage(Component.translatable("ae2cs.msg.resonating_pattern.no_valid_inputs")
-                    .withStyle(ChatFormatting.RED), true);
+            player.sendOverlayMessage(Component.translatable("ae2cs.msg.resonating_pattern.no_valid_inputs")
+                    .withStyle(ChatFormatting.RED));
             return;
         }
 
         int nextIdx = next ? findNextNonEmptyInput(encoded, cur) : findPrevNonEmptyInput(encoded, cur);
         if (nextIdx < 0)
         {
-            player.displayClientMessage(Component.translatable("ae2cs.msg.resonating_pattern.no_valid_inputs")
-                    .withStyle(ChatFormatting.RED), true);
+            player.sendOverlayMessage(Component.translatable("ae2cs.msg.resonating_pattern.no_valid_inputs")
+                    .withStyle(ChatFormatting.RED));
             return;
         }
 
@@ -204,23 +203,21 @@ public class ResonatingPatternItem extends EncodedPatternItem<ResonatingPatternD
             var t = markInfo.get();
             var dimId = Component.translatable(t.pos().dimension().location().toLanguageKey("dimension"));
             var pos = t.pos().pos();
-            player.displayClientMessage(
+            player.sendOverlayMessage(
                     Component.translatable("ae2cs.msg.resonating_pattern.selected_input_marked",
                                     ord, validCount, selectedInfo,
                                     dimId,
                                     pos.getX(), pos.getY(), pos.getZ(),
                                     t.face().getName())
-                            .withStyle(ChatFormatting.GRAY),
-                    true
+                            .withStyle(ChatFormatting.GRAY)
             );
         }
         else
         {
-            player.displayClientMessage(
+            player.sendOverlayMessage(
                     Component.translatable("ae2cs.msg.resonating_pattern.selected_input_unmarked",
                                     ord, validCount, selectedInfo)
-                            .withStyle(ChatFormatting.GRAY),
-                    true
+                            .withStyle(ChatFormatting.GRAY)
             );
         }
     }

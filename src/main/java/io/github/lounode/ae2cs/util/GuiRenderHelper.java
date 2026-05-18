@@ -1,7 +1,7 @@
 package io.github.lounode.ae2cs.util;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 
 public class GuiRenderHelper
@@ -18,7 +18,7 @@ public class GuiRenderHelper
      * @param color       颜色（0xAARRGGBB）
      * @param dropShadow  是否绘制阴影
      */
-    public static void drawCenteredInRegion(GuiGraphics guiGraphics,
+    public static void drawCenteredInRegion(GuiGraphicsExtractor guiGraphics,
                                             Font font,
                                             Component text,
                                             int xA, int xB,
@@ -38,10 +38,10 @@ public class GuiRenderHelper
         int xStart = left + (regionWidth - textWidth) / 2;
 
         // 4) 绘制
-        guiGraphics.drawString(font, text, xStart, y, color, dropShadow);
+        GuiGraphicsExtractor.drawString(font, text, xStart, y, color, dropShadow);
     }
 
-    public static void drawRightAlignedAtX(GuiGraphics guiGraphics,
+    public static void drawRightAlignedAtX(GuiGraphicsExtractor guiGraphics,
                                            Font font,
                                            Component text,
                                            int xRight,
@@ -50,6 +50,6 @@ public class GuiRenderHelper
                                            boolean dropShadow)
     {
         int xStart = xRight - font.width(text);
-        guiGraphics.drawString(font, text, xStart, y, color, dropShadow);
+        GuiGraphicsExtractor.drawString(font, text, xStart, y, color, dropShadow);
     }
 }

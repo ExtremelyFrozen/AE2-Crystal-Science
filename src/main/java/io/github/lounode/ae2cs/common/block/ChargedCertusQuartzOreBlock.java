@@ -1,7 +1,7 @@
 package io.github.lounode.ae2cs.common.block;
 
+import appeng.client.AppEngClient;
 import appeng.core.AEConfig;
-import appeng.core.AppEngClient;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.util.RandomSource;
@@ -30,7 +30,7 @@ public class ChargedCertusQuartzOreBlock extends CertusQuartzOreBlock
         super.animateTick(state, level, pos, random);
 
         if (!AEConfig.instance().isEnableEffects()) return;
-        if (!AppEngClient.instance().shouldAddParticles(random)) return;
+//        if (!AppEngClient.instance().shouldAddParticles(random)) return;
 
         float xOff = random.nextFloat();
         float yOff = random.nextFloat();
@@ -47,8 +47,7 @@ public class ChargedCertusQuartzOreBlock extends CertusQuartzOreBlock
             case 5 -> zOff = 1.0f + eps;
         }
 
-        var color = new Vector3f(0.21f, 0.61f, 1.0f);
-        var dust = new DustParticleOptions(color, 0.9f);
+        var dust = new DustParticleOptions(0x369CFF, 0.9f);
 
         level.addParticle(dust,
                 pos.getX() + xOff, pos.getY() + yOff, pos.getZ() + zOff,

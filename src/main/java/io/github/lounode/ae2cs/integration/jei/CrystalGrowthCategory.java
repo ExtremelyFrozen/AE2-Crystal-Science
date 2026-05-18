@@ -11,16 +11,16 @@ import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.recipe.IFocusGroup;
-import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.types.IRecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class CrystalGrowthCategory implements IRecipeCategory<CrystalSeedItem>
 {
-    public static RecipeType<CrystalSeedItem> RECIPE_TYPE = RecipeType.create(AECSConstants.MODID, "crystal_growth",
+    public static IRecipeType<CrystalSeedItem> RECIPE_TYPE = IRecipeType.create(AECSConstants.MODID, "crystal_growth",
             CrystalSeedItem.class);
 
     private final IDrawableStatic background;
@@ -37,7 +37,7 @@ public class CrystalGrowthCategory implements IRecipeCategory<CrystalSeedItem>
     }
 
     @Override
-    public @NotNull RecipeType<CrystalSeedItem> getRecipeType()
+    public @NotNull IRecipeType<CrystalSeedItem> getRecipeType()
     {
         return RECIPE_TYPE;
     }
@@ -56,7 +56,7 @@ public class CrystalGrowthCategory implements IRecipeCategory<CrystalSeedItem>
 
     @Override
     public void draw(@NotNull CrystalSeedItem recipe, @NotNull IRecipeSlotsView recipeSlotsView,
-                     @NotNull GuiGraphics guiGraphics, double mouseX, double mouseY)
+                     @NotNull GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY)
     {
         IRecipeCategory.super.draw(recipe, recipeSlotsView, guiGraphics, mouseX, mouseY);
         background.draw(guiGraphics);
@@ -80,10 +80,10 @@ public class CrystalGrowthCategory implements IRecipeCategory<CrystalSeedItem>
     {
         int xIn = 23;
         int yIn = 22;
-        builder.addInputSlot(xIn, yIn).addItemStack(seedItem.getDefaultInstance());
+        builder.addInputSlot(xIn, yIn).add(seedItem.getDefaultInstance());
 
         int xOut = 86;
         int yOut = yIn;
-        builder.addOutputSlot(xOut, yOut).addItemStack(seedItem.getGrowTo().getDefaultInstance());
+        builder.addOutputSlot(xOut, yOut).add(seedItem.getGrowTo().getDefaultInstance());
     }
 }

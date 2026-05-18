@@ -156,13 +156,13 @@ public class CircuitEtcherRecipe implements Recipe<ThreeItemStackRecipeInput>
     }
 
     @Override
-    public @NotNull ItemStack assemble(@NotNull ThreeItemStackRecipeInput in, HolderLookup.@NotNull Provider registries)
+    public @NotNull ItemStack assemble(@NotNull ThreeItemStackRecipeInput in)
     {
         return result.copy();
     }
 
     @Override
-    public @NotNull ItemStack getResultItem(HolderLookup.@NotNull Provider registries)
+    public @NotNull ItemStack getResultItem()
     {
         return result;
     }

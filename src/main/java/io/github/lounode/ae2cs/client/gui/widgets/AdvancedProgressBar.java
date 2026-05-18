@@ -4,7 +4,7 @@ import appeng.client.gui.style.Blitter;
 import appeng.client.gui.widgets.ITooltip;
 import appeng.core.localization.GuiText;
 import appeng.menu.interfaces.IProgressProvider;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.Rect2i;
@@ -47,7 +47,7 @@ public class AdvancedProgressBar extends AbstractWidget implements ITooltip
     }
 
     @Override
-    public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks)
+    public void renderWidget(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks)
     {
         if (!this.visible) return;
 
@@ -78,7 +78,7 @@ public class AdvancedProgressBar extends AbstractWidget implements ITooltip
             case LEFT_TO_RIGHT ->
             {
                 if (shownW <= 0) return;
-                blitSub(guiGraphics,
+                blitSub(GuiGraphicsExtractor,
                         baseSrcX, baseSrcY, shownW, baseSrcH,
                         baseDestX, baseDestY);
             }
@@ -86,14 +86,14 @@ public class AdvancedProgressBar extends AbstractWidget implements ITooltip
             {
                 if (shownW <= 0) return;
                 int diff = baseSrcW - shownW;
-                blitSub(guiGraphics,
+                blitSub(GuiGraphicsExtractor,
                         baseSrcX + diff, baseSrcY, shownW, baseSrcH,
                         baseDestX, baseDestY);
             }
             case TOP_TO_BOTTOM ->
             {
                 if (shownH <= 0) return;
-                blitSub(guiGraphics,
+                blitSub(GuiGraphicsExtractor,
                         baseSrcX, baseSrcY, baseSrcW, shownH,
                         baseDestX, baseDestY);
             }
@@ -101,7 +101,7 @@ public class AdvancedProgressBar extends AbstractWidget implements ITooltip
             {
                 if (shownH <= 0) return;
                 int diff = baseSrcH - shownH;
-                blitSub(guiGraphics,
+                blitSub(GuiGraphicsExtractor,
                         baseSrcX, baseSrcY + diff, baseSrcW, shownH,
                         baseDestX, baseDestY + diff);
             }
@@ -117,7 +117,7 @@ public class AdvancedProgressBar extends AbstractWidget implements ITooltip
                 // 顶部：从最上面取 topH
                 if (topH > 0)
                 {
-                    blitSub(guiGraphics,
+                    blitSub(GuiGraphicsExtractor,
                             baseSrcX, baseSrcY, baseSrcW, topH,
                             baseDestX, baseDestY);
                 }
@@ -126,7 +126,7 @@ public class AdvancedProgressBar extends AbstractWidget implements ITooltip
                 if (bottomH > 0)
                 {
                     int diff = baseSrcH - bottomH;
-                    blitSub(guiGraphics,
+                    blitSub(GuiGraphicsExtractor,
                             baseSrcX, baseSrcY + diff, baseSrcW, bottomH,
                             baseDestX, baseDestY + diff);
                 }
@@ -141,7 +141,7 @@ public class AdvancedProgressBar extends AbstractWidget implements ITooltip
                 // 左侧：从最左取 leftW
                 if (leftW > 0)
                 {
-                    blitSub(guiGraphics,
+                    blitSub(GuiGraphicsExtractor,
                             baseSrcX, baseSrcY, leftW, baseSrcH,
                             baseDestX, baseDestY);
                 }
@@ -150,7 +150,7 @@ public class AdvancedProgressBar extends AbstractWidget implements ITooltip
                 if (rightW > 0)
                 {
                     int diff = baseSrcW - rightW;
-                    blitSub(guiGraphics,
+                    blitSub(GuiGraphicsExtractor,
                             baseSrcX + diff, baseSrcY, rightW, baseSrcH,
                             baseDestX + diff, baseDestY);
                 }
@@ -162,7 +162,7 @@ public class AdvancedProgressBar extends AbstractWidget implements ITooltip
                 double close = (double) current / (double) max; // 0=open, 1=closed
                 if (close <= 0.0)
                 {
-                    blitSub(guiGraphics, baseSrcX, baseSrcY, baseSrcW, baseSrcH, baseDestX, baseDestY);
+                    blitSub(GuiGraphicsExtractor, baseSrcX, baseSrcY, baseSrcW, baseSrcH, baseDestX, baseDestY);
                     return;
                 }
                 if (close >= 1.0)
@@ -206,7 +206,7 @@ public class AdvancedProgressBar extends AbstractWidget implements ITooltip
                 int destX = baseDestX + left;
                 int destY = baseDestY + top;
 
-                blitSub(guiGraphics, srcX, srcY, srcW, srcH, destX, destY);
+                blitSub(GuiGraphicsExtractor, srcX, srcY, srcW, srcH, destX, destY);
             }
         }
     }
@@ -222,7 +222,7 @@ public class AdvancedProgressBar extends AbstractWidget implements ITooltip
         return (int) Math.round(maxVal * t);
     }
 
-    private void blitSub(GuiGraphics g,
+    private void blitSub(GuiGraphicsExtractor g,
                          int srcX, int srcY, int srcW, int srcH,
                          int destX, int destY)
     {

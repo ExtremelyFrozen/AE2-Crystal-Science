@@ -5,7 +5,7 @@ import appeng.client.gui.style.Blitter;
 import io.github.lounode.ae2cs.client.gui.icon.AdaptedAE2Icon;
 import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -74,11 +74,11 @@ public class AECSBackgroundToggleButton<E extends Enum<E>> extends AECSIconButto
         this.iconByState = new EnumMap<>(enumClass);
     }
 
-    @Override
-    public void onPress()
-    {
-        cycleNext();
-    }
+//    @Override
+//    public void onPress()
+//    {
+//        cycleNext();
+//    }
 
     public @NotNull E getValue()
     {
@@ -178,7 +178,7 @@ public class AECSBackgroundToggleButton<E extends Enum<E>> extends AECSIconButto
     }
 
     @Override
-    public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partial)
+    public void extractContents(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partial)
     {
         if (!this.visible)
         {
@@ -204,13 +204,12 @@ public class AECSBackgroundToggleButton<E extends Enum<E>> extends AECSIconButto
             {
                 bgSet.normal().getBlitter()
                         .dest(getX(), getY())
-                        .zOffset(10)
                         .blit(guiGraphics);
             }
 
             if (item != null)
             {
-                guiGraphics.renderItem(new net.minecraft.world.item.ItemStack(item), getX(), getY(), 0, 20);
+                guiGraphics.item(new ItemStack(item), getX(), getY(), 20);
             }
             else if (icon != null)
             {
@@ -219,7 +218,7 @@ public class AECSBackgroundToggleButton<E extends Enum<E>> extends AECSIconButto
                 {
                     blitter.opacity(0.5f);
                 }
-                blitter.dest(getX(), getY()).zOffset(20).blit(guiGraphics);
+                blitter.dest(getX(), getY()).blit(guiGraphics);
             }
         }
         else
@@ -232,19 +231,17 @@ public class AECSBackgroundToggleButton<E extends Enum<E>> extends AECSIconButto
 
                 bgIcon.getBlitter()
                         .dest(getX() - 1, getY() + yOffset, 18, 20)
-                        .zOffset(2)
                         .blit(guiGraphics);
             }
 
             if (item != null)
             {
-                guiGraphics.renderItem(new ItemStack(item), getX(), getY() + 1 + yOffset, 0, 3);
+                guiGraphics.item(new ItemStack(item), getX(), getY() + 1 + yOffset, 3);
             }
             else if (icon != null)
             {
                 icon.getBlitter()
                         .dest(getX(), getY() + 1 + yOffset)
-                        .zOffset(3)
                         .blit(guiGraphics);
             }
         }

@@ -47,6 +47,7 @@ import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -351,7 +352,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         // 节点准备好之后加入到缓存表
         if (level != null && !level.isClientSide())
         {
-            ChunkPos center = new ChunkPos(worldPosition);
+            ChunkPos center = ChunkPos.containing(worldPosition);
             for (int offsetX = -autoAreaFactor; offsetX <= autoAreaFactor; offsetX++)
             {
                 for (int offsetZ = -autoAreaFactor; offsetZ <= autoAreaFactor; offsetZ++)
@@ -376,7 +377,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         // 方块被移除或区块卸载时从全局索引移除
         if (level != null && !level.isClientSide())
         {
-            ChunkPos center = new ChunkPos(worldPosition);
+            ChunkPos center = ChunkPos.containing(worldPosition);
             BlockPos posKey = worldPosition.immutable();
 
             for (int offsetX = -autoAreaFactor; offsetX <= autoAreaFactor; offsetX++)
@@ -577,7 +578,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
     }
 
     @SubscribeEvent
-    public static void onBlockBreak(BlockEvent.BreakEvent event)
+    public static void onBlockBreak(BreakBlockEvent event)
     {
         LevelAccessor targetLevelAccessor = event.getLevel();
         if (targetLevelAccessor instanceof ServerLevelAccessor sla)
@@ -709,7 +710,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         Level targetLevel = emitter.level;
         if (targetLevel instanceof ServerLevel serverLevel)
         {
-            ChunkPos centerChunk = new ChunkPos(emitter.worldPosition);
+            ChunkPos centerChunk = ChunkPos.containing(emitter.worldPosition);
             List<BlockEntity> blockEntities = ChunkHelper.getBlockEntitiesInChunks(serverLevel, centerChunk, autoAreaFactor);
             for (BlockEntity be : blockEntities)
             {

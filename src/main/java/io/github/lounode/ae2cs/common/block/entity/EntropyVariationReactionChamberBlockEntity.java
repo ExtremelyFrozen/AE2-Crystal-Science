@@ -30,7 +30,7 @@ import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -80,7 +80,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
      * 当前执行配方的id，在重新加载时保证机器运行进展不会因为配方检查被刷新掉
      */
     @Nullable
-    private ResourceLocation activeRecipeId;
+    private Identifier activeRecipeId;
 
     /**
      * 该配方需要的总能量
@@ -384,7 +384,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
         recipeProgress = data.getInt("recipe_progress");
         if (data.contains("active_recipe_id"))
         {
-            activeRecipeId = ResourceLocation.parse(data.getString("active_recipe_id"));
+            activeRecipeId = Identifier.parse(data.getString("active_recipe_id"));
         }
     }
 

@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * copy from applied energistics 2
@@ -24,7 +24,7 @@ public final class IntrinsicEnchantment
         this.level = level;
     }
 
-    public void appendHoverText(Item.TooltipContext context, List<Component> tooltipComponents)
+    public void appendHoverText(Item.TooltipContext context, Consumer<Component> tooltipComponents)
     {
         var registries = context.registries();
         if (registries == null)
@@ -34,7 +34,7 @@ public final class IntrinsicEnchantment
 
         var registrylookup = registries.lookupOrThrow(Registries.ENCHANTMENT);
         registrylookup.get(enchantment).ifPresent(holder -> {
-            tooltipComponents.add(GuiText.IntrinsicEnchant.text(Enchantment.getFullname(holder, level)));
+            tooltipComponents.accept(GuiText.IntrinsicEnchant.text(Enchantment.getFullname(holder, level)));
         });
     }
 

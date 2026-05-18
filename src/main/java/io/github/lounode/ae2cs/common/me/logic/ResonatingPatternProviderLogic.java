@@ -40,7 +40,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -168,7 +168,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
 
             try
             {
-                var rl = ResourceLocation.parse(dimStr);
+                var rl = Identifier.parse(dimStr);
                 var dimKey = ResourceKey.create(Registries.DIMENSION, rl);
                 var gp = GlobalPos.of(dimKey, BlockPos.of(posLong));
                 resonatingSendList.add(new PendingSend(new EncodedResonatingPattern.Target(gp, face), stack));

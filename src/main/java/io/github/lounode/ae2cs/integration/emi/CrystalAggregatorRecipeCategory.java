@@ -14,7 +14,7 @@ import io.github.lounode.ae2cs.common.recipe.crystal_aggregator.CrystalAggregato
 import net.minecraft.Util;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
@@ -32,7 +32,7 @@ public class CrystalAggregatorRecipeCategory extends BasicEmiRecipe
         }
     };
 
-    public static final ResourceLocation BG = AE2CrystalScience.makeId("textures/gui/recipe/crystal_aggregator.png");
+    public static final Identifier BG = AE2CrystalScience.makeId("textures/gui/recipe/crystal_aggregator.png");
     private static final int W = 135;
     private static final int H = 58;
 

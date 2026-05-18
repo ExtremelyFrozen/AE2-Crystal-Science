@@ -19,7 +19,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
@@ -138,7 +138,7 @@ public class AECSCompatEAERecipeProvider extends AECSRecipeProvider
                 .save(compatOut, getCrystalAssemblerPath(AECSBlocks.EX_INTEGRATED_INTERFACE_BLOCK));
     }
 
-    protected static ResourceLocation getCrystalAssemblerPath(ItemLike output)
+    protected static Identifier getCrystalAssemblerPath(ItemLike output)
     {
         return AE2CrystalScience.makeId(getPrefixedItemName("crystal_assembler", output));
     }

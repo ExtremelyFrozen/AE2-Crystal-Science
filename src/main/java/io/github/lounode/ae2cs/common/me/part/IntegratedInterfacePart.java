@@ -20,7 +20,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
@@ -31,7 +31,7 @@ import java.util.List;
 
 public class IntegratedInterfacePart extends AEBasePart implements IntegratedInterfaceHost
 {
-    public static final ResourceLocation MODEL_BASE = AE2CrystalScience.makeId("part/integrate_interface/base");
+    public static final Identifier MODEL_BASE = AE2CrystalScience.makeId("part/integrate_interface/base");
 
     @PartModels
     public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE, AppEng.makeId("part/interface_off"));
@@ -42,7 +42,7 @@ public class IntegratedInterfacePart extends AEBasePart implements IntegratedInt
     @PartModels
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, AppEng.makeId("part/interface_has_channel"));
 
-    public static final ResourceLocation MODEL_EXTENDED = AE2CrystalScience.makeId(
+    public static final Identifier MODEL_EXTENDED = AE2CrystalScience.makeId(
             "part/integrate_interface/extended");
 
     @PartModels

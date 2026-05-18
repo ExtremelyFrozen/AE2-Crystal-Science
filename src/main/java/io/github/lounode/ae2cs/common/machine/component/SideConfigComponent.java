@@ -30,7 +30,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -254,7 +255,7 @@ public class SideConfigComponent extends BaseMachineComponent
 
     private void tickAppEngInv(@NotNull Level level, @NotNull BlockPos pos)
     {
-        if (level.isClientSide || appEngInvComponent == null) return;
+        if (level.isClientSide() || appEngInvComponent == null) return;
         if (!autoImport && !autoExport) return;
 
 
@@ -278,7 +279,7 @@ public class SideConfigComponent extends BaseMachineComponent
             Direction otherSide = dir.getOpposite();
 
             // 利用AE2对外部进行物品能力进行包装，简化部分操作
-            IItemHandler otherItemHandler = level.getCapability(Capabilities.ItemHandler.BLOCK, otherPos, otherSide);
+            ResourceHandler<ItemResource> otherItemHandler = level.getCapability(Capabilities.Item.BLOCK, otherPos, otherSide);
             if (otherItemHandler == null) continue;
             PlatformInventoryWrapper otherInv = new PlatformInventoryWrapper(otherItemHandler);
 
@@ -375,7 +376,7 @@ public class SideConfigComponent extends BaseMachineComponent
 
     private void tickGenericInv(@NotNull Level level, @NotNull BlockPos pos)
     {
-        if (level.isClientSide || genericInvComponent == null) return;
+        if (level.isClientSide() || genericInvComponent == null) return;
         if (!autoImport && !autoExport) return;
 
         CombinedGenericInternalInventory original = genericInvComponent.combined();
@@ -607,23 +608,23 @@ public class SideConfigComponent extends BaseMachineComponent
     @Override
     public void readNbt(CompoundTag tag, HolderLookup.Provider registries)
     {
-        this.autoImport = tag.getBoolean("side_config_auto_import");
-        this.autoExport = tag.getBoolean("side_config_auto_export");
+        this.autoImport = tag.getBoolean("side_config_auto_import").orElse(false);
+        this.autoExport = tag.getBoolean("side_config_auto_export").orElse(false);
 
         this.policies.clear();
 
-        if (tag.contains("side_policies", CompoundTag.TAG_COMPOUND))
+        if (tag.contains("side_policies"))
         {
-            CompoundTag polTag = tag.getCompound("side_policies");
+            CompoundTag polTag = tag.getCompound("side_policies").orElse(new CompoundTag());
 
             for (Direction dir : Direction.values())
             {
                 String dirKey = dir.getName();
 
-                if (!polTag.contains(dirKey, CompoundTag.TAG_STRING))
+                if (!polTag.contains(dirKey))
                     continue;
 
-                String name = polTag.getString(dirKey);
+                String name = polTag.getString(dirKey).orElse("NONE");
                 try
                 {
                     this.policies.put(dir, SidePolicy.valueOf(name));

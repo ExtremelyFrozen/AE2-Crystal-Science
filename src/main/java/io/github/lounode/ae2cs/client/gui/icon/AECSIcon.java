@@ -2,7 +2,7 @@ package io.github.lounode.ae2cs.client.gui.icon;
 
 import appeng.client.gui.style.Blitter;
 import io.github.lounode.ae2cs.AE2CrystalScience;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public enum AECSIcon implements IButtonIcon
 {
@@ -88,7 +88,7 @@ public enum AECSIcon implements IButtonIcon
         this.height = height;
     }
 
-    public static final ResourceLocation TEXTURE = AE2CrystalScience.makeId("textures/gui/icons.png");
+    public static final Identifier TEXTURE = AE2CrystalScience.makeId("textures/gui/icons.png");
     public static final int TEXTURE_WIDTH = 256;
     public static final int TEXTURE_HEIGHT = 256;
 

@@ -9,7 +9,6 @@ import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.block.entity.*;
 import io.github.lounode.ae2cs.common.machine.IMachineHost;
 import io.github.lounode.ae2cs.common.machine.component.AppEngInvComponent;
-import io.github.lounode.ae2cs.common.machine.component.EnergyComponent;
 import io.github.lounode.ae2cs.common.machine.component.GenericStackInvComponent;
 import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
 import io.github.lounode.ae2cs.common.me.part.*;
@@ -19,8 +18,9 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.energy.IEnergyStorage;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 @EventBusSubscriber(modid = AECSConstants.MODID)
 public class AECSCapabilities
@@ -45,24 +45,24 @@ public class AECSCapabilities
                     }
             );
         }
-        for (BlockEntityType<?> beType : AECSBlockEntities.getAnnotatedWith(IEnergyStorage.class))
+        for (BlockEntityType<?> beType : AECSBlockEntities.getAnnotatedWith(EnergyHandler.class))
         {
             event.registerBlockEntity(
-                    Capabilities.EnergyStorage.BLOCK,
+                    Capabilities.Energy.BLOCK,
                     beType,
                     (be, direction) -> {
-                        if (be instanceof IMachineHost host && host.getMachineComponents().hasService(EnergyComponent.class))
+                        if (be instanceof IMachineHost host && host.getMachineComponents().hasService(EnergyHandler.class))
                         {
-                            return host.getMachineComponents().getService(EnergyComponent.class).getForgeEnergyAdapter();
+                            return host.getMachineComponents().getService(EnergyHandler.class);
                         }
                         return null;
                     }
             );
         }
-        for (BlockEntityType<?> beType : AECSBlockEntities.getAnnotatedWith(IItemHandler.class))
+        for (BlockEntityType<?> beType : AECSBlockEntities.getAnnotatedWith(ItemResource.class))
         {
             event.registerBlockEntity(
-                    Capabilities.ItemHandler.BLOCK,
+                    Capabilities.Item.BLOCK,
                     beType,
                     (be, direction) -> {
                         if (be instanceof IMachineHost host && host.getMachineComponents().hasService(AppEngInvComponent.class))
@@ -71,13 +71,13 @@ public class AECSCapabilities
                             {
                                 BaseInternalInventory inv = host.getMachineComponents().getService(SideConfigComponent.class).appEngInvForSide(direction);
                                 if (inv != null)
-                                    return inv.toItemHandler();
+                                    return inv.toResourceHandler();
                                 else
                                     return null;
                             }
                             else
                             {
-                                return host.getMachineComponents().getService(AppEngInvComponent.class).combined().toItemHandler();
+                                return host.getMachineComponents().getService(AppEngInvComponent.class).combined().toResourceHandler();
                             }
                         }
                         return null;

@@ -12,7 +12,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
@@ -20,8 +20,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import org.joml.Matrix4f;
-
-import static net.neoforged.neoforge.client.event.RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS;
 
 /**
  * 在手持谐振样板时渲染目标面
@@ -52,11 +50,8 @@ public class ResonatingPatternTargetHighlighter
     }
 
     @SubscribeEvent
-    public static void onRenderLevelStage(RenderLevelStageEvent event)
+    public static void onRenderLevelStage(RenderLevelStageEvent.AfterTranslucentBlocks event)
     {
-        if (event.getStage() != AFTER_TRANSLUCENT_BLOCKS)
-            return;
-
         Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
         if (player == null)
@@ -177,7 +172,7 @@ public class ResonatingPatternTargetHighlighter
                                      float x3, float y3, float z3,
                                      int r, int g, int b, int a)
     {
-        int argb = FastColor.ARGB32.color(a, r, g, b);
+        int argb = ARGB.color(a, r, g, b);
 
         vc.addVertex(mat, x0, y0, z0).setColor(argb);
         vc.addVertex(mat, x1, y1, z1).setColor(argb);

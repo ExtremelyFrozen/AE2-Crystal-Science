@@ -4,14 +4,14 @@ import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.client.gui.icon.AdaptedAE2Icon;
 import io.github.lounode.ae2cs.common.menu.linker.broadcast.FrequencyBandManagerMenu;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class BroadcasterPanel extends AbstractWidget
 {
-    private static final ResourceLocation BG = AE2CrystalScience.makeId("textures/gui/frequency_band_manager_menu.png");
+    private static final Identifier BG = AE2CrystalScience.makeId("textures/gui/frequency_band_manager_menu.png");
     private static final Rect2i TEXTURE_BOUND = new Rect2i(0, 226, 158, 17);
     private static final Rect2i TEXTURE_HIGHLIGHT_BOUND = new Rect2i(0, 243, 158, 17);
     private static final Rect2i DELETE_AREA_BOUND = new Rect2i(142, 0, 16, 17);
@@ -53,23 +53,23 @@ public class BroadcasterPanel extends AbstractWidget
     }
 
     @Override
-    protected void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float pt)
+    protected void renderWidget(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float pt)
     {
         Rect2i bounds;
         if (isHovered())
             bounds = TEXTURE_HIGHLIGHT_BOUND;
         else
             bounds = TEXTURE_BOUND;
-        guiGraphics.blit(BG, getX(), getY(), bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight(), 512, 512);
+        GuiGraphicsExtractor.blit(BG, getX(), getY(), bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight(), 512, 512);
 
-        AdaptedAE2Icon.CLEAR.getBlitter().dest(getX() + DELETE_AREA_BOUND.getX(), getY() + DELETE_AREA_BOUND.getY()).blit(guiGraphics);
+        AdaptedAE2Icon.CLEAR.getBlitter().dest(getX() + DELETE_AREA_BOUND.getX(), getY() + DELETE_AREA_BOUND.getY()).blit(GuiGraphicsExtractor);
 
         final var font = Minecraft.getInstance().font;
 
         if (isSender)
-            guiGraphics.drawString(font, senderComponent, getX() + 2, getY() + 4, getTextColor(), false);
+            GuiGraphicsExtractor.drawString(font, senderComponent, getX() + 2, getY() + 4, getTextColor(), false);
         else
-            guiGraphics.drawString(font, receiverComponent, getX() + 2, getY() + 4, getTextColor(), false);
+            GuiGraphicsExtractor.drawString(font, receiverComponent, getX() + 2, getY() + 4, getTextColor(), false);
     }
 
     @Override

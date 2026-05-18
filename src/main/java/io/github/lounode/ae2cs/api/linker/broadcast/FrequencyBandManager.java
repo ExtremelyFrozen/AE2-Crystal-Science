@@ -1,15 +1,15 @@
 package io.github.lounode.ae2cs.api.linker.broadcast;
 
+import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.linker.broadcast.networking.BroadcastBandsField;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 import net.minecraft.world.level.storage.LevelResource;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -39,8 +39,13 @@ public class FrequencyBandManager extends SavedData
      */
     private static final String MANAGER_PATH = SAVED_FOLDER_NAME + "/frequency_band_manager";
 
-    private static final SavedData.Factory<FrequencyBandManager> FACTORY =
-            new SavedData.Factory<>(FrequencyBandManager::new, FrequencyBandManager::load);
+    private static final SavedDataType<FrequencyBandManager> SAVED_DATA_TYPE =
+            new SavedDataType<>(
+                    AE2CrystalScience.makeId(MANAGER_PATH),
+                    FrequencyBandManager::new,
+                    CompoundTag.CODEC.listOf().xmap(FrequencyBandManager::fromTag , FrequencyBandManager::toTag)
+//                    .apply(instance, FrequencyBandManager::new))
+            );
 
     /**
      * name -> 频段实例
@@ -250,24 +255,22 @@ public class FrequencyBandManager extends SavedData
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server == null) return null;
 
-        return server.overworld().getDataStorage().computeIfAbsent(FACTORY, MANAGER_PATH);
+        return server.overworld().getDataStorage().computeIfAbsent(SAVED_DATA_TYPE);
     }
 
     // ---------- 持久化 ----------
 
-    public static FrequencyBandManager load(CompoundTag tag, HolderLookup.Provider registries)
+    public static FrequencyBandManager fromTag(List<CompoundTag> bandsTag)
     {
         FrequencyBandManager manager = new FrequencyBandManager();
 
-        ListTag bandsTag = tag.getList("bands", 10);
         for (Tag bandTag : bandsTag)
         {
             if (!(bandTag instanceof CompoundTag compoundBandTag)) continue;
 
             try
             {
-                BroadcastFrequencyBand band = new BroadcastFrequencyBand("", "", UUID.randomUUID(), false, false);
-                band.deserializeNBT(registries, compoundBandTag);
+                var band = BroadcastFrequencyBand.fromTag(compoundBandTag);
                 manager.frequencyBands.put(band.getName(), band);
             }
             catch (Throwable ignored)
@@ -277,19 +280,18 @@ public class FrequencyBandManager extends SavedData
         return manager;
     }
 
-    @Override
-    public @NotNull CompoundTag save(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider provider)
+//    @Override
+    public @NotNull List<CompoundTag> toTag()
     {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server != null) ensureSaveDirExists(server);
 
-        ListTag bandTags = new ListTag();
+        var bandTags = new ArrayList<CompoundTag>();
         for (BroadcastFrequencyBand band : frequencyBands.values())
         {
-            bandTags.add(band.serializeNBT(provider));
+            bandTags.add(band.toTag());
         }
-        tag.put("bands", bandTags);
-        return tag;
+        return bandTags;
     }
 
     /**

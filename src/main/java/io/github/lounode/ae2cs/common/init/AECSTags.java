@@ -1,7 +1,7 @@
 package io.github.lounode.ae2cs.common.init;
 
 import io.github.lounode.ae2cs.AE2CrystalScience;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -36,7 +36,7 @@ public class AECSTags
 
         private static TagKey<Block> tag(String name)
         {
-            return BlockTags.create(ResourceLocation.fromNamespaceAndPath("c", name));
+            return BlockTags.create(Identifier.fromNamespaceAndPath("c", name));
         }
 
         private static TagKey<Block> aecsTag(String name)
@@ -107,7 +107,7 @@ public class AECSTags
 
         private static TagKey<Item> tag(String name)
         {
-            return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", name));
+            return ItemTags.create(Identifier.fromNamespaceAndPath("c", name));
         }
 
         private static TagKey<Item> aecsTag(String name)

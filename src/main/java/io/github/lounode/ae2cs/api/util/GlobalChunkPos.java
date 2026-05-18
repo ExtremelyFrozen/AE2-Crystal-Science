@@ -10,12 +10,12 @@ public record GlobalChunkPos(ResourceKey<Level> dimension, ChunkPos chunkPos)
 {
     public GlobalChunkPos(GlobalPos pos)
     {
-        this(pos.dimension(), new ChunkPos(pos.pos()));
+        this(pos.dimension(), ChunkPos.containing(pos.pos()));
     }
 
     public GlobalChunkPos(ResourceKey<Level> dimension, BlockPos pos)
     {
-        this(dimension, new ChunkPos(pos));
+        this(dimension, ChunkPos.containing(pos));
     }
 
     public GlobalChunkPos(ResourceKey<Level> dimension, int x, int z)
@@ -25,6 +25,6 @@ public record GlobalChunkPos(ResourceKey<Level> dimension, ChunkPos chunkPos)
 
     public GlobalChunkPos(ResourceKey<Level> dimension, long packedPos)
     {
-        this(dimension, new ChunkPos(packedPos));
+        this(dimension, ChunkPos.unpack(packedPos));
     }
 }

@@ -12,7 +12,7 @@ import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -100,7 +100,7 @@ public class CrystalPulverizerRecipeBuilder implements RecipeBuilder
     }
 
     @Override
-    public void save(@NotNull RecipeOutput output, @NotNull ResourceLocation id)
+    public void save(@NotNull RecipeOutput output, @NotNull Identifier id)
     {
         if (this.input == null || this.input.ingredient().isEmpty() || this.input.count() <= 0)
         {
@@ -158,7 +158,7 @@ public class CrystalPulverizerRecipeBuilder implements RecipeBuilder
     @Override
     public void save(@NotNull RecipeOutput recipeOutput)
     {
-        ResourceLocation path = AE2CrystalScience.makeId("pulverizer/" + RecipeBuilder.getDefaultRecipeId(getResult()).getPath());
+        Identifier path = AE2CrystalScience.makeId("pulverizer/" + RecipeBuilder.getDefaultRecipeId(getResult()).getPath());
         save(recipeOutput, path);
     }
 

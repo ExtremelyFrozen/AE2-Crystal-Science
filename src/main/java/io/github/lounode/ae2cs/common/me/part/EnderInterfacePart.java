@@ -22,7 +22,7 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
@@ -31,7 +31,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 public class EnderInterfacePart extends InterfacePart implements EnderInterfaceHost
 {
-    public static final ResourceLocation MODEL_BASE = AE2CrystalScience.makeId(
+    public static final Identifier MODEL_BASE = AE2CrystalScience.makeId(
             "part/ender_interface/base");
 
     @PartModels
@@ -46,7 +46,7 @@ public class EnderInterfacePart extends InterfacePart implements EnderInterfaceH
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
             AppEng.makeId("part/interface_has_channel"));
 
-    public static final ResourceLocation MODEL_EXTENDED = AE2CrystalScience.makeId(
+    public static final Identifier MODEL_EXTENDED = AE2CrystalScience.makeId(
             "part/ender_interface/extended");
 
     @PartModels

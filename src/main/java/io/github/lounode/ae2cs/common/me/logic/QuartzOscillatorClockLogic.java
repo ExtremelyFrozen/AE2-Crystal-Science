@@ -23,6 +23,8 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import java.util.List;
 
@@ -348,24 +350,24 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
         level.updateNeighbourForOutputSignal(pos, block);
     }
 
-    public void writeToNBT(CompoundTag tag, HolderLookup.Provider registries)
+    public void writeToNBT(ValueOutput data)
     {
-        this.upgrades.writeToNBT(tag, "upgrades", registries);
-        this.cm.writeToNBT(tag, registries);
+        this.upgrades.writeToNBT(data, "upgrades");
+        this.cm.writeToNBT(data);
 
-        tag.putInt("pulse_width_ticks", pulseWidthTicks);
-        tag.putInt("current_hold", this.currentHold);
-        tag.putInt("current_countdown", this.currentCountDown);
+        data.putInt("pulse_width_ticks", pulseWidthTicks);
+        data.putInt("current_hold", this.currentHold);
+        data.putInt("current_countdown", this.currentCountDown);
     }
 
-    public void readFromNBT(CompoundTag tag, HolderLookup.Provider registries)
+    public void readFromNBT(ValueInput input)
     {
-        this.upgrades.readFromNBT(tag, "upgrades", registries);
-        this.cm.readFromNBT(tag, registries);
+        this.upgrades.readFromNBT(input, "upgrades");
+        this.cm.readFromNBT(input);
 
-        this.pulseWidthTicks = tag.getInt("pulse_width_ticks");
-        this.currentHold = Math.max(1, tag.getInt("current_hold"));
-        this.currentCountDown = tag.getInt("current_countdown");
+        this.pulseWidthTicks = input.getIntOr("pulse_width_ticks",0);
+        this.currentHold = Math.max(1, input.getIntOr("current_hold",1));
+        this.currentCountDown = input.getIntOr("current_countdown",0);
 
         // 重置红石状态
         onUpgradesChange();
@@ -430,7 +432,7 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
             var be = host.getBlockEntity();
             var level = be.getLevel();
 
-            if (level == null || level.isClientSide)
+            if (level == null || level.isClientSide())
             {
                 return TickRateModulation.IDLE;
             }

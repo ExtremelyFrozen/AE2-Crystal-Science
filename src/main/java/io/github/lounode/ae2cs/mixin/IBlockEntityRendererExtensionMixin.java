@@ -2,7 +2,6 @@ package io.github.lounode.ae2cs.mixin;
 
 import appeng.api.parts.IPart;
 import appeng.blockentity.networking.CableBusBlockEntity;
-import appeng.blockentity.networking.CableBusTESR;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import io.github.lounode.ae2cs.api.render.ICustomRenderBounding;
 import net.minecraft.core.BlockPos;
@@ -22,10 +21,10 @@ public interface IBlockEntityRendererExtensionMixin
     )
     private AABB aecs$getRenderBoundingBox(AABB original, BlockEntity be)
     {
-        if (!(this instanceof CableBusTESR))
-        {
-            return original;
-        }
+//        if (!(this instanceof CableBusTESR))
+//        {
+//            return original;
+//        }
         if (!(be instanceof CableBusBlockEntity te))
         {
             return original;

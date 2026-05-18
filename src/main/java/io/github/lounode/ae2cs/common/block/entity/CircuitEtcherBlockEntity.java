@@ -21,19 +21,19 @@ import io.github.lounode.ae2cs.common.recipe.input.ThreeItemStackRecipeInput;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
 
-@ProvideCaps(IItemHandler.class)
+@ProvideCaps(EnergyHandler.class)
 public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity implements IUpgradeableObject,
         CustomReturnableSubMenuHost
 {
@@ -60,7 +60,7 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
      * 当前执行配方的id，在重新加载时保证机器运行进展不会因为配方检查被刷新掉
      */
     @Nullable
-    private ResourceLocation activeRecipeId;
+    private Identifier activeRecipeId;
 
     /**
      * activeRecipe 对应的槽位映射（required[i] 使用哪个输入槽 0/1/2）
@@ -348,7 +348,7 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
         recipeProgress = data.getInt("recipe_progress");
         if (data.contains("active_recipe_id"))
         {
-            activeRecipeId = ResourceLocation.parse(data.getString("active_recipe_id"));
+            activeRecipeId = Identifier.parse(data.getString("active_recipe_id"));
         }
     }
 

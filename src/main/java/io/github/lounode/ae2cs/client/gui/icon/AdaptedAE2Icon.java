@@ -1,6 +1,6 @@
 package io.github.lounode.ae2cs.client.gui.icon;
 
-import appeng.client.gui.Icon;
+import appeng.util.Icon;
 
 public class AdaptedAE2Icon
 {

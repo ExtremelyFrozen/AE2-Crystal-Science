@@ -1,6 +1,5 @@
 package io.github.lounode.ae2cs.client.gui;
 
-import appeng.api.client.AEKeyRendering;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.LockCraftingMode;
 import appeng.api.config.Settings;
@@ -8,7 +7,7 @@ import appeng.api.config.YesNo;
 import appeng.api.stacks.AmountFormat;
 import appeng.client.Point;
 import appeng.client.gui.ICompositeWidget;
-import appeng.client.gui.Icon;
+import appeng.util.Icon;
 import appeng.client.gui.Tooltip;
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.style.ScreenStyle;
@@ -28,7 +27,7 @@ import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSIconButton;
 import io.github.lounode.ae2cs.common.menu.IntegratedInterfaceMenu;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
@@ -118,7 +117,7 @@ public class IntegratedInterfaceGUI extends UpgradeableScreen<IntegratedInterfac
     {
         final boolean backwards = isHandlingRightClick();
         ServerboundPacket message = new ConfigButtonPacket(Settings.PATTERN_ACCESS_TERMINAL, backwards);
-        PacketDistributor.sendToServer(message);
+        PacketDistributor.sendToAllPlayers(message);
     }
 
     @Override
@@ -195,7 +194,7 @@ public class IntegratedInterfaceGUI extends UpgradeableScreen<IntegratedInterfac
         }
 
         @Override
-        public void drawForegroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse)
+        public void drawForegroundLayer(GuiGraphicsExtractor guiGraphics, Rect2i bounds, Point mouse)
         {
             var menu = screen.getMenu();
 
@@ -214,8 +213,8 @@ public class IntegratedInterfaceGUI extends UpgradeableScreen<IntegratedInterfac
                         .setStyle(Style.EMPTY.withColor(Mth.color(193 / 255f, 66 / 255f, 75 / 255f)));
             }
 
-            icon.getBlitter().dest(x, y).blit(guiGraphics);
-            guiGraphics.drawString(Minecraft.getInstance().font, lockStatusText, x + 15, y + 5, -1, false);
+            icon.getBlitter().dest(x, y).blit(GuiGraphicsExtractor);
+            GuiGraphicsExtractor.drawString(Minecraft.getInstance().font, lockStatusText, x + 15, y + 5, -1, false);
         }
 
         @Nullable

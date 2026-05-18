@@ -9,7 +9,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -28,9 +28,9 @@ import java.util.concurrent.CompletableFuture;
 public class AECSRecipeProvider extends RecipeProvider implements IConditionBuilder
 {
 
-    public AECSRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries)
+    public AECSRecipeProvider(RecipeOutput output, HolderLookup.Provider registries)
     {
-        super(output, registries);
+        super(registries, output);
     }
 
     @Override
@@ -119,13 +119,13 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
             ItemLike output
     )
     {
-        ShapedRecipeBuilder.shaped(category, output)
+        ShapedRecipeBuilder.shaped(input.items,category, output)
                 .pattern("###")
                 .pattern("###")
                 .pattern("###")
                 .define('#', input)
                 .unlockedBy(getHasName(input), has(input))
-                .save(recipeOutput, getCrafterPath(input, output, true));
+                .save(recipeOutput);
     }
 
     protected static void unpackTo9(
@@ -447,7 +447,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     // AE充能配方-------------------------------------------------------------------
     protected static void chargedRecipe(RecipeOutput consumer, ItemLike input, ItemLike output)
     {
-        ResourceLocation id = AE2CrystalScience.makeId("charged/" + getItemName(input) + "_from_" + getItemName(output));
+        Identifier id = AE2CrystalScience.makeId("charged/" + getItemName(input) + "_from_" + getItemName(output));
         ChargerRecipeBuilder.charge(consumer, id, input, output);
     }
 
@@ -455,14 +455,14 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     {
         String tagId = sanitize(input.location());
 
-        ResourceLocation id = AE2CrystalScience.makeId("charged/" + getItemName(output) + "_from_" + tagId);
+        Identifier id = AE2CrystalScience.makeId("charged/" + getItemName(output) + "_from_" + tagId);
         ChargerRecipeBuilder.charge(consumer, id, input, output);
     }
 
     protected static void chargedRecipeWithAggregator(RecipeOutput consumer, ItemLike input, ItemLike output)
     {
         chargedRecipe(consumer, input, output);
-        ResourceLocation id = AE2CrystalScience.makeId("aggregator/" + getItemName(input) + "_from_" + getItemName(output));
+        Identifier id = AE2CrystalScience.makeId("aggregator/" + getItemName(input) + "_from_" + getItemName(output));
         CrystalAggregatorRecipeBuilder.aggregating(new ItemStack(output, 64), 102400)
                 .require(input, 64)
                 .save(consumer, id);
@@ -472,7 +472,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     {
         chargedRecipe(consumer, input, output);
         String tagId = sanitize(input.location());
-        ResourceLocation id = AE2CrystalScience.makeId("aggregator/" + getItemName(output) + "_from_" + tagId);
+        Identifier id = AE2CrystalScience.makeId("aggregator/" + getItemName(output) + "_from_" + tagId);
         CrystalAggregatorRecipeBuilder.aggregating(new ItemStack(output, 64), 102400)
                 .require(input, 64)
                 .save(consumer, id);
@@ -480,13 +480,13 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
 
 
     // id工具------------------------------------------------
-    protected static ResourceLocation getCrafterPath(ItemLike output, boolean shaped)
+    protected static Identifier getCrafterPath(ItemLike output, boolean shaped)
     {
         String prefix = shaped ? "craft/shaped" : "craft/shapeless";
         return AE2CrystalScience.makeId(getPrefixedItemName(prefix, output));
     }
 
-    protected static ResourceLocation getCrafterPath(ItemLike input, ItemLike output, boolean shaped)
+    protected static Identifier getCrafterPath(ItemLike input, ItemLike output, boolean shaped)
     {
         String prefix = shaped ? "craft/shaped" : "craft/shapeless";
         String path = prefix + "/" + getItemName(output) + "_from_" + getItemName(input);
@@ -496,17 +496,17 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
     /**
      * 给“互换”配方一个稳定的ID
      */
-    private static ResourceLocation craftingConversionId(ItemLike result, ItemLike material)
+    private static Identifier craftingConversionId(ItemLike result, ItemLike material)
     {
         return AE2CrystalScience.makeId("craft/shapeless/" + getConversionRecipeName(result, material) + "_swap");
     }
 
-    protected static ResourceLocation getInscriberPath(ItemLike output)
+    protected static Identifier getInscriberPath(ItemLike output)
     {
         return AE2CrystalScience.makeId(getPrefixedItemName("inscriber", output));
     }
 
-    protected static ResourceLocation getTransformPath(ItemLike output)
+    protected static Identifier getTransformPath(ItemLike output)
     {
         return AE2CrystalScience.makeId(getPrefixedItemName("transform", output));
     }
@@ -516,7 +516,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
         return prefix + "/" + getItemName(item);
     }
 
-    protected static String sanitize(ResourceLocation id)
+    protected static String sanitize(Identifier id)
     {
         // namespace:path/xxx -> namespace_path_xxx
         return id.getNamespace() + "_" + id.getPath().replace('/', '_');

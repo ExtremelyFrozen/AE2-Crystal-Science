@@ -1,30 +1,37 @@
 package io.github.lounode.ae2cs.api.util;
 
-
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnit;
 import appeng.api.networking.energy.IAEPowerStorage;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-public class ForgeEnergyAdapterUpgrade implements IEnergyStorage
-{
+public class ForgeEnergyAdapterUpgrade implements EnergyHandler {
     private final IAEPowerStorage aePowerStorage;
     private final AccessRestriction adapterRestriction;
 
-    public ForgeEnergyAdapterUpgrade(IAEPowerStorage aePowerStorage, AccessRestriction adapterRestriction)
-    {
+    public ForgeEnergyAdapterUpgrade(IAEPowerStorage aePowerStorage, AccessRestriction adapterRestriction) {
         this.aePowerStorage = aePowerStorage;
         this.adapterRestriction = adapterRestriction;
     }
 
     @Override
-    public int receiveEnergy(int amount, boolean simulate)
-    {
-        if (!canReceive()) return 0;
+    public long getAmountAsLong() {
+        return (long) Math.floor(PowerUnit.AE.convertTo(PowerUnit.FE, this.aePowerStorage.getAECurrentPower()));
+    }
 
-        final Actionable mode = simulate ? Actionable.SIMULATE : Actionable.MODULATE;
+    @Override
+    public long getCapacityAsLong() {
+        return (long) Math.floor(PowerUnit.AE.convertTo(PowerUnit.FE, this.aePowerStorage.getAEMaxPower()));
+    }
+
+    @Override
+    public int insert(int amount, TransactionContext transaction) {
+        if (!adapterRestriction.isAllowInsertion()) return 0;
+
+        final Actionable mode = Actionable.MODULATE;
         final double remaining = PowerUnit.AE.convertTo(PowerUnit.FE,
                 this.aePowerStorage.injectAEPower(PowerUnit.FE.convertTo(PowerUnit.AE, amount), mode));
 
@@ -32,38 +39,13 @@ public class ForgeEnergyAdapterUpgrade implements IEnergyStorage
     }
 
     @Override
-    public int extractEnergy(int amount, boolean simulate)
-    {
-        if (!canExtract()) return 0;
+    public int extract(int amount, TransactionContext transaction) {
+        if (!adapterRestriction.isAllowExtraction()) return 0;
 
-        final Actionable mode = simulate ? Actionable.SIMULATE : Actionable.MODULATE;
+        final Actionable mode = Actionable.MODULATE;
         final double extracted = PowerUnit.AE.convertTo(PowerUnit.FE,
                 this.aePowerStorage.extractAEPower(PowerUnit.FE.convertTo(PowerUnit.AE, amount), mode, PowerMultiplier.ONE));
 
         return (int) extracted;
-    }
-
-    @Override
-    public int getEnergyStored()
-    {
-        return (int) Math.floor(PowerUnit.AE.convertTo(PowerUnit.FE, this.aePowerStorage.getAECurrentPower()));
-    }
-
-    @Override
-    public int getMaxEnergyStored()
-    {
-        return (int) Math.floor(PowerUnit.AE.convertTo(PowerUnit.FE, this.aePowerStorage.getAEMaxPower()));
-    }
-
-    @Override
-    public boolean canExtract()
-    {
-        return adapterRestriction.isAllowExtraction();
-    }
-
-    @Override
-    public boolean canReceive()
-    {
-        return adapterRestriction.isAllowInsertion();
     }
 }
