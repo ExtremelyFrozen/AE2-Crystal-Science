@@ -3,7 +3,7 @@ package io.github.lounode.ae2cs.datagen.recipes;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
-import appeng.datagen.providers.tags.ConventionTags;
+import appeng.core.ConventionTags;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSEnchantments;
 import io.github.lounode.ae2cs.common.init.AECSItems;
@@ -13,6 +13,7 @@ import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBui
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
@@ -22,21 +23,16 @@ import java.util.concurrent.CompletableFuture;
 
 public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
 {
-    public AECSAggregatorRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries)
+    public AECSAggregatorRecipeProvider(HolderLookup.Provider registries, RecipeOutput output)
     {
-        super(output, registries);
+        super(registries, output);
     }
 
     @Override
-    public @NotNull String getName()
+    protected void buildRecipes()
     {
-        return "AECS Aggregator Recipes";
-    }
-
-    @Override
-    protected void buildRecipes(@NotNull RecipeOutput recipeOutput, HolderLookup.@NotNull Provider registries)
-    {
-        super.buildRecipes(recipeOutput, registries);
+        var recipeOutput = this.output;
+        var registries = this.registries;
 
         // 谐振样板转换器
         CrystalAggregatorRecipeBuilder.aggregating(AECSItems.RESONATING_PATTERN_CONVERTER, 1, 16000)
@@ -296,5 +292,25 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
                 .require(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_ENDER_QUARTZ, 1)
                 .require(AEItems.SINGULARITY, 1)
                 .save(recipeOutput, "aggregator/enchanted_book_of_ender_link");
+    }
+
+    public static class Runner extends RecipeProvider.Runner
+    {
+        public Runner(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider)
+        {
+            super(output, lookupProvider);
+        }
+
+        @Override
+        protected @NotNull RecipeProvider createRecipeProvider(HolderLookup.@NotNull Provider provider, @NotNull RecipeOutput output)
+        {
+            return new AECSAggregatorRecipeProvider(provider, output);
+        }
+
+        @Override
+        public @NotNull String getName()
+        {
+            return "AECS Aggregator Recipes";
+        }
     }
 }

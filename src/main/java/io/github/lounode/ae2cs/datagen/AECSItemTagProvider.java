@@ -1,5 +1,7 @@
 package io.github.lounode.ae2cs.datagen;
 
+import appeng.api.ids.AETags;
+import appeng.core.ConventionTags;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
@@ -9,7 +11,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ItemTagsProvider;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -19,9 +20,9 @@ import java.util.concurrent.CompletableFuture;
 
 public class AECSItemTagProvider extends ItemTagsProvider
 {
-    public AECSItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, String modId)
+    public AECSItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider)
     {
-        super(output, lookupProvider, blockTags, AECSConstants.MODID, existingFileHelper);
+        super(output, lookupProvider, AECSConstants.MODID);
     }
 
     @Override
@@ -143,8 +144,9 @@ public class AECSItemTagProvider extends ItemTagsProvider
                 .addTag(AECSTags.Items.PURE_METEOR_CRYSTAL);
         tag(AECSTags.Items.GEM_RESONATING)
                 .addTag(AECSTags.Items.PURE_RESONATING_CRYSTAL);
-        tag(EAETags.ENTRO_CRYSTAL)
-                .addTag(AECSTags.Items.PURE_ENTRO_CRYSTAL);
+        // TODO(compat) EAE联动
+//        tag(EAETags.ENTRO_CRYSTAL)
+//                .addTag(AECSTags.Items.PURE_ENTRO_CRYSTAL);
 
         // 矿
         tag(Tags.Items.ORES)

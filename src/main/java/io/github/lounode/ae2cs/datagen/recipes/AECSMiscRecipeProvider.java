@@ -1,7 +1,7 @@
 package io.github.lounode.ae2cs.datagen.recipes;
 
+import appeng.core.ConventionTags;
 import appeng.core.definitions.AEItems;
-import appeng.datagen.providers.tags.ConventionTags;
 import appeng.recipes.handlers.InscriberProcessType;
 import appeng.recipes.handlers.InscriberRecipeBuilder;
 import appeng.recipes.transform.TransformCircumstance;
@@ -15,8 +15,9 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
@@ -26,21 +27,15 @@ import java.util.concurrent.CompletableFuture;
 
 public class AECSMiscRecipeProvider extends AECSRecipeProvider
 {
-    public AECSMiscRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries)
+    public AECSMiscRecipeProvider(HolderLookup.Provider registries, RecipeOutput output)
     {
-        super(output, registries);
+        super(registries, output);
     }
 
     @Override
-    public @NotNull String getName()
+    protected void buildRecipes()
     {
-        return "AECS Misc Recipes";
-    }
-
-    @Override
-    protected void buildRecipes(@NotNull RecipeOutput recipeOutput, HolderLookup.@NotNull Provider registries)
-    {
-        super.buildRecipes(recipeOutput, registries);
+        var recipeOutput = this.output;
 
         // 爆炸以获得谐振水晶粉
         TransformRecipeBuilder.transform(recipeOutput, getTransformPath(AECSItems.RESONATING_DUST),
@@ -51,11 +46,11 @@ public class AECSMiscRecipeProvider extends AECSRecipeProvider
                 AECSItems.PURE_ENDER_QUARTZ);
 
         // 添加谐振样板配方
-        SpecialRecipeBuilder.special(ResonatingPatternUpgradeRecipe::new)
-                .save(recipeOutput, AE2CrystalScience.makeId("resonating_pattern_upgrade"));
+        SpecialRecipeBuilder.special(() -> new ResonatingPatternUpgradeRecipe(CraftingBookCategory.MISC))
+                .save(recipeOutput, recipeKey(AE2CrystalScience.makeId("resonating_pattern_upgrade")));
 
         // 添加谐振样板拆解
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEItems.BLANK_PATTERN)
+        shapeless(RecipeCategory.MISC, AEItems.BLANK_PATTERN)
                 .requires(AECSItems.RESONATING_PATTERN)
                 .unlockedBy("just_has_resonating_pattern", has(AECSItems.RESONATING_PATTERN))
                 .save(recipeOutput);
@@ -73,23 +68,43 @@ public class AECSMiscRecipeProvider extends AECSRecipeProvider
                 AECSItems.METEOR_CRYSTAL_SHOVEL, AECSItems.PURE_RESONATING_CRYSTAL, AECSItems.RESONATING_CRYSTAL_SHOVEL);
 
         // 压印系列
-        InscriberRecipeBuilder.inscribe(AECSTags.Items.GEM_RESONATING, AECSItems.RESONATING_CIRCUIT_PRINT, 1)
+        InscriberRecipeBuilder.inscribe(tag(AECSTags.Items.GEM_RESONATING), AECSItems.RESONATING_CIRCUIT_PRINT, 1)
                 .setTop(Ingredient.of(AECSItems.RESONATING_PRINT_PRESS))
                 .setMode(InscriberProcessType.INSCRIBE)
                 .save(recipeOutput, getInscriberPath(AECSItems.RESONATING_CIRCUIT_PRINT));
-        InscriberRecipeBuilder.inscribe(ConventionTags.SKY_STONE_DUST, AECSItems.RESONATING_PROCESSOR, 1)
+        InscriberRecipeBuilder.inscribe(tag(ConventionTags.SKY_STONE_DUST), AECSItems.RESONATING_PROCESSOR, 1)
                 .setTop(Ingredient.of(AECSItems.RESONATING_CIRCUIT_PRINT))
                 .setBottom(Ingredient.of(AEItems.SILICON_PRINT))
                 .setMode(InscriberProcessType.PRESS)
                 .save(recipeOutput, getInscriberPath(AECSItems.RESONATING_PROCESSOR));
 
-        InscriberRecipeBuilder.inscribe(Tags.Items.GEMS_QUARTZ, AECSItems.SIMPLE_CIRCUIT_PRINT, 1)
+        InscriberRecipeBuilder.inscribe(tag(Tags.Items.GEMS_QUARTZ), AECSItems.SIMPLE_CIRCUIT_PRINT, 1)
                 .setMode(InscriberProcessType.PRESS)
                 .save(recipeOutput, getInscriberPath(AECSItems.SIMPLE_CIRCUIT_PRINT));
-        InscriberRecipeBuilder.inscribe(Tags.Items.DUSTS_REDSTONE, AECSItems.SIMPLE_PROCESSOR, 1)
+        InscriberRecipeBuilder.inscribe(tag(Tags.Items.DUSTS_REDSTONE), AECSItems.SIMPLE_PROCESSOR, 1)
                 .setTop(Ingredient.of(AECSItems.SIMPLE_CIRCUIT_PRINT))
                 .setBottom(Ingredient.of(AEItems.SILICON_PRINT))
                 .setMode(InscriberProcessType.PRESS)
                 .save(recipeOutput, getInscriberPath(AECSItems.SIMPLE_PROCESSOR));
+    }
+
+    public static class Runner extends RecipeProvider.Runner
+    {
+        public Runner(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider)
+        {
+            super(output, lookupProvider);
+        }
+
+        @Override
+        protected @NotNull RecipeProvider createRecipeProvider(HolderLookup.@NotNull Provider provider, @NotNull RecipeOutput output)
+        {
+            return new AECSMiscRecipeProvider(provider, output);
+        }
+
+        @Override
+        public @NotNull String getName()
+        {
+            return "AECS Misc Recipes";
+        }
     }
 }

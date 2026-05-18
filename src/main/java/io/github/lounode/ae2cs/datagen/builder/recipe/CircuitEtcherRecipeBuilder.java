@@ -6,17 +6,20 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.advancements.critereon.MinMaxBounds;
-import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.advancements.criterion.InventoryChangeTrigger;
+import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +30,7 @@ import java.util.*;
 public class CircuitEtcherRecipeBuilder implements RecipeBuilder
 {
 
-    private static final SizedIngredient EMPTY = new SizedIngredient(Ingredient.EMPTY, 1);
+    private static final SizedIngredient EMPTY = new SizedIngredient(Ingredient.of(java.util.stream.Stream.<ItemLike>empty()), 1);
 
     private final ItemStack result;
     private final int energyCost;
@@ -36,7 +39,7 @@ public class CircuitEtcherRecipeBuilder implements RecipeBuilder
     private final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
 
     // 用来自动写配方成就，在没有手写unlockBy条件时，会自动启用
-    private final List<ItemPredicate.Builder> autoUnlockPredicates = new ArrayList<>(3);
+    private final List<Item> autoUnlockItems = new ArrayList<>(3);
 
     private CircuitEtcherRecipeBuilder(ItemStack result, int energyCost)
     {
@@ -84,7 +87,7 @@ public class CircuitEtcherRecipeBuilder implements RecipeBuilder
 
     public CircuitEtcherRecipeBuilder require(TagKey<Item> tag, int count)
     {
-        require(Ingredient.of(tag), count);
+        require(ingredient(tag), count);
         return this;
     }
 
@@ -102,15 +105,21 @@ public class CircuitEtcherRecipeBuilder implements RecipeBuilder
         return this;
     }
 
-    @Override
     public @NotNull Item getResult()
     {
         return result.getItem();
     }
 
     @Override
-    public void save(RecipeOutput output, @NotNull Identifier id)
+    public @NotNull ResourceKey<Recipe<?>> defaultId()
     {
+        return recipeKey(AE2CrystalScience.makeId("circuit_etcher/" + getItemName(getResult())));
+    }
+
+    @Override
+    public void save(RecipeOutput output, @NotNull ResourceKey<Recipe<?>> id)
+    {
+        Identifier advancementId = id.identifier().withPrefix("recipes/");
         Advancement.Builder adv = output.advancement()
                 .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
                 .rewards(AdvancementRewards.Builder.recipe(id))
@@ -128,13 +137,13 @@ public class CircuitEtcherRecipeBuilder implements RecipeBuilder
             int idx = 0;
             Set<String> usedNames = new HashSet<>();
 
-            for (ItemPredicate.Builder p : this.autoUnlockPredicates)
+            for (Item item : this.autoUnlockItems)
             {
                 String name = uniqueCriterionName("has_input_" + idx++, usedNames);
-                adv.addCriterion(name, InventoryChangeTrigger.TriggerInstance.hasItems(p));
+                adv.addCriterion(name, InventoryChangeTrigger.TriggerInstance.hasItems(item));
             }
 
-            if (this.autoUnlockPredicates.isEmpty())
+            if (this.autoUnlockItems.isEmpty())
             {
                 adv.addCriterion("has_result",
                         InventoryChangeTrigger.TriggerInstance.hasItems(this.result.getItem()));
@@ -147,7 +156,12 @@ public class CircuitEtcherRecipeBuilder implements RecipeBuilder
         SizedIngredient c = inputs.size() > 2 ? inputs.get(2) : EMPTY;
 
         var recipe = new CircuitEtcherRecipe(a, b, c, result, energyCost);
-        output.accept(id, recipe, adv.build(id.withPrefix("recipes/")));
+        output.accept(id, recipe, adv.build(advancementId));
+    }
+
+    public void save(RecipeOutput output, @NotNull Identifier id)
+    {
+        save(output, recipeKey(id));
     }
 
     @Override
@@ -159,20 +173,13 @@ public class CircuitEtcherRecipeBuilder implements RecipeBuilder
     @Override
     public void save(@NotNull RecipeOutput recipeOutput)
     {
-        Identifier path = AE2CrystalScience.makeId("circuit_etcher/" + RecipeBuilder.getDefaultRecipeId(getResult()).getPath());
-        save(recipeOutput, path);
+        save(recipeOutput, defaultId());
     }
 
     // 用于自动生成成就解锁条件
-    private void addAutoUnlockPredicateForItem(Item item)
+    private void addAutoUnlockItem(Item item)
     {
-        MinMaxBounds.Ints countBound = MinMaxBounds.Ints.atLeast(1);
-
-        autoUnlockPredicates.add(
-                ItemPredicate.Builder.item()
-                        .of(item)
-                        .withCount(countBound)
-        );
+        autoUnlockItems.add(item);
     }
 
     /**
@@ -180,20 +187,33 @@ public class CircuitEtcherRecipeBuilder implements RecipeBuilder
      */
     private void tryAddAutoUnlockFromIngredient(Ingredient ing)
     {
-        ItemStack[] stacks = ing.getItems();
-        if (stacks.length == 0) return;
-
-        // 去空
-        List<Item> items = Arrays.stream(stacks)
-                .filter(s -> s != null && !s.isEmpty())
-                .map(ItemStack::getItem)
-                .distinct()
-                .toList();
-
-        if (!items.isEmpty())
+        try
         {
-            addAutoUnlockPredicateForItem(items.getFirst());
+            ing.items()
+                    .map(holder -> holder.value())
+                    .distinct()
+                    .findFirst()
+                    .ifPresent(this::addAutoUnlockItem);
         }
+        catch (IllegalStateException ignored)
+        {
+            // Tag ingredients may be unbound during datagen; the result item fallback will unlock the recipe.
+        }
+    }
+
+    private static Ingredient ingredient(TagKey<Item> tag)
+    {
+        return Ingredient.of(HolderSet.emptyNamed(BuiltInRegistries.ITEM, tag));
+    }
+
+    private static ResourceKey<Recipe<?>> recipeKey(Identifier id)
+    {
+        return ResourceKey.create(Registries.RECIPE, id);
+    }
+
+    private static String getItemName(Item item)
+    {
+        return BuiltInRegistries.ITEM.getKey(item).getPath();
     }
 
     private static String uniqueCriterionName(String base, Set<String> used)
