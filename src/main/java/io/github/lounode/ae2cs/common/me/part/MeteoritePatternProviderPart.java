@@ -4,37 +4,19 @@
 //import appeng.api.parts.IPartItem;
 //import appeng.api.parts.RegisterPartCapabilitiesEvent;
 //import appeng.api.stacks.AEItemKey;
-//import appeng.core.AppEng;
 //import appeng.helpers.patternprovider.PatternProviderLogic;
 //import appeng.menu.ISubMenu;
 //import appeng.menu.MenuOpener;
 //import appeng.menu.locator.MenuHostLocator;
 //import appeng.parts.crafting.PatternProviderPart;
-//import io.github.lounode.ae2cs.AE2CrystalScience;
 //import io.github.lounode.ae2cs.common.init.AECSMenus;
 //import io.github.lounode.ae2cs.common.me.logic.MeteoritePatternProviderHost;
 //import io.github.lounode.ae2cs.common.me.logic.MeteoritePatternProviderLogic;
-//import net.minecraft.resources.Identifier;
 //import net.minecraft.world.entity.player.Player;
 //import net.minecraft.world.item.ItemStack;
 //
 //public class MeteoritePatternProviderPart extends PatternProviderPart implements MeteoritePatternProviderHost
 //{
-//    public static final Identifier MODEL_BASE = AE2CrystalScience.makeId(
-//            "part/meteorite_pattern_provider/base");
-//
-//    @PartModels
-//    public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE,
-//            AppEng.makeId("part/interface_off"));
-//
-//    @PartModels
-//    public static final PartModel MODELS_ON = new PartModel(MODEL_BASE,
-//            AppEng.makeId("part/interface_on"));
-//
-//    @PartModels
-//    public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-//            AppEng.makeId("part/interface_has_channel"));
-//
 //    public MeteoritePatternProviderPart(IPartItem<?> partItem)
 //    {
 //        super(partItem);
@@ -50,23 +32,6 @@
 //                (part, direction) -> part.getLogic().getReturnInv(),
 //                MeteoritePatternProviderPart.class
 //        );
-//    }
-//
-//    @Override
-//    public IPartModel getStaticModels()
-//    {
-//        if (this.isActive() && this.isPowered())
-//        {
-//            return MODELS_HAS_CHANNEL;
-//        }
-//        else if (this.isPowered())
-//        {
-//            return MODELS_ON;
-//        }
-//        else
-//        {
-//            return MODELS_OFF;
-//        }
 //    }
 //
 //    @Override

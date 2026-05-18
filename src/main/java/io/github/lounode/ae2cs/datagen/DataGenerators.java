@@ -54,6 +54,8 @@ public class DataGenerators {
 
         // 生成物品和方块模型
         event.createProvider(AECSModelProvider::new);
+        // 生成 AE 26.1 part item -> part model 绑定
+        event.createProvider(AECSPartModelProvider::new);
         // 生成方块、物品、流体标签
         event.createProvider(AECSBlockTagProvider::new);
         event.createProvider(AECSItemTagProvider::new);

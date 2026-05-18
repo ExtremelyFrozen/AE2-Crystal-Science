@@ -5,12 +5,14 @@ import appeng.api.orientation.IOrientationStrategy;
 import appeng.api.orientation.OrientationStrategies;
 import appeng.block.AEBaseBlock;
 import appeng.block.crafting.PatternProviderBlock;
+import appeng.core.AppEng;
 import com.mojang.math.Quadrant;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
+import io.github.lounode.ae2cs.common.init.AECSParts;
 import io.github.lounode.ae2cs.common.item.CrystalSeedItem;
 import io.github.lounode.ae2cs.common.item.PureCrystalItem;
 import io.github.lounode.ae2cs.datagen.properties.GrowProcess;
@@ -36,7 +38,29 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
 
+import java.util.Optional;
+
 public class AECSModelProvider extends ModelProvider {
+    private static final ModelTemplate PART_INTERFACE = new ModelTemplate(
+            Optional.of(AppEng.makeId("part/interface_base")),
+            Optional.empty(),
+            TextureSlot.FRONT
+    );
+    private static final ModelTemplate PART_PATTERN_PROVIDER = new ModelTemplate(
+            Optional.of(AppEng.makeId("part/pattern_provider_base")),
+            Optional.empty(),
+            TextureSlot.FRONT
+    );
+    private static final ModelTemplate ITEM_INTERFACE = new ModelTemplate(
+            Optional.of(AppEng.makeId("item/cable_interface")),
+            Optional.empty(),
+            TextureSlot.FRONT
+    );
+    private static final ModelTemplate ITEM_PATTERN_PROVIDER = new ModelTemplate(
+            Optional.of(AppEng.makeId("item/cable_pattern_provider")),
+            Optional.empty(),
+            TextureSlot.FRONT
+    );
 
     public AECSModelProvider(PackOutput output) {
         super(output, AECSConstants.MODID);
@@ -86,6 +110,8 @@ public class AECSModelProvider extends ModelProvider {
         for (DeferredItem<? extends Item> item : AECSItems.getOthers()) {
             itemModels.generateFlatItem(item.get(), ModelTemplates.FLAT_ITEM);
         }
+
+        genPartModels(blockModels, itemModels);
     }
 
 
@@ -107,6 +133,81 @@ public class AECSModelProvider extends ModelProvider {
                         ItemModelUtils.override(model2, 0.666f)
                 )
         );
+    }
+
+    private void genPartModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
+        partModel(blockModels, "part/ender_interface/base", PART_INTERFACE,
+                "block/ender_interface/base", null, null);
+        partModel(blockModels, "part/ender_interface/extended", PART_INTERFACE,
+                "block/ender_interface/extended", null, null);
+        partItemModel(blockModels, itemModels, AECSParts.ENDER_INTERFACE_PART.get(), ITEM_INTERFACE,
+                "block/ender_interface/base", null);
+        partItemModel(blockModels, itemModels, AECSParts.EX_ENDER_INTERFACE_PART.get(), ITEM_INTERFACE,
+                "block/ender_interface/extended", null);
+
+        partModel(blockModels, "part/integrate_interface/base", PART_INTERFACE,
+                "block/integrated_interface/base", "block/integrated_interface/back", "block/integrated_interface/back");
+        partModel(blockModels, "part/integrate_interface/extended", PART_INTERFACE,
+                "block/extended_integrated_interface/base", "block/extended_integrated_interface/back", "block/extended_integrated_interface/back");
+        partItemModel(blockModels, itemModels, AECSParts.INTEGRATE_INTERFACE_PART.get(), ITEM_INTERFACE,
+                "block/integrated_interface/base", "block/integrated_interface/back");
+        partItemModel(blockModels, itemModels, AECSParts.EX_INTEGRATE_INTERFACE_PART.get(), ITEM_INTERFACE,
+                "block/extended_integrated_interface/base", "block/extended_integrated_interface/back");
+
+        partModel(blockModels, "part/simple_pattern_provider/base", PART_PATTERN_PROVIDER,
+                "block/simple_pattern_provider/base", "block/simple_pattern_provider/back", "block/simple_pattern_provider/back");
+        partItemModel(blockModels, itemModels, AECSParts.SIMPLE_PATTERN_PROVIDER_PART.get(), ITEM_PATTERN_PROVIDER,
+                "block/simple_pattern_provider/base", "block/simple_pattern_provider/back");
+
+        partModel(blockModels, "part/meteorite_pattern_provider/base", PART_PATTERN_PROVIDER,
+                "block/meteorite_pattern_provider/base", "block/meteorite_pattern_provider/back", "block/meteorite_pattern_provider/back");
+        partItemModel(blockModels, itemModels, AECSParts.METEORITE_PATTERN_PROVIDER_PART.get(), ITEM_PATTERN_PROVIDER,
+                "block/meteorite_pattern_provider/base", "block/meteorite_pattern_provider/back");
+
+        partModel(blockModels, "part/resonating_pattern_provider/base", PART_PATTERN_PROVIDER,
+                "block/resonating_pattern_provider/base", "block/resonating_pattern_provider/back", "block/resonating_pattern_provider/back");
+        partModel(blockModels, "part/resonating_pattern_provider/extended", PART_PATTERN_PROVIDER,
+                "block/extended_resonating_pattern_provider/base", "block/extended_resonating_pattern_provider/back", "block/extended_resonating_pattern_provider/back");
+        partItemModel(blockModels, itemModels, AECSParts.RESONATING_PATTERN_PROVIDER_PART.get(), ITEM_PATTERN_PROVIDER,
+                "block/resonating_pattern_provider/base", "block/resonating_pattern_provider/back");
+        partItemModel(blockModels, itemModels, AECSParts.EX_RESONATING_PATTERN_PROVIDER_PART.get(), ITEM_PATTERN_PROVIDER,
+                "block/extended_resonating_pattern_provider/base", "block/extended_resonating_pattern_provider/back");
+
+        partModel(blockModels, "part/quartz_oscillator_clock/base_off", PART_INTERFACE,
+                "block/quartz_oscillator_clock/off/part/front", "block/quartz_oscillator_clock/off/part/back", null);
+        partModel(blockModels, "part/quartz_oscillator_clock/base_on", PART_INTERFACE,
+                "block/quartz_oscillator_clock/on/part/front", "block/quartz_oscillator_clock/on/part/back", null);
+        partItemModel(blockModels, itemModels, AECSParts.QUARTZ_OSCILLATOR_CLOCK_PART.get(), ITEM_INTERFACE,
+                "block/quartz_oscillator_clock/off/part/front", null);
+    }
+
+    private void partModel(BlockModelGenerators blockModels, String modelPath, ModelTemplate template,
+                           String front, @Nullable String back, @Nullable String particle) {
+        template.create(AE2CrystalScience.makeId(modelPath), partTextures(front, back, particle), blockModels.modelOutput);
+    }
+
+    private void partItemModel(BlockModelGenerators blockModels, ItemModelGenerators itemModels, Item item,
+                               ModelTemplate template, String front, @Nullable String back) {
+        var model = template.create(
+                ModelLocationUtils.getModelLocation(item),
+                partTextures(front, back, null),
+                blockModels.modelOutput
+        );
+        itemModels.itemModelOutput.accept(item, ItemModelUtils.plainModel(model));
+    }
+
+    private TextureMapping partTextures(String front, @Nullable String back, @Nullable String particle) {
+        var textures = new TextureMapping()
+                .put(TextureSlot.FRONT, new Material(AE2CrystalScience.makeId(front)));
+
+        if (back != null) {
+            textures.putForced(TextureSlot.BACK, new Material(AE2CrystalScience.makeId(back)));
+        }
+        if (particle != null) {
+            textures.putForced(TextureSlot.PARTICLE, new Material(AE2CrystalScience.makeId(particle)));
+        }
+
+        return textures;
     }
 
     protected void blockWithItem(BlockModelGenerators blockModels, DeferredBlock<?> deferredBlock) {

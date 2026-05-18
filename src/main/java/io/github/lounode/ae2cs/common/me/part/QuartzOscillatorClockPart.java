@@ -6,10 +6,9 @@ import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
-import appeng.core.AppEng;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.AEBasePart;
-import io.github.lounode.ae2cs.AE2CrystalScience;
+import appeng.parts.automation.PartModelData;
 import io.github.lounode.ae2cs.common.me.logic.QuartzOscillatorClockHost;
 import io.github.lounode.ae2cs.common.me.logic.QuartzOscillatorClockLogic;
 import net.minecraft.core.BlockPos;
@@ -17,13 +16,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -31,24 +30,6 @@ import java.util.List;
 public class QuartzOscillatorClockPart extends AEBasePart implements QuartzOscillatorClockHost, IUpgradeableObject,
         IConfigurableObject
 {
-    public static final Identifier MODEL_BASE_OFF = AE2CrystalScience.makeId(
-            "part/quartz_oscillator_clock/base_off");
-    public static final Identifier MODEL_BASE_ON = AE2CrystalScience.makeId(
-            "part/quartz_oscillator_clock/base_on");
-
-//    @PartModels
-//    public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE_OFF,
-//            AppEng.makeId("part/interface_off"));
-//
-//    @PartModels
-//    public static final PartModel MODELS_ON = new PartModel(MODEL_BASE_ON,
-//            AppEng.makeId("part/interface_on"));
-//
-//    @PartModels
-//    public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE_OFF,
-//            AppEng.makeId("part/interface_has_channel"));
-
-
     private final QuartzOscillatorClockLogic logic;
 
     /**
@@ -63,17 +44,6 @@ public class QuartzOscillatorClockPart extends AEBasePart implements QuartzOscil
         this.logic = createLogic();
     }
 
-//    @Override
-//    public IPartModel getStaticModels()
-//    {
-//        if (this.pulseActive)
-//            return MODELS_ON;
-//        else if (this.isActive() && this.isPowered())
-//            return MODELS_HAS_CHANNEL;
-//        else
-//            return MODELS_OFF;
-//    }
-
     protected QuartzOscillatorClockLogic createLogic()
     {
         return new QuartzOscillatorClockLogic(getMainNode(), this, getPartItem().asItem());
@@ -84,6 +54,13 @@ public class QuartzOscillatorClockPart extends AEBasePart implements QuartzOscil
     {
         bch.addBox(2, 2, 14, 14, 14, 16);
         bch.addBox(5, 5, 12, 11, 11, 14);
+    }
+
+    @Override
+    public void collectModelData(ModelData.Builder builder)
+    {
+        super.collectModelData(builder);
+        builder.with(PartModelData.LEVEL_EMITTER_ON, this.pulseActive);
     }
 
     @Override
