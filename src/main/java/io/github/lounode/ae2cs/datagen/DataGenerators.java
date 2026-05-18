@@ -6,6 +6,7 @@ import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSEnchantments;
 import io.github.lounode.ae2cs.datagen.properties.GrowProcess;
 import io.github.lounode.ae2cs.datagen.recipes.*;
+import io.github.lounode.ae2cs.datagen.recipes.compat.AECSCompatOCRecipeProvider;
 import io.github.lounode.ae2cs.datagen.worldgen.AECSBiomeModifiers;
 import io.github.lounode.ae2cs.datagen.worldgen.AECSConfiguredFeatures;
 import io.github.lounode.ae2cs.datagen.worldgen.AECSPlacedFeatures;
@@ -74,7 +75,7 @@ public class DataGenerators {
 //        generator.addProvider(event.includeServer(), new AECSCompatEAERecipeProvider(packOutput, lookupProvider));
 //        generator.addProvider(event.includeServer(), new AECSCompatMegaCellRecipeProvider(packOutput, lookupProvider));
 //        generator.addProvider(event.includeServer(), new AECSCompatMEKRecipeProvider(packOutput, lookupProvider));
-//        generator.addProvider(event.includeServer(), new AECSCompatOCRecipeProvider(packOutput, lookupProvider));
+        event.createProvider(AECSCompatOCRecipeProvider.Runner::new);
     }
 
     @SubscribeEvent

@@ -1,7 +1,7 @@
 package io.github.lounode.ae2cs.datagen.recipes.compat;
 
+import appeng.core.ConventionTags;
 import appeng.core.definitions.AEItems;
-import appeng.datagen.providers.tags.ConventionTags;
 import com.wintercogs.ae2omnicells.common.init.OCBlocks;
 import com.wintercogs.ae2omnicells.common.init.OCItems;
 import com.wintercogs.ae2omnicells.common.init.OCTags;
@@ -11,40 +11,36 @@ import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CircuitEtcherRecipeBuilder;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBuilder;
+import io.github.lounode.ae2cs.datagen.recipes.AECSCraftRecipeProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 
+import static net.neoforged.neoforge.common.conditions.NeoForgeConditions.modLoaded;
+
 public class AECSCompatOCRecipeProvider extends AECSRecipeProvider
 {
-    public AECSCompatOCRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries)
+    public AECSCompatOCRecipeProvider(HolderLookup.Provider registries, RecipeOutput output)
     {
-        super(output, registries);
+        super(registries, output);
     }
 
     @Override
-    public @NotNull String getName()
-    {
-        return "AECS OMNI CELLS Compat Recipes";
-    }
-
-    @Override
-    protected void buildRecipes(@NotNull RecipeOutput originalOut, HolderLookup.@NotNull Provider registries)
-    {
-        var compatOut = originalOut.withConditions(modLoaded(AECSConstants.OMNI_CELL_ID));
-        super.buildRecipes(compatOut, registries);
+    protected void buildRecipes() {
+        var compatOut = this.output.withConditions(modLoaded(AECSConstants.OMNI_CELL_ID));
 
         stonecutterResultFromItem(compatOut, RecipeCategory.MISC, OCItems.OMNI_LINK_PRINT_PRESS, AECSItems.ENDER_BLANK_PRINT_PRESS);
         stonecutterResultFromItem(compatOut, RecipeCategory.MISC, OCItems.COMPLEX_LINK_PRINT_PRESS, AECSItems.ENDER_BLANK_PRINT_PRESS);
         stonecutterResultFromItem(compatOut, RecipeCategory.MISC, OCItems.MULTIDIMENSIONAL_EXPANSION_PRINT_PRESS, AECSItems.ENDER_BLANK_PRINT_PRESS);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSItems.ENDER_BLANK_PRINT_PRESS)
+        shaped(RecipeCategory.MISC, AECSItems.ENDER_BLANK_PRINT_PRESS)
                 .pattern(" a ")
                 .pattern("aba")
                 .pattern(" a ")
@@ -91,5 +87,25 @@ public class AECSCompatOCRecipeProvider extends AECSRecipeProvider
                 .require(Tags.Items.INGOTS_IRON, 32)
                 .require(ConventionTags.CERTUS_QUARTZ_DUST, 32)
                 .save(compatOut);
+    }
+
+    public static class Runner extends RecipeProvider.Runner
+    {
+        public Runner(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider)
+        {
+            super(output, lookupProvider);
+        }
+
+        @Override
+        protected @NotNull RecipeProvider createRecipeProvider(HolderLookup.@NotNull Provider provider, @NotNull RecipeOutput output)
+        {
+            return new AECSCompatOCRecipeProvider(provider, output);
+        }
+
+        @Override
+        public @NotNull String getName()
+        {
+            return "AECS OMNI CELLS Compat Recipes";
+        }
     }
 }

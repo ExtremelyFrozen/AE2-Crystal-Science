@@ -155,8 +155,8 @@ dependencies {
 
     // MEK - TODO: Update to 26.1 compatible version
     //implementation "maven.modrinth:mekanism:10.7.13.78"
-    // OMNI CELL - TODO: Update to 26.1 compatible version
-    //implementation "curse.maven:omni-cells-1359517:7169530"
+    // OMNI CELL
+    implementation "curse.maven:omni-cells-1359517:8050970"
     // MEGA CELL - TODO: Update to 26.1 compatible version
     //implementation "curse.maven:mega-cells-622112:6853076"
     // EAE - TODO: Update to 26.1 compatible version
