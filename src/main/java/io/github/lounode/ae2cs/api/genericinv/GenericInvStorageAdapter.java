@@ -10,6 +10,7 @@ import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
 import com.google.common.base.Preconditions;
 import net.minecraft.network.chat.Component;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -136,6 +137,11 @@ public class GenericInvStorageAdapter implements MEStorage, GenericInternalInven
     public void onChange()
     {
         delegate.onChange();
+    }
+
+    @Override
+    public void updateSnapshots(TransactionContext transaction) {
+
     }
 
     // MEStorage:：跨槽聚合

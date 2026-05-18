@@ -5,6 +5,7 @@ import appeng.api.config.Actionable;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -252,6 +253,11 @@ public class CombinedGenericInternalInventory implements GenericInternalInventor
         }
     }
 
+    @Override
+    public void updateSnapshots(TransactionContext transaction) {
+
+    }
+
     // === 辅助方法 ===
 
     private static long saturatingAdd(long a, long b)
@@ -363,6 +369,11 @@ public class CombinedGenericInternalInventory implements GenericInternalInventor
         @Override
         public void onChange()
         {
+        }
+
+        @Override
+        public void updateSnapshots(TransactionContext transaction) {
+
         }
     }
 }

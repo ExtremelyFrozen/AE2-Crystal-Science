@@ -39,6 +39,6 @@ public class ResonatingPatternListener
         event.setCanceled(true);
 
         boolean next = dy < 0;
-        PacketDistributor.sendToServer(new ScrollResonatingPatternSelectPacket(next));
+        PacketDistributor.sendToAllPlayers(new ScrollResonatingPatternSelectPacket(next));
     }
 }

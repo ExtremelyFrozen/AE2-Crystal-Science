@@ -2,11 +2,9 @@ package io.github.lounode.ae2cs.common.init;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.PartModels;
 import appeng.api.util.AEColor;
 import appeng.items.parts.ColoredPartItem;
 import appeng.items.parts.PartItem;
-import appeng.items.parts.PartModelsHelper;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.ids.AECSPartIds;
 import io.github.lounode.ae2cs.common.me.part.*;
@@ -102,7 +100,7 @@ public class AECSParts
             Supplier<Item.Properties> props
     )
     {
-        PartModels.registerModels(PartModelsHelper.createModels(partClass));
+//        PartModels.registerModels(PartModelsHelper.createModels(partClass));
 
         DeferredItem<PartItem<T>> obj = ITEMS.register(idPath,
                 () -> new PartItem<>(props.get(), partClass, partFactory));
@@ -129,7 +127,7 @@ public class AECSParts
             Supplier<Item.Properties> props
     )
     {
-        PartModels.registerModels(PartModelsHelper.createModels(partClass));
+//        PartModels.registerModels(PartModelsHelper.createModels(partClass));
 
         DeferredItem<PartItem<T>> obj = ITEMS.register(idPath, () -> itemFactory.apply(props.get()));
         ALL.add(obj);
@@ -155,7 +153,7 @@ public class AECSParts
             Supplier<Item.Properties> props
     )
     {
-        PartModels.registerModels(PartModelsHelper.createModels(partClass));
+//        PartModels.registerModels(PartModelsHelper.createModels(partClass));
 
         EnumMap<AEColor, DeferredItem<ColoredPartItem<T>>> map = new EnumMap<>(AEColor.class);
 

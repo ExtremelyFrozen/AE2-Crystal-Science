@@ -17,6 +17,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -99,17 +101,17 @@ public class AENetworkedComponentBlockEntity extends AENetworkedBlockEntity impl
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries)
+    public void saveAdditional(ValueOutput data)
     {
-        super.saveAdditional(data, registries);
-        machineComponents.writeNbt(data, registries);
+        super.saveAdditional(data);
+        machineComponents.writeNbt(data);
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries)
+    public void loadTag(ValueInput data)
     {
-        super.loadTag(data, registries);
-        machineComponents.readNbt(data, registries);
+        super.loadTag(data);
+        machineComponents.readNbt(data);
     }
 
     @Override

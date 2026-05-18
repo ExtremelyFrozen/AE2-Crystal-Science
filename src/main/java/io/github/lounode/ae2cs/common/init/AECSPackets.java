@@ -6,7 +6,6 @@ import io.github.lounode.ae2cs.network.c2s.SideConfigMenuOpenPacket;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 @EventBusSubscriber(modid = AECSConstants.MODID)
@@ -22,19 +21,15 @@ public class AECSPackets
         registrar.playBidirectional(
                 ScrollResonatingPatternSelectPacket.TYPE,
                 ScrollResonatingPatternSelectPacket.STREAM_CODEC,
-                new DirectionalPayloadHandler<>(
-                        ScrollResonatingPatternSelectPacket::handle,
-                        ScrollResonatingPatternSelectPacket::handle
-                )
+                ScrollResonatingPatternSelectPacket::handle,
+                ScrollResonatingPatternSelectPacket::handle
         );
 
         registrar.playBidirectional(
                 SideConfigMenuOpenPacket.TYPE,
                 SideConfigMenuOpenPacket.STREAM_CODEC,
-                new DirectionalPayloadHandler<>(
-                        SideConfigMenuOpenPacket::handle,
-                        SideConfigMenuOpenPacket::handle
-                )
+                SideConfigMenuOpenPacket::handle,
+                SideConfigMenuOpenPacket::handle
         );
     }
 }

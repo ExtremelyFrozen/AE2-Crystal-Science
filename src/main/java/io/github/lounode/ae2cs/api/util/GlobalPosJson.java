@@ -17,7 +17,7 @@ public record GlobalPosJson(String dimensionId, int x, int y, int z)
     public static GlobalPosJson from(GlobalPos pos)
     {
         Objects.requireNonNull(pos, "pos");
-        String dim = pos.dimension().location().toString();
+        String dim = pos.dimension().identifier().toString();
         BlockPos bp = pos.pos();
         return new GlobalPosJson(dim, bp.getX(), bp.getY(), bp.getZ());
     }

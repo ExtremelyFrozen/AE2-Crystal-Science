@@ -33,6 +33,8 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -378,19 +380,19 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
     }
 
     @Override
-    public void writeToNBT(CompoundTag tag, HolderLookup.Provider registries)
+    public void writeToNBT(ValueOutput output)
     {
-        super.writeToNBT(tag, registries);
-        upgrades.writeToNBT(tag, "upgrades", registries);
-        AEKeyHelper.writeKeyAmountMap(tag, "crafted_contents", craftedContents, registries);
+        super.writeToNBT(output);
+        upgrades.writeToNBT(output, "upgrades");
+        AEKeyHelper.writeKeyAmountMap(output, "crafted_contents", craftedContents);
     }
 
     @Override
-    public void readFromNBT(CompoundTag tag, HolderLookup.Provider registries)
+    public void readFromNBT(ValueInput input)
     {
-        super.readFromNBT(tag, registries);
-        upgrades.readFromNBT(tag, "upgrades", registries);
-        AEKeyHelper.readKeyAmountMap(tag, "crafted_contents", craftedContents, registries);
+        super.readFromNBT(input);
+        upgrades.readFromNBT(input, "upgrades");
+        AEKeyHelper.readKeyAmountMap(input, "crafted_contents", craftedContents);
         onUpgradesChange();
     }
 

@@ -26,6 +26,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import org.jetbrains.annotations.Nullable;
@@ -256,7 +258,7 @@ public class CrystalAggregatorBlockEntity extends AENetworkedSelfPoweredBlockEnt
                 getInputInv().getStackInSlot(2)
         );
 
-        var opt = level.getRecipeManager().getRecipeFor(
+        var opt = level.getServer().getRecipeManager().getRecipeFor(
                 AECSRecipeTypes.CRYSTAL_AGGREGATOR.get(),
                 input,
                 level
@@ -329,10 +331,10 @@ public class CrystalAggregatorBlockEntity extends AENetworkedSelfPoweredBlockEnt
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries)
+    public void saveAdditional(ValueOutput data)
     {
-        super.saveAdditional(data, registries);
-        upgrades.writeToNBT(data, "upgrades", registries);
+        super.saveAdditional(data);
+        upgrades.writeToNBT(data, "upgrades");
         data.putInt("recipe_progress", recipeProgress);
         if (activeRecipe != null)
         {
@@ -341,15 +343,14 @@ public class CrystalAggregatorBlockEntity extends AENetworkedSelfPoweredBlockEnt
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries)
+    public void loadTag(ValueInput input)
     {
-        super.loadTag(data, registries);
-        upgrades.readFromNBT(data, "upgrades", registries);
-        recipeProgress = data.getInt("recipe_progress");
-        if (data.contains("active_recipe_id"))
-        {
-            activeRecipeId = Identifier.parse(data.getString("active_recipe_id"));
-        }
+        super.loadTag(input);
+        upgrades.readFromNBT(input, "upgrades");
+        recipeProgress = input.getIntOr("recipe_progress", 0);
+        input.getString("active_recipe_id").ifPresent(id -> {
+            activeRecipeId = Identifier.parse(id);
+        });
     }
 
     @Override
@@ -358,7 +359,7 @@ public class CrystalAggregatorBlockEntity extends AENetworkedSelfPoweredBlockEnt
         super.onLoad();
         if (activeRecipeId != null && level != null)
         {
-            Optional<RecipeHolder<?>> opt = level.getRecipeManager().byKey(activeRecipeId);
+            Optional<RecipeHolder<?>> opt = level.getServer().getRecipeManager().byKey(activeRecipeId);
             opt.ifPresent(recipeHolder -> activeRecipe = (RecipeHolder<CrystalAggregatorRecipe>) recipeHolder);
         }
         updateActiveRecipe();

@@ -12,6 +12,8 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -125,14 +127,14 @@ public final class MachineComponentContainer
         components.forEach(component -> component.exportSettings(ctx, builder, player));
     }
 
-    public void writeNbt(CompoundTag tag, HolderLookup.Provider r)
+    public void writeNbt(ValueOutput data)
     {
-        components.forEach(component -> component.writeNbt(tag, r));
+        components.forEach(component -> component.writeNbt(data));
     }
 
-    public void readNbt(CompoundTag tag, HolderLookup.Provider r)
+    public void readNbt(ValueInput input)
     {
-        components.forEach(component -> component.readNbt(tag, r));
+        components.forEach(component -> component.readNbt(input));
     }
 
     public void writeStream(RegistryFriendlyByteBuf data)

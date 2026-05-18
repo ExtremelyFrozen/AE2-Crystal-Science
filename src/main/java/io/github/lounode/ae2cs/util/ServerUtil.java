@@ -1,11 +1,8 @@
 package io.github.lounode.ae2cs.util;
 
-import com.mojang.authlib.GameProfile;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.players.GameProfileCache;
 
-import java.util.Optional;
 import java.util.UUID;
 
 public class ServerUtil
@@ -19,19 +16,12 @@ public class ServerUtil
         ServerPlayer onlinePlayer = infoProvider.getPlayerList().getPlayer(uuid);
         if (onlinePlayer != null)
         {
-            return onlinePlayer.getGameProfile().getName();
+            return onlinePlayer.getGameProfile().name();
         }
 
-        GameProfileCache profileCache = infoProvider.getProfileCache();
-        if (profileCache != null)
-        {
-            Optional<GameProfile> profileInfo =
-                    profileCache.get(uuid);
-            if (profileInfo.isPresent())
-            {
-                return profileInfo.get().getName();
-            }
-        }
+        var gameProfile = infoProvider.services().profileResolver().fetchById(uuid);
+
+        if(gameProfile.isPresent()) return gameProfile.get().name();
 
         return "Unknown";
     }

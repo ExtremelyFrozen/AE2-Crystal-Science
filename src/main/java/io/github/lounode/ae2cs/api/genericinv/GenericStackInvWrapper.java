@@ -5,6 +5,7 @@ import appeng.api.config.Actionable;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -138,6 +139,11 @@ public class GenericStackInvWrapper implements GenericInternalInventory
     public void onChange()
     {
         delegate.onChange();
+    }
+
+    @Override
+    public void updateSnapshots(TransactionContext transaction) {
+
     }
 
     @Override

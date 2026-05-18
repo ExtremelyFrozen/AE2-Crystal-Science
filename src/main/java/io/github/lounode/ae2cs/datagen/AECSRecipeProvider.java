@@ -19,13 +19,12 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.conditions.IConditionBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-public class AECSRecipeProvider extends RecipeProvider implements IConditionBuilder
+public class AECSRecipeProvider extends RecipeProvider
 {
 
     public AECSRecipeProvider(RecipeOutput output, HolderLookup.Provider registries)
@@ -33,7 +32,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
         super(registries, output);
     }
 
-    @Override
+//    @Override
     public @NotNull String getName()
     {
         throw new IllegalStateException("Must be overridden");
@@ -59,7 +58,7 @@ public class AECSRecipeProvider extends RecipeProvider implements IConditionBuil
                                   ItemLike b)
     {
         // A -> B
-        ShapelessRecipeBuilder.shapeless(aToBCategory, b, 1)
+        ShapelessRecipeBuilder.shapeless(null,aToBCategory, b, 1)
                 .requires(a)
                 .unlockedBy(getHasName(a), has(a))
                 .save(out, craftingConversionId(b, a));

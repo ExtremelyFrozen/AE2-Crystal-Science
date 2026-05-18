@@ -6,10 +6,7 @@ import io.github.lounode.ae2cs.common.recipe.input.ThreeItemStackRecipeInput;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jetbrains.annotations.NotNull;
@@ -162,12 +159,22 @@ public class CircuitEtcherRecipe implements Recipe<ThreeItemStackRecipeInput>
     }
 
     @Override
+    public boolean showNotification() {
+        return false;
+    }
+
+    @Override
+    public String group() {
+        return "";
+    }
+
+    //    @Override
     public @NotNull ItemStack getResultItem()
     {
         return result;
     }
 
-    @Override
+//    @Override
     public @NotNull NonNullList<Ingredient> getIngredients()
     {
         NonNullList<Ingredient> list = NonNullList.create();
@@ -175,20 +182,30 @@ public class CircuitEtcherRecipe implements Recipe<ThreeItemStackRecipeInput>
         return list;
     }
 
-    @Override
-    public boolean canCraftInDimensions(int width, int height)
-    {
-        return width * height >= effective.size();
-    }
+//    @Override
+//    public boolean canCraftInDimensions(int width, int height)
+//    {
+//        return width * height >= effective.size();
+//    }
 
     @Override
-    public @NotNull RecipeType<?> getType()
+    public @NotNull RecipeType<CircuitEtcherRecipe> getType()
     {
         return AECSRecipeTypes.CIRCUIT_ETCHER.get();
     }
 
     @Override
-    public @NotNull RecipeSerializer<?> getSerializer()
+    public PlacementInfo placementInfo() {
+        return null;
+    }
+
+    @Override
+    public RecipeBookCategory recipeBookCategory() {
+        return null;
+    }
+
+    @Override
+    public @NotNull RecipeSerializer<CircuitEtcherRecipe> getSerializer()
     {
         return AECSRecipeSerializers.CIRCUIT_ETCHER.get();
     }
