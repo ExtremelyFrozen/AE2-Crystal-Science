@@ -8,6 +8,7 @@ import io.github.lounode.ae2cs.datagen.builder.recipe.CircuitEtcherRecipeBuilder
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
@@ -16,21 +17,15 @@ import java.util.concurrent.CompletableFuture;
 
 public class AECSEtcherRecipeProvider extends AECSRecipeProvider
 {
-    public AECSEtcherRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries)
+    public AECSEtcherRecipeProvider(HolderLookup.Provider registries, RecipeOutput output)
     {
-        super(output, registries);
+        super(registries, output);
     }
 
     @Override
-    public @NotNull String getName()
+    protected void buildRecipes()
     {
-        return "AECS Etcher Recipes";
-    }
-
-    @Override
-    protected void buildRecipes(@NotNull RecipeOutput recipeOutput, HolderLookup.@NotNull Provider registries)
-    {
-        super.buildRecipes(recipeOutput, registries);
+        var recipeOutput = this.output;
 
         CircuitEtcherRecipeBuilder.etching(AECSItems.RESONATING_PROCESSOR, 9, 14400)
                 .require(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_RESONATING_CRYSTAL, 1)
@@ -61,5 +56,25 @@ public class AECSEtcherRecipeProvider extends AECSRecipeProvider
                 .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 4)
                 .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 4)
                 .save(recipeOutput);
+    }
+
+    public static class Runner extends RecipeProvider.Runner
+    {
+        public Runner(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider)
+        {
+            super(output, lookupProvider);
+        }
+
+        @Override
+        protected @NotNull RecipeProvider createRecipeProvider(HolderLookup.@NotNull Provider provider, @NotNull RecipeOutput output)
+        {
+            return new AECSEtcherRecipeProvider(provider, output);
+        }
+
+        @Override
+        public @NotNull String getName()
+        {
+            return "AECS Etcher Recipes";
+        }
     }
 }

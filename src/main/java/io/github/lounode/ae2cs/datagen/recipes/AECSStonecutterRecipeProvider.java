@@ -7,6 +7,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.tags.ItemTags;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,21 +15,15 @@ import java.util.concurrent.CompletableFuture;
 
 public class AECSStonecutterRecipeProvider extends AECSRecipeProvider
 {
-    public AECSStonecutterRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries)
+    public AECSStonecutterRecipeProvider(HolderLookup.Provider registries, RecipeOutput output)
     {
-        super(output, registries);
+        super(registries, output);
     }
 
     @Override
-    public @NotNull String getName()
+    protected void buildRecipes()
     {
-        return "AECS Stonecutter Recipes";
-    }
-
-    @Override
-    protected void buildRecipes(@NotNull RecipeOutput recipeOutput, HolderLookup.@NotNull Provider registries)
-    {
-        super.buildRecipes(recipeOutput, registries);
+        var recipeOutput = this.output;
 
         // 木齿轮（已经包含去皮原木）
         stonecutterResultFromTag(recipeOutput, RecipeCategory.MISC, AECSItems.WOODEN_GEAR, ItemTags.LOGS);
@@ -39,5 +34,25 @@ public class AECSStonecutterRecipeProvider extends AECSRecipeProvider
         stonecutterResultFromItem(recipeOutput, RecipeCategory.MISC, AEItems.ENGINEERING_PROCESSOR_PRESS, AECSItems.BLANK_PRINT_PRESS);
         stonecutterResultFromItem(recipeOutput, RecipeCategory.MISC, AEItems.LOGIC_PROCESSOR_PRESS, AECSItems.BLANK_PRINT_PRESS);
         stonecutterResultFromItem(recipeOutput, RecipeCategory.MISC, AECSItems.RESONATING_PRINT_PRESS, AECSItems.BLANK_PRINT_PRESS);
+    }
+
+    public static class Runner extends RecipeProvider.Runner
+    {
+        public Runner(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider)
+        {
+            super(output, lookupProvider);
+        }
+
+        @Override
+        protected @NotNull RecipeProvider createRecipeProvider(HolderLookup.@NotNull Provider provider, @NotNull RecipeOutput output)
+        {
+            return new AECSStonecutterRecipeProvider(provider, output);
+        }
+
+        @Override
+        public @NotNull String getName()
+        {
+            return "AECS Stonecutter Recipes";
+        }
     }
 }

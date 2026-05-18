@@ -5,6 +5,7 @@ import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSEnchantments;
 import io.github.lounode.ae2cs.datagen.properties.GrowProcess;
+import io.github.lounode.ae2cs.datagen.recipes.*;
 import io.github.lounode.ae2cs.datagen.worldgen.AECSBiomeModifiers;
 import io.github.lounode.ae2cs.datagen.worldgen.AECSConfiguredFeatures;
 import io.github.lounode.ae2cs.datagen.worldgen.AECSPlacedFeatures;
@@ -58,13 +59,13 @@ public class DataGenerators {
         event.createProvider(AECSFluidTagsProvider::new);
 
         // 生成配方表
-//        generator.addProvider(event.includeServer(), new AECSAggregatorRecipeProvider(packOutput, lookupProvider));
-//        generator.addProvider(event.includeServer(), new AECSCraftRecipeProvider(packOutput, lookupProvider));
-//        generator.addProvider(event.includeServer(), new AECSEtcherRecipeProvider(packOutput, lookupProvider));
-//        generator.addProvider(event.includeServer(), new AECSFurnaceRecipeProvider(packOutput, lookupProvider));
-//        generator.addProvider(event.includeServer(), new AECSMiscRecipeProvider(packOutput, lookupProvider));
-//        generator.addProvider(event.includeServer(), new AECSPulverizerRecipeProvider(packOutput, lookupProvider));
-//        generator.addProvider(event.includeServer(), new AECSStonecutterRecipeProvider(packOutput, lookupProvider));
+        event.createProvider(AECSAggregatorRecipeProvider.Runner::new);
+        event.createProvider(AECSCraftRecipeProvider.Runner::new);
+        event.createProvider(AECSEtcherRecipeProvider.Runner::new);
+        event.createProvider(AECSFurnaceRecipeProvider.Runner::new);
+        event.createProvider(AECSMiscRecipeProvider.Runner::new);
+        event.createProvider(AECSPulverizerRecipeProvider.Runner::new);
+        event.createProvider(AECSStonecutterRecipeProvider.Runner::new);
         // 联动配方
 //        generator.addProvider(event.includeServer(), new AECSCompatAAERecipeProvider(packOutput, lookupProvider));
 //        generator.addProvider(event.includeServer(), new AECSCompatAFRecipeProvider(packOutput, lookupProvider));

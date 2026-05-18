@@ -1,9 +1,9 @@
 package io.github.lounode.ae2cs.datagen.recipes;
 
+import appeng.core.ConventionTags;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
-import appeng.datagen.providers.tags.ConventionTags;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSParts;
@@ -11,10 +11,7 @@ import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
-import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.data.recipes.*;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
@@ -24,21 +21,15 @@ import java.util.concurrent.CompletableFuture;
 
 public class AECSCraftRecipeProvider extends AECSRecipeProvider
 {
-    public AECSCraftRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries)
+    public AECSCraftRecipeProvider(HolderLookup.Provider registries, RecipeOutput output)
     {
-        super(output, registries);
+        super(registries, output);
     }
 
     @Override
-    public @NotNull String getName()
+    protected void buildRecipes()
     {
-        return "AECS Crafting Recipes";
-    }
-
-    @Override
-    protected void buildRecipes(@NotNull RecipeOutput recipeOutput, HolderLookup.@NotNull Provider registries)
-    {
-        super.buildRecipes(recipeOutput, registries);
+        var recipeOutput = this.output;
 
         // 块配方
         pack2x2(recipeOutput, RecipeCategory.MISC, AECSItems.PURE_CERTUS_QUARTZ_CRYSTAL, AEBlocks.QUARTZ_BLOCK);
@@ -78,25 +69,25 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
         swap1x1(recipeOutput, RecipeCategory.MISC, AECSBlocks.QUARTZ_OSCILLATOR_CLOCK_BLOCK, AECSParts.QUARTZ_OSCILLATOR_CLOCK_PART);
 
         // 种子配方
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.CERTUS_QUARTZ_SEED, 2)
+        shapeless(RecipeCategory.MISC, AECSItems.CERTUS_QUARTZ_SEED, 2)
                 .requires(AEItems.CERTUS_QUARTZ_DUST)
                 .requires(Blocks.SAND)
                 .unlockedBy(getHasName(Blocks.SAND), has(Blocks.SAND))
                 .save(recipeOutput, getCrafterPath(AECSItems.CERTUS_QUARTZ_SEED, false));
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.FLUIX_CRYSTAL_SEED, 2)
+        shapeless(RecipeCategory.MISC, AECSItems.FLUIX_CRYSTAL_SEED, 2)
                 .requires(AEItems.FLUIX_DUST)
                 .requires(Blocks.SAND)
                 .unlockedBy(getHasName(Blocks.SAND), has(Blocks.SAND))
                 .save(recipeOutput, getCrafterPath(AECSItems.FLUIX_CRYSTAL_SEED, false));
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.NETHER_QUARTZ_SEED, 2)
+        shapeless(RecipeCategory.MISC, AECSItems.NETHER_QUARTZ_SEED, 2)
                 .requires(AECSTags.Items.DUST_QUARTZ)
                 .requires(Blocks.SAND)
                 .unlockedBy(getHasName(Blocks.SAND), has(Blocks.SAND))
                 .save(recipeOutput, getCrafterPath(AECSItems.NETHER_QUARTZ_SEED, false));
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.RESONATING_SEED)
+        shapeless(RecipeCategory.MISC, AECSItems.RESONATING_SEED)
                 .requires(AECSTags.Items.DUST_RESONATING)
                 .requires(ConventionTags.FLUIX_DUST)
                 .requires(ConventionTags.SKY_STONE_DUST)
@@ -104,7 +95,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .unlockedBy(getHasName(AECSItems.RESONATING_DUST), has(AECSTags.Items.DUST_RESONATING))
                 .save(recipeOutput, getCrafterPath(AECSItems.RESONATING_SEED, false));
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.ENDER_QUARTZ_SEED, 1)
+        shapeless(RecipeCategory.MISC, AECSItems.ENDER_QUARTZ_SEED, 1)
                 .requires(ConventionTags.ENDER_PEARL_DUST)
                 .requires(AECSTags.Items.DUST_QUARTZ)
                 .requires(Blocks.SAND)
@@ -112,7 +103,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .unlockedBy(getHasName(Blocks.SAND), has(Blocks.SAND))
                 .save(recipeOutput, getCrafterPath(AECSItems.ENDER_QUARTZ_SEED, false));
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.METEOR_SEED)
+        shapeless(RecipeCategory.MISC, AECSItems.METEOR_SEED)
                 .requires(ConventionTags.SKY_STONE_DUST)
                 .requires(ConventionTags.CERTUS_QUARTZ_DUST)
                 .requires(Blocks.GRAVEL)
@@ -120,13 +111,13 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .unlockedBy(getHasName(Blocks.GRAVEL), has(Blocks.GRAVEL))
                 .save(recipeOutput, getCrafterPath(AECSItems.METEOR_SEED, false));
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.crystalGrowthCard)
+        shapeless(RecipeCategory.MISC, AECSItems.crystalGrowthCard)
                 .requires(AEItems.ADVANCED_CARD)
                 .requires(AEBlocks.GROWTH_ACCELERATOR)
                 .unlockedBy(getHasName(AEBlocks.GROWTH_ACCELERATOR), has(AEBlocks.GROWTH_ACCELERATOR))
                 .save(recipeOutput, getCrafterPath(AECSItems.crystalGrowthCard, false));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSItems.BLANK_PRINT_PRESS)
+        shaped(RecipeCategory.MISC, AECSItems.BLANK_PRINT_PRESS)
                 .pattern(" a ")
                 .pattern("aba")
                 .pattern(" a ")
@@ -135,7 +126,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .unlockedBy(getHasName(AECSItems.SIMPLE_CIRCUIT_PRINT), has(AECSItems.SIMPLE_CIRCUIT_PRINT))
                 .save(recipeOutput, getCrafterPath(AECSItems.BLANK_PRINT_PRESS, true));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSItems.RESONATING_PRINT_PRESS)
+        shaped(RecipeCategory.MISC, AECSItems.RESONATING_PRINT_PRESS)
                 .pattern("aba")
                 .pattern("bcb")
                 .pattern("aba")
@@ -146,56 +137,56 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .save(recipeOutput, getCrafterPath(AECSItems.RESONATING_PRINT_PRESS, true));
 
         // 各类升级
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.ENDER_INTERFACE_UPGRADE)
+        shapeless(RecipeCategory.MISC, AECSItems.ENDER_INTERFACE_UPGRADE)
                 .requires(AECSBlocks.ENDER_INTERFACE_BLOCK)
                 .requires(Tags.Items.INGOTS)
                 .unlockedBy(getHasName(AECSBlocks.ENDER_INTERFACE_BLOCK), has(AECSBlocks.ENDER_INTERFACE_BLOCK))
                 .save(recipeOutput, getCrafterPath(AECSItems.ENDER_INTERFACE_UPGRADE, false));
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.EX_ENDER_INTERFACE_UPGRADE)
+        shapeless(RecipeCategory.MISC, AECSItems.EX_ENDER_INTERFACE_UPGRADE)
                 .requires(AECSBlocks.EX_ENDER_INTERFACE_BLOCK)
                 .requires(Tags.Items.INGOTS)
                 .unlockedBy(getHasName(AECSBlocks.EX_ENDER_INTERFACE_BLOCK), has(AECSBlocks.EX_ENDER_INTERFACE_BLOCK))
                 .save(recipeOutput, getCrafterPath(AECSItems.EX_ENDER_INTERFACE_UPGRADE, false));
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.INTEGRATED_INTERFACE_UPGRADE)
+        shapeless(RecipeCategory.MISC, AECSItems.INTEGRATED_INTERFACE_UPGRADE)
                 .requires(AECSBlocks.INTEGRATED_INTERFACE_BLOCK)
                 .requires(Tags.Items.INGOTS)
                 .unlockedBy(getHasName(AECSBlocks.INTEGRATED_INTERFACE_BLOCK), has(AECSBlocks.INTEGRATED_INTERFACE_BLOCK))
                 .save(recipeOutput, getCrafterPath(AECSItems.INTEGRATED_INTERFACE_UPGRADE, false));
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.EX_INTEGRATED_INTERFACE_UPGRADE)
+        shapeless(RecipeCategory.MISC, AECSItems.EX_INTEGRATED_INTERFACE_UPGRADE)
                 .requires(AECSBlocks.EX_INTEGRATED_INTERFACE_BLOCK)
                 .requires(Tags.Items.INGOTS)
                 .unlockedBy(getHasName(AECSBlocks.EX_INTEGRATED_INTERFACE_BLOCK), has(AECSBlocks.EX_INTEGRATED_INTERFACE_BLOCK))
                 .save(recipeOutput, getCrafterPath(AECSItems.EX_INTEGRATED_INTERFACE_UPGRADE, false));
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.RESONATING_PATTERN_PROVIDER_UPGRADE)
+        shapeless(RecipeCategory.MISC, AECSItems.RESONATING_PATTERN_PROVIDER_UPGRADE)
                 .requires(AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK)
                 .requires(Tags.Items.INGOTS)
                 .unlockedBy(getHasName(AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK), has(AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK))
                 .save(recipeOutput, getCrafterPath(AECSItems.RESONATING_PATTERN_PROVIDER_UPGRADE, false));
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.EX_RESONATING_PATTERN_PROVIDER_UPGRADE)
+        shapeless(RecipeCategory.MISC, AECSItems.EX_RESONATING_PATTERN_PROVIDER_UPGRADE)
                 .requires(AECSBlocks.EX_RESONATING_PATTERN_PROVIDER_BLOCK)
                 .requires(Tags.Items.INGOTS)
                 .unlockedBy(getHasName(AECSBlocks.EX_RESONATING_PATTERN_PROVIDER_BLOCK), has(AECSBlocks.EX_RESONATING_PATTERN_PROVIDER_BLOCK))
                 .save(recipeOutput, getCrafterPath(AECSItems.EX_RESONATING_PATTERN_PROVIDER_UPGRADE, false));
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.PATTERN_PROVIDER_UPGRADE)
+        shapeless(RecipeCategory.MISC, AECSItems.PATTERN_PROVIDER_UPGRADE)
                 .requires(AEBlocks.PATTERN_PROVIDER)
                 .requires(Tags.Items.INGOTS)
                 .unlockedBy(getHasName(AEBlocks.PATTERN_PROVIDER), has(AEBlocks.PATTERN_PROVIDER))
                 .save(recipeOutput, getCrafterPath(AECSItems.PATTERN_PROVIDER_UPGRADE, false));
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AECSItems.METEOR_PATTERN_PROVIDER_UPGRADE)
+        shapeless(RecipeCategory.MISC, AECSItems.METEOR_PATTERN_PROVIDER_UPGRADE)
                 .requires(AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK)
                 .requires(Tags.Items.INGOTS)
                 .unlockedBy(getHasName(AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK), has(AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK))
                 .save(recipeOutput, getCrafterPath(AECSItems.METEOR_PATTERN_PROVIDER_UPGRADE, false));
 
         // 晶能聚合器
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK)
+        shaped(RecipeCategory.MISC, AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK)
                 .pattern("aba")
                 .pattern("cdc")
                 .pattern("efe")
@@ -209,7 +200,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .save(recipeOutput, getCrafterPath(AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK, true));
 
         // 电路切片机
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSBlocks.CIRCUIT_ETCHER_BLOCK)
+        shaped(RecipeCategory.MISC, AECSBlocks.CIRCUIT_ETCHER_BLOCK)
                 .pattern("aba")
                 .pattern("bcb")
                 .pattern("ded")
@@ -222,7 +213,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .save(recipeOutput, getCrafterPath(AECSBlocks.CIRCUIT_ETCHER_BLOCK, true));
 
         // 催生仓
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK)
+        shaped(RecipeCategory.MISC, AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK)
                 .pattern("aba")
                 .pattern("cdc")
                 .pattern("aea")
@@ -235,7 +226,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .save(recipeOutput, getCrafterPath(AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK, true));
 
         // 谐振仓
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK)
+        shaped(RecipeCategory.MISC, AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK)
                 .pattern("aba")
                 .pattern("cdc")
                 .pattern("efe")
@@ -249,7 +240,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .save(recipeOutput, getCrafterPath(AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK, true));
 
         // 粉碎机
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSBlocks.CRYSTAL_PULVERIZER_BLOCK)
+        shaped(RecipeCategory.MISC, AECSBlocks.CRYSTAL_PULVERIZER_BLOCK)
                 .pattern("aba")
                 .pattern("cdc")
                 .pattern("efe")
@@ -263,7 +254,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .save(recipeOutput, getCrafterPath(AECSBlocks.CRYSTAL_PULVERIZER_BLOCK, true));
 
         // 石英磨具
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSBlocks.QUARTZ_GRINDSTONE_BLOCK)
+        shaped(RecipeCategory.MISC, AECSBlocks.QUARTZ_GRINDSTONE_BLOCK)
                 .pattern("aba")
                 .pattern("cac")
                 .pattern("aca")
@@ -274,7 +265,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .save(recipeOutput, getCrafterPath(AECSBlocks.QUARTZ_GRINDSTONE_BLOCK, true));
 
         // 熵变反应器
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK)
+        shaped(RecipeCategory.MISC, AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK)
                 .pattern("aba")
                 .pattern("cdc")
                 .pattern("efe")
@@ -288,7 +279,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .save(recipeOutput, getCrafterPath(AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK, true));
 
         // 自装配式供应器
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK)
+        shaped(RecipeCategory.MISC, AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK)
                 .pattern("aba")
                 .pattern("cdc")
                 .pattern("efe")
@@ -302,7 +293,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .save(recipeOutput, getCrafterPath(AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK, true));
 
         // 初级样板供应器
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK)
+        shaped(RecipeCategory.MISC, AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK)
                 .pattern("aba")
                 .pattern("cdc")
                 .pattern("aba")
@@ -314,7 +305,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .save(recipeOutput, getCrafterPath(AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK, true));
 
         // 末影广播装置
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSBlocks.ENDER_BROADCASTER_BLOCK)
+        shaped(RecipeCategory.MISC, AECSBlocks.ENDER_BROADCASTER_BLOCK)
                 .pattern("aba")
                 .pattern("bcb")
                 .pattern("ada")
@@ -326,7 +317,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .save(recipeOutput, getCrafterPath(AECSBlocks.ENDER_BROADCASTER_BLOCK, true));
 
         // 末影发信器
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSBlocks.ENDER_EMITTER_BLOCK)
+        shaped(RecipeCategory.MISC, AECSBlocks.ENDER_EMITTER_BLOCK)
                 .pattern("aba")
                 .pattern(" c ")
                 .pattern("ded")
@@ -339,7 +330,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .save(recipeOutput, getCrafterPath(AECSBlocks.ENDER_EMITTER_BLOCK, true));
 
         // 石英振荡器
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSBlocks.QUARTZ_OSCILLATOR_CLOCK_BLOCK)
+        shaped(RecipeCategory.MISC, AECSBlocks.QUARTZ_OSCILLATOR_CLOCK_BLOCK)
                 .pattern("aba")
                 .pattern("cdc")
                 .pattern("efe")
@@ -351,5 +342,25 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .define('f', Items.CLOCK)
                 .unlockedBy(getHasName(AECSItems.RESONATING_PROCESSOR), has(AECSItems.RESONATING_PROCESSOR))
                 .save(recipeOutput, getCrafterPath(AECSBlocks.QUARTZ_OSCILLATOR_CLOCK_BLOCK, true));
+    }
+
+    public static class Runner extends RecipeProvider.Runner
+    {
+        public Runner(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider)
+        {
+            super(output, lookupProvider);
+        }
+
+        @Override
+        protected @NotNull RecipeProvider createRecipeProvider(HolderLookup.@NotNull Provider provider, @NotNull RecipeOutput output)
+        {
+            return new AECSCraftRecipeProvider(provider, output);
+        }
+
+        @Override
+        public @NotNull String getName()
+        {
+            return "AECS Crafting Recipes";
+        }
     }
 }
