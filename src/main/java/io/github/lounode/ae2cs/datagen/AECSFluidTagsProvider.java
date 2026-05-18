@@ -11,9 +11,9 @@ import java.util.concurrent.CompletableFuture;
 
 public class AECSFluidTagsProvider extends FluidTagsProvider
 {
-    public AECSFluidTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, @Nullable ExistingFileHelper existingFileHelper)
+    public AECSFluidTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider)
     {
-        super(output, provider, AECSConstants.MODID, existingFileHelper);
+        super(output, provider, AECSConstants.MODID);
     }
 
     @Override
