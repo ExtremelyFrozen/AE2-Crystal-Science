@@ -19,11 +19,11 @@ import io.github.lounode.ae2cs.api.settings.AECSSettings;
 import io.github.lounode.ae2cs.api.settings.BlackListMode;
 import io.github.lounode.ae2cs.api.settings.ShowRangeMode;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 
 import java.util.HashSet;
@@ -126,19 +126,19 @@ public class EnderInterfaceLogic extends InterfaceLogic
     }
 
     @Override
-    public void writeToNBT(CompoundTag tag, HolderLookup.Provider registries)
+    public void writeToNBT(ValueOutput tag)
     {
-        super.writeToNBT(tag, registries);
-        absorbConfigInventory.writeToChildTag(tag, "absorb_config", registries);
+        super.writeToNBT(tag);
+        absorbConfigInventory.writeToChildTag(tag, "absorb_config");
         tag.putInt("range", range);
     }
 
     @Override
-    public void readFromNBT(CompoundTag tag, HolderLookup.Provider registries)
+    public void readFromNBT(ValueInput tag)
     {
-        super.readFromNBT(tag, registries);
-        absorbConfigInventory.readFromChildTag(tag, "absorb_config", registries);
-        if (tag.contains("range")) range = tag.getInt("range");
+        super.readFromNBT(tag);
+        absorbConfigInventory.readFromChildTag(tag, "absorb_config");
+        range = tag.getIntOr("range", range);
         this.onConfigChanged();
         onAbsorbConfigChange();
     }

@@ -50,10 +50,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Nameable;
@@ -63,6 +60,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -1102,20 +1101,20 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         }
     }
 
-    public void save(CompoundTag tag, HolderLookup.Provider registries)
+    public void save(ValueOutput tag)
     {
         // 配置 / 存储
-        this.configInv.writeToChildTag(tag, "config", registries);
-        this.storage.writeToChildTag(tag, "storage", registries);
+        this.configInv.writeToChildTag(tag, "config");
+        this.storage.writeToChildTag(tag, "storage");
 
         // 升级
-        this.upgrades.writeToNBT(tag, "upgrades", registries);
+        this.upgrades.writeToNBT(tag, "upgrades");
 
         // 机器配置（FUZZY_MODE / BLOCKING / LOCK_CRAFTING_MODE / PATTERN_ACCESS_TERMINAL）
-        this.configManager.writeToNBT(tag, registries);
+        this.configManager.writeToNBT(tag);
 
         // 样板槽
-        this.patternInventory.writeToNBT(tag, "patterns", registries);
+        this.patternInventory.writeToNBT(tag, "patterns");
 
         // 合成跟踪
         this.craftingTracker.writeToNBT(tag);
@@ -1128,19 +1127,18 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         {
             tag.putByte("unlockEvent", (byte) unlockEvent.ordinal());
         }
-        if (unlockStack != null && registries != null)
+        if (unlockStack != null)
         {
-            tag.put("unlockStack", GenericStack.writeTag(registries, unlockStack));
+            GenericStack.writeTag(tag.child("unlockStack"), unlockStack);
         }
 
-        if (!sendList.isEmpty() && registries != null)
+        if (!sendList.isEmpty())
         {
-            var list = new ListTag();
+            var list = tag.childrenList("sendList");
             for (var gs : sendList)
             {
-                list.add(GenericStack.writeTag(registries, gs));
+                GenericStack.writeTag(list.addChild(), gs);
             }
-            tag.put("sendList", list);
         }
         if (sendDirection != null)
         {
@@ -1148,28 +1146,28 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         }
     }
 
-    public void load(CompoundTag tag, HolderLookup.Provider registries)
+    public void load(ValueInput tag)
     {
         // 合成跟踪必须先读（里面可能依赖其它字段）
         this.craftingTracker.readFromNBT(tag);
 
         // 升级
-        this.upgrades.readFromNBT(tag, "upgrades", registries);
+        this.upgrades.readFromNBT(tag, "upgrades");
 
         // 配置
-        this.configInv.readFromChildTag(tag, "config", registries);
+        this.configInv.readFromChildTag(tag, "config");
 
         // 存储-支持两个key，使其可以通过升级模板从接口或者供应器任意一方升级得到
-        if (tag.contains("storage"))
-            this.storage.readFromChildTag(tag, "storage", registries);
-        else if (tag.contains("returnInv"))
-            this.storage.readFromChildTag(tag, "returnInv", registries);
+        if (tag.child("storage").isPresent())
+            this.storage.readFromChildTag(tag, "storage");
+        else if (tag.child("returnInv").isPresent())
+            this.storage.readFromChildTag(tag, "returnInv");
 
         // 机器配置
-        this.configManager.readFromNBT(tag, registries);
+        this.configManager.readFromNBT(tag);
 
         // 样板槽
-        this.patternInventory.readFromNBT(tag, "patterns", registries);
+        this.patternInventory.readFromNBT(tag, "patterns");
 
         // 配置读完后要重新计算 hasConfig + plannedWork
         readConfig();
@@ -1178,15 +1176,15 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         updatePatterns();
 
         // 样板推送状态
-        this.roundRobinIndex = tag.getInt("roundRobinIndex");
-        this.redstoneState = YesNo.values()[tag.getByte("redstoneState")];
+        this.roundRobinIndex = tag.getIntOr("roundRobinIndex", 0);
+        this.redstoneState = YesNo.values()[tag.getByteOr("redstoneState", (byte) YesNo.UNDECIDED.ordinal())];
 
-        if (tag.contains("unlockEvent"))
+        var unlockEventOrdinal = tag.getByteOr("unlockEvent", (byte) -1);
+        if (unlockEventOrdinal >= 0)
         {
-            byte u = tag.getByte("unlockEvent");
-            if (u >= 0 && u < UnlockCraftingEvent.values().length)
+            if (unlockEventOrdinal < UnlockCraftingEvent.values().length)
             {
-                this.unlockEvent = UnlockCraftingEvent.values()[u];
+                this.unlockEvent = UnlockCraftingEvent.values()[unlockEventOrdinal];
             }
         }
         else
@@ -1194,32 +1192,22 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
             this.unlockEvent = null;
         }
 
-        if (tag.contains("unlockStack") && registries != null)
-        {
-            this.unlockStack = GenericStack.readTag(registries, tag.getCompound("unlockStack"));
-        }
-        else
-        {
-            this.unlockStack = null;
-        }
+        this.unlockStack = tag.child("unlockStack").map(GenericStack::readTag).orElse(null);
 
         this.sendList.clear();
-        if (tag.contains("sendList") && registries != null)
+        for (var child : tag.childrenListOrEmpty("sendList"))
         {
-            var list = tag.getList("sendList", net.minecraft.nbt.Tag.TAG_COMPOUND);
-            for (int i = 0; i < list.size(); i++)
+            var gs = GenericStack.readTag(child);
+            if (gs != null)
             {
-                var gs = GenericStack.readTag(registries, list.getCompound(i));
-                if (gs != null)
-                {
-                    this.sendList.add(gs);
-                }
+                this.sendList.add(gs);
             }
         }
 
-        if (tag.contains("sendDirection"))
+        byte sendDirectionOrdinal = tag.getByteOr("sendDirection", (byte) -1);
+        if (sendDirectionOrdinal >= 0)
         {
-            this.sendDirection = Direction.from3DDataValue(tag.getByte("sendDirection"));
+            this.sendDirection = Direction.from3DDataValue(sendDirectionOrdinal);
         }
         else
         {
@@ -1358,7 +1346,7 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
     {
         ItemContainerContents patterns = input.getOrDefault(AEComponents.EXPORTED_PATTERNS, ItemContainerContents.EMPTY);
 
-        if (player != null && !player.level().isClientSide)
+        if (player != null && !player.level().isClientSide())
         {
             clearPatternInventory(player);
 

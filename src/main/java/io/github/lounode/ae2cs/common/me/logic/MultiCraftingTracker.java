@@ -6,8 +6,9 @@ import appeng.api.stacks.AEKey;
 import appeng.api.storage.StorageHelper;
 import appeng.helpers.NonNullArrayIterator;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -27,20 +28,17 @@ public class MultiCraftingTracker
         this.size = size;
     }
 
-    public void readFromNBT(CompoundTag extra)
+    public void readFromNBT(ValueInput extra)
     {
         for (int x = 0; x < this.size; x++)
         {
-            final CompoundTag link = extra.getCompound("links-" + x);
-
-            if (link != null && !link.isEmpty())
-            {
-                this.setLink(x, StorageHelper.loadCraftingLink(link, this.owner));
-            }
+            final int slot = x;
+            extra.child("links-" + x)
+                    .ifPresent(link -> this.setLink(slot, StorageHelper.loadCraftingLink(link, this.owner)));
         }
     }
 
-    public void writeToNBT(CompoundTag extra)
+    public void writeToNBT(ValueOutput extra)
     {
         for (int x = 0; x < this.size; x++)
         {
@@ -48,9 +46,7 @@ public class MultiCraftingTracker
 
             if (link != null)
             {
-                final CompoundTag ln = new CompoundTag();
-                link.writeToNBT(ln);
-                extra.put("links-" + x, ln);
+                link.writeToNBT(extra.child("links-" + x));
             }
         }
     }

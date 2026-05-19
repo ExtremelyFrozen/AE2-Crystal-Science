@@ -34,15 +34,12 @@ import io.github.lounode.ae2cs.common.me.crafting.ResonatingPatternDetails;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -119,48 +116,38 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
     }
 
     @Override
-    public void writeToNBT(CompoundTag tag, HolderLookup.Provider registries)
+    public void writeToNBT(ValueOutput tag)
     {
-        super.writeToNBT(tag, registries);
+        super.writeToNBT(tag);
 
-        this.upgrades.writeToNBT(tag, "upgrades", registries);
+        this.upgrades.writeToNBT(tag, "upgrades");
 
-        var list = new ListTag();
+        var list = tag.childrenList("resonating_send_list");
         for (var p : resonatingSendList)
         {
-            var e = new CompoundTag();
-            e.putString("dim", p.target().pos().dimension().location().toString());
+            var e = list.addChild();
+            e.store("dim", ResourceKey.codec(Registries.DIMENSION), p.target().pos().dimension());
             e.putLong("pos", p.target().pos().pos().asLong());
             e.putByte("face", (byte) p.target().face().get3DDataValue());
-            e.put("stack", GenericStack.writeTag(registries, p.stack()));
-            list.add(e);
+            GenericStack.writeTag(e.child("stack"), p.stack());
         }
-        tag.put("resonating_send_list", list);
     }
 
     @Override
-    public void readFromNBT(CompoundTag tag, HolderLookup.Provider registries)
+    public void readFromNBT(ValueInput tag)
     {
-        super.readFromNBT(tag, registries);
+        super.readFromNBT(tag);
 
-        this.upgrades.readFromNBT(tag, "upgrades", registries);
+        this.upgrades.readFromNBT(tag, "upgrades");
 
         resonatingSendList.clear();
-        if (!tag.contains("resonating_send_list", Tag.TAG_LIST))
+        for (var e : tag.childrenListOrEmpty("resonating_send_list"))
         {
-            return;
-        }
+            var dimKey = e.read("dim", ResourceKey.codec(Registries.DIMENSION));
+            var posLong = e.getLongOr("pos", 0L);
+            var face = Direction.from3DDataValue(e.getByteOr("face", (byte) 0));
 
-        var list = tag.getList("resonating_send_list", Tag.TAG_COMPOUND);
-        for (int i = 0; i < list.size(); i++)
-        {
-            var e = list.getCompound(i);
-
-            var dimStr = e.getString("dim");
-            var posLong = e.getLong("pos");
-            var face = Direction.from3DDataValue(e.getByte("face"));
-
-            var stack = GenericStack.readTag(registries, e.getCompound("stack"));
+            var stack = e.child("stack").map(GenericStack::readTag).orElse(null);
             if (stack == null || stack.amount() <= 0)
             {
                 continue;
@@ -168,9 +155,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
 
             try
             {
-                var rl = Identifier.parse(dimStr);
-                var dimKey = ResourceKey.create(Registries.DIMENSION, rl);
-                var gp = GlobalPos.of(dimKey, BlockPos.of(posLong));
+                var gp = GlobalPos.of(dimKey.orElseThrow(), BlockPos.of(posLong));
                 resonatingSendList.add(new PendingSend(new EncodedResonatingPattern.Target(gp, face), stack));
             }
             catch (Exception ex)
