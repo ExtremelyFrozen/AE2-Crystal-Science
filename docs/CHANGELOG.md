@@ -1,1 +1,1 @@
-* Fix: Crystal Growth Cards are now much more reliable.
+* Fix Item Duplication

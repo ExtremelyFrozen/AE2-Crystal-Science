@@ -154,8 +154,13 @@ public class AppEngInvComponent extends BaseMachineComponent
     @Override
     public void addDrops(Level level, BlockPos pos, List<ItemStack> drops)
     {
+        var visited = new IdentityHashMap<AppEngInternalInventory, Boolean>();
+
         for (var inv : ports.values())
         {
+            if (visited.put(inv, Boolean.TRUE) != null)
+                continue;
+
             for (ItemStack stack : inv)
             {
                 if (stack.isEmpty()) continue;
