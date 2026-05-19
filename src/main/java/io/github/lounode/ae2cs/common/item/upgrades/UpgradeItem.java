@@ -4,6 +4,7 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.parts.AEBasePart;
+import appeng.parts.crafting.PatternProviderPart;
 import io.github.lounode.ae2cs.util.BlockStateAligner;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -94,7 +95,7 @@ public class UpgradeItem extends Item
                     if (newPart != null)
                     {
                         newPart.readFromNBT(TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), contents));
-                        newPart.addToWorld();
+                        //newPart.addToWorld();
                     }
                     context.getItemInHand().shrink(1);
                 }

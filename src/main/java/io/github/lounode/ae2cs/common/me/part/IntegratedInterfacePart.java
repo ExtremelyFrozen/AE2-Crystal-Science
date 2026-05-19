@@ -148,12 +148,14 @@ public class IntegratedInterfacePart extends AEBasePart implements IntegratedInt
     @Override
     public void writeToNBT(ValueOutput data) {
         super.writeToNBT(data);
+        this.logic.save(data);
         data.putInt("priority", this.priority);
     }
 
     @Override
     public void readFromNBT(ValueInput input) {
         super.readFromNBT(input);
+        this.logic.load(input);
         this.priority = input.getInt("priority").orElse(0);
     }
 
