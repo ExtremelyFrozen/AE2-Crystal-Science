@@ -109,8 +109,8 @@ public class CrystalAggregatorRecipeCategory implements IRecipeCategory<RecipeHo
     {
         IRecipeCategory.super.draw(recipe, recipeSlotsView, guiGraphics, mouseX, mouseY);
         background.draw(guiGraphics);
-        energyRateBar.renderWidget(guiGraphics, (int) mouseX, (int) mouseY, 0.0f);
-        workingProgressBar.renderWidget(guiGraphics, (int) mouseX, (int) mouseY, 0.0f);
+        energyRateBar.extractWidgetRenderState(guiGraphics, (int) mouseX, (int) mouseY, 0.0f);
+        workingProgressBar.extractWidgetRenderState(guiGraphics, (int) mouseX, (int) mouseY, 0.0f);
     }
 
     @Override

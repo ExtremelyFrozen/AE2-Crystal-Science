@@ -19,6 +19,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -45,10 +46,9 @@ public class JeiPlugin implements IModPlugin
     @Override
     public void registerRecipes(@NotNull IRecipeRegistration registration)
     {
-        var level = Minecraft.getInstance().level;
-        if (level == null) return;
+        var server = ServerLifecycleHooks.getCurrentServer();
 
-        var recipeMap = RecipeCache.getRecipeMap();
+        var recipeMap = server == null ? RecipeCache.getRecipeMap() : server.getRecipeManager().recipeMap();
 
         {
             List<RecipeHolder<CircuitEtcherRecipe>> recipes = recipeMap
