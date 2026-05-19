@@ -10,13 +10,13 @@ import io.github.lounode.ae2cs.common.me.logic.QuartzOscillatorClockHost;
 import io.github.lounode.ae2cs.common.me.logic.QuartzOscillatorClockLogic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -65,7 +65,7 @@ public class QuartzOscillatorClockBlockEntity extends AENetworkedBlockEntity imp
     public void setPulseActive(boolean active)
     {
         var level = getLevel();
-        if (level == null || level.isClientSide) return;
+        if (level == null || level.isClientSide()) return;
 
         var pos = getBlockPos();
         var state = getBlockState();
@@ -106,17 +106,17 @@ public class QuartzOscillatorClockBlockEntity extends AENetworkedBlockEntity imp
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries)
+    public void saveAdditional(ValueOutput data)
     {
-        super.saveAdditional(data, registries);
-        this.logic.writeToNBT(data, registries);
+        super.saveAdditional(data);
+        this.logic.writeToNBT(data);
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries)
+    public void loadTag(ValueInput data)
     {
-        super.loadTag(data, registries);
-        this.logic.readFromNBT(data, registries);
+        super.loadTag(data);
+        this.logic.readFromNBT(data);
     }
 
     @Override

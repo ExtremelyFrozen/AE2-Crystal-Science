@@ -15,14 +15,14 @@ import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceHost;
 import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceLogic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.Nullable;
 
@@ -185,19 +185,19 @@ public class IntegratedInterfaceBlockEntity extends AENetworkedBlockEntity imple
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries)
+    public void saveAdditional(ValueOutput data)
     {
-        super.saveAdditional(data, registries);
-        this.logic.save(data, registries);
+        super.saveAdditional(data);
+        this.logic.save(data);
         data.putInt("priority", this.priority);
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries)
+    public void loadTag(ValueInput data)
     {
-        super.loadTag(data, registries);
-        this.logic.load(data, registries);
-        this.priority = data.getInt("priority");
+        super.loadTag(data);
+        this.logic.load(data);
+        this.priority = data.getIntOr("priority", 0);
     }
 
     @Override

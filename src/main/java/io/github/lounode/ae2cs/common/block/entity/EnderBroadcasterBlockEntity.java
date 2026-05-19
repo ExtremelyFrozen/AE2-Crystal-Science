@@ -15,15 +15,15 @@ import io.github.lounode.ae2cs.common.init.AECSDataComponents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -670,9 +670,9 @@ public class EnderBroadcasterBlockEntity extends AENetworkedComponentBlockEntity
     // ---------------- NBT ----------------
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries)
+    public void saveAdditional(ValueOutput data)
     {
-        super.saveAdditional(data, registries);
+        super.saveAdditional(data);
         data.putString("band_id", bandId);
         data.putString("connection_type", connectionType.name());
         data.putBoolean("enabled_custom_channel", enabledCustomChannel);
@@ -681,17 +681,17 @@ public class EnderBroadcasterBlockEntity extends AENetworkedComponentBlockEntity
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries)
+    public void loadTag(ValueInput data)
     {
-        super.loadTag(data, registries);
-        bandId = data.getString("band_id");
+        super.loadTag(data);
+        bandId = data.getStringOr("band_id", "");
 
-        String t = data.getString("connection_type");
+        String t = data.getStringOr("connection_type", "");
         connectionType = t.isEmpty() ? ConnectionType.NO_CONNECTION : ConnectionType.valueOf(t);
 
-        enabledCustomChannel = data.getBoolean("enabled_custom_channel");
-        customMaxChannels = data.getInt("custom_max_channels");
-        this.expectedChannels = data.getInt("expected_channels");
+        enabledCustomChannel = data.getBooleanOr("enabled_custom_channel", false);
+        customMaxChannels = data.getIntOr("custom_max_channels", 0);
+        this.expectedChannels = data.getIntOr("expected_channels", 32);
     }
 
     @Override

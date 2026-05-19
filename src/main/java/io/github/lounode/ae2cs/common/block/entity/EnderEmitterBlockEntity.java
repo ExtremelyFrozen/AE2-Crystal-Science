@@ -28,11 +28,6 @@ import io.github.lounode.ae2cs.util.ChunkHelper;
 import io.github.lounode.ae2cs.util.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -43,6 +38,8 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -357,7 +354,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
             {
                 for (int offsetZ = -autoAreaFactor; offsetZ <= autoAreaFactor; offsetZ++)
                 {
-                    GlobalChunkPos chunkKey = new GlobalChunkPos(level.dimension(), center.x + offsetX, center.z + offsetZ);
+                    GlobalChunkPos chunkKey = new GlobalChunkPos(level.dimension(), center.x() + offsetX, center.z() + offsetZ);
                     EMITTER_CHUNK_POSITIONS
                             .computeIfAbsent(chunkKey, key -> new HashSet<>())
                             .add(worldPosition.immutable());
@@ -384,7 +381,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
             {
                 for (int offsetZ = -autoAreaFactor; offsetZ <= autoAreaFactor; offsetZ++)
                 {
-                    GlobalChunkPos chunkKey = new GlobalChunkPos(level.dimension(), center.x + offsetX, center.z + offsetZ);
+                    GlobalChunkPos chunkKey = new GlobalChunkPos(level.dimension(), center.x() + offsetX, center.z() + offsetZ);
 
                     Set<BlockPos> set = EMITTER_CHUNK_POSITIONS.get(chunkKey);
                     if (set != null)
@@ -401,57 +398,30 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries)
+    public void saveAdditional(ValueOutput data)
     {
-        super.saveAdditional(data, registries);
-        configManager.writeToNBT(data, registries);
+        super.saveAdditional(data);
+        configManager.writeToNBT(data);
         data.putInt("link_distance", this.linkDistance);
 
-        ListTag linkPositions = new ListTag();
+        var linkPositions = data.list("linked_positions", BlockPos.CODEC);
         for (BlockPos pos : linkedPositions)
         {
-            try
-            {
-                Tag t = BlockPos.CODEC
-                        .encodeStart(NbtOps.INSTANCE, pos)
-                        .getOrThrow();
-                linkPositions.add(t);
-            }
-            catch (Throwable e)
-            {
-                // 静默
-            }
+            linkPositions.add(pos);
         }
-
-        data.put("linked_positions", linkPositions);
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries)
+    public void loadTag(ValueInput data)
     {
-        super.loadTag(data, registries);
-        this.configManager.readFromNBT(data, registries);
-        this.linkDistance = data.getInt("link_distance");
+        super.loadTag(data);
+        this.configManager.readFromNBT(data);
+        this.linkDistance = data.getIntOr("link_distance", 8);
 
         linkedPositions.clear();
-
-        Tag root = data.get("linked_positions");
-        if (!(root instanceof ListTag list)) return;
-
-        for (Tag t : list)
+        for (BlockPos pos : data.listOrEmpty("linked_positions", BlockPos.CODEC))
         {
-            try
-            {
-                BlockPos.CODEC
-                        .parse(NbtOps.INSTANCE, t)
-                        .resultOrPartial(msg -> {
-                        })
-                        .ifPresent(pos -> linkedPositions.add(pos.immutable()));
-            }
-            catch (Throwable e)
-            {
-                // 忽略
-            }
+            linkedPositions.add(pos.immutable());
         }
 
         this.autoMode = configManager.getSetting(AECSSettings.AUTO_LINK_MODE) == AutoLinkMode.ENABLE;
