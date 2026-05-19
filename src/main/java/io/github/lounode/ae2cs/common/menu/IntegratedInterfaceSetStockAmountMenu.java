@@ -6,6 +6,7 @@ import appeng.menu.AEBaseMenu;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.SlotSemantics;
+import appeng.menu.guisync.ClientActionKey;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.locator.MenuHostLocator;
 import appeng.menu.slot.InaccessibleSlot;
@@ -13,6 +14,7 @@ import appeng.util.inv.AppEngInternalInventory;
 import com.google.common.primitives.Ints;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceHost;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
@@ -25,7 +27,7 @@ import java.util.Objects;
 public class IntegratedInterfaceSetStockAmountMenu extends AEBaseMenu implements ISubMenu
 {
 
-    public static final String ACTION_SET_STOCK_AMOUNT = "setStockAmount";
+    public static final ClientActionKey<Integer> ACTION_SET_STOCK_AMOUNT = new ClientActionKey<>("setStockAmount");
 
     /**
      * This slot is used to synchronize a visual representation of what is to be stocked to the client.
@@ -50,7 +52,7 @@ public class IntegratedInterfaceSetStockAmountMenu extends AEBaseMenu implements
     public IntegratedInterfaceSetStockAmountMenu(int id, Inventory ip, IntegratedInterfaceHost host)
     {
         super(AECSMenus.INTEGRATED_INTERFACE_SET_STOCK_AMOUNT_MENU.get(), id, ip, host);
-        registerClientAction(ACTION_SET_STOCK_AMOUNT, Integer.class, this::confirm);
+        registerClientAction(ACTION_SET_STOCK_AMOUNT, ByteBufCodecs.INT, this::confirm);
         this.host = host;
         this.stockedItem = new InaccessibleSlot(new AppEngInternalInventory(1), 0);
         this.addSlot(this.stockedItem, SlotSemantics.MACHINE_OUTPUT);

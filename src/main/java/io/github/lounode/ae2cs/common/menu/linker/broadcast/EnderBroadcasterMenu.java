@@ -2,12 +2,14 @@ package io.github.lounode.ae2cs.common.menu.linker.broadcast;
 
 import appeng.api.util.IConfigManager;
 import appeng.menu.MenuOpener;
+import appeng.menu.guisync.ClientActionKey;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.UpgradeableMenu;
 import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastFrequencyBand;
 import io.github.lounode.ae2cs.api.linker.broadcast.FrequencyBandManager;
 import io.github.lounode.ae2cs.common.block.entity.EnderBroadcasterBlockEntity;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -15,12 +17,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class EnderBroadcasterMenu extends UpgradeableMenu<EnderBroadcasterBlockEntity>
 {
-    private static final String changeExpectedChannelsAction = "change_expected_channels";
-    private static final String openFrequencyBandMenuAction = "open_frequency_band_menu";
-    private static final String openFrequencyBandCreateMenuAction = "open_frequency_band_create_menu";
-    private static final String openFrequencyBandManagerMenuAction = "open_frequency_band_manager_menu";
-    private static final String toggleLinkerSideAction = "toggle_linker_side";
-    private static final String cleanLinkerConnectionAction = "clean_linker_connection";
+    private static final ClientActionKey<Integer> changeExpectedChannelsAction = new ClientActionKey<>("change_expected_channels");
+    private static final ClientActionKey<Void> openFrequencyBandMenuAction = new ClientActionKey<>("open_frequency_band_menu");
+    private static final ClientActionKey<Void> openFrequencyBandCreateMenuAction = new ClientActionKey<>("open_frequency_band_create_menu");
+    private static final ClientActionKey<Void> openFrequencyBandManagerMenuAction = new ClientActionKey<>("open_frequency_band_manager_menu");
+    private static final ClientActionKey<Void> toggleLinkerSideAction = new ClientActionKey<>("toggle_linker_side");
+    private static final ClientActionKey<Void> cleanLinkerConnectionAction = new ClientActionKey<>("clean_linker_connection");
 
     @GuiSync(10)
     public String bandName = "";
@@ -41,7 +43,7 @@ public class EnderBroadcasterMenu extends UpgradeableMenu<EnderBroadcasterBlockE
     public EnderBroadcasterMenu(int id, Inventory playerInv, @NotNull EnderBroadcasterBlockEntity host)
     {
         super(AECSMenus.ENDER_BROADCASTER_MENU.get(), id, playerInv, host);
-        registerClientAction(changeExpectedChannelsAction, Integer.class, this::acceptChangeExpectedChannelsAction);
+        registerClientAction(changeExpectedChannelsAction, ByteBufCodecs.INT, this::acceptChangeExpectedChannelsAction);
         registerClientAction(openFrequencyBandMenuAction, this::openFrequencyBandMenuAction);
         registerClientAction(openFrequencyBandCreateMenuAction, this::openFrequencyBandCreateMenuAction);
         registerClientAction(openFrequencyBandManagerMenuAction, this::openFrequencyBandManagerMenuAction);

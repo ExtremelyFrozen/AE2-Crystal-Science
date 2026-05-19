@@ -3,6 +3,7 @@ package io.github.lounode.ae2cs.common.menu.linker.broadcast;
 import appeng.api.storage.ISubMenuHost;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.MenuOpener;
+import appeng.menu.guisync.ClientActionKey;
 import appeng.menu.guisync.GuiSync;
 import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastFrequencyBand;
 import io.github.lounode.ae2cs.api.linker.broadcast.FrequencyBandManager;
@@ -13,6 +14,7 @@ import io.github.lounode.ae2cs.common.block.entity.EnderBroadcasterBlockEntity;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -27,13 +29,13 @@ import java.util.Set;
  */
 public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturnableSubMenu
 {
-    private static final String changePasswordAction = "change_password";
-    private static final String changePublicAction = "change_public";
-    private static final String changeAllowMemoryCardAction = "change_allow_memory_card";
-    private static final String tryDisconnectBroadcasterAction = "try_disconnect_broadcast";
-    private static final String tryTapToBroadcasterAction = "try_tap_to_broadcaster";
-    private static final String openBandWhiteManagerAction = "open_band_white_manager";
-    private static final String removeBandAction = "remove_band";
+    private static final ClientActionKey<String> changePasswordAction = new ClientActionKey<>("change_password");
+    private static final ClientActionKey<Boolean> changePublicAction = new ClientActionKey<>("change_public");
+    private static final ClientActionKey<Boolean> changeAllowMemoryCardAction = new ClientActionKey<>("change_allow_memory_card");
+    private static final ClientActionKey<GlobalPosJson> tryDisconnectBroadcasterAction = new ClientActionKey<>("try_disconnect_broadcast");
+    private static final ClientActionKey<GlobalPosJson> tryTapToBroadcasterAction = new ClientActionKey<>("try_tap_to_broadcaster");
+    private static final ClientActionKey<Void> openBandWhiteManagerAction = new ClientActionKey<>("open_band_white_manager");
+    private static final ClientActionKey<Void> removeBandAction = new ClientActionKey<>("remove_band");
 
     private final EnderBroadcasterBlockEntity host;
     private final BroadcastFrequencyBand band;
@@ -54,11 +56,11 @@ public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturn
         this.host = host;
         this.band = FrequencyBandManager.getBand(this.host.getBandName());
 
-        registerClientAction(changePasswordAction, String.class, this::changePasswordAction);
-        registerClientAction(changePublicAction, Boolean.class, this::changePublicAction);
-        registerClientAction(changeAllowMemoryCardAction, Boolean.class, this::changeAllowMemoryCardAction);
-        registerClientAction(tryDisconnectBroadcasterAction, GlobalPosJson.class, this::tryDisconnectBroadcasterAction);
-        registerClientAction(tryTapToBroadcasterAction, GlobalPosJson.class, this::tryTapToBroadcasterAction);
+        registerClientAction(changePasswordAction, ByteBufCodecs.STRING_UTF8, this::changePasswordAction);
+        registerClientAction(changePublicAction, ByteBufCodecs.BOOL, this::changePublicAction);
+        registerClientAction(changeAllowMemoryCardAction, ByteBufCodecs.BOOL, this::changeAllowMemoryCardAction);
+        registerClientAction(tryDisconnectBroadcasterAction, GlobalPosJson.STREAM_CODEC, this::tryDisconnectBroadcasterAction);
+        registerClientAction(tryTapToBroadcasterAction, GlobalPosJson.STREAM_CODEC, this::tryTapToBroadcasterAction);
         registerClientAction(openBandWhiteManagerAction, this::openBandWhiteManagerAction);
         registerClientAction(removeBandAction, this::onRemoveBand);
     }

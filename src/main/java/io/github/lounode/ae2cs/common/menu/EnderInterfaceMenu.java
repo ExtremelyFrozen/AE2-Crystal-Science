@@ -3,6 +3,7 @@ package io.github.lounode.ae2cs.common.menu;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.util.IConfigManager;
 import appeng.menu.SlotSemantics;
+import appeng.menu.guisync.ClientActionKey;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.InterfaceMenu;
 import appeng.menu.slot.FakeSlot;
@@ -10,12 +11,13 @@ import io.github.lounode.ae2cs.api.settings.AECSSettings;
 import io.github.lounode.ae2cs.api.settings.BlackListMode;
 import io.github.lounode.ae2cs.api.settings.ShowRangeMode;
 import io.github.lounode.ae2cs.common.me.logic.EnderInterfaceHost;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
 public class EnderInterfaceMenu extends InterfaceMenu
 {
-    private static final String changeAbsorbRange = "change_absorb_range";
+    private static final ClientActionKey<Integer> changeAbsorbRange = new ClientActionKey<>("change_absorb_range");
 
     public final boolean extended;
 
@@ -40,7 +42,7 @@ public class EnderInterfaceMenu extends InterfaceMenu
 
         extended = host.isExtended();
 
-        registerClientAction(changeAbsorbRange, Integer.class, this::onChangeAbsorbRange);
+        registerClientAction(changeAbsorbRange, ByteBufCodecs.INT, this::onChangeAbsorbRange);
     }
 
     @Override

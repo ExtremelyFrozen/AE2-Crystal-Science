@@ -5,6 +5,7 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.util.IConfigManager;
 import appeng.core.definitions.AEItems;
 import appeng.menu.SlotSemantics;
+import appeng.menu.guisync.ClientActionKey;
 import appeng.menu.implementations.UpgradeableMenu;
 import appeng.menu.slot.AppEngSlot;
 import io.github.lounode.ae2cs.common.init.AECSItems;
@@ -16,7 +17,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class ResonatingPatternConverterMenu extends UpgradeableMenu<ResonatingPatternConverterMenuHost>
 {
-    private static final String converterPattern = "converter_pattern";
+    private static final ClientActionKey<Void> converterPattern = new ClientActionKey<>("converter_pattern");
     private static final int LEFT_BOUNDARY = 9;
 
     public ResonatingPatternConverterMenu(MenuType<?> menuType, int id, Inventory playerInventory, ResonatingPatternConverterMenuHost host)

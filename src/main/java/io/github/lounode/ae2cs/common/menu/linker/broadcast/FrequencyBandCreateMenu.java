@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs.common.menu.linker.broadcast;
 
 import appeng.api.storage.ISubMenuHost;
 import appeng.menu.AEBaseMenu;
+import appeng.menu.guisync.ClientActionKey;
 import io.github.lounode.ae2cs.api.linker.broadcast.FrequencyBandManager;
 import io.github.lounode.ae2cs.api.linker.broadcast.networking.FrequencyBandCreateInfo;
 import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenu;
@@ -15,7 +16,7 @@ import java.util.UUID;
 
 public class FrequencyBandCreateMenu extends AEBaseMenu implements CustomReturnableSubMenu
 {
-    private static final String CREATE_BAND_ACTION = "create_band";
+    private static final ClientActionKey<FrequencyBandCreateInfo> CREATE_BAND_ACTION = new ClientActionKey<>("create_band");
 
     private final EnderBroadcasterBlockEntity host;
 
@@ -24,7 +25,7 @@ public class FrequencyBandCreateMenu extends AEBaseMenu implements CustomReturna
         super(AECSMenus.FREQUENCY_BAND_CREATE_MENU.get(), id, playerInventory, host);
         this.host = host;
 
-        registerClientAction(CREATE_BAND_ACTION, FrequencyBandCreateInfo.class, this::createBand);
+        registerClientAction(CREATE_BAND_ACTION, FrequencyBandCreateInfo.STREAM_CODEC, this::createBand);
     }
 
     public void sendCreateBand(FrequencyBandCreateInfo info)

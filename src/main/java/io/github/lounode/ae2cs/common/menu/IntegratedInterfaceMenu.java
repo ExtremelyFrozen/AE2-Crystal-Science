@@ -7,6 +7,7 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.GenericStack;
 import appeng.api.util.IConfigManager;
 import appeng.menu.SlotSemantics;
+import appeng.menu.guisync.ClientActionKey;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.UpgradeableMenu;
 import appeng.menu.slot.AppEngSlot;
@@ -15,6 +16,7 @@ import appeng.menu.slot.RestrictedInputSlot;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceHost;
 import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceLogic;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -22,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class IntegratedInterfaceMenu extends UpgradeableMenu<IntegratedInterfaceHost>
 {
-    public static final String ACTION_OPEN_SET_AMOUNT = "setAmount";
+    public static final ClientActionKey<Integer> ACTION_OPEN_SET_AMOUNT = new ClientActionKey<>("setAmount");
 
     public final boolean extended;
 
@@ -70,7 +72,7 @@ public class IntegratedInterfaceMenu extends UpgradeableMenu<IntegratedInterface
         this.extended = host.isExtended();
         this.pageSize = extended ? 4 : 1;
 
-        registerClientAction(ACTION_OPEN_SET_AMOUNT, Integer.class, this::openSetAmountMenu);
+        registerClientAction(ACTION_OPEN_SET_AMOUNT, ByteBufCodecs.INT, this::openSetAmountMenu);
     }
 
     @Override

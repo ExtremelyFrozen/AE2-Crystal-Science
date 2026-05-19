@@ -1,6 +1,7 @@
 package io.github.lounode.ae2cs.common.menu.linker.broadcast;
 
 import appeng.menu.AEBaseMenu;
+import appeng.menu.guisync.ClientActionKey;
 import appeng.menu.guisync.GuiSync;
 import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastFrequencyBand;
 import io.github.lounode.ae2cs.api.linker.broadcast.FrequencyBandManager;
@@ -8,6 +9,7 @@ import io.github.lounode.ae2cs.api.linker.broadcast.networking.BroadcastBandsFie
 import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenu;
 import io.github.lounode.ae2cs.common.block.entity.EnderBroadcasterBlockEntity;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
@@ -20,7 +22,7 @@ import java.util.List;
  */
 public class FrequencyBandMenu extends AEBaseMenu implements CustomReturnableSubMenu
 {
-    private static final String TRY_CONNECT_BAND = "try_connect_band";
+    private static final ClientActionKey<String> TRY_CONNECT_BAND = new ClientActionKey<>("try_connect_band");
 
     private final EnderBroadcasterBlockEntity host;
 
@@ -32,7 +34,7 @@ public class FrequencyBandMenu extends AEBaseMenu implements CustomReturnableSub
         super(AECSMenus.FREQUENCY_BAND_MENU.get(), id, ip, host);
         this.host = host;
 
-        registerClientAction(TRY_CONNECT_BAND, String.class, this::tryConnectBand);
+        registerClientAction(TRY_CONNECT_BAND, ByteBufCodecs.STRING_UTF8, this::tryConnectBand);
     }
 
     @Override

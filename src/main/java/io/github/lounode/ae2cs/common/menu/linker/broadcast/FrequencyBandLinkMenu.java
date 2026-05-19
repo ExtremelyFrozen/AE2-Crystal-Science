@@ -4,6 +4,7 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.MenuOpener;
+import appeng.menu.guisync.ClientActionKey;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.locator.MenuHostLocator;
 import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastFrequencyBand;
@@ -22,7 +23,7 @@ import net.minecraft.world.inventory.MenuType;
  */
 public class FrequencyBandLinkMenu extends AEBaseMenu implements CustomReturnableSubMenu
 {
-    private static final String LINK_TO_BAND = "link_to_band";
+    private static final ClientActionKey<FrequencyBandLinkInfo> LINK_TO_BAND = new ClientActionKey<>("link_to_band");
 
     private final EnderBroadcasterBlockEntity host;
 
@@ -37,7 +38,7 @@ public class FrequencyBandLinkMenu extends AEBaseMenu implements CustomReturnabl
         super(AECSMenus.FREQUENCY_BAND_LINK_MENU.get(), id, playerInventory, host);
         this.host = host;
 
-        registerClientAction(LINK_TO_BAND, FrequencyBandLinkInfo.class, this::linkToBand);
+        registerClientAction(LINK_TO_BAND, FrequencyBandLinkInfo.STREAM_CODEC, this::linkToBand);
     }
 
     // 动作机制-客户端

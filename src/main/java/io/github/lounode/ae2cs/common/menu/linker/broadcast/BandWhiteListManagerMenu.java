@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs.common.menu.linker.broadcast;
 
 import appeng.api.storage.ISubMenuHost;
 import appeng.menu.AEBaseMenu;
+import appeng.menu.guisync.ClientActionKey;
 import appeng.menu.guisync.GuiSync;
 import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastFrequencyBand;
 import io.github.lounode.ae2cs.api.linker.broadcast.FrequencyBandManager;
@@ -10,6 +11,7 @@ import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenu;
 import io.github.lounode.ae2cs.common.block.entity.EnderBroadcasterBlockEntity;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 import io.github.lounode.ae2cs.util.ServerUtil;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -25,7 +27,7 @@ import java.util.UUID;
  */
 public class BandWhiteListManagerMenu extends AEBaseMenu implements CustomReturnableSubMenu
 {
-    private static final String changeWhiteListStateAction = "change_white_list_state";
+    private static final ClientActionKey<UUID> changeWhiteListStateAction = new ClientActionKey<>("change_white_list_state");
 
     private final EnderBroadcasterBlockEntity host;
     private final BroadcastFrequencyBand band;
@@ -43,7 +45,7 @@ public class BandWhiteListManagerMenu extends AEBaseMenu implements CustomReturn
         this.host = host;
         this.band = FrequencyBandManager.getBand(this.host.getBandName());
 
-        registerClientAction(changeWhiteListStateAction, UUID.class, this::onChangeWhiteListStateAction);
+        registerClientAction(changeWhiteListStateAction, UUIDUtil.STREAM_CODEC, this::onChangeWhiteListStateAction);
     }
 
     public void sendChangeWhiteListStateAction(UUID playerId)

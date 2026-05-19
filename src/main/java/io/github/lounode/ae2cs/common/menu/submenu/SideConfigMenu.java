@@ -1,7 +1,9 @@
 package io.github.lounode.ae2cs.common.menu.submenu;
 
 import appeng.menu.AEBaseMenu;
+import appeng.menu.guisync.ClientActionKey;
 import appeng.menu.guisync.GuiSync;
+import io.netty.buffer.ByteBuf;
 import io.github.lounode.ae2cs.api.networking.SideConfigField;
 import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenu;
 import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
@@ -9,15 +11,17 @@ import io.github.lounode.ae2cs.common.machine.IMachineHost;
 import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
 import io.github.lounode.ae2cs.common.machine.component.SidePolicy;
 import net.minecraft.core.Direction;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
 public class SideConfigMenu extends AEBaseMenu implements CustomReturnableSubMenu
 {
-    private static final String changeSideDirPolicy = "change_side_dir_policy";
-    private static final String clearSideDirPolicy = "clear_side_dir_policy";
-    private static final String changeAutoImport = "change_auto_import";
-    private static final String changeAutoExport = "change_auto_export";
+    private static final ClientActionKey<SideConfigChoice> changeSideDirPolicy = new ClientActionKey<>("change_side_dir_policy");
+    private static final ClientActionKey<Void> clearSideDirPolicy = new ClientActionKey<>("clear_side_dir_policy");
+    private static final ClientActionKey<Boolean> changeAutoImport = new ClientActionKey<>("change_auto_import");
+    private static final ClientActionKey<Boolean> changeAutoExport = new ClientActionKey<>("change_auto_export");
 
     private MenuType<?> returnToMenuType;
     private final CustomReturnableSubMenuHost host;
@@ -40,10 +44,10 @@ public class SideConfigMenu extends AEBaseMenu implements CustomReturnableSubMen
         }
         this.sideConfig = machineHost.getMachineComponents().getService(SideConfigComponent.class);
 
-        registerClientAction(changeSideDirPolicy, SideConfigChoice.class, this::onChangeSideDirPolicy);
+        registerClientAction(changeSideDirPolicy, SideConfigChoice.STREAM_CODEC, this::onChangeSideDirPolicy);
         registerClientAction(clearSideDirPolicy, this::onClearSideDirPolicy);
-        registerClientAction(changeAutoImport, Boolean.class, this::onChangeAutoImport);
-        registerClientAction(changeAutoExport, Boolean.class, this::onChangeAutoExport);
+        registerClientAction(changeAutoImport, ByteBufCodecs.BOOL, this::onChangeAutoImport);
+        registerClientAction(changeAutoExport, ByteBufCodecs.BOOL, this::onChangeAutoExport);
     }
 
     public void setReturnToMenuType(MenuType<?> returnToMenuType)
@@ -115,5 +119,12 @@ public class SideConfigMenu extends AEBaseMenu implements CustomReturnableSubMen
 
     public record SideConfigChoice(Direction dir, SidePolicy policy)
     {
+        public static final StreamCodec<ByteBuf, SideConfigChoice> STREAM_CODEC = StreamCodec.composite(
+                Direction.STREAM_CODEC,
+                SideConfigChoice::dir,
+                SidePolicy.STREAM_CODEC,
+                SideConfigChoice::policy,
+                SideConfigChoice::new
+        );
     }
 }
