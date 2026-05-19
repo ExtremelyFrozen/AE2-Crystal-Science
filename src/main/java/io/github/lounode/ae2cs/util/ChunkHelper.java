@@ -20,7 +20,7 @@ public class ChunkHelper
         {
             for (int offsetZ = -offset; offsetZ <= offset; offsetZ++)
             {
-                LevelChunk chunk = level.getChunkSource().getChunkNow(centerChunk.x + offsetX, centerChunk.z + offsetZ);
+                LevelChunk chunk = level.getChunkSource().getChunkNow(centerChunk.x() + offsetX, centerChunk.z() + offsetZ);
                 if (chunk == null) continue;
 
                 blockEntitiesInChunks.addAll(chunk.getBlockEntities().values());

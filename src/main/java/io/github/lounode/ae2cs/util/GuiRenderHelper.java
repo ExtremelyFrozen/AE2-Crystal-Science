@@ -38,7 +38,7 @@ public class GuiRenderHelper
         int xStart = left + (regionWidth - textWidth) / 2;
 
         // 4) 绘制
-        GuiGraphicsExtractor.drawString(font, text, xStart, y, color, dropShadow);
+        guiGraphics.text(font, text, xStart, y, color, dropShadow);
     }
 
     public static void drawRightAlignedAtX(GuiGraphicsExtractor guiGraphics,
@@ -50,6 +50,6 @@ public class GuiRenderHelper
                                            boolean dropShadow)
     {
         int xStart = xRight - font.width(text);
-        GuiGraphicsExtractor.drawString(font, text, xStart, y, color, dropShadow);
+        guiGraphics.text(font, text, xStart, y, color, dropShadow);
     }
 }
