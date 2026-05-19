@@ -22,6 +22,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -255,7 +256,7 @@ public class AECSBlockEntities
             @SuppressWarnings("unchecked")
             Block[] vanillaBlocks = Arrays.stream(blocks).toArray(Block[]::new);
 
-            BlockEntityType<T> type = BlockEntityType.Builder.of(supplier, vanillaBlocks).build(null);
+            BlockEntityType<T> type = new BlockEntityType<>(supplier, Set.of(vanillaBlocks));
             // 让上面的 supplier 拿得到 type
             typeRef.set(type);
 

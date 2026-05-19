@@ -73,8 +73,8 @@ public class ResonatingPatternTargetHighlighter
         sel = ResonatingPatternDetails.clampSelected(sel, size);
 
         Level level = player.level();
-        var cam = event.getCamera();
-        var camPos = cam.getPosition();
+        var cam = mc.gameRenderer.getMainCamera();
+        var camPos = cam.position();
 
         PoseStack poseStack = event.getPoseStack();
 

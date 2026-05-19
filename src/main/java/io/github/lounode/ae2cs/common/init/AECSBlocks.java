@@ -126,77 +126,82 @@ public class AECSBlocks
     /**
      * 晶能谐振器
      */
-    public static final DeferredBlock<CrystalVibrationChamberBlock> CRYSTAL_VIBRATION_CHAMBER_BLOCK = registerOtherBlock(AECSBlockIds.CRYSTAL_VIBRATION_CHAMBER, () -> new CrystalVibrationChamberBlock(AEBaseBlock.metalProps().strength(4.5f)));
+    public static final DeferredBlock<CrystalVibrationChamberBlock> CRYSTAL_VIBRATION_CHAMBER_BLOCK = registerOtherBlock(AECSBlockIds.CRYSTAL_VIBRATION_CHAMBER, () -> new CrystalVibrationChamberBlock(metalProps().strength(4.5f)));
 
     /**
      * 水晶聚合器
      */
-    public static final DeferredBlock<CrystalAggregatorBlock> CRYSTAL_AGGREGATOR_BLOCK = registerOtherBlock(AECSBlockIds.CRYSTAL_AGGREGATOR, () -> new CrystalAggregatorBlock(AEBaseBlock.metalProps()));
+    public static final DeferredBlock<CrystalAggregatorBlock> CRYSTAL_AGGREGATOR_BLOCK = registerOtherBlock(AECSBlockIds.CRYSTAL_AGGREGATOR, () -> new CrystalAggregatorBlock(metalProps()));
 
     /**
      * 熵变反应仓
      */
-    public static final DeferredBlock<EntropyVariationReactionChamberBlock> ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK = registerOtherBlock(AECSBlockIds.ENTROPY_VARIATION_REACTION_CHAMBER, () -> new EntropyVariationReactionChamberBlock(AEBaseBlock.metalProps()));
+    public static final DeferredBlock<EntropyVariationReactionChamberBlock> ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK = registerOtherBlock(AECSBlockIds.ENTROPY_VARIATION_REACTION_CHAMBER, () -> new EntropyVariationReactionChamberBlock(metalProps()));
 
     /**
      * 末影广播装置
      */
-    public static final DeferredBlock<EnderBroadcasterBlock> ENDER_BROADCASTER_BLOCK = registerOtherBlock(AECSBlockIds.ENDER_BROADCASTER, () -> new EnderBroadcasterBlock(AEBaseBlock.metalProps()));
+    public static final DeferredBlock<EnderBroadcasterBlock> ENDER_BROADCASTER_BLOCK = registerOtherBlock(AECSBlockIds.ENDER_BROADCASTER, () -> new EnderBroadcasterBlock(metalProps()));
 
     /**
      * 末影发信器
      */
-    public static final DeferredBlock<EnderEmitterBlock> ENDER_EMITTER_BLOCK = registerOtherBlock(AECSBlockIds.ENDER_EMITTER, () -> new EnderEmitterBlock(AEBaseBlock.metalProps()));
+    public static final DeferredBlock<EnderEmitterBlock> ENDER_EMITTER_BLOCK = registerOtherBlock(AECSBlockIds.ENDER_EMITTER, () -> new EnderEmitterBlock(metalProps()));
 
     /**
      * 末影接口
      */
-    public static final DeferredBlock<InterfaceBlock> ENDER_INTERFACE_BLOCK = registerOtherBlock(AECSBlockIds.ENDER_INTERFACE, InterfaceBlock::new);
+    public static final DeferredBlock<InterfaceBlock> ENDER_INTERFACE_BLOCK = registerOtherBlock(AECSBlockIds.ENDER_INTERFACE, () -> new InterfaceBlock(BlockBehaviour.Properties.of()));
 
     /**
      * 扩展末影接口
      */
-    public static final DeferredBlock<InterfaceBlock> EX_ENDER_INTERFACE_BLOCK = registerOtherBlock(AECSBlockIds.EX_ENDER_INTERFACE, InterfaceBlock::new);
+    public static final DeferredBlock<InterfaceBlock> EX_ENDER_INTERFACE_BLOCK = registerOtherBlock(AECSBlockIds.EX_ENDER_INTERFACE, () -> new InterfaceBlock(BlockBehaviour.Properties.of()));
 
     /**
      * ME集成接口
      */
-    public static final DeferredBlock<IntegratedInterfaceBlock> INTEGRATED_INTERFACE_BLOCK = registerOtherBlock(AECSBlockIds.INTEGRATED_INTERFACE, () -> new IntegratedInterfaceBlock(AEBaseBlock.metalProps()));
+    public static final DeferredBlock<IntegratedInterfaceBlock> INTEGRATED_INTERFACE_BLOCK = registerOtherBlock(AECSBlockIds.INTEGRATED_INTERFACE, () -> new IntegratedInterfaceBlock(metalProps()));
 
     /**
      * 扩展ME集成接口
      */
-    public static final DeferredBlock<IntegratedInterfaceBlock> EX_INTEGRATED_INTERFACE_BLOCK = registerOtherBlock(AECSBlockIds.EX_INTEGRATED_INTERFACE, () -> new IntegratedInterfaceBlock(AEBaseBlock.metalProps()));
+    public static final DeferredBlock<IntegratedInterfaceBlock> EX_INTEGRATED_INTERFACE_BLOCK = registerOtherBlock(AECSBlockIds.EX_INTEGRATED_INTERFACE, () -> new IntegratedInterfaceBlock(metalProps()));
 
     /**
      * 谐振样板供应器
      */
-    public static final DeferredBlock<PatternProviderBlock> RESONATING_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.RESONATING_PATTERN_PROVIDER, PatternProviderBlock::new);
+    public static final DeferredBlock<PatternProviderBlock> RESONATING_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.RESONATING_PATTERN_PROVIDER, () -> new PatternProviderBlock(BlockBehaviour.Properties.of()));
 
     /**
      * 扩展谐振样板供应器
      */
-    public static final DeferredBlock<PatternProviderBlock> EX_RESONATING_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.EX_RESONATING_PATTERN_PROVIDER, PatternProviderBlock::new);
+    public static final DeferredBlock<PatternProviderBlock> EX_RESONATING_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.EX_RESONATING_PATTERN_PROVIDER, () -> new PatternProviderBlock(BlockBehaviour.Properties.of()));
 
     /**
      * 初级样板供应器
      */
-    public static final DeferredBlock<PatternProviderBlock> SIMPLE_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.SIMPLE_PATTERN_PROVIDER, PatternProviderBlock::new);
+    public static final DeferredBlock<PatternProviderBlock> SIMPLE_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.SIMPLE_PATTERN_PROVIDER, () -> new PatternProviderBlock(BlockBehaviour.Properties.of()));
 
     /**
      * 陨石样板供应器
      */
-    public static final DeferredBlock<PatternProviderBlock> METEORITE_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.METEORITE_PATTERN_PROVIDER, PatternProviderBlock::new);
+    public static final DeferredBlock<PatternProviderBlock> METEORITE_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.METEORITE_PATTERN_PROVIDER, () -> new PatternProviderBlock(BlockBehaviour.Properties.of()));
 
     /**
      * 石英震荡钟
      */
-    public static final DeferredBlock<QuartzOscillatorClockBlock> QUARTZ_OSCILLATOR_CLOCK_BLOCK = registerOtherBlock(AECSBlockIds.QUARTZ_OSCILLATOR_CLOCK, () -> new QuartzOscillatorClockBlock(AEBaseBlock.metalProps()));
+    public static final DeferredBlock<QuartzOscillatorClockBlock> QUARTZ_OSCILLATOR_CLOCK_BLOCK = registerOtherBlock(AECSBlockIds.QUARTZ_OSCILLATOR_CLOCK, () -> new QuartzOscillatorClockBlock(metalProps()));
 
 
     public static BlockBehaviour.Properties copy(BlockBehaviour behaviour)
     {
         return BlockBehaviour.Properties.ofFullCopy(behaviour);
+    }
+
+    public static BlockBehaviour.Properties metalProps()
+    {
+        return AEBaseBlock.metalProps(BlockBehaviour.Properties.of());
     }
 
     // getter

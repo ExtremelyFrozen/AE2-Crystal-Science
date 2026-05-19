@@ -5,6 +5,7 @@ import appeng.core.definitions.AEItems;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Unit;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
@@ -48,7 +49,7 @@ public record EncodedResonatingPattern(
     ).apply(b, Target::new));
 
     public static final Codec<Optional<Target>> OPTIONAL_TARGET_CODEC =
-            Codec.either(TARGET_CODEC, Codec.unit(Unit.INSTANCE))
+            Codec.either(TARGET_CODEC, MapCodec.unitCodec(Unit.INSTANCE))
                     .xmap(
                             e -> e.left().map(Optional::of).orElse(Optional.empty()),
                             opt -> opt.<Either<Target, Unit>>map(

@@ -16,9 +16,11 @@ import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern.Target;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.TagValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -276,7 +278,9 @@ public class ResonatingPatternDetails implements IPatternDetails
         boolean foundStack = false;
         for (var stack : stacks)
         {
-            tag.add(GenericStack.writeTag(registries, stack));
+            TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, registries);
+            GenericStack.writeTag(output, stack);
+            tag.add(output.buildResult());
             if (stack != null && stack.amount() > 0)
             {
                 foundStack = true;

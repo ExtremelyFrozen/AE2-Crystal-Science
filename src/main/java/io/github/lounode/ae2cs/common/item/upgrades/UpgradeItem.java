@@ -8,6 +8,7 @@ import io.github.lounode.ae2cs.util.BlockStateAligner;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -16,6 +17,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
@@ -68,7 +71,7 @@ public class UpgradeItem extends Item
                 BlockEntity newBe = level.getBlockEntity(pos);
                 if (newBe != null)
                 {
-                    newBe.loadWithComponents(originalData, level.registryAccess());
+                    newBe.loadWithComponents(TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), originalData));
                     newBe.setChanged();
                 }
                 context.getItemInHand().shrink(1);
@@ -83,13 +86,14 @@ public class UpgradeItem extends Item
                         partReplaceInfo.containsKey(part.getPartItem()))
                 {
                     Direction side = basePart.getSide();
-                    CompoundTag contents = new CompoundTag();
+                    TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, level.registryAccess());
                     IPartItem<?> partItem = partReplaceInfo.get(part.getPartItem());
-                    part.writeToNBT(contents, level.registryAccess());
+                    part.writeToNBT(output);
+                    CompoundTag contents = output.buildResult();
                     IPart newPart = cable.replacePart(partItem, side, context.getPlayer(), null);
                     if (newPart != null)
                     {
-                        newPart.readFromNBT(contents, level.registryAccess());
+                        newPart.readFromNBT(TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), contents));
                         newPart.addToWorld();
                     }
                     context.getItemInHand().shrink(1);
