@@ -98,6 +98,12 @@ public class GenericInvStorageAdapter implements MEStorage, GenericInternalInven
     }
 
     @Override
+    public boolean isSupportedType(AEKey what)
+    {
+        return delegate.isSupportedType(what);
+    }
+
+    @Override
     public boolean isAllowedIn(int slot, AEKey what)
     {
         return delegate.isAllowedIn(slot, what);
@@ -140,8 +146,9 @@ public class GenericInvStorageAdapter implements MEStorage, GenericInternalInven
     }
 
     @Override
-    public void updateSnapshots(TransactionContext transaction) {
-
+    public void updateSnapshots(TransactionContext transaction)
+    {
+        delegate.updateSnapshots(transaction);
     }
 
     // MEStorage:：跨槽聚合

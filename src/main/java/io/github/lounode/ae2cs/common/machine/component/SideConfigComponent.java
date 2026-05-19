@@ -185,9 +185,21 @@ public class SideConfigComponent extends BaseMachineComponent
                 }
 
                 @Override
+                public boolean canInsert()
+                {
+                    return policy.allowInsert() && super.canInsert();
+                }
+
+                @Override
                 public long extract(int slot, AEKey what, long amount, Actionable mode)
                 {
                     return policy.allowExtract() ? super.extract(slot, what, amount, mode) : 0;
+                }
+
+                @Override
+                public boolean canExtract()
+                {
+                    return policy.allowExtract() && super.canExtract();
                 }
             };
         }

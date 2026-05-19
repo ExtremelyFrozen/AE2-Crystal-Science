@@ -142,8 +142,9 @@ public class GenericStackInvWrapper implements GenericInternalInventory
     }
 
     @Override
-    public void updateSnapshots(TransactionContext transaction) {
-
+    public void updateSnapshots(TransactionContext transaction)
+    {
+        delegate.updateSnapshots(transaction);
     }
 
     @Override

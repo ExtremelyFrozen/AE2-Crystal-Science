@@ -70,7 +70,11 @@ public class CombinedGenericInternalInventory implements GenericInternalInventor
     // 将扁平槽位映射为该索引对应委托库存中的本地槽位
     protected int getLocalSlot(int slot, int index)
     {
-        if (index <= 0 || index >= baseIndex.length)
+        if (index < 0 || index >= baseIndex.length)
+        {
+            throw new IndexOutOfBoundsException("Slot " + slot + " out of bounds for size " + slotCount);
+        }
+        if (index == 0)
         {
             return slot;
         }
@@ -191,6 +195,17 @@ public class CombinedGenericInternalInventory implements GenericInternalInventor
     }
 
     @Override
+    public boolean isSupportedType(AEKey what)
+    {
+        if (what == null) return false;
+        for (GenericInternalInventory inv : delegates)
+        {
+            if (inv != null && inv.isSupportedType(what)) return true;
+        }
+        return false;
+    }
+
+    @Override
     public boolean isAllowedIn(int slot, AEKey what)
     {
         int idx = getIndexForSlot(slot);
@@ -254,8 +269,12 @@ public class CombinedGenericInternalInventory implements GenericInternalInventor
     }
 
     @Override
-    public void updateSnapshots(TransactionContext transaction) {
-
+    public void updateSnapshots(TransactionContext transaction)
+    {
+        for (GenericInternalInventory inv : delegates)
+        {
+            if (inv != null) inv.updateSnapshots(transaction);
+        }
     }
 
     // === 辅助方法 ===
@@ -334,6 +353,12 @@ public class CombinedGenericInternalInventory implements GenericInternalInventor
         }
 
         @Override
+        public boolean isSupportedType(AEKey what)
+        {
+            return false;
+        }
+
+        @Override
         public boolean isAllowedIn(int slot, AEKey what)
         {
             return false;
@@ -372,8 +397,8 @@ public class CombinedGenericInternalInventory implements GenericInternalInventor
         }
 
         @Override
-        public void updateSnapshots(TransactionContext transaction) {
-
+        public void updateSnapshots(TransactionContext transaction)
+        {
         }
     }
 }

@@ -83,6 +83,12 @@ public final class GenericStackInvComponent extends BaseMachineComponent
                         {
                             return 0;
                         }
+
+                        @Override
+                        public boolean canExtract()
+                        {
+                            return false;
+                        }
                     };
                     list.add(wrapper);
                     portWrappers.put(InvPort.INPUT, wrapper);
@@ -97,6 +103,12 @@ public final class GenericStackInvComponent extends BaseMachineComponent
                         public long insert(int slot, AEKey what, long amount, Actionable mode)
                         {
                             return 0;
+                        }
+
+                        @Override
+                        public boolean canInsert()
+                        {
+                            return false;
                         }
                     };
                     list.add(wrapper);
