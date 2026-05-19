@@ -60,7 +60,7 @@ public class CrystalPulverizerRecipeBuilder implements RecipeBuilder
      */
     public CrystalPulverizerRecipeBuilder require(Ingredient ing, int count)
     {
-        if (ing == null || isDefinitelyEmpty(ing) || count <= 0)
+        if (ing == null || count <= 0)
         {
             return this;
         }
@@ -110,7 +110,7 @@ public class CrystalPulverizerRecipeBuilder implements RecipeBuilder
     @Override
     public void save(@NotNull RecipeOutput output, @NotNull ResourceKey<Recipe<?>> id)
     {
-        if (this.input == null || isDefinitelyEmpty(this.input.ingredient()) || this.input.count() <= 0)
+        if (this.input == null || this.input.count() <= 0)
         {
             throw new IllegalStateException("CrystalPulverizerRecipe requires exactly 1 valid input: " + id);
         }
@@ -196,18 +196,6 @@ public class CrystalPulverizerRecipeBuilder implements RecipeBuilder
         }
         catch (IllegalStateException | UnsupportedOperationException ignored)
         {
-        }
-    }
-
-    private static boolean isDefinitelyEmpty(Ingredient ingredient)
-    {
-        try
-        {
-            return ingredient.isEmpty();
-        }
-        catch (UnsupportedOperationException ignored)
-        {
-            return false;
         }
     }
 

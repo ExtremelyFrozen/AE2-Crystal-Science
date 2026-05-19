@@ -60,7 +60,7 @@ public class CircuitEtcherRecipeBuilder implements RecipeBuilder
     public CircuitEtcherRecipeBuilder require(Ingredient ing, int count)
     {
         // 空/无效：不添加，不占位
-        if (ing == null || isDefinitelyEmpty(ing) || count <= 0)
+        if (ing == null || count <= 0)
         {
             return this;
         }
@@ -193,18 +193,6 @@ public class CircuitEtcherRecipeBuilder implements RecipeBuilder
         }
         catch (IllegalStateException | UnsupportedOperationException ignored)
         {
-        }
-    }
-
-    private static boolean isDefinitelyEmpty(Ingredient ingredient)
-    {
-        try
-        {
-            return ingredient.isEmpty();
-        }
-        catch (UnsupportedOperationException ignored)
-        {
-            return false;
         }
     }
 

@@ -24,7 +24,6 @@ public class CircuitEtcherRecipe implements Recipe<ThreeItemStackRecipeInput>
 
     // 真正所需的输入的缓存
     private final List<SizedIngredient> effective;
-    private final PlacementInfo placementInfo;
 
     public CircuitEtcherRecipe(SizedIngredient inputA, SizedIngredient inputB, SizedIngredient inputC,
                                ItemStack result, int energyCost)
@@ -39,43 +38,13 @@ public class CircuitEtcherRecipe implements Recipe<ThreeItemStackRecipeInput>
         addIfRequired(this.effective, inputA);
         addIfRequired(this.effective, inputB);
         addIfRequired(this.effective, inputC);
-        this.placementInfo = createPlacementInfo();
     }
 
     private static void addIfRequired(List<SizedIngredient> list, SizedIngredient si)
     {
-        if (si != null && !isDefinitelyEmpty(si.ingredient()) && si.count() > 0)
+        if (si != null)
         {
             list.add(si);
-        }
-    }
-
-    private static boolean isDefinitelyEmpty(Ingredient ingredient)
-    {
-        try
-        {
-            return ingredient.isEmpty();
-        }
-        catch (UnsupportedOperationException ignored)
-        {
-            return false;
-        }
-    }
-
-    private PlacementInfo createPlacementInfo()
-    {
-        if (effective.isEmpty())
-        {
-            return PlacementInfo.NOT_PLACEABLE;
-        }
-
-        try
-        {
-            return PlacementInfo.create(getIngredients());
-        }
-        catch (UnsupportedOperationException ignored)
-        {
-            return PlacementInfo.NOT_PLACEABLE;
         }
     }
 
@@ -214,7 +183,7 @@ public class CircuitEtcherRecipe implements Recipe<ThreeItemStackRecipeInput>
 
     @Override
     public @NotNull PlacementInfo placementInfo() {
-        return placementInfo;
+        return PlacementInfo.NOT_PLACEABLE;
     }
 
     @Override

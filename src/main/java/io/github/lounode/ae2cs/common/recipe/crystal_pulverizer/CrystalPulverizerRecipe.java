@@ -14,11 +14,10 @@ public class CrystalPulverizerRecipe implements Recipe<SingleRecipeInput>
     private final SizedIngredient input;
     private final ItemStack result;
     private final int energyCost;
-    private final PlacementInfo placementInfo;
 
     public CrystalPulverizerRecipe(SizedIngredient input, ItemStack result, int energyCost)
     {
-        if (isDefinitelyEmpty(input.ingredient()) || input.count() <= 0)
+        if (input == null || input.count() <= 0)
         {
             throw new IllegalArgumentException("Input cannot be empty");
         }
@@ -30,31 +29,6 @@ public class CrystalPulverizerRecipe implements Recipe<SingleRecipeInput>
         this.input = input;
         this.result = result;
         this.energyCost = energyCost;
-        this.placementInfo = createPlacementInfo(input.ingredient());
-    }
-
-    private static boolean isDefinitelyEmpty(Ingredient ingredient)
-    {
-        try
-        {
-            return ingredient.isEmpty();
-        }
-        catch (UnsupportedOperationException ignored)
-        {
-            return false;
-        }
-    }
-
-    private static PlacementInfo createPlacementInfo(Ingredient ingredient)
-    {
-        try
-        {
-            return PlacementInfo.create(ingredient);
-        }
-        catch (UnsupportedOperationException ignored)
-        {
-            return PlacementInfo.NOT_PLACEABLE;
-        }
     }
 
     public SizedIngredient input()
@@ -108,7 +82,7 @@ public class CrystalPulverizerRecipe implements Recipe<SingleRecipeInput>
 
     @Override
     public PlacementInfo placementInfo() {
-        return placementInfo;
+        return PlacementInfo.NOT_PLACEABLE;
     }
 
     @Override
