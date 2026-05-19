@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -46,32 +47,30 @@ public class FrequencyBandInfoPanel extends AbstractWidget
     }
 
     @Override
-    protected void renderWidget(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float pt)
-    {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor guiGraphicsExtractor, int i, int i1, float v) {
         // 背景
         Rect2i bounds;
         if (isHovered())
             bounds = TEXTURE_HIGHLIGHT_BOUND;
         else
             bounds = TEXTURE_BOUND;
-        GuiGraphicsExtractor.blit(BG, getX(), getY(), bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight(), 256, 256);
+        guiGraphicsExtractor.blit(BG, getX(), getY(), bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight(), 256, 256);
 
         // 频段名
         final var font = Minecraft.getInstance().font;
-        GuiGraphicsExtractor.drawString(font, bandId, getX() + 6, getY() + 4, getTextColor(), false);
+        guiGraphicsExtractor.text(font, bandId, getX() + 6, getY() + 4, getTextColor(), false);
 
         // 加密图标
         if (isEncrypted)
         {
             int rightX = getX() + getWidth() - 18;
-            AdaptedAE2Icon.LOCKED.getBlitter().dest(rightX, getY() - 1).blit(GuiGraphicsExtractor);
+            AdaptedAE2Icon.LOCKED.getBlitter().dest(rightX, getY() - 1).blit(guiGraphicsExtractor);
         }
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button)
-    {
-        super.onClick(mouseX, mouseY, button);
+    public void onClick(MouseButtonEvent event, boolean doubleClick) {
+        super.onClick(event, doubleClick);
 
         if (bandId != null && !bandId.isEmpty())
         {

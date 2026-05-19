@@ -2,7 +2,9 @@ package io.github.lounode.ae2cs.client.gui.widgets;
 
 import appeng.client.gui.widgets.ITooltip;
 import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
+import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -51,7 +53,7 @@ public class AECSToggleButton extends AECSIconButton implements ITooltip
     }
 
     @Override
-    public void onPress()
+    public void onPress(@NotNull InputWithModifiers input)
     {
         this.listener.onChange(!state);
     }

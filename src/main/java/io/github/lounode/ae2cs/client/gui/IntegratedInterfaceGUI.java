@@ -7,6 +7,7 @@ import appeng.api.config.YesNo;
 import appeng.api.stacks.AmountFormat;
 import appeng.client.Point;
 import appeng.client.gui.ICompositeWidget;
+import appeng.client.gui.style.Blitter;
 import appeng.util.Icon;
 import appeng.client.gui.Tooltip;
 import appeng.client.gui.implementations.UpgradeableScreen;
@@ -32,6 +33,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
@@ -204,17 +206,17 @@ public class IntegratedInterfaceGUI extends UpgradeableScreen<IntegratedInterfac
             {
                 icon = Icon.UNLOCKED;
                 lockStatusText = GuiText.CraftingLockIsUnlocked.text()
-                        .setStyle(Style.EMPTY.withColor(Mth.color(125 / 255f, 169 / 255f, 210 / 255f)));
+                        .setStyle(Style.EMPTY.withColor(ARGB.color(125, 169, 210)));
             }
             else
             {
                 icon = Icon.LOCKED;
                 lockStatusText = GuiText.CraftingLockIsLocked.text()
-                        .setStyle(Style.EMPTY.withColor(Mth.color(193 / 255f, 66 / 255f, 75 / 255f)));
+                        .setStyle(Style.EMPTY.withColor(ARGB.color(193, 66, 75)));
             }
 
-            icon.getBlitter().dest(x, y).blit(GuiGraphicsExtractor);
-            GuiGraphicsExtractor.drawString(Minecraft.getInstance().font, lockStatusText, x + 15, y + 5, -1, false);
+            Blitter.icon(icon).dest(x, y).blit(guiGraphics);
+            guiGraphics.text(Minecraft.getInstance().font, lockStatusText, x + 15, y + 5, -1, false);
         }
 
         @Nullable
@@ -235,7 +237,7 @@ public class IntegratedInterfaceGUI extends UpgradeableScreen<IntegratedInterfac
                     Component stackAmount;
                     if (stack != null)
                     {
-                        stackName = AEKeyRendering.getDisplayName(stack.what());
+                        stackName = stack.what().getDisplayName();
                         stackAmount = Component.literal(stack.what().formatAmount(stack.amount(), AmountFormat.FULL));
                     }
                     else

@@ -79,7 +79,7 @@ public abstract class AECSIconButton extends Button implements ITooltip
 
             if (item != null)
             {
-                guiGraphics.item(new ItemStack(item), getX(), getY(), 20);
+                guiGraphics.item(new ItemStack(item), getX(), getY());
             }
             else if (icon != null)
             {
@@ -106,7 +106,7 @@ public abstract class AECSIconButton extends Button implements ITooltip
 
             if (item != null)
             {
-                guiGraphics.item(new ItemStack(item), getX(), getY() + 1 + yOffset, 3);
+                guiGraphics.item(new ItemStack(item), getX(), getY() + 1 + yOffset);
             }
             else if (icon != null)
             {

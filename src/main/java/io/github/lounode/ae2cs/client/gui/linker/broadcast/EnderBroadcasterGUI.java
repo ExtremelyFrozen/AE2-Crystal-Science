@@ -10,6 +10,7 @@ import io.github.lounode.ae2cs.client.gui.widgets.AECSIconButton;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSToggleButton;
 import io.github.lounode.ae2cs.common.block.entity.EnderBroadcasterBlockEntity;
 import io.github.lounode.ae2cs.common.menu.linker.broadcast.EnderBroadcasterMenu;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -85,25 +86,25 @@ public class EnderBroadcasterGUI extends UpgradeableScreen<EnderBroadcasterMenu>
         addToLeftToolbar(cleanLinkerConnectionButton);
 
         addReceiver1ChannelsButton = new AE2Button(Component.literal("+1"), button -> {
-            int mult = hasShiftDown() ? 5 : 1;
+            int mult = Minecraft.getInstance().hasShiftDown() ? 5 : 1;
             menu.sendChangeExpectedChannels(1 * mult);
         });
         widgets.add("add_receiver_expected_channels_button_1", addReceiver1ChannelsButton);
 
         addReceiver10ChannelsButton = new AE2Button(Component.literal("+10"), button -> {
-            int mult = hasShiftDown() ? 5 : 1;
+            int mult = Minecraft.getInstance().hasShiftDown() ? 5 : 1;
             menu.sendChangeExpectedChannels(10 * mult);
         });
         widgets.add("add_receiver_expected_channels_button_10", addReceiver10ChannelsButton);
 
         reduceReceiver1ChannelsButton = new AE2Button(Component.literal("-1"), button -> {
-            int mult = hasShiftDown() ? 5 : 1;
+            int mult = Minecraft.getInstance().hasShiftDown() ? 5 : 1;
             menu.sendChangeExpectedChannels(-1 * mult);
         });
         widgets.add("reduce_receiver_expected_channels_button_1", reduceReceiver1ChannelsButton);
 
         reduceReceiver10ChannelsButton = new AE2Button(Component.literal("-10"), button -> {
-            int mult = hasShiftDown() ? 5 : 1;
+            int mult = Minecraft.getInstance().hasShiftDown() ? 5 : 1;
             menu.sendChangeExpectedChannels(-10 * mult);
         });
         widgets.add("reduce_receiver_expected_channels_button_10", reduceReceiver10ChannelsButton);

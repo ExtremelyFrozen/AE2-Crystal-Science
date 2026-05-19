@@ -11,6 +11,7 @@ import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSIconButton;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSServerSettingToggleButton;
 import io.github.lounode.ae2cs.common.menu.EnderEmitterMenu;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -30,8 +31,8 @@ public class EnderEmitterGUI extends UpgradeableScreen<EnderEmitterMenu>
         super(menu, playerInventory, title, style);
 
         this.addDistanceButton = new AECSIconButton(button -> {
-            int mult = hasShiftDown() ? 5 : 1;
-            mult = hasControlDown() ? menu.linkDistance / 2 : mult;
+            int mult = Minecraft.getInstance().hasShiftDown() ? 5 : 1;
+            mult = Minecraft.getInstance().hasControlDown() ? menu.linkDistance / 2 : mult;
             mult = Math.max(1, mult);
             menu.sendChangeDistance(1 * mult);
         })
@@ -46,8 +47,8 @@ public class EnderEmitterGUI extends UpgradeableScreen<EnderEmitterMenu>
         this.widgets.add("add_distance_button", addDistanceButton);
 
         this.reduceDistanceButton = new AECSIconButton(button -> {
-            int mult = hasShiftDown() ? 5 : 1;
-            mult = hasControlDown() ? menu.linkDistance / 2 : mult;
+            int mult = Minecraft.getInstance().hasShiftDown() ? 5 : 1;
+            mult = Minecraft.getInstance().hasControlDown() ? menu.linkDistance / 2 : mult;
             mult = Math.max(1, mult);
             menu.sendChangeDistance(-1 * mult);
         })

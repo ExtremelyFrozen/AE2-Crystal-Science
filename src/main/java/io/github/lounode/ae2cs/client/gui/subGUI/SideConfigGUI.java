@@ -16,6 +16,7 @@ import io.github.lounode.ae2cs.network.c2s.SideConfigMenuOpenPacket;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
@@ -106,7 +107,7 @@ public class SideConfigGUI extends AEBaseScreen<SideConfigMenu>
 
     public static AECSIconButton iconButton()
     {
-        AECSIconButton iconButton = new AECSIconButton(button -> PacketDistributor.sendToServer(new SideConfigMenuOpenPacket()))
+        AECSIconButton iconButton = new AECSIconButton(button -> ClientPacketDistributor.sendToServer(new SideConfigMenuOpenPacket()))
         {
             @Override
             protected @NotNull IButtonIcon getIcon()

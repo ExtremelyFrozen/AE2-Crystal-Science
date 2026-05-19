@@ -8,6 +8,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
@@ -47,43 +48,41 @@ public class BroadcasterPanel extends AbstractWidget
         if (globalPos != null)
             this.setTooltip(
                     Tooltip.create(Component.translatable("ae2cs.widgets.broadcaster.pos",
-                            Component.translatable(globalPos.dimension().location().toLanguageKey("dimension")), globalPos.pos().getX(), globalPos.pos().getY(), globalPos.pos().getZ())));
+                            Component.translatable(globalPos.dimension().identifier().toLanguageKey("dimension")), globalPos.pos().getX(), globalPos.pos().getY(), globalPos.pos().getZ())));
         else
             this.setTooltip(Tooltip.create(Component.empty()));
     }
 
     @Override
-    protected void renderWidget(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float pt)
-    {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor guiGraphicsExtractor, int i, int i1, float v) {
         Rect2i bounds;
         if (isHovered())
             bounds = TEXTURE_HIGHLIGHT_BOUND;
         else
             bounds = TEXTURE_BOUND;
-        GuiGraphicsExtractor.blit(BG, getX(), getY(), bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight(), 512, 512);
+        guiGraphicsExtractor.blit(BG, getX(), getY(), bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight(), 512, 512);
 
-        AdaptedAE2Icon.CLEAR.getBlitter().dest(getX() + DELETE_AREA_BOUND.getX(), getY() + DELETE_AREA_BOUND.getY()).blit(GuiGraphicsExtractor);
+        AdaptedAE2Icon.CLEAR.getBlitter().dest(getX() + DELETE_AREA_BOUND.getX(), getY() + DELETE_AREA_BOUND.getY()).blit(guiGraphicsExtractor);
 
         final var font = Minecraft.getInstance().font;
 
         if (isSender)
-            GuiGraphicsExtractor.drawString(font, senderComponent, getX() + 2, getY() + 4, getTextColor(), false);
+            guiGraphicsExtractor.text(font, senderComponent, getX() + 2, getY() + 4, getTextColor(), false);
         else
-            GuiGraphicsExtractor.drawString(font, receiverComponent, getX() + 2, getY() + 4, getTextColor(), false);
+            guiGraphicsExtractor.text(font, receiverComponent, getX() + 2, getY() + 4, getTextColor(), false);
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button)
-    {
-        super.onClick(mouseX, mouseY, button);
-
+    public void onClick(MouseButtonEvent event, boolean doubleClick) {
+        super.onClick(event, doubleClick);
         if (globalPos != null)
         {
-            if (DELETE_AREA_BOUND.contains((int) mouseX - getX(), (int) mouseY - getY()))
+            if (DELETE_AREA_BOUND.contains((int) event.x() - getX(), (int) event.y() - getY()))
                 menu.sendDisconnectBroadcasterAction(globalPos);
             else
                 menu.sendTapToBroadcasterAction(globalPos);
         }
+
     }
 
     @Override

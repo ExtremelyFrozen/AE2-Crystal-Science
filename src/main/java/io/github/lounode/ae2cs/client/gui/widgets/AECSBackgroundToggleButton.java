@@ -7,6 +7,7 @@ import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -63,7 +64,7 @@ public class AECSBackgroundToggleButton<E extends Enum<E>> extends AECSIconButto
 
     public AECSBackgroundToggleButton(@NotNull Class<E> enumClass, @NotNull E initial)
     {
-        super(btn -> { /* onPress 由本类覆写 */ });
+        super(null);
 
         this.enumClass = Objects.requireNonNull(enumClass);
         this.values = Objects.requireNonNull(enumClass.getEnumConstants());
@@ -74,11 +75,11 @@ public class AECSBackgroundToggleButton<E extends Enum<E>> extends AECSIconButto
         this.iconByState = new EnumMap<>(enumClass);
     }
 
-//    @Override
-//    public void onPress()
-//    {
-//        cycleNext();
-//    }
+    @Override
+    public void onPress(@NotNull InputWithModifiers input)
+    {
+        cycleNext();
+    }
 
     public @NotNull E getValue()
     {
@@ -209,7 +210,7 @@ public class AECSBackgroundToggleButton<E extends Enum<E>> extends AECSIconButto
 
             if (item != null)
             {
-                guiGraphics.item(new ItemStack(item), getX(), getY(), 20);
+                guiGraphics.item(new ItemStack(item), getX(), getY());
             }
             else if (icon != null)
             {
@@ -236,7 +237,7 @@ public class AECSBackgroundToggleButton<E extends Enum<E>> extends AECSIconButto
 
             if (item != null)
             {
-                guiGraphics.item(new ItemStack(item), getX(), getY() + 1 + yOffset, 3);
+                guiGraphics.item(new ItemStack(item), getX(), getY() + 1 + yOffset);
             }
             else if (icon != null)
             {

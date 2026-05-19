@@ -106,7 +106,7 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
             else
             {
                 clickRemoveButtonTicks = 40;
-                getPlayer().displayClientMessage(Component.translatable("ae2cs.menu.frequency_manager_menu.click_again"), false);
+                getPlayer().sendOverlayMessage(Component.translatable("ae2cs.menu.frequency_manager_menu.click_again"));
             }
         })
         {

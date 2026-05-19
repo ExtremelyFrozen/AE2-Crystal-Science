@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -43,24 +44,22 @@ public class WhiteListPlayerPanel extends AbstractWidget
     }
 
     @Override
-    protected void renderWidget(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float pt)
-    {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor guiGraphicsExtractor, int i, int i1, float v) {
         Rect2i bounds;
         if (isHovered())
             bounds = TEXTURE_HIGHLIGHT_BOUND;
         else
             bounds = TEXTURE_BOUND;
-        GuiGraphicsExtractor.blit(BG, getX(), getY(), bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight(), 512, 512);
+        guiGraphicsExtractor.blit(BG, getX(), getY(), bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight(), 512, 512);
 
         final var font = Minecraft.getInstance().font;
 
-        GuiGraphicsExtractor.drawString(font, playerName, getX() + 2, getY() + 4, getTextColor(), false);
+        guiGraphicsExtractor.text(font, playerName, getX() + 2, getY() + 4, getTextColor(), false);
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button)
-    {
-        super.onClick(mouseX, mouseY, button);
+    public void onClick(MouseButtonEvent event, boolean doubleClick) {
+        super.onClick(event, doubleClick);
         menu.sendChangeWhiteListStateAction(playerId);
     }
 

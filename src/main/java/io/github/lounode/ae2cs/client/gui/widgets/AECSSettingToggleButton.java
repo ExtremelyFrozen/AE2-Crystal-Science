@@ -2,8 +2,10 @@ package io.github.lounode.ae2cs.client.gui.widgets;
 
 import appeng.api.config.Setting;
 import appeng.client.gui.AEBaseScreen;
+import appeng.core.localization.ButtonToolTips;
 import appeng.util.EnumCycler;
 import io.github.lounode.ae2cs.api.settings.AECSSettingAppearances;
+import io.github.lounode.ae2cs.client.gui.icon.AdaptedAE2Icon;
 import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
@@ -114,7 +116,11 @@ public class AECSSettingToggleButton<T extends Enum<T>> extends AECSIconButton
     protected @Nullable IButtonIcon getIcon()
     {
         var app = getAppearance();
-        return app != null ? app.icon() : null;
+        if (app != null && app.icon() != null)
+        {
+            return app.icon();
+        }
+        return AdaptedAE2Icon.TOOLBAR_BUTTON_BACKGROUND;
     }
 
     @Override
@@ -135,7 +141,7 @@ public class AECSSettingToggleButton<T extends Enum<T>> extends AECSIconButton
         var app = getAppearance();
         if (app == null)
         {
-            return Collections.emptyList();
+            return Collections.singletonList(ButtonToolTips.NoSuchMessage.text());
         }
 
         return app.tooltipLines();
