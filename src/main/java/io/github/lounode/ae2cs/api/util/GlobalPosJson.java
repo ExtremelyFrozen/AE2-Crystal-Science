@@ -1,8 +1,10 @@
 package io.github.lounode.ae2cs.api.util;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
@@ -14,6 +16,8 @@ import java.util.Objects;
  */
 public record GlobalPosJson(String dimensionId, int x, int y, int z)
 {
+    public static final StreamCodec<ByteBuf, GlobalPosJson> STREAM_CODEC = GlobalPos.STREAM_CODEC.map(GlobalPosJson::from, GlobalPosJson::toGlobalPos);
+
     public static GlobalPosJson from(GlobalPos pos)
     {
         Objects.requireNonNull(pos, "pos");
