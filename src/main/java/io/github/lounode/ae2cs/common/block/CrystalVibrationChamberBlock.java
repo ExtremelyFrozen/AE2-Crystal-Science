@@ -59,7 +59,7 @@ public class CrystalVibrationChamberBlock extends AEBaseEntityBlock<CrystalVibra
             if (level.getBlockEntity(pos) instanceof CrystalVibrationChamberBlockEntity be)
                 MenuOpener.open(AECSMenus.CRYSTAL_VIBRATION_CHAMBER_MENU.get(), player, MenuLocators.forBlockEntity(be));
         }
-        return InteractionResult.SUCCESS_NO_ITEM_USED;
+        return InteractionResult.SUCCESS;
     }
 
     /**

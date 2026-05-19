@@ -53,6 +53,6 @@ public class CircuitEtcherBlock extends AEBaseEntityBlock<CircuitEtcherBlockEnti
             if (level.getBlockEntity(pos) instanceof CircuitEtcherBlockEntity be)
                 MenuOpener.open(AECSMenus.CIRCUIT_ETCHER_MENU.get(), player, MenuLocators.forBlockEntity(be));
         }
-        return InteractionResult.SUCCESS_NO_ITEM_USED;
+        return InteractionResult.SUCCESS;
     }
 }

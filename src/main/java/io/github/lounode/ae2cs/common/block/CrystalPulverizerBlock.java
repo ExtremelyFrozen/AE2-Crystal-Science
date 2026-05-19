@@ -53,6 +53,6 @@ public class CrystalPulverizerBlock extends AEBaseEntityBlock<CrystalPulverizerB
             if (level.getBlockEntity(pos) instanceof CrystalPulverizerBlockEntity be)
                 MenuOpener.open(AECSMenus.CRYSTAL_PULVERIZER_MENU.get(), player, MenuLocators.forBlockEntity(be));
         }
-        return InteractionResult.SUCCESS_NO_ITEM_USED;
+        return InteractionResult.SUCCESS;
     }
 }

@@ -10,14 +10,16 @@ import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -70,7 +72,7 @@ public class EnderEmitterBlock extends AEBaseEntityBlock<EnderEmitterBlockEntity
             if (level.getBlockEntity(pos) instanceof EnderEmitterBlockEntity be)
                 MenuOpener.open(AECSMenus.ENDER_EMITTER_MENU.get(), player, MenuLocators.forBlockEntity(be));
         }
-        return InteractionResult.SUCCESS_NO_ITEM_USED;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
@@ -78,7 +80,7 @@ public class EnderEmitterBlock extends AEBaseEntityBlock<EnderEmitterBlockEntity
     {
         BlockPos pos = ctx.getClickedPos();
         Level level = ctx.getLevel();
-        if (pos.getY() >= level.getMaxBuildHeight() - 1) return null;
+        if (pos.getY() >= level.getMaxSectionY() - 1) return null;
 
         BlockPos above = pos.above();
         if (!level.getBlockState(above).canBeReplaced(ctx)) return null;
@@ -103,7 +105,7 @@ public class EnderEmitterBlock extends AEBaseEntityBlock<EnderEmitterBlockEntity
     @Override
     public @NotNull BlockState playerWillDestroy(Level level, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Player player)
     {
-        if (!level.isClientSide
+        if (!level.isClientSide()
                 && (player.isCreative() || !player.hasCorrectToolForDrops(state, level, pos)))
         {
             // 放置另一半方块掉落
@@ -115,40 +117,39 @@ public class EnderEmitterBlock extends AEBaseEntityBlock<EnderEmitterBlockEntity
 
 
     @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston)
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston)
     {
-        if (!level.isClientSide && state.is(this) && !newState.is(this))
+        if (state.is(this))
         {
             removeOtherHalfNoDrops(level, pos, state);
         }
-        super.onRemove(state, level, pos, newState, movedByPiston);
+        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
     }
 
-
     @Override
-    protected @NotNull BlockState updateShape(BlockState state, Direction facing, @NotNull BlockState facingState,
-                                              @NotNull LevelAccessor level, @NotNull BlockPos currentPos, @NotNull BlockPos facingPos)
-    {
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos, Direction directionToNeighbour, BlockPos neighbourPos, BlockState neighbourState, RandomSource random) {
+
+
         DoubleBlockHalf half = state.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF);
 
-        if (facing.getAxis() == Direction.Axis.Y)
+        if (directionToNeighbour.getAxis() == Direction.Axis.Y)
         {
-            boolean isOtherHalfDir = (half == DoubleBlockHalf.LOWER) == (facing == Direction.UP);
+            boolean isOtherHalfDir = (half == DoubleBlockHalf.LOWER) == (directionToNeighbour == Direction.UP);
             if (isOtherHalfDir)
             {
-                return facingState.is(this)
-                        && facingState.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) != half
-                        ? facingState.setValue(BlockStateProperties.DOUBLE_BLOCK_HALF, half)
+                return neighbourState.is(this)
+                        && neighbourState.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) != half
+                        ? neighbourState.setValue(BlockStateProperties.DOUBLE_BLOCK_HALF, half)
                         : Blocks.AIR.defaultBlockState();
             }
         }
 
-        if (half == DoubleBlockHalf.LOWER && facing == Direction.DOWN && !state.canSurvive(level, currentPos))
+        if (half == DoubleBlockHalf.LOWER && directionToNeighbour == Direction.DOWN && !state.canSurvive(level, pos))
         {
             return Blocks.AIR.defaultBlockState();
         }
 
-        return super.updateShape(state, facing, facingState, level, currentPos, facingPos);
+        return super.updateShape(state, level, ticks, pos, directionToNeighbour, neighbourPos, neighbourState, random);
     }
 
 

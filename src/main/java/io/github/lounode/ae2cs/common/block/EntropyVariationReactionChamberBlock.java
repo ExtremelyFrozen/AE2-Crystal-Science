@@ -53,6 +53,6 @@ public class EntropyVariationReactionChamberBlock extends AEBaseEntityBlock<Entr
             if (level.getBlockEntity(pos) instanceof EntropyVariationReactionChamberBlockEntity be)
                 MenuOpener.open(AECSMenus.ENTROPY_VARIATION_REACTION_CHAMBER_MENU.get(), player, MenuLocators.forBlockEntity(be));
         }
-        return InteractionResult.SUCCESS_NO_ITEM_USED;
+        return InteractionResult.SUCCESS;
     }
 }

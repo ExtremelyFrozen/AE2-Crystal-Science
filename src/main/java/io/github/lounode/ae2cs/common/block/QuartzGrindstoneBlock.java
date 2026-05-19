@@ -41,6 +41,6 @@ public class QuartzGrindstoneBlock extends AEBaseEntityBlock<QuartzGrindstoneBlo
             if (level.getBlockEntity(pos) instanceof QuartzGrindstoneBlockEntity be)
                 MenuOpener.open(AECSMenus.QUARTZ_GRINDSTONE_MENU.get(), player, MenuLocators.forBlockEntity(be));
         }
-        return InteractionResult.SUCCESS_NO_ITEM_USED;
+        return InteractionResult.SUCCESS;
     }
 }

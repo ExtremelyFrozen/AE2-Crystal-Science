@@ -34,22 +34,7 @@ public class EnderBroadcasterBlock extends AEBaseEntityBlock<EnderBroadcasterBlo
             if (level.getBlockEntity(pos) instanceof EnderBroadcasterBlockEntity be)
                 MenuOpener.open(AECSMenus.ENDER_BROADCASTER_MENU.get(), player, MenuLocators.forBlockEntity(be));
         }
-        return InteractionResult.SUCCESS_NO_ITEM_USED;
+        return InteractionResult.SUCCESS;
     }
 
-    /**
-     * 方块真正被替换/移除时，永久清理
-     */
-    @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving)
-    {
-        if (!level.isClientSide() && state.getBlock() != newState.getBlock())
-        {
-            if (level.getBlockEntity(pos) instanceof EnderBroadcasterBlockEntity be)
-            {
-                be.cleanConnectionPermanent();
-            }
-        }
-        super.onRemove(state, level, pos, newState, isMoving);
-    }
 }

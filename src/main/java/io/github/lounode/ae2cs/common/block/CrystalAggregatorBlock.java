@@ -53,6 +53,6 @@ public class CrystalAggregatorBlock extends AEBaseEntityBlock<CrystalAggregatorB
             if (level.getBlockEntity(pos) instanceof CrystalAggregatorBlockEntity be)
                 MenuOpener.open(AECSMenus.CRYSTAL_AGGREGATOR_MENU.get(), player, MenuLocators.forBlockEntity(be));
         }
-        return InteractionResult.SUCCESS_NO_ITEM_USED;
+        return InteractionResult.SUCCESS;
     }
 }

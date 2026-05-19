@@ -30,7 +30,6 @@ public class ChargedCertusQuartzOreBlock extends CertusQuartzOreBlock
         super.animateTick(state, level, pos, random);
 
         if (!AEConfig.instance().isEnableEffects()) return;
-//        if (!AppEngClient.instance().shouldAddParticles(random)) return;
 
         float xOff = random.nextFloat();
         float yOff = random.nextFloat();

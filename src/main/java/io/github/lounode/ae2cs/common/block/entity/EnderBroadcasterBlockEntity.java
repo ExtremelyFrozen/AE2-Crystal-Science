@@ -510,6 +510,13 @@ public class EnderBroadcasterBlockEntity extends AENetworkedComponentBlockEntity
         setChanged();
     }
 
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state)
+    {
+        cleanConnectionPermanent();
+        super.preRemoveSideEffects(pos, state);
+    }
+
     /**
      * 将链接的频段标脏，让频段下一个tick重新计算频道分配，
      * 仅当发射端提供的频道/接收端需求的频道量变化时调用。

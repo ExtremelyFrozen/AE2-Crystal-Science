@@ -17,8 +17,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public class IntegratedInterfaceBlock extends AEBaseEntityBlock<IntegratedInterfaceBlockEntity>
 {
@@ -36,14 +38,8 @@ public class IntegratedInterfaceBlock extends AEBaseEntityBlock<IntegratedInterf
         builder.add(PatternProviderBlock.PUSH_DIRECTION);
     }
 
-//    @Override
-    public void neighborChanged(@NotNull BlockState state,
-                                @NotNull Level level,
-                                @NotNull BlockPos pos,
-                                @NotNull Block block,
-                                @NotNull BlockPos fromPos,
-                                boolean isMoving)
-    {
+    @Override
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean movedByPiston) {
         var be = this.getBlockEntity(level, pos);
         if (be != null)
         {

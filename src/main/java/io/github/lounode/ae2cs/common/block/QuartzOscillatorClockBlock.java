@@ -43,7 +43,7 @@ public class QuartzOscillatorClockBlock extends AEBaseEntityBlock<QuartzOscillat
             if (level.getBlockEntity(pos) instanceof QuartzOscillatorClockBlockEntity be)
                 be.openMenu(player, MenuLocators.forBlockEntity(be));
         }
-        return InteractionResult.SUCCESS_NO_ITEM_USED;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
