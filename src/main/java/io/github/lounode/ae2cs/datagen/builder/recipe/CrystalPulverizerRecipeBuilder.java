@@ -18,6 +18,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
@@ -29,7 +30,7 @@ import java.util.*;
 
 public class CrystalPulverizerRecipeBuilder implements RecipeBuilder
 {
-    private final ItemStack result;
+    private final ItemStackTemplate result;
     private final int energyCost;
 
     private @Nullable SizedIngredient input = null;
@@ -39,20 +40,25 @@ public class CrystalPulverizerRecipeBuilder implements RecipeBuilder
     // 自动成就解锁：如果没有手写 unlockedBy，则自动从输入推导
     private final List<Item> autoUnlockItems = new ArrayList<>(1);
 
-    private CrystalPulverizerRecipeBuilder(ItemStack result, int energyCost)
+    private CrystalPulverizerRecipeBuilder(ItemStackTemplate result, int energyCost)
     {
         this.result = result;
         this.energyCost = energyCost;
     }
 
-    public static CrystalPulverizerRecipeBuilder pulverizing(ItemStack result, int energyCost)
+    public static CrystalPulverizerRecipeBuilder pulverizing(ItemStackTemplate result, int energyCost)
     {
         return new CrystalPulverizerRecipeBuilder(result, energyCost);
     }
 
+    public static CrystalPulverizerRecipeBuilder pulverizing(ItemStack result, int energyCost)
+    {
+        return pulverizing(ItemStackTemplate.fromNonEmptyStack(result), energyCost);
+    }
+
     public static CrystalPulverizerRecipeBuilder pulverizing(ItemLike result, int count, int energyCost)
     {
-        return new CrystalPulverizerRecipeBuilder(new ItemStack(result, count), energyCost);
+        return new CrystalPulverizerRecipeBuilder(new ItemStackTemplate(result.asItem(), count), energyCost);
     }
 
     /**
@@ -98,7 +104,7 @@ public class CrystalPulverizerRecipeBuilder implements RecipeBuilder
 
     public @NotNull Item getResult()
     {
-        return result.getItem();
+        return result.item().value();
     }
 
     @Override
@@ -118,7 +124,7 @@ public class CrystalPulverizerRecipeBuilder implements RecipeBuilder
         {
             throw new IllegalStateException("CrystalPulverizerRecipe time must be positive: " + id);
         }
-        if (this.result.isEmpty())
+        if (this.result == null || this.result.count() <= 0)
         {
             throw new IllegalStateException("CrystalPulverizerRecipe result cannot be empty: " + id);
         }
@@ -150,7 +156,7 @@ public class CrystalPulverizerRecipeBuilder implements RecipeBuilder
             else
             {
                 adv.addCriterion("has_result",
-                        InventoryChangeTrigger.TriggerInstance.hasItems(this.result.getItem()));
+                        InventoryChangeTrigger.TriggerInstance.hasItems(this.result.item().value()));
             }
         }
 

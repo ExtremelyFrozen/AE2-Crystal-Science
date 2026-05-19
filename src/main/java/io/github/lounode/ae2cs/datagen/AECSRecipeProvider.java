@@ -13,6 +13,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -455,7 +456,7 @@ public abstract class AECSRecipeProvider extends RecipeProvider
     {
         chargedRecipe(consumer, input, output);
         Identifier id = AE2CrystalScience.makeId("aggregator/" + getItemName(input) + "_from_" + getItemName(output));
-        CrystalAggregatorRecipeBuilder.aggregating(new ItemStack(output, 64), 102400)
+        CrystalAggregatorRecipeBuilder.aggregating(new ItemStackTemplate(output.asItem(), 64), 102400)
                 .require(input, 64)
                 .save(consumer, id);
     }
@@ -465,7 +466,7 @@ public abstract class AECSRecipeProvider extends RecipeProvider
         chargedRecipe(consumer, input, output);
         String tagId = sanitize(input.location());
         Identifier id = AE2CrystalScience.makeId("aggregator/" + getItemName(output) + "_from_" + tagId);
-        CrystalAggregatorRecipeBuilder.aggregating(new ItemStack(output, 64), 102400)
+        CrystalAggregatorRecipeBuilder.aggregating(new ItemStackTemplate(output.asItem(), 64), 102400)
                 .require(input, 64)
                 .save(consumer, id);
     }
@@ -535,12 +536,12 @@ public abstract class AECSRecipeProvider extends RecipeProvider
     }
 
     // 其他工具
-    public static ItemStack enchantedItem(HolderLookup.Provider registries, ItemLike item, int count, ResourceKey<Enchantment> enchantKey, int level)
+    public static ItemStackTemplate enchantedItem(HolderLookup.Provider registries, ItemLike item, int count, ResourceKey<Enchantment> enchantKey, int level)
     {
         return enchantedItem(registries, item, count, Map.of(enchantKey, level));
     }
 
-    public static ItemStack enchantedItem(HolderLookup.Provider registries, ItemLike item, int count, Map<ResourceKey<Enchantment>, Integer> enchants)
+    public static ItemStackTemplate enchantedItem(HolderLookup.Provider registries, ItemLike item, int count, Map<ResourceKey<Enchantment>, Integer> enchants)
     {
         ItemStack stack = new ItemStack(item, count);
 
@@ -561,6 +562,6 @@ public abstract class AECSRecipeProvider extends RecipeProvider
             stack.set(DataComponents.ENCHANTMENTS, mutable.toImmutable());
         }
 
-        return stack;
+        return ItemStackTemplate.fromNonEmptyStack(stack);
     }
 }

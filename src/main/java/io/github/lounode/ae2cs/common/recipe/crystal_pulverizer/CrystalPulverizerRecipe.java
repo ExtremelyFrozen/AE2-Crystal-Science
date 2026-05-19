@@ -4,6 +4,7 @@ import io.github.lounode.ae2cs.common.init.AECSRecipeSerializers;
 import io.github.lounode.ae2cs.common.init.AECSRecipeTypes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
@@ -12,10 +13,10 @@ import org.jetbrains.annotations.NotNull;
 public class CrystalPulverizerRecipe implements Recipe<SingleRecipeInput>
 {
     private final SizedIngredient input;
-    private final ItemStack result;
+    private final ItemStackTemplate result;
     private final int energyCost;
 
-    public CrystalPulverizerRecipe(SizedIngredient input, ItemStack result, int energyCost)
+    public CrystalPulverizerRecipe(SizedIngredient input, ItemStackTemplate result, int energyCost)
     {
         if (input == null || input.count() <= 0)
         {
@@ -36,7 +37,7 @@ public class CrystalPulverizerRecipe implements Recipe<SingleRecipeInput>
         return input;
     }
 
-    public ItemStack result()
+    public ItemStackTemplate result()
     {
         return result;
     }
@@ -55,7 +56,7 @@ public class CrystalPulverizerRecipe implements Recipe<SingleRecipeInput>
     @Override
     public @NotNull ItemStack assemble(@NotNull SingleRecipeInput singleRecipeInput)
     {
-        return result.copy();
+        return result.create();
     }
 
     @Override

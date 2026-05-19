@@ -14,7 +14,6 @@
     "ingredient": "ae2:interface"
   },
   "result": {
-    "count": 1,
     "id": "ae2cs:integrated_interface"
   }
 }

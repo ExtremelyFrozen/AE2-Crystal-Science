@@ -140,7 +140,7 @@ public class CrystalPulverizerRecipeCategory implements IRecipeCategory<RecipeHo
 
         int xOut = 86;
         int yOut = yIn;
-        builder.addOutputSlot(xOut, yOut).add(recipe.value().result().copy());
+        builder.addOutputSlot(xOut, yOut).add(recipe.value().result().create());
     }
 
     private int getAnimMsInCycle()

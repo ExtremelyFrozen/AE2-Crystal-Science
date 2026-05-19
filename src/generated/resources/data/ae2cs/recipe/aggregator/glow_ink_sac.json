@@ -10,7 +10,6 @@
     "ingredient": "minecraft:ink_sac"
   },
   "result": {
-    "count": 1,
     "id": "minecraft:glow_ink_sac"
   }
 }

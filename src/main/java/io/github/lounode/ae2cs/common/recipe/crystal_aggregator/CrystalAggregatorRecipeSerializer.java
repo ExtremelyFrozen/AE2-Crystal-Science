@@ -6,7 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
 import java.util.Optional;
@@ -21,7 +21,7 @@ public class CrystalAggregatorRecipeSerializer
             SizedIngredient.NESTED_CODEC.optionalFieldOf("input_a").forGetter(recipe -> optional(recipe.inputA())),
             SizedIngredient.NESTED_CODEC.optionalFieldOf("input_b").forGetter(recipe -> optional(recipe.inputB())),
             SizedIngredient.NESTED_CODEC.optionalFieldOf("input_c").forGetter(recipe -> optional(recipe.inputC())),
-            ItemStack.CODEC.fieldOf("result").forGetter(CrystalAggregatorRecipe::result),
+            ItemStackTemplate.CODEC.fieldOf("result").forGetter(CrystalAggregatorRecipe::result),
             Codec.INT.optionalFieldOf("energy_cost", 200).forGetter(CrystalAggregatorRecipe::energyCost)
     ).apply(inst, CrystalAggregatorRecipeSerializer::create));
 
@@ -30,7 +30,7 @@ public class CrystalAggregatorRecipeSerializer
                     OPTIONAL_SIZED_INGREDIENT_STREAM_CODEC, recipe -> optional(recipe.inputA()),
                     OPTIONAL_SIZED_INGREDIENT_STREAM_CODEC, recipe -> optional(recipe.inputB()),
                     OPTIONAL_SIZED_INGREDIENT_STREAM_CODEC, recipe -> optional(recipe.inputC()),
-                    ItemStack.STREAM_CODEC, CrystalAggregatorRecipe::result,
+                    ItemStackTemplate.STREAM_CODEC, CrystalAggregatorRecipe::result,
                     ByteBufCodecs.VAR_INT, CrystalAggregatorRecipe::energyCost,
                     CrystalAggregatorRecipeSerializer::create
             );
@@ -41,7 +41,7 @@ public class CrystalAggregatorRecipeSerializer
     }
 
     private static CrystalAggregatorRecipe create(Optional<SizedIngredient> inputA, Optional<SizedIngredient> inputB,
-                                                  Optional<SizedIngredient> inputC, ItemStack result, int energyCost)
+                                                  Optional<SizedIngredient> inputC, ItemStackTemplate result, int energyCost)
     {
         return new CrystalAggregatorRecipe(inputA.orElse(null), inputB.orElse(null), inputC.orElse(null), result, energyCost);
     }

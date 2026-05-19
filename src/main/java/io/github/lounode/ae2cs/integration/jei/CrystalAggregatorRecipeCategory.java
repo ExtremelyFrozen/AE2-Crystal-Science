@@ -155,7 +155,7 @@ public class CrystalAggregatorRecipeCategory implements IRecipeCategory<RecipeHo
 
         int xOut = 86;
         int yOut = y0 + dy + 1;
-        builder.addOutputSlot(xOut, yOut).add(recipe.value().result().copy());
+        builder.addOutputSlot(xOut, yOut).add(recipe.value().result().create());
     }
 
     private int getAnimMsInCycle()

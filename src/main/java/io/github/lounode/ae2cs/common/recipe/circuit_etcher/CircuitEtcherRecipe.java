@@ -6,6 +6,7 @@ import io.github.lounode.ae2cs.common.recipe.input.ThreeItemStackRecipeInput;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
@@ -19,14 +20,14 @@ public class CircuitEtcherRecipe implements Recipe<ThreeItemStackRecipeInput>
     private final SizedIngredient inputA;
     private final SizedIngredient inputB;
     private final SizedIngredient inputC;
-    private final ItemStack result;
+    private final ItemStackTemplate result;
     private final int energyCost;
 
     // 真正所需的输入的缓存
     private final List<SizedIngredient> effective;
 
     public CircuitEtcherRecipe(SizedIngredient inputA, SizedIngredient inputB, SizedIngredient inputC,
-                               ItemStack result, int energyCost)
+                               ItemStackTemplate result, int energyCost)
     {
         this.inputA = inputA;
         this.inputB = inputB;
@@ -63,7 +64,7 @@ public class CircuitEtcherRecipe implements Recipe<ThreeItemStackRecipeInput>
         return inputC;
     }
 
-    public ItemStack result()
+    public ItemStackTemplate result()
     {
         return result;
     }
@@ -155,7 +156,7 @@ public class CircuitEtcherRecipe implements Recipe<ThreeItemStackRecipeInput>
     @Override
     public @NotNull ItemStack assemble(@NotNull ThreeItemStackRecipeInput in)
     {
-        return result.copy();
+        return result.create();
     }
 
     @Override

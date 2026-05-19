@@ -18,6 +18,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
@@ -29,7 +30,7 @@ import java.util.*;
 
 public class CrystalAggregatorRecipeBuilder implements RecipeBuilder
 {
-    private final ItemStack result;
+    private final ItemStackTemplate result;
     private final int energyCost;
     private final List<SizedIngredient> inputs = new ArrayList<>(3);
 
@@ -38,20 +39,25 @@ public class CrystalAggregatorRecipeBuilder implements RecipeBuilder
     // 用来自动写配方成就，在没有手写unlockBy条件时，会自动启用
     private final List<Item> autoUnlockItems = new ArrayList<>(3);
 
-    private CrystalAggregatorRecipeBuilder(ItemStack result, int energyCost)
+    private CrystalAggregatorRecipeBuilder(ItemStackTemplate result, int energyCost)
     {
         this.result = result;
         this.energyCost = energyCost;
     }
 
-    public static CrystalAggregatorRecipeBuilder aggregating(ItemStack result, int energyCost)
+    public static CrystalAggregatorRecipeBuilder aggregating(ItemStackTemplate result, int energyCost)
     {
         return new CrystalAggregatorRecipeBuilder(result, energyCost);
     }
 
+    public static CrystalAggregatorRecipeBuilder aggregating(ItemStack result, int energyCost)
+    {
+        return aggregating(ItemStackTemplate.fromNonEmptyStack(result), energyCost);
+    }
+
     public static CrystalAggregatorRecipeBuilder aggregating(ItemLike result, int count, int energyCost)
     {
-        return new CrystalAggregatorRecipeBuilder(new ItemStack(result, count), energyCost);
+        return new CrystalAggregatorRecipeBuilder(new ItemStackTemplate(result.asItem(), count), energyCost);
     }
 
     /**
@@ -104,7 +110,7 @@ public class CrystalAggregatorRecipeBuilder implements RecipeBuilder
 
     public @NotNull Item getResult()
     {
-        return result.getItem();
+        return result.item().value();
     }
 
     @Override
@@ -143,7 +149,7 @@ public class CrystalAggregatorRecipeBuilder implements RecipeBuilder
             if (this.autoUnlockItems.isEmpty())
             {
                 adv.addCriterion("has_result",
-                        InventoryChangeTrigger.TriggerInstance.hasItems(this.result.getItem()));
+                        InventoryChangeTrigger.TriggerInstance.hasItems(this.result.item().value()));
             }
         }
 

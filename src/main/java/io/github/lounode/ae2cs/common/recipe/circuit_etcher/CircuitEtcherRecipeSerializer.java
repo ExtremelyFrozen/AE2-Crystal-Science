@@ -6,7 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
 import java.util.Optional;
@@ -21,7 +21,7 @@ public class CircuitEtcherRecipeSerializer
             SizedIngredient.NESTED_CODEC.optionalFieldOf("input_a").forGetter(recipe -> optional(recipe.inputA())),
             SizedIngredient.NESTED_CODEC.optionalFieldOf("input_b").forGetter(recipe -> optional(recipe.inputB())),
             SizedIngredient.NESTED_CODEC.optionalFieldOf("input_c").forGetter(recipe -> optional(recipe.inputC())),
-            ItemStack.CODEC.fieldOf("result").forGetter(CircuitEtcherRecipe::result),
+            ItemStackTemplate.CODEC.fieldOf("result").forGetter(CircuitEtcherRecipe::result),
             Codec.INT.optionalFieldOf("energy_cost", 3200).forGetter(CircuitEtcherRecipe::energyCost)
     ).apply(inst, CircuitEtcherRecipeSerializer::create));
 
@@ -30,7 +30,7 @@ public class CircuitEtcherRecipeSerializer
                     OPTIONAL_SIZED_INGREDIENT_STREAM_CODEC, recipe -> optional(recipe.inputA()),
                     OPTIONAL_SIZED_INGREDIENT_STREAM_CODEC, recipe -> optional(recipe.inputB()),
                     OPTIONAL_SIZED_INGREDIENT_STREAM_CODEC, recipe -> optional(recipe.inputC()),
-                    ItemStack.STREAM_CODEC, CircuitEtcherRecipe::result,
+                    ItemStackTemplate.STREAM_CODEC, CircuitEtcherRecipe::result,
                     ByteBufCodecs.VAR_INT, CircuitEtcherRecipe::energyCost,
                     CircuitEtcherRecipeSerializer::create
             );
@@ -41,7 +41,7 @@ public class CircuitEtcherRecipeSerializer
     }
 
     private static CircuitEtcherRecipe create(Optional<SizedIngredient> inputA, Optional<SizedIngredient> inputB,
-                                             Optional<SizedIngredient> inputC, ItemStack result, int energyCost)
+                                             Optional<SizedIngredient> inputC, ItemStackTemplate result, int energyCost)
     {
         return new CircuitEtcherRecipe(inputA.orElse(null), inputB.orElse(null), inputC.orElse(null), result, energyCost);
     }
