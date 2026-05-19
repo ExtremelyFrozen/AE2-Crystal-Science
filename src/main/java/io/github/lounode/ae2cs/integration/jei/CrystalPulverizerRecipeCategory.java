@@ -20,6 +20,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Util;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -136,7 +137,12 @@ public class CrystalPulverizerRecipeCategory implements IRecipeCategory<RecipeHo
     {
         int xIn = 23;
         int yIn = 22;
-        builder.addInputSlot(xIn, yIn).add(recipe.value().input().ingredient());
+        var sized = recipe.value().input();
+        var stacks = sized.ingredient().getValues()
+                .stream()
+                .map(h -> new ItemStack(h.value(), sized.count()))
+                .toList();
+        builder.addInputSlot(xIn, yIn).addItemStacks(stacks);
 
         int xOut = 86;
         int yOut = yIn;

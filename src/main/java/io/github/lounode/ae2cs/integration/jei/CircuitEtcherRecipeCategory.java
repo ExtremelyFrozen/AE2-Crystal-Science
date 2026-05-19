@@ -21,6 +21,7 @@ import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jetbrains.annotations.NotNull;
@@ -146,9 +147,14 @@ public class CircuitEtcherRecipeCategory implements IRecipeCategory<RecipeHolder
         for (int i = 0; i < 3; i++)
         {
             IRecipeSlotBuilder slotBuilder = builder.addInputSlot(xIn, y0 + i * dy);
-            if (ingredients.size() > i)
-            {
-                slotBuilder.add(ingredients.get(i).ingredient());
+            if (ingredients.size() > i) {
+                var sized = ingredients.get(i);
+                var count = sized.count();
+                var stacks = sized.ingredient().getValues()
+                        .stream()
+                        .map(h -> new ItemStack(h.value(), count))
+                        .toList();
+                slotBuilder.addItemStacks(stacks);
             }
         }
 
