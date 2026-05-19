@@ -18,6 +18,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class AECSBlocks
@@ -45,153 +46,150 @@ public class AECSBlocks
     private static final List<DeferredBlock<? extends Block>> NOT_SELF_DROP = new ArrayList<>();
 
     // -------------------高纯水晶块-----------------
-    public static final DeferredBlock<Block> PURE_ENDER_QUARTZ_BLOCK = registerCrystalBlock(AECSBlockIds.ENDER_QUARTZ_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
-    public static final DeferredBlock<Block> PURE_RESONATING_CRYSTAL_BLOCK = registerCrystalBlock(AECSBlockIds.RESONATING_CRYSTAL_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
-    public static final DeferredBlock<Block> PURE_METEOR_CRYSTAL_BLOCK = registerCrystalBlock(AECSBlockIds.METEOR_CRYSTAL_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
-    public static final DeferredBlock<Block> PURE_REDSTONE_CRYSTAL_BLOCK = registerCrystalBlock(AECSBlockIds.REDSTONE_CRYSTAL_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
-    public static final DeferredBlock<Block> PURE_QUANTUM_CRYSTAL_BLOCK = registerCrystalBlock(AECSBlockIds.QUANTUM_CRYSTAL_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
-    public static final DeferredBlock<Block> PURE_ROSE_QUARTZ_BLOCK = registerCrystalBlock(AECSBlockIds.ROSE_QUARTZ_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
-    public static final DeferredBlock<Block> IRRADIATED_CRYSTAL_BLOCK = registerCrystalBlock(AECSBlockIds.IRRADIATED_CRYSTAL_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
+    public static final DeferredBlock<Block> PURE_ENDER_QUARTZ_BLOCK = registerCrystalBlock(AECSBlockIds.ENDER_QUARTZ_BLOCK, Block::new, () -> copy(Blocks.IRON_BLOCK));
+    public static final DeferredBlock<Block> PURE_RESONATING_CRYSTAL_BLOCK = registerCrystalBlock(AECSBlockIds.RESONATING_CRYSTAL_BLOCK, Block::new, () -> copy(Blocks.IRON_BLOCK));
+    public static final DeferredBlock<Block> PURE_METEOR_CRYSTAL_BLOCK = registerCrystalBlock(AECSBlockIds.METEOR_CRYSTAL_BLOCK, Block::new, () -> copy(Blocks.IRON_BLOCK));
+    public static final DeferredBlock<Block> PURE_REDSTONE_CRYSTAL_BLOCK = registerCrystalBlock(AECSBlockIds.REDSTONE_CRYSTAL_BLOCK, Block::new, () -> copy(Blocks.IRON_BLOCK));
+    public static final DeferredBlock<Block> PURE_QUANTUM_CRYSTAL_BLOCK = registerCrystalBlock(AECSBlockIds.QUANTUM_CRYSTAL_BLOCK, Block::new, () -> copy(Blocks.IRON_BLOCK));
+    public static final DeferredBlock<Block> PURE_ROSE_QUARTZ_BLOCK = registerCrystalBlock(AECSBlockIds.ROSE_QUARTZ_BLOCK, Block::new, () -> copy(Blocks.IRON_BLOCK));
+    public static final DeferredBlock<Block> IRRADIATED_CRYSTAL_BLOCK = registerCrystalBlock(AECSBlockIds.IRRADIATED_CRYSTAL_BLOCK, Block::new, () -> copy(Blocks.IRON_BLOCK));
 
     /**
      * 硅块
      */
-    public static final DeferredBlock<Block> SILICON_BLOCK = registerOtherBlock(AECSBlockIds.SILICON_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
+    public static final DeferredBlock<Block> SILICON_BLOCK = registerOtherBlock(AECSBlockIds.SILICON_BLOCK, Block::new, () -> copy(Blocks.IRON_BLOCK));
 
     /**
      * 赛特斯石英矿石
      */
     public static final DeferredBlock<CertusQuartzOreBlock> CERTUS_QUARTZ_ORE =
             registerOtherBlock(AECSBlockIds.CERTUS_QUARTZ_ORE,
-                    () -> new CertusQuartzOreBlock(
-                            copy(Blocks.STONE)
-                                    .strength(3, 5)
-                                    .requiresCorrectToolForDrops()
-                    ));
+                    CertusQuartzOreBlock::new,
+                    () -> copy(Blocks.STONE)
+                            .strength(3, 5)
+                            .requiresCorrectToolForDrops());
 
     /**
      * 深层赛特斯石英矿石
      */
     public static final DeferredBlock<CertusQuartzOreBlock> DEEPSLATE_CERTUS_QUARTZ_ORE =
             registerOtherBlock(AECSBlockIds.DEEPSLATE_CERTUS_QUARTZ_ORE,
-                    () -> new CertusQuartzOreBlock(
-                            copy(Blocks.DEEPSLATE)
-                                    .strength(4.5f, 7.5f)
-                                    .requiresCorrectToolForDrops()
-                    ));
+                    CertusQuartzOreBlock::new,
+                    () -> copy(Blocks.DEEPSLATE)
+                            .strength(4.5f, 7.5f)
+                            .requiresCorrectToolForDrops());
 
     /**
      * 充能赛特斯石英矿石
      */
     public static final DeferredBlock<ChargedCertusQuartzOreBlock> CHARGED_CERTUS_QUARTZ_ORE =
             registerOtherBlock(AECSBlockIds.CHARGED_CERTUS_QUARTZ_ORE,
-                    () -> new ChargedCertusQuartzOreBlock(
-                            copy(Blocks.STONE)
-                                    .strength(3, 5)
-                                    .requiresCorrectToolForDrops()
-                                    .lightLevel(value -> 7)
-                    ));
+                    ChargedCertusQuartzOreBlock::new,
+                    () -> copy(Blocks.STONE)
+                            .strength(3, 5)
+                            .requiresCorrectToolForDrops()
+                            .lightLevel(value -> 7));
 
     /**
      * 深层充能赛特斯石英矿石
      */
     public static final DeferredBlock<ChargedCertusQuartzOreBlock> DEEPSLATE_CHARGED_CERTUS_QUARTZ_ORE =
             registerOtherBlock(AECSBlockIds.DEEPSLATE_CHARGED_CERTUS_QUARTZ_ORE,
-                    () -> new ChargedCertusQuartzOreBlock(copy(Blocks.DEEPSLATE)
+                    ChargedCertusQuartzOreBlock::new,
+                    () -> copy(Blocks.DEEPSLATE)
                             .strength(4.5f, 7.5f)
                             .requiresCorrectToolForDrops()
-                            .lightLevel(value -> 7)
-                    ));
+                            .lightLevel(value -> 7));
 
     /**
      * 水晶催生仓
      */
-    public static final DeferredBlock<CrystalGrowthChamberBlock> CRYSTAL_GROWTH_CHAMBER_BLOCK = registerOtherBlock(AECSBlockIds.CRYSTAL_GROWTH_CHAMBER, () -> new CrystalGrowthChamberBlock(copy(Blocks.IRON_BLOCK)));
+    public static final DeferredBlock<CrystalGrowthChamberBlock> CRYSTAL_GROWTH_CHAMBER_BLOCK = registerOtherBlock(AECSBlockIds.CRYSTAL_GROWTH_CHAMBER, CrystalGrowthChamberBlock::new, () -> copy(Blocks.IRON_BLOCK));
 
     /**
      * 电路蚀刻器
      */
-    public static final DeferredBlock<CircuitEtcherBlock> CIRCUIT_ETCHER_BLOCK = registerOtherBlock(AECSBlockIds.CIRCUIT_ETCHER, () -> new CircuitEtcherBlock(copy(Blocks.IRON_BLOCK)));
+    public static final DeferredBlock<CircuitEtcherBlock> CIRCUIT_ETCHER_BLOCK = registerOtherBlock(AECSBlockIds.CIRCUIT_ETCHER, CircuitEtcherBlock::new, () -> copy(Blocks.IRON_BLOCK));
 
     /**
      * 石英磨具
      */
-    public static final DeferredBlock<QuartzGrindstoneBlock> QUARTZ_GRINDSTONE_BLOCK = registerOtherBlock(AECSBlockIds.QUARTZ_GRINDSTONE, () -> new QuartzGrindstoneBlock(copy(Blocks.STONE)));
+    public static final DeferredBlock<QuartzGrindstoneBlock> QUARTZ_GRINDSTONE_BLOCK = registerOtherBlock(AECSBlockIds.QUARTZ_GRINDSTONE, QuartzGrindstoneBlock::new, () -> copy(Blocks.STONE));
 
     /**
      * 晶能粉碎机
      */
-    public static final DeferredBlock<CrystalPulverizerBlock> CRYSTAL_PULVERIZER_BLOCK = registerOtherBlock(AECSBlockIds.CRYSTAL_PULVERIZER, () -> new CrystalPulverizerBlock(copy(Blocks.IRON_BLOCK)));
+    public static final DeferredBlock<CrystalPulverizerBlock> CRYSTAL_PULVERIZER_BLOCK = registerOtherBlock(AECSBlockIds.CRYSTAL_PULVERIZER, CrystalPulverizerBlock::new, () -> copy(Blocks.IRON_BLOCK));
 
     /**
      * 晶能谐振器
      */
-    public static final DeferredBlock<CrystalVibrationChamberBlock> CRYSTAL_VIBRATION_CHAMBER_BLOCK = registerOtherBlock(AECSBlockIds.CRYSTAL_VIBRATION_CHAMBER, () -> new CrystalVibrationChamberBlock(metalProps().strength(4.5f)));
+    public static final DeferredBlock<CrystalVibrationChamberBlock> CRYSTAL_VIBRATION_CHAMBER_BLOCK = registerOtherBlock(AECSBlockIds.CRYSTAL_VIBRATION_CHAMBER, CrystalVibrationChamberBlock::new, () -> metalProps().strength(4.5f));
 
     /**
      * 水晶聚合器
      */
-    public static final DeferredBlock<CrystalAggregatorBlock> CRYSTAL_AGGREGATOR_BLOCK = registerOtherBlock(AECSBlockIds.CRYSTAL_AGGREGATOR, () -> new CrystalAggregatorBlock(metalProps()));
+    public static final DeferredBlock<CrystalAggregatorBlock> CRYSTAL_AGGREGATOR_BLOCK = registerOtherBlock(AECSBlockIds.CRYSTAL_AGGREGATOR, CrystalAggregatorBlock::new, AECSBlocks::metalProps);
 
     /**
      * 熵变反应仓
      */
-    public static final DeferredBlock<EntropyVariationReactionChamberBlock> ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK = registerOtherBlock(AECSBlockIds.ENTROPY_VARIATION_REACTION_CHAMBER, () -> new EntropyVariationReactionChamberBlock(metalProps()));
+    public static final DeferredBlock<EntropyVariationReactionChamberBlock> ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK = registerOtherBlock(AECSBlockIds.ENTROPY_VARIATION_REACTION_CHAMBER, EntropyVariationReactionChamberBlock::new, AECSBlocks::metalProps);
 
     /**
      * 末影广播装置
      */
-    public static final DeferredBlock<EnderBroadcasterBlock> ENDER_BROADCASTER_BLOCK = registerOtherBlock(AECSBlockIds.ENDER_BROADCASTER, () -> new EnderBroadcasterBlock(metalProps()));
+    public static final DeferredBlock<EnderBroadcasterBlock> ENDER_BROADCASTER_BLOCK = registerOtherBlock(AECSBlockIds.ENDER_BROADCASTER, EnderBroadcasterBlock::new, AECSBlocks::metalProps);
 
     /**
      * 末影发信器
      */
-    public static final DeferredBlock<EnderEmitterBlock> ENDER_EMITTER_BLOCK = registerOtherBlock(AECSBlockIds.ENDER_EMITTER, () -> new EnderEmitterBlock(metalProps()));
+    public static final DeferredBlock<EnderEmitterBlock> ENDER_EMITTER_BLOCK = registerOtherBlock(AECSBlockIds.ENDER_EMITTER, EnderEmitterBlock::new, AECSBlocks::metalProps);
 
     /**
      * 末影接口
      */
-    public static final DeferredBlock<InterfaceBlock> ENDER_INTERFACE_BLOCK = registerOtherBlock(AECSBlockIds.ENDER_INTERFACE, () -> new InterfaceBlock(BlockBehaviour.Properties.of()));
+    public static final DeferredBlock<InterfaceBlock> ENDER_INTERFACE_BLOCK = registerOtherBlock(AECSBlockIds.ENDER_INTERFACE, InterfaceBlock::new, BlockBehaviour.Properties::of);
 
     /**
      * 扩展末影接口
      */
-    public static final DeferredBlock<InterfaceBlock> EX_ENDER_INTERFACE_BLOCK = registerOtherBlock(AECSBlockIds.EX_ENDER_INTERFACE, () -> new InterfaceBlock(BlockBehaviour.Properties.of()));
+    public static final DeferredBlock<InterfaceBlock> EX_ENDER_INTERFACE_BLOCK = registerOtherBlock(AECSBlockIds.EX_ENDER_INTERFACE, InterfaceBlock::new, BlockBehaviour.Properties::of);
 
     /**
      * ME集成接口
      */
-    public static final DeferredBlock<IntegratedInterfaceBlock> INTEGRATED_INTERFACE_BLOCK = registerOtherBlock(AECSBlockIds.INTEGRATED_INTERFACE, () -> new IntegratedInterfaceBlock(metalProps()));
+    public static final DeferredBlock<IntegratedInterfaceBlock> INTEGRATED_INTERFACE_BLOCK = registerOtherBlock(AECSBlockIds.INTEGRATED_INTERFACE, IntegratedInterfaceBlock::new, AECSBlocks::metalProps);
 
     /**
      * 扩展ME集成接口
      */
-    public static final DeferredBlock<IntegratedInterfaceBlock> EX_INTEGRATED_INTERFACE_BLOCK = registerOtherBlock(AECSBlockIds.EX_INTEGRATED_INTERFACE, () -> new IntegratedInterfaceBlock(metalProps()));
+    public static final DeferredBlock<IntegratedInterfaceBlock> EX_INTEGRATED_INTERFACE_BLOCK = registerOtherBlock(AECSBlockIds.EX_INTEGRATED_INTERFACE, IntegratedInterfaceBlock::new, AECSBlocks::metalProps);
 
     /**
      * 谐振样板供应器
      */
-    public static final DeferredBlock<PatternProviderBlock> RESONATING_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.RESONATING_PATTERN_PROVIDER, () -> new PatternProviderBlock(BlockBehaviour.Properties.of()));
+    public static final DeferredBlock<PatternProviderBlock> RESONATING_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.RESONATING_PATTERN_PROVIDER, PatternProviderBlock::new, BlockBehaviour.Properties::of);
 
     /**
      * 扩展谐振样板供应器
      */
-    public static final DeferredBlock<PatternProviderBlock> EX_RESONATING_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.EX_RESONATING_PATTERN_PROVIDER, () -> new PatternProviderBlock(BlockBehaviour.Properties.of()));
+    public static final DeferredBlock<PatternProviderBlock> EX_RESONATING_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.EX_RESONATING_PATTERN_PROVIDER, PatternProviderBlock::new, BlockBehaviour.Properties::of);
 
     /**
      * 初级样板供应器
      */
-    public static final DeferredBlock<PatternProviderBlock> SIMPLE_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.SIMPLE_PATTERN_PROVIDER, () -> new PatternProviderBlock(BlockBehaviour.Properties.of()));
+    public static final DeferredBlock<PatternProviderBlock> SIMPLE_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.SIMPLE_PATTERN_PROVIDER, PatternProviderBlock::new, BlockBehaviour.Properties::of);
 
     /**
      * 陨石样板供应器
      */
-    public static final DeferredBlock<PatternProviderBlock> METEORITE_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.METEORITE_PATTERN_PROVIDER, () -> new PatternProviderBlock(BlockBehaviour.Properties.of()));
+    public static final DeferredBlock<PatternProviderBlock> METEORITE_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.METEORITE_PATTERN_PROVIDER, PatternProviderBlock::new, BlockBehaviour.Properties::of);
 
     /**
      * 石英震荡钟
      */
-    public static final DeferredBlock<QuartzOscillatorClockBlock> QUARTZ_OSCILLATOR_CLOCK_BLOCK = registerOtherBlock(AECSBlockIds.QUARTZ_OSCILLATOR_CLOCK, () -> new QuartzOscillatorClockBlock(metalProps()));
+    public static final DeferredBlock<QuartzOscillatorClockBlock> QUARTZ_OSCILLATOR_CLOCK_BLOCK = registerOtherBlock(AECSBlockIds.QUARTZ_OSCILLATOR_CLOCK, QuartzOscillatorClockBlock::new, AECSBlocks::metalProps);
 
 
     public static BlockBehaviour.Properties copy(BlockBehaviour behaviour)
@@ -226,44 +224,44 @@ public class AECSBlocks
     }
 
     // 工具方法
-    private static <T extends Block> DeferredBlock<T> registerNotSelfDropBlock(String name, Supplier<T> block)
+    private static <T extends Block> DeferredBlock<T> registerNotSelfDropBlock(String name, Function<BlockBehaviour.Properties, T> block, Supplier<BlockBehaviour.Properties> properties)
     {
-        DeferredBlock<T> toReturn = registerBlock(name, block);
+        DeferredBlock<T> toReturn = registerBlock(name, block, properties);
         NOT_SELF_DROP.add(toReturn);
         return toReturn;
     }
 
-    private static <T extends Block> DeferredBlock<T> registerOtherBlock(String name, Supplier<T> block)
+    private static <T extends Block> DeferredBlock<T> registerOtherBlock(String name, Function<BlockBehaviour.Properties, T> block, Supplier<BlockBehaviour.Properties> properties)
     {
-        DeferredBlock<T> toReturn = registerBlock(name, block);
+        DeferredBlock<T> toReturn = registerBlock(name, block, properties);
         OTHERS.add(toReturn);
         return toReturn;
     }
 
-    private static <T extends Block> DeferredBlock<T> registerCrystalBlock(String name, Supplier<T> block)
+    private static <T extends Block> DeferredBlock<T> registerCrystalBlock(String name, Function<BlockBehaviour.Properties, T> block, Supplier<BlockBehaviour.Properties> properties)
     {
-        DeferredBlock<T> toReturn = registerBlock(name, block);
+        DeferredBlock<T> toReturn = registerBlock(name, block, properties);
         CRYSTAL_BLOCKS.add(toReturn);
         return toReturn;
     }
 
-    private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block)
+    private static <T extends Block> DeferredBlock<T> registerBlock(String name, Function<BlockBehaviour.Properties, T> block, Supplier<BlockBehaviour.Properties> properties)
     {
-        DeferredBlock<T> toReturn = registerOnlyBlock(name, block);
+        DeferredBlock<T> toReturn = registerOnlyBlock(name, block, properties);
         registerBlockItem(name, toReturn);
         return toReturn;
     }
 
-    private static <T extends Block> DeferredBlock<T> registerOnlyBlock(String name, Supplier<T> block)
+    private static <T extends Block> DeferredBlock<T> registerOnlyBlock(String name, Function<BlockBehaviour.Properties, T> block, Supplier<BlockBehaviour.Properties> properties)
     {
-        DeferredBlock<T> toReturn = BLOCKS.register(name, block);
+        DeferredBlock<T> toReturn = BLOCKS.registerBlock(name, block, properties);
         ALL.add(toReturn);
         return toReturn;
     }
 
     private static <T extends Block> void registerBlockItem(String name, DeferredBlock<T> block)
     {
-        AECSItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
+        AECSItems.ITEMS.registerSimpleBlockItem(name, block, AECSItems::defaultBuilder);
     }
 
     // 注册监听

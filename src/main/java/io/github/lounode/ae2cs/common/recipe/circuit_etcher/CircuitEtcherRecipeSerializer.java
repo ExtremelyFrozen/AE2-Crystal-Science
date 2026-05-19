@@ -7,30 +7,42 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
+
+import java.util.Optional;
 
 public class CircuitEtcherRecipeSerializer
 {
 
-    // 缺省值
-    private static final SizedIngredient EMPTY = new SizedIngredient(Ingredient.of(), 1);
+    private static final StreamCodec<RegistryFriendlyByteBuf, Optional<SizedIngredient>> OPTIONAL_SIZED_INGREDIENT_STREAM_CODEC =
+            ByteBufCodecs.optional(SizedIngredient.STREAM_CODEC);
 
     public static final MapCodec<CircuitEtcherRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-            SizedIngredient.NESTED_CODEC.optionalFieldOf("input_a", EMPTY).forGetter(CircuitEtcherRecipe::inputA),
-            SizedIngredient.NESTED_CODEC.optionalFieldOf("input_b", EMPTY).forGetter(CircuitEtcherRecipe::inputB),
-            SizedIngredient.NESTED_CODEC.optionalFieldOf("input_c", EMPTY).forGetter(CircuitEtcherRecipe::inputC),
+            SizedIngredient.NESTED_CODEC.optionalFieldOf("input_a").forGetter(recipe -> optional(recipe.inputA())),
+            SizedIngredient.NESTED_CODEC.optionalFieldOf("input_b").forGetter(recipe -> optional(recipe.inputB())),
+            SizedIngredient.NESTED_CODEC.optionalFieldOf("input_c").forGetter(recipe -> optional(recipe.inputC())),
             ItemStack.CODEC.fieldOf("result").forGetter(CircuitEtcherRecipe::result),
             Codec.INT.optionalFieldOf("energy_cost", 3200).forGetter(CircuitEtcherRecipe::energyCost)
-    ).apply(inst, CircuitEtcherRecipe::new));
+    ).apply(inst, CircuitEtcherRecipeSerializer::create));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, CircuitEtcherRecipe> STREAM_CODEC =
             StreamCodec.composite(
-                    SizedIngredient.STREAM_CODEC, CircuitEtcherRecipe::inputA,
-                    SizedIngredient.STREAM_CODEC, CircuitEtcherRecipe::inputB,
-                    SizedIngredient.STREAM_CODEC, CircuitEtcherRecipe::inputC,
+                    OPTIONAL_SIZED_INGREDIENT_STREAM_CODEC, recipe -> optional(recipe.inputA()),
+                    OPTIONAL_SIZED_INGREDIENT_STREAM_CODEC, recipe -> optional(recipe.inputB()),
+                    OPTIONAL_SIZED_INGREDIENT_STREAM_CODEC, recipe -> optional(recipe.inputC()),
                     ItemStack.STREAM_CODEC, CircuitEtcherRecipe::result,
                     ByteBufCodecs.VAR_INT, CircuitEtcherRecipe::energyCost,
-                    CircuitEtcherRecipe::new
+                    CircuitEtcherRecipeSerializer::create
             );
+
+    private static Optional<SizedIngredient> optional(SizedIngredient ingredient)
+    {
+        return Optional.ofNullable(ingredient);
+    }
+
+    private static CircuitEtcherRecipe create(Optional<SizedIngredient> inputA, Optional<SizedIngredient> inputB,
+                                             Optional<SizedIngredient> inputC, ItemStack result, int energyCost)
+    {
+        return new CircuitEtcherRecipe(inputA.orElse(null), inputB.orElse(null), inputC.orElse(null), result, energyCost);
+    }
 }

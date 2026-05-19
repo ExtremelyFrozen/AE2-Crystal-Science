@@ -245,7 +245,7 @@ public class AECSModelProvider extends ModelProvider {
                 .put(TextureSlot.SOUTH, new Material(ModelLocationUtils.getModelLocation(block, "/alternate_arrow")))
                 .put(TextureSlot.EAST, new Material(ModelLocationUtils.getModelLocation(block, "/alternate_arrow")))
                 .put(TextureSlot.WEST, new Material(ModelLocationUtils.getModelLocation(block, "/alternate_arrow")));
-        var orientedModel = ModelTemplates.CUBE.create(block, textures, blockModels.modelOutput);
+        var orientedModel = ModelTemplates.CUBE.createWithSuffix(block, "_oriented", textures, blockModels.modelOutput);
 
         // blockstate：根据 PUSH_DIRECTION 选择 normal / oriented，并对 oriented 做旋转
         blockModels.blockStateOutput.accept(
@@ -389,8 +389,8 @@ public class AECSModelProvider extends ModelProvider {
                 model,
                 new TextureMapping()
                         .put(TextureSlot.PARTICLE, new Material(front))
-                        .put(TextureSlot.BOTTOM, new Material(bottom))
-                        .put(TextureSlot.TOP, new Material(top))
+                        .put(TextureSlot.DOWN, new Material(bottom))
+                        .put(TextureSlot.UP, new Material(top))
                         .put(TextureSlot.NORTH, new Material(front))
                         .put(TextureSlot.SOUTH, new Material(back))
                         .put(TextureSlot.WEST, new Material(right))

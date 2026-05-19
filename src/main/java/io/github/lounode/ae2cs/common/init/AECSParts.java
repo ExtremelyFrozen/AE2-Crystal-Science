@@ -102,8 +102,8 @@ public class AECSParts
     {
 //        PartModels.registerModels(PartModelsHelper.createModels(partClass));
 
-        DeferredItem<PartItem<T>> obj = ITEMS.register(idPath,
-                () -> new PartItem<>(props.get(), partClass, partFactory));
+        DeferredItem<PartItem<T>> obj = ITEMS.registerItem(idPath,
+                properties -> new PartItem<>(properties, partClass, partFactory), props);
         ALL.add(obj);
         return obj;
     }
@@ -129,7 +129,7 @@ public class AECSParts
     {
 //        PartModels.registerModels(PartModelsHelper.createModels(partClass));
 
-        DeferredItem<PartItem<T>> obj = ITEMS.register(idPath, () -> itemFactory.apply(props.get()));
+        DeferredItem<PartItem<T>> obj = ITEMS.registerItem(idPath, itemFactory, props);
         ALL.add(obj);
         return obj;
     }
@@ -161,8 +161,8 @@ public class AECSParts
         {
             String idPath = color.registryPrefix + "_" + idSuffix;
 
-            DeferredItem<ColoredPartItem<T>> obj = ITEMS.register(idPath,
-                    () -> new ColoredPartItem<>(props.get(), partClass, partFactory, color));
+            DeferredItem<ColoredPartItem<T>> obj = ITEMS.registerItem(idPath,
+                    properties -> new ColoredPartItem<>(properties, partClass, partFactory, color), props);
 
             map.put(color, obj);
             ALL.add(obj);

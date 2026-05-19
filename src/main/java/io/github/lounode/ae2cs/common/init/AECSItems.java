@@ -16,7 +16,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 public class AECSItems
 {
@@ -49,104 +49,104 @@ public class AECSItems
 
     public static final DeferredItem<PureCrystalItem> PURE_CERTUS_QUARTZ_CRYSTAL =
             registerPureCrystalItem(AECSItemIds.PURE_CERTUS_QUARTZ_CRYSTAL,
-                    () -> new PureCrystalItem(defaultBuilder(), 500d, 600));
+                    properties -> new PureCrystalItem(properties, 500d, 600));
     public static final DeferredItem<PureCrystalItem> PURE_FLUIX_CRYSTAL =
             registerPureCrystalItem(AECSItemIds.PURE_FLUIX_CRYSTAL,
-                    () -> new PureCrystalItem(defaultBuilder(), 1500d, 1200));
+                    properties -> new PureCrystalItem(properties, 1500d, 1200));
     public static final DeferredItem<PureCrystalItem> PURE_NETHER_QUARTZ_CRYSTAL =
             registerPureCrystalItem(AECSItemIds.PURE_NETHER_QUARTZ_CRYSTAL,
-                    () -> new PureCrystalItem(defaultBuilder(), 800d, 900));
+                    properties -> new PureCrystalItem(properties, 800d, 900));
     public static final DeferredItem<PureCrystalItem> PURE_ENDER_QUARTZ =
             registerPureCrystalItem(AECSItemIds.PURE_ENDER_QUARTZ,
-                    () -> new PureCrystalItem(defaultBuilder(), 900d, 800));
+                    properties -> new PureCrystalItem(properties, 900d, 800));
     public static final DeferredItem<PureCrystalItem> PURE_METEOR_CRYSTAL =
             registerPureCrystalItem(AECSItemIds.PURE_METEOR_CRYSTAL,
-                    () -> new PureCrystalItem(defaultBuilder(), 1200d, 1500));
+                    properties -> new PureCrystalItem(properties, 1200d, 1500));
     public static final DeferredItem<PureCrystalItem> PURE_RESONATING_CRYSTAL =
             registerPureCrystalItem(AECSItemIds.PURE_RESONATING_CRYSTAL,
-                    () -> new PureCrystalItem(defaultBuilder(), 2500d, 2400));
+                    properties -> new PureCrystalItem(properties, 2500d, 2400));
     public static final DeferredItem<PureCrystalItem> PURE_ENTRO_CRYSTAL =
             registerPureCrystalItem(AECSItemIds.PURE_ENTRO_CRYSTAL,
-                    () -> new PureCrystalItem(defaultBuilder(), 2000d, 2400));
+                    properties -> new PureCrystalItem(properties, 2000d, 2400));
     public static final DeferredItem<PureCrystalItem> PURE_REDSTONE_CRYSTAL =
             registerPureCrystalItem(AECSItemIds.PURE_REDSTONE_CRYSTAL,
-                    () -> new PureCrystalItem(defaultBuilder(), 1800d, 2000));
+                    properties -> new PureCrystalItem(properties, 1800d, 2000));
     public static final DeferredItem<PureCrystalItem> PURE_QUANTUM_CRYSTAL =
             registerPureCrystalItem(AECSItemIds.PURE_QUANTUM_CRYSTAL,
-                    () -> new PureCrystalItem(defaultBuilder(), 2320d, 3000));
+                    properties -> new PureCrystalItem(properties, 2320d, 3000));
     public static final DeferredItem<PureCrystalItem> PURE_ROSE_QUARTZ =
             registerPureCrystalItem(AECSItemIds.PURE_ROSE_QUARTZ,
-                    () -> new PureCrystalItem(defaultBuilder(), 2000d, 1800));
+                    properties -> new PureCrystalItem(properties, 2000d, 1800));
     public static final DeferredItem<PureCrystalItem> PURE_IRRADIATED_CRYSTAL =
             registerPureCrystalItem(AECSItemIds.PURE_IRRADIATED_CRYSTAL,
-                    () -> new PureCrystalItem(defaultBuilder(), 2900d, 2400));
+                    properties -> new PureCrystalItem(properties, 2900d, 2400));
     public static final DeferredItem<PureCrystalItem> PURE_EMBER_CRYSTAL =
             registerPureCrystalItem(AECSItemIds.PURE_EMBER_CRYSTAL,
-                    () -> new PureCrystalItem(defaultBuilder(), 2000d, 3600));
+                    properties -> new PureCrystalItem(properties, 2000d, 3600));
 
-    public static final DeferredItem<CrystalSeedItem> CERTUS_QUARTZ_SEED = registerCrystalSeedItem(AECSItemIds.CERTUS_QUARTZ_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_CERTUS_QUARTZ_CRYSTAL));
-    public static final DeferredItem<CrystalSeedItem> FLUIX_CRYSTAL_SEED = registerCrystalSeedItem(AECSItemIds.FLUIX_CRYSTAL_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_FLUIX_CRYSTAL));
-    public static final DeferredItem<CrystalSeedItem> NETHER_QUARTZ_SEED = registerCrystalSeedItem(AECSItemIds.NETHER_QUARTZ_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_NETHER_QUARTZ_CRYSTAL));
-    public static final DeferredItem<CrystalSeedItem> ENDER_QUARTZ_SEED = registerCrystalSeedItem(AECSItemIds.ENDER_QUARTZ_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_ENDER_QUARTZ));
-    public static final DeferredItem<CrystalSeedItem> METEOR_SEED = registerCrystalSeedItem(AECSItemIds.METEOR_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_METEOR_CRYSTAL));
-    public static final DeferredItem<CrystalSeedItem> RESONATING_SEED = registerCrystalSeedItem(AECSItemIds.RESONATING_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_RESONATING_CRYSTAL));
-    public static final DeferredItem<CrystalSeedItem> ENTRO_CRYSTAL_SEED = registerCrystalSeedItem(AECSItemIds.ENTRO_CRYSTAL_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_ENTRO_CRYSTAL));
-    public static final DeferredItem<CrystalSeedItem> REDSTONE_CRYSTAL_SEED = registerCrystalSeedItem(AECSItemIds.REDSTONE_CRYSTAL_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_REDSTONE_CRYSTAL));
-    public static final DeferredItem<CrystalSeedItem> QUANTUM_CRYSTAL_SEED = registerCrystalSeedItem(AECSItemIds.QUANTUM_CRYSTAL_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_QUANTUM_CRYSTAL));
-    public static final DeferredItem<CrystalSeedItem> ROSE_QUARTZ_SEED = registerCrystalSeedItem(AECSItemIds.ROSE_QUARTZ_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_ROSE_QUARTZ));
-    public static final DeferredItem<CrystalSeedItem> IRRADIATED_SEED = registerCrystalSeedItem(AECSItemIds.IRRADIATED_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_IRRADIATED_CRYSTAL));
-    public static final DeferredItem<CrystalSeedItem> EMBER_SEED = registerCrystalSeedItem(AECSItemIds.EMBER_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_EMBER_CRYSTAL));
+    public static final DeferredItem<CrystalSeedItem> CERTUS_QUARTZ_SEED = registerCrystalSeedItem(AECSItemIds.CERTUS_QUARTZ_SEED, properties -> new CrystalSeedItem(properties, PURE_CERTUS_QUARTZ_CRYSTAL));
+    public static final DeferredItem<CrystalSeedItem> FLUIX_CRYSTAL_SEED = registerCrystalSeedItem(AECSItemIds.FLUIX_CRYSTAL_SEED, properties -> new CrystalSeedItem(properties, PURE_FLUIX_CRYSTAL));
+    public static final DeferredItem<CrystalSeedItem> NETHER_QUARTZ_SEED = registerCrystalSeedItem(AECSItemIds.NETHER_QUARTZ_SEED, properties -> new CrystalSeedItem(properties, PURE_NETHER_QUARTZ_CRYSTAL));
+    public static final DeferredItem<CrystalSeedItem> ENDER_QUARTZ_SEED = registerCrystalSeedItem(AECSItemIds.ENDER_QUARTZ_SEED, properties -> new CrystalSeedItem(properties, PURE_ENDER_QUARTZ));
+    public static final DeferredItem<CrystalSeedItem> METEOR_SEED = registerCrystalSeedItem(AECSItemIds.METEOR_SEED, properties -> new CrystalSeedItem(properties, PURE_METEOR_CRYSTAL));
+    public static final DeferredItem<CrystalSeedItem> RESONATING_SEED = registerCrystalSeedItem(AECSItemIds.RESONATING_SEED, properties -> new CrystalSeedItem(properties, PURE_RESONATING_CRYSTAL));
+    public static final DeferredItem<CrystalSeedItem> ENTRO_CRYSTAL_SEED = registerCrystalSeedItem(AECSItemIds.ENTRO_CRYSTAL_SEED, properties -> new CrystalSeedItem(properties, PURE_ENTRO_CRYSTAL));
+    public static final DeferredItem<CrystalSeedItem> REDSTONE_CRYSTAL_SEED = registerCrystalSeedItem(AECSItemIds.REDSTONE_CRYSTAL_SEED, properties -> new CrystalSeedItem(properties, PURE_REDSTONE_CRYSTAL));
+    public static final DeferredItem<CrystalSeedItem> QUANTUM_CRYSTAL_SEED = registerCrystalSeedItem(AECSItemIds.QUANTUM_CRYSTAL_SEED, properties -> new CrystalSeedItem(properties, PURE_QUANTUM_CRYSTAL));
+    public static final DeferredItem<CrystalSeedItem> ROSE_QUARTZ_SEED = registerCrystalSeedItem(AECSItemIds.ROSE_QUARTZ_SEED, properties -> new CrystalSeedItem(properties, PURE_ROSE_QUARTZ));
+    public static final DeferredItem<CrystalSeedItem> IRRADIATED_SEED = registerCrystalSeedItem(AECSItemIds.IRRADIATED_SEED, properties -> new CrystalSeedItem(properties, PURE_IRRADIATED_CRYSTAL));
+    public static final DeferredItem<CrystalSeedItem> EMBER_SEED = registerCrystalSeedItem(AECSItemIds.EMBER_SEED, properties -> new CrystalSeedItem(properties, PURE_EMBER_CRYSTAL));
 
-    public static final DeferredItem<Item> NETHER_QUARTZ_DUST = registerOtherItem(AECSItemIds.NETHER_QUARTZ_DUST, () -> new Item(defaultBuilder()));
-    public static final DeferredItem<Item> RESONATING_DUST = registerOtherItem(AECSItemIds.RESONATING_DUST, () -> new Item(defaultBuilder()));
-    public static final DeferredItem<Item> REDSTONE_CRYSTAL_DUST = registerOtherItem(AECSItemIds.REDSTONE_CRYSTAL_DUST, () -> new Item(defaultBuilder()));
-    public static final DeferredItem<Item> QUANTUM_CRYSTAL_DUST = registerOtherItem(AECSItemIds.QUANTUM_CRYSTAL_DUST, () -> new Item(defaultBuilder()));
-    public static final DeferredItem<Item> IRRADIATED_CRYSTAL_DUST = registerOtherItem(AECSItemIds.IRRADIATED_CRYSTAL_DUST, () -> new Item(defaultBuilder()));
+    public static final DeferredItem<Item> NETHER_QUARTZ_DUST = registerOtherItem(AECSItemIds.NETHER_QUARTZ_DUST, Item::new);
+    public static final DeferredItem<Item> RESONATING_DUST = registerOtherItem(AECSItemIds.RESONATING_DUST, Item::new);
+    public static final DeferredItem<Item> REDSTONE_CRYSTAL_DUST = registerOtherItem(AECSItemIds.REDSTONE_CRYSTAL_DUST, Item::new);
+    public static final DeferredItem<Item> QUANTUM_CRYSTAL_DUST = registerOtherItem(AECSItemIds.QUANTUM_CRYSTAL_DUST, Item::new);
+    public static final DeferredItem<Item> IRRADIATED_CRYSTAL_DUST = registerOtherItem(AECSItemIds.IRRADIATED_CRYSTAL_DUST, Item::new);
 
-    public static final DeferredItem<Item> RESONATING_PRINT_PRESS = registerOtherItem(AECSItemIds.RESONATING_PRINT_PRESS, () -> new Item(defaultBuilder()));
-    public static final DeferredItem<Item> RESONATING_CIRCUIT_PRINT = registerOtherItem(AECSItemIds.RESONATING_CIRCUIT_PRINT, () -> new Item(defaultBuilder()));
-    public static final DeferredItem<Item> RESONATING_PROCESSOR = registerOtherItem(AECSItemIds.RESONATING_PROCESSOR, () -> new Item(defaultBuilder()));
-    public static final DeferredItem<Item> SIMPLE_CIRCUIT_PRINT = registerOtherItem(AECSItemIds.SIMPLE_CIRCUIT_PRINT, () -> new Item(defaultBuilder()));
-    public static final DeferredItem<Item> SIMPLE_PROCESSOR = registerOtherItem(AECSItemIds.SIMPLE_PROCESSOR, () -> new Item(defaultBuilder()));
+    public static final DeferredItem<Item> RESONATING_PRINT_PRESS = registerOtherItem(AECSItemIds.RESONATING_PRINT_PRESS, Item::new);
+    public static final DeferredItem<Item> RESONATING_CIRCUIT_PRINT = registerOtherItem(AECSItemIds.RESONATING_CIRCUIT_PRINT, Item::new);
+    public static final DeferredItem<Item> RESONATING_PROCESSOR = registerOtherItem(AECSItemIds.RESONATING_PROCESSOR, Item::new);
+    public static final DeferredItem<Item> SIMPLE_CIRCUIT_PRINT = registerOtherItem(AECSItemIds.SIMPLE_CIRCUIT_PRINT, Item::new);
+    public static final DeferredItem<Item> SIMPLE_PROCESSOR = registerOtherItem(AECSItemIds.SIMPLE_PROCESSOR, Item::new);
 
-    public static final DeferredItem<Item> BLANK_PRINT_PRESS = registerOtherItem(AECSItemIds.BLANK_PRINT_PRESS, () -> new Item(defaultBuilder()));
-    public static final DeferredItem<Item> ENDER_BLANK_PRINT_PRESS = registerOtherItem(AECSItemIds.ENDER_BLANK_PRINT_PRESS, () -> new Item(defaultBuilder()));
+    public static final DeferredItem<Item> BLANK_PRINT_PRESS = registerOtherItem(AECSItemIds.BLANK_PRINT_PRESS, Item::new);
+    public static final DeferredItem<Item> ENDER_BLANK_PRINT_PRESS = registerOtherItem(AECSItemIds.ENDER_BLANK_PRINT_PRESS, Item::new);
 
-    public static final DeferredItem<ExtendedEnderInterfaceUpgradeItem> EX_ENDER_INTERFACE_UPGRADE = registerOtherItem(AECSItemIds.EX_ENDER_INTERFACE_UPGRADE, () -> new ExtendedEnderInterfaceUpgradeItem(defaultBuilder()));
-    public static final DeferredItem<ExtendedIntegratedInterfaceUpgradeItem> EX_INTEGRATED_INTERFACE_UPGRADE = registerOtherItem(AECSItemIds.EX_INTEGRATED_INTERFACE_UPGRADE, () -> new ExtendedIntegratedInterfaceUpgradeItem(defaultBuilder()));
-    public static final DeferredItem<ExtendedResonatingPatternProviderUpgradeItem> EX_RESONATING_PATTERN_PROVIDER_UPGRADE = registerOtherItem(AECSItemIds.EX_RESONATING_PATTERN_PROVIDER_UPGRADE, () -> new ExtendedResonatingPatternProviderUpgradeItem(defaultBuilder()));
+    public static final DeferredItem<ExtendedEnderInterfaceUpgradeItem> EX_ENDER_INTERFACE_UPGRADE = registerOtherItem(AECSItemIds.EX_ENDER_INTERFACE_UPGRADE, ExtendedEnderInterfaceUpgradeItem::new);
+    public static final DeferredItem<ExtendedIntegratedInterfaceUpgradeItem> EX_INTEGRATED_INTERFACE_UPGRADE = registerOtherItem(AECSItemIds.EX_INTEGRATED_INTERFACE_UPGRADE, ExtendedIntegratedInterfaceUpgradeItem::new);
+    public static final DeferredItem<ExtendedResonatingPatternProviderUpgradeItem> EX_RESONATING_PATTERN_PROVIDER_UPGRADE = registerOtherItem(AECSItemIds.EX_RESONATING_PATTERN_PROVIDER_UPGRADE, ExtendedResonatingPatternProviderUpgradeItem::new);
 
-    public static final DeferredItem<EnderInterfaceUpgradeItem> ENDER_INTERFACE_UPGRADE = registerOtherItem(AECSItemIds.ENDER_INTERFACE_UPGRADE, () -> new EnderInterfaceUpgradeItem(defaultBuilder()));
-    public static final DeferredItem<IntegratedInterfaceUpgradeItem> INTEGRATED_INTERFACE_UPGRADE = registerOtherItem(AECSItemIds.INTEGRATED_INTERFACE_UPGRADE, () -> new IntegratedInterfaceUpgradeItem(defaultBuilder()));
-    public static final DeferredItem<ResonatingPatternProviderUpgradeItem> RESONATING_PATTERN_PROVIDER_UPGRADE = registerOtherItem(AECSItemIds.RESONATING_PATTERN_PROVIDER_UPGRADE, () -> new ResonatingPatternProviderUpgradeItem(defaultBuilder()));
-    public static final DeferredItem<PatternProviderUpgradeItem> PATTERN_PROVIDER_UPGRADE = registerOtherItem(AECSItemIds.PATTERN_PROVIDER_UPGRADE, () -> new PatternProviderUpgradeItem(defaultBuilder()));
-    public static final DeferredItem<MeteorPatternProviderUpgradeItem> METEOR_PATTERN_PROVIDER_UPGRADE = registerOtherItem(AECSItemIds.METEOR_PATTERN_PROVIDER_UPGRADE, () -> new MeteorPatternProviderUpgradeItem(defaultBuilder()));
+    public static final DeferredItem<EnderInterfaceUpgradeItem> ENDER_INTERFACE_UPGRADE = registerOtherItem(AECSItemIds.ENDER_INTERFACE_UPGRADE, EnderInterfaceUpgradeItem::new);
+    public static final DeferredItem<IntegratedInterfaceUpgradeItem> INTEGRATED_INTERFACE_UPGRADE = registerOtherItem(AECSItemIds.INTEGRATED_INTERFACE_UPGRADE, IntegratedInterfaceUpgradeItem::new);
+    public static final DeferredItem<ResonatingPatternProviderUpgradeItem> RESONATING_PATTERN_PROVIDER_UPGRADE = registerOtherItem(AECSItemIds.RESONATING_PATTERN_PROVIDER_UPGRADE, ResonatingPatternProviderUpgradeItem::new);
+    public static final DeferredItem<PatternProviderUpgradeItem> PATTERN_PROVIDER_UPGRADE = registerOtherItem(AECSItemIds.PATTERN_PROVIDER_UPGRADE, PatternProviderUpgradeItem::new);
+    public static final DeferredItem<MeteorPatternProviderUpgradeItem> METEOR_PATTERN_PROVIDER_UPGRADE = registerOtherItem(AECSItemIds.METEOR_PATTERN_PROVIDER_UPGRADE, MeteorPatternProviderUpgradeItem::new);
 
-    public static final DeferredItem<Item> crystalGrowthCard = registerOtherItem(AECSItemIds.CRYSTAL_GROWTH_CARD, () -> Upgrades.createUpgradeCardItem(defaultBuilder()));
-    public static final DeferredItem<EnderLinkerItem> enderLink = registerOtherItem(AECSItemIds.ENDER_LINKER, () -> new EnderLinkerItem(defaultBuilder()));
-    public static final DeferredItem<ResonatingPatternItem> RESONATING_PATTERN = registerOtherItem(AECSItemIds.RESONATING_PATTERN, () -> new ResonatingPatternItem(defaultBuilder()));
-    public static final DeferredItem<ResonatingPatternConverterItem> RESONATING_PATTERN_CONVERTER = registerOtherItem(AECSItemIds.RESONATING_PATTERN_CONVERTER, () -> new ResonatingPatternConverterItem(defaultBuilder().stacksTo(1)));
+    public static final DeferredItem<Item> crystalGrowthCard = registerOtherItem(AECSItemIds.CRYSTAL_GROWTH_CARD, Upgrades::createUpgradeCardItem);
+    public static final DeferredItem<EnderLinkerItem> enderLink = registerOtherItem(AECSItemIds.ENDER_LINKER, EnderLinkerItem::new);
+    public static final DeferredItem<ResonatingPatternItem> RESONATING_PATTERN = registerOtherItem(AECSItemIds.RESONATING_PATTERN, ResonatingPatternItem::new);
+    public static final DeferredItem<ResonatingPatternConverterItem> RESONATING_PATTERN_CONVERTER = registerOtherItem(AECSItemIds.RESONATING_PATTERN_CONVERTER, properties -> new ResonatingPatternConverterItem(properties.stacksTo(1)));
 
-    public static final DeferredItem<EnderSwordItem> ENDER_CRYSTAL_SWORD = registerToolsItem(AECSItemIds.ENDER_CRYSTAL_SWORD, () -> new EnderSwordItem(defaultBuilder().stacksTo(1)));
-    public static final DeferredItem<EnderAxeItem> ENDER_CRYSTAL_AXE = registerToolsItem(AECSItemIds.ENDER_CRYSTAL_AXE, () -> new EnderAxeItem(defaultBuilder().stacksTo(1)));
-    public static final DeferredItem<EnderPickaxeItem> ENDER_CRYSTAL_PICKAXE = registerToolsItem(AECSItemIds.ENDER_CRYSTAL_PICKAXE, () -> new EnderPickaxeItem(defaultBuilder().stacksTo(1)));
-    public static final DeferredItem<EnderShovelItem> ENDER_CRYSTAL_SHOVEL = registerToolsItem(AECSItemIds.ENDER_CRYSTAL_SHOVEL, () -> new EnderShovelItem(defaultBuilder().stacksTo(1)));
-    public static final DeferredItem<EnderHoeItem> ENDER_CRYSTAL_HOE = registerToolsItem(AECSItemIds.ENDER_CRYSTAL_HOE, () -> new EnderHoeItem(defaultBuilder().stacksTo(1)));
+    public static final DeferredItem<EnderSwordItem> ENDER_CRYSTAL_SWORD = registerToolsItem(AECSItemIds.ENDER_CRYSTAL_SWORD, properties -> new EnderSwordItem(properties.stacksTo(1)));
+    public static final DeferredItem<EnderAxeItem> ENDER_CRYSTAL_AXE = registerToolsItem(AECSItemIds.ENDER_CRYSTAL_AXE, properties -> new EnderAxeItem(properties.stacksTo(1)));
+    public static final DeferredItem<EnderPickaxeItem> ENDER_CRYSTAL_PICKAXE = registerToolsItem(AECSItemIds.ENDER_CRYSTAL_PICKAXE, properties -> new EnderPickaxeItem(properties.stacksTo(1)));
+    public static final DeferredItem<EnderShovelItem> ENDER_CRYSTAL_SHOVEL = registerToolsItem(AECSItemIds.ENDER_CRYSTAL_SHOVEL, properties -> new EnderShovelItem(properties.stacksTo(1)));
+    public static final DeferredItem<EnderHoeItem> ENDER_CRYSTAL_HOE = registerToolsItem(AECSItemIds.ENDER_CRYSTAL_HOE, properties -> new EnderHoeItem(properties.stacksTo(1)));
 
-    public static final DeferredItem<MeteorSwordItem> METEOR_CRYSTAL_SWORD = registerToolsItem(AECSItemIds.METEOR_CRYSTAL_SWORD, () -> new MeteorSwordItem(defaultBuilder().stacksTo(1)));
-    public static final DeferredItem<MeteorAxeItem> METEOR_CRYSTAL_AXE = registerToolsItem(AECSItemIds.METEOR_CRYSTAL_AXE, () -> new MeteorAxeItem(defaultBuilder().stacksTo(1)));
-    public static final DeferredItem<MeteorPickaxeItem> METEOR_CRYSTAL_PICKAXE = registerToolsItem(AECSItemIds.METEOR_CRYSTAL_PICKAXE, () -> new MeteorPickaxeItem(defaultBuilder().stacksTo(1)));
-    public static final DeferredItem<MeteorShovelItem> METEOR_CRYSTAL_SHOVEL = registerToolsItem(AECSItemIds.METEOR_CRYSTAL_SHOVEL, () -> new MeteorShovelItem(defaultBuilder().stacksTo(1)));
-    public static final DeferredItem<MeteorHoeItem> METEOR_CRYSTAL_HOE = registerToolsItem(AECSItemIds.METEOR_CRYSTAL_HOE, () -> new MeteorHoeItem(defaultBuilder().stacksTo(1)));
+    public static final DeferredItem<MeteorSwordItem> METEOR_CRYSTAL_SWORD = registerToolsItem(AECSItemIds.METEOR_CRYSTAL_SWORD, properties -> new MeteorSwordItem(properties.stacksTo(1)));
+    public static final DeferredItem<MeteorAxeItem> METEOR_CRYSTAL_AXE = registerToolsItem(AECSItemIds.METEOR_CRYSTAL_AXE, properties -> new MeteorAxeItem(properties.stacksTo(1)));
+    public static final DeferredItem<MeteorPickaxeItem> METEOR_CRYSTAL_PICKAXE = registerToolsItem(AECSItemIds.METEOR_CRYSTAL_PICKAXE, properties -> new MeteorPickaxeItem(properties.stacksTo(1)));
+    public static final DeferredItem<MeteorShovelItem> METEOR_CRYSTAL_SHOVEL = registerToolsItem(AECSItemIds.METEOR_CRYSTAL_SHOVEL, properties -> new MeteorShovelItem(properties.stacksTo(1)));
+    public static final DeferredItem<MeteorHoeItem> METEOR_CRYSTAL_HOE = registerToolsItem(AECSItemIds.METEOR_CRYSTAL_HOE, properties -> new MeteorHoeItem(properties.stacksTo(1)));
 
-    public static final DeferredItem<ResonatingSwordItem> RESONATING_CRYSTAL_SWORD = registerToolsItem(AECSItemIds.RESONATING_CRYSTAL_SWORD, () -> new ResonatingSwordItem(defaultBuilder().stacksTo(1)));
-    public static final DeferredItem<ResonatingAxeItem> RESONATING_CRYSTAL_AXE = registerToolsItem(AECSItemIds.RESONATING_CRYSTAL_AXE, () -> new ResonatingAxeItem(defaultBuilder().stacksTo(1)));
-    public static final DeferredItem<ResonatingPickaxeItem> RESONATING_CRYSTAL_PICKAXE = registerToolsItem(AECSItemIds.RESONATING_CRYSTAL_PICKAXE, () -> new ResonatingPickaxeItem(defaultBuilder().stacksTo(1)));
-    public static final DeferredItem<ResonatingShovelItem> RESONATING_CRYSTAL_SHOVEL = registerToolsItem(AECSItemIds.RESONATING_CRYSTAL_SHOVEL, () -> new ResonatingShovelItem(defaultBuilder().stacksTo(1)));
-    public static final DeferredItem<ResonatingHoeItem> RESONATING_CRYSTAL_HOE = registerToolsItem(AECSItemIds.RESONATING_CRYSTAL_HOE, () -> new ResonatingHoeItem(defaultBuilder().stacksTo(1)));
+    public static final DeferredItem<ResonatingSwordItem> RESONATING_CRYSTAL_SWORD = registerToolsItem(AECSItemIds.RESONATING_CRYSTAL_SWORD, properties -> new ResonatingSwordItem(properties.stacksTo(1)));
+    public static final DeferredItem<ResonatingAxeItem> RESONATING_CRYSTAL_AXE = registerToolsItem(AECSItemIds.RESONATING_CRYSTAL_AXE, properties -> new ResonatingAxeItem(properties.stacksTo(1)));
+    public static final DeferredItem<ResonatingPickaxeItem> RESONATING_CRYSTAL_PICKAXE = registerToolsItem(AECSItemIds.RESONATING_CRYSTAL_PICKAXE, properties -> new ResonatingPickaxeItem(properties.stacksTo(1)));
+    public static final DeferredItem<ResonatingShovelItem> RESONATING_CRYSTAL_SHOVEL = registerToolsItem(AECSItemIds.RESONATING_CRYSTAL_SHOVEL, properties -> new ResonatingShovelItem(properties.stacksTo(1)));
+    public static final DeferredItem<ResonatingHoeItem> RESONATING_CRYSTAL_HOE = registerToolsItem(AECSItemIds.RESONATING_CRYSTAL_HOE, properties -> new ResonatingHoeItem(properties.stacksTo(1)));
 
-    public static final DeferredItem<Item> FLOUR = registerOtherItem(AECSItemIds.FLOUR, () -> new Item(defaultBuilder()));
-    public static final DeferredItem<Item> WOODEN_GEAR = registerOtherItem(AECSItemIds.WOODEN_GEAR, () -> new Item(defaultBuilder()));
+    public static final DeferredItem<Item> FLOUR = registerOtherItem(AECSItemIds.FLOUR, Item::new);
+    public static final DeferredItem<Item> WOODEN_GEAR = registerOtherItem(AECSItemIds.WOODEN_GEAR, Item::new);
 
     // 快速物品状态
     public static Item.Properties defaultBuilder()
@@ -181,40 +181,37 @@ public class AECSItems
     }
 
     // 工具方法
-    private static <T extends Item> DeferredItem<T> registerItem(String name, Supplier<T> supplier)
+    private static <T extends Item> DeferredItem<T> registerItem(String name, Function<Item.Properties, T> factory)
     {
-        DeferredItem<T> obj = ITEMS.register(name, () -> {
-            T t = supplier.get();
-            return t instanceof Item ? t : (T) new Item(new Item.Properties());
-        });
+        DeferredItem<T> obj = ITEMS.registerItem(name, factory, AECSItems::defaultBuilder);
         ALL.add(obj);
         return obj;
     }
 
-    private static DeferredItem<CrystalSeedItem> registerCrystalSeedItem(String name, Supplier<CrystalSeedItem> sup)
+    private static DeferredItem<CrystalSeedItem> registerCrystalSeedItem(String name, Function<Item.Properties, CrystalSeedItem> factory)
     {
-        DeferredItem<CrystalSeedItem> obj = registerItem(name, sup);
+        DeferredItem<CrystalSeedItem> obj = registerItem(name, factory);
         CRYSTAL_SEEDS.add(obj);
         return obj;
     }
 
-    private static DeferredItem<PureCrystalItem> registerPureCrystalItem(String name, Supplier<PureCrystalItem> sup)
+    private static DeferredItem<PureCrystalItem> registerPureCrystalItem(String name, Function<Item.Properties, PureCrystalItem> factory)
     {
-        DeferredItem<PureCrystalItem> obj = registerItem(name, sup);
+        DeferredItem<PureCrystalItem> obj = registerItem(name, factory);
         PURE_CRYSTAL.add(obj);
         return obj;
     }
 
-    private static <T extends Item> DeferredItem<T> registerToolsItem(String name, Supplier<T> sup)
+    private static <T extends Item> DeferredItem<T> registerToolsItem(String name, Function<Item.Properties, T> factory)
     {
-        DeferredItem<T> obj = registerItem(name, sup);
+        DeferredItem<T> obj = registerItem(name, factory);
         TOOLS.add(obj);
         return obj;
     }
 
-    private static <T extends Item> DeferredItem<T> registerOtherItem(String name, Supplier<T> sup)
+    private static <T extends Item> DeferredItem<T> registerOtherItem(String name, Function<Item.Properties, T> factory)
     {
-        DeferredItem<T> obj = registerItem(name, sup);
+        DeferredItem<T> obj = registerItem(name, factory);
         OTHERS.add(obj);
         return obj;
     }

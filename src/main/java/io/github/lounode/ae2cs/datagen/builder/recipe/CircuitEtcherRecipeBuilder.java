@@ -29,9 +29,6 @@ import java.util.*;
 
 public class CircuitEtcherRecipeBuilder implements RecipeBuilder
 {
-
-    private static final SizedIngredient EMPTY = new SizedIngredient(Ingredient.of(java.util.stream.Stream.<ItemLike>empty()), 1);
-
     private final ItemStack result;
     private final int energyCost;
     private final List<SizedIngredient> inputs = new ArrayList<>(3);
@@ -150,10 +147,9 @@ public class CircuitEtcherRecipeBuilder implements RecipeBuilder
             }
         }
 
-        // 填满到 3 个输入（缺省用 EMPTY）
-        SizedIngredient a = inputs.size() > 0 ? inputs.get(0) : EMPTY;
-        SizedIngredient b = inputs.size() > 1 ? inputs.get(1) : EMPTY;
-        SizedIngredient c = inputs.size() > 2 ? inputs.get(2) : EMPTY;
+        SizedIngredient a = inputs.size() > 0 ? inputs.get(0) : null;
+        SizedIngredient b = inputs.size() > 1 ? inputs.get(1) : null;
+        SizedIngredient c = inputs.size() > 2 ? inputs.get(2) : null;
 
         var recipe = new CircuitEtcherRecipe(a, b, c, result, energyCost);
         output.accept(id, recipe, adv.build(advancementId));
