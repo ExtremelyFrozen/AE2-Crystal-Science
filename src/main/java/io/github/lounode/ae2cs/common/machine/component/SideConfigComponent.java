@@ -22,13 +22,13 @@ import io.github.lounode.ae2cs.common.machine.MachineComponentContainer;
 import io.github.lounode.ae2cs.common.machine.MachineContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -589,42 +589,41 @@ public class SideConfigComponent extends BaseMachineComponent
     }
 
     @Override
-    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries)
+    public void writeNbt(ValueOutput data)
     {
-        tag.putBoolean("side_config_auto_import", this.autoImport);
-        tag.putBoolean("side_config_auto_export", this.autoExport);
+        super.writeNbt(data);
 
-        CompoundTag polTag = new CompoundTag();
+        data.putBoolean("side_config_auto_import", this.autoImport);
+        data.putBoolean("side_config_auto_export", this.autoExport);
+
+        ValueOutput polData = data.child("side_policies");
         for (Direction dir : Direction.values())
         {
             SidePolicy policy = this.policies.get(dir);
             if (policy == null) continue;
 
-            polTag.putString(dir.getName(), policy.name());
+            polData.putString(dir.getName(), policy.name());
         }
-        tag.put("side_policies", polTag);
     }
 
     @Override
-    public void readNbt(CompoundTag tag, HolderLookup.Provider registries)
+    public void readNbt(ValueInput input)
     {
-        this.autoImport = tag.getBoolean("side_config_auto_import").orElse(false);
-        this.autoExport = tag.getBoolean("side_config_auto_export").orElse(false);
+        super.readNbt(input);
+
+        this.autoImport = input.getBooleanOr("side_config_auto_import", false);
+        this.autoExport = input.getBooleanOr("side_config_auto_export", false);
 
         this.policies.clear();
 
-        if (tag.contains("side_policies"))
-        {
-            CompoundTag polTag = tag.getCompound("side_policies").orElse(new CompoundTag());
-
+        input.child("side_policies").ifPresent(polData -> {
             for (Direction dir : Direction.values())
             {
                 String dirKey = dir.getName();
 
-                if (!polTag.contains(dirKey))
-                    continue;
+                String name = polData.getString(dirKey).orElse(null);
+                if (name == null) continue;
 
-                String name = polTag.getString(dirKey).orElse("NONE");
                 try
                 {
                     this.policies.put(dir, SidePolicy.valueOf(name));
@@ -634,7 +633,7 @@ public class SideConfigComponent extends BaseMachineComponent
                     // 方便以后存档兼容
                 }
             }
-        }
+        });
 
         SidePolicy def = SidePolicy.ALL;
         for (Direction dir : Direction.values())

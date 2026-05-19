@@ -12,6 +12,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -139,15 +141,15 @@ public final class GenericStackInvComponent extends BaseMachineComponent
     }
 
     @Override
-    public void writeNbt(CompoundTag tag, HolderLookup.Provider r)
-    {
-        for (var e : ports.entrySet()) e.getValue().writeToChildTag(tag, "inv_" + e.getKey().name().toLowerCase(), r);
+    public void writeNbt(ValueOutput data) {
+        super.writeNbt(data);
+        for (var e : ports.entrySet()) e.getValue().writeToChildTag(data, "inv_" + e.getKey().name().toLowerCase());
     }
 
     @Override
-    public void readNbt(CompoundTag tag, HolderLookup.Provider r)
-    {
-        for (var e : ports.entrySet()) e.getValue().readFromChildTag(tag, "inv_" + e.getKey().name().toLowerCase(), r);
+    public void readNbt(ValueInput input) {
+        super.readNbt(input);
+        for (var e : ports.entrySet()) e.getValue().readFromChildTag(input, "inv_" + e.getKey().name().toLowerCase());
     }
 
     @Override

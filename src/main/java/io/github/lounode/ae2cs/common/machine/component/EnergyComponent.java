@@ -13,6 +13,8 @@ import io.github.lounode.ae2cs.common.machine.MachineComponentContainer;
 import io.github.lounode.ae2cs.common.machine.MachineContext;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class EnergyComponent extends NetworkMachineComponent implements IAEPowerStorage
 {
@@ -42,17 +44,15 @@ public class EnergyComponent extends NetworkMachineComponent implements IAEPower
     }
 
     @Override
-    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries)
-    {
-        super.writeNbt(tag, registries);
-        tag.putDouble("stored_energy", this.storedEnergy.getAmount());
+    public void writeNbt(ValueOutput data) {
+        super.writeNbt(data);
+        data.putDouble("stored_energy", this.storedEnergy.getAmount());
     }
 
     @Override
-    public void readNbt(CompoundTag tag, HolderLookup.Provider registries)
-    {
-        super.readNbt(tag, registries);
-        this.storedEnergy.setStored(tag.getDouble("stored_energy"));
+    public void readNbt(ValueInput input) {
+        super.readNbt(input);
+        this.storedEnergy.setStored(input.getDoubleOr("stored_energy", 0));
     }
 
     @Override
