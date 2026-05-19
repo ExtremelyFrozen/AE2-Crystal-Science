@@ -17,20 +17,20 @@ import io.github.lounode.ae2cs.common.machine.component.InvPort;
 import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
 import io.github.lounode.ae2cs.common.recipe.crystal_pulverizer.CrystalPulverizerRecipe;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.Identifier;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Optional;
 
 @ProvideCaps(ItemResource.class)
 public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEntity implements ICrankable,
@@ -51,7 +51,7 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
      * 当前执行配方的id，在重新加载时保证机器运行进展不会因为配方检查被刷新掉
      */
     @Nullable
-    private Identifier activeRecipeId;
+    private ResourceKey<Recipe<?>> activeRecipeId;
 
     /**
      * 该配方需要的总能量
@@ -112,7 +112,7 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
             @Override
             public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack)
             {
-                if (level == null) return false;
+                if (level == null || level.isClientSide()) return false;
                 if (stack.isEmpty()) return false;
 
                 // 先做一个简单的合并判断，然后再进入配方判别
@@ -122,7 +122,7 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
 
                 SingleRecipeInput input = new SingleRecipeInput(stack);
                 canInsert = canInsert
-                        && level.getRecipeManager().getRecipeFor(AECSRecipeTypes.CRYSTAL_PULVERIZER.get(), input, level).isPresent();
+                        && level.getServer().getRecipeManager().getRecipeFor(AECSRecipeTypes.CRYSTAL_PULVERIZER.get(), input, level).isPresent();
 
                 return IAEItemFilter.super.allowInsert(inv, slot, stack) && canInsert;
             }
@@ -192,7 +192,6 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
             return;
         }
 
-        Level level = getLevel();
         CrystalPulverizerRecipe recipe = activeRecipe.value();
 
         // 2) 若未完成：推进进度 + 扣能量
@@ -211,7 +210,7 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
         if (recipeProgress >= activeRecipeEnergyCost)
         {
             SingleRecipeInput input = new SingleRecipeInput(getWorkingInv().getStackInSlot(0));
-            ItemStack result = recipe.assemble(input, level.registryAccess());
+            ItemStack result = recipe.assemble(input);
             if (result.isEmpty()) // 如果我们拿不到输出，说明配方可能有问题，此时清空状态
             {
                 recipeProgress = 0;
@@ -263,7 +262,7 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
         var level = getLevel();
         var input = new SingleRecipeInput(getWorkingInv().getStackInSlot(0));
 
-        var opt = level.getRecipeManager().getRecipeFor(
+        var opt = level.getServer().getRecipeManager().getRecipeFor(
                 AECSRecipeTypes.CRYSTAL_PULVERIZER.get(),
                 input,
                 level
@@ -337,36 +336,33 @@ public class QuartzGrindstoneBlockEntity extends AENetworkedSelfPoweredBlockEnti
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries)
+    public void saveAdditional(ValueOutput data)
     {
-        super.saveAdditional(data, registries);
+        super.saveAdditional(data);
         data.putInt("recipe_progress", recipeProgress);
         if (activeRecipe != null)
         {
-            data.putString("active_recipe_id", activeRecipe.id().toString());
+            data.store("active_recipe_id", ResourceKey.codec(Registries.RECIPE), activeRecipe.id());
         }
         // 配方时间会由后续的update根据配方更新
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries)
+    public void loadTag(ValueInput data)
     {
-        super.loadTag(data, registries);
-        recipeProgress = data.getInt("recipe_progress");
-        if (data.contains("active_recipe_id"))
-        {
-            activeRecipeId = Identifier.parse(data.getString("active_recipe_id"));
-        }
+        super.loadTag(data);
+        recipeProgress = data.getIntOr("recipe_progress", 0);
+        activeRecipeId = data.read("active_recipe_id", ResourceKey.codec(Registries.RECIPE)).orElse(null);
     }
 
     @Override
     public void onLoad()
     {
         super.onLoad();
-        if (activeRecipeId != null && level != null)
+        if (activeRecipeId != null && level != null && !level.isClientSide())
         {
-            Optional<RecipeHolder<?>> opt = level.getServer().getRecipeManager().byKey(activeRecipeId);
-            opt.ifPresent(recipeHolder -> activeRecipe = (RecipeHolder<CrystalPulverizerRecipe>) recipeHolder);
+            level.getServer().getRecipeManager().byKey(activeRecipeId)
+                    .ifPresent(recipeHolder -> activeRecipe = (RecipeHolder<CrystalPulverizerRecipe>) recipeHolder);
         }
         updateActiveRecipe();
     }

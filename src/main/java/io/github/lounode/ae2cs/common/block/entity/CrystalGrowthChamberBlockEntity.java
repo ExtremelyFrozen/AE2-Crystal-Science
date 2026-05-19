@@ -24,11 +24,11 @@ import io.github.lounode.ae2cs.common.machine.component.InvPort;
 import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
@@ -155,17 +155,17 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
 
     // inv的save与load均已由AEBaseInvBlockEntity处理
     @Override
-    public void saveAdditional(CompoundTag tag, HolderLookup.Provider registries)
+    public void saveAdditional(ValueOutput tag)
     {
-        super.saveAdditional(tag, registries);
-        this.upgrades.writeToNBT(tag, "interface_upgrades", registries);
+        super.saveAdditional(tag);
+        this.upgrades.writeToNBT(tag, "interface_upgrades");
     }
 
     @Override
-    public void loadTag(CompoundTag tag, HolderLookup.Provider registries)
+    public void loadTag(ValueInput tag)
     {
-        super.loadTag(tag, registries);
-        this.upgrades.readFromNBT(tag, "interface_upgrades", registries);
+        super.loadTag(tag);
+        this.upgrades.readFromNBT(tag, "interface_upgrades");
     }
 
     // load完成之后，且level被注入后
@@ -187,7 +187,7 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
     {
         super.serverTick();
 
-        if (level == null || level.isClientSide) return;
+        if (level == null || level.isClientSide()) return;
 
         --workTickCountDown;
         if (workTickCountDown > 0) return;
@@ -226,7 +226,7 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
      */
     public void updateGrowthNum()
     {
-        if (level == null || level.isClientSide) return;
+        if (level == null || level.isClientSide()) return;
 
         growthNum = 0;
         for (Direction dir : Direction.values())

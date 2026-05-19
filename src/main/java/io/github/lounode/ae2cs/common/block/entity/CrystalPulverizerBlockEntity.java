@@ -18,21 +18,22 @@ import io.github.lounode.ae2cs.common.machine.component.InvPort;
 import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
 import io.github.lounode.ae2cs.common.recipe.crystal_pulverizer.CrystalPulverizerRecipe;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.Identifier;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Optional;
 
 @ProvideCaps(ItemResource.class)
 public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEntity implements IUpgradeableObject,
@@ -61,7 +62,7 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
      * 当前执行配方的id，在重新加载时保证机器运行进展不会因为配方检查被刷新掉
      */
     @Nullable
-    private Identifier activeRecipeId;
+    private ResourceKey<Recipe<?>> activeRecipeId;
 
     /**
      * 该配方需要的总能量
@@ -170,7 +171,6 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
             return;
         }
 
-        Level level = getLevel();
         CrystalPulverizerRecipe recipe = activeRecipe.value();
 
         // 2) 若未完成：推进进度 + 扣能量
@@ -189,7 +189,7 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
         if (recipeProgress >= activeRecipeEnergyCost)
         {
             SingleRecipeInput input = new SingleRecipeInput(getInputInv().getStackInSlot(0));
-            ItemStack result = recipe.assemble(input, level.registryAccess());
+            ItemStack result = recipe.assemble(input);
             if (result.isEmpty()) // 如果我们拿不到输出，说明配方可能有问题，此时清空状态
             {
                 recipeProgress = 0;
@@ -242,7 +242,7 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
         var level = getLevel();
         var input = new SingleRecipeInput(getInputInv().getStackInSlot(0));
 
-        var opt = level.getRecipeManager().getRecipeFor(
+        var opt = level.getServer().getRecipeManager().getRecipeFor(
                 AECSRecipeTypes.CRYSTAL_PULVERIZER.get(),
                 input,
                 level
@@ -301,37 +301,34 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries)
+    public void saveAdditional(ValueOutput data)
     {
-        super.saveAdditional(data, registries);
-        upgrades.writeToNBT(data, "upgrades", registries);
+        super.saveAdditional(data);
+        upgrades.writeToNBT(data, "upgrades");
         data.putInt("recipe_progress", recipeProgress);
         if (activeRecipe != null)
         {
-            data.putString("active_recipe_id", activeRecipe.id().toString());
+            data.store("active_recipe_id", ResourceKey.codec(Registries.RECIPE), activeRecipe.id());
         }
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries)
+    public void loadTag(ValueInput data)
     {
-        super.loadTag(data, registries);
-        upgrades.readFromNBT(data, "upgrades", registries);
-        recipeProgress = data.getInt("recipe_progress");
-        if (data.contains("active_recipe_id"))
-        {
-            activeRecipeId = Identifier.parse(data.getString("active_recipe_id"));
-        }
+        super.loadTag(data);
+        upgrades.readFromNBT(data, "upgrades");
+        recipeProgress = data.getIntOr("recipe_progress", 0);
+        activeRecipeId = data.read("active_recipe_id", ResourceKey.codec(Registries.RECIPE)).orElse(null);
     }
 
     @Override
     public void onLoad()
     {
         super.onLoad();
-        if (activeRecipeId != null && level != null)
+        if (activeRecipeId != null && level != null && !level.isClientSide())
         {
-            Optional<RecipeHolder<?>> opt = level.getRecipeManager().byKey(activeRecipeId);
-            opt.ifPresent(recipeHolder -> activeRecipe = (RecipeHolder<CrystalPulverizerRecipe>) recipeHolder);
+            level.getServer().getRecipeManager().byKey(activeRecipeId)
+                    .ifPresent(recipeHolder -> activeRecipe = (RecipeHolder<CrystalPulverizerRecipe>) recipeHolder);
         }
         updateActiveRecipe();
     }

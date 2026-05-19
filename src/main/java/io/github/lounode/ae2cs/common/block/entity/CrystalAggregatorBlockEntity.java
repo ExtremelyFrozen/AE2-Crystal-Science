@@ -19,13 +19,10 @@ import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
 import io.github.lounode.ae2cs.common.recipe.crystal_aggregator.CrystalAggregatorRecipe;
 import io.github.lounode.ae2cs.common.recipe.input.ThreeItemStackRecipeInput;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -37,7 +34,6 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Optional;
 
 @ProvideCaps(ItemResource.class)
 public class CrystalAggregatorBlockEntity extends AENetworkedSelfPoweredBlockEntity implements IUpgradeableObject,
@@ -66,7 +62,7 @@ public class CrystalAggregatorBlockEntity extends AENetworkedSelfPoweredBlockEnt
      * 当前执行配方的id，在重新加载时保证机器运行进展不会因为配方检查被刷新掉
      */
     @Nullable
-    private Identifier activeRecipeId;
+    private ResourceKey<Recipe<?>> activeRecipeId;
 
     /**
      * activeRecipe 对应的槽位映射（required[i] 使用哪个输入槽 0/1/2）
@@ -180,7 +176,6 @@ public class CrystalAggregatorBlockEntity extends AENetworkedSelfPoweredBlockEnt
             return;
         }
 
-        Level level = getLevel();
         CrystalAggregatorRecipe recipe = activeRecipe.value();
 
         // 2) 若未完成：推进进度 + 扣能量
@@ -203,7 +198,7 @@ public class CrystalAggregatorBlockEntity extends AENetworkedSelfPoweredBlockEnt
                     getInputInv().getStackInSlot(1),
                     getInputInv().getStackInSlot(2)
             );
-            ItemStack result = recipe.assemble(input, level.registryAccess());
+            ItemStack result = recipe.assemble(input);
             if (result.isEmpty()) // 如果我们拿不到输出，说明配方可能有问题，此时清空状态
             {
                 recipeProgress = 0;
@@ -342,7 +337,7 @@ public class CrystalAggregatorBlockEntity extends AENetworkedSelfPoweredBlockEnt
         data.putInt("recipe_progress", recipeProgress);
         if (activeRecipe != null)
         {
-            data.putString("active_recipe_id", activeRecipe.id().toString());
+            data.store("active_recipe_id", ResourceKey.codec(Registries.RECIPE), activeRecipe.id());
         }
     }
 
@@ -352,19 +347,17 @@ public class CrystalAggregatorBlockEntity extends AENetworkedSelfPoweredBlockEnt
         super.loadTag(input);
         upgrades.readFromNBT(input, "upgrades");
         recipeProgress = input.getIntOr("recipe_progress", 0);
-        input.getString("active_recipe_id").ifPresent(id -> {
-            activeRecipeId = Identifier.parse(id);
-        });
+        activeRecipeId = input.read("active_recipe_id", ResourceKey.codec(Registries.RECIPE)).orElse(null);
     }
 
     @Override
     public void onLoad()
     {
         super.onLoad();
-        if (activeRecipeId != null && level != null)
+        if (activeRecipeId != null && level != null && !level.isClientSide())
         {
-            Optional<RecipeHolder<?>> opt = level.getServer().getRecipeManager().byKey(activeRecipeId);
-            opt.ifPresent(recipeHolder -> activeRecipe = (RecipeHolder<CrystalAggregatorRecipe>) recipeHolder);
+            level.getServer().getRecipeManager().byKey(activeRecipeId)
+                    .ifPresent(recipeHolder -> activeRecipe = (RecipeHolder<CrystalAggregatorRecipe>) recipeHolder);
         }
         updateActiveRecipe();
     }

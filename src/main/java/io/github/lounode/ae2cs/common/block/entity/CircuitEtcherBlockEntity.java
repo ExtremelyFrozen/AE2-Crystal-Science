@@ -22,6 +22,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -55,6 +56,12 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
      */
     @Nullable
     private RecipeHolder<CircuitEtcherRecipe> activeRecipe;
+
+    /**
+     * 当前执行配方的id，在重新加载时保证机器运行进展不会因为配方检查被刷新掉
+     */
+    @Nullable
+    private ResourceKey<Recipe<?>> activeRecipeId;
 
     /**
      * activeRecipe 对应的槽位映射（required[i] 使用哪个输入槽 0/1/2）
@@ -300,7 +307,7 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
         upgrades.writeToNBT(data, "upgrades");
         data.putInt("recipe_progress", recipeProgress);
         if (activeRecipe != null) {
-            data.store("active_recipe", ResourceKey.codec(Registries.RECIPE), activeRecipe.id());
+            data.store("active_recipe_id", ResourceKey.codec(Registries.RECIPE), activeRecipe.id());
         }
     }
 
@@ -309,20 +316,20 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
         super.loadTag(input);
         upgrades.readFromNBT(input, "upgrades");
         recipeProgress = input.getIntOr("recipe_progress", 0);
-        input.read("active_recipe_id", ResourceKey.codec(Registries.RECIPE))
-                .ifPresent(key -> {
-                    if (level != null) {
-                        level.getServer().getRecipeManager().byKey(key)
-                                .ifPresent(recipeHolder ->
-                                        activeRecipe = (RecipeHolder<CircuitEtcherRecipe>) recipeHolder
-                                );
-                    }
-                });
+        var recipeId = input.read("active_recipe_id", ResourceKey.codec(Registries.RECIPE));
+        if (recipeId.isEmpty()) {
+            recipeId = input.read("active_recipe", ResourceKey.codec(Registries.RECIPE));
+        }
+        activeRecipeId = recipeId.orElse(null);
     }
 
     @Override
     public void onLoad() {
         super.onLoad();
+        if (activeRecipeId != null && level != null && !level.isClientSide()) {
+            level.getServer().getRecipeManager().byKey(activeRecipeId)
+                    .ifPresent(recipeHolder -> activeRecipe = (RecipeHolder<CircuitEtcherRecipe>) recipeHolder);
+        }
         updateActiveRecipe();
     }
 

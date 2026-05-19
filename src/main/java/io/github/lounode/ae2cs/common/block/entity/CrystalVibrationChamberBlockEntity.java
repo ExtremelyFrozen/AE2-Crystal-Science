@@ -22,11 +22,11 @@ import io.github.lounode.ae2cs.common.machine.component.InvPort;
 import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import java.util.List;
 
@@ -98,23 +98,23 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries)
+    public void saveAdditional(ValueOutput data)
     {
-        super.saveAdditional(data, registries);
-        this.upgrades.writeToNBT(data, "upgrades", registries);
+        super.saveAdditional(data);
+        this.upgrades.writeToNBT(data, "upgrades");
         data.putInt("max_burn_time", this.maxBurnTime);
         data.putInt("burn_time", this.remainingBurnTime);
         data.putDouble("energy_per_tick", this.energyPerTick);
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries)
+    public void loadTag(ValueInput data)
     {
-        super.loadTag(data, registries);
-        this.upgrades.readFromNBT(data, "upgrades", registries);
-        this.maxBurnTime = data.getInt("max_burn_time");
-        this.remainingBurnTime = data.getInt("burn_time");
-        this.energyPerTick = data.getDouble("energy_per_tick");
+        super.loadTag(data);
+        this.upgrades.readFromNBT(data, "upgrades");
+        this.maxBurnTime = data.getIntOr("max_burn_time", 0);
+        this.remainingBurnTime = data.getIntOr("burn_time", 0);
+        this.energyPerTick = data.getDoubleOr("energy_per_tick", 0);
     }
 
     @Override
