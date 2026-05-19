@@ -105,7 +105,7 @@ public class UpgradeablePatternProviderLockReason implements ICompositeWidget
                 Component stackAmount;
                 if (stack != null)
                 {
-                    stackName = AEKeyRendering.getTooltip().getDisplayName(stack.what());
+                    stackName = stack.what().getDisplayName();
                     stackAmount = Component.literal(stack.what().formatAmount(stack.amount(), AmountFormat.FULL));
                 }
                 else
