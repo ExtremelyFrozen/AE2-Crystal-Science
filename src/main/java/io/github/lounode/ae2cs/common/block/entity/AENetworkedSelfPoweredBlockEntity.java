@@ -9,12 +9,13 @@ import io.github.lounode.ae2cs.common.machine.component.EnergyComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
 /**
  * 根据其确定的能量流向，这个机器会自动与AE网络进行能量交互
  */
-@ProvideCaps(ItemResource.class)
+@ProvideCaps(EnergyHandler.class)
 public class AENetworkedSelfPoweredBlockEntity extends AENetworkedComponentBlockEntity implements
         IAEPowerStorage
 {

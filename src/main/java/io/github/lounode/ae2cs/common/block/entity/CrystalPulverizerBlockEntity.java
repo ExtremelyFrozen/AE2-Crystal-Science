@@ -28,12 +28,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
 
-@ProvideCaps(EnergyHandler.class)
+@ProvideCaps(ItemResource.class)
 public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEntity implements IUpgradeableObject,
         CustomReturnableSubMenuHost
 {

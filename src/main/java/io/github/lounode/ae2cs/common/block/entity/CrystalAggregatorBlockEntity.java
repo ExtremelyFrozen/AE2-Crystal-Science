@@ -33,12 +33,13 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
 
-@ProvideCaps(EnergyHandler.class)
+@ProvideCaps(ItemResource.class)
 public class CrystalAggregatorBlockEntity extends AENetworkedSelfPoweredBlockEntity implements IUpgradeableObject,
         CustomReturnableSubMenuHost
 {
