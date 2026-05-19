@@ -7,7 +7,10 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategories;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -27,6 +30,7 @@ public class CrystalAggregatorRecipe implements Recipe<ThreeItemStackRecipeInput
 
     // 真正所需的输入的缓存
     private final List<SizedIngredient> effective;
+    private final PlacementInfo placementInfo;
 
     public CrystalAggregatorRecipe(SizedIngredient inputA, SizedIngredient inputB, SizedIngredient inputC,
                                    ItemStack result, int energyCost)
@@ -41,6 +45,7 @@ public class CrystalAggregatorRecipe implements Recipe<ThreeItemStackRecipeInput
         addIfRequired(this.effective, inputA);
         addIfRequired(this.effective, inputB);
         addIfRequired(this.effective, inputC);
+        this.placementInfo = PlacementInfo.create(getIngredients());
     }
 
     private static void addIfRequired(List<SizedIngredient> list, SizedIngredient si)
@@ -162,12 +167,17 @@ public class CrystalAggregatorRecipe implements Recipe<ThreeItemStackRecipeInput
     }
 
     @Override
-    public @NotNull ItemStack getResultItem()
+    public boolean showNotification()
     {
-        return result;
+        return false;
     }
 
     @Override
+    public @NotNull String group()
+    {
+        return "";
+    }
+
     public @NotNull NonNullList<Ingredient> getIngredients()
     {
         NonNullList<Ingredient> list = NonNullList.create();
@@ -176,19 +186,25 @@ public class CrystalAggregatorRecipe implements Recipe<ThreeItemStackRecipeInput
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height)
-    {
-        return width * height >= effective.size();
-    }
-
-    @Override
-    public @NotNull RecipeType<?> getType()
+    public @NotNull RecipeType<CrystalAggregatorRecipe> getType()
     {
         return AECSRecipeTypes.CRYSTAL_AGGREGATOR.get();
     }
 
     @Override
-    public @NotNull RecipeSerializer<?> getSerializer()
+    public @NotNull PlacementInfo placementInfo()
+    {
+        return placementInfo;
+    }
+
+    @Override
+    public @NotNull RecipeBookCategory recipeBookCategory()
+    {
+        return RecipeBookCategories.CRAFTING_MISC;
+    }
+
+    @Override
+    public @NotNull RecipeSerializer<CrystalAggregatorRecipe> getSerializer()
     {
         return AECSRecipeSerializers.CRYSTAL_AGGREGATOR.get();
     }

@@ -14,6 +14,7 @@ public class CrystalPulverizerRecipe implements Recipe<SingleRecipeInput>
     private final SizedIngredient input;
     private final ItemStack result;
     private final int energyCost;
+    private final PlacementInfo placementInfo;
 
     public CrystalPulverizerRecipe(SizedIngredient input, ItemStack result, int energyCost)
     {
@@ -29,6 +30,7 @@ public class CrystalPulverizerRecipe implements Recipe<SingleRecipeInput>
         this.input = input;
         this.result = result;
         this.energyCost = energyCost;
+        this.placementInfo = PlacementInfo.create(input.ingredient());
     }
 
     public SizedIngredient input()
@@ -82,11 +84,11 @@ public class CrystalPulverizerRecipe implements Recipe<SingleRecipeInput>
 
     @Override
     public PlacementInfo placementInfo() {
-        return null;
+        return placementInfo;
     }
 
     @Override
     public RecipeBookCategory recipeBookCategory() {
-        return null;
+        return RecipeBookCategories.CRAFTING_MISC;
     }
 }

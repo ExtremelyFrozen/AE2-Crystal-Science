@@ -2,28 +2,27 @@ package io.github.lounode.ae2cs.common.recipe;
 
 import appeng.api.ids.AEComponents;
 import appeng.core.definitions.AEItems;
-import appeng.crafting.pattern.EncodedProcessingPattern;
-import io.github.lounode.ae2cs.common.init.AECSDataComponents;
-import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSRecipeSerializers;
 import io.github.lounode.ae2cs.common.init.AECSTags;
-import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern;
 import io.github.lounode.ae2cs.common.me.crafting.ResonatingPatternDetails;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CustomRecipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public class ResonatingPatternUpgradeRecipe extends CustomRecipe
 {
+    private final CraftingBookCategory category;
 
     public ResonatingPatternUpgradeRecipe(CraftingBookCategory category)
     {
-        super();
+        this.category = category;
+    }
+
+    @Override
+    public @NotNull CraftingBookCategory category()
+    {
+        return category;
     }
 
     @Override
@@ -76,12 +75,6 @@ public class ResonatingPatternUpgradeRecipe extends CustomRecipe
 
         return ResonatingPatternDetails.encode(processingPattern);
     }
-
-//    @Override
-//    public boolean canCraftInDimensions(int width, int height)
-//    {
-//        return width * height >= 2;
-//    }
 
     @Override
     public @NotNull RecipeSerializer<ResonatingPatternUpgradeRecipe> getSerializer()

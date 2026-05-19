@@ -24,6 +24,7 @@ public class CircuitEtcherRecipe implements Recipe<ThreeItemStackRecipeInput>
 
     // 真正所需的输入的缓存
     private final List<SizedIngredient> effective;
+    private final PlacementInfo placementInfo;
 
     public CircuitEtcherRecipe(SizedIngredient inputA, SizedIngredient inputB, SizedIngredient inputC,
                                ItemStack result, int energyCost)
@@ -38,6 +39,7 @@ public class CircuitEtcherRecipe implements Recipe<ThreeItemStackRecipeInput>
         addIfRequired(this.effective, inputA);
         addIfRequired(this.effective, inputB);
         addIfRequired(this.effective, inputC);
+        this.placementInfo = PlacementInfo.create(getIngredients());
     }
 
     private static void addIfRequired(List<SizedIngredient> list, SizedIngredient si)
@@ -168,25 +170,12 @@ public class CircuitEtcherRecipe implements Recipe<ThreeItemStackRecipeInput>
         return "";
     }
 
-    //    @Override
-    public @NotNull ItemStack getResultItem()
-    {
-        return result;
-    }
-
-//    @Override
     public @NotNull NonNullList<Ingredient> getIngredients()
     {
         NonNullList<Ingredient> list = NonNullList.create();
         for (var si : effective) list.add(si.ingredient());
         return list;
     }
-
-//    @Override
-//    public boolean canCraftInDimensions(int width, int height)
-//    {
-//        return width * height >= effective.size();
-//    }
 
     @Override
     public @NotNull RecipeType<CircuitEtcherRecipe> getType()
@@ -195,13 +184,13 @@ public class CircuitEtcherRecipe implements Recipe<ThreeItemStackRecipeInput>
     }
 
     @Override
-    public PlacementInfo placementInfo() {
-        return null;
+    public @NotNull PlacementInfo placementInfo() {
+        return placementInfo;
     }
 
     @Override
-    public RecipeBookCategory recipeBookCategory() {
-        return null;
+    public @NotNull RecipeBookCategory recipeBookCategory() {
+        return RecipeBookCategories.CRAFTING_MISC;
     }
 
     @Override
