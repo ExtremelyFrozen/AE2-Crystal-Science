@@ -5,6 +5,7 @@ import appeng.core.definitions.AEParts;
 import io.github.lounode.ae2cs.api.util.BlockDefinitionSupplier;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 //import io.github.lounode.ae2cs.common.init.AECSParts;
+import io.github.lounode.ae2cs.common.init.AECSParts;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -24,7 +25,7 @@ public class ResonatingPatternProviderUpgradeItem extends UpgradeItem
         super(properties);
 
         registerBlockReplaceInfo(BlockDefinitionSupplier.of(AEBlocks.PATTERN_PROVIDER), AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK);
-//        registerPartReplaceInfo(AEParts.PATTERN_PROVIDER, AECSParts.RESONATING_PATTERN_PROVIDER_PART);
+        registerPartReplaceInfo(AEParts.PATTERN_PROVIDER, AECSParts.RESONATING_PATTERN_PROVIDER_PART);
     }
 
     @Override

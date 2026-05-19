@@ -146,6 +146,6 @@ public final class AECSEnchantments
 
     public static Identifier id(ResourceKey<Enchantment> key)
     {
-        return key.location();
+        return key.identifier();
     }
 }

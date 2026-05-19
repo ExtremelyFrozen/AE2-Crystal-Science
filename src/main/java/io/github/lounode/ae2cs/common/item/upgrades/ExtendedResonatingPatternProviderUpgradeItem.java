@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs.common.item.upgrades;
 
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 //import io.github.lounode.ae2cs.common.init.AECSParts;
+import io.github.lounode.ae2cs.common.init.AECSParts;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -19,7 +20,7 @@ public class ExtendedResonatingPatternProviderUpgradeItem extends UpgradeItem
         super(properties);
 
         registerBlockReplaceInfo(AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK, AECSBlocks.EX_RESONATING_PATTERN_PROVIDER_BLOCK);
-//        registerPartReplaceInfo(AECSParts.RESONATING_PATTERN_PROVIDER_PART, AECSParts.EX_RESONATING_PATTERN_PROVIDER_PART);
+        registerPartReplaceInfo(AECSParts.RESONATING_PATTERN_PROVIDER_PART, AECSParts.EX_RESONATING_PATTERN_PROVIDER_PART);
     }
 
     @Override

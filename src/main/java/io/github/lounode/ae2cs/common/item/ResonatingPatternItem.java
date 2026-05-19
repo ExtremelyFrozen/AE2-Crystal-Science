@@ -139,7 +139,7 @@ public class ResonatingPatternItem extends EncodedPatternItem<ResonatingPatternD
         }
 
         // 有编码的情况下，我们不允许拆解，防止误操作
-        return InteractionResultHolder.pass(stack);
+        return InteractionResult.PASS;
     }
 
     /**
@@ -201,7 +201,7 @@ public class ResonatingPatternItem extends EncodedPatternItem<ResonatingPatternD
         if (markInfo.isPresent())
         {
             var t = markInfo.get();
-            var dimId = Component.translatable(t.pos().dimension().location().toLanguageKey("dimension"));
+            var dimId = Component.translatable(t.pos().dimension().identifier().toLanguageKey("dimension"));
             var pos = t.pos().pos();
             player.sendOverlayMessage(
                     Component.translatable("ae2cs.msg.resonating_pattern.selected_input_marked",

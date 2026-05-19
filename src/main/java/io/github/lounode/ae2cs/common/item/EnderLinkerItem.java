@@ -30,21 +30,21 @@ public class EnderLinkerItem extends Item
         if (player == null) return InteractionResult.PASS;
         if (level.isClientSide())
         {
-            if (player.isShiftKeyDown()) return InteractionResult.SUCCESS_NO_ITEM_USED;
+            if (player.isShiftKeyDown()) return InteractionResult.SUCCESS;
             else return InteractionResult.PASS;
         }
 
         if (player.isShiftKeyDown() && level.getBlockEntity(context.getClickedPos()) instanceof EnderEmitterBlockEntity)
         {
             stack.set(AECSDataComponents.ENDER_EMITTER_POS, GlobalPos.of(level.dimension(), context.getClickedPos()));
-            player.displayClientMessage(Component.translatable("ae2cs.msg.item.ender_linker.bing_to_emitter"), true);
+            player.sendOverlayMessage(Component.translatable("ae2cs.msg.item.ender_linker.bing_to_emitter"));
         }
         else if (!player.isShiftKeyDown() &&
                 level.getCapability(AECapabilities.IN_WORLD_GRID_NODE_HOST, context.getClickedPos()) != null)
         {
             GlobalPos linkerPos = stack.get(AECSDataComponents.ENDER_EMITTER_POS);
             if (linkerPos == null || !linkerPos.dimension().equals(level.dimension()))
-                return InteractionResult.SUCCESS_NO_ITEM_USED;
+                return InteractionResult.SUCCESS;
 
             if (level.getBlockEntity(linkerPos.pos()) instanceof EnderEmitterBlockEntity emitter)
             {
@@ -60,15 +60,15 @@ public class EnderLinkerItem extends Item
                     {
                         EnderEmitterBlockEntity.removePosFromRecentEmitter(level, context.getClickedPos());
                         EnderEmitterBlockEntity.addPosToEmitter(emitter, context.getClickedPos(), true, false);
-                        player.displayClientMessage(Component.translatable("ae2cs.msg.item.ender_linker.success_to_link"), true);
+                        player.sendOverlayMessage(Component.translatable("ae2cs.msg.item.ender_linker.success_to_link"));
                     }
                     else
                     {
-                        player.displayClientMessage(Component.translatable("ae2cs.msg.item.ender_linker.failed_to_link"), true);
+                        player.sendOverlayMessage(Component.translatable("ae2cs.msg.item.ender_linker.failed_to_link"));
                     }
                 }
             }
-            return InteractionResult.SUCCESS_NO_ITEM_USED;
+            return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }

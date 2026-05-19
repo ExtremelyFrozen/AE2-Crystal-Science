@@ -5,6 +5,7 @@ import appeng.core.definitions.AEParts;
 import io.github.lounode.ae2cs.api.util.BlockDefinitionSupplier;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 //import io.github.lounode.ae2cs.common.init.AECSParts;
+import io.github.lounode.ae2cs.common.init.AECSParts;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -24,7 +25,7 @@ public class PatternProviderUpgradeItem extends UpgradeItem
         super(properties);
 
         registerBlockReplaceInfo(AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK, BlockDefinitionSupplier.of(AEBlocks.PATTERN_PROVIDER));
-//        registerPartReplaceInfo(AECSParts.SIMPLE_PATTERN_PROVIDER_PART, AEParts.PATTERN_PROVIDER);
+        registerPartReplaceInfo(AECSParts.SIMPLE_PATTERN_PROVIDER_PART, AEParts.PATTERN_PROVIDER);
     }
 
     @Override

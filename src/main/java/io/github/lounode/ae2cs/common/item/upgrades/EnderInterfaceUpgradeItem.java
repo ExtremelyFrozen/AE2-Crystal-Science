@@ -5,6 +5,7 @@ import appeng.core.definitions.AEParts;
 import io.github.lounode.ae2cs.api.util.BlockDefinitionSupplier;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 //import io.github.lounode.ae2cs.common.init.AECSParts;
+import io.github.lounode.ae2cs.common.init.AECSParts;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -24,7 +25,7 @@ public class EnderInterfaceUpgradeItem extends UpgradeItem
         super(properties);
 
         registerBlockReplaceInfo(BlockDefinitionSupplier.of(AEBlocks.INTERFACE), AECSBlocks.ENDER_INTERFACE_BLOCK);
-//        registerPartReplaceInfo(AEParts.INTERFACE, AECSParts.ENDER_INTERFACE_PART);
+        registerPartReplaceInfo(AEParts.INTERFACE, AECSParts.ENDER_INTERFACE_PART);
     }
 
     @Override

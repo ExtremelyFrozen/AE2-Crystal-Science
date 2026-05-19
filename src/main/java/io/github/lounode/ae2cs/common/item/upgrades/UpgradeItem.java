@@ -98,7 +98,7 @@ public class UpgradeItem extends Item
                 {
                     return InteractionResult.PASS;
                 }
-                return InteractionResult.sidedSuccess(level.isClientSide);
+                return InteractionResult.SUCCESS;
             }
         }
         return InteractionResult.PASS;

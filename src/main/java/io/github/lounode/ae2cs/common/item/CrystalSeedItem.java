@@ -9,12 +9,14 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class CrystalSeedItem extends Item
@@ -37,14 +39,14 @@ public class CrystalSeedItem extends Item
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack,
-                                @NotNull TooltipContext context,
-                                @NotNull List<Component> tooltipComponents,
-                                @NotNull TooltipFlag tooltipFlag)
-    {
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-        tooltipComponents.add(
-                Component.translatable("message.ae2_crystal_seeds.tooltip.seed_growth", String.format("%.2f", getGrowProcess(stack) * 100))
+    public void appendHoverText(ItemStack itemStack,
+                                TooltipContext context,
+                                TooltipDisplay display,
+                                Consumer<Component> builder,
+                                TooltipFlag tooltipFlag) {
+        super.appendHoverText(itemStack, context, display, builder, tooltipFlag);
+        builder.accept(
+                Component.translatable("message.ae2_crystal_seeds.tooltip.seed_growth", String.format("%.2f", getGrowProcess(itemStack) * 100))
                         .withStyle(ChatFormatting.GRAY));
     }
 

@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs.common.item.upgrades;
 
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 //import io.github.lounode.ae2cs.common.init.AECSParts;
+import io.github.lounode.ae2cs.common.init.AECSParts;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -19,7 +20,7 @@ public class ExtendedEnderInterfaceUpgradeItem extends UpgradeItem
         super(properties);
 
         registerBlockReplaceInfo(AECSBlocks.ENDER_INTERFACE_BLOCK, AECSBlocks.EX_ENDER_INTERFACE_BLOCK);
-//        registerPartReplaceInfo(AECSParts.ENDER_INTERFACE_PART, AECSParts.EX_ENDER_INTERFACE_PART);
+        registerPartReplaceInfo(AECSParts.ENDER_INTERFACE_PART, AECSParts.EX_ENDER_INTERFACE_PART);
     }
 
     @Override
