@@ -99,7 +99,7 @@ public class AECSModelProvider extends ModelProvider {
 
         //item
         for (DeferredItem<CrystalSeedItem> item : AECSItems.getCrystalSeeds()) {
-            crystalSeedItem(itemModels, item.get());
+            crystalSeedItem(blockModels, itemModels, item.get());
         }
         for (DeferredItem<PureCrystalItem> item : AECSItems.getPureCrystal()) {
             itemModels.generateFlatItem(item.get(), ModelTemplates.FLAT_ITEM);
@@ -119,7 +119,16 @@ public class AECSModelProvider extends ModelProvider {
         return BuiltInRegistries.ITEM.getKey(item.asItem()).getPath();
     }
 
-    public void crystalSeedItem(ItemModelGenerators itemModels, Item item) {
+    public void crystalSeedItem(BlockModelGenerators blockModels, ItemModelGenerators itemModels, Item item) {
+        for (int stage = 0; stage < 3; stage++) {
+            var suffix = "_" + stage;
+            ModelTemplates.FLAT_ITEM.create(
+                    ModelLocationUtils.getModelLocation(item, suffix),
+                    TextureMapping.layer0(TextureMapping.getItemTexture(item, suffix)),
+                    blockModels.modelOutput
+            );
+        }
+
         var model0 = ItemModelUtils.plainModel(ModelLocationUtils.getModelLocation(item, "_0"));
         var model1 = ItemModelUtils.plainModel(ModelLocationUtils.getModelLocation(item, "_1"));
         var model2 = ItemModelUtils.plainModel(ModelLocationUtils.getModelLocation(item, "_2"));

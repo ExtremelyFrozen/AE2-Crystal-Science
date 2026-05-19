@@ -3,7 +3,7 @@ name: Build & Publish
 on: [workflow_dispatch]
 
 env:
-  JAVA_VERSION: "21"
+  JAVA_VERSION: "25"
   LOADER: "neoforge"
 
   CURSEFORGE_ID: "1435174"

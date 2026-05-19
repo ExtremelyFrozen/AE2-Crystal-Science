@@ -1,1 +1,1 @@
-* Fix: Crystal Growth Cards are now much more reliable.
+* init 26.1.2
