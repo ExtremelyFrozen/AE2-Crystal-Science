@@ -29,7 +29,6 @@ public class ResonatingPickaxeItem extends Item implements LinkableTool, Intrins
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context,
                                 @NotNull TooltipDisplay display, @NonNull Consumer<Component> builder,
                                 @NotNull TooltipFlag advancedTooltips) {

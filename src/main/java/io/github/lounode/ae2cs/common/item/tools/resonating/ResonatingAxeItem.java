@@ -29,7 +29,6 @@ public class ResonatingAxeItem extends Item implements LinkableTool, IntrinsicEn
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context,
                                 @NotNull TooltipDisplay display, @NonNull Consumer<Component> builder,
                                 @NotNull TooltipFlag advancedTooltips) {

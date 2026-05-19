@@ -12,7 +12,5 @@ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 public class AE2CrystalScienceClient {
     public AE2CrystalScienceClient(IEventBus modEventBus, ModContainer container) {
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
-        modEventBus.register(this);
     }
-
 }

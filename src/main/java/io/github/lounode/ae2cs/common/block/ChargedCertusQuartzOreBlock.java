@@ -23,7 +23,6 @@ public class ChargedCertusQuartzOreBlock extends CertusQuartzOreBlock
      * 模仿旧版粒子特效
      */
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void animateTick(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
                             @NotNull RandomSource random)
     {
