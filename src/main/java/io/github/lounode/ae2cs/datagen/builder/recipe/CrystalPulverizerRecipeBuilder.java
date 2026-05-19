@@ -60,7 +60,7 @@ public class CrystalPulverizerRecipeBuilder implements RecipeBuilder
      */
     public CrystalPulverizerRecipeBuilder require(Ingredient ing, int count)
     {
-        if (ing == null || ing.isEmpty() || count <= 0)
+        if (ing == null || isDefinitelyEmpty(ing) || count <= 0)
         {
             return this;
         }
@@ -110,7 +110,7 @@ public class CrystalPulverizerRecipeBuilder implements RecipeBuilder
     @Override
     public void save(@NotNull RecipeOutput output, @NotNull ResourceKey<Recipe<?>> id)
     {
-        if (this.input == null || this.input.ingredient().isEmpty() || this.input.count() <= 0)
+        if (this.input == null || isDefinitelyEmpty(this.input.ingredient()) || this.input.count() <= 0)
         {
             throw new IllegalStateException("CrystalPulverizerRecipe requires exactly 1 valid input: " + id);
         }
@@ -194,9 +194,20 @@ public class CrystalPulverizerRecipeBuilder implements RecipeBuilder
                     .findFirst()
                     .ifPresent(this::addAutoUnlockItem);
         }
-        catch (IllegalStateException ignored)
+        catch (IllegalStateException | UnsupportedOperationException ignored)
         {
-            // Tag ingredients may be unbound during datagen; the result item fallback will unlock the recipe.
+        }
+    }
+
+    private static boolean isDefinitelyEmpty(Ingredient ingredient)
+    {
+        try
+        {
+            return ingredient.isEmpty();
+        }
+        catch (UnsupportedOperationException ignored)
+        {
+            return false;
         }
     }
 

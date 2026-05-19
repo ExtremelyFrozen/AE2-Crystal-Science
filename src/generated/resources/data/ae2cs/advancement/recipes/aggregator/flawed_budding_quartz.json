@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_input_0": {
+      "conditions": {
+        "items": [
+          {
+            "items": "ae2cs:certus_quartz_seed"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_input_1": {
+      "conditions": {
+        "items": [
+          {
+            "items": "ae2:chipped_budding_quartz"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "ae2cs:aggregator/flawed_budding_quartz"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_input_0",
+      "has_input_1"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "ae2cs:aggregator/flawed_budding_quartz"
+    ]
+  }
+}

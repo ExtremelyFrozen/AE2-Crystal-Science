@@ -1,0 +1,25 @@
+{
+  "type": "ae2cs:crystal_aggregator_recipe_serializer",
+  "energy_cost": 64000,
+  "input_a": {
+    "count": 1,
+    "ingredient": "minecraft:book"
+  },
+  "input_b": {
+    "count": 1,
+    "ingredient": "#c:storage_blocks/pure_crystal/ender_quartz_block"
+  },
+  "input_c": {
+    "count": 1,
+    "ingredient": "ae2:singularity"
+  },
+  "result": {
+    "components": {
+      "minecraft:stored_enchantments": {
+        "ae2cs:ender_link": 1
+      }
+    },
+    "count": 1,
+    "id": "minecraft:enchanted_book"
+  }
+}

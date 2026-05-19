@@ -1,0 +1,11 @@
+{
+  "type": "ae2:inscriber",
+  "ingredients": {
+    "middle": "#c:gems/resonating",
+    "top": "ae2cs:resonating_print_press"
+  },
+  "mode": "inscribe",
+  "result": {
+    "id": "ae2cs:resonating_circuit_print"
+  }
+}

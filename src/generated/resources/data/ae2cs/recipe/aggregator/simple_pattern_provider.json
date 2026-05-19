@@ -1,0 +1,20 @@
+{
+  "type": "ae2cs:crystal_aggregator_recipe_serializer",
+  "energy_cost": 4000,
+  "input_a": {
+    "count": 1,
+    "ingredient": "ae2cs:simple_processor"
+  },
+  "input_b": {
+    "count": 1,
+    "ingredient": "minecraft:crafting_table"
+  },
+  "input_c": {
+    "count": 2,
+    "ingredient": "#c:gears/wood"
+  },
+  "result": {
+    "count": 1,
+    "id": "ae2cs:simple_pattern_provider"
+  }
+}

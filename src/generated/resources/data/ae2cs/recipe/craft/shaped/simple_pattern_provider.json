@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "#c:ingots/iron",
+    "b": "#c:gears/wood",
+    "c": "ae2cs:simple_processor",
+    "d": "minecraft:crafting_table"
+  },
+  "pattern": [
+    "aba",
+    "cdc",
+    "aba"
+  ],
+  "result": {
+    "id": "ae2cs:simple_pattern_provider"
+  }
+}

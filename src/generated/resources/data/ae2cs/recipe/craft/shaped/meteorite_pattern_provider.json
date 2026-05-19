@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "#c:storage_blocks/pure_crystal/meteor_crystal_block",
+    "b": "ae2:molecular_assembler",
+    "c": "ae2:pattern_provider",
+    "d": "ae2cs:resonating_processor",
+    "e": "ae2:singularity",
+    "f": "ae2:cell_component_256k"
+  },
+  "pattern": [
+    "aba",
+    "cdc",
+    "efe"
+  ],
+  "result": {
+    "id": "ae2cs:meteorite_pattern_provider"
+  }
+}

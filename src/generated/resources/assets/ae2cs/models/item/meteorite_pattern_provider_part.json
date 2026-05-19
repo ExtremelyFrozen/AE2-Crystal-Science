@@ -1,0 +1,7 @@
+{
+  "parent": "ae2:item/cable_pattern_provider",
+  "textures": {
+    "back": "ae2cs:block/meteorite_pattern_provider/back",
+    "front": "ae2cs:block/meteorite_pattern_provider/base"
+  }
+}

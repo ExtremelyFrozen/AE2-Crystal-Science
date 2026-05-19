@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#c:dusts/ender_pearl",
+    "#c:dusts/quartz",
+    "minecraft:sand",
+    "minecraft:sand"
+  ],
+  "result": {
+    "id": "ae2cs:ender_quartz_seed"
+  }
+}

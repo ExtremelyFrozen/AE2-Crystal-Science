@@ -1,0 +1,26 @@
+{
+  "model": {
+    "type": "minecraft:range_dispatch",
+    "entries": [
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "ae2cs:item/meteor_seed_1"
+        },
+        "threshold": 0.333
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "ae2cs:item/meteor_seed_2"
+        },
+        "threshold": 0.666
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "ae2cs:item/meteor_seed_0"
+    },
+    "property": "ae2cs:grow_progress"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "ae2:inscriber",
+  "ingredients": {
+    "bottom": "ae2:printed_silicon",
+    "middle": "#c:dusts/sky_stone",
+    "top": "ae2cs:resonating_circuit_print"
+  },
+  "mode": "press",
+  "result": {
+    "id": "ae2cs:resonating_processor"
+  }
+}

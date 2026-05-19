@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "ae2cs:purified_ender_quartz",
+    "|": "#c:rods/wooden"
+  },
+  "pattern": [
+    "## ",
+    "#| ",
+    " | "
+  ],
+  "result": {
+    "id": "ae2cs:ender_crystal_axe"
+  }
+}

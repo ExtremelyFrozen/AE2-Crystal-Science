@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "#c:ingots/iron",
+    "b": "#c:dusts/resonating",
+    "c": "ae2:silicon_press"
+  },
+  "pattern": [
+    "aba",
+    "bcb",
+    "aba"
+  ],
+  "result": {
+    "id": "ae2cs:resonating_print_press"
+  }
+}

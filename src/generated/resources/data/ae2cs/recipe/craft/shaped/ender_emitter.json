@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "#c:ingots/iron",
+    "b": "ae2:wireless_access_point",
+    "c": "ae2cs:resonating_processor",
+    "d": "#ae2:smart_cable",
+    "e": "#c:storage_blocks/pure_crystal/ender_quartz_block"
+  },
+  "pattern": [
+    "aba",
+    " c ",
+    "ded"
+  ],
+  "result": {
+    "id": "ae2cs:ender_emitter"
+  }
+}

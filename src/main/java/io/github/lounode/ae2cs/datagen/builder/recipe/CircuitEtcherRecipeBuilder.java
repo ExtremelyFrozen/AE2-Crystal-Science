@@ -60,7 +60,7 @@ public class CircuitEtcherRecipeBuilder implements RecipeBuilder
     public CircuitEtcherRecipeBuilder require(Ingredient ing, int count)
     {
         // 空/无效：不添加，不占位
-        if (ing == null || ing.isEmpty() || count <= 0)
+        if (ing == null || isDefinitelyEmpty(ing) || count <= 0)
         {
             return this;
         }
@@ -191,9 +191,20 @@ public class CircuitEtcherRecipeBuilder implements RecipeBuilder
                     .findFirst()
                     .ifPresent(this::addAutoUnlockItem);
         }
-        catch (IllegalStateException ignored)
+        catch (IllegalStateException | UnsupportedOperationException ignored)
         {
-            // Tag ingredients may be unbound during datagen; the result item fallback will unlock the recipe.
+        }
+    }
+
+    private static boolean isDefinitelyEmpty(Ingredient ingredient)
+    {
+        try
+        {
+            return ingredient.isEmpty();
+        }
+        catch (UnsupportedOperationException ignored)
+        {
+            return false;
         }
     }
 

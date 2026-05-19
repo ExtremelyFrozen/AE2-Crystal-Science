@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#c:dusts/resonating",
+    "#c:dusts/fluix",
+    "#c:dusts/sky_stone",
+    "#c:dusts/redstone"
+  ],
+  "result": {
+    "id": "ae2cs:resonating_seed"
+  }
+}

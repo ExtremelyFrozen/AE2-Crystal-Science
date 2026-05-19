@@ -1,0 +1,14 @@
+{
+  "type": "ae2:transform",
+  "circumstance": {
+    "type": "explosion"
+  },
+  "ingredients": [
+    "ae2cs:purified_meteor_crystal",
+    "minecraft:redstone_block",
+    "ae2cs:purified_ender_quartz"
+  ],
+  "result": {
+    "id": "ae2cs:resonating_crystal_dust"
+  }
+}

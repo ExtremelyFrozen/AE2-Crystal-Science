@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "#c:gems/sky_stone_crystal",
+    "b": "ae2:entropy_manipulator",
+    "c": "ae2:engineering_processor",
+    "d": "ae2:condenser",
+    "e": "#c:ingots/iron",
+    "f": "ae2cs:resonating_processor"
+  },
+  "pattern": [
+    "aba",
+    "cdc",
+    "efe"
+  ],
+  "result": {
+    "id": "ae2cs:entropy_variation_reaction_chamber"
+  }
+}

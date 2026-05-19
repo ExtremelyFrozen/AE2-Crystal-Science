@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": "ae2cs:purified_resonating_crystal",
+  "base": "ae2cs:meteor_crystal_shovel",
+  "result": {
+    "id": "ae2cs:resonating_crystal_shovel"
+  },
+  "template": "ae2:fluix_upgrade_smithing_template"
+}

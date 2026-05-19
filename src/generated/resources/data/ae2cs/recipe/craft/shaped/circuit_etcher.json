@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "#c:gems/sky_stone_crystal",
+    "b": "ae2:inscriber",
+    "c": "ae2cs:resonating_processor",
+    "d": "ae2:engineering_processor",
+    "e": "ae2cs:blank_print_press"
+  },
+  "pattern": [
+    "aba",
+    "bcb",
+    "ded"
+  ],
+  "result": {
+    "id": "ae2cs:circuit_etcher"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#c:dusts/sky_stone",
+    "#c:dusts/certus_quartz",
+    "minecraft:gravel",
+    "minecraft:gravel"
+  ],
+  "result": {
+    "id": "ae2cs:meteor_seed"
+  }
+}

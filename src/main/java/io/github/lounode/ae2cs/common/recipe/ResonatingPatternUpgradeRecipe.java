@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs.common.recipe;
 
 import appeng.api.ids.AEComponents;
 import appeng.core.definitions.AEItems;
+import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSRecipeSerializers;
 import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.common.me.crafting.ResonatingPatternDetails;
@@ -10,13 +11,20 @@ import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class ResonatingPatternUpgradeRecipe extends CustomRecipe
 {
     private final CraftingBookCategory category;
+    private final PlacementInfo placementInfo;
 
     public ResonatingPatternUpgradeRecipe(CraftingBookCategory category)
     {
         this.category = category;
+        this.placementInfo = PlacementInfo.create(List.of(
+                Ingredient.of(AEItems.PROCESSING_PATTERN),
+                Ingredient.of(AECSItems.RESONATING_DUST)
+        ));
     }
 
     @Override
@@ -80,6 +88,12 @@ public class ResonatingPatternUpgradeRecipe extends CustomRecipe
     public @NotNull RecipeSerializer<ResonatingPatternUpgradeRecipe> getSerializer()
     {
         return AECSRecipeSerializers.RESONATING_PATTERN_UPGRADE.get();
+    }
+
+    @Override
+    public @NotNull PlacementInfo placementInfo()
+    {
+        return placementInfo;
     }
 
     private static boolean isEncodedProcessingPattern(ItemStack stack)

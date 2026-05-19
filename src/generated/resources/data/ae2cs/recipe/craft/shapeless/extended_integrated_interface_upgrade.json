@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "ae2cs:extended_integrated_interface",
+    "#c:ingots"
+  ],
+  "result": {
+    "id": "ae2cs:extended_integrated_interface_upgrade"
+  }
+}

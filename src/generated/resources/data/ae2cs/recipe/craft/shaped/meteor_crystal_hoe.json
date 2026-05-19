@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "ae2cs:purified_meteor_crystal",
+    "|": "#c:rods/wooden"
+  },
+  "pattern": [
+    "## ",
+    " | ",
+    " | "
+  ],
+  "result": {
+    "id": "ae2cs:meteor_crystal_hoe"
+  }
+}

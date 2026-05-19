@@ -39,14 +39,43 @@ public class CircuitEtcherRecipe implements Recipe<ThreeItemStackRecipeInput>
         addIfRequired(this.effective, inputA);
         addIfRequired(this.effective, inputB);
         addIfRequired(this.effective, inputC);
-        this.placementInfo = PlacementInfo.create(getIngredients());
+        this.placementInfo = createPlacementInfo();
     }
 
     private static void addIfRequired(List<SizedIngredient> list, SizedIngredient si)
     {
-        if (si != null && !si.ingredient().isEmpty() && si.count() > 0)
+        if (si != null && !isDefinitelyEmpty(si.ingredient()) && si.count() > 0)
         {
             list.add(si);
+        }
+    }
+
+    private static boolean isDefinitelyEmpty(Ingredient ingredient)
+    {
+        try
+        {
+            return ingredient.isEmpty();
+        }
+        catch (UnsupportedOperationException ignored)
+        {
+            return false;
+        }
+    }
+
+    private PlacementInfo createPlacementInfo()
+    {
+        if (effective.isEmpty())
+        {
+            return PlacementInfo.NOT_PLACEABLE;
+        }
+
+        try
+        {
+            return PlacementInfo.create(getIngredients());
+        }
+        catch (UnsupportedOperationException ignored)
+        {
+            return PlacementInfo.NOT_PLACEABLE;
         }
     }
 

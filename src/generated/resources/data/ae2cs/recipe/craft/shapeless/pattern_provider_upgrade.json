@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "ae2:pattern_provider",
+    "#c:ingots"
+  ],
+  "result": {
+    "id": "ae2cs:pattern_provider_upgrade"
+  }
+}

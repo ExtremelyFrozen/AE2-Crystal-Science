@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_result": {
+      "conditions": {
+        "items": [
+          {
+            "items": "ae2:certus_quartz_dust"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "ae2cs:pulverizer/certus_quartz_dust"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_result"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "ae2cs:pulverizer/certus_quartz_dust"
+    ]
+  }
+}

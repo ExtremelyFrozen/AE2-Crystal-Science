@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": "ae2:fluix_pearl",
+    "b": "ae2:molecular_assembler",
+    "c": "#c:dusts/redstone",
+    "d": "ae2cs:resonating_processor",
+    "e": "ae2:logic_processor",
+    "f": "ae2:condenser"
+  },
+  "pattern": [
+    "aba",
+    "cdc",
+    "efe"
+  ],
+  "result": {
+    "id": "ae2cs:crystal_aggregator"
+  }
+}
