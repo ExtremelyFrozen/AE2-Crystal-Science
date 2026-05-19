@@ -28,18 +28,20 @@ import io.github.lounode.ae2cs.common.machine.component.GenericStackInvComponent
 import io.github.lounode.ae2cs.common.machine.component.InvPort;
 import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.Identifier;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -47,7 +49,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @ProvideCaps(GenericInternalInventory.class)
 public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfPoweredBlockEntity implements
@@ -80,7 +81,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
      * 当前执行配方的id，在重新加载时保证机器运行进展不会因为配方检查被刷新掉
      */
     @Nullable
-    private Identifier activeRecipeId;
+    private ResourceKey<Recipe<?>> activeRecipeId;
 
     /**
      * 该配方需要的总能量
@@ -203,7 +204,6 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
             return;
         }
 
-        Level level = getLevel();
         EntropyRecipe recipe = activeRecipe.value();
 
         // 2) 若未完成：推进进度 + 扣能量
@@ -363,39 +363,36 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries)
+    public void saveAdditional(ValueOutput data)
     {
-        super.saveAdditional(data, registries);
-        this.configManager.writeToNBT(data, registries);
-        upgrades.writeToNBT(data, "upgrades", registries);
+        super.saveAdditional(data);
+        this.configManager.writeToNBT(data);
+        upgrades.writeToNBT(data, "upgrades");
         data.putInt("recipe_progress", recipeProgress);
         if (activeRecipe != null)
         {
-            data.putString("active_recipe_id", activeRecipe.id().toString());
+            data.store("active_recipe_id", ResourceKey.codec(Registries.RECIPE), activeRecipe.id());
         }
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries)
+    public void loadTag(ValueInput data)
     {
-        super.loadTag(data, registries);
-        this.configManager.readFromNBT(data, registries);
-        upgrades.readFromNBT(data, "upgrades", registries);
-        recipeProgress = data.getInt("recipe_progress");
-        if (data.contains("active_recipe_id"))
-        {
-            activeRecipeId = Identifier.parse(data.getString("active_recipe_id"));
-        }
+        super.loadTag(data);
+        this.configManager.readFromNBT(data);
+        upgrades.readFromNBT(data, "upgrades");
+        recipeProgress = data.getIntOr("recipe_progress", 0);
+        activeRecipeId = data.read("active_recipe_id", ResourceKey.codec(Registries.RECIPE)).orElse(null);
     }
 
     @Override
     public void onLoad()
     {
         super.onLoad();
-        if (activeRecipeId != null && level != null)
+        if (activeRecipeId != null && level != null && !level.isClientSide())
         {
-            Optional<RecipeHolder<?>> opt = level.getRecipeManager().byKey(activeRecipeId);
-            opt.ifPresent(recipeHolder -> activeRecipe = (RecipeHolder<EntropyRecipe>) recipeHolder);
+            level.getServer().getRecipeManager().byKey(activeRecipeId)
+                    .ifPresent(recipeHolder -> activeRecipe = (RecipeHolder<EntropyRecipe>) recipeHolder);
         }
         if (level != null && !level.isClientSide())
         {
@@ -433,13 +430,16 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
     private static RecipeHolder<EntropyRecipe> findRecipe(Level level, EntropyMode mode, BlockState blockState,
                                                           FluidState fluidState)
     {
-        for (var holder : level.getRecipeManager().byType(AERecipeTypes.ENTROPY))
+        for (var holder : level.getServer().getRecipeManager().getRecipes())
         {
-            var recipe = holder.value();
+            if (!(holder.value() instanceof EntropyRecipe recipe) || recipe.getType() != AERecipeTypes.ENTROPY)
+            {
+                continue;
+            }
             if (recipe.matches(mode, blockState, fluidState))
             {
                 if (!getRecipeOutput(recipe).isEmpty())
-                    return holder;
+                    return (RecipeHolder<EntropyRecipe>) holder;
             }
         }
         return null;
@@ -467,9 +467,10 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
             }
         });
         output.drops().forEach(outputDrop -> {
-            if (!outputDrop.isEmpty())
+            ItemStack outputStack = outputDrop.create();
+            if (!outputStack.isEmpty())
             {
-                outputList.add(new GenericStack(AEItemKey.of(outputDrop), outputDrop.getCount()));
+                outputList.add(GenericStack.fromItemStack(outputStack));
             }
         });
         return outputList;
