@@ -119,7 +119,7 @@ public class EnderBroadcasterMenu extends UpgradeableMenu<EnderBroadcasterBlockE
         }
         else
         {
-            getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.broadcaster.sender.not_connect_any_band"), true);
+            getPlayer().sendOverlayMessage(Component.translatable("ae2cs.msg.broadcaster.sender.not_connect_any_band"));
         }
     }
 

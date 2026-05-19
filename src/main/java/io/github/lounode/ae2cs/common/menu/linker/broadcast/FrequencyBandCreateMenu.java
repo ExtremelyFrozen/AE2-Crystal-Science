@@ -42,14 +42,14 @@ public class FrequencyBandCreateMenu extends AEBaseMenu implements CustomReturna
 
         if (name.isEmpty() || ownerId == null)
         {
-            getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.band_create.no_name"), true);
+            getPlayer().sendOverlayMessage(Component.translatable("ae2cs.msg.band_create.no_name"));
             return;
         }
         ;
 
         if (FrequencyBandManager.isBandPresent(info.name()))
         {
-            getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.band_create.band_present"), true);
+            getPlayer().sendOverlayMessage(Component.translatable("ae2cs.msg.band_create.band_present"));
             return;
         }
         ;
@@ -57,7 +57,7 @@ public class FrequencyBandCreateMenu extends AEBaseMenu implements CustomReturna
         if (FrequencyBandManager.tryCreateBand(name, password, ownerId, isPublic, allowedMemoryCardCopy) != null)
         {
             // 创建成功，关闭此菜单
-            getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.band_create.success"), true);
+            getPlayer().sendOverlayMessage(Component.translatable("ae2cs.msg.band_create.success"));
             getHost().returnToMainMenu(getPlayer(), this);
         }
     }

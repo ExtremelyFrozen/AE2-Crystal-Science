@@ -53,7 +53,7 @@ public class BandWhiteListManagerMenu extends AEBaseMenu implements CustomReturn
 
     private void onChangeWhiteListStateAction(UUID playerId)
     {
-        MinecraftServer server = getPlayer().getServer();
+        MinecraftServer server = getPlayer().level().getServer();
         UUID ownerId = band.getOwner();
         if (ownerId.equals(getPlayer().getUUID()))
         {
@@ -67,14 +67,14 @@ public class BandWhiteListManagerMenu extends AEBaseMenu implements CustomReturn
         }
         else
         {
-            getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.frequency_manager.you_not_owner"), true);
+            getPlayer().sendOverlayMessage(Component.translatable("ae2cs.msg.frequency_manager.you_not_owner"));
         }
     }
 
     @Override
     public void broadcastChanges()
     {
-        MinecraftServer server = getPlayer().getServer();
+        MinecraftServer server = getPlayer().level().getServer();
         if (server != null)
         {
             // 白名单信息
@@ -96,7 +96,7 @@ public class BandWhiteListManagerMenu extends AEBaseMenu implements CustomReturn
                 if (id.equals(owner)) continue;
                 if (wl.contains(id)) continue;
 
-                otherMap.put(id, sp.getGameProfile().getName());
+                otherMap.put(id, sp.getGameProfile().name());
             }
             this.otherPlayerInfo = new ServerPlayerInfo(otherMap);
         }

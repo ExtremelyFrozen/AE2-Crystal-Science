@@ -70,12 +70,12 @@ public class FrequencyBandLinkMenu extends AEBaseMenu implements CustomReturnabl
 
                 if (hostGrid.getPathingService().getControllerState() != ControllerState.CONTROLLER_ONLINE)
                 {
-                    getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.band_link.sender.grid_must_has_control"), true);
+                    getPlayer().sendOverlayMessage(Component.translatable("ae2cs.msg.band_link.sender.grid_must_has_control"));
                     return;
                 }
                 if (bandGrid != null && bandGrid != hostGrid)
                 {
-                    getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.band_link.sender.grid_conflict"), true);
+                    getPlayer().sendOverlayMessage(Component.translatable("ae2cs.msg.band_link.sender.grid_conflict"));
                     return;
                 }
             }
@@ -85,7 +85,7 @@ public class FrequencyBandLinkMenu extends AEBaseMenu implements CustomReturnabl
                         && hostGrid.getPathingService().getControllerState() == ControllerState.CONTROLLER_ONLINE
                         && hostGrid != bandGrid)
                 {
-                    getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.band_link.receiver.grid_conflict"), true);
+                    getPlayer().sendOverlayMessage(Component.translatable("ae2cs.msg.band_link.receiver.grid_conflict"));
                     return;
                 }
             }
@@ -93,7 +93,7 @@ public class FrequencyBandLinkMenu extends AEBaseMenu implements CustomReturnabl
         }
         else
         {
-            getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.band_link.password_error"), true);
+            getPlayer().sendOverlayMessage(Component.translatable("ae2cs.msg.band_link.password_error"));
             return;
         }
     }

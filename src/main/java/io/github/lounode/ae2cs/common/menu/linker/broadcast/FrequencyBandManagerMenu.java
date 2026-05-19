@@ -110,7 +110,7 @@ public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturn
         }
         else
         {
-            getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.frequency_manager.you_not_owner"), true);
+            getPlayer().sendOverlayMessage(Component.translatable("ae2cs.msg.frequency_manager.you_not_owner"));
         }
     }
 
@@ -122,7 +122,7 @@ public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturn
         }
         else
         {
-            getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.frequency_manager.you_not_owner"), true);
+            getPlayer().sendOverlayMessage(Component.translatable("ae2cs.msg.frequency_manager.you_not_owner"));
         }
     }
 
@@ -134,13 +134,13 @@ public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturn
         }
         else
         {
-            getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.frequency_manager.you_not_owner"), true);
+            getPlayer().sendOverlayMessage(Component.translatable("ae2cs.msg.frequency_manager.you_not_owner"));
         }
     }
 
     private void tryDisconnectBroadcasterAction(GlobalPosJson jsonPos)
     {
-        MinecraftServer server = getPlayer().getServer();
+        MinecraftServer server = getPlayer().level().getServer();
         if (server == null) return;
 
         GlobalPos globalPos = jsonPos.toGlobalPos();
@@ -159,7 +159,7 @@ public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturn
 
     private void tryTapToBroadcasterAction(GlobalPosJson jsonPos)
     {
-        MinecraftServer server = getPlayer().getServer();
+        MinecraftServer server = getPlayer().level().getServer();
         if (server == null) return;
 
         GlobalPos globalPos = jsonPos.toGlobalPos();
@@ -173,10 +173,10 @@ public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturn
         }
         if (!(level.getBlockEntity(pos) instanceof EnderBroadcasterBlockEntity be)) return;
 
-        if (!getPlayer().hasPermissions(2)) return;
+        if (!server.getProfilePermissions(getPlayer().nameAndId()).level().isEqualOrHigherThan(net.minecraft.server.permissions.PermissionLevel.GAMEMASTERS)) return;
 
         getPlayer().closeContainer();
-        getPlayer().teleportTo(level, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, Set.of(), getPlayer().getYRot(), getPlayer().getXRot());
+        getPlayer().teleportTo(level, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, Set.of(), getPlayer().getYRot(), getPlayer().getXRot(), false);
     }
 
     private void openBandWhiteManagerAction()
@@ -193,7 +193,7 @@ public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturn
         }
         else
         {
-            getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.frequency_manager.you_not_owner"), true);
+            getPlayer().sendOverlayMessage(Component.translatable("ae2cs.msg.frequency_manager.you_not_owner"));
         }
     }
 
@@ -201,7 +201,7 @@ public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturn
     public void broadcastChanges()
     {
         this.tick++;
-        if (this.tick >= 1 && getPlayer().getServer() != null)
+        if (this.tick >= 1 && getPlayer().level().getServer() != null)
         {
             bandDetailInfo = new FrequencyBandDetailInfo(band.getName(),
                     !band.getPassword().isEmpty(),
