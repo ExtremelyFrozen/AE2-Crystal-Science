@@ -117,6 +117,7 @@ public class EnderEmitterBlock extends AEBaseEntityBlock<EnderEmitterBlockEntity
             // 放置另一半方块掉落
             preventDropFromBottomPart(level, pos, state, player);
         }
+        super.playerWillDestroy(level, pos, state, player);
     }
 
 

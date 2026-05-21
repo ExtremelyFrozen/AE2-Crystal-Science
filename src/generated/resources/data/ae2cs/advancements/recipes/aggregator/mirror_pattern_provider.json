@@ -23,7 +23,7 @@
               "min": 1
             },
             "items": [
-              "ae2:pattern_provider"
+              "ae2cs:simple_pattern_provider"
             ]
           }
         ]

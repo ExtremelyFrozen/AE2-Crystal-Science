@@ -324,7 +324,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .define('a', AECSItems.PURE_LINK_CRYSTAL)
                 .define('b', AECSTags.Items.GEARS_WOOD)
                 .define('c', AECSItems.SIMPLE_PROCESSOR)
-                .define('d', AEBlocks.PATTERN_PROVIDER)
+                .define('d', AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK)
                 .define('e', AECSItems.RESONATING_PROCESSOR)
                 .unlockedBy(getHasName(AECSItems.PURE_LINK_CRYSTAL), has(AECSItems.PURE_LINK_CRYSTAL))
                 .save(recipeOutput, getCrafterPath(AECSBlocks.MIRROR_PATTERN_PROVIDER_BLOCK, true));
