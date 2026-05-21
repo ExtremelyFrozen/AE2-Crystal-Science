@@ -97,7 +97,7 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
         CrystalAggregatorRecipeBuilder.aggregating(AECSItems.LINK_CRYSTAL_SEED, 32, 16000)
                 .require(AECSItems.LINK_CRYSTAL_DUST, 16)
                 .require(Items.CHAIN, 16)
-                .require(ConventionTags.ENDER_PEARL_DUST, 8)
+                .require(AECSTags.Items.DUST_QUARTZ, 8)
                 .save(recipeOutput);
 
         CrystalAggregatorRecipeBuilder.aggregating(AECSBlocks.MIRROR_PATTERN_PROVIDER_BLOCK.toStack(), 16000)

@@ -38,7 +38,7 @@
               "min": 1
             },
             "items": [
-              "minecraft:barrier"
+              "ae2cs:nether_quartz_dust"
             ]
           }
         ]
