@@ -1,7 +1,6 @@
 package io.github.lounode.ae2cs.client.render;
 
 import appeng.api.parts.IPartHost;
-import appeng.parts.AEBasePart;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
@@ -23,7 +22,6 @@ import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderHost;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -58,7 +56,11 @@ public class ResonatingPatternTargetHighlighter
     private static final int MIRROR_R = 255;
     private static final int MIRROR_G = 170;
     private static final int MIRROR_B = 40;
+    private static final int MIRROR_BLOCK_TARGET_R = 0;
+    private static final int MIRROR_BLOCK_TARGET_G = 216;
+    private static final int MIRROR_BLOCK_TARGET_B = 151;
     private static final int FACE_A = 90;
+    private static final int CUBE_A = 128;
     private static final int LINE_A = 180;
     private static final float EPS = 0.002f;
     private static final int SEARCH_RADIUS = 24;
@@ -172,6 +174,8 @@ public class ResonatingPatternTargetHighlighter
 
         record MirrorLine(Vector3f start, Vector3f end) {}
         List<MirrorLine> lines = new ArrayList<>();
+        List<BlockPos> cubes = new ArrayList<>();
+        List<BlockPos> blockTargetCubes = new ArrayList<>();
 
         for (MirrorPatternProviderHost provider : collectNearbyMirrorProviders(level, player.blockPosition(), SEARCH_RADIUS))
         {
@@ -187,27 +191,53 @@ public class ResonatingPatternTargetHighlighter
                 continue;
             }
 
-            Direction targetFace = target.side() == null ? Direction.UP : target.side();
-            poseStack.pushPose();
-            poseStack.translate(targetPos.getX() - camPos.x, targetPos.getY() - camPos.y, targetPos.getZ() - camPos.z);
-            drawFaceQuad(poseStack, faceVc, targetFace, EPS, MIRROR_R, MIRROR_G, MIRROR_B, FACE_A);
-            poseStack.popPose();
+            Direction targetFace = target.side();
+            if (targetFace == null)
+            {
+                blockTargetCubes.add(targetPos);
+            }
+            else
+            {
+                poseStack.pushPose();
+                poseStack.translate(targetPos.getX() - camPos.x, targetPos.getY() - camPos.y, targetPos.getZ() - camPos.z);
+                drawFaceQuad(poseStack, faceVc, targetFace, EPS, MIRROR_R, MIRROR_G, MIRROR_B, FACE_A);
+                poseStack.popPose();
+            }
 
-            Direction sourceFace = provider instanceof AEBasePart part ? part.getSide() : null;
+            BlockPos sourcePos = provider.getBlockEntity().getBlockPos();
+            cubes.add(sourcePos);
+
             lines.add(new MirrorLine(
-                    anchorOf(provider.getBlockEntity().getBlockPos(), sourceFace),
-                    anchorOf(targetPos, target.side())
+                    anchorOf(sourcePos, null),
+                    anchorOf(targetPos, targetFace)
             ));
         }
 
         bufferSource.endBatch(AECSRenderTypes.RESONATING_MARK_FACE);
 
-        VertexConsumer lineVc = bufferSource.getBuffer(RenderType.lines());
+        VertexConsumer cubeVc = bufferSource.getBuffer(AECSRenderTypes.RESONATING_MARK_SEE_THROUGH);
+        for (BlockPos cubePos : cubes)
+        {
+            poseStack.pushPose();
+            poseStack.translate(cubePos.getX() - camPos.x, cubePos.getY() - camPos.y, cubePos.getZ() - camPos.z);
+            drawInnerCube(poseStack, cubeVc, MIRROR_R, MIRROR_G, MIRROR_B, CUBE_A);
+            poseStack.popPose();
+        }
+        for (BlockPos cubePos : blockTargetCubes)
+        {
+            poseStack.pushPose();
+            poseStack.translate(cubePos.getX() - camPos.x, cubePos.getY() - camPos.y, cubePos.getZ() - camPos.z);
+            drawInnerCube(poseStack, cubeVc, MIRROR_BLOCK_TARGET_R, MIRROR_BLOCK_TARGET_G, MIRROR_BLOCK_TARGET_B, CUBE_A);
+            poseStack.popPose();
+        }
+        bufferSource.endBatch(AECSRenderTypes.RESONATING_MARK_SEE_THROUGH);
+
+        VertexConsumer lineVc = bufferSource.getBuffer(AECSRenderTypes.RESONATING_MARK_LINE);
         for (MirrorLine line : lines)
         {
             drawLine(poseStack, lineVc, camPos, line.start(), line.end(), MIRROR_R, MIRROR_G, MIRROR_B, LINE_A);
         }
-        bufferSource.endBatch(RenderType.lines());
+        bufferSource.endBatch(AECSRenderTypes.RESONATING_MARK_LINE);
     }
 
     private static void renderResonatingTargets(RenderLevelStageEvent event, LocalPlayer player, ResonatingPatternProviderHost provider)
@@ -223,9 +253,9 @@ public class ResonatingPatternTargetHighlighter
         List<ResonatingLine> lines = new ArrayList<>();
 
         List<Optional<EncodedResonatingPattern.Target>> targets = provider.getDefaultInputTargets();
-        int selected = provider.getDefaultSelectedInput();
-        Direction sourceFace = provider instanceof AEBasePart part ? part.getSide() : null;
-        Vector3f sourceAnchor = anchorOf(provider.getBlockEntity().getBlockPos(), sourceFace);
+        BlockPos sourcePos = provider.getBlockEntity().getBlockPos();
+        Vector3f sourceAnchor = anchorOf(sourcePos, null);
+        boolean hasRenderableTarget = false;
 
         for (int i = 0; i < targets.size(); i++)
         {
@@ -247,10 +277,10 @@ public class ResonatingPatternTargetHighlighter
                 continue;
             }
 
-            boolean isSelected = i == selected;
-            int r = isSelected ? SEL_R : UNS_R;
-            int g = isSelected ? SEL_G : UNS_G;
-            int b = isSelected ? SEL_B : UNS_B;
+            int r = UNS_R;
+            int g = UNS_G;
+            int b = UNS_B;
+            hasRenderableTarget = true;
 
             poseStack.pushPose();
             poseStack.translate(targetPos.getX() - camPos.x, targetPos.getY() - camPos.y, targetPos.getZ() - camPos.z);
@@ -262,12 +292,22 @@ public class ResonatingPatternTargetHighlighter
 
         bufferSource.endBatch(AECSRenderTypes.RESONATING_MARK_FACE);
 
-        VertexConsumer lineVc = bufferSource.getBuffer(RenderType.lines());
+        if (hasRenderableTarget)
+        {
+            VertexConsumer cubeVc = bufferSource.getBuffer(AECSRenderTypes.RESONATING_MARK_SEE_THROUGH);
+            poseStack.pushPose();
+            poseStack.translate(sourcePos.getX() - camPos.x, sourcePos.getY() - camPos.y, sourcePos.getZ() - camPos.z);
+            drawInnerCube(poseStack, cubeVc, UNS_R, UNS_G, UNS_B, CUBE_A);
+            poseStack.popPose();
+            bufferSource.endBatch(AECSRenderTypes.RESONATING_MARK_SEE_THROUGH);
+        }
+
+        VertexConsumer lineVc = bufferSource.getBuffer(AECSRenderTypes.RESONATING_MARK_LINE);
         for (ResonatingLine line : lines)
         {
             drawLine(poseStack, lineVc, camPos, line.start(), line.end(), line.r(), line.g(), line.b(), LINE_A);
         }
-        bufferSource.endBatch(RenderType.lines());
+        bufferSource.endBatch(AECSRenderTypes.RESONATING_MARK_LINE);
     }
 
     private static void renderTargets(RenderLevelStageEvent event, LocalPlayer player, TargetRenderData renderData)
@@ -462,7 +502,7 @@ public class ResonatingPatternTargetHighlighter
     }
 
     private static void drawFaceQuad(PoseStack poseStack, VertexConsumer vc, Direction face, float eps,
-                                     int r, int g, int b, int a)
+                                      int r, int g, int b, int a)
     {
         float x0 = 0f, x1 = 1f;
         float y0 = 0f, y1 = 1f;
@@ -494,6 +534,35 @@ public class ResonatingPatternTargetHighlighter
                     x0, y1 + eps, z1, x1, y1 + eps, z1, x1, y1 + eps, z0, x0, y1 + eps, z0,
                     r, g, b, a, normalMat, normal);
         }
+    }
+
+    private static void drawInnerCube(PoseStack poseStack, VertexConsumer vc, int r, int g, int b, int a)
+    {
+        float lo = 0.25f;
+        float hi = 0.75f;
+
+        var pose = poseStack.last();
+        Matrix4f mat = pose.pose();
+        Matrix3f normalMat = pose.normal();
+
+        quadPosColor(vc, mat,
+                lo, lo, lo, hi, lo, lo, hi, lo, hi, lo, lo, hi,
+                r, g, b, a, normalMat, new Vector3f(0, -1, 0));
+        quadPosColor(vc, mat,
+                lo, hi, hi, hi, hi, hi, hi, hi, lo, lo, hi, lo,
+                r, g, b, a, normalMat, new Vector3f(0, 1, 0));
+        quadPosColor(vc, mat,
+                lo, lo, lo, lo, hi, lo, hi, hi, lo, hi, lo, lo,
+                r, g, b, a, normalMat, new Vector3f(0, 0, -1));
+        quadPosColor(vc, mat,
+                hi, lo, hi, hi, hi, hi, lo, hi, hi, lo, lo, hi,
+                r, g, b, a, normalMat, new Vector3f(0, 0, 1));
+        quadPosColor(vc, mat,
+                lo, lo, hi, lo, hi, hi, lo, hi, lo, lo, lo, lo,
+                r, g, b, a, normalMat, new Vector3f(-1, 0, 0));
+        quadPosColor(vc, mat,
+                hi, lo, lo, hi, hi, lo, hi, hi, hi, hi, lo, hi,
+                r, g, b, a, normalMat, new Vector3f(1, 0, 0));
     }
 
     private static void quadPosColor(VertexConsumer vc, Matrix4f mat,
