@@ -152,8 +152,13 @@ public final class GenericStackInvComponent extends BaseMachineComponent
     @Override
     public void addDrops(Level level, BlockPos pos, List<ItemStack> drops)
     {
+        var visited = new IdentityHashMap<GenericStackInv, Boolean>();
+
         for (var inv : ports.values())
         {
+            if (visited.put(inv, Boolean.TRUE) != null)
+                continue;
+
             for (int i = 0; i < inv.size(); i++)
             {
                 GenericStack gs = inv.getStack(i);

@@ -1,1 +1,1 @@
-* Fix Resonating PatternProvider can not push any ingredient.
+* Fix Item Duplication
