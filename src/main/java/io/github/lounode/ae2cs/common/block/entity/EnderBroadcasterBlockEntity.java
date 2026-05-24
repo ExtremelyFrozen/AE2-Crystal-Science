@@ -198,12 +198,31 @@ public class EnderBroadcasterBlockEntity extends AENetworkedComponentBlockEntity
     public void setExpectedChannels(int expectedChannels)
     {
         int newExpectedChannels = Math.max(0, expectedChannels);
-        newExpectedChannels = Math.min(newExpectedChannels, MAX_RECEIVER_CHANNELS.get());
+        newExpectedChannels = Math.min(newExpectedChannels, getMaxExpectedChannels());
         if (newExpectedChannels == this.expectedChannels) return;
 
         this.expectedChannels = newExpectedChannels;
         markBandRuntimeDirty(); // 期望频道数量改变，因此需要标脏
         setChanged();
+    }
+
+    private int getMaxExpectedChannels()
+    {
+        if (bandId != null && !bandId.isEmpty())
+        {
+            BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
+            if (band != null)
+            {
+                return clampChannelCount(band.getUsableChannels());
+            }
+        }
+        return MAX_RECEIVER_CHANNELS.get();
+    }
+
+    private static int clampChannelCount(long channels)
+    {
+        if (channels <= 0) return 0;
+        return channels >= Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) channels;
     }
 
     // ---------------- CustomChannelProviderHost（接收端用） ----------------

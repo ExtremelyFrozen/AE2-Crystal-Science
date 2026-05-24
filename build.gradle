@@ -153,6 +153,8 @@ dependencies {
     localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
     compileOnly "curse.maven:ae2-jei-integration-1074338:5748513"
     localRuntime "curse.maven:ae2-jei-integration-1074338:5748513"
+    compileOnly "maven.modrinth:jade:15.10.5+neoforge"
+    localRuntime "maven.modrinth:jade:15.10.5+neoforge"
 
     localRuntime "curse.maven:nbtedit-reborn-678133:6125444"
 

@@ -30,10 +30,28 @@
         "top": 20
       }
     },
+    "band_name": {
+      "position": {
+        "left": 10,
+        "top": 20
+      }
+    },
+    "emitter_channels": {
+      "position": {
+        "left": 10,
+        "top": 48
+      }
+    },
+    "band_channels": {
+      "position": {
+        "left": 10,
+        "top": 34
+      }
+    },
     "distance": {
       "position": {
         "left": 10,
-        "top": 36
+        "top": 62
       }
     }
   },

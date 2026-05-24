@@ -11,24 +11,20 @@ item_ids:
   - ae2cs:purified_ender_quartz
   - ae2cs:purified_meteor_crystal
   - ae2cs:purified_resonating_crystal
-  - ae2cs:purified_entro_crystal
   - ae2cs:purified_redstone_crystal
   - ae2cs:purified_quantum_crystal
   - ae2cs:purified_rose_quartz
   - ae2cs:purified_irradiated_crystal
-  - ae2cs:purified_ember_crystal
   - ae2cs:certus_quartz_seed
   - ae2cs:fluix_crystal_seed
   - ae2cs:nether_quartz_seed
   - ae2cs:meteor_seed
   - ae2cs:ender_quartz_seed
   - ae2cs:resonating_seed
-  - ae2cs:entro_crystal_seed
   - ae2cs:redstone_crystal_seed
   - ae2cs:quantum_crystal_seed
   - ae2cs:rose_quartz_seed
   - ae2cs:irradiated_seed
-  - ae2cs:ember_seed
   - ae2cs:nether_quartz_dust
   - ae2cs:resonating_crystal_dust
   - ae2cs:redstone_crystal_dust
@@ -135,12 +131,10 @@ item_ids:
 ## 联动水晶
 
 <Row gap="16">
-  <ItemImage id="ae2cs:purified_entro_crystal" scale="2" />
   <ItemImage id="ae2cs:purified_redstone_crystal" scale="2" />
   <ItemImage id="ae2cs:purified_quantum_crystal" scale="2" />
   <ItemImage id="ae2cs:purified_rose_quartz" scale="2" />
   <ItemImage id="ae2cs:purified_irradiated_crystal" scale="2" />
-  <ItemImage id="ae2cs:purified_ember_crystal" scale="2" />
 </Row>
 
 AECS 还为部分常见模组提供了对应的高纯水晶，用于实现材料层面的联动。

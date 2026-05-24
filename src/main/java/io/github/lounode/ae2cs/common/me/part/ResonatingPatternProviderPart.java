@@ -130,4 +130,13 @@ public class ResonatingPatternProviderPart extends PatternProviderPart implement
     {
         return (ResonatingPatternProviderLogic) getLogic();
     }
+
+    @Override
+    public void markForLogicClientUpdate()
+    {
+        if (this.getBlockEntity().getLevel() != null && !this.getBlockEntity().getLevel().isClientSide())
+        {
+            this.getHost().markForUpdate();
+        }
+    }
 }

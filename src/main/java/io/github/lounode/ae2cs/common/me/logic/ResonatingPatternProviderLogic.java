@@ -30,6 +30,7 @@ import io.github.lounode.ae2cs.api.settings.PullMode;
 import io.github.lounode.ae2cs.api.util.GenericStackInvHelper;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern;
+import io.github.lounode.ae2cs.common.me.crafting.ResonatingProviderDefaults;
 import io.github.lounode.ae2cs.common.me.crafting.ResonatingPatternDetails;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -49,13 +50,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
  * 谐振样板供应器，对于谐振样板，尝试将标记了位置的原料发送到指定位置
  */
-public class ResonatingPatternProviderLogic extends PatternProviderLogic implements IUpgradeableObject
-{
+public class ResonatingPatternProviderLogic extends PatternProviderLogic implements IUpgradeableObject {
     private final IActionSource actionSource;
     private final PatternProviderLogicHost host;
     private final IManagedGridNode mainNode;
@@ -71,63 +72,55 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
      * 用于未标记目的地发送材料的round-robin
      */
     private int localRoundRobinIndex = 0;
+    private List<Optional<EncodedResonatingPattern.Target>> defaultInputTargets = ResonatingProviderDefaults.emptyTargets();
+    private int defaultSelectedInput = 0;
 
-    public ResonatingPatternProviderLogic(IManagedGridNode mainNode, PatternProviderLogicHost host)
-    {
+    public ResonatingPatternProviderLogic(IManagedGridNode mainNode, PatternProviderLogicHost host) {
         this(mainNode, host, 9);
     }
 
-    public ResonatingPatternProviderLogic(IManagedGridNode mainNode, PatternProviderLogicHost host, int patternInventorySize)
-    {
+    public ResonatingPatternProviderLogic(IManagedGridNode mainNode, PatternProviderLogicHost host, int patternInventorySize) {
         super(mainNode, host, patternInventorySize);
 
         this.host = host;
         this.mainNode = mainNode.addService(IGridTickable.class, new ResonatingTicker());
         this.actionSource = new MachineSource(mainNode::getNode);
 
-        if (getConfigManager() instanceof ConfigManager cm)
-        {
+        if (getConfigManager() instanceof ConfigManager cm) {
             cm.registerSetting(AECSSettings.PULL_MODE, PullMode.PULL_OFF);
         }
     }
 
-    public boolean isEnablePull()
-    {
+    public boolean isEnablePull() {
         return getConfigManager().getSetting(AECSSettings.PULL_MODE) == PullMode.PULL_ON;
     }
 
     @Override
-    public IUpgradeInventory getUpgrades()
-    {
+    public IUpgradeInventory getUpgrades() {
         return upgrades;
     }
 
     @Override
-    protected void configChanged(IConfigManager manager, Setting<?> setting)
-    {
+    protected void configChanged(IConfigManager manager, Setting<?> setting) {
         super.configChanged(manager, setting);
-        if (setting == AECSSettings.PULL_MODE)
-        {
+        if (setting == AECSSettings.PULL_MODE) {
             host.saveChanges();
             this.mainNode.ifPresent((grid, node) -> grid.getTickManager().alertDevice(node));
         }
     }
 
-    private void onUpgradesChange()
-    {
+    private void onUpgradesChange() {
         this.saveChanges();
     }
 
     @Override
-    public void writeToNBT(CompoundTag tag, HolderLookup.Provider registries)
-    {
+    public void writeToNBT(CompoundTag tag, HolderLookup.Provider registries) {
         super.writeToNBT(tag, registries);
 
         this.upgrades.writeToNBT(tag, "upgrades", registries);
 
         var list = new ListTag();
-        for (var p : resonatingSendList)
-        {
+        for (var p : resonatingSendList) {
             var e = new CompoundTag();
             e.putString("dim", p.target().pos().dimension().location().toString());
             e.putLong("pos", p.target().pos().pos().asLong());
@@ -139,21 +132,18 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
     }
 
     @Override
-    public void readFromNBT(CompoundTag tag, HolderLookup.Provider registries)
-    {
+    public void readFromNBT(CompoundTag tag, HolderLookup.Provider registries) {
         super.readFromNBT(tag, registries);
 
         this.upgrades.readFromNBT(tag, "upgrades", registries);
 
         resonatingSendList.clear();
-        if (!tag.contains("resonating_send_list", Tag.TAG_LIST))
-        {
+        if (!tag.contains("resonating_send_list", Tag.TAG_LIST)) {
             return;
         }
 
         var list = tag.getList("resonating_send_list", Tag.TAG_COMPOUND);
-        for (int i = 0; i < list.size(); i++)
-        {
+        for (int i = 0; i < list.size(); i++) {
             var e = list.getCompound(i);
 
             var dimStr = e.getString("dim");
@@ -161,51 +151,70 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
             var face = Direction.from3DDataValue(e.getByte("face"));
 
             var stack = GenericStack.readTag(registries, e.getCompound("stack"));
-            if (stack == null || stack.amount() <= 0)
-            {
+            if (stack == null || stack.amount() <= 0) {
                 continue;
             }
 
-            try
-            {
+            try {
                 var rl = ResourceLocation.parse(dimStr);
                 var dimKey = ResourceKey.create(Registries.DIMENSION, rl);
                 var gp = GlobalPos.of(dimKey, BlockPos.of(posLong));
                 resonatingSendList.add(new PendingSend(new EncodedResonatingPattern.Target(gp, face), stack));
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 AE2CrystalScience.LOGGER.warn("Failed to read pending resonating send entry from NBT: {}", e, ex);
             }
         }
     }
 
+    public void readDefaultsFromItem(ItemStack stack) {
+        this.defaultInputTargets = ResonatingProviderDefaults.readTargets(stack);
+        this.defaultSelectedInput = ResonatingProviderDefaults.getSelectedInput(stack);
+        saveChanges();
+    }
+
+    public void writeDefaultsToStack(ItemStack stack) {
+        ResonatingProviderDefaults.writeTargets(stack, this.defaultInputTargets);
+        ResonatingProviderDefaults.setSelectedInput(stack, this.defaultSelectedInput);
+    }
+
+    public void writeDefaultsToDrops(List<ItemStack> drops, net.minecraft.world.item.Item selfItem) {
+        for (ItemStack drop : drops) {
+            if (drop.is(selfItem)) {
+                writeDefaultsToStack(drop);
+                return;
+            }
+        }
+    }
+
+    public List<Optional<EncodedResonatingPattern.Target>> getDefaultInputTargets() {
+        return defaultInputTargets;
+    }
+
+    public int getDefaultSelectedInput() {
+        return defaultSelectedInput;
+    }
+
     @Override
-    public boolean pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder)
-    {
+    public boolean pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder) {
         // 非谐振走原版
-        if (!(patternDetails instanceof ResonatingPatternDetails resonating))
-        {
+        if (!(patternDetails instanceof ResonatingPatternDetails resonating)) {
             return super.pushPattern(patternDetails, inputHolder);
         }
 
         // 类原版拒绝条件
         if (super.isBusy() || !resonatingSendList.isEmpty() || !this.mainNode.isActive()
-                || !getAvailablePatterns().contains(patternDetails))
-        {
+                || !getAvailablePatterns().contains(patternDetails)) {
             return false;
         }
 
         // 原版锁定逻辑
-        if (getCraftingLockedReason() != LockCraftingMode.NONE)
-        {
+        if (getCraftingLockedReason() != LockCraftingMode.NONE) {
             return false;
         }
 
         var be = host.getBlockEntity();
         var level = be.getLevel();
-        if (level == null)
-        {
+        if (level == null) {
             return false;
         }
 
@@ -213,20 +222,17 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
         KeyCounter[] remaining = copyKeyCounters(inputHolder);
 
         // 收集marked，并从remaining扣掉对应数量
-        record Marked(AEKey key, long amount, EncodedResonatingPattern.Target target)
-        {
+        record Marked(AEKey key, long amount, EncodedResonatingPattern.Target target) {
         }
         var marked = new ArrayList<Marked>();
 
         var sparseInputs = resonating.getSparseInputs();
-        for (int sparseIndex = 0; sparseIndex < sparseInputs.size(); sparseIndex++)
-        {
+        for (int sparseIndex = 0; sparseIndex < sparseInputs.size(); sparseIndex++) {
             var sparse = sparseInputs.get(sparseIndex);
             if (sparse == null) continue;
 
             var optTarget = resonating.getTargetForSparseInputIndex(sparseIndex);
-            if (optTarget.isEmpty())
-            {
+            if (optTarget.isEmpty()) {
                 continue; // 无target：留给unmarked fallback
             }
 
@@ -234,8 +240,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
             var key = sparse.what();
             var amount = sparse.amount();
 
-            if (!removeFromRemaining(remaining, key, amount))
-            {
+            if (!removeFromRemaining(remaining, key, amount)) {
                 return false;
             }
 
@@ -243,8 +248,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
         }
 
         // 预先尝试marked材料是否能完整发配
-        for (var m : marked)
-        {
+        for (var m : marked) {
             var adapter = findTarget(m.target());
             if (adapter == null) return false;
 
@@ -259,28 +263,23 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
         Direction chosenDirection = null;
         PatternProviderTarget chosenAdapter = null;
 
-        if (!isEmpty(remaining))
-        {
-            if (!patternDetails.supportsPushInputsToExternalInventory())
-            {
+        if (!isEmpty(remaining)) {
+            if (!patternDetails.supportsPushInputsToExternalInventory()) {
                 return false;
             }
 
-            record PushTarget(Direction direction, PatternProviderTarget target)
-            {
+            record PushTarget(Direction direction, PatternProviderTarget target) {
             }
             var possibleTargets = new ArrayList<PushTarget>();
 
-            for (var dir : getActiveSidesFiltered())
-            {
+            for (var dir : getActiveSidesFiltered()) {
                 var adjPos = be.getBlockPos().relative(dir);
                 var adjSide = dir.getOpposite();
 
-                var adapter = PatternProviderTarget.get(level, adjPos, null, adjSide, actionSource);
+                var adapter = PatternProviderTarget.get(level, adjPos, level.getBlockEntity(adjPos), adjSide, actionSource);
                 if (adapter == null) continue;
 
-                if (this.isBlocking() && adapter.containsPatternInput(this.patternInputs))
-                {
+                if (this.isBlocking() && adapter.containsPatternInput(this.patternInputs)) {
                     continue;
                 }
 
@@ -289,12 +288,10 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
 
             rearrangeRoundRobin(possibleTargets);
 
-            for (int i = 0; i < possibleTargets.size(); i++)
-            {
+            for (int i = 0; i < possibleTargets.size(); i++) {
                 var p = possibleTargets.get(i);
 
-                if (adapterAcceptsAllLocal(p.target(), remaining))
-                {
+                if (adapterAcceptsAllLocal(p.target(), remaining)) {
                     chosenDirection = p.direction();
                     chosenAdapter = p.target();
                     localRoundRobinIndex += i + 1;
@@ -302,24 +299,20 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
                 }
             }
 
-            if (chosenAdapter == null)
-            {
+            if (chosenAdapter == null) {
                 return false;
             }
         }
 
         // 正式执行插入
-        for (var m : marked)
-        {
+        for (var m : marked) {
             var adapter = findTarget(m.target());
-            if (adapter == null)
-            {
+            if (adapter == null) {
                 return false;
             }
 
             long inserted = adapter.insert(m.key(), m.amount(), Actionable.MODULATE);
-            if (inserted < m.amount())
-            {
+            if (inserted < m.amount()) {
                 var left = m.amount() - inserted;
                 resonatingSendList.add(new PendingSend(m.target(), new GenericStack(m.key(), left)));
                 this.mainNode.ifPresent((grid, node) -> grid.getTickManager().alertDevice(node));
@@ -327,14 +320,12 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
         }
 
         // 无目的地材料走原版
-        if (chosenAdapter != null)
-        {
+        if (chosenAdapter != null) {
             final var adapterFinal = chosenAdapter;
 
             patternDetails.pushInputsToExternalInventory(remaining, (what, amount) -> {
                 var inserted = adapterFinal.insert(what, amount, Actionable.MODULATE);
-                if (inserted < amount)
-                {
+                if (inserted < amount) {
                     addToSendList(what, amount - inserted);
                 }
             });
@@ -350,8 +341,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
         didSomething |= sendStacksOut();
         didSomething |= sendResonatingStacksOut();
 
-        if (didSomething)
-        {
+        if (didSomething) {
             this.mainNode.ifPresent((grid, node) -> grid.getTickManager().alertDevice(node));
         }
 
@@ -359,16 +349,14 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
     }
 
     @Override
-    public boolean isBusy()
-    {
+    public boolean isBusy() {
         return super.isBusy() || !resonatingSendList.isEmpty();
     }
 
     /**
      * 从周围面抽取资源进入返回仓
      */
-    private boolean doPullWork()
-    {
+    private boolean doPullWork() {
         if (!isEnablePull()) return false;
 
         var hostBe = host.getBlockEntity();
@@ -386,8 +374,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
         final int maxKeysPerTick = 32;
         int scanned = 0;
 
-        for (var dir : sides)
-        {
+        for (var dir : sides) {
             var adjPos = hostBe.getBlockPos().relative(dir);
             var adjSide = dir.getOpposite();
 
@@ -396,8 +383,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
             var ext = GenericStackInvHelper.getAdjacentMeStorage(hostLevel, adjPos, null, adjSide);
             if (ext == null) continue;
 
-            for (var stack : ext.getAvailableStacks())
-            {
+            for (var stack : ext.getAvailableStacks()) {
                 if (scanned++ >= maxKeysPerTick) return false;
 
                 var key = stack.getKey();
@@ -415,8 +401,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
                 long buffered = returnInv.insert(key, extracted, Actionable.MODULATE, actionSource);
 
                 long leftover = extracted - buffered;
-                if (leftover > 0)
-                {
+                if (leftover > 0) {
                     ext.insert(key, leftover, Actionable.MODULATE, actionSource);
                 }
                 return true;
@@ -428,28 +413,23 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
 
     // -------------------辅助方法-------------------------
 
-    private boolean isBlockedByMode(PatternProviderTarget adapter)
-    {
+    private boolean isBlockedByMode(PatternProviderTarget adapter) {
         return this.isBlocking() && adapter.containsPatternInput(this.patternInputs);
     }
 
-    private static KeyCounter[] copyKeyCounters(KeyCounter[] inputHolder)
-    {
+    private static KeyCounter[] copyKeyCounters(KeyCounter[] inputHolder) {
         var out = new KeyCounter[inputHolder.length];
-        for (int i = 0; i < inputHolder.length; i++)
-        {
+        for (int i = 0; i < inputHolder.length; i++) {
             out[i] = new KeyCounter();
             out[i].addAll(inputHolder[i]);
         }
         return out;
     }
 
-    private static boolean removeFromRemaining(KeyCounter[] remaining, AEKey key, long amount)
-    {
+    private static boolean removeFromRemaining(KeyCounter[] remaining, AEKey key, long amount) {
         long toRemove = amount;
 
-        for (var counter : remaining)
-        {
+        for (var counter : remaining) {
             long avail = counter.get(key);
             if (avail <= 0) continue;
 
@@ -457,8 +437,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
             counter.remove(key, take);
             toRemove -= take;
 
-            if (toRemove <= 0)
-            {
+            if (toRemove <= 0) {
                 return true;
             }
         }
@@ -466,14 +445,10 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
         return false;
     }
 
-    private static boolean isEmpty(KeyCounter[] holders)
-    {
-        for (var h : holders)
-        {
-            for (var entry : h)
-            {
-                if (entry.getLongValue() > 0)
-                {
+    private static boolean isEmpty(KeyCounter[] holders) {
+        for (var h : holders) {
+            for (var entry : h) {
+                if (entry.getLongValue() > 0) {
                     return false;
                 }
             }
@@ -482,8 +457,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
     }
 
 
-    private static <T> void rearrangeRoundRobin(List<T> list, int roundRobinIndex)
-    {
+    private static <T> void rearrangeRoundRobin(List<T> list, int roundRobinIndex) {
         if (list.isEmpty()) return;
 
         int idx = Math.floorMod(roundRobinIndex, list.size());
@@ -494,20 +468,15 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
         list.addAll(head);
     }
 
-    private <T> void rearrangeRoundRobin(List<T> list)
-    {
+    private <T> void rearrangeRoundRobin(List<T> list) {
         rearrangeRoundRobin(list, localRoundRobinIndex);
     }
 
-    private boolean adapterAcceptsAllLocal(PatternProviderTarget target, KeyCounter[] inputHolder)
-    {
-        for (var inputList : inputHolder)
-        {
-            for (var input : inputList)
-            {
+    private boolean adapterAcceptsAllLocal(PatternProviderTarget target, KeyCounter[] inputHolder) {
+        for (var inputList : inputHolder) {
+            for (var input : inputList) {
                 var inserted = target.insert(input.getKey(), input.getLongValue(), Actionable.SIMULATE);
-                if (inserted == 0)
-                {
+                if (inserted == 0) {
                     return false;
                 }
             }
@@ -518,20 +487,16 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
     /**
      * 复刻父类getActiveSides的过滤逻辑
      */
-    private Set<Direction> getActiveSidesFiltered()
-    {
+    private Set<Direction> getActiveSidesFiltered() {
         var sides = EnumSet.copyOf(host.getTargets());
 
         var node = mainNode.getNode();
-        if (node != null)
-        {
-            for (var entry : node.getInWorldConnections().entrySet())
-            {
+        if (node != null) {
+            for (var entry : node.getInWorldConnections().entrySet()) {
                 var otherNode = entry.getValue().getOtherSide(node);
                 if (otherNode.getOwner() instanceof PatternProviderLogicHost
                         || (otherNode.getOwner() instanceof InterfaceLogicHost
-                        && otherNode.getGrid().equals(mainNode.getGrid())))
-                {
+                        && otherNode.getGrid().equals(mainNode.getGrid()))) {
                     sides.remove(entry.getKey());
                 }
             }
@@ -541,8 +506,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
     }
 
     @Nullable
-    private ServerLevel getTargetLevel(EncodedResonatingPattern.Target target)
-    {
+    private ServerLevel getTargetLevel(EncodedResonatingPattern.Target target) {
         var hostLevel = host.getBlockEntity().getLevel();
         if (!(hostLevel instanceof ServerLevel)) return null;
 
@@ -551,47 +515,40 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
         return server.getLevel(target.pos().dimension());
     }
 
-    private boolean isTargetChunkLoaded(@NotNull ServerLevel level, BlockPos pos)
-    {
+    private boolean isTargetChunkLoaded(@NotNull ServerLevel level, BlockPos pos) {
         return level.hasChunkAt(pos);
     }
 
     @Nullable
-    private PatternProviderTarget findTarget(EncodedResonatingPattern.Target target)
-    {
+    private PatternProviderTarget findTarget(EncodedResonatingPattern.Target target) {
         var targetLevel = getTargetLevel(target);
         if (targetLevel == null) return null;
 
         var pos = target.pos().pos();
         if (!isTargetChunkLoaded(targetLevel, pos)) return null;
 
-        return PatternProviderTarget.get(targetLevel, pos, null, target.face(), actionSource);
+        return PatternProviderTarget.get(targetLevel, pos, targetLevel.getBlockEntity(pos), target.face(), actionSource);
     }
 
-    private boolean hasResonatingWorkToDo()
-    {
+    private boolean hasResonatingWorkToDo() {
         return !resonatingSendList.isEmpty();
     }
 
-    private boolean sendResonatingStacksOut()
-    {
+    private boolean sendResonatingStacksOut() {
         if (resonatingSendList.isEmpty()) return false;
 
         boolean did = false;
 
-        for (var it = resonatingSendList.listIterator(); it.hasNext(); )
-        {
+        for (var it = resonatingSendList.listIterator(); it.hasNext(); ) {
             var pending = it.next();
 
             var adapter = findTarget(pending.target());
-            if (adapter == null)
-            {
+            if (adapter == null) {
                 continue; // 维度不存在/区块未加载/能力不存在
             }
 
             // 阻挡模式
-            if (isBlockedByMode(adapter))
-            {
+            if (isBlockedByMode(adapter)) {
                 continue;
             }
 
@@ -599,13 +556,10 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
             var amount = pending.stack().amount();
             var inserted = adapter.insert(what, amount, Actionable.MODULATE);
 
-            if (inserted >= amount)
-            {
+            if (inserted >= amount) {
                 it.remove();
                 did = true;
-            }
-            else if (inserted > 0)
-            {
+            } else if (inserted > 0) {
                 it.set(new PendingSend(pending.target(), new GenericStack(what, amount - inserted)));
                 did = true;
             }
@@ -614,42 +568,34 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
         return did;
     }
 
-    private boolean doResonatingWork()
-    {
+    private boolean doResonatingWork() {
         return sendResonatingStacksOut();
     }
 
     @Override
-    public void addDrops(List<ItemStack> drops)
-    {
+    public void addDrops(List<ItemStack> drops) {
         super.addDrops(drops);
-        for (ItemStack stack : upgrades)
-        {
+        for (ItemStack stack : upgrades) {
             drops.add(stack);
         }
     }
 
     @Override
-    public void clearContent()
-    {
+    public void clearContent() {
         super.clearContent();
         upgrades.clear();
     }
 
-    private class ResonatingTicker implements IGridTickable
-    {
+    private class ResonatingTicker implements IGridTickable {
         @Override
-        public TickingRequest getTickingRequest(IGridNode node)
-        {
+        public TickingRequest getTickingRequest(IGridNode node) {
             boolean idle = !hasWorkToDo() && !hasResonatingWorkToDo() && !isEnablePull();
             return new TickingRequest(TickRates.Interface, idle);
         }
 
         @Override
-        public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall)
-        {
-            if (!mainNode.isActive())
-            {
+        public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
+            if (!mainNode.isActive()) {
                 return TickRateModulation.SLEEP;
             }
 
@@ -661,7 +607,6 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
         }
     }
 
-    private record PendingSend(EncodedResonatingPattern.Target target, GenericStack stack)
-    {
+    private record PendingSend(EncodedResonatingPattern.Target target, GenericStack stack) {
     }
 }
