@@ -1,11 +1,13 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
 import appeng.api.stacks.AEItemKey;
+import appeng.api.AECapabilities;
 import appeng.blockentity.crafting.PatternProviderBlockEntity;
 import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.menu.locator.MenuHostLocator;
 import appeng.util.SettingsFrom;
+import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.me.logic.MirrorPatternProviderLogic;
 import io.github.lounode.ae2cs.common.me.logic.MirrorPatternProviderHost;
@@ -19,6 +21,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.Nullable;
 
 public class MirrorPatternProviderBlockEntity extends PatternProviderBlockEntity implements MirrorPatternProviderHost
@@ -32,6 +35,15 @@ public class MirrorPatternProviderBlockEntity extends PatternProviderBlockEntity
     protected PatternProviderLogic createLogic()
     {
         return new MirrorPatternProviderLogic(getMainNode(), this);
+    }
+
+    public static void onRegisterCaps(RegisterCapabilitiesEvent event)
+    {
+        event.registerBlockEntity(
+                AECapabilities.GENERIC_INTERNAL_INV,
+                AECSBlockEntities.MIRROR_PATTERN_PROVIDER_BLOCK_ENTITY.get(),
+                (be, direction) -> be.getLogic().getReturnInv()
+        );
     }
 
     @Override

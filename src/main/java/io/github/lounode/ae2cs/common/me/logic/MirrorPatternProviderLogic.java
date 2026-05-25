@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs.common.me.logic;
 
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IManagedGridNode;
+import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
@@ -15,12 +16,14 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class MirrorPatternProviderLogic extends PatternProviderLogic {
+    private final IManagedGridNode mainNode;
     private final PatternProviderLogicHost host;
     private @Nullable MirroredPatternProviderTarget mirrorTarget;
     public WeakReference<PatternProviderLogicHost> cachedTarget = new WeakReference<>(null);
 
     public MirrorPatternProviderLogic(IManagedGridNode mainNode, PatternProviderLogicHost host) {
         super(mainNode, host, 0);
+        this.mainNode = mainNode;
         this.host = host;
         this.configManager = new MirrorConfigManager(this, this.configManager);
     }
@@ -75,6 +78,11 @@ public class MirrorPatternProviderLogic extends PatternProviderLogic {
     }
 
     @Override
+    public int getPatternPriority() {
+        return getPriority();
+    }
+
+    @Override
     public void updatePatterns() {
         if (!isMirroring()) {
             super.updatePatterns();
@@ -83,25 +91,34 @@ public class MirrorPatternProviderLogic extends PatternProviderLogic {
 
         PatternProviderLogicHost target = resolveMirrorTargetHost();
 
-        if (target != null) {
-            var targetPatterns = target.getLogic().getAvailablePatterns();
-
-            if (patterns.equals(targetPatterns)) {
-                return;
+        if (target == null) {
+            if (!patterns.isEmpty() || !patternInputs.isEmpty()) {
+                patterns.clear();
+                patternInputs.clear();
+                ICraftingProvider.requestUpdate(mainNode);
             }
+            return;
+        }
 
-            patterns.clear();
-            patternInputs.clear();
+        var targetPatterns = target.getLogic().getAvailablePatterns();
 
-            patterns.addAll(targetPatterns);
-            for (var details : patterns) {
-                for (var input : details.getInputs()) {
-                    for (var inputCandidate : input.getPossibleInputs()) {
-                        patternInputs.add(inputCandidate.what().dropSecondary());
-                    }
+        if (patterns.equals(targetPatterns)) {
+            return;
+        }
+
+        patterns.clear();
+        patternInputs.clear();
+
+        patterns.addAll(targetPatterns);
+        for (var details : patterns) {
+            for (var input : details.getInputs()) {
+                for (var inputCandidate : input.getPossibleInputs()) {
+                    patternInputs.add(inputCandidate.what().dropSecondary());
                 }
             }
         }
+
+        ICraftingProvider.requestUpdate(mainNode);
     }
 
     @Override

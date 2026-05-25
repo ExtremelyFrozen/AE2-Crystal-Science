@@ -2,7 +2,9 @@ package io.github.lounode.ae2cs.common.me.part;
 
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
+import appeng.api.parts.RegisterPartCapabilitiesEvent;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.AECapabilities;
 import appeng.core.AppEng;
 import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.items.parts.PartModels;
@@ -43,6 +45,15 @@ public class MirrorPatternProviderPart extends PatternProviderPart implements Mi
     public MirrorPatternProviderPart(IPartItem<?> partItem)
     {
         super(partItem);
+    }
+
+    public static void onRegisterCaps(RegisterPartCapabilitiesEvent event)
+    {
+        event.register(
+                AECapabilities.GENERIC_INTERNAL_INV,
+                (part, direction) -> part.getLogic().getReturnInv(),
+                MirrorPatternProviderPart.class
+        );
     }
 
     @Override
