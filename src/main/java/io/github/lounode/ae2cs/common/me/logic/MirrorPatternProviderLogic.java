@@ -3,6 +3,7 @@ package io.github.lounode.ae2cs.common.me.logic;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.crafting.ICraftingProvider;
+import appeng.api.stacks.KeyCounter;
 import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
@@ -80,6 +81,15 @@ public class MirrorPatternProviderLogic extends PatternProviderLogic {
     @Override
     public int getPatternPriority() {
         return getPriority();
+    }
+
+    @Override
+    public boolean pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder) {
+        if (isMirroring()) {
+            updatePatterns();
+        }
+
+        return super.pushPattern(patternDetails, inputHolder);
     }
 
     @Override
