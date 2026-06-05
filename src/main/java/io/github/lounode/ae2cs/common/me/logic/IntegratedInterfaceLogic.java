@@ -1034,6 +1034,10 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         // 升级
         this.upgrades.readFromNBT(tag, "upgrades");
 
+        // 样板槽 — 必须在配置之前加载，否则配置加载触发 onChangeInventory
+        // → updatePatterns() 时样板槽还是空的，会导致已解码样板列表被清空
+        this.patternInventory.readFromNBT(tag, "patterns");
+
         // 配置
         this.configInv.readFromChildTag(tag, "config");
 
@@ -1045,9 +1049,6 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
 
         // 机器配置
         this.configManager.readFromNBT(tag);
-
-        // 样板槽
-        this.patternInventory.readFromNBT(tag, "patterns");
 
         // 配置读完后要重新计算 hasConfig + plannedWork
         readConfig();
