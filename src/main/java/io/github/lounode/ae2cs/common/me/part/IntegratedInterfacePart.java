@@ -196,6 +196,7 @@ public class IntegratedInterfacePart extends AEBasePart implements IntegratedInt
     public void writeToNBT(CompoundTag data, HolderLookup.Provider registries)
     {
         super.writeToNBT(data, registries);
+        this.logic.save(data, registries);
         data.putInt("priority", this.priority);
     }
 
@@ -203,6 +204,7 @@ public class IntegratedInterfacePart extends AEBasePart implements IntegratedInt
     public void readFromNBT(CompoundTag data, HolderLookup.Provider registries)
     {
         super.readFromNBT(data, registries);
+        this.logic.load(data, registries);
         this.priority = data.getInt("priority");
     }
 
