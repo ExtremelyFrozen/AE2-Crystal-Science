@@ -8,6 +8,8 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.storage.MEStorage;
 import appeng.capabilities.Capabilities;
 import appeng.core.AppEng;
+import appeng.helpers.externalstorage.GenericStackFluidStorage;
+import appeng.helpers.externalstorage.GenericStackItemStorage;
 import appeng.items.parts.PartModels;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.AEBasePart;
@@ -25,6 +27,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -71,10 +74,25 @@ public class IntegratedInterfacePart extends AEBasePart implements IntegratedInt
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(Capability<T> capabilityClass)
     {
-        if (capabilityClass == Capabilities.GENERIC_INTERNAL_INV)
+        if (capabilityClass == Capabilities.GENERIC_INTERNAL_INV
+                || capabilityClass == ForgeCapabilities.ITEM_HANDLER
+                || capabilityClass == ForgeCapabilities.FLUID_HANDLER)
         {
             GenericInternalInventory inv = getLogic().getStorageInv();
-            return inv == null ? LazyOptional.empty() : LazyOptional.of(() -> inv).cast();
+            if (inv == null)
+            {
+                return LazyOptional.empty();
+            }
+
+            if (capabilityClass == ForgeCapabilities.ITEM_HANDLER)
+            {
+                return LazyOptional.of(() -> new GenericStackItemStorage(inv)).cast();
+            }
+            if (capabilityClass == ForgeCapabilities.FLUID_HANDLER)
+            {
+                return LazyOptional.of(() -> new GenericStackFluidStorage(inv)).cast();
+            }
+            return LazyOptional.of(() -> inv).cast();
         }
 
         if (capabilityClass == Capabilities.STORAGE)

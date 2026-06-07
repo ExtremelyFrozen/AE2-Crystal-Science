@@ -9,6 +9,8 @@ import appeng.block.crafting.PatternProviderBlock;
 import appeng.block.crafting.PushDirection;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.capabilities.Capabilities;
+import appeng.helpers.externalstorage.GenericStackFluidStorage;
+import appeng.helpers.externalstorage.GenericStackItemStorage;
 import appeng.util.SettingsFrom;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
@@ -23,6 +25,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -52,11 +55,22 @@ public class IntegratedInterfaceBlockEntity extends AENetworkBlockEntity impleme
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side)
     {
-        if (cap == Capabilities.GENERIC_INTERNAL_INV)
+        if (cap == Capabilities.GENERIC_INTERNAL_INV
+                || cap == ForgeCapabilities.ITEM_HANDLER
+                || cap == ForgeCapabilities.FLUID_HANDLER)
         {
             if (!genericInvOpt.isPresent())
             {
                 genericInvOpt = LazyOptional.of(() -> getLogic().getStorageInv());
+            }
+
+            if (cap == ForgeCapabilities.ITEM_HANDLER)
+            {
+                return LazyOptional.of(() -> new GenericStackItemStorage(getLogic().getStorageInv())).cast();
+            }
+            if (cap == ForgeCapabilities.FLUID_HANDLER)
+            {
+                return LazyOptional.of(() -> new GenericStackFluidStorage(getLogic().getStorageInv())).cast();
             }
             return genericInvOpt.cast();
         }
