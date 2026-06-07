@@ -1,0 +1,101 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Client",
+      "presentation": {
+        "group": "Mod Development - ae2cs-clone",
+        "order": 0
+      },
+      "projectName": "ae2cs-clone",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@D:\\文档\\素材\\Applied-Energistics-2\\ae2cs-clone\\build\\moddev\\clientRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@D:\\文档\\素材\\Applied-Energistics-2\\ae2cs-clone\\build\\moddev\\clientRunVmArgs.txt",
+        "-Dfml.modFolders\u003dae2cs%%D:\\文档\\素材\\Applied-Energistics-2\\ae2cs-clone\\bin\\main"
+      ],
+      "cwd": "${workspaceFolder}\\run",
+      "env": {
+        "MOD_CLASSES": "ae2cs%%D:\\文档\\素材\\Applied-Energistics-2\\ae2cs-clone\\bin\\main"
+      },
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Data",
+      "presentation": {
+        "group": "Mod Development - ae2cs-clone",
+        "order": 1
+      },
+      "projectName": "ae2cs-clone",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@D:\\文档\\素材\\Applied-Energistics-2\\ae2cs-clone\\build\\moddev\\dataRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@D:\\文档\\素材\\Applied-Energistics-2\\ae2cs-clone\\build\\moddev\\dataRunVmArgs.txt",
+        "-Dfml.modFolders\u003dae2cs%%D:\\文档\\素材\\Applied-Energistics-2\\ae2cs-clone\\bin\\main"
+      ],
+      "cwd": "${workspaceFolder}\\run",
+      "env": {
+        "MOD_CLASSES": "ae2cs%%D:\\文档\\素材\\Applied-Energistics-2\\ae2cs-clone\\bin\\main"
+      },
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "GameTestServer",
+      "presentation": {
+        "group": "Mod Development - ae2cs-clone",
+        "order": 2
+      },
+      "projectName": "ae2cs-clone",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@D:\\文档\\素材\\Applied-Energistics-2\\ae2cs-clone\\build\\moddev\\gameTestServerRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@D:\\文档\\素材\\Applied-Energistics-2\\ae2cs-clone\\build\\moddev\\gameTestServerRunVmArgs.txt",
+        "-Dfml.modFolders\u003dae2cs%%D:\\文档\\素材\\Applied-Energistics-2\\ae2cs-clone\\bin\\main"
+      ],
+      "cwd": "${workspaceFolder}\\run",
+      "env": {
+        "MOD_CLASSES": "ae2cs%%D:\\文档\\素材\\Applied-Energistics-2\\ae2cs-clone\\bin\\main"
+      },
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Server",
+      "presentation": {
+        "group": "Mod Development - ae2cs-clone",
+        "order": 3
+      },
+      "projectName": "ae2cs-clone",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@D:\\文档\\素材\\Applied-Energistics-2\\ae2cs-clone\\build\\moddev\\serverRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@D:\\文档\\素材\\Applied-Energistics-2\\ae2cs-clone\\build\\moddev\\serverRunVmArgs.txt",
+        "-Dfml.modFolders\u003dae2cs%%D:\\文档\\素材\\Applied-Energistics-2\\ae2cs-clone\\bin\\main"
+      ],
+      "cwd": "${workspaceFolder}\\run",
+      "env": {
+        "MOD_CLASSES": "ae2cs%%D:\\文档\\素材\\Applied-Energistics-2\\ae2cs-clone\\bin\\main"
+      },
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    }
+  ]
+}

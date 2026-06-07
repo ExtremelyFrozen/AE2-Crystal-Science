@@ -8,6 +8,8 @@ import appeng.api.stacks.AEItemKey;
 import appeng.block.crafting.PatternProviderBlock;
 import appeng.block.crafting.PushDirection;
 import appeng.blockentity.grid.AENetworkedBlockEntity;
+import appeng.helpers.externalstorage.GenericStackFluidStorage;
+import appeng.helpers.externalstorage.GenericStackItemStorage;
 import appeng.util.SettingsFrom;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
@@ -23,6 +25,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,6 +62,22 @@ public class IntegratedInterfaceBlockEntity extends AENetworkedBlockEntity imple
                 AECSBlockEntities.INTEGRATED_INTERFACE_BLOCK_ENTITY.get(),
                 (be, direction) -> be.getLogic().getExposedMEStorage(direction)
         );
+        event.registerBlockEntity(
+                Capabilities.ItemHandler.BLOCK,
+                AECSBlockEntities.INTEGRATED_INTERFACE_BLOCK_ENTITY.get(),
+                (be, direction) -> {
+                    var inv = be.getLogic().getStorageInv();
+                    return inv != null ? new GenericStackItemStorage(inv) : null;
+                }
+        );
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                AECSBlockEntities.INTEGRATED_INTERFACE_BLOCK_ENTITY.get(),
+                (be, direction) -> {
+                    var inv = be.getLogic().getStorageInv();
+                    return inv != null ? new GenericStackFluidStorage(inv) : null;
+                }
+        );
 
         event.registerBlockEntity(
                 AECapabilities.GENERIC_INTERNAL_INV,
@@ -69,6 +88,22 @@ public class IntegratedInterfaceBlockEntity extends AENetworkedBlockEntity imple
                 AECapabilities.ME_STORAGE,
                 AECSBlockEntities.EX_INTEGRATED_INTERFACE_BLOCK_ENTITY.get(),
                 (be, direction) -> be.getLogic().getExposedMEStorage(direction)
+        );
+        event.registerBlockEntity(
+                Capabilities.ItemHandler.BLOCK,
+                AECSBlockEntities.EX_INTEGRATED_INTERFACE_BLOCK_ENTITY.get(),
+                (be, direction) -> {
+                    var inv = be.getLogic().getStorageInv();
+                    return inv != null ? new GenericStackItemStorage(inv) : null;
+                }
+        );
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                AECSBlockEntities.EX_INTEGRATED_INTERFACE_BLOCK_ENTITY.get(),
+                (be, direction) -> {
+                    var inv = be.getLogic().getStorageInv();
+                    return inv != null ? new GenericStackFluidStorage(inv) : null;
+                }
         );
     }
 
