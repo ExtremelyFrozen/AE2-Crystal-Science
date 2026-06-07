@@ -200,6 +200,7 @@ public class IntegratedInterfacePart extends AEBasePart implements IntegratedInt
     public void writeToNBT(CompoundTag data)
     {
         super.writeToNBT(data);
+        this.logic.save(data);
         data.putInt("priority", this.priority);
     }
 
@@ -207,6 +208,7 @@ public class IntegratedInterfacePart extends AEBasePart implements IntegratedInt
     public void readFromNBT(CompoundTag data)
     {
         super.readFromNBT(data);
+        this.logic.load(data);
         this.priority = data.getInt("priority");
     }
 
