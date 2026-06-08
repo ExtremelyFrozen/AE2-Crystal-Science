@@ -1,6 +1,7 @@
 package io.github.lounode.ae2cs.common.me.part;
 
 import appeng.api.behaviors.GenericInternalInventory;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
@@ -86,6 +87,11 @@ public class IntegratedInterfacePart extends AEBasePart implements IntegratedInt
         return super.getCapability(capabilityClass);
     }
 
+    @Override
+    protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
+        super.onMainNodeStateChanged(reason);
+        this.logic.onMainNodeStateChanged();
+    }
 
     @Override
     public void getBoxes(IPartCollisionHelper bch)

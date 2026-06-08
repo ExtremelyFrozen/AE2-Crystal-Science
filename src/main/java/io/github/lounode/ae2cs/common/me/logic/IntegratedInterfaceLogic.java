@@ -177,7 +177,7 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
      * 是否配置了备货内容（有 config 的话对外暴露本地库存，没有的话暴露网络）
      */
     private boolean hasConfig = false;
-
+    private boolean needsPatternReRegister = false;
     /**
      * 本地库存的 MEStorage 视图，用于给存储总线看
      */
@@ -364,14 +364,18 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         patternInputs.clear();
 
         BlockEntity blockEntity = host.getBlockEntity();
+        Level level = blockEntity != null ? blockEntity.getLevel() : null;
+        int slotCount = this.patternInventory.size();
+        int decodedCount = 0;
 
         for (ItemStack stack : this.patternInventory)
         {
-            IPatternDetails details = PatternDetailsHelper.decodePattern(stack, blockEntity.getLevel());
+            IPatternDetails details = PatternDetailsHelper.decodePattern(stack, level);
 
             if (details != null)
             {
                 patterns.add(details);
+                decodedCount++;
 
                 for (IPatternDetails.IInput iinput : details.getInputs())
                 {
@@ -961,6 +965,12 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
                 return TickRateModulation.SLEEP;
             }
 
+            if (needsPatternReRegister)
+            {
+                updatePatterns();
+                needsPatternReRegister = false;
+            }
+
             boolean didSomething = updateStorage() | sendStacksOut();
 
             boolean stillHasWork = hasStorageWork() || !sendList.isEmpty();
@@ -1055,6 +1065,7 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
 
         // 样板槽更新 patternInputs / patterns 列表
         updatePatterns();
+        needsPatternReRegister = true;
 
         // 样板推送状态
         this.roundRobinIndex = tag.getInt("roundRobinIndex");
