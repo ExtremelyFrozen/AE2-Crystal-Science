@@ -405,11 +405,6 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
             }
         }
 
-        if (filledSlots > 0) {
-                    filledSlots, decodedCount, level != null,
-                    level != null ? level.registryAccess() != null : false);
-        }
-
         ICraftingProvider.requestUpdate(mainNode);
     }
 
@@ -1094,8 +1089,6 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
                 return TickRateModulation.SLEEP;
             }
 
-                    needsPatternReRegister, patterns.size(), ticksSinceLastCall);
-
             if (needsPatternReRegister)
             {
                 updatePatterns();
@@ -1196,7 +1189,6 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         // 样板槽更新 patternInputs / patterns 列表
         updatePatterns();
         needsPatternReRegister = true;
-                patternInventory.size(), patterns.size());
 
         // 样板推送状态
         this.roundRobinIndex = tag.getInt("roundRobinIndex");
