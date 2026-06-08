@@ -7,6 +7,8 @@ import appeng.api.parts.IPartModel;
 import appeng.api.parts.RegisterPartCapabilitiesEvent;
 import appeng.api.stacks.AEItemKey;
 import appeng.core.AppEng;
+import appeng.helpers.externalstorage.GenericStackFluidStorage;
+import appeng.helpers.externalstorage.GenericStackItemStorage;
 import appeng.items.parts.PartModels;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.AEBasePart;
@@ -24,6 +26,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
@@ -78,6 +81,22 @@ public class IntegratedInterfacePart extends AEBasePart implements IntegratedInt
         event.register(
                 AECapabilities.ME_STORAGE,
                 (part, direction) -> part.getLogic().getExposedMEStorage(direction),
+                IntegratedInterfacePart.class
+        );
+        event.register(
+                Capabilities.ItemHandler.BLOCK,
+                (part, direction) -> {
+                    var inv = part.getLogic().getStorageInv();
+                    return inv != null ? new GenericStackItemStorage(inv) : null;
+                },
+                IntegratedInterfacePart.class
+        );
+        event.register(
+                Capabilities.FluidHandler.BLOCK,
+                (part, direction) -> {
+                    var inv = part.getLogic().getStorageInv();
+                    return inv != null ? new GenericStackFluidStorage(inv) : null;
+                },
                 IntegratedInterfacePart.class
         );
     }
