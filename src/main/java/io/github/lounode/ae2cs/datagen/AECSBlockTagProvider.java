@@ -35,7 +35,8 @@ public class AECSBlockTagProvider extends BlockTagsProvider
                 .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_REDSTONE_CRYSTAL)
                 .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_QUANTUM_CRYSTAL)
                 .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_ROSE_QUARTZ)
-                .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL);
+                .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL)
+                .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_LINK_CRYSTAL);
 
         // 非接口机器
         tag(AECSTags.Blocks.AECS_MACHINE)
@@ -57,6 +58,7 @@ public class AECSBlockTagProvider extends BlockTagsProvider
                 .add(AECSBlocks.EX_INTEGRATED_INTERFACE_BLOCK.get())
                 .add(AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK.get())
                 .add(AECSBlocks.EX_RESONATING_PATTERN_PROVIDER_BLOCK.get())
+                .add(AECSBlocks.MIRROR_PATTERN_PROVIDER_BLOCK.get())
                 .add(AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK.get())
                 .add(AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK.get())
                 .add(AECSBlocks.QUARTZ_OSCILLATOR_CLOCK_BLOCK.get());
@@ -74,7 +76,8 @@ public class AECSBlockTagProvider extends BlockTagsProvider
                 .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_REDSTONE_CRYSTAL)
                 .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_QUANTUM_CRYSTAL)
                 .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_ROSE_QUARTZ)
-                .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL);
+                .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL)
+                .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_LINK_CRYSTAL);
         tag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_ENDER_QUARTZ)
                 .add(AECSBlocks.PURE_ENDER_QUARTZ_BLOCK.get());
         tag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_RESONATING_CRYSTAL)
@@ -89,6 +92,8 @@ public class AECSBlockTagProvider extends BlockTagsProvider
                 .add(AECSBlocks.PURE_ROSE_QUARTZ_BLOCK.get());
         tag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL)
                 .add(AECSBlocks.IRRADIATED_CRYSTAL_BLOCK.get());
+        tag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_LINK_CRYSTAL)
+                .add(AECSBlocks.PURE_LINK_CRYSTAL_BLOCK.get());
 
         // 矿
         tag(Tags.Blocks.ORES)

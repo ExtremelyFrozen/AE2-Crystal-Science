@@ -130,7 +130,9 @@ public class MirrorPatternProviderBlockEntity extends PatternProviderBlockEntity
     @Override
     protected boolean readFromStream(RegistryFriendlyByteBuf data)
     {
-        getMirroringLogic().setMirrorTarget(data.readBoolean() ? MirroredPatternProviderTarget.read(data) : null);
-        return true;
+        boolean redraw = super.readFromStream(data);
+        boolean targetChanged = getMirroringLogic().readMirrorTargetFromStream(
+                data.readBoolean() ? MirroredPatternProviderTarget.read(data) : null);
+        return redraw || targetChanged;
     }
 }

@@ -155,8 +155,9 @@ public class MirrorPatternProviderPart extends PatternProviderPart implements Mi
     public boolean readFromStream(RegistryFriendlyByteBuf data)
     {
         boolean redraw = super.readFromStream(data);
-        getMirroringLogic().setMirrorTarget(data.readBoolean() ? MirroredPatternProviderTarget.read(data) : null);
-        return redraw || true;
+        boolean targetChanged = getMirroringLogic().readMirrorTargetFromStream(
+                data.readBoolean() ? MirroredPatternProviderTarget.read(data) : null);
+        return redraw || targetChanged;
     }
 
     @Override

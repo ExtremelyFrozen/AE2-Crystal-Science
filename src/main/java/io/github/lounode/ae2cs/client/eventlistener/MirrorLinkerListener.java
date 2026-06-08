@@ -38,6 +38,7 @@ public class MirrorLinkerListener
         event.setCancellationResult(InteractionResult.SUCCESS);
         event.setCanceled(true);
         PacketDistributor.sendToServer(new MirrorLinkerBatchApplyPacket(event.getPos(),
+                event.getHand() == net.minecraft.world.InteractionHand.MAIN_HAND,
                 event.getHitVec().getLocation().x,
                 event.getHitVec().getLocation().y,
                 event.getHitVec().getLocation().z));

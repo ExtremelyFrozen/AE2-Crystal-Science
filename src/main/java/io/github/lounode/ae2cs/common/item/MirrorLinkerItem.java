@@ -28,6 +28,10 @@ import java.util.Set;
 
 public class MirrorLinkerItem extends Item
 {
+    private static final int MAX_BATCH_RADIUS = 16;
+    private static final int MAX_BATCH_PROVIDERS = 256;
+    private static final double MAX_BATCH_DISTANCE_SQR = 64.0D;
+
     public MirrorLinkerItem(Properties properties)
     {
         super(properties.stacksTo(1));
@@ -104,21 +108,43 @@ public class MirrorLinkerItem extends Item
 
     public static int applyStoredTargetToCluster(ItemStack stack, Player player, Level level, BlockPos centerPos, Vec3 clickLocation)
     {
+        if (level.isClientSide() || !level.hasChunkAt(centerPos))
+        {
+            return 0;
+        }
+
+        if (player.distanceToSqr(centerPos.getX() + 0.5D, centerPos.getY() + 0.5D, centerPos.getZ() + 0.5D) > MAX_BATCH_DISTANCE_SQR)
+        {
+            return 0;
+        }
+
+        if (!player.mayUseItemAt(centerPos, Direction.UP, stack))
+        {
+            return 0;
+        }
+
+        MirrorPatternProviderHost selected = PatternProviderBindingHelper.resolveMirrorProvider(level, centerPos, clickLocation);
+        if (selected == null)
+        {
+            return 0;
+        }
+
         Set<MirrorPatternProviderHost> hosts = new LinkedHashSet<>();
         Set<BlockPos> visited = new HashSet<>();
         Queue<BlockPos> pending = new ArrayDeque<>();
 
         pending.add(centerPos);
-        MirrorPatternProviderHost selected = PatternProviderBindingHelper.resolveMirrorProvider(level, centerPos, clickLocation);
-        if (selected != null)
-        {
-            hosts.add(selected);
-        }
+        hosts.add(selected);
 
-        while (!pending.isEmpty())
+        while (!pending.isEmpty() && hosts.size() < MAX_BATCH_PROVIDERS)
         {
             BlockPos current = pending.poll();
             if (!visited.add(current))
+            {
+                continue;
+            }
+
+            if (!isWithinBatchBounds(centerPos, current) || !level.hasChunkAt(current))
             {
                 continue;
             }
@@ -133,7 +159,7 @@ public class MirrorLinkerItem extends Item
             for (Direction direction : Direction.values())
             {
                 BlockPos next = current.relative(direction);
-                if (!visited.contains(next))
+                if (!visited.contains(next) && isWithinBatchBounds(centerPos, next))
                 {
                     pending.add(next);
                 }
@@ -155,5 +181,12 @@ public class MirrorLinkerItem extends Item
         }
 
         return hosts.size();
+    }
+
+    private static boolean isWithinBatchBounds(BlockPos center, BlockPos pos)
+    {
+        return Math.abs(pos.getX() - center.getX()) <= MAX_BATCH_RADIUS
+                && Math.abs(pos.getY() - center.getY()) <= MAX_BATCH_RADIUS
+                && Math.abs(pos.getZ() - center.getZ()) <= MAX_BATCH_RADIUS;
     }
 }

@@ -29,6 +29,8 @@ public class AECSTags
                 aecsTag("storage_blocks/pure_crystal/rose_quartz_block");
         public static final TagKey<Block> STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL =
                 aecsTag("storage_blocks/pure_crystal/irradiated_crystal_block");
+        public static final TagKey<Block> STORAGE_BLOCK_PURE_CRYSTAL_LINK_CRYSTAL =
+                aecsTag("storage_blocks/pure_crystal/link_crystal_block");
         public static final TagKey<Block> STORAGE_BLOCK_SILICON = tag("storage_blocks/silicon");
 
         public static final TagKey<Block> AECS_MACHINE = aecsTag("aecs/machine");
@@ -62,6 +64,7 @@ public class AECSTags
         public static final TagKey<Item> PURE_ROSE_QUARTZ = aecsTag("pure_crystal/rose_quartz");
         public static final TagKey<Item> PURE_IRRADIATED_CRYSTAL = aecsTag("pure_crystal/irradiated_crystal");
         public static final TagKey<Item> PURE_EMBER_CRYSTAL = aecsTag("pure_crystal/ember_crystal");
+        public static final TagKey<Item> PURE_LINK_CRYSTAL = aecsTag("pure_crystal/link_crystal");
 
         public static final TagKey<Item> DUST_RESONATING = tag("dusts/resonating");
         public static final TagKey<Item> DUST_QUARTZ = tag("dusts/quartz");
@@ -95,6 +98,8 @@ public class AECSTags
                 tag("storage_blocks/pure_crystal/rose_quartz_block");
         public static final TagKey<Item> STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL =
                 tag("storage_blocks/pure_crystal/irradiated_crystal_block");
+        public static final TagKey<Item> STORAGE_BLOCK_PURE_CRYSTAL_LINK_CRYSTAL =
+                tag("storage_blocks/pure_crystal/link_crystal_block");
         public static final TagKey<Item> STORAGE_BLOCK_SILICON = tag("storage_blocks/silicon");
 
         public static final TagKey<Item> AECS_MACHINE = aecsTag("aecs/machine");

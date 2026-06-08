@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
+import java.util.Objects;
 
 public class MirrorPatternProviderLogic extends PatternProviderLogic {
     private final IManagedGridNode mainNode;
@@ -45,6 +46,13 @@ public class MirrorPatternProviderLogic extends PatternProviderLogic {
         if (host instanceof MirrorPatternProviderHost mirrorHost) {
             mirrorHost.markForLogicClientUpdate();
         }
+    }
+
+    public boolean readMirrorTargetFromStream(@Nullable MirroredPatternProviderTarget mirrorTarget) {
+        boolean changed = !Objects.equals(this.mirrorTarget, mirrorTarget);
+        this.mirrorTarget = mirrorTarget;
+        this.cachedTarget = new WeakReference<>(null);
+        return changed;
     }
 
     public @Nullable PatternProviderLogicHost resolveMirrorTargetHost() {
