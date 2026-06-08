@@ -79,6 +79,10 @@ public final class GenericStackInvComponent extends BaseMachineComponent
                         @Override
                         public long extract(int slot, AEKey what, long amount, Actionable mode)
                         {
+                            if (mode == Actionable.SIMULATE)
+                            {
+                                return super.extract(slot, what, amount, mode);
+                            }
                             return 0;
                         }
                     };
