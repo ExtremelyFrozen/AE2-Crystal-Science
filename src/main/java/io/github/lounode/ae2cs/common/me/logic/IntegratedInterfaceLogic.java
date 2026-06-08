@@ -365,8 +365,12 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
 
         BlockEntity blockEntity = host.getBlockEntity();
         Level level = blockEntity != null ? blockEntity.getLevel() : null;
-        int slotCount = this.patternInventory.size();
-        int decodedCount = 0;
+        if (level == null)
+        {
+            needsPatternReRegister = true;
+            ICraftingProvider.requestUpdate(mainNode);
+            return;
+        }
 
         for (ItemStack stack : this.patternInventory)
         {
@@ -375,7 +379,6 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
             if (details != null)
             {
                 patterns.add(details);
-                decodedCount++;
 
                 for (IPatternDetails.IInput iinput : details.getInputs())
                 {
