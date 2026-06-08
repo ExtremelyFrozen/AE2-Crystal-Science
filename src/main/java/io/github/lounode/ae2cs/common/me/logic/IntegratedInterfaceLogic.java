@@ -1034,8 +1034,8 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         // 升级
         this.upgrades.readFromNBT(tag, "upgrades");
 
-        // 样板槽 — 必须在配置之前加载，否则配置加载触发 onChangeInventory
-        // → updatePatterns() 时样板槽还是空的，会导致已解码样板列表被清空
+        // 先恢复样板槽，再统一重建 decoded pattern cache。
+        this.patternInventory.clear();
         this.patternInventory.readFromNBT(tag, "patterns");
 
         // 配置
@@ -1058,20 +1058,9 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
 
         // 样板推送状态
         this.roundRobinIndex = tag.getInt("roundRobinIndex");
-        this.redstoneState = YesNo.values()[tag.getByte("redstoneState")];
+        this.redstoneState = readEnum(tag, "redstoneState", YesNo.values(), YesNo.UNDECIDED);
 
-        if (tag.contains("unlockEvent"))
-        {
-            byte u = tag.getByte("unlockEvent");
-            if (u >= 0 && u < UnlockCraftingEvent.values().length)
-            {
-                this.unlockEvent = UnlockCraftingEvent.values()[u];
-            }
-        }
-        else
-        {
-            this.unlockEvent = null;
-        }
+        this.unlockEvent = readEnum(tag, "unlockEvent", UnlockCraftingEvent.values(), null);
 
         if (tag.contains("unlockStack"))
         {
@@ -1104,6 +1093,23 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         {
             this.sendDirection = null;
         }
+    }
+
+    @Nullable
+    private static <T extends Enum<T>> T readEnum(CompoundTag tag, String key, T[] values, @Nullable T fallback)
+    {
+        if (!tag.contains(key))
+        {
+            return fallback;
+        }
+
+        byte value = tag.getByte(key);
+        if (value < 0 || value >= values.length)
+        {
+            return fallback;
+        }
+
+        return values[value];
     }
 
     /**
