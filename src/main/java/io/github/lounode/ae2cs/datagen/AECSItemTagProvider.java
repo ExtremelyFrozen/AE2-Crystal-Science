@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs.datagen;
 
 import appeng.api.ids.AETags;
 import appeng.core.ConventionTags;
+import com.glodblock.github.extendedae.util.EAETags;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
@@ -144,9 +145,8 @@ public class AECSItemTagProvider extends ItemTagsProvider
                 .addTag(AECSTags.Items.PURE_METEOR_CRYSTAL);
         tag(AECSTags.Items.GEM_RESONATING)
                 .addTag(AECSTags.Items.PURE_RESONATING_CRYSTAL);
-        // TODO(compat) EAE联动
-//        tag(EAETags.ENTRO_CRYSTAL)
-//                .addTag(AECSTags.Items.PURE_ENTRO_CRYSTAL);
+        tag(EAETags.ENTRO_CRYSTAL)
+                .addTag(AECSTags.Items.PURE_ENTRO_CRYSTAL);
 
         // 矿
         tag(Tags.Items.ORES)

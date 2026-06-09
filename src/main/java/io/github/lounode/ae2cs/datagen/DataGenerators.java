@@ -6,6 +6,8 @@ import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSEnchantments;
 import io.github.lounode.ae2cs.datagen.properties.GrowProcess;
 import io.github.lounode.ae2cs.datagen.recipes.*;
+import io.github.lounode.ae2cs.datagen.recipes.compat.AECSCompatAAERecipeProvider;
+import io.github.lounode.ae2cs.datagen.recipes.compat.AECSCompatEAERecipeProvider;
 import io.github.lounode.ae2cs.datagen.recipes.compat.AECSCompatOCRecipeProvider;
 import io.github.lounode.ae2cs.datagen.worldgen.AECSBiomeModifiers;
 import io.github.lounode.ae2cs.datagen.worldgen.AECSConfiguredFeatures;
@@ -73,11 +75,11 @@ public class DataGenerators {
         event.createProvider(AECSPulverizerRecipeProvider.Runner::new);
         event.createProvider(AECSStonecutterRecipeProvider.Runner::new);
         // 联动配方
-//        generator.addProvider(event.includeServer(), new AECSCompatAAERecipeProvider(packOutput, lookupProvider));
+        event.createProvider(AECSCompatAAERecipeProvider.Runner::new);
 //        generator.addProvider(event.includeServer(), new AECSCompatAFRecipeProvider(packOutput, lookupProvider));
 //        generator.addProvider(event.includeServer(), new AECSCompatAGRecipeProvider(packOutput, lookupProvider));
 //        generator.addProvider(event.includeServer(), new AECSCompatCreateRecipeProvider(packOutput, lookupProvider));
-//        generator.addProvider(event.includeServer(), new AECSCompatEAERecipeProvider(packOutput, lookupProvider));
+        event.createProvider(AECSCompatEAERecipeProvider.Runner::new);
 //        generator.addProvider(event.includeServer(), new AECSCompatMegaCellRecipeProvider(packOutput, lookupProvider));
 //        generator.addProvider(event.includeServer(), new AECSCompatMEKRecipeProvider(packOutput, lookupProvider));
         event.createProvider(AECSCompatOCRecipeProvider.Runner::new);
