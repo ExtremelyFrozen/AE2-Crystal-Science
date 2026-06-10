@@ -8,6 +8,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
+import net.pedroksl.advanced_ae.datagen.AAEConventionTags;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -115,9 +116,9 @@ public class AECSBlockTagProvider extends BlockTagsProvider
         tag(AECSTags.Blocks.STORAGE_BLOCK_SILICON)
                 .add(AECSBlocks.SILICON_BLOCK.get());
 
-        // 联动区域 - TODO: Advanced AE 26.1 兼容版本
-        // tag(AAEConventionTags.QUANTUM_ALLOY_STORAGE_BLOCK_BLOCK)
-        //         .add(AECSBlocks.PURE_QUANTUM_CRYSTAL_BLOCK.get());
+        // 联动区域
+         tag(AAEConventionTags.QUANTUM_ALLOY_STORAGE_BLOCK_BLOCK)
+                 .add(AECSBlocks.PURE_QUANTUM_CRYSTAL_BLOCK.get());
 
         // 镐挖掘
         tag(BlockTags.MINEABLE_WITH_PICKAXE)

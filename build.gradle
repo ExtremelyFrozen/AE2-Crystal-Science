@@ -149,21 +149,21 @@ dependencies {
 
     //localRuntime "curse.maven:nbtedit-reborn-678133:6125444"
 
-    // 联动前置 - TODO: Update to 26.1 compatible versions
-    //implementation "curse.maven:glodium-957920:5821676"
-    //implementation "curse.maven:geckolib-388172:7415496"
+    // 联动前置
+    implementation "curse.maven:glodium-957920:8196173"
+    implementation "curse.maven:geckolib-388172:7913641"
 
     // MEK - TODO: Update to 26.1 compatible version
     //implementation "maven.modrinth:mekanism:10.7.13.78"
     // OMNI CELL
-    implementation "curse.maven:omni-cells-1359517:8050970"
+    implementation "curse.maven:omni-cells-1359517:8209869"
     // MEGA CELL - TODO: Update to 26.1 compatible version
     //implementation "curse.maven:mega-cells-622112:6853076"
-    // EAE - TODO: Update to 26.1 compatible version
-    //implementation "curse.maven:ex-pattern-provider-892005:7356474"
-    // AAE - TODO: Update to 26.1 compatible version
-    //implementation "curse.maven:advancedae-1084104:7374386"
-    //compileOnly "io.github.pedroksl:ae2addonlib:1.0.3-1.21.1"
+    // EAE
+    implementation "curse.maven:ex-pattern-provider-892005:8196267"
+    // AAE
+    implementation "curse.maven:advancedae-1084104:8139539"
+    compileOnly "io.github.pedroksl:ae2addonlib:26.1.2-alpha"
     // AF - TODO: Update to 26.1 compatible version
     //implementation "curse.maven:applied-flux-965012:7429565"
     // AG - TODO: Update to 26.1 compatible version

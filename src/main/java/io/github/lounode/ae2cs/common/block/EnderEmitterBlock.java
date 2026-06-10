@@ -80,7 +80,7 @@ public class EnderEmitterBlock extends AEBaseEntityBlock<EnderEmitterBlockEntity
     {
         BlockPos pos = ctx.getClickedPos();
         Level level = ctx.getLevel();
-        if (pos.getY() >= level.getMaxSectionY() - 1) return null;
+        if (pos.getY() >= level.getMaxY() - 1) return null;
 
         BlockPos above = pos.above();
         if (!level.getBlockState(above).canBeReplaced(ctx)) return null;
