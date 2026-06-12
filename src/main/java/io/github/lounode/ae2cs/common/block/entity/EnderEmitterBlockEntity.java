@@ -1,19 +1,5 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
-import appeng.api.AECapabilities;
-import appeng.api.networking.*;
-import appeng.api.networking.pathing.ControllerState;
-import appeng.api.orientation.BlockOrientation;
-import appeng.api.parts.IPart;
-import appeng.api.upgrades.IUpgradeableObject;
-import appeng.api.util.IConfigManager;
-import appeng.api.util.IConfigurableObject;
-import appeng.blockentity.ClientTickingBlockEntity;
-import appeng.blockentity.ServerTickingBlockEntity;
-import appeng.blockentity.grid.AENetworkedBlockEntity;
-import appeng.blockentity.networking.CableBusBlockEntity;
-import appeng.blockentity.networking.ControllerBlockEntity;
-import appeng.parts.CableBusContainer;
 import io.github.lounode.ae2cs.Config;
 import io.github.lounode.ae2cs.api.CustomChannelProviderHost;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
@@ -31,6 +17,22 @@ import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.util.ChunkHelper;
 import io.github.lounode.ae2cs.util.VecHelper;
+
+import appeng.api.AECapabilities;
+import appeng.api.networking.*;
+import appeng.api.networking.pathing.ControllerState;
+import appeng.api.orientation.BlockOrientation;
+import appeng.api.parts.IPart;
+import appeng.api.upgrades.IUpgradeableObject;
+import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigurableObject;
+import appeng.blockentity.ClientTickingBlockEntity;
+import appeng.blockentity.ServerTickingBlockEntity;
+import appeng.blockentity.grid.AENetworkedBlockEntity;
+import appeng.blockentity.networking.CableBusBlockEntity;
+import appeng.blockentity.networking.ControllerBlockEntity;
+import appeng.parts.CableBusContainer;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
@@ -54,6 +56,7 @@ import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.BlockEvent;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,8 +65,9 @@ import java.util.function.Supplier;
 
 @EventBusSubscriber(modid = AECSConstants.MODID)
 public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements ServerTickingBlockEntity,
-        IUpgradeableObject, ClientTickingBlockEntity, IConfigurableObject, ICustomRenderBounding,
-        CustomChannelProviderHost, BroadcastReceiverHost, CustomReturnableSubMenuHost {
+                                     IUpgradeableObject, ClientTickingBlockEntity, IConfigurableObject, ICustomRenderBounding,
+                                     CustomChannelProviderHost, BroadcastReceiverHost, CustomReturnableSubMenuHost {
+
     /**
      * 以全局区块坐标为索引的发信器位置表，用来快速寻找发信器，每个区块key下的set集合都对应周围3x3区块范围内所有发信器
      */
@@ -327,7 +331,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         }
 
         int pendingSize = pendingLinkPositions.size();
-        for (Iterator<BlockPos> it = pendingLinkPositions.iterator(); it.hasNext(); ) {
+        for (Iterator<BlockPos> it = pendingLinkPositions.iterator(); it.hasNext();) {
             BlockPos targetPos = it.next();
 
             // 不处理未加载区块的情况
@@ -444,8 +448,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
 
         int newBandUsedChannelsForClient = clampChannelCount(newBandUsedChannels);
         int newBandTotalChannelsForClient = clampChannelCount(newBandTotalChannels);
-        if (this.bandUsedChannelsForClient != newBandUsedChannelsForClient
-                || this.bandTotalChannelsForClient != newBandTotalChannelsForClient) {
+        if (this.bandUsedChannelsForClient != newBandUsedChannelsForClient || this.bandTotalChannelsForClient != newBandTotalChannelsForClient) {
             this.bandUsedChannelsForClient = newBandUsedChannelsForClient;
             this.bandTotalChannelsForClient = newBandTotalChannelsForClient;
             markForClientUpdate();
@@ -589,8 +592,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
             try {
                 BlockPos.CODEC
                         .parse(NbtOps.INSTANCE, t)
-                        .resultOrPartial(msg -> {
-                        })
+                        .resultOrPartial(msg -> {})
                         .ifPresent(pos -> linkedPositions.add(pos.immutable()));
             } catch (Throwable e) {
                 // 忽略
@@ -658,8 +660,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
     }
 
     @Override
-    public ItemStack getMainMenuIcon()
-    {
+    public ItemStack getMainMenuIcon() {
         return AECSBlocks.ENDER_EMITTER_BLOCK.toStack();
     }
 
@@ -735,10 +736,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
             IGridNode emitterNode = emitter.getMainNode().getNode();
             if (emitterNode == null || !emitterNode.isActive()) return false;
             IInWorldGridNodeHost targetNodeHost = emitter.level.getCapability(AECapabilities.IN_WORLD_GRID_NODE_HOST, pos);
-            valid = (forceAuto || emitter.isAutoMode())
-                    && emitterNode.getUsedChannels() < emitter.getMaxLinkChannels()
-                    && (!(targetNodeHost instanceof CableBusBlockEntity) || emitter.allowAutoLinkCableLike())
-                    && VecHelper.closerThanChebyshev(emitter.worldPosition, pos, emitter.linkDistance);
+            valid = (forceAuto || emitter.isAutoMode()) && emitterNode.getUsedChannels() < emitter.getMaxLinkChannels() && (!(targetNodeHost instanceof CableBusBlockEntity) || emitter.allowAutoLinkCableLike()) && VecHelper.closerThanChebyshev(emitter.worldPosition, pos, emitter.linkDistance);
         }
 
         if (valid) {

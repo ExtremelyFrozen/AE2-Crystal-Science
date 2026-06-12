@@ -1,13 +1,13 @@
 package io.github.lounode.ae2cs.common.me.logic;
 
 import appeng.api.parts.IPartHost;
+import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.menu.locator.MenuHostLocator;
 import appeng.menu.locator.MenuLocators;
-import appeng.helpers.patternprovider.PatternProviderLogicHost;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
@@ -16,14 +16,17 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Nullable;
 
 public record MirroredPatternProviderTarget(GlobalPos pos, @Nullable Direction side) {
+
     private static final String TAG_MIRROR = "mirror_target";
     private static final String TAG_DIMENSION = "dimension";
     private static final String TAG_POS = "pos";
@@ -32,16 +35,14 @@ public record MirroredPatternProviderTarget(GlobalPos pos, @Nullable Direction s
 
     public static final Codec<MirroredPatternProviderTarget> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             GlobalPos.CODEC.fieldOf("pos").forGetter(MirroredPatternProviderTarget::pos),
-            Direction.CODEC.optionalFieldOf("side").forGetter(target -> java.util.Optional.ofNullable(target.side()))
-    ).apply(instance, (pos, side) -> new MirroredPatternProviderTarget(pos, side.orElse(null))));
+            Direction.CODEC.optionalFieldOf("side").forGetter(target -> java.util.Optional.ofNullable(target.side()))).apply(instance, (pos, side) -> new MirroredPatternProviderTarget(pos, side.orElse(null))));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, MirroredPatternProviderTarget> STREAM_CODEC = StreamCodec.composite(
             GlobalPos.STREAM_CODEC,
             MirroredPatternProviderTarget::pos,
             ByteBufCodecs.optional(ByteBufCodecs.idMapper(Direction.BY_ID, Direction::get3DDataValue)),
             target -> java.util.Optional.ofNullable(target.side()),
-            (pos, side) -> new MirroredPatternProviderTarget(pos, side.orElse(null))
-    );
+            (pos, side) -> new MirroredPatternProviderTarget(pos, side.orElse(null)));
 
     public static @Nullable MirroredPatternProviderTarget read(CompoundTag root) {
         if (!root.contains(TAG_MIRROR, Tag.TAG_COMPOUND)) {
@@ -58,14 +59,12 @@ public record MirroredPatternProviderTarget(GlobalPos pos, @Nullable Direction s
             return null;
         }
 
-        Direction readSide = tag.getBoolean(TAG_HAS_SIDE) && tag.contains(TAG_SIDE, Tag.TAG_INT)
-                ? Direction.from3DDataValue(tag.getInt(TAG_SIDE))
-                : null;
+        Direction readSide = tag.getBoolean(TAG_HAS_SIDE) && tag.contains(TAG_SIDE, Tag.TAG_INT) ? Direction.from3DDataValue(tag.getInt(TAG_SIDE)) : null;
 
         var pos = NbtUtils.readBlockPos(tag, TAG_POS);
         return pos.map(blockPos -> new MirroredPatternProviderTarget(
-                        GlobalPos.of(ResourceKey.create(Registries.DIMENSION, dimId), blockPos),
-                        readSide))
+                GlobalPos.of(ResourceKey.create(Registries.DIMENSION, dimId), blockPos),
+                readSide))
                 .orElse(null);
     }
 

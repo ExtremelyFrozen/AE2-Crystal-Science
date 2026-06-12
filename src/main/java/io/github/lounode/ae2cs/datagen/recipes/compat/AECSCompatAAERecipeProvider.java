@@ -1,7 +1,5 @@
 package io.github.lounode.ae2cs.datagen.recipes.compat;
 
-import appeng.core.definitions.AEItems;
-import appeng.datagen.providers.tags.ConventionTags;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
@@ -11,6 +9,10 @@ import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CircuitEtcherRecipeBuilder;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBuilder;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalPulverizerRecipeBuilder;
+
+import appeng.core.definitions.AEItems;
+import appeng.datagen.providers.tags.ConventionTags;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -22,26 +24,24 @@ import net.pedroksl.advanced_ae.common.definitions.AAEFluids;
 import net.pedroksl.advanced_ae.common.definitions.AAEItems;
 import net.pedroksl.advanced_ae.datagen.AAEConventionTags;
 import net.pedroksl.advanced_ae.recipes.ReactionChamberRecipeBuilder;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 
-public class AECSCompatAAERecipeProvider extends AECSRecipeProvider
-{
-    public AECSCompatAAERecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries)
-    {
+public class AECSCompatAAERecipeProvider extends AECSRecipeProvider {
+
+    public AECSCompatAAERecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries);
     }
 
     @Override
-    public @NotNull String getName()
-    {
+    public @NotNull String getName() {
         return "AECS AAE Compat Recipes";
     }
 
     @Override
-    protected void buildRecipes(@NotNull RecipeOutput originalOut, HolderLookup.@NotNull Provider registries)
-    {
+    protected void buildRecipes(@NotNull RecipeOutput originalOut, HolderLookup.@NotNull Provider registries) {
         var compatOut = originalOut.withConditions(modLoaded(AECSConstants.AAE_ID));
         super.buildRecipes(compatOut, registries);
 
@@ -49,7 +49,6 @@ public class AECSCompatAAERecipeProvider extends AECSRecipeProvider
                 AECSItems.PURE_QUANTUM_CRYSTAL, AECSBlocks.PURE_QUANTUM_CRYSTAL_BLOCK);
 
         stonecutterResultFromItem(compatOut, RecipeCategory.MISC, AAEItems.QUANTUM_PROCESSOR_PRESS, AECSItems.BLANK_PRINT_PRESS);
-
 
         CrystalAggregatorRecipeBuilder.aggregating(AAEItems.QUANTUM_ALLOY.stack(), 16000)
                 .require(AECSTags.Items.DUST_QUANTUM_ALLOY, 1)
@@ -84,9 +83,7 @@ public class AECSCompatAAERecipeProvider extends AECSRecipeProvider
                 .save(compatOut);
     }
 
-    protected static ResourceLocation getReactionPath(ItemLike output)
-    {
+    protected static ResourceLocation getReactionPath(ItemLike output) {
         return AE2CrystalScience.makeId(getPrefixedItemName("reaction", output));
     }
-
 }

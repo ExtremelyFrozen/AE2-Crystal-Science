@@ -1,12 +1,14 @@
 package io.github.lounode.ae2cs.client.gui.linker.broadcast;
 
+import io.github.lounode.ae2cs.api.linker.broadcast.networking.BroadcastBandsField;
+import io.github.lounode.ae2cs.common.menu.linker.broadcast.EnderEmitterFrequencyBandMenu;
+
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.AESubScreen;
 import appeng.client.gui.style.StyleManager;
 import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.Scrollbar;
-import io.github.lounode.ae2cs.api.linker.broadcast.networking.BroadcastBandsField;
-import io.github.lounode.ae2cs.common.menu.linker.broadcast.EnderEmitterFrequencyBandMenu;
+
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -16,8 +18,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-public class EnderEmitterFrequencyBandGUI extends AEBaseScreen<EnderEmitterFrequencyBandMenu>
-{
+public class EnderEmitterFrequencyBandGUI extends AEBaseScreen<EnderEmitterFrequencyBandMenu> {
+
     private static final Rect2i PANEL_AREA = new Rect2i(9, 39, 158, 170);
     private static final int ROW_H = 17;
     private static final int HIDE_X = -10000;
@@ -36,8 +38,7 @@ public class EnderEmitterFrequencyBandGUI extends AEBaseScreen<EnderEmitterFrequ
     private int totalRows = 0;
     private int lastTopRow = -1;
 
-    public EnderEmitterFrequencyBandGUI(EnderEmitterFrequencyBandMenu menu, Inventory inv, Component title)
-    {
+    public EnderEmitterFrequencyBandGUI(EnderEmitterFrequencyBandMenu menu, Inventory inv, Component title) {
         super(menu, inv, title, StyleManager.loadStyleDoc("/screens/frequency_band_menu.json"));
         AESubScreen.addBackButton(menu, "back_button", widgets);
 
@@ -57,8 +58,7 @@ public class EnderEmitterFrequencyBandGUI extends AEBaseScreen<EnderEmitterFrequ
     }
 
     @Override
-    protected void init()
-    {
+    protected void init() {
         super.init();
         this.visibleRows = Math.max(1, PANEL_AREA.getHeight() / ROW_H);
         this.scrollbar.setHeight(SCROLL_HEIGHT);
@@ -67,28 +67,23 @@ public class EnderEmitterFrequencyBandGUI extends AEBaseScreen<EnderEmitterFrequ
     }
 
     @Override
-    protected void updateBeforeRender()
-    {
+    protected void updateBeforeRender() {
         super.updateBeforeRender();
         refreshBandsFromMenuIfNeeded(false);
         int topRow = scrollbar.getCurrentScroll();
-        if (topRow != lastTopRow)
-        {
+        if (topRow != lastTopRow) {
             lastTopRow = topRow;
             reLayoutVisiblePanels();
         }
     }
 
-    private void refreshBandsFromMenuIfNeeded(boolean force)
-    {
+    private void refreshBandsFromMenuIfNeeded(boolean force) {
         BroadcastBandsField current = menu.bandsInfo;
-        if (current == null)
-        {
+        if (current == null) {
             current = new BroadcastBandsField(List.of());
         }
 
-        if (!force && Objects.equals(current, lastBandsInfo))
-        {
+        if (!force && Objects.equals(current, lastBandsInfo)) {
             return;
         }
 
@@ -101,10 +96,8 @@ public class EnderEmitterFrequencyBandGUI extends AEBaseScreen<EnderEmitterFrequ
         reLayoutVisiblePanels();
     }
 
-    private void ensurePanelPoolUpToDate()
-    {
-        for (int i = panelPool.size(); i < bands.size(); i++)
-        {
+    private void ensurePanelPoolUpToDate() {
+        for (int i = panelPool.size(); i < bands.size(); i++) {
             var p = new EnderEmitterFrequencyBandInfoPanel(HIDE_X, HIDE_Y, menu);
             p.active = false;
             p.visible = false;
@@ -112,8 +105,7 @@ public class EnderEmitterFrequencyBandGUI extends AEBaseScreen<EnderEmitterFrequ
             panelPool.add(p);
         }
 
-        for (int i = bands.size(); i < panelPool.size(); i++)
-        {
+        for (int i = bands.size(); i < panelPool.size(); i++) {
             var p = panelPool.get(i);
             p.active = false;
             p.visible = false;
@@ -122,54 +114,42 @@ public class EnderEmitterFrequencyBandGUI extends AEBaseScreen<EnderEmitterFrequ
         }
     }
 
-    private void rebuildFilter()
-    {
+    private void rebuildFilter() {
         filteredIndex.clear();
-        if (bands.isEmpty())
-        {
+        if (bands.isEmpty()) {
             return;
         }
 
-        if (searchQuery.isEmpty())
-        {
+        if (searchQuery.isEmpty()) {
             for (int i = 0; i < bands.size(); i++) filteredIndex.add(i);
-        }
-        else
-        {
-            for (int i = 0; i < bands.size(); i++)
-            {
+        } else {
+            for (int i = 0; i < bands.size(); i++) {
                 String name = bands.get(i).name();
-                if (name != null && name.toLowerCase(Locale.ROOT).contains(searchQuery))
-                {
+                if (name != null && name.toLowerCase(Locale.ROOT).contains(searchQuery)) {
                     filteredIndex.add(i);
                 }
             }
         }
     }
 
-    private void updateScrollbarRangeByFilteredSize()
-    {
+    private void updateScrollbarRangeByFilteredSize() {
         this.totalRows = filteredIndex.size();
         int maxScroll = Math.max(0, totalRows - visibleRows);
         scrollbar.setRange(0, maxScroll, 1);
-        if (scrollbar.getCurrentScroll() > maxScroll)
-        {
+        if (scrollbar.getCurrentScroll() > maxScroll) {
             scrollbar.setCurrentScroll(maxScroll);
         }
     }
 
-    private void reLayoutVisiblePanels()
-    {
-        for (var p : panelPool)
-        {
+    private void reLayoutVisiblePanels() {
+        for (var p : panelPool) {
             p.active = false;
             p.visible = false;
             p.setX(HIDE_X);
             p.setY(HIDE_Y);
         }
 
-        if (filteredIndex.isEmpty())
-        {
+        if (filteredIndex.isEmpty()) {
             return;
         }
 
@@ -179,8 +159,7 @@ public class EnderEmitterFrequencyBandGUI extends AEBaseScreen<EnderEmitterFrequ
         int x0 = leftPos + PANEL_AREA.getX();
         int y0 = topPos + PANEL_AREA.getY();
 
-        for (int row = startRow; row < endExclusive; row++)
-        {
+        for (int row = startRow; row < endExclusive; row++) {
             int idxInBands = filteredIndex.get(row);
             var entry = bands.get(idxInBands);
 

@@ -1,16 +1,19 @@
 package io.github.lounode.ae2cs.common.me.logic;
 
+import io.github.lounode.ae2cs.common.init.AECSDataComponents;
+import io.github.lounode.ae2cs.util.MirrorConfigManager;
+
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.stacks.KeyCounter;
 import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
-import io.github.lounode.ae2cs.common.init.AECSDataComponents;
-import io.github.lounode.ae2cs.util.MirrorConfigManager;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
@@ -18,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class MirrorPatternProviderLogic extends PatternProviderLogic {
+
     private final IManagedGridNode mainNode;
     private final PatternProviderLogicHost host;
     private @Nullable MirroredPatternProviderTarget mirrorTarget;

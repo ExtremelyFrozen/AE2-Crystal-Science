@@ -1,5 +1,13 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
+import io.github.lounode.ae2cs.api.cap.ProvideCaps;
+import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
+import io.github.lounode.ae2cs.common.init.*;
+import io.github.lounode.ae2cs.common.item.CrystalSeedItem;
+import io.github.lounode.ae2cs.common.machine.component.AppEngInvComponent;
+import io.github.lounode.ae2cs.common.machine.component.InvPort;
+import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
+
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.inventories.InternalInventory;
@@ -15,13 +23,7 @@ import appeng.core.definitions.AEItems;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
-import io.github.lounode.ae2cs.api.cap.ProvideCaps;
-import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
-import io.github.lounode.ae2cs.common.init.*;
-import io.github.lounode.ae2cs.common.item.CrystalSeedItem;
-import io.github.lounode.ae2cs.common.machine.component.AppEngInvComponent;
-import io.github.lounode.ae2cs.common.machine.component.InvPort;
-import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -30,14 +32,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.IItemHandler;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 @ProvideCaps(IItemHandler.class)
 public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlockEntity implements IUpgradeableObject,
-        CustomReturnableSubMenuHost
-{
+                                             CustomReturnableSubMenuHost {
+
     /**
      * 晶体催生仓提供的基础生长值
      */
@@ -68,43 +71,38 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
 
     private int workTickCountDown = 10;
 
-    public CrystalGrowthChamberBlockEntity(BlockPos pos, BlockState state)
-    {
+    public CrystalGrowthChamberBlockEntity(BlockPos pos, BlockState state) {
         super(AECSBlockEntities.CRYSTAL_GROWTH_CHAMBER.get(), pos, state,
                 40000, false, AccessRestriction.WRITE);
 
         getMainNode().setIdlePowerUsage(0.0);
 
-        AppEngInternalInventory inventory = new AppEngInternalInventory(54)
-        {
+        AppEngInternalInventory inventory = new AppEngInternalInventory(54) {
+
             @Override
-            protected void onContentsChanged(int slot)
-            {
+            protected void onContentsChanged(int slot) {
                 super.onContentsChanged(slot);
                 setChanged();
             }
         };
-        inventory.setFilter(new IAEItemFilter()
-        {
+        inventory.setFilter(new IAEItemFilter() {
+
             // 这里限定只允许水晶种子进入，但不限制输出，以便UI中能手动拿取任意物品
             @Override
-            public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack)
-            {
+            public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
                 return stack != null && !stack.isEmpty() && stack.is(AECSTags.Items.CRYSTAL_SEEDS);
             }
         });
 
-        FilteredInternalInventory exposeInv = new FilteredInternalInventory(inventory, new IAEItemFilter()
-        {
+        FilteredInternalInventory exposeInv = new FilteredInternalInventory(inventory, new IAEItemFilter() {
+
             @Override
-            public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack)
-            {
+            public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
                 return stack != null && !stack.isEmpty() && stack.is(AECSTags.Items.CRYSTAL_SEEDS);
             }
 
             @Override
-            public boolean allowExtract(InternalInventory inv, int slot, int amount)
-            {
+            public boolean allowExtract(InternalInventory inv, int slot, int amount) {
                 return inv.getStackInSlot(slot).is(AECSTags.Items.PURE_CRYSTAL);
             }
         });
@@ -119,8 +117,7 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
     /**
      * 取当前网络的MEStorage
      */
-    public @Nullable MEStorage getNetworkInventory()
-    {
+    public @Nullable MEStorage getNetworkInventory() {
         IGrid grid = getMainNode().getGrid();
         if (grid == null) return null;
         IStorageService ss = grid.getStorageService();
@@ -130,60 +127,51 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
     /**
      * 存储槽
      */
-    public InternalInventory getInternalInventory()
-    {
+    public InternalInventory getInternalInventory() {
         return getMachineComponents().getService(AppEngInvComponent.class).port(InvPort.WORK);
     }
 
-    public void checkActive(boolean active)
-    {
+    public void checkActive(boolean active) {
         if (level == null || level.isClientSide()) return;
         BlockState state = getBlockState();
-        if (state.hasProperty(AECSBlockProperties.ACTIVE) && state.getValue(AECSBlockProperties.ACTIVE) != active)
-        {
+        if (state.hasProperty(AECSBlockProperties.ACTIVE) && state.getValue(AECSBlockProperties.ACTIVE) != active) {
             level.setBlock(worldPosition, getBlockState().setValue(AECSBlockProperties.ACTIVE, active), 2);
         }
     }
 
     /* 对外返回升级仓 */
     @Override
-    public IUpgradeInventory getUpgrades()
-    {
+    public IUpgradeInventory getUpgrades() {
         return upgrades;
     }
 
     // inv的save与load均已由AEBaseInvBlockEntity处理
     @Override
-    public void saveAdditional(CompoundTag tag, HolderLookup.Provider registries)
-    {
+    public void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         this.upgrades.writeToNBT(tag, "interface_upgrades", registries);
     }
 
     @Override
-    public void loadTag(CompoundTag tag, HolderLookup.Provider registries)
-    {
+    public void loadTag(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadTag(tag, registries);
         this.upgrades.readFromNBT(tag, "interface_upgrades", registries);
     }
 
     // load完成之后，且level被注入后
     @Override
-    public void onLoad()
-    {
+    public void onLoad() {
         super.onLoad();
         onUpgradesChanged(); // 加载后刷新一次升级状态
         updateGrowthNum();
     }
 
-    private void onUpgradesChanged()
-    {
+    private void onUpgradesChanged() {
         setChanged();
     }
 
     @Override
-    public void serverTick()
-    {
+    public void serverTick() {
         super.serverTick();
 
         if (level == null || level.isClientSide) return;
@@ -203,8 +191,7 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
         int growthTick = growthProgressBase + speedCard * growthProgressPerSpeedCard + growthNum * growthProgressPerGrowth;
 
         boolean worked = false;
-        for (int i = 0; i < getInternalInventory().size(); ++i)
-        {
+        for (int i = 0; i < getInternalInventory().size(); ++i) {
             ItemStack stack = getInternalInventory().getStackInSlot(i);
             if (stack.isEmpty() || !stack.is(AECSTags.Items.CRYSTAL_SEEDS)) continue;
 
@@ -223,25 +210,18 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
     /**
      * 设置周围晶体催生器的数量
      */
-    public void updateGrowthNum()
-    {
+    public void updateGrowthNum() {
         if (level == null || level.isClientSide) return;
 
         growthNum = 0;
-        for (Direction dir : Direction.values())
-        {
+        for (Direction dir : Direction.values()) {
             BlockState state = level.getBlockState(getBlockPos().relative(dir));
-            if (state.getBlock() == AEBlocks.GROWTH_ACCELERATOR.block())
-            {
+            if (state.getBlock() == AEBlocks.GROWTH_ACCELERATOR.block()) {
                 growthNum++;
-            }
-            else if (level.getBlockEntity(getBlockPos().relative(dir)) instanceof IUpgradeableObject upgradeableObject)
-            {
+            } else if (level.getBlockEntity(getBlockPos().relative(dir)) instanceof IUpgradeableObject upgradeableObject) {
                 if (upgradeableObject.isUpgradedWith(AECSItems.crystalGrowthCard))
                     growthNum++;
-            }
-            else if (level.getBlockEntity(getBlockPos().relative(dir)) instanceof CableBusBlockEntity cabe)
-            {
+            } else if (level.getBlockEntity(getBlockPos().relative(dir)) instanceof CableBusBlockEntity cabe) {
                 if (cabe.getCableBus().getPart(dir.getOpposite()) instanceof IUpgradeableObject upgradeableObject &&
                         upgradeableObject.isUpgradedWith(AECSItems.crystalGrowthCard))
                     growthNum++;
@@ -249,29 +229,24 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
         }
     }
 
-
     @Override
-    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops)
-    {
+    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
         super.addAdditionalDrops(level, pos, drops);
 
-        for (ItemStack stack : upgrades)
-        {
+        for (ItemStack stack : upgrades) {
             if (stack.isEmpty()) continue;
             drops.add(stack.copy());
         }
     }
 
     @Override
-    public void clearContent()
-    {
+    public void clearContent() {
         super.clearContent();
         this.upgrades.clear();
     }
 
     @Override
-    public ItemStack getMainMenuIcon()
-    {
+    public ItemStack getMainMenuIcon() {
         return new ItemStack(getItemFromBlockEntity());
     }
 }

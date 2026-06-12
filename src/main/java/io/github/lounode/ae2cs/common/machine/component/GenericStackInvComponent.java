@@ -1,24 +1,27 @@
 package io.github.lounode.ae2cs.common.machine.component;
 
+import io.github.lounode.ae2cs.api.genericinv.CombinedGenericInternalInventory;
+import io.github.lounode.ae2cs.api.genericinv.GenericStackInvWrapper;
+import io.github.lounode.ae2cs.common.machine.MachineComponentContainer;
+
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.helpers.externalstorage.GenericStackInv;
-import io.github.lounode.ae2cs.api.genericinv.CombinedGenericInternalInventory;
-import io.github.lounode.ae2cs.api.genericinv.GenericStackInvWrapper;
-import io.github.lounode.ae2cs.common.machine.MachineComponentContainer;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public final class GenericStackInvComponent extends BaseMachineComponent
-{
+public final class GenericStackInvComponent extends BaseMachineComponent {
+
     /**
      * 原始仓库
      */
@@ -35,24 +38,20 @@ public final class GenericStackInvComponent extends BaseMachineComponent
     /**
      * 输入之前必须把change给Inv准备好
      */
-    public GenericStackInvComponent addPort(InvPort port, GenericStackInv inv)
-    {
+    public GenericStackInvComponent addPort(InvPort port, GenericStackInv inv) {
         ports.put(port, inv);
         return this;
     }
 
-    public GenericStackInvComponent setWrap(InvPort port, GenericStackInvWrapper inv)
-    {
+    public GenericStackInvComponent setWrap(InvPort port, GenericStackInvWrapper inv) {
         portWrappers.put(port, inv);
         Set<GenericStackInvWrapper> filters = Collections.newSetFromMap(new IdentityHashMap<>());
         filters.addAll(portWrappers.values());
         combined = new CombinedGenericInternalInventory(filters.toArray(GenericStackInvWrapper[]::new));
 
-        if (container != null)
-        {
+        if (container != null) {
             container.host().invalidCap();
-            if (container.hasService(SideConfigComponent.class))
-            {
+            if (container.hasService(SideConfigComponent.class)) {
                 container.getService(SideConfigComponent.class).invalidateAllCaches();
             }
         }
@@ -60,27 +59,21 @@ public final class GenericStackInvComponent extends BaseMachineComponent
     }
 
     @Override
-    public void onConstruct(MachineComponentContainer container)
-    {
+    public void onConstruct(MachineComponentContainer container) {
         if (ports.isEmpty()) throw new IllegalStateException("No ports available");
 
         var list = new ArrayList<GenericStackInvWrapper>();
         var added = new HashSet<GenericStackInv>();
-        for (var portEntry : ports.entrySet())
-        {
-            switch (portEntry.getKey())
-            {
-                case INPUT ->
-                {
+        for (var portEntry : ports.entrySet()) {
+            switch (portEntry.getKey()) {
+                case INPUT -> {
                     if (added.contains(portEntry.getValue())) continue;
                     added.add(portEntry.getValue());
-                    GenericStackInvWrapper wrapper = new GenericStackInvWrapper(portEntry.getValue())
-                    {
+                    GenericStackInvWrapper wrapper = new GenericStackInvWrapper(portEntry.getValue()) {
+
                         @Override
-                        public long extract(int slot, AEKey what, long amount, Actionable mode)
-                        {
-                            if (mode == Actionable.SIMULATE)
-                            {
+                        public long extract(int slot, AEKey what, long amount, Actionable mode) {
+                            if (mode == Actionable.SIMULATE) {
                                 return super.extract(slot, what, amount, mode);
                             }
                             return 0;
@@ -89,23 +82,20 @@ public final class GenericStackInvComponent extends BaseMachineComponent
                     list.add(wrapper);
                     portWrappers.put(InvPort.INPUT, wrapper);
                 }
-                case OUTPUT ->
-                {
+                case OUTPUT -> {
                     if (added.contains(portEntry.getValue())) continue;
                     added.add(portEntry.getValue());
-                    GenericStackInvWrapper wrapper = new GenericStackInvWrapper(portEntry.getValue())
-                    {
+                    GenericStackInvWrapper wrapper = new GenericStackInvWrapper(portEntry.getValue()) {
+
                         @Override
-                        public long insert(int slot, AEKey what, long amount, Actionable mode)
-                        {
+                        public long insert(int slot, AEKey what, long amount, Actionable mode) {
                             return 0;
                         }
                     };
                     list.add(wrapper);
                     portWrappers.put(InvPort.OUTPUT, wrapper);
                 }
-                case WORK ->
-                {
+                case WORK -> {
                     if (added.contains(portEntry.getValue())) continue;
                     added.add(portEntry.getValue());
                     GenericStackInvWrapper wrapper = new GenericStackInvWrapper(portEntry.getValue());
@@ -120,13 +110,11 @@ public final class GenericStackInvComponent extends BaseMachineComponent
         container.exposeService(CombinedGenericInternalInventory.class, combined);
     }
 
-    public @Nullable GenericStackInv port(InvPort port)
-    {
+    public @Nullable GenericStackInv port(InvPort port) {
         return ports.get(port);
     }
 
-    public @Nullable GenericStackInvWrapper warp(InvPort port)
-    {
+    public @Nullable GenericStackInvWrapper warp(InvPort port) {
         return portWrappers.get(port);
     }
 
@@ -137,35 +125,29 @@ public final class GenericStackInvComponent extends BaseMachineComponent
      * - WORK 完全尊重原始Inv
      * 如果单个仓库被标记为多个port，则以其第一个标记的port为准
      */
-    public @NotNull CombinedGenericInternalInventory combined()
-    {
+    public @NotNull CombinedGenericInternalInventory combined() {
         return combined;
     }
 
     @Override
-    public void writeNbt(CompoundTag tag, HolderLookup.Provider r)
-    {
+    public void writeNbt(CompoundTag tag, HolderLookup.Provider r) {
         for (var e : ports.entrySet()) e.getValue().writeToChildTag(tag, "inv_" + e.getKey().name().toLowerCase(), r);
     }
 
     @Override
-    public void readNbt(CompoundTag tag, HolderLookup.Provider r)
-    {
+    public void readNbt(CompoundTag tag, HolderLookup.Provider r) {
         for (var e : ports.entrySet()) e.getValue().readFromChildTag(tag, "inv_" + e.getKey().name().toLowerCase(), r);
     }
 
     @Override
-    public void addDrops(Level level, BlockPos pos, List<ItemStack> drops)
-    {
+    public void addDrops(Level level, BlockPos pos, List<ItemStack> drops) {
         var visited = new IdentityHashMap<GenericStackInv, Boolean>();
 
-        for (var inv : ports.values())
-        {
+        for (var inv : ports.values()) {
             if (visited.put(inv, Boolean.TRUE) != null)
                 continue;
 
-            for (GenericStack gs : inv.toList())
-            {
+            for (GenericStack gs : inv.toList()) {
                 if (gs == null) continue;
                 gs.what().addDrops(gs.amount(), drops, level, pos);
             }
@@ -173,8 +155,7 @@ public final class GenericStackInvComponent extends BaseMachineComponent
     }
 
     @Override
-    public void clearContent()
-    {
+    public void clearContent() {
         ports.values().forEach(GenericStackInv::clear);
     }
 }

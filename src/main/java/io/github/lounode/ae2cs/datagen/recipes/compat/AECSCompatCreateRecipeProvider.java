@@ -1,39 +1,38 @@
 package io.github.lounode.ae2cs.datagen.recipes.compat;
 
-import com.simibubi.create.AllItems;
-import com.simibubi.create.api.data.recipe.MechanicalCraftingRecipeBuilder;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
+
+import com.simibubi.create.AllItems;
+import com.simibubi.create.api.data.recipe.MechanicalCraftingRecipeBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 
-public class AECSCompatCreateRecipeProvider extends AECSRecipeProvider
-{
-    public AECSCompatCreateRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries)
-    {
+public class AECSCompatCreateRecipeProvider extends AECSRecipeProvider {
+
+    public AECSCompatCreateRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries);
     }
 
     @Override
-    public @NotNull String getName()
-    {
+    public @NotNull String getName() {
         return "AECS Create Compat Recipes";
     }
 
     @Override
-    protected void buildRecipes(@NotNull RecipeOutput originalOut, HolderLookup.@NotNull Provider registries)
-    {
+    protected void buildRecipes(@NotNull RecipeOutput originalOut, HolderLookup.@NotNull Provider registries) {
         var compatOut = originalOut.withConditions(modLoaded(AECSConstants.CREATE_ID));
         super.buildRecipes(compatOut, registries);
 
@@ -49,8 +48,7 @@ public class AECSCompatCreateRecipeProvider extends AECSRecipeProvider
                 .build(compatOut, getMechanicalCraftingPath(AECSItems.ROSE_QUARTZ_SEED));
     }
 
-    protected static ResourceLocation getMechanicalCraftingPath(ItemLike output)
-    {
+    protected static ResourceLocation getMechanicalCraftingPath(ItemLike output) {
         return AE2CrystalScience.makeId(getPrefixedItemName("mechanical_crafting", output));
     }
 }

@@ -1,10 +1,12 @@
 package io.github.lounode.ae2cs.client.gui.linker.broadcast;
 
+import io.github.lounode.ae2cs.api.networking.ServerPlayerInfo;
+import io.github.lounode.ae2cs.common.menu.linker.broadcast.BandWhiteListManagerMenu;
+
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.AESubScreen;
 import appeng.client.gui.style.StyleManager;
-import io.github.lounode.ae2cs.api.networking.ServerPlayerInfo;
-import io.github.lounode.ae2cs.common.menu.linker.broadcast.BandWhiteListManagerMenu;
+
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -12,8 +14,8 @@ import net.minecraft.world.entity.player.Inventory;
 
 import java.util.*;
 
-public class BandWhiteListManagerGUI extends AEBaseScreen<BandWhiteListManagerMenu>
-{
+public class BandWhiteListManagerGUI extends AEBaseScreen<BandWhiteListManagerMenu> {
+
     // 可滚动区域
     private static final Rect2i WHITELIST_AREA = new Rect2i(9, 22, 158, 187); // 左侧：白名单
     private static final Rect2i OTHER_AREA = new Rect2i(193, 22, 158, 187); // 右侧：其它玩家
@@ -49,15 +51,13 @@ public class BandWhiteListManagerGUI extends AEBaseScreen<BandWhiteListManagerMe
     private int lastWhitelistTopRow = -1;
     private int lastOtherTopRow = -1;
 
-    public BandWhiteListManagerGUI(BandWhiteListManagerMenu menu, Inventory playerInventory, Component title)
-    {
+    public BandWhiteListManagerGUI(BandWhiteListManagerMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, StyleManager.loadStyleDoc("/screens/band_white_list_manager_menu.json"));
         AESubScreen.addBackButton(menu, "back_button", widgets);
     }
 
     @Override
-    protected void init()
-    {
+    protected void init() {
         super.init();
 
         this.visibleWhitelistRows = Math.max(1, WHITELIST_AREA.getHeight() / ROW_H);
@@ -82,35 +82,30 @@ public class BandWhiteListManagerGUI extends AEBaseScreen<BandWhiteListManagerMe
     }
 
     @Override
-    protected void updateBeforeRender()
-    {
+    protected void updateBeforeRender() {
         super.updateBeforeRender();
 
         refreshFromMenuIfNeeded(false);
 
-        if (whitelistTopRow != lastWhitelistTopRow)
-        {
+        if (whitelistTopRow != lastWhitelistTopRow) {
             lastWhitelistTopRow = whitelistTopRow;
             layoutWhitelistPanels();
         }
 
-        if (otherTopRow != lastOtherTopRow)
-        {
+        if (otherTopRow != lastOtherTopRow) {
             lastOtherTopRow = otherTopRow;
             layoutOtherPanels();
         }
     }
 
-    private void refreshFromMenuIfNeeded(boolean force)
-    {
+    private void refreshFromMenuIfNeeded(boolean force) {
         ServerPlayerInfo wl = menu.whiteListInfo;
         ServerPlayerInfo other = menu.otherPlayerInfo;
 
         if (wl == null) wl = new ServerPlayerInfo(Map.of());
         if (other == null) other = new ServerPlayerInfo(Map.of());
 
-        if (!force && Objects.equals(wl, lastWhitelistInfo) && Objects.equals(other, lastOtherInfo))
-        {
+        if (!force && Objects.equals(wl, lastWhitelistInfo) && Objects.equals(other, lastOtherInfo)) {
             return;
         }
 
@@ -136,25 +131,21 @@ public class BandWhiteListManagerGUI extends AEBaseScreen<BandWhiteListManagerMe
         layoutOtherPanels();
     }
 
-    private static int clampTopRow(int topRow, int totalRows, int visibleRows)
-    {
+    private static int clampTopRow(int topRow, int totalRows, int visibleRows) {
         int maxTop = Math.max(0, totalRows - visibleRows);
         return Mth.clamp(topRow, 0, maxTop);
     }
 
-    private void ensurePoolsUpToDate()
-    {
+    private void ensurePoolsUpToDate() {
         // whitelist pool
-        for (int i = whitelistPool.size(); i < whitelistEntries.size(); i++)
-        {
+        for (int i = whitelistPool.size(); i < whitelistEntries.size(); i++) {
             var p = new WhiteListPlayerPanel(HIDE_X, HIDE_Y, menu);
             p.active = false;
             p.visible = false;
             addRenderableWidget(p);
             whitelistPool.add(p);
         }
-        for (int i = whitelistEntries.size(); i < whitelistPool.size(); i++)
-        {
+        for (int i = whitelistEntries.size(); i < whitelistPool.size(); i++) {
             var p = whitelistPool.get(i);
             p.active = false;
             p.visible = false;
@@ -163,16 +154,14 @@ public class BandWhiteListManagerGUI extends AEBaseScreen<BandWhiteListManagerMe
         }
 
         // other pool
-        for (int i = otherPool.size(); i < otherEntries.size(); i++)
-        {
+        for (int i = otherPool.size(); i < otherEntries.size(); i++) {
             var p = new WhiteListPlayerPanel(HIDE_X, HIDE_Y, menu);
             p.active = false;
             p.visible = false;
             addRenderableWidget(p);
             otherPool.add(p);
         }
-        for (int i = otherEntries.size(); i < otherPool.size(); i++)
-        {
+        for (int i = otherEntries.size(); i < otherPool.size(); i++) {
             var p = otherPool.get(i);
             p.active = false;
             p.visible = false;
@@ -181,10 +170,8 @@ public class BandWhiteListManagerGUI extends AEBaseScreen<BandWhiteListManagerMe
         }
     }
 
-    private void hideAllWhitelistPanels()
-    {
-        for (var p : whitelistPool)
-        {
+    private void hideAllWhitelistPanels() {
+        for (var p : whitelistPool) {
             p.active = false;
             p.visible = false;
             p.setX(HIDE_X);
@@ -192,10 +179,8 @@ public class BandWhiteListManagerGUI extends AEBaseScreen<BandWhiteListManagerMe
         }
     }
 
-    private void hideAllOtherPanels()
-    {
-        for (var p : otherPool)
-        {
+    private void hideAllOtherPanels() {
+        for (var p : otherPool) {
             p.active = false;
             p.visible = false;
             p.setX(HIDE_X);
@@ -203,12 +188,10 @@ public class BandWhiteListManagerGUI extends AEBaseScreen<BandWhiteListManagerMe
         }
     }
 
-    private void layoutWhitelistPanels()
-    {
+    private void layoutWhitelistPanels() {
         hideAllWhitelistPanels();
 
-        if (whitelistEntries.isEmpty())
-        {
+        if (whitelistEntries.isEmpty()) {
             return;
         }
 
@@ -219,8 +202,7 @@ public class BandWhiteListManagerGUI extends AEBaseScreen<BandWhiteListManagerMe
         int x0 = leftPos + WHITELIST_AREA.getX();
         int y0 = topPos + WHITELIST_AREA.getY();
 
-        for (int row = startRow; row < endExclusive; row++)
-        {
+        for (int row = startRow; row < endExclusive; row++) {
             var e = whitelistEntries.get(row);
             var panel = whitelistPool.get(row);
 
@@ -232,12 +214,10 @@ public class BandWhiteListManagerGUI extends AEBaseScreen<BandWhiteListManagerMe
         }
     }
 
-    private void layoutOtherPanels()
-    {
+    private void layoutOtherPanels() {
         hideAllOtherPanels();
 
-        if (otherEntries.isEmpty())
-        {
+        if (otherEntries.isEmpty()) {
             return;
         }
 
@@ -248,8 +228,7 @@ public class BandWhiteListManagerGUI extends AEBaseScreen<BandWhiteListManagerMe
         int x0 = leftPos + OTHER_AREA.getX();
         int y0 = topPos + OTHER_AREA.getY();
 
-        for (int row = startRow; row < endExclusive; row++)
-        {
+        for (int row = startRow; row < endExclusive; row++) {
             var e = otherEntries.get(row);
             var panel = otherPool.get(row);
 
@@ -261,34 +240,28 @@ public class BandWhiteListManagerGUI extends AEBaseScreen<BandWhiteListManagerMe
         }
     }
 
-    private boolean isMouseInArea(double mouseX, double mouseY, Rect2i area)
-    {
+    private boolean isMouseInArea(double mouseX, double mouseY, Rect2i area) {
         int ax = leftPos + area.getX();
         int ay = topPos + area.getY();
-        return mouseX >= ax && mouseX < ax + area.getWidth()
-                && mouseY >= ay && mouseY < ay + area.getHeight();
+        return mouseX >= ax && mouseX < ax + area.getWidth() && mouseY >= ay && mouseY < ay + area.getHeight();
     }
 
     /**
      * 在没有滚动条的情况下，我们使用此方法手动进行滚动操作
      */
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY)
-    {
+    public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY) {
         int amount = (int) Math.ceil(Math.abs(deltaY));
-        if (amount <= 0)
-        {
+        if (amount <= 0) {
             return super.mouseScrolled(mouseX, mouseY, deltaX, deltaY);
         }
 
-        if (isMouseInArea(mouseX, mouseY, WHITELIST_AREA))
-        {
+        if (isMouseInArea(mouseX, mouseY, WHITELIST_AREA)) {
             int dir = deltaY < 0 ? 1 : -1;
             int old = whitelistTopRow;
             whitelistTopRow = clampTopRow(whitelistTopRow + dir * amount, totalWhitelistRows, visibleWhitelistRows);
 
-            if (whitelistTopRow != old)
-            {
+            if (whitelistTopRow != old) {
                 // 立即布局
                 lastWhitelistTopRow = -1;
                 layoutWhitelistPanels();
@@ -297,14 +270,12 @@ public class BandWhiteListManagerGUI extends AEBaseScreen<BandWhiteListManagerMe
             return true; // 区域内吞掉滚轮事件
         }
 
-        if (isMouseInArea(mouseX, mouseY, OTHER_AREA))
-        {
+        if (isMouseInArea(mouseX, mouseY, OTHER_AREA)) {
             int dir = deltaY < 0 ? 1 : -1;
             int old = otherTopRow;
             otherTopRow = clampTopRow(otherTopRow + dir * amount, totalOtherRows, visibleOtherRows);
 
-            if (otherTopRow != old)
-            {
+            if (otherTopRow != old) {
                 lastOtherTopRow = -1;
                 layoutOtherPanels();
                 return true;

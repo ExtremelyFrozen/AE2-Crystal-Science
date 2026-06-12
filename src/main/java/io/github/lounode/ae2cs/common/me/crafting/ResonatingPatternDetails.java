@@ -1,5 +1,10 @@
 package io.github.lounode.ae2cs.common.me.crafting;
 
+import io.github.lounode.ae2cs.api.util.PatternHelper;
+import io.github.lounode.ae2cs.common.init.AECSDataComponents;
+import io.github.lounode.ae2cs.common.init.AECSItems;
+import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern.Target;
+
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.PatternDetailsTooltip;
 import appeng.api.ids.AEComponents;
@@ -9,16 +14,14 @@ import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.core.definitions.AEItems;
 import appeng.crafting.pattern.EncodedProcessingPattern;
-import com.google.common.base.Preconditions;
-import io.github.lounode.ae2cs.api.util.PatternHelper;
-import io.github.lounode.ae2cs.common.init.AECSDataComponents;
-import io.github.lounode.ae2cs.common.init.AECSItems;
-import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern.Target;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+
+import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -93,9 +96,7 @@ public class ResonatingPatternDetails implements IPatternDetails {
     public static boolean encode(@NotNull ItemStack patternItem, @NotNull ItemStack resonatingPattern) {
         if (patternItem.isEmpty() || resonatingPattern.isEmpty()) return false;
 
-        if (!patternItem.is(AEItems.PROCESSING_PATTERN.asItem())
-                || !resonatingPattern.is(AECSItems.RESONATING_PATTERN.asItem())
-                || !patternItem.has(AEComponents.ENCODED_PROCESSING_PATTERN))
+        if (!patternItem.is(AEItems.PROCESSING_PATTERN.asItem()) || !resonatingPattern.is(AECSItems.RESONATING_PATTERN.asItem()) || !patternItem.has(AEComponents.ENCODED_PROCESSING_PATTERN))
             return false;
 
         EncodedProcessingPattern src = patternItem.get(AEComponents.ENCODED_PROCESSING_PATTERN);
@@ -116,8 +117,7 @@ public class ResonatingPatternDetails implements IPatternDetails {
     public static ItemStack encode(@NotNull ItemStack patternItem) {
         if (patternItem.isEmpty()) return ItemStack.EMPTY;
 
-        if (!patternItem.is(AEItems.PROCESSING_PATTERN.asItem())
-                || !patternItem.has(AEComponents.ENCODED_PROCESSING_PATTERN))
+        if (!patternItem.is(AEItems.PROCESSING_PATTERN.asItem()) || !patternItem.has(AEComponents.ENCODED_PROCESSING_PATTERN))
             return ItemStack.EMPTY;
 
         ItemStack resonatingItem = AECSItems.RESONATING_PATTERN.get().getDefaultInstance();
@@ -205,11 +205,12 @@ public class ResonatingPatternDetails implements IPatternDetails {
     }
 
     private static class Input implements IInput {
+
         private final GenericStack[] template;
         private final long multiplier;
 
         private Input(GenericStack stack) {
-            this.template = new GenericStack[]{new GenericStack(stack.what(), 1)};
+            this.template = new GenericStack[] { new GenericStack(stack.what(), 1) };
             this.multiplier = stack.amount();
         }
 

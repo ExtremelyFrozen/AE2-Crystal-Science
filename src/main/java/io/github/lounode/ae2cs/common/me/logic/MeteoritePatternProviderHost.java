@@ -5,11 +5,10 @@ import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 
-public interface MeteoritePatternProviderHost extends PatternProviderLogicHost, IUpgradeableObject
-{
+public interface MeteoritePatternProviderHost extends PatternProviderLogicHost, IUpgradeableObject {
+
     @Override
-    default IUpgradeInventory getUpgrades()
-    {
+    default IUpgradeInventory getUpgrades() {
         if (getLogic() instanceof MeteoritePatternProviderLogic logic)
             return logic.getUpgrades();
         else

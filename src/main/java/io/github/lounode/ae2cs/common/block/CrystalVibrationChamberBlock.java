@@ -1,13 +1,15 @@
 package io.github.lounode.ae2cs.common.block;
 
+import io.github.lounode.ae2cs.common.block.entity.CrystalVibrationChamberBlockEntity;
+import io.github.lounode.ae2cs.common.init.AECSMenus;
+
 import appeng.api.orientation.IOrientationStrategy;
 import appeng.api.orientation.OrientationStrategies;
 import appeng.block.AEBaseEntityBlock;
 import appeng.core.AEConfig;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
-import io.github.lounode.ae2cs.common.block.entity.CrystalVibrationChamberBlockEntity;
-import io.github.lounode.ae2cs.common.init.AECSMenus;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -20,15 +22,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
+
 import org.jetbrains.annotations.NotNull;
 
 import static io.github.lounode.ae2cs.common.init.AECSBlockProperties.ACTIVE;
 
-public class CrystalVibrationChamberBlock extends AEBaseEntityBlock<CrystalVibrationChamberBlockEntity>
-{
+public class CrystalVibrationChamberBlock extends AEBaseEntityBlock<CrystalVibrationChamberBlockEntity> {
 
-    public CrystalVibrationChamberBlock(Properties properties)
-    {
+    public CrystalVibrationChamberBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(this.defaultBlockState()
                 .setValue(ACTIVE, false)
@@ -36,8 +37,7 @@ public class CrystalVibrationChamberBlock extends AEBaseEntityBlock<CrystalVibra
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
-    {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         // super中已经通过horizontalFacing的Orientation策略把HORIZONTAL_FACING面属性加上了
         // 包括放置时候的面朝向，也已经在AEBaseBlock中做过处理了
         super.createBlockStateDefinition(builder);
@@ -45,17 +45,14 @@ public class CrystalVibrationChamberBlock extends AEBaseEntityBlock<CrystalVibra
     }
 
     @Override
-    public IOrientationStrategy getOrientationStrategy()
-    {
+    public IOrientationStrategy getOrientationStrategy() {
         return OrientationStrategies.horizontalFacing();
     }
 
     @Override
-    protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult)
-    {
+    protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         super.useWithoutItem(state, level, pos, player, hitResult);
-        if (!level.isClientSide() && !player.isShiftKeyDown())
-        {
+        if (!level.isClientSide() && !player.isShiftKeyDown()) {
             if (level.getBlockEntity(pos) instanceof CrystalVibrationChamberBlockEntity be)
                 MenuOpener.open(AECSMenus.CRYSTAL_VIBRATION_CHAMBER_MENU.get(), player, MenuLocators.forBlockEntity(be));
         }
@@ -66,17 +63,14 @@ public class CrystalVibrationChamberBlock extends AEBaseEntityBlock<CrystalVibra
      * 在燃烧时添加一些烟雾和粒子特效
      */
     @Override
-    public void animateTick(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull RandomSource r)
-    {
-        if (!AEConfig.instance().isEnableEffects())
-        {
+    public void animateTick(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull RandomSource r) {
+        if (!AEConfig.instance().isEnableEffects()) {
             return;
         }
 
         var tc = this.getBlockEntity(level, pos);
         boolean isActive = state.getValue(ACTIVE);
-        if (tc != null && isActive)
-        {
+        if (tc != null && isActive) {
             double f1 = pos.getX() + 0.5F;
             double f2 = pos.getY() + 0.5F;
             double f3 = pos.getZ() + 0.5F;

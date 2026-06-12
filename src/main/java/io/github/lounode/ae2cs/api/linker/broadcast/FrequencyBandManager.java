@@ -2,7 +2,7 @@ package io.github.lounode.ae2cs.api.linker.broadcast;
 
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.linker.broadcast.networking.BroadcastBandsField;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -15,6 +15,8 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
+
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,8 +29,8 @@ import java.util.*;
  * 用于管理当前服务端内所有频段（持久化 + 运行时重算调度）
  */
 @EventBusSubscriber(modid = AECSConstants.MODID)
-public class FrequencyBandManager extends SavedData
-{
+public class FrequencyBandManager extends SavedData {
+
     /**
      * SavedData存放的文件夹
      */
@@ -39,8 +41,7 @@ public class FrequencyBandManager extends SavedData
      */
     private static final String MANAGER_PATH = SAVED_FOLDER_NAME + "/frequency_band_manager";
 
-    private static final SavedData.Factory<FrequencyBandManager> FACTORY =
-            new SavedData.Factory<>(FrequencyBandManager::new, FrequencyBandManager::load);
+    private static final SavedData.Factory<FrequencyBandManager> FACTORY = new SavedData.Factory<>(FrequencyBandManager::new, FrequencyBandManager::load);
 
     /**
      * name -> 频段实例
@@ -52,8 +53,7 @@ public class FrequencyBandManager extends SavedData
      */
     private final transient Object2LongOpenHashMap<String> dirtyRuntimeAt = new Object2LongOpenHashMap<>();
 
-    private FrequencyBandManager()
-    {
+    private FrequencyBandManager() {
         dirtyRuntimeAt.defaultReturnValue(Long.MIN_VALUE);
     }
 
@@ -61,8 +61,7 @@ public class FrequencyBandManager extends SavedData
      * 获取频段
      */
     @Nullable
-    public static BroadcastFrequencyBand getBand(String bandName)
-    {
+    public static BroadcastFrequencyBand getBand(String bandName) {
         FrequencyBandManager manager = resolveManager();
         if (manager == null) return null;
         return manager.frequencyBands.get(bandName);
@@ -71,8 +70,7 @@ public class FrequencyBandManager extends SavedData
     /**
      * 查询是否存在此频段
      */
-    public static boolean isBandPresent(String bandName)
-    {
+    public static boolean isBandPresent(String bandName) {
         FrequencyBandManager manager = resolveManager();
         if (manager == null) return false;
 
@@ -83,15 +81,13 @@ public class FrequencyBandManager extends SavedData
      * 将频段的大体信息包装后用以网络传输
      */
     @Nullable
-    public static BroadcastBandsField getBandsInfo()
-    {
+    public static BroadcastBandsField getBandsInfo() {
         FrequencyBandManager manager = resolveManager();
         if (manager == null) return null;
 
         List<BroadcastBandsField.Entry> out = new ArrayList<>(manager.frequencyBands.size());
 
-        for (BroadcastFrequencyBand band : manager.frequencyBands.values())
-        {
+        for (BroadcastFrequencyBand band : manager.frequencyBands.values()) {
             String name = band.getName();
 
             boolean isPublic = band.isPublic();
@@ -108,16 +104,14 @@ public class FrequencyBandManager extends SavedData
      * 将频段的大体信息包装后用以网络传输，但剔除掉玩家不可见的部分
      */
     @Nullable
-    public static BroadcastBandsField getBandsInfoByPlayer(Player player)
-    {
+    public static BroadcastBandsField getBandsInfoByPlayer(Player player) {
         FrequencyBandManager manager = resolveManager();
         if (manager == null) return null;
 
         UUID playerUUID = player.getUUID();
         List<BroadcastBandsField.Entry> out = new ArrayList<>(manager.frequencyBands.size());
 
-        for (BroadcastFrequencyBand band : manager.frequencyBands.values())
-        {
+        for (BroadcastFrequencyBand band : manager.frequencyBands.values()) {
             String name = band.getName();
 
             boolean isPublic = band.isPublic();
@@ -136,14 +130,12 @@ public class FrequencyBandManager extends SavedData
      * 获取频段，如果不存在则创建
      */
     @Nullable
-    public static BroadcastFrequencyBand tryCreateBand(String bandName, String password, UUID ownerId, boolean isPublic, boolean allowedMemoryCardCopy)
-    {
+    public static BroadcastFrequencyBand tryCreateBand(String bandName, String password, UUID ownerId, boolean isPublic, boolean allowedMemoryCardCopy) {
         FrequencyBandManager manager = resolveManager();
         if (manager == null) return null;
 
         BroadcastFrequencyBand band = manager.frequencyBands.get(bandName);
-        if (band == null)
-        {
+        if (band == null) {
             band = new BroadcastFrequencyBand(bandName, password, ownerId, isPublic, allowedMemoryCardCopy);
             manager.frequencyBands.put(bandName, band);
             manager.setDirty();
@@ -156,8 +148,7 @@ public class FrequencyBandManager extends SavedData
      *
      * @return true=成功删除；false=不存在或 manager 不可用
      */
-    public static boolean deleteBand(String bandName)
-    {
+    public static boolean deleteBand(String bandName) {
         FrequencyBandManager manager = resolveManager();
         if (manager == null) return false;
 
@@ -165,13 +156,9 @@ public class FrequencyBandManager extends SavedData
         if (band == null) return false;
 
         // 删除前清理（断链/清缓存/清 BE 持久化连接）
-        try
-        {
+        try {
             band.onRemoved();
-        }
-        catch (Throwable ignored)
-        {
-        }
+        } catch (Throwable ignored) {}
 
         // 最后清走band，保证onRemoved中部分依赖bandManager的工作可以正常完成
         manager.frequencyBands.remove(bandName);
@@ -183,8 +170,7 @@ public class FrequencyBandManager extends SavedData
     /**
      * 标脏
      */
-    public static void markDirty()
-    {
+    public static void markDirty() {
         FrequencyBandManager manager = resolveManager();
         if (manager != null) manager.setDirty();
     }
@@ -192,8 +178,7 @@ public class FrequencyBandManager extends SavedData
     /**
      * 标记某个band需要在下一个tick重算链接
      */
-    public static void markRuntimeDirty(MinecraftServer server, String bandName)
-    {
+    public static void markRuntimeDirty(MinecraftServer server, String bandName) {
         FrequencyBandManager manager = resolveManager();
         if (manager == null) return;
 
@@ -201,8 +186,7 @@ public class FrequencyBandManager extends SavedData
 
         // 只有dirtyRuntimeAt中不存在bandName时才把now放进去，防止重复标脏
         // tick查表后，则把相关元素从表中移走，保证多次标记仅会记录到第一次
-        if (manager.dirtyRuntimeAt.getLong(bandName) == Long.MIN_VALUE)
-        {
+        if (manager.dirtyRuntimeAt.getLong(bandName) == Long.MIN_VALUE) {
             manager.dirtyRuntimeAt.put(bandName, now);
         }
     }
@@ -211,8 +195,7 @@ public class FrequencyBandManager extends SavedData
      * 统一调用服务端的频段链接重算
      */
     @SubscribeEvent
-    public static void tick(ServerTickEvent.Post event)
-    {
+    public static void tick(ServerTickEvent.Post event) {
         FrequencyBandManager manager = resolveManager();
         if (manager == null) return;
 
@@ -221,18 +204,15 @@ public class FrequencyBandManager extends SavedData
         long now = server.overworld().getGameTime();
 
         var it = manager.dirtyRuntimeAt.object2LongEntrySet().iterator();
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             var entry = it.next();
             String bandName = entry.getKey();
             long markedAt = entry.getLongValue();
 
             // 下一tick再计算，避免本tick计算与ae网络的寻路撞车
-            if (now > markedAt)
-            {
+            if (now > markedAt) {
                 BroadcastFrequencyBand band = manager.frequencyBands.get(bandName);
-                if (band != null)
-                {
+                if (band != null) {
                     band.recomputeRuntime();
                 }
                 // 最后移除掉已经tick过的元素
@@ -245,8 +225,7 @@ public class FrequencyBandManager extends SavedData
      * 获取服务端中唯一的频段管理者
      */
     @Nullable
-    private static FrequencyBandManager resolveManager()
-    {
+    private static FrequencyBandManager resolveManager() {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server == null) return null;
 
@@ -255,37 +234,29 @@ public class FrequencyBandManager extends SavedData
 
     // ---------- 持久化 ----------
 
-    public static FrequencyBandManager load(CompoundTag tag, HolderLookup.Provider registries)
-    {
+    public static FrequencyBandManager load(CompoundTag tag, HolderLookup.Provider registries) {
         FrequencyBandManager manager = new FrequencyBandManager();
 
         ListTag bandsTag = tag.getList("bands", 10);
-        for (Tag bandTag : bandsTag)
-        {
+        for (Tag bandTag : bandsTag) {
             if (!(bandTag instanceof CompoundTag compoundBandTag)) continue;
 
-            try
-            {
+            try {
                 BroadcastFrequencyBand band = new BroadcastFrequencyBand("", "", UUID.randomUUID(), false, false);
                 band.deserializeNBT(registries, compoundBandTag);
                 manager.frequencyBands.put(band.getName(), band);
-            }
-            catch (Throwable ignored)
-            {
-            }
+            } catch (Throwable ignored) {}
         }
         return manager;
     }
 
     @Override
-    public @NotNull CompoundTag save(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider provider)
-    {
+    public @NotNull CompoundTag save(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider provider) {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server != null) ensureSaveDirExists(server);
 
         ListTag bandTags = new ListTag();
-        for (BroadcastFrequencyBand band : frequencyBands.values())
-        {
+        for (BroadcastFrequencyBand band : frequencyBands.values()) {
             bandTags.add(band.serializeNBT(provider));
         }
         tag.put("bands", bandTags);
@@ -295,17 +266,13 @@ public class FrequencyBandManager extends SavedData
     /**
      * 确保 world/data/aecs 目录存在，否则savedData没法正确创建在带目录的路径下
      */
-    private static void ensureSaveDirExists(@NotNull MinecraftServer server)
-    {
+    private static void ensureSaveDirExists(@NotNull MinecraftServer server) {
         Path dir = server.getWorldPath(LevelResource.ROOT)
                 .resolve("data")
                 .resolve(SAVED_FOLDER_NAME);
-        try
-        {
+        try {
             Files.createDirectories(dir);
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             // 静默
         }
     }

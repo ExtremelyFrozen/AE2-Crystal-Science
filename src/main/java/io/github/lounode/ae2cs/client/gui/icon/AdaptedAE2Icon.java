@@ -2,11 +2,9 @@ package io.github.lounode.ae2cs.client.gui.icon;
 
 import appeng.client.gui.Icon;
 
-public class AdaptedAE2Icon
-{
-    private AdaptedAE2Icon()
-    {
-    }
+public class AdaptedAE2Icon {
+
+    private AdaptedAE2Icon() {}
 
     public static final AE2IconAdapter REDSTONE_IGNORE = new AE2IconAdapter(Icon.REDSTONE_IGNORE);
     public static final AE2IconAdapter REDSTONE_LOW = new AE2IconAdapter(Icon.REDSTONE_LOW);
@@ -31,5 +29,4 @@ public class AdaptedAE2Icon
     public static final AE2IconAdapter ARROW_LEFT = new AE2IconAdapter(Icon.ARROW_LEFT);
 
     public static final AE2IconAdapter SCHEDULING_RANDOM = new AE2IconAdapter(Icon.SCHEDULING_RANDOM);
-
 }

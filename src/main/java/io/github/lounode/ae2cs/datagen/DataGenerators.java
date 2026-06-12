@@ -1,6 +1,5 @@
 package io.github.lounode.ae2cs.datagen;
 
-import com.mojang.logging.LogUtils;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSEnchantments;
 import io.github.lounode.ae2cs.datagen.recipes.*;
@@ -8,6 +7,7 @@ import io.github.lounode.ae2cs.datagen.recipes.compat.*;
 import io.github.lounode.ae2cs.datagen.worldgen.AECSBiomeModifiers;
 import io.github.lounode.ae2cs.datagen.worldgen.AECSConfiguredFeatures;
 import io.github.lounode.ae2cs.datagen.worldgen.AECSPlacedFeatures;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
@@ -22,6 +22,8 @@ import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
+
+import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 
 import java.util.Collections;
@@ -30,13 +32,12 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 @EventBusSubscriber(modid = AECSConstants.MODID)
-public class DataGenerators
-{
+public class DataGenerators {
+
     public static final Logger LOGGER = LogUtils.getLogger();
 
     @SubscribeEvent
-    public static void gatherData(GatherDataEvent event)
-    {
+    public static void gatherData(GatherDataEvent event) {
         LOGGER.info("数据生成启动");
 
         DataGenerator generator = event.getGenerator();
@@ -53,8 +54,7 @@ public class DataGenerators
                         .add(Registries.CONFIGURED_FEATURE, AECSConfiguredFeatures::bootstrap)
                         .add(Registries.PLACED_FEATURE, AECSPlacedFeatures::bootstrap)
                         .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, AECSBiomeModifiers::bootstrap),
-                Set.of(AECSConstants.MODID)
-        );
+                Set.of(AECSConstants.MODID));
         generator.addProvider(event.includeServer(), builtin);
 
         CompletableFuture<HolderLookup.Provider> lookupProvider = builtin.getRegistryProvider();
@@ -64,8 +64,7 @@ public class DataGenerators
                 packOutput,
                 Collections.emptySet(),
                 List.of(new LootTableProvider.SubProviderEntry(AECSBlockLootTableProvider::new, LootContextParamSets.BLOCK)),
-                lookupProvider
-        ));
+                lookupProvider));
 
         // 生成物品和方块模型 / blockstate（一般不依赖 lookupProvider，但保持原样即可）
         generator.addProvider(event.includeClient(), new AECSItemModelProvider(packOutput, existingFileHelper));
@@ -79,8 +78,7 @@ public class DataGenerators
                 packOutput,
                 lookupProvider,
                 blockTagsProvider.contentsGetter(),
-                existingFileHelper
-        ));
+                existingFileHelper));
         generator.addProvider(event.includeServer(), new AECSFluidTagsProvider(packOutput, lookupProvider, existingFileHelper));
 
         // 生成配方表

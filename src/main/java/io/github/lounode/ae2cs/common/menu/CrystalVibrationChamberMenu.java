@@ -1,19 +1,22 @@
 package io.github.lounode.ae2cs.common.menu;
 
+import io.github.lounode.ae2cs.common.block.entity.CrystalVibrationChamberBlockEntity;
+import io.github.lounode.ae2cs.common.init.AECSMenus;
+
 import appeng.api.inventories.InternalInventory;
 import appeng.api.util.IConfigManager;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.UpgradeableMenu;
 import appeng.menu.slot.AppEngSlot;
-import io.github.lounode.ae2cs.common.block.entity.CrystalVibrationChamberBlockEntity;
-import io.github.lounode.ae2cs.common.init.AECSMenus;
+
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+
 import org.jetbrains.annotations.NotNull;
 
-public class CrystalVibrationChamberMenu extends UpgradeableMenu<CrystalVibrationChamberBlockEntity>
-{
+public class CrystalVibrationChamberMenu extends UpgradeableMenu<CrystalVibrationChamberBlockEntity> {
+
     @GuiSync(10)
     public int burnTime;
 
@@ -29,9 +32,7 @@ public class CrystalVibrationChamberMenu extends UpgradeableMenu<CrystalVibratio
     @GuiSync(14)
     public double maxStoredAE;
 
-
-    public CrystalVibrationChamberMenu(int id, Inventory playerInv, @NotNull CrystalVibrationChamberBlockEntity host)
-    {
+    public CrystalVibrationChamberMenu(int id, Inventory playerInv, @NotNull CrystalVibrationChamberBlockEntity host) {
         super(AECSMenus.CRYSTAL_VIBRATION_CHAMBER_MENU.get(), id, playerInv, host);
 
         InternalInventory wrapInv = getHost().getInv().createMenuWrapper();
@@ -39,16 +40,11 @@ public class CrystalVibrationChamberMenu extends UpgradeableMenu<CrystalVibratio
     }
 
     @Override
-    protected void loadSettingsFromHost(IConfigManager cm)
-    {
-
-    }
+    protected void loadSettingsFromHost(IConfigManager cm) {}
 
     @Override
-    public void broadcastChanges()
-    {
-        if (isServerSide())
-        {
+    public void broadcastChanges() {
+        if (isServerSide()) {
             this.burnTime = getHost().getRemainingBurnTime();
             this.maxBurnTime = getHost().getMaxBurnTime();
             this.energyPerTick = getHost().getEnergyPerTick();
@@ -60,8 +56,7 @@ public class CrystalVibrationChamberMenu extends UpgradeableMenu<CrystalVibratio
     }
 
     @Override
-    public boolean stillValid(@NotNull Player player)
-    {
+    public boolean stillValid(@NotNull Player player) {
         return !getHost().isRemoved();
     }
 }

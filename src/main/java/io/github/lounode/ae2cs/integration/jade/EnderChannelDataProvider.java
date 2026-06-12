@@ -5,11 +5,13 @@ import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastFrequencyBand;
 import io.github.lounode.ae2cs.api.linker.broadcast.FrequencyBandManager;
 import io.github.lounode.ae2cs.common.block.entity.EnderBroadcasterBlockEntity;
 import io.github.lounode.ae2cs.common.block.entity.EnderEmitterBlockEntity;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.IServerDataProvider;
@@ -17,6 +19,7 @@ import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
 public final class EnderChannelDataProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
+
     public static final EnderChannelDataProvider INSTANCE = new EnderChannelDataProvider();
 
     private static final String USED_CHANNELS = "used_channels";
@@ -29,8 +32,7 @@ public final class EnderChannelDataProvider implements IBlockComponentProvider, 
     private static final int MODE_BROADCASTER_NONE = 3;
     private static final ResourceLocation UID = AE2CrystalScience.makeId("jade/ender_channels");
 
-    private EnderChannelDataProvider() {
-    }
+    private EnderChannelDataProvider() {}
 
     @Override
     public void appendServerData(CompoundTag data, BlockAccessor accessor) {
@@ -99,22 +101,17 @@ public final class EnderChannelDataProvider implements IBlockComponentProvider, 
 
         if (mode != MODE_EMITTER) {
             tooltip.add(switch (mode) {
-                case MODE_BROADCASTER_RECEIVER ->
-                        Component.translatable("jade.ae2cs.ender_broadcaster.mode", Component.translatable("jade.ae2cs.ender_broadcaster.mode.receiver"));
-                case MODE_BROADCASTER_SENDER ->
-                        Component.translatable("jade.ae2cs.ender_broadcaster.mode", Component.translatable("jade.ae2cs.ender_broadcaster.mode.sender"));
-                default ->
-                        Component.translatable("jade.ae2cs.ender_broadcaster.mode", Component.translatable("jade.ae2cs.ender_broadcaster.mode.none"));
+                case MODE_BROADCASTER_RECEIVER -> Component.translatable("jade.ae2cs.ender_broadcaster.mode", Component.translatable("jade.ae2cs.ender_broadcaster.mode.receiver"));
+                case MODE_BROADCASTER_SENDER -> Component.translatable("jade.ae2cs.ender_broadcaster.mode", Component.translatable("jade.ae2cs.ender_broadcaster.mode.sender"));
+                default -> Component.translatable("jade.ae2cs.ender_broadcaster.mode", Component.translatable("jade.ae2cs.ender_broadcaster.mode.none"));
             });
 
             tooltip.add(Component.translatable("jade.ae2cs.ender_broadcaster.band", data.contains(BAND_NAME) ? data.getString(BAND_NAME) : Component.translatable("jade.ae2cs.ender_broadcaster.band.none")));
         }
 
         tooltip.add(switch (mode) {
-            case MODE_BROADCASTER_RECEIVER ->
-                    Component.translatable("jade.ae2cs.ender_broadcaster.receiver_channels", used, total);
-            case MODE_BROADCASTER_SENDER ->
-                    Component.translatable("jade.ae2cs.ender_broadcaster.sender_channels", used, total);
+            case MODE_BROADCASTER_RECEIVER -> Component.translatable("jade.ae2cs.ender_broadcaster.receiver_channels", used, total);
+            case MODE_BROADCASTER_SENDER -> Component.translatable("jade.ae2cs.ender_broadcaster.sender_channels", used, total);
             case MODE_BROADCASTER_NONE -> Component.translatable("jade.ae2cs.ender_broadcaster.no_connection");
             default -> Component.translatable("jade.ae2cs.ender_emitter.channels", used, total);
         });

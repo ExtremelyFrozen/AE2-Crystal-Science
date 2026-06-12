@@ -1,5 +1,15 @@
 package io.github.lounode.ae2cs.common.me.logic;
 
+import io.github.lounode.ae2cs.AE2CrystalScience;
+import io.github.lounode.ae2cs.api.settings.AECSSettings;
+import io.github.lounode.ae2cs.api.settings.PullMode;
+import io.github.lounode.ae2cs.api.util.GenericStackInvHelper;
+import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.init.AECSDataComponents;
+import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern;
+import io.github.lounode.ae2cs.common.me.crafting.ResonatingPatternDetails;
+import io.github.lounode.ae2cs.common.me.crafting.ResonatingProviderDefaults;
+
 import appeng.api.config.Actionable;
 import appeng.api.config.LockCraftingMode;
 import appeng.api.config.Setting;
@@ -24,15 +34,7 @@ import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.helpers.patternprovider.PatternProviderTarget;
 import appeng.me.helpers.MachineSource;
 import appeng.util.ConfigManager;
-import io.github.lounode.ae2cs.AE2CrystalScience;
-import io.github.lounode.ae2cs.api.settings.AECSSettings;
-import io.github.lounode.ae2cs.api.settings.PullMode;
-import io.github.lounode.ae2cs.api.util.GenericStackInvHelper;
-import io.github.lounode.ae2cs.common.init.AECSBlocks;
-import io.github.lounode.ae2cs.common.init.AECSDataComponents;
-import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern;
-import io.github.lounode.ae2cs.common.me.crafting.ResonatingProviderDefaults;
-import io.github.lounode.ae2cs.common.me.crafting.ResonatingPatternDetails;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
@@ -46,6 +48,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,6 +62,7 @@ import java.util.Set;
  * 谐振样板供应器，对于谐振样板，尝试将标记了位置的原料发送到指定位置
  */
 public class ResonatingPatternProviderLogic extends PatternProviderLogic implements IUpgradeableObject {
+
     private static final String TAG_DEFAULTS = "resonating_provider_defaults";
     private static final String TAG_SELECTED_INPUT = "selected_input";
     private static final String TAG_TARGETS = "targets";
@@ -290,8 +294,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
         }
 
         // 类原版拒绝条件
-        if (super.isBusy() || !resonatingSendList.isEmpty() || !this.mainNode.isActive()
-                || !getAvailablePatterns().contains(patternDetails)) {
+        if (super.isBusy() || !resonatingSendList.isEmpty() || !this.mainNode.isActive() || !getAvailablePatterns().contains(patternDetails)) {
             return false;
         }
 
@@ -310,8 +313,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
         KeyCounter[] remaining = copyKeyCounters(inputHolder);
 
         // 收集marked，并从remaining扣掉对应数量
-        record Marked(AEKey key, long amount, EncodedResonatingPattern.Target target) {
-        }
+        record Marked(AEKey key, long amount, EncodedResonatingPattern.Target target) {}
         var marked = new ArrayList<Marked>();
 
         var sparseInputs = resonating.getSparseInputs();
@@ -356,8 +358,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
                 return false;
             }
 
-            record PushTarget(Direction direction, PatternProviderTarget target) {
-            }
+            record PushTarget(Direction direction, PatternProviderTarget target) {}
             var possibleTargets = new ArrayList<PushTarget>();
 
             for (var dir : getActiveSidesFiltered()) {
@@ -498,7 +499,6 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
         return false;
     }
 
-
     // -------------------辅助方法-------------------------
 
     private boolean isBlockedByMode(PatternProviderTarget adapter) {
@@ -544,7 +544,6 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
         return true;
     }
 
-
     private static <T> void rearrangeRoundRobin(List<T> list, int roundRobinIndex) {
         if (list.isEmpty()) return;
 
@@ -582,9 +581,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
         if (node != null) {
             for (var entry : node.getInWorldConnections().entrySet()) {
                 var otherNode = entry.getValue().getOtherSide(node);
-                if (otherNode.getOwner() instanceof PatternProviderLogicHost
-                        || (otherNode.getOwner() instanceof InterfaceLogicHost
-                        && otherNode.getGrid().equals(mainNode.getGrid()))) {
+                if (otherNode.getOwner() instanceof PatternProviderLogicHost || (otherNode.getOwner() instanceof InterfaceLogicHost && otherNode.getGrid().equals(mainNode.getGrid()))) {
                     sides.remove(entry.getKey());
                 }
             }
@@ -627,7 +624,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
 
         boolean did = false;
 
-        for (var it = resonatingSendList.listIterator(); it.hasNext(); ) {
+        for (var it = resonatingSendList.listIterator(); it.hasNext();) {
             var pending = it.next();
 
             var adapter = findTarget(pending.target());
@@ -675,6 +672,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
     }
 
     private class ResonatingTicker implements IGridTickable {
+
         @Override
         public TickingRequest getTickingRequest(IGridNode node) {
             boolean idle = !hasWorkToDo() && !hasResonatingWorkToDo() && !isEnablePull();
@@ -690,11 +688,9 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
             boolean could = doWork() | doResonatingWork() | doPullWork();
             boolean has = hasWorkToDo() || hasResonatingWorkToDo() || isEnablePull();
 
-            return has ? (could ? TickRateModulation.URGENT : TickRateModulation.SLOWER)
-                    : TickRateModulation.SLEEP;
+            return has ? (could ? TickRateModulation.URGENT : TickRateModulation.SLOWER) : TickRateModulation.SLEEP;
         }
     }
 
-    private record PendingSend(EncodedResonatingPattern.Target target, GenericStack stack) {
-    }
+    private record PendingSend(EncodedResonatingPattern.Target target, GenericStack stack) {}
 }

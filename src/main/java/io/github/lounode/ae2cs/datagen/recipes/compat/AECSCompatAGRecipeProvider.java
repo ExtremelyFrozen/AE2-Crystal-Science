@@ -1,7 +1,5 @@
 package io.github.lounode.ae2cs.datagen.recipes.compat;
 
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSTags;
@@ -9,34 +7,36 @@ import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CircuitEtcherRecipeBuilder;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBuilder;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalPulverizerRecipeBuilder;
-import io.github.sapporo1101.appgen.common.AGSingletons;
-import io.github.sapporo1101.appgen.util.AGTags;
+
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.Tags;
+
+import io.github.sapporo1101.appgen.common.AGSingletons;
+import io.github.sapporo1101.appgen.util.AGTags;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 
-public class AECSCompatAGRecipeProvider extends AECSRecipeProvider
-{
-    public AECSCompatAGRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries)
-    {
+public class AECSCompatAGRecipeProvider extends AECSRecipeProvider {
+
+    public AECSCompatAGRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries);
     }
 
     @Override
-    public @NotNull String getName()
-    {
+    public @NotNull String getName() {
         return "AECS AG Compat Recipes";
     }
 
     @Override
-    protected void buildRecipes(@NotNull RecipeOutput originalOut, HolderLookup.@NotNull Provider registries)
-    {
+    protected void buildRecipes(@NotNull RecipeOutput originalOut, HolderLookup.@NotNull Provider registries) {
         var compatOut = originalOut.withConditions(modLoaded(AECSConstants.AG_ID));
         super.buildRecipes(compatOut, registries);
 

@@ -1,10 +1,12 @@
 package io.github.lounode.ae2cs.client.eventlistener;
 
-import appeng.util.InteractionUtil;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
 import io.github.lounode.ae2cs.common.item.ResonatingPatternItem;
 import io.github.lounode.ae2cs.network.c2s.ScrollResonatingPatternSelectPacket;
+
+import appeng.util.InteractionUtil;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -15,11 +17,10 @@ import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 @EventBusSubscriber(modid = AECSConstants.MODID, value = Dist.CLIENT)
-public class ResonatingPatternListener
-{
+public class ResonatingPatternListener {
+
     @SubscribeEvent
-    public static void onMouseScroll(InputEvent.MouseScrollingEvent event)
-    {
+    public static void onMouseScroll(InputEvent.MouseScrollingEvent event) {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) return;
 

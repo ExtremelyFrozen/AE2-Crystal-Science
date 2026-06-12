@@ -1,15 +1,17 @@
 package io.github.lounode.ae2cs.common.me;
 
-import appeng.api.features.GridLinkables;
-import appeng.api.upgrades.Upgrades;
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
-import appeng.core.definitions.AEParts;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSParts;
 import io.github.lounode.ae2cs.common.item.tools.ToolLinkableHandler;
+
+import appeng.api.features.GridLinkables;
+import appeng.api.upgrades.Upgrades;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.core.definitions.AEParts;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
@@ -19,8 +21,8 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 
 @EventBusSubscriber(modid = AECSConstants.MODID)
-public class AEPlugin
-{
+public class AEPlugin {
+
     private static String INTEGRATED_INTERFACE_GROUP_NAME = "block.ae2cs.integrated_interface";
     private static String INTERFACE_GROUP_NAME = "block.ae2.interface";
     private static String METEORITE_PATTERN_PROVIDER_GROUP_NAME = "block.ae2cs.meteorite_pattern_provider";
@@ -32,24 +34,17 @@ public class AEPlugin
     /**
      * 在mod入口点调用
      */
-    public static void onInit()
-    {
-
-    }
+    public static void onInit() {}
 
     /**
      * init后立刻运行此段代码，在这里进行注册相关内容
      */
-    public static void onRegister(IEventBus modEventBus, IEventBus gameEventBus)
-    {
-
-    }
+    public static void onRegister(IEventBus modEventBus, IEventBus gameEventBus) {}
 
     /**
      * 在FMLCommonSetupEvent阶段调用
      */
-    public static void onCommonSetup()
-    {
+    public static void onCommonSetup() {
         Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK, 4);
         Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK, 3);
         Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.CIRCUIT_ETCHER_BLOCK, 4);
@@ -76,8 +71,7 @@ public class AEPlugin
         addGrowthCardSupport();
     }
 
-    private static void addGrowthCardSupport()
-    {
+    private static void addGrowthCardSupport() {
         // AE原版机器
         Upgrades.add(AECSItems.crystalGrowthCard, AEParts.STORAGE_BUS, 1);
         Upgrades.add(AECSItems.crystalGrowthCard, AEParts.IMPORT_BUS, 1);
@@ -99,14 +93,12 @@ public class AEPlugin
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onTagsUpdated(TagsUpdatedEvent event)
-    {
+    public static void onTagsUpdated(TagsUpdatedEvent event) {
         // 为全部工具添加可链接能力
         var tagOpt = BuiltInRegistries.ITEM.getTag(Tags.Items.TOOLS);
         if (tagOpt.isEmpty()) return;
 
-        for (var holder : tagOpt.get())
-        {
+        for (var holder : tagOpt.get()) {
             if (GridLinkables.get(holder.value()) == null)
                 GridLinkables.register(holder.value(), ToolLinkableHandler.INSTANCE);
         }

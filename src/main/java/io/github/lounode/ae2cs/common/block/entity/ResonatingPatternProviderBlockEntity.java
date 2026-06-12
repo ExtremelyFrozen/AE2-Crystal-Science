@@ -1,5 +1,11 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
+import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
+import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.init.AECSMenus;
+import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderHost;
+import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderLogic;
+
 import appeng.api.AECapabilities;
 import appeng.api.stacks.AEItemKey;
 import appeng.blockentity.crafting.PatternProviderBlockEntity;
@@ -7,11 +13,7 @@ import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuHostLocator;
-import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
-import io.github.lounode.ae2cs.common.init.AECSBlocks;
-import io.github.lounode.ae2cs.common.init.AECSMenus;
-import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderHost;
-import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderLogic;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -20,6 +22,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 public class ResonatingPatternProviderBlockEntity extends PatternProviderBlockEntity implements ResonatingPatternProviderHost {
+
     public ResonatingPatternProviderBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
     }
@@ -42,14 +45,12 @@ public class ResonatingPatternProviderBlockEntity extends PatternProviderBlockEn
         event.registerBlockEntity(
                 AECapabilities.GENERIC_INTERNAL_INV,
                 AECSBlockEntities.RESONATING_PATTERN_PROVIDER_BLOCK_ENTITY.get(),
-                (be, direction) -> be.getLogic().getReturnInv()
-        );
+                (be, direction) -> be.getLogic().getReturnInv());
 
         event.registerBlockEntity(
                 AECapabilities.GENERIC_INTERNAL_INV,
                 AECSBlockEntities.EX_RESONATING_PATTERN_PROVIDER_BLOCK_ENTITY.get(),
-                (be, direction) -> be.getLogic().getReturnInv()
-        );
+                (be, direction) -> be.getLogic().getReturnInv());
     }
 
     @Override

@@ -1,11 +1,13 @@
 package io.github.lounode.ae2cs.client.gui.icon;
 
-import appeng.client.gui.style.Blitter;
 import io.github.lounode.ae2cs.AE2CrystalScience;
+
+import appeng.client.gui.style.Blitter;
+
 import net.minecraft.resources.ResourceLocation;
 
-public enum AECSIcon implements IButtonIcon
-{
+public enum AECSIcon implements IButtonIcon {
+
     PULL_MODE_ON(0, 0),
     PULL_MODE_OFF(16, 0),
 
@@ -75,13 +77,11 @@ public enum AECSIcon implements IButtonIcon
     public final int width;
     public final int height;
 
-    AECSIcon(int x, int y)
-    {
+    AECSIcon(int x, int y) {
         this(x, y, 16, 16);
     }
 
-    AECSIcon(int x, int y, int width, int height)
-    {
+    AECSIcon(int x, int y, int width, int height) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -93,8 +93,7 @@ public enum AECSIcon implements IButtonIcon
     public static final int TEXTURE_HEIGHT = 256;
 
     @Override
-    public Blitter getBlitter()
-    {
+    public Blitter getBlitter() {
         return Blitter.texture(TEXTURE, TEXTURE_WIDTH, TEXTURE_HEIGHT)
                 .src(x, y, width, height);
     }

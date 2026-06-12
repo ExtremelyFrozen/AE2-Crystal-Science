@@ -1,7 +1,6 @@
 package io.github.lounode.ae2cs.common.machine.component;
 
-public enum InvPort
-{
+public enum InvPort {
     /**
      * 输入仓
      */

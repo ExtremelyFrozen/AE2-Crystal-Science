@@ -1,29 +1,32 @@
 package io.github.lounode.ae2cs.client.gui.linker.broadcast;
 
-import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.implementations.AESubScreen;
-import appeng.client.gui.style.StyleManager;
-import appeng.client.gui.widgets.AE2Button;
-import appeng.client.gui.widgets.AETextField;
-import appeng.client.gui.widgets.Scrollbar;
 import io.github.lounode.ae2cs.client.gui.icon.AECSIcon;
 import io.github.lounode.ae2cs.client.gui.icon.AdaptedAE2Icon;
 import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSIconButton;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSToggleButton;
 import io.github.lounode.ae2cs.common.menu.linker.broadcast.FrequencyBandManagerMenu;
+
+import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.implementations.AESubScreen;
+import appeng.client.gui.style.StyleManager;
+import appeng.client.gui.widgets.AE2Button;
+import appeng.client.gui.widgets.AETextField;
+import appeng.client.gui.widgets.Scrollbar;
+
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMenu>
-{
+public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMenu> {
+
     private static final Rect2i BROADCASTER_AREA = new Rect2i(9, 21, 158, 119);
     private static final int ROW_H = 17;
     private static final int HIDE_X = -10000;
@@ -36,7 +39,6 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
     private AETextField inputPassword;
     private AE2Button confirmChangePasswordButton;
 
-
     private AECSToggleButton changePublicButton;
     private AECSToggleButton changeAllowMemoryCardButton;
     private AECSIconButton removeBandButton;
@@ -44,9 +46,7 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
 
     private final Scrollbar broadcasterScrollbar;
 
-    private record DisplayEntry(GlobalPos pos, boolean isSender)
-    {
-    }
+    private record DisplayEntry(GlobalPos pos, boolean isSender) {}
 
     private List<DisplayEntry> broadcasterEntries = List.of();
     private final List<BroadcasterPanel> broadcasterPanelPool = new ArrayList<>();
@@ -58,8 +58,7 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
 
     private int clickRemoveButtonTicks = 0;
 
-    public FrequencyBandManagerGUI(FrequencyBandManagerMenu menu, Inventory playerInventory, Component title)
-    {
+    public FrequencyBandManagerGUI(FrequencyBandManagerMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, StyleManager.loadStyleDoc("/screens/frequency_band_manager_menu.json"));
 
         AESubScreen.addBackButton(menu, "back_button", widgets);
@@ -75,23 +74,20 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
                 AdaptedAE2Icon.UNLOCKED, AdaptedAE2Icon.LOCKED,
                 Component.translatable("ae2cs.menu.frequency_manager.button.change_public.title"),
                 Component.translatable("ae2cs.menu.frequency_manager.button.change_public.desc"),
-                menu::sendChangePublicAction
-        );
+                menu::sendChangePublicAction);
         addToLeftToolbar(changePublicButton);
 
         changeAllowMemoryCardButton = new AECSToggleButton(
                 AECSIcon.ALLOW_MEMORY_CARD, AECSIcon.DENY_MEMORY_CARD,
                 Component.translatable("ae2cs.menu.frequency_manager.button.change_allow_memory_card.title"),
                 Component.translatable("ae2cs.menu.frequency_manager.button.change_allow_memory_card.desc"),
-                menu::sendChangeAllowMemoryCardAction
-        );
+                menu::sendChangeAllowMemoryCardAction);
         addToLeftToolbar(changeAllowMemoryCardButton);
 
-        openBandWhiteManagerButton = new AECSIconButton(button -> menu.sendOpenBandManagerMenu())
-        {
+        openBandWhiteManagerButton = new AECSIconButton(button -> menu.sendOpenBandManagerMenu()) {
+
             @Override
-            protected @NotNull IButtonIcon getIcon()
-            {
+            protected @NotNull IButtonIcon getIcon() {
                 return AECSIcon.WHITE_LIST_MODE;
             }
         };
@@ -99,20 +95,16 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
         addToLeftToolbar(openBandWhiteManagerButton);
 
         removeBandButton = new AECSIconButton(button -> {
-            if (clickRemoveButtonTicks > 0)
-            {
+            if (clickRemoveButtonTicks > 0) {
                 menu.sendDeleteBand();
-            }
-            else
-            {
+            } else {
                 clickRemoveButtonTicks = 40;
                 getPlayer().displayClientMessage(Component.translatable("ae2cs.menu.frequency_manager_menu.click_again"), false);
             }
-        })
-        {
+        }) {
+
             @Override
-            protected @NotNull IButtonIcon getIcon()
-            {
+            protected @NotNull IButtonIcon getIcon() {
                 return AdaptedAE2Icon.CLEAR;
             }
         };
@@ -125,8 +117,7 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
     }
 
     @Override
-    protected void init()
-    {
+    protected void init() {
         super.init();
 
         this.visibleBroadcasterRows = Math.max(1, BROADCASTER_AREA.getHeight() / ROW_H);
@@ -142,8 +133,7 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
     }
 
     @Override
-    protected void updateBeforeRender()
-    {
+    protected void updateBeforeRender() {
         super.updateBeforeRender();
 
         clickRemoveButtonTicks--;
@@ -152,13 +142,10 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
 
         bandName = Component.translatable("ae2cs.menu.frequency_manager_menu.band_name", menu.bandDetailInfo.name());
         channelUsage = Component.translatable("ae2cs.menu.frequency_manager_menu.band_usage", menu.usedChannels + "/" + menu.usableChannels);
-        bandError = switch (menu.bandDetailInfo.errorState())
-        {
+        bandError = switch (menu.bandDetailInfo.errorState()) {
             case FINE -> Component.translatable("ae2cs.menu.frequency_manager_menu.band_error.fine");
-            case MISSING_CONTROLLER ->
-                    Component.translatable("ae2cs.menu.frequency_manager_menu.band_error.missing_controller");
-            case CONTROLLER_CONFLICT ->
-                    Component.translatable("ae2cs.menu.frequency_manager_menu.band_error.controller_conflict");
+            case MISSING_CONTROLLER -> Component.translatable("ae2cs.menu.frequency_manager_menu.band_error.missing_controller");
+            case CONTROLLER_CONFLICT -> Component.translatable("ae2cs.menu.frequency_manager_menu.band_error.controller_conflict");
             case SENDER_ERROR -> Component.translatable("ae2cs.menu.frequency_manager_menu.band_error.sender_error");
             case NO_SENDER -> Component.translatable("ae2cs.menu.frequency_manager_menu.band_error.no_sender");
         };
@@ -171,18 +158,15 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
 
         // 滚动位置变化时重排
         int topRow = broadcasterScrollbar.getCurrentScroll();
-        if (topRow != lastBroadcasterTopRow)
-        {
+        if (topRow != lastBroadcasterTopRow) {
             lastBroadcasterTopRow = topRow;
             reLayoutBroadcasterPanels();
         }
     }
 
-    private void refreshBroadcastersFromMenuIfNeeded(boolean force)
-    {
+    private void refreshBroadcastersFromMenuIfNeeded(boolean force) {
         var detail = menu.bandDetailInfo;
-        if (detail == null)
-        {
+        if (detail == null) {
             broadcasterEntries = List.of();
             updateBroadcasterScrollbarRange();
             reLayoutBroadcasterPanels();
@@ -190,19 +174,16 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
         }
 
         int h = Objects.hash(detail.senderList(), detail.receiverList());
-        if (!force && h == lastBroadcasterHash)
-        {
+        if (!force && h == lastBroadcasterHash) {
             return;
         }
         lastBroadcasterHash = h;
 
         List<DisplayEntry> tmp = new ArrayList<>();
-        for (var p : detail.senderList())
-        {
+        for (var p : detail.senderList()) {
             tmp.add(new DisplayEntry(p, true));
         }
-        for (var p : detail.receiverList())
-        {
+        for (var p : detail.receiverList()) {
             tmp.add(new DisplayEntry(p, false));
         }
         this.broadcasterEntries = tmp;
@@ -214,10 +195,8 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
         reLayoutBroadcasterPanels();
     }
 
-    private void ensureBroadcasterPanelPoolUpToDate()
-    {
-        for (int i = broadcasterPanelPool.size(); i < broadcasterEntries.size(); i++)
-        {
+    private void ensureBroadcasterPanelPoolUpToDate() {
+        for (int i = broadcasterPanelPool.size(); i < broadcasterEntries.size(); i++) {
             var p = new BroadcasterPanel(HIDE_X, HIDE_Y, menu);
             p.active = false;
             p.visible = false;
@@ -226,8 +205,7 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
         }
 
         // 隐藏多余面板
-        for (int i = broadcasterEntries.size(); i < broadcasterPanelPool.size(); i++)
-        {
+        for (int i = broadcasterEntries.size(); i < broadcasterPanelPool.size(); i++) {
             var p = broadcasterPanelPool.get(i);
             p.active = false;
             p.visible = false;
@@ -236,32 +214,27 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
         }
     }
 
-    private void updateBroadcasterScrollbarRange()
-    {
+    private void updateBroadcasterScrollbarRange() {
         this.totalBroadcasterRows = broadcasterEntries.size();
         int maxScroll = Math.max(0, totalBroadcasterRows - visibleBroadcasterRows);
 
         broadcasterScrollbar.setRange(0, maxScroll, 1);
 
-        if (broadcasterScrollbar.getCurrentScroll() > maxScroll)
-        {
+        if (broadcasterScrollbar.getCurrentScroll() > maxScroll) {
             broadcasterScrollbar.setCurrentScroll(maxScroll);
         }
     }
 
-    private void reLayoutBroadcasterPanels()
-    {
+    private void reLayoutBroadcasterPanels() {
         // 先全部隐藏
-        for (var p : broadcasterPanelPool)
-        {
+        for (var p : broadcasterPanelPool) {
             p.active = false;
             p.visible = false;
             p.setX(HIDE_X);
             p.setY(HIDE_Y);
         }
 
-        if (broadcasterEntries.isEmpty())
-        {
+        if (broadcasterEntries.isEmpty()) {
             return;
         }
 
@@ -272,8 +245,7 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
         int x0 = leftPos + BROADCASTER_AREA.getX();
         int y0 = topPos + BROADCASTER_AREA.getY();
 
-        for (int row = startRow; row < endExclusive; row++)
-        {
+        for (int row = startRow; row < endExclusive; row++) {
             var e = broadcasterEntries.get(row);
             var panel = broadcasterPanelPool.get(row);
 

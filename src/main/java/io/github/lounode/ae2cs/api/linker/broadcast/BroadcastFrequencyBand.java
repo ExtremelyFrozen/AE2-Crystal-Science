@@ -1,5 +1,10 @@
 package io.github.lounode.ae2cs.api.linker.broadcast;
 
+import io.github.lounode.ae2cs.AE2CrystalScience;
+import io.github.lounode.ae2cs.api.CustomChannelProviderHost;
+import io.github.lounode.ae2cs.api.util.AECSGridHelper;
+import io.github.lounode.ae2cs.util.BlockPosHelper;
+
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridConnection;
@@ -7,13 +12,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.pathing.ChannelMode;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.core.AEConfig;
-import com.mojang.serialization.DataResult;
-import io.github.lounode.ae2cs.AE2CrystalScience;
-import io.github.lounode.ae2cs.api.CustomChannelProviderHost;
-import io.github.lounode.ae2cs.api.util.AECSGridHelper;
-import io.github.lounode.ae2cs.util.BlockPosHelper;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
@@ -24,6 +23,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
+
+import com.mojang.serialization.DataResult;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -31,7 +34,6 @@ import org.jetbrains.annotations.UnknownNullability;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 /**
  * 频段：持久化数据（纯数据） + 运行时在线端/连接/分配（下一 tick 重算）
@@ -40,6 +42,7 @@ import java.util.function.Supplier;
  * - recomputeRuntime：由 FrequencyBandManager 统一触发
  */
 public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag> {
+
     /**
      * 当AE使用无线频段时，我们统计可用频段总数时直接返回此值
      */
@@ -599,8 +602,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag> {
             if (be instanceof BandLinkHost linkHost) {
                 try {
                     linkHost.cleanConnectionPermanent();
-                } catch (Throwable ignored) {
-                }
+                } catch (Throwable ignored) {}
             }
         }
     }
@@ -680,8 +682,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag> {
             DataResult<GlobalPos> parsed = GlobalPos.CODEC.parse(NbtOps.INSTANCE, t);
             parsed.result().ifPresentOrElse(
                     this.declaredSenders::add,
-                    () -> AE2CrystalScience.LOGGER.error("Failed to parse GlobalPos from sender_list entry: {}", t)
-            );
+                    () -> AE2CrystalScience.LOGGER.error("Failed to parse GlobalPos from sender_list entry: {}", t));
         }
 
         ListTag receiverListTag = compoundTag.getList("receiver_list", 10);
@@ -689,8 +690,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag> {
             DataResult<GlobalPos> parsed = GlobalPos.CODEC.parse(NbtOps.INSTANCE, t);
             parsed.result().ifPresentOrElse(
                     this.declaredReceivers::add,
-                    () -> AE2CrystalScience.LOGGER.error("Failed to parse GlobalPos from receiver_list entry: {}", t)
-            );
+                    () -> AE2CrystalScience.LOGGER.error("Failed to parse GlobalPos from receiver_list entry: {}", t));
         }
     }
 

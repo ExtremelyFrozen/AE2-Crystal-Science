@@ -1,50 +1,42 @@
 package io.github.lounode.ae2cs.common.item;
 
 import appeng.api.parts.IPart;
-import appeng.api.parts.IPartHost;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.util.SettingsFrom;
+
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
 import org.jetbrains.annotations.Nullable;
 
-public final class ResonatingMemoryCardHelper
-{
-    private ResonatingMemoryCardHelper()
-    {
-    }
+public final class ResonatingMemoryCardHelper {
 
-    public static @Nullable ItemStack findActiveCard(Player player)
-    {
-        for (ItemStack stack : player.getInventory().items)
-        {
-            if (stack.getItem() instanceof ResonatingMemoryCardItem && ResonatingMemoryCardItem.hasSelectedData(stack))
-            {
+    private ResonatingMemoryCardHelper() {}
+
+    public static @Nullable ItemStack findActiveCard(Player player) {
+        for (ItemStack stack : player.getInventory().items) {
+            if (stack.getItem() instanceof ResonatingMemoryCardItem && ResonatingMemoryCardItem.hasSelectedData(stack)) {
                 return stack;
             }
         }
         return null;
     }
 
-    public static void tryApplyToBlockEntity(Player player, BlockEntity blockEntity)
-    {
-        if (!(blockEntity instanceof AEBaseBlockEntity aeBe))
-        {
+    public static void tryApplyToBlockEntity(Player player, BlockEntity blockEntity) {
+        if (!(blockEntity instanceof AEBaseBlockEntity aeBe)) {
             return;
         }
 
         ItemStack card = findActiveCard(player);
-        if (card == null)
-        {
+        if (card == null) {
             return;
         }
 
         DataComponentMap data = ((ResonatingMemoryCardItem) card.getItem()).getData(card);
-        if (data.isEmpty())
-        {
+        if (data.isEmpty()) {
             return;
         }
 
@@ -55,17 +47,14 @@ public final class ResonatingMemoryCardHelper
                 ResonatingMemoryCardItem.getSelectedSlotName(card)).withStyle(net.minecraft.ChatFormatting.GRAY), true);
     }
 
-    public static void tryApplyToPart(Player player, IPart part)
-    {
+    public static void tryApplyToPart(Player player, IPart part) {
         ItemStack card = findActiveCard(player);
-        if (card == null)
-        {
+        if (card == null) {
             return;
         }
 
         DataComponentMap data = ((ResonatingMemoryCardItem) card.getItem()).getData(card);
-        if (data.isEmpty())
-        {
+        if (data.isEmpty()) {
             return;
         }
 

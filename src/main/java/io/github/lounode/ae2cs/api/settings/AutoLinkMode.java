@@ -1,7 +1,6 @@
 package io.github.lounode.ae2cs.api.settings;
 
-public enum AutoLinkMode
-{
+public enum AutoLinkMode {
     ENABLE,
     DISABLE,
 }

@@ -1,12 +1,11 @@
 package io.github.lounode.ae2cs.client.render;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
 import io.github.lounode.ae2cs.common.init.client.AECSRenderTypes;
 import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern;
 import io.github.lounode.ae2cs.common.me.crafting.ResonatingPatternDetails;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -19,6 +18,9 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Matrix4f;
 
 import static net.neoforged.neoforge.client.event.RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS;
@@ -30,8 +32,8 @@ import static net.neoforged.neoforge.client.event.RenderLevelStageEvent.Stage.AF
  * - 渲染所有存在目标的 sparse input
  */
 @EventBusSubscriber(modid = AECSConstants.MODID, value = Dist.CLIENT)
-public class ResonatingPatternTargetHighlighter
-{
+public class ResonatingPatternTargetHighlighter {
+
     // 选中：绿色 + 半透明
     private static final int SEL_R = 0;
     private static final int SEL_G = 255;
@@ -47,13 +49,10 @@ public class ResonatingPatternTargetHighlighter
     // 防Z-fighting
     private static final float EPS = 0.002f;
 
-    private ResonatingPatternTargetHighlighter()
-    {
-    }
+    private ResonatingPatternTargetHighlighter() {}
 
     @SubscribeEvent
-    public static void onRenderLevelStage(RenderLevelStageEvent event)
-    {
+    public static void onRenderLevelStage(RenderLevelStageEvent event) {
         if (event.getStage() != AFTER_TRANSLUCENT_BLOCKS)
             return;
 
@@ -87,8 +86,7 @@ public class ResonatingPatternTargetHighlighter
         VertexConsumer vc = bufferSource.getBuffer(AECSRenderTypes.RESONATING_MARK_FACE);
 
         // 渲染所有存在目标的输入
-        for (int i = 0; i < size; i++)
-        {
+        for (int i = 0; i < size; i++) {
             var opt = encoded.targetOfSparseInput(i);
             if (opt.isEmpty())
                 continue;
@@ -110,12 +108,9 @@ public class ResonatingPatternTargetHighlighter
             // 移到相机坐标系
             poseStack.translate(pos.getX() - camPos.x, pos.getY() - camPos.y, pos.getZ() - camPos.z);
 
-            if (selected)
-            {
+            if (selected) {
                 drawFaceQuad(poseStack, vc, t.face(), EPS, SEL_R, SEL_G, SEL_B, A);
-            }
-            else
-            {
+            } else {
                 drawFaceQuad(poseStack, vc, t.face(), EPS, UNS_R, UNS_G, UNS_B, A);
             }
 
@@ -125,8 +120,7 @@ public class ResonatingPatternTargetHighlighter
         bufferSource.endBatch(AECSRenderTypes.RESONATING_MARK_FACE);
     }
 
-    private static ItemStack getHeldResonatingPattern(LocalPlayer player)
-    {
+    private static ItemStack getHeldResonatingPattern(LocalPlayer player) {
         ItemStack main = player.getMainHandItem();
         if (main.get(AECSDataComponents.ENCODED_RESONATING_PATTERN.get()) != null)
             return main;
@@ -139,16 +133,14 @@ public class ResonatingPatternTargetHighlighter
     }
 
     private static void drawFaceQuad(PoseStack poseStack, VertexConsumer vc, Direction face, float eps,
-                                     int r, int g, int b, int a)
-    {
+                                     int r, int g, int b, int a) {
         float x0 = 0f, x1 = 1f;
         float y0 = 0f, y1 = 1f;
         float z0 = 0f, z1 = 1f;
 
         Matrix4f mat = poseStack.last().pose();
 
-        switch (face)
-        {
+        switch (face) {
             case NORTH -> quadPosColor(vc, mat,
                     x0, y0, z0 - eps, x1, y0, z0 - eps, x1, y1, z0 - eps, x0, y1, z0 - eps,
                     r, g, b, a);
@@ -175,8 +167,7 @@ public class ResonatingPatternTargetHighlighter
                                      float x1, float y1, float z1,
                                      float x2, float y2, float z2,
                                      float x3, float y3, float z3,
-                                     int r, int g, int b, int a)
-    {
+                                     int r, int g, int b, int a) {
         int argb = FastColor.ARGB32.color(a, r, g, b);
 
         vc.addVertex(mat, x0, y0, z0).setColor(argb);

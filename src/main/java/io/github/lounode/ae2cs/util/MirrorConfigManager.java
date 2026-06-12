@@ -1,9 +1,11 @@
 package io.github.lounode.ae2cs.util;
 
+import io.github.lounode.ae2cs.common.me.logic.MirrorPatternProviderLogic;
+
 import appeng.api.config.Setting;
 import appeng.api.util.IConfigManager;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
-import io.github.lounode.ae2cs.common.me.logic.MirrorPatternProviderLogic;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
@@ -11,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class MirrorConfigManager implements IConfigManager {
+
     private final MirrorPatternProviderLogic host;
     private final IConfigManager delegate;
 

@@ -1,32 +1,34 @@
 package io.github.lounode.ae2cs.integration.emi;
 
-import appeng.menu.interfaces.IProgressProvider;
-import dev.emi.emi.api.recipe.BasicEmiRecipe;
-import dev.emi.emi.api.recipe.EmiRecipeCategory;
-import dev.emi.emi.api.stack.EmiIngredient;
-import dev.emi.emi.api.stack.EmiStack;
-import dev.emi.emi.api.widget.WidgetHolder;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.client.gui.icon.AECSBlitter;
 import io.github.lounode.ae2cs.client.gui.widgets.AdvancedProgressBar;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.recipe.crystal_pulverizer.CrystalPulverizerRecipe;
+
+import appeng.menu.interfaces.IProgressProvider;
+
 import net.minecraft.Util;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
+import dev.emi.emi.api.recipe.BasicEmiRecipe;
+import dev.emi.emi.api.recipe.EmiRecipeCategory;
+import dev.emi.emi.api.stack.EmiIngredient;
+import dev.emi.emi.api.stack.EmiStack;
+import dev.emi.emi.api.widget.WidgetHolder;
+
 import java.util.List;
 
-public class CrystalPulverizerRecipeCategory extends BasicEmiRecipe
-{
+public class CrystalPulverizerRecipeCategory extends BasicEmiRecipe {
+
     public static final EmiRecipeCategory RECIPE_TYPE = new EmiRecipeCategory(AE2CrystalScience.makeId("crystal_pulverizer"),
-            EmiStack.of(AECSBlocks.CRYSTAL_PULVERIZER_BLOCK))
-    {
+            EmiStack.of(AECSBlocks.CRYSTAL_PULVERIZER_BLOCK)) {
+
         @Override
-        public Component getName()
-        {
+        public Component getName() {
             return Component.translatable("ae2cs.integration.jei.recipe_category.crystal_pulverizer");
         }
     };
@@ -45,8 +47,7 @@ public class CrystalPulverizerRecipeCategory extends BasicEmiRecipe
 
     private final CrystalPulverizerRecipe recipe;
 
-    public CrystalPulverizerRecipeCategory(RecipeHolder<CrystalPulverizerRecipe> holder)
-    {
+    public CrystalPulverizerRecipeCategory(RecipeHolder<CrystalPulverizerRecipe> holder) {
         super(RECIPE_TYPE, holder.id(), 135, 58);
         var recipe = holder.value();
         this.recipe = recipe;
@@ -55,34 +56,30 @@ public class CrystalPulverizerRecipeCategory extends BasicEmiRecipe
 
         this.outputs.add(EmiStack.of(recipe.result().copy()));
 
-        energyRateBar = new AdvancedProgressBar(new IProgressProvider()
-        {
+        energyRateBar = new AdvancedProgressBar(new IProgressProvider() {
+
             @Override
-            public int getCurrentProgress()
-            {
+            public int getCurrentProgress() {
                 return getAnimMsInCycle();
             }
 
             @Override
-            public int getMaxProgress()
-            {
+            public int getMaxProgress() {
                 return ANIM_DURATION_MS;
             }
         }, AECSBlitter.energyProgress, AdvancedProgressBar.FillMode.BOTTOM_TO_TOP);
         energyRateBar.setX(109);
         energyRateBar.setY(21);
 
-        workingProgressBar = new AdvancedProgressBar(new IProgressProvider()
-        {
+        workingProgressBar = new AdvancedProgressBar(new IProgressProvider() {
+
             @Override
-            public int getCurrentProgress()
-            {
+            public int getCurrentProgress() {
                 return getAnimMsInCycle();
             }
 
             @Override
-            public int getMaxProgress()
-            {
+            public int getMaxProgress() {
                 return ANIM_DURATION_MS;
             }
         }, AECSBlitter.crystalPulverizerProgress, AdvancedProgressBar.FillMode.LEFT_TO_RIGHT);
@@ -91,8 +88,7 @@ public class CrystalPulverizerRecipeCategory extends BasicEmiRecipe
     }
 
     @Override
-    public void addWidgets(WidgetHolder widgets)
-    {
+    public void addWidgets(WidgetHolder widgets) {
         widgets.addTexture(BG, 0, 0, W, H, 0, 0, W, H, 256, 256);
 
         int xIn = 22;
@@ -110,11 +106,9 @@ public class CrystalPulverizerRecipeCategory extends BasicEmiRecipe
                 energyTooltipArea.getX(), energyTooltipArea.getY(), energyTooltipArea.getWidth(), energyTooltipArea.getHeight());
     }
 
-    private int getAnimMsInCycle()
-    {
+    private int getAnimMsInCycle() {
         long now = Util.getMillis();
-        if (animStartMs < 0L)
-        {
+        if (animStartMs < 0L) {
             animStartMs = now;
         }
         long elapsed = now - animStartMs;
