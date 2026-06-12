@@ -1,27 +1,28 @@
-# eclipse
-bin
-*.launch
-.settings
-.metadata
-.classpath
-.project
-
-# idea
-out
+build/
 *.ipr
+run/
 *.iws
+out/
 *.iml
-.idea
+.gradle/
+output/
+bin/
+libs/
 
-# gradle
-build
-.gradle
+.classpath
+*/.factorypath
+.project
+.idea/
+.kotlin/
+.eclipse
+classes/
+.metadata
+.vscode
+.codex
+.settings
+*.launch
+.architectury-transformer/debug.log
+src/generated/resources/.cache/
 
-# other
-eclipse
-run
-runs
-run-data
-
-repo
-/src/generated/resources/.cache/
+*.patch
+*.DS_Store

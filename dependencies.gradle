@@ -1,0 +1,123 @@
+dependencies {
+    compileOnly(libs.jetbrains.annotations)
+
+    testImplementation(libs.testframework)
+
+    // Misc libraries
+    compileOnly(forge.jech)
+    compileOnly(forge.curios)
+
+    // AE2
+    accessCompileOnly(forge.ae2)
+    compileOnly(forge.guideme)
+    compileOnly(forge.ae2wt)
+    compileOnly(forge.ae2wt.api)
+
+    // AE2 addons
+    compileOnly(forge.ae2ji)
+    compileOnly(forge.eae)
+    compileOnly(forge.aelt)
+    compileOnly(forge.applied.flux)
+    compileOnly(forge.applied.create)
+    compileOnly(forge.mega.cells)
+    compileOnly(forge.aae)
+    compileOnly(forge.amek)
+    compileOnly(forge.mek)
+
+    compileOnly(forge.create)
+
+    // FTB
+    compileOnly(forge.ftbultimine)
+
+    // Recipe viewers
+    compileOnly(forge.bundles.jei)
+    compileOnly(forge.emi)
+
+    // WAILA-likes
+    compileOnly(forge.jade)
+
+    // Standard runtime mods
+    localRuntime(forge.spark)
+    compileOnly "com.tterrag.registrate:Registrate:MC1.21-1.3.0+67"
+    compileOnly "io.github.pedroksl:ae2addonlib:1.0.3-1.21.1"
+    // FTB //
+    localRuntime(forge.architectury)
+    localRuntime(forge.ftblibrary)
+    localRuntime(forge.ftbultimine)
+
+    localRuntime(forge.jade)
+    localRuntime(forge.curios)
+    localRuntime(forge.modernfix)
+    localRuntime(forge.ae2)
+    localRuntime(forge.ldlib)
+    localRuntime(forge.glodium)
+    localRuntime(forge.geckolib)
+    localRuntime(forge.cloth.config)
+    localRuntime(forge.pneumaticcraft)
+    localRuntime(forge.kotlinforforge)
+    localRuntime(forge.create) {
+        // Needed to prevent game-test crashes
+        exclude group: "maven.modrinth", module: "journeymap"
+        exclude group: "info.journeymap", module: "journeymap-api-neoforge"
+    }
+
+    // Runtime AE2 addons
+    localRuntime(forge.ae2ji)
+    localRuntime(forge.guideme)
+    localRuntime(forge.ae2wt)
+    localRuntime(forge.eae)
+    localRuntime(forge.aelt)
+    localRuntime(forge.applied.flux)
+    localRuntime(forge.applied.create)
+    localRuntime(forge.aae)
+    localRuntime(forge.eco)
+    localRuntime(forge.extendedae.plus)
+    localRuntime(forge.applied.pneumatics)
+    localRuntime(forge.mega.cells)
+    localRuntime(forge.amek)
+    localRuntime(forge.mek)
+
+    // Runtime recipe viewers
+    localRuntime(forge.emi)
+    localRuntime(forge.jei.neoforge.impl)
+    // AG
+    implementation "curse.maven:applied-generators-1320369:7161908"
+    // OMNI CELL
+    implementation "curse.maven:omni-cells-1359517:7169530"
+
+    // Client-only runtime mods
+    clientLocalRuntime(forge.jech)
+    clientLocalRuntime(forge.ctm)
+    clientLocalRuntime(forge.sodium)
+    clientLocalRuntime(forge.iris)
+    renderNurseCfg(libs.renderNurse)
+
+    //////////////////////////////////////////////////////
+    // Runtime mods for dev testing with unclean client //
+    //////////////////////////////////////////////////////
+}
+//
+//dependencies {
+//    compileOnly "curse.maven:ae2-jei-integration-1074338:5748513"
+//    localRuntime "curse.maven:ae2-jei-integration-1074338:5748513"
+//
+//    localRuntime "curse.maven:nbtedit-reborn-678133:6125444"
+//
+//    // 联动前置
+//    implementation "curse.maven:glodium-957920:5821676"
+//    implementation "curse.maven:geckolib-388172:7415496"
+//
+//    // MEK
+//    implementation "maven.modrinth:mekanism:10.7.13.78"
+//    // MEGA CELL
+//    implementation "curse.maven:mega-cells-622112:6853076"
+//    // EAE
+//    implementation "curse.maven:ex-pattern-provider-892005:7356474"
+//    // AAE
+//    implementation "curse.maven:advancedae-1084104:7374386"
+
+//    // AF
+//    implementation "curse.maven:applied-flux-965012:7429565"
+//    // Create
+//    implementation "curse.maven:create-328085:7408951"
+//}
