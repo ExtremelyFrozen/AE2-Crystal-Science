@@ -1,12 +1,14 @@
 package io.github.lounode.ae2cs.common.block;
 
+import io.github.lounode.ae2cs.common.block.entity.IntegratedInterfaceBlockEntity;
+
 import appeng.block.AEBaseEntityBlock;
 import appeng.block.crafting.PatternProviderBlock;
 import appeng.block.crafting.PushDirection;
 import appeng.menu.locator.MenuLocators;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
-import io.github.lounode.ae2cs.common.block.entity.IntegratedInterfaceBlockEntity;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -19,20 +21,18 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
+
 import org.jetbrains.annotations.NotNull;
 
-public class IntegratedInterfaceBlock extends AEBaseEntityBlock<IntegratedInterfaceBlockEntity>
-{
+public class IntegratedInterfaceBlock extends AEBaseEntityBlock<IntegratedInterfaceBlockEntity> {
 
-    public IntegratedInterfaceBlock(Properties properties)
-    {
+    public IntegratedInterfaceBlock(Properties properties) {
         super(properties);
         registerDefaultState(defaultBlockState().setValue(PatternProviderBlock.PUSH_DIRECTION, PushDirection.ALL));
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
-    {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(PatternProviderBlock.PUSH_DIRECTION);
     }
@@ -43,11 +43,9 @@ public class IntegratedInterfaceBlock extends AEBaseEntityBlock<IntegratedInterf
                                 @NotNull BlockPos pos,
                                 @NotNull Block block,
                                 @NotNull BlockPos fromPos,
-                                boolean isMoving)
-    {
+                                boolean isMoving) {
         var be = this.getBlockEntity(level, pos);
-        if (be != null)
-        {
+        if (be != null) {
             // 通知更新红石信号缓存
             be.getLogic().updateRedstoneState();
         }
@@ -55,10 +53,8 @@ public class IntegratedInterfaceBlock extends AEBaseEntityBlock<IntegratedInterf
 
     @Override
     protected @NotNull ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
-                                                       Player player, InteractionHand hand, BlockHitResult hit)
-    {
-        if (InteractionUtil.canWrenchRotate(heldItem))
-        {
+                                                       Player player, InteractionHand hand, BlockHitResult hit) {
+        if (InteractionUtil.canWrenchRotate(heldItem)) {
             setSide(level, pos, hit.getDirection());
             return ItemInteractionResult.sidedSuccess(level.isClientSide());
         }
@@ -67,13 +63,10 @@ public class IntegratedInterfaceBlock extends AEBaseEntityBlock<IntegratedInterf
 
     @Override
     protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
-                                                        BlockHitResult hitResult)
-    {
+                                                        BlockHitResult hitResult) {
         var be = this.getBlockEntity(level, pos);
-        if (be != null)
-        {
-            if (!level.isClientSide())
-            {
+        if (be != null) {
+            if (!level.isClientSide()) {
                 be.openMenu(player, MenuLocators.forBlockEntity(be));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());
@@ -81,26 +74,18 @@ public class IntegratedInterfaceBlock extends AEBaseEntityBlock<IntegratedInterf
         return InteractionResult.PASS;
     }
 
-    public void setSide(Level level, BlockPos pos, Direction facing)
-    {
+    public void setSide(Level level, BlockPos pos, Direction facing) {
         var currentState = level.getBlockState(pos);
         var pushSide = currentState.getValue(PatternProviderBlock.PUSH_DIRECTION).getDirection();
 
         PushDirection newPushDirection;
-        if (pushSide == facing.getOpposite())
-        {
+        if (pushSide == facing.getOpposite()) {
             newPushDirection = PushDirection.fromDirection(facing);
-        }
-        else if (pushSide == facing)
-        {
+        } else if (pushSide == facing) {
             newPushDirection = PushDirection.ALL;
-        }
-        else if (pushSide == null)
-        {
+        } else if (pushSide == null) {
             newPushDirection = PushDirection.fromDirection(facing.getOpposite());
-        }
-        else
-        {
+        } else {
             newPushDirection = PushDirection.fromDirection(Platform.rotateAround(pushSide, facing));
         }
 

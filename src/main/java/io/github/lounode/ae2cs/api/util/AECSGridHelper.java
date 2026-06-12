@@ -7,19 +7,19 @@ import appeng.api.networking.pathing.ChannelMode;
 import appeng.blockentity.networking.ControllerBlockEntity;
 import appeng.me.GridConnection;
 import appeng.me.GridNode;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 
-public class AECSGridHelper
-{
+public class AECSGridHelper {
+
     /**
      * 获取网络中随机一个控制器节点
      */
     @Nullable
-    public static IGridNode getControlNode(@NotNull IGrid grid)
-    {
+    public static IGridNode getControlNode(@NotNull IGrid grid) {
         Iterator<IGridNode> it = grid.getMachineNodes(ControllerBlockEntity.class).iterator();
         return it.hasNext() ? it.next() : null;
     }
@@ -30,8 +30,7 @@ public class AECSGridHelper
      * - INFINITE 返回 Integer.MAX_VALUE
      * - 端点设备会从其父节点（控制器方向第一跳）开始计算，避免把端点自身 maxChannels 当成瓶颈
      */
-    public static int getDistributableChannelsOnControllerPath(IGridNode node)
-    {
+    public static int getDistributableChannelsOnControllerPath(IGridNode node) {
         if (!(node instanceof GridNode gn)) return 0;
 
         var grid = gn.getGrid();
@@ -53,15 +52,12 @@ public class AECSGridHelper
         int available = Integer.MAX_VALUE;
 
         // 向上爬到 controller，取路径上最小 slack
-        for (int guard = 0; guard < 2048 && cur != null; guard++)
-        {
+        for (int guard = 0; guard < 2048 && cur != null; guard++) {
             if (cur.getOwner() instanceof ControllerBlockEntity) break;
 
-            if (!cur.hasFlag(GridFlags.CANNOT_CARRY))
-            {
+            if (!cur.hasFlag(GridFlags.CANNOT_CARRY)) {
                 int slack = cur.getMaxChannels() - cur.getUsedChannels();
-                if (slack < available)
-                {
+                if (slack < available) {
                     available = slack;
                     if (available <= 0) return 0;
                 }
@@ -76,23 +72,18 @@ public class AECSGridHelper
     /**
      * 是否是线缆类节点
      */
-    private static boolean isCableLike(GridNode n)
-    {
+    private static boolean isCableLike(GridNode n) {
         // DENSE_CAPACITY指致密线缆、PREFERRED是普通线缆
         return n.hasFlag(GridFlags.DENSE_CAPACITY) || n.hasFlag(GridFlags.PREFERRED);
     }
 
-    private static @Nullable GridNode parentTowardController(GridNode n)
-    {
-        try
-        {
+    private static @Nullable GridNode parentTowardController(GridNode n) {
+        try {
             // controller route 的那条边
             var route = (GridConnection) n.getControllerRoute();
             var other = route.getOtherSide(n);
             return (other instanceof GridNode gn) ? gn : null;
-        }
-        catch (Throwable t)
-        {
+        } catch (Throwable t) {
             return null;
         }
     }

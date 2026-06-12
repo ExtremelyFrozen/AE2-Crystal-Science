@@ -1,11 +1,20 @@
 package io.github.lounode.ae2cs.integration.jei;
 
-import appeng.menu.interfaces.IProgressProvider;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.client.gui.icon.AECSBlitter;
 import io.github.lounode.ae2cs.client.gui.widgets.AdvancedProgressBar;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.recipe.crystal_aggregator.CrystalAggregatorRecipe;
+
+import appeng.menu.interfaces.IProgressProvider;
+
+import net.minecraft.Util;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
+
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.builder.ITooltipBuilder;
@@ -16,20 +25,14 @@ import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.Util;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class CrystalAggregatorRecipeCategory implements IRecipeCategory<RecipeHolder<CrystalAggregatorRecipe>>
-{
+public class CrystalAggregatorRecipeCategory implements IRecipeCategory<RecipeHolder<CrystalAggregatorRecipe>> {
+
     public static RecipeType<RecipeHolder<CrystalAggregatorRecipe>> RECIPE_TYPE = RecipeType.createRecipeHolderType(AE2CrystalScience.makeId("crystal_aggregator"));
 
     private static final Rect2i energyTooltipArea = new Rect2i(109, 21, 6, 18);
@@ -43,40 +46,35 @@ public class CrystalAggregatorRecipeCategory implements IRecipeCategory<RecipeHo
     private static final int ANIM_DURATION_MS = 3_000;
     private long animStartMs = -1L;
 
-    public CrystalAggregatorRecipeCategory(IJeiHelpers jeiHelper)
-    {
+    public CrystalAggregatorRecipeCategory(IJeiHelpers jeiHelper) {
         var guiHelper = jeiHelper.getGuiHelper();
         this.background = guiHelper.createDrawable(AE2CrystalScience.makeId("textures/gui/recipe/crystal_aggregator.png"), 0, 0, 135, 58);
         this.icon = guiHelper.createDrawableItemLike(AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK);
 
-        energyRateBar = new AdvancedProgressBar(new IProgressProvider()
-        {
+        energyRateBar = new AdvancedProgressBar(new IProgressProvider() {
+
             @Override
-            public int getCurrentProgress()
-            {
+            public int getCurrentProgress() {
                 return getAnimMsInCycle();
             }
 
             @Override
-            public int getMaxProgress()
-            {
+            public int getMaxProgress() {
                 return ANIM_DURATION_MS;
             }
         }, AECSBlitter.energyProgress, AdvancedProgressBar.FillMode.BOTTOM_TO_TOP);
         energyRateBar.setX(109);
         energyRateBar.setY(21);
 
-        workingProgressBar = new AdvancedProgressBar(new IProgressProvider()
-        {
+        workingProgressBar = new AdvancedProgressBar(new IProgressProvider() {
+
             @Override
-            public int getCurrentProgress()
-            {
+            public int getCurrentProgress() {
                 return getAnimMsInCycle();
             }
 
             @Override
-            public int getMaxProgress()
-            {
+            public int getMaxProgress() {
                 return ANIM_DURATION_MS;
             }
         }, AECSBlitter.crystalAggregatorProgress, AdvancedProgressBar.FillMode.LEFT_TO_RIGHT);
@@ -85,27 +83,23 @@ public class CrystalAggregatorRecipeCategory implements IRecipeCategory<RecipeHo
     }
 
     @Override
-    public @NotNull RecipeType<RecipeHolder<CrystalAggregatorRecipe>> getRecipeType()
-    {
+    public @NotNull RecipeType<RecipeHolder<CrystalAggregatorRecipe>> getRecipeType() {
         return RECIPE_TYPE;
     }
 
     @Override
-    public int getWidth()
-    {
+    public int getWidth() {
         return background.getWidth();
     }
 
     @Override
-    public int getHeight()
-    {
+    public int getHeight() {
         return background.getHeight();
     }
 
     @Override
     public void draw(@NotNull RecipeHolder<CrystalAggregatorRecipe> recipe, @NotNull IRecipeSlotsView recipeSlotsView,
-                     @NotNull GuiGraphics guiGraphics, double mouseX, double mouseY)
-    {
+                     @NotNull GuiGraphics guiGraphics, double mouseX, double mouseY) {
         IRecipeCategory.super.draw(recipe, recipeSlotsView, guiGraphics, mouseX, mouseY);
         background.draw(guiGraphics);
         energyRateBar.renderWidget(guiGraphics, (int) mouseX, (int) mouseY, 0.0f);
@@ -113,41 +107,34 @@ public class CrystalAggregatorRecipeCategory implements IRecipeCategory<RecipeHo
     }
 
     @Override
-    public @NotNull Component getTitle()
-    {
+    public @NotNull Component getTitle() {
         return Component.translatable("ae2cs.integration.jei.recipe_category.crystal_aggregator");
     }
 
     @Override
-    public @Nullable IDrawable getIcon()
-    {
+    public @Nullable IDrawable getIcon() {
         return icon;
     }
 
     @Override
     public void getTooltip(@NotNull ITooltipBuilder tooltip, @NotNull RecipeHolder<CrystalAggregatorRecipe> recipe,
-                           @NotNull IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY)
-    {
+                           @NotNull IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
         IRecipeCategory.super.getTooltip(tooltip, recipe, recipeSlotsView, mouseX, mouseY);
-        if (energyTooltipArea.contains((int) mouseX, (int) mouseY))
-        {
+        if (energyTooltipArea.contains((int) mouseX, (int) mouseY)) {
             tooltip.add(Component.translatable("ae2cs.integration.jei.recipe_category.energy_cost.tooltip", recipe.value().energyCost()));
         }
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, @NotNull RecipeHolder<CrystalAggregatorRecipe> recipe, @NotNull IFocusGroup focuses)
-    {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, @NotNull RecipeHolder<CrystalAggregatorRecipe> recipe, @NotNull IFocusGroup focuses) {
         int xIn = 30;
         int y0 = 3;
         int dy = 18;
 
         List<SizedIngredient> ingredients = recipe.value().required();
-        for (int i = 0; i < 3; i++)
-        {
+        for (int i = 0; i < 3; i++) {
             IRecipeSlotBuilder slotBuilder = builder.addInputSlot(xIn, y0 + i * dy);
-            if (ingredients.size() > i)
-            {
+            if (ingredients.size() > i) {
                 slotBuilder.addItemStacks(Arrays.asList(ingredients.get(i).getItems()));
             }
         }
@@ -157,11 +144,9 @@ public class CrystalAggregatorRecipeCategory implements IRecipeCategory<RecipeHo
         builder.addOutputSlot(xOut, yOut).addItemStack(recipe.value().result().copy());
     }
 
-    private int getAnimMsInCycle()
-    {
+    private int getAnimMsInCycle() {
         long now = Util.getMillis();
-        if (animStartMs < 0L)
-        {
+        if (animStartMs < 0L) {
             animStartMs = now;
         }
         long elapsed = now - animStartMs;

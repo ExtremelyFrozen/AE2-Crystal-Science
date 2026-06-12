@@ -1,11 +1,5 @@
 package io.github.lounode.ae2cs.datagen.recipes.compat;
 
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
-import appeng.datagen.providers.tags.ConventionTags;
-import com.glodblock.github.extendedae.common.EAESingletons;
-import com.glodblock.github.extendedae.recipe.CrystalAssemblerRecipeBuilder;
-import com.glodblock.github.extendedae.util.EAETags;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
@@ -15,6 +9,11 @@ import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CircuitEtcherRecipeBuilder;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBuilder;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalPulverizerRecipeBuilder;
+
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.datagen.providers.tags.ConventionTags;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -23,26 +22,27 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
+
+import com.glodblock.github.extendedae.common.EAESingletons;
+import com.glodblock.github.extendedae.recipe.CrystalAssemblerRecipeBuilder;
+import com.glodblock.github.extendedae.util.EAETags;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 
-public class AECSCompatEAERecipeProvider extends AECSRecipeProvider
-{
-    public AECSCompatEAERecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries)
-    {
+public class AECSCompatEAERecipeProvider extends AECSRecipeProvider {
+
+    public AECSCompatEAERecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries);
     }
 
     @Override
-    public @NotNull String getName()
-    {
+    public @NotNull String getName() {
         return "AECS EAE Compat Recipes";
     }
 
     @Override
-    protected void buildRecipes(@NotNull RecipeOutput originalOut, HolderLookup.@NotNull Provider registries)
-    {
+    protected void buildRecipes(@NotNull RecipeOutput originalOut, HolderLookup.@NotNull Provider registries) {
         var compatOut = originalOut.withConditions(modLoaded(AECSConstants.EAE_ID));
         super.buildRecipes(compatOut, registries);
 
@@ -138,8 +138,7 @@ public class AECSCompatEAERecipeProvider extends AECSRecipeProvider
                 .save(compatOut, getCrystalAssemblerPath(AECSBlocks.EX_INTEGRATED_INTERFACE_BLOCK));
     }
 
-    protected static ResourceLocation getCrystalAssemblerPath(ItemLike output)
-    {
+    protected static ResourceLocation getCrystalAssemblerPath(ItemLike output) {
         return AE2CrystalScience.makeId(getPrefixedItemName("crystal_assembler", output));
     }
 }

@@ -7,8 +7,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class PatternHelper
-{
+public class PatternHelper {
 
     /**
      * 给定一个可能包含 null 的堆叠数组，其中可能包含多个相同类型，
@@ -16,26 +15,21 @@ public class PatternHelper
      * <p>
      * 这段代码复制自AE2原版
      */
-    public static List<GenericStack> condenseStacks(List<GenericStack> sparseInput)
-    {
+    public static List<GenericStack> condenseStacks(List<GenericStack> sparseInput) {
         var map = new LinkedHashMap<AEKey, Long>();
 
-        for (var input : sparseInput)
-        {
-            if (input != null)
-            {
+        for (var input : sparseInput) {
+            if (input != null) {
                 map.merge(input.what(), input.amount(), Long::sum);
             }
         }
 
-        if (map.isEmpty())
-        {
+        if (map.isEmpty()) {
             throw new IllegalStateException("No pattern here!");
         }
 
         List<GenericStack> out = new ArrayList<>(map.size());
-        for (var entry : map.entrySet())
-        {
+        for (var entry : map.entrySet()) {
             out.add(new GenericStack(entry.getKey(), entry.getValue()));
         }
         return out;

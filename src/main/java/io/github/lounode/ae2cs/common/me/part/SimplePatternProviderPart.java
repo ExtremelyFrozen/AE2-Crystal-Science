@@ -1,5 +1,9 @@
 package io.github.lounode.ae2cs.common.me.part;
 
+import io.github.lounode.ae2cs.AE2CrystalScience;
+import io.github.lounode.ae2cs.common.init.AECSMenus;
+import io.github.lounode.ae2cs.common.init.AECSParts;
+
 import appeng.api.AECapabilities;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
@@ -13,15 +17,13 @@ import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuHostLocator;
 import appeng.parts.PartModel;
 import appeng.parts.crafting.PatternProviderPart;
-import io.github.lounode.ae2cs.AE2CrystalScience;
-import io.github.lounode.ae2cs.common.init.AECSMenus;
-import io.github.lounode.ae2cs.common.init.AECSParts;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-public class SimplePatternProviderPart extends PatternProviderPart
-{
+public class SimplePatternProviderPart extends PatternProviderPart {
+
     public static final ResourceLocation MODEL_BASE = AE2CrystalScience.makeId(
             "part/simple_pattern_provider/base");
 
@@ -37,67 +39,53 @@ public class SimplePatternProviderPart extends PatternProviderPart
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
             AppEng.makeId("part/interface_has_channel"));
 
-    public SimplePatternProviderPart(IPartItem<?> partItem)
-    {
+    public SimplePatternProviderPart(IPartItem<?> partItem) {
         super(partItem);
     }
 
     /**
      * 注册能力
      */
-    public static void onRegisterCaps(RegisterPartCapabilitiesEvent event)
-    {
+    public static void onRegisterCaps(RegisterPartCapabilitiesEvent event) {
         event.register(
                 AECapabilities.GENERIC_INTERNAL_INV,
                 (part, direction) -> part.getLogic().getReturnInv(),
-                SimplePatternProviderPart.class
-        );
+                SimplePatternProviderPart.class);
     }
 
     @Override
-    public IPartModel getStaticModels()
-    {
-        if (this.isActive() && this.isPowered())
-        {
+    public IPartModel getStaticModels() {
+        if (this.isActive() && this.isPowered()) {
             return MODELS_HAS_CHANNEL;
-        }
-        else if (this.isPowered())
-        {
+        } else if (this.isPowered()) {
             return MODELS_ON;
-        }
-        else
-        {
+        } else {
             return MODELS_OFF;
         }
     }
 
     @Override
-    protected PatternProviderLogic createLogic()
-    {
+    protected PatternProviderLogic createLogic() {
         return new PatternProviderLogic(getMainNode(), this, 5);
     }
 
     @Override
-    public void openMenu(Player player, MenuHostLocator locator)
-    {
+    public void openMenu(Player player, MenuHostLocator locator) {
         MenuOpener.open(AECSMenus.SIMPLE_PATTERN_PROVIDER_MENU.get(), player, locator);
     }
 
     @Override
-    public void returnToMainMenu(Player player, ISubMenu subMenu)
-    {
+    public void returnToMainMenu(Player player, ISubMenu subMenu) {
         MenuOpener.returnTo(AECSMenus.SIMPLE_PATTERN_PROVIDER_MENU.get(), player, subMenu.getLocator());
     }
 
     @Override
-    public AEItemKey getTerminalIcon()
-    {
+    public AEItemKey getTerminalIcon() {
         return AEItemKey.of(AECSParts.SIMPLE_PATTERN_PROVIDER_PART);
     }
 
     @Override
-    public ItemStack getMainMenuIcon()
-    {
+    public ItemStack getMainMenuIcon() {
         return AECSParts.SIMPLE_PATTERN_PROVIDER_PART.toStack();
     }
 }

@@ -1,5 +1,9 @@
 package io.github.lounode.ae2cs.common.me.logic;
 
+import io.github.lounode.ae2cs.api.util.AEKeyHelper;
+import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.util.KeyCounterHelper;
+
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.crafting.IPatternDetails;
@@ -24,22 +28,21 @@ import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.me.helpers.MachineSource;
-import io.github.lounode.ae2cs.api.util.AEKeyHelper;
-import io.github.lounode.ae2cs.common.init.AECSBlocks;
-import io.github.lounode.ae2cs.util.KeyCounterHelper;
-import it.unimi.dsi.fastutil.objects.*;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
+
+import it.unimi.dsi.fastutil.objects.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MeteoritePatternProviderLogic extends PatternProviderLogic implements IUpgradeableObject
-{
+public class MeteoritePatternProviderLogic extends PatternProviderLogic implements IUpgradeableObject {
+
     private final IManagedGridNode mainNode;
     private final IActionSource actionSource;
     private final MeteoritePatternProviderHost meteoriteHost;
@@ -84,8 +87,7 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
      */
     private final ReferenceArrayList<IPatternDetails> outputCacheOrder = new ReferenceArrayList<>(OUTPUT_CACHE_LIMIT + 4);
 
-    public MeteoritePatternProviderLogic(IManagedGridNode mainNode, MeteoritePatternProviderHost host, int patternInventorySize)
-    {
+    public MeteoritePatternProviderLogic(IManagedGridNode mainNode, MeteoritePatternProviderHost host, int patternInventorySize) {
         super(mainNode, host, patternInventorySize);
 
         this.meteoriteHost = host;
@@ -96,77 +98,64 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
         this.actionSource = new MachineSource(mainNode::getNode);
     }
 
-    private boolean canAcceptPattern(@Nullable IPatternDetails details)
-    {
+    private boolean canAcceptPattern(@Nullable IPatternDetails details) {
         if (details == null) return false;
         return details instanceof IMolecularAssemblerSupportedPattern;
     }
 
-    private void onUpgradesChange()
-    {
+    private void onUpgradesChange() {
         this.maxWorksInRound = 8 << getInstalledUpgrades(AEItems.SPEED_CARD);
         this.saveChanges();
     }
 
-    private double getEnergyPerWorkAfterSpeed()
-    {
+    private double getEnergyPerWorkAfterSpeed() {
         return energyPerWork << getInstalledUpgrades(AEItems.SPEED_CARD);
     }
 
-    private boolean workCraftedContents()
-    {
+    private boolean workCraftedContents() {
         boolean worked = false;
         this.worksInRound = 0; // 每tick重置
 
-        if (!craftedContents.isEmpty())
-        {
-            @Nullable MEStorage gridInv = null;
+        if (!craftedContents.isEmpty()) {
+            @Nullable
+            MEStorage gridInv = null;
 
             IGrid grid = getGrid();
-            if (grid != null)
-            {
+            if (grid != null) {
                 gridInv = grid.getStorageService().getInventory();
             }
 
             // 完成sendContent内容
             ObjectIterator<Object2LongMap.Entry<AEKey>> it = craftedContents.object2LongEntrySet().iterator();
-            while (it.hasNext())
-            {
+            while (it.hasNext()) {
                 Object2LongMap.Entry<AEKey> entry = it.next();
                 AEKey key = entry.getKey();
                 long remaining = entry.getLongValue();
-                if (key == null || remaining <= 0)
-                {
+                if (key == null || remaining <= 0) {
                     it.remove();
                     continue;
                 }
 
                 // 尝试塞入可用库存
                 long allInserted = 0;
-                if (gridInv != null)
-                {
+                if (gridInv != null) {
                     long inserted = gridInv.insert(key, remaining, Actionable.MODULATE, actionSource);
                     allInserted += inserted;
                     remaining -= inserted;
                 }
-                if (remaining > 0)
-                {
+                if (remaining > 0) {
                     long inserted = getReturnInv().insert(key, remaining, Actionable.MODULATE, actionSource);
                     allInserted += inserted;
                     remaining -= inserted;
                 }
 
                 // 更新 craftedContents并决定返回值
-                if (remaining <= 0)
-                {
+                if (remaining <= 0) {
                     it.remove();
-                }
-                else
-                {
+                } else {
                     entry.setValue(remaining);
                 }
-                if (allInserted > 0)
-                {
+                if (allInserted > 0) {
                     worked = true;
                 }
             }
@@ -178,8 +167,7 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
     }
 
     @Override
-    public boolean isBusy()
-    {
+    public boolean isBusy() {
         // 显示保留，不要在这里检查工作轮数，让工作流进入pushPattern，以防设备tick无法被及时唤醒
         return super.isBusy();
     }
@@ -188,18 +176,15 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
      * 如果是可通过陨石样板供应器快速完成的样板，则直接完成，否则回退到普通供应器逻辑
      */
     @Override
-    public boolean pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder)
-    {
+    public boolean pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder) {
         // 如果本轮工作轮数已经超出上限，则直接返回
         if (worksInRound >= maxWorksInRound) return false;
 
         // 检查样板
-        if (!canAcceptPattern(patternDetails))
-        {
+        if (!canAcceptPattern(patternDetails)) {
             return super.pushPattern(patternDetails, inputHolder);
         }
-        if (!(patternDetails instanceof IMolecularAssemblerSupportedPattern pattern))
-        {
+        if (!(patternDetails instanceof IMolecularAssemblerSupportedPattern pattern)) {
             return super.pushPattern(patternDetails, inputHolder);
         }
 
@@ -216,8 +201,7 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
         if (output == null) return false;
 
         // 将产物与剩余物添加入表
-        for (GenericStack stack : output)
-        {
+        for (GenericStack stack : output) {
             if (stack == null || stack.what() == null || stack.amount() <= 0) continue;
             craftedContents.addTo(stack.what(), stack.amount());
         }
@@ -234,77 +218,62 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
     /**
      * 尝试从网络中扣除指定数量的能量，如果不足不扣除
      */
-    private boolean tryConsumeEnergyFromGrid(double energy)
-    {
+    private boolean tryConsumeEnergyFromGrid(double energy) {
         IGrid grid = getGrid();
         if (grid == null) return false;
         IEnergyService energyService = grid.getEnergyService();
         if (energyService == null) return false;
 
         double extracted = energyService.extractAEPower(energy, Actionable.MODULATE, PowerMultiplier.ONE);
-        if (extracted + 1.0e-9 >= energy)
-        {
+        if (extracted + 1.0e-9 >= energy) {
             return true;
         }
 
-        try
-        {
+        try {
             energyService.injectPower(extracted, Actionable.MODULATE);
-        }
-        catch (Throwable ignored)
-        {
+        } catch (Throwable ignored) {
             // 默许损耗
         }
         return false;
     }
 
     @Nullable
-    private List<GenericStack> getMolecularAssemblerSupportedPatternOutput(IMolecularAssemblerSupportedPattern pattern, KeyCounter[] inputHolder)
-    {
+    private List<GenericStack> getMolecularAssemblerSupportedPatternOutput(IMolecularAssemblerSupportedPattern pattern, KeyCounter[] inputHolder) {
         List<GenericStack> cachedOutput = outputCache.get(pattern);
         if (cachedOutput != null) return cachedOutput;
 
         // 提供注册表信息，用于后续assemble实际输出
         var level = meteoriteHost.getBlockEntity().getLevel();
-        if (level == null)
-        {
+        if (level == null) {
             return null;
         }
 
         // 计算真实输出和剩余物
         final ItemStack[] grid3x3 = new ItemStack[9];
-        for (int i = 0; i < 9; i++)
-        {
+        for (int i = 0; i < 9; i++) {
             grid3x3[i] = ItemStack.EMPTY;
         }
-        try
-        {
+        try {
             KeyCounter[] inputHolderCopy = new KeyCounter[inputHolder.length];
-            for (int i = 0; i < inputHolder.length; i++)
-            {
+            for (int i = 0; i < inputHolder.length; i++) {
                 KeyCounter kc = inputHolder[i];
                 inputHolderCopy[i] = (kc == null) ? new KeyCounter() : KeyCounterHelper.deepCopy(kc);
             }
             pattern.fillCraftingGrid(inputHolderCopy, (slot, stack) -> {
-                if (slot >= 0 && slot < 9)
-                {
+                if (slot >= 0 && slot < 9) {
                     grid3x3[slot] = (stack == null) ? ItemStack.EMPTY : stack;
                 }
             });
-        }
-        catch (RuntimeException e)
-        {
+        } catch (RuntimeException e) {
             // 出现任何异常，此时便不稳定，直接返回null
             return null;
         }
 
         // 压缩边距
         int minX = 3, minY = 3, maxX = -1, maxY = -1;
-        for (int slot = 0; slot < 9; slot++)
-        {
+        for (int slot = 0; slot < 9; slot++) {
             ItemStack stack = grid3x3[slot];
-            if (stack != null && !stack.isEmpty())
-            {
+            if (stack != null && !stack.isEmpty()) {
                 int x = slot % 3;
                 int y = slot / 3;
                 if (x < minX) minX = x;
@@ -314,8 +283,7 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
             }
         }
 
-        if (maxX < 0)
-        {
+        if (maxX < 0) {
             return null;
         }
 
@@ -323,10 +291,8 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
         final int height = (maxY - minY + 1);
 
         final List<ItemStack> compressedItems = new ArrayList<>(width * height);
-        for (int y = 0; y < height; y++)
-        {
-            for (int x = 0; x < width; x++)
-            {
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
                 int srcSlot = (minX + x) + (minY + y) * 3;
                 ItemStack stack = grid3x3[srcSlot];
                 compressedItems.add(stack == null ? ItemStack.EMPTY : stack);
@@ -335,10 +301,8 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
 
         final CraftingInput input = CraftingInput.of(width, height, compressedItems);
 
-
         ItemStack output = pattern.assemble(input, level);
-        if (output == null || output.isEmpty())
-        {
+        if (output == null || output.isEmpty()) {
             // 无输出
             return null;
         }
@@ -347,15 +311,12 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
         // 构造结果
         List<GenericStack> finalOutput = new ArrayList<>();
         GenericStack outputStack = GenericStack.fromItemStack(output);
-        if (outputStack != null)
-        {
+        if (outputStack != null) {
             finalOutput.add(outputStack);
         }
-        for (ItemStack stack : remainders)
-        {
+        for (ItemStack stack : remainders) {
             GenericStack remainingStack = GenericStack.fromItemStack(stack);
-            if (remainingStack != null)
-            {
+            if (remainingStack != null) {
                 finalOutput.add(remainingStack);
             }
         }
@@ -363,8 +324,7 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
         // 写入并清理缓存
         outputCache.put(pattern, finalOutput);
         outputCacheOrder.add(pattern);
-        while (outputCache.size() > OUTPUT_CACHE_LIMIT && !outputCacheOrder.isEmpty())
-        {
+        while (outputCache.size() > OUTPUT_CACHE_LIMIT && !outputCacheOrder.isEmpty()) {
             IPatternDetails oldest = outputCacheOrder.removeFirst();
             outputCache.remove(oldest);
         }
@@ -372,22 +332,19 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
     }
 
     @Override
-    public IUpgradeInventory getUpgrades()
-    {
+    public IUpgradeInventory getUpgrades() {
         return upgrades;
     }
 
     @Override
-    public void writeToNBT(CompoundTag tag, HolderLookup.Provider registries)
-    {
+    public void writeToNBT(CompoundTag tag, HolderLookup.Provider registries) {
         super.writeToNBT(tag, registries);
         upgrades.writeToNBT(tag, "upgrades", registries);
         AEKeyHelper.writeKeyAmountMap(tag, "crafted_contents", craftedContents, registries);
     }
 
     @Override
-    public void readFromNBT(CompoundTag tag, HolderLookup.Provider registries)
-    {
+    public void readFromNBT(CompoundTag tag, HolderLookup.Provider registries) {
         super.readFromNBT(tag, registries);
         upgrades.readFromNBT(tag, "upgrades", registries);
         AEKeyHelper.readKeyAmountMap(tag, "crafted_contents", craftedContents, registries);
@@ -395,18 +352,15 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
     }
 
     @Override
-    public void addDrops(List<ItemStack> drops)
-    {
+    public void addDrops(List<ItemStack> drops) {
         super.addDrops(drops);
-        for (ItemStack stack : upgrades)
-        {
+        for (ItemStack stack : upgrades) {
             drops.add(stack);
         }
     }
 
     @Override
-    public void clearContent()
-    {
+    public void clearContent() {
         super.clearContent();
         upgrades.clear();
     }
@@ -414,27 +368,23 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
     /**
      * 对原始的Ticker类进行一个扩展，使其在操作返回仓物品的同时，能顺便把我们的合成完成物发送回网络
      */
-    private class Ticker implements IGridTickable
-    {
+    private class Ticker implements IGridTickable {
+
         @Override
-        public TickingRequest getTickingRequest(IGridNode node)
-        {
+        public TickingRequest getTickingRequest(IGridNode node) {
             return new TickingRequest(TickRates.Interface, !hasWorkToDo() && craftedContents.isEmpty());
         }
 
         @Override
-        public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall)
-        {
-            if (!mainNode.isActive())
-            {
+        public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
+            if (!mainNode.isActive()) {
                 return TickRateModulation.SLEEP;
             }
             boolean couldDoWork = doWork();
             boolean workedForCrafter = workCraftedContents();
             couldDoWork = couldDoWork || workedForCrafter;
             boolean hasWorkToDo = hasWorkToDo() || !craftedContents.isEmpty();
-            return hasWorkToDo ? couldDoWork ? TickRateModulation.URGENT : TickRateModulation.SLOWER
-                    : TickRateModulation.SLEEP;
+            return hasWorkToDo ? couldDoWork ? TickRateModulation.URGENT : TickRateModulation.SLOWER : TickRateModulation.SLEEP;
         }
     }
 }

@@ -5,13 +5,12 @@ import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 
-public interface ResonatingPatternProviderHost extends PatternProviderLogicHost, IUpgradeableObject
-{
+public interface ResonatingPatternProviderHost extends PatternProviderLogicHost, IUpgradeableObject {
+
     ResonatingPatternProviderLogic getResonatingLogic();
 
     @Override
-    default IUpgradeInventory getUpgrades()
-    {
+    default IUpgradeInventory getUpgrades() {
         if (getLogic() instanceof ResonatingPatternProviderLogic logic)
             return logic.getUpgrades();
         else

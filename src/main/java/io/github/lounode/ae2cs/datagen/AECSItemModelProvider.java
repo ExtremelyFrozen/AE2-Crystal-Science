@@ -4,6 +4,7 @@ import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.item.CrystalSeedItem;
 import io.github.lounode.ae2cs.common.item.PureCrystalItem;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -18,60 +19,47 @@ import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.Objects;
 
-public class AECSItemModelProvider extends ItemModelProvider
-{
+public class AECSItemModelProvider extends ItemModelProvider {
 
-    public AECSItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper)
-    {
+    public AECSItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
         super(output, AECSConstants.MODID, existingFileHelper);
     }
 
     @Override
-    protected void registerModels()
-    {
-        for (DeferredItem<CrystalSeedItem> item : AECSItems.getCrystalSeeds())
-        {
+    protected void registerModels() {
+        for (DeferredItem<CrystalSeedItem> item : AECSItems.getCrystalSeeds()) {
             crystalSeedItem(item.get());
         }
-        for (DeferredItem<PureCrystalItem> item : AECSItems.getPureCrystal())
-        {
+        for (DeferredItem<PureCrystalItem> item : AECSItems.getPureCrystal()) {
             basicItem(item.get());
         }
-        for (DeferredItem<? extends Item> item : AECSItems.getTools())
-        {
+        for (DeferredItem<? extends Item> item : AECSItems.getTools()) {
             handheldItem(item.get());
         }
-        for (DeferredItem<? extends Item> item : AECSItems.getOthers())
-        {
+        for (DeferredItem<? extends Item> item : AECSItems.getOthers()) {
             basicItem(item.get());
         }
     }
 
-
-    private String getItemName(ItemLike item)
-    {
+    private String getItemName(ItemLike item) {
         return BuiltInRegistries.ITEM.getKey(item.asItem()).getPath();
     }
 
     /**
      * 把非本模组命名空间的纹理标记为“已生成”，从而绕过存在性校验
      */
-    private void allowExternalTexture(String path)
-    {
+    private void allowExternalTexture(String path) {
         ResourceLocation rl = ResourceLocation.parse(path);
-        if (!rl.getNamespace().equals(AECSConstants.MODID))
-        {
+        if (!rl.getNamespace().equals(AECSConstants.MODID)) {
             this.existingFileHelper.trackGenerated(rl, ModelProvider.TEXTURE);
         }
     }
 
-    public ItemModelBuilder crystalSeedItem(Item item)
-    {
+    public ItemModelBuilder crystalSeedItem(Item item) {
         return crystalSeedItem(Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(item)));
     }
 
-    public ItemModelBuilder crystalSeedItem(ResourceLocation item)
-    {
+    public ItemModelBuilder crystalSeedItem(ResourceLocation item) {
         var main = getBuilder(item.toString())
                 .parent(new ModelFile.UncheckedModelFile("item/generated"))
                 .texture("layer0", ResourceLocation.fromNamespaceAndPath(item.getNamespace(), "item/" + item.getPath() + "_0"))
@@ -93,5 +81,4 @@ public class AECSItemModelProvider extends ItemModelProvider
                 .texture("layer0", ResourceLocation.fromNamespaceAndPath(item.getNamespace(), "item/" + item.getPath() + "_2"));
         return main;
     }
-
 }

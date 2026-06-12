@@ -1,6 +1,5 @@
 package io.github.lounode.ae2cs.common.init;
 
-import appeng.api.upgrades.Upgrades;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.ids.AECSItemIds;
 import io.github.lounode.ae2cs.common.item.*;
@@ -8,6 +7,9 @@ import io.github.lounode.ae2cs.common.item.tools.ender.*;
 import io.github.lounode.ae2cs.common.item.tools.meteor.*;
 import io.github.lounode.ae2cs.common.item.tools.resonating.*;
 import io.github.lounode.ae2cs.common.item.upgrades.*;
+
+import appeng.api.upgrades.Upgrades;
+
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -18,8 +20,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class AECSItems
-{
+public class AECSItems {
+
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(AECSConstants.MODID);
 
     /**
@@ -47,42 +49,30 @@ public class AECSItems
      */
     private static final List<DeferredItem<? extends Item>> OTHERS = new ArrayList<>();
 
-    public static final DeferredItem<PureCrystalItem> PURE_CERTUS_QUARTZ_CRYSTAL =
-            registerPureCrystalItem(AECSItemIds.PURE_CERTUS_QUARTZ_CRYSTAL,
-                    () -> new PureCrystalItem(defaultBuilder(), 500d, 600));
-    public static final DeferredItem<PureCrystalItem> PURE_FLUIX_CRYSTAL =
-            registerPureCrystalItem(AECSItemIds.PURE_FLUIX_CRYSTAL,
-                    () -> new PureCrystalItem(defaultBuilder(), 1500d, 1200));
-    public static final DeferredItem<PureCrystalItem> PURE_NETHER_QUARTZ_CRYSTAL =
-            registerPureCrystalItem(AECSItemIds.PURE_NETHER_QUARTZ_CRYSTAL,
-                    () -> new PureCrystalItem(defaultBuilder(), 800d, 900));
-    public static final DeferredItem<PureCrystalItem> PURE_ENDER_QUARTZ =
-            registerPureCrystalItem(AECSItemIds.PURE_ENDER_QUARTZ,
-                    () -> new PureCrystalItem(defaultBuilder(), 900d, 800));
-    public static final DeferredItem<PureCrystalItem> PURE_METEOR_CRYSTAL =
-            registerPureCrystalItem(AECSItemIds.PURE_METEOR_CRYSTAL,
-                    () -> new PureCrystalItem(defaultBuilder(), 1200d, 1500));
-    public static final DeferredItem<PureCrystalItem> PURE_RESONATING_CRYSTAL =
-            registerPureCrystalItem(AECSItemIds.PURE_RESONATING_CRYSTAL,
-                    () -> new PureCrystalItem(defaultBuilder(), 2500d, 2400));
-    public static final DeferredItem<PureCrystalItem> PURE_ENTRO_CRYSTAL =
-            registerPureCrystalItem(AECSItemIds.PURE_ENTRO_CRYSTAL,
-                    () -> new PureCrystalItem(defaultBuilder(), 2000d, 2400));
-    public static final DeferredItem<PureCrystalItem> PURE_REDSTONE_CRYSTAL =
-            registerPureCrystalItem(AECSItemIds.PURE_REDSTONE_CRYSTAL,
-                    () -> new PureCrystalItem(defaultBuilder(), 1800d, 2000));
-    public static final DeferredItem<PureCrystalItem> PURE_QUANTUM_CRYSTAL =
-            registerPureCrystalItem(AECSItemIds.PURE_QUANTUM_CRYSTAL,
-                    () -> new PureCrystalItem(defaultBuilder(), 2320d, 3000));
-    public static final DeferredItem<PureCrystalItem> PURE_ROSE_QUARTZ =
-            registerPureCrystalItem(AECSItemIds.PURE_ROSE_QUARTZ,
-                    () -> new PureCrystalItem(defaultBuilder(), 2000d, 1800));
-    public static final DeferredItem<PureCrystalItem> PURE_IRRADIATED_CRYSTAL =
-            registerPureCrystalItem(AECSItemIds.PURE_IRRADIATED_CRYSTAL,
-                    () -> new PureCrystalItem(defaultBuilder(), 2900d, 2400));
-    public static final DeferredItem<PureCrystalItem> PURE_EMBER_CRYSTAL =
-            registerPureCrystalItem(AECSItemIds.PURE_EMBER_CRYSTAL,
-                    () -> new PureCrystalItem(defaultBuilder(), 2000d, 3600));
+    public static final DeferredItem<PureCrystalItem> PURE_CERTUS_QUARTZ_CRYSTAL = registerPureCrystalItem(AECSItemIds.PURE_CERTUS_QUARTZ_CRYSTAL,
+            () -> new PureCrystalItem(defaultBuilder(), 500d, 600));
+    public static final DeferredItem<PureCrystalItem> PURE_FLUIX_CRYSTAL = registerPureCrystalItem(AECSItemIds.PURE_FLUIX_CRYSTAL,
+            () -> new PureCrystalItem(defaultBuilder(), 1500d, 1200));
+    public static final DeferredItem<PureCrystalItem> PURE_NETHER_QUARTZ_CRYSTAL = registerPureCrystalItem(AECSItemIds.PURE_NETHER_QUARTZ_CRYSTAL,
+            () -> new PureCrystalItem(defaultBuilder(), 800d, 900));
+    public static final DeferredItem<PureCrystalItem> PURE_ENDER_QUARTZ = registerPureCrystalItem(AECSItemIds.PURE_ENDER_QUARTZ,
+            () -> new PureCrystalItem(defaultBuilder(), 900d, 800));
+    public static final DeferredItem<PureCrystalItem> PURE_METEOR_CRYSTAL = registerPureCrystalItem(AECSItemIds.PURE_METEOR_CRYSTAL,
+            () -> new PureCrystalItem(defaultBuilder(), 1200d, 1500));
+    public static final DeferredItem<PureCrystalItem> PURE_RESONATING_CRYSTAL = registerPureCrystalItem(AECSItemIds.PURE_RESONATING_CRYSTAL,
+            () -> new PureCrystalItem(defaultBuilder(), 2500d, 2400));
+    public static final DeferredItem<PureCrystalItem> PURE_ENTRO_CRYSTAL = registerPureCrystalItem(AECSItemIds.PURE_ENTRO_CRYSTAL,
+            () -> new PureCrystalItem(defaultBuilder(), 2000d, 2400));
+    public static final DeferredItem<PureCrystalItem> PURE_REDSTONE_CRYSTAL = registerPureCrystalItem(AECSItemIds.PURE_REDSTONE_CRYSTAL,
+            () -> new PureCrystalItem(defaultBuilder(), 1800d, 2000));
+    public static final DeferredItem<PureCrystalItem> PURE_QUANTUM_CRYSTAL = registerPureCrystalItem(AECSItemIds.PURE_QUANTUM_CRYSTAL,
+            () -> new PureCrystalItem(defaultBuilder(), 2320d, 3000));
+    public static final DeferredItem<PureCrystalItem> PURE_ROSE_QUARTZ = registerPureCrystalItem(AECSItemIds.PURE_ROSE_QUARTZ,
+            () -> new PureCrystalItem(defaultBuilder(), 2000d, 1800));
+    public static final DeferredItem<PureCrystalItem> PURE_IRRADIATED_CRYSTAL = registerPureCrystalItem(AECSItemIds.PURE_IRRADIATED_CRYSTAL,
+            () -> new PureCrystalItem(defaultBuilder(), 2900d, 2400));
+    public static final DeferredItem<PureCrystalItem> PURE_EMBER_CRYSTAL = registerPureCrystalItem(AECSItemIds.PURE_EMBER_CRYSTAL,
+            () -> new PureCrystalItem(defaultBuilder(), 2000d, 3600));
 
     public static final DeferredItem<CrystalSeedItem> CERTUS_QUARTZ_SEED = registerCrystalSeedItem(AECSItemIds.CERTUS_QUARTZ_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_CERTUS_QUARTZ_CRYSTAL));
     public static final DeferredItem<CrystalSeedItem> FLUIX_CRYSTAL_SEED = registerCrystalSeedItem(AECSItemIds.FLUIX_CRYSTAL_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_FLUIX_CRYSTAL));
@@ -149,40 +139,33 @@ public class AECSItems
     public static final DeferredItem<Item> WOODEN_GEAR = registerOtherItem(AECSItemIds.WOODEN_GEAR, () -> new Item(defaultBuilder()));
 
     // 快速物品状态
-    public static Item.Properties defaultBuilder()
-    {
+    public static Item.Properties defaultBuilder() {
         return new Item.Properties();
     }
 
     // getter
-    public static List<DeferredItem<? extends Item>> getALL()
-    {
+    public static List<DeferredItem<? extends Item>> getALL() {
         return Collections.unmodifiableList(ALL);
     }
 
-    public static List<DeferredItem<CrystalSeedItem>> getCrystalSeeds()
-    {
+    public static List<DeferredItem<CrystalSeedItem>> getCrystalSeeds() {
         return Collections.unmodifiableList(CRYSTAL_SEEDS);
     }
 
-    public static List<DeferredItem<PureCrystalItem>> getPureCrystal()
-    {
+    public static List<DeferredItem<PureCrystalItem>> getPureCrystal() {
         return Collections.unmodifiableList(PURE_CRYSTAL);
     }
 
-    public static List<DeferredItem<? extends Item>> getTools()
-    {
+    public static List<DeferredItem<? extends Item>> getTools() {
         return Collections.unmodifiableList(TOOLS);
     }
 
-    public static List<DeferredItem<? extends Item>> getOthers()
-    {
+    public static List<DeferredItem<? extends Item>> getOthers() {
         return Collections.unmodifiableList(OTHERS);
     }
 
     // 工具方法
-    private static <T extends Item> DeferredItem<T> registerItem(String name, Supplier<T> supplier)
-    {
+    private static <T extends Item> DeferredItem<T> registerItem(String name, Supplier<T> supplier) {
         DeferredItem<T> obj = ITEMS.register(name, () -> {
             T t = supplier.get();
             return t instanceof Item ? t : (T) new Item(new Item.Properties());
@@ -191,37 +174,32 @@ public class AECSItems
         return obj;
     }
 
-    private static DeferredItem<CrystalSeedItem> registerCrystalSeedItem(String name, Supplier<CrystalSeedItem> sup)
-    {
+    private static DeferredItem<CrystalSeedItem> registerCrystalSeedItem(String name, Supplier<CrystalSeedItem> sup) {
         DeferredItem<CrystalSeedItem> obj = registerItem(name, sup);
         CRYSTAL_SEEDS.add(obj);
         return obj;
     }
 
-    private static DeferredItem<PureCrystalItem> registerPureCrystalItem(String name, Supplier<PureCrystalItem> sup)
-    {
+    private static DeferredItem<PureCrystalItem> registerPureCrystalItem(String name, Supplier<PureCrystalItem> sup) {
         DeferredItem<PureCrystalItem> obj = registerItem(name, sup);
         PURE_CRYSTAL.add(obj);
         return obj;
     }
 
-    private static <T extends Item> DeferredItem<T> registerToolsItem(String name, Supplier<T> sup)
-    {
+    private static <T extends Item> DeferredItem<T> registerToolsItem(String name, Supplier<T> sup) {
         DeferredItem<T> obj = registerItem(name, sup);
         TOOLS.add(obj);
         return obj;
     }
 
-    private static <T extends Item> DeferredItem<T> registerOtherItem(String name, Supplier<T> sup)
-    {
+    private static <T extends Item> DeferredItem<T> registerOtherItem(String name, Supplier<T> sup) {
         DeferredItem<T> obj = registerItem(name, sup);
         OTHERS.add(obj);
         return obj;
     }
 
     // 注册监听
-    public static void register(IEventBus eventBus)
-    {
+    public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }
 }

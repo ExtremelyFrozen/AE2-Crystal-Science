@@ -1,41 +1,41 @@
 package io.github.lounode.ae2cs.datagen.recipes;
 
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
-import appeng.core.definitions.AEParts;
-import appeng.datagen.providers.tags.ConventionTags;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSEnchantments;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBuilder;
+
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.core.definitions.AEParts;
+import appeng.datagen.providers.tags.ConventionTags;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 
-public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
-{
-    public AECSAggregatorRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries)
-    {
+public class AECSAggregatorRecipeProvider extends AECSRecipeProvider {
+
+    public AECSAggregatorRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries);
     }
 
     @Override
-    public @NotNull String getName()
-    {
+    public @NotNull String getName() {
         return "AECS Aggregator Recipes";
     }
 
     @Override
-    protected void buildRecipes(@NotNull RecipeOutput recipeOutput, HolderLookup.@NotNull Provider registries)
-    {
+    protected void buildRecipes(@NotNull RecipeOutput recipeOutput, HolderLookup.@NotNull Provider registries) {
         super.buildRecipes(recipeOutput, registries);
 
         // 谐振样板转换器
@@ -121,7 +121,6 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
                 .require(Blocks.GRAVEL, 16)
                 .unlockedBy(getHasName(Blocks.GRAVEL), has(Blocks.GRAVEL))
                 .save(recipeOutput);
-
 
         // 扩展接口系列
         CrystalAggregatorRecipeBuilder.aggregating(AECSBlocks.EX_ENDER_INTERFACE_BLOCK.toStack(), 16000)
@@ -291,7 +290,7 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
 
         // 附魔书获取
         CrystalAggregatorRecipeBuilder.aggregating(
-                        enchantedItem(registries, Items.ENCHANTED_BOOK, 1, AECSEnchantments.ENDER_LINK, 1), 64000)
+                enchantedItem(registries, Items.ENCHANTED_BOOK, 1, AECSEnchantments.ENDER_LINK, 1), 64000)
                 .require(Items.BOOK, 1)
                 .require(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_ENDER_QUARTZ, 1)
                 .require(AEItems.SINGULARITY, 1)

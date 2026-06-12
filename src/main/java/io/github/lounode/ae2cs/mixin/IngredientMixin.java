@@ -1,10 +1,12 @@
 package io.github.lounode.ae2cs.mixin;
 
 import io.github.lounode.ae2cs.api.IngredientReplacer;
-import it.unimi.dsi.fastutil.ints.IntList;
+
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+
+import it.unimi.dsi.fastutil.ints.IntList;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -17,8 +19,8 @@ import java.util.Arrays;
 import java.util.Set;
 
 @Mixin(Ingredient.class)
-public abstract class IngredientMixin
-{
+public abstract class IngredientMixin {
+
     @Shadow
     @Nullable
     private ItemStack[] itemStacks;
@@ -34,8 +36,7 @@ public abstract class IngredientMixin
     private boolean aecs_patchedOnce = false;
 
     @Inject(method = "getItems", at = @At("RETURN"), cancellable = true)
-    private void aecs$expandGetItems(CallbackInfoReturnable<ItemStack[]> cir)
-    {
+    private void aecs$expandGetItems(CallbackInfoReturnable<ItemStack[]> cir) {
         if (aecs_patchedOnce) return;
         aecs_patchedOnce = true;
 
@@ -48,16 +49,14 @@ public abstract class IngredientMixin
         Item[] added = null;
         int addedCount = 0;
 
-        for (ItemStack stack : originalItems)
-        {
+        for (ItemStack stack : originalItems) {
             if (stack == null || stack.isEmpty()) continue;
 
             Item target = stack.getItem();
             Set<Item> extras = IngredientReplacer.getRule(target);
             if (extras == null || extras.isEmpty()) continue;
 
-            for (Item extra : extras)
-            {
+            for (Item extra : extras) {
                 if (extra == null) continue;
                 if (extra == target) continue; // 避免 A->A 的无意义规则
 
@@ -68,12 +67,9 @@ public abstract class IngredientMixin
                 if (addedCount > 0 && aecs$containsItem(added, addedCount, extra)) continue;
 
                 // 记录到待新增
-                if (added == null)
-                {
+                if (added == null) {
                     added = new Item[4];
-                }
-                else if (addedCount == added.length)
-                {
+                } else if (addedCount == added.length) {
                     added = Arrays.copyOf(added, addedCount * 2);
                 }
                 added[addedCount++] = extra;
@@ -85,8 +81,7 @@ public abstract class IngredientMixin
         // 一次性扩容并追加
         ItemStack[] expanded = Arrays.copyOf(originalItems, originalItems.length + addedCount);
         int idx = originalItems.length;
-        for (int i = 0; i < addedCount; i++)
-        {
+        for (int i = 0; i < addedCount; i++) {
             expanded[idx++] = new ItemStack(added[i]);
         }
 
@@ -98,20 +93,16 @@ public abstract class IngredientMixin
     }
 
     @Unique
-    private static boolean aecs$containsItem(ItemStack[] items, Item item)
-    {
-        for (ItemStack stack : items)
-        {
+    private static boolean aecs$containsItem(ItemStack[] items, Item item) {
+        for (ItemStack stack : items) {
             if (stack != null && !stack.isEmpty() && stack.getItem() == item) return true;
         }
         return false;
     }
 
     @Unique
-    private static boolean aecs$containsItem(Item[] items, int size, Item item)
-    {
-        for (int i = 0; i < size; i++)
-        {
+    private static boolean aecs$containsItem(Item[] items, int size, Item item) {
+        for (int i = 0; i < size; i++) {
             if (items[i] == item) return true;
         }
         return false;

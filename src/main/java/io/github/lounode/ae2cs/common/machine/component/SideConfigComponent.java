@@ -1,5 +1,14 @@
 package io.github.lounode.ae2cs.common.machine.component;
 
+import io.github.lounode.ae2cs.api.genericinv.CombinedGenericInternalInventory;
+import io.github.lounode.ae2cs.api.genericinv.GenericInvStorageAdapter;
+import io.github.lounode.ae2cs.api.genericinv.GenericStackInvWrapper;
+import io.github.lounode.ae2cs.api.networking.SideConfigField;
+import io.github.lounode.ae2cs.api.util.GenericStackInvHelper;
+import io.github.lounode.ae2cs.common.init.AECSDataComponents;
+import io.github.lounode.ae2cs.common.machine.MachineComponentContainer;
+import io.github.lounode.ae2cs.common.machine.MachineContext;
+
 import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.config.Actionable;
 import appeng.api.inventories.BaseInternalInventory;
@@ -12,14 +21,7 @@ import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
-import io.github.lounode.ae2cs.api.genericinv.CombinedGenericInternalInventory;
-import io.github.lounode.ae2cs.api.genericinv.GenericInvStorageAdapter;
-import io.github.lounode.ae2cs.api.genericinv.GenericStackInvWrapper;
-import io.github.lounode.ae2cs.api.networking.SideConfigField;
-import io.github.lounode.ae2cs.api.util.GenericStackInvHelper;
-import io.github.lounode.ae2cs.common.init.AECSDataComponents;
-import io.github.lounode.ae2cs.common.machine.MachineComponentContainer;
-import io.github.lounode.ae2cs.common.machine.MachineContext;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -31,14 +33,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumMap;
 import java.util.EnumSet;
 
-public class SideConfigComponent extends BaseMachineComponent
-{
+public class SideConfigComponent extends BaseMachineComponent {
+
     private final EnumMap<Direction, SidePolicy> policies = new EnumMap<>(Direction.class);
     private boolean autoImport = false;
     private boolean autoExport = false;
@@ -59,22 +62,19 @@ public class SideConfigComponent extends BaseMachineComponent
     private final EnumMap<Direction, @Nullable GenericInternalInventory> genericSideCache = new EnumMap<>(Direction.class);
     private final EnumSet<Direction> genericSideCacheComputed = EnumSet.noneOf(Direction.class);
 
-    private void invalidateAppEngCache(@Nullable Direction dir)
-    {
+    private void invalidateAppEngCache(@Nullable Direction dir) {
         if (dir == null) return;
         appEngSideCacheComputed.remove(dir);
         appEngSideCache.remove(dir);
     }
 
-    private void invalidateGenericCache(@Nullable Direction dir)
-    {
+    private void invalidateGenericCache(@Nullable Direction dir) {
         if (dir == null) return;
         genericSideCacheComputed.remove(dir);
         genericSideCache.remove(dir);
     }
 
-    public void invalidateAllCaches()
-    {
+    public void invalidateAllCaches() {
         appEngSideCacheComputed.clear();
         appEngSideCache.clear();
 
@@ -83,8 +83,7 @@ public class SideConfigComponent extends BaseMachineComponent
     }
 
     @Override
-    public void onConstruct(MachineComponentContainer container)
-    {
+    public void onConstruct(MachineComponentContainer container) {
         this.container = container;
 
         if (container.hasService(GenericStackInvComponent.class))
@@ -92,8 +91,7 @@ public class SideConfigComponent extends BaseMachineComponent
         if (container.hasService(AppEngInvComponent.class))
             appEngInvComponent = container.get(AppEngInvComponent.class);
 
-        for (var dir : Direction.values())
-        {
+        for (var dir : Direction.values()) {
             policies.put(dir, SidePolicy.ALL);
         }
 
@@ -102,18 +100,15 @@ public class SideConfigComponent extends BaseMachineComponent
         container.exposeService(SideConfigComponent.class, this);
     }
 
-    public EnumMap<Direction, SidePolicy> getPolicies()
-    {
+    public EnumMap<Direction, SidePolicy> getPolicies() {
         return policies;
     }
 
-    public boolean isAutoImport()
-    {
+    public boolean isAutoImport() {
         return autoImport;
     }
 
-    public void setAutoImport(boolean autoImport)
-    {
+    public void setAutoImport(boolean autoImport) {
         if (this.autoImport == autoImport) return;
 
         // 主动模式不影响能力系统，只需要标脏即可
@@ -121,13 +116,11 @@ public class SideConfigComponent extends BaseMachineComponent
         this.container.host().markChanged();
     }
 
-    public boolean isAutoExport()
-    {
+    public boolean isAutoExport() {
         return autoExport;
     }
 
-    public void setAutoExport(boolean autoExport)
-    {
+    public void setAutoExport(boolean autoExport) {
         if (this.autoExport == autoExport) return;
 
         // 主动模式不影响能力系统，只需要标脏即可
@@ -135,18 +128,15 @@ public class SideConfigComponent extends BaseMachineComponent
         this.container.host().markChanged();
     }
 
-    public SidePolicy get(Direction dir)
-    {
+    public SidePolicy get(Direction dir) {
         return policies.get(dir);
     }
 
-    public void set(Direction dir, SidePolicy policy)
-    {
+    public void set(Direction dir, SidePolicy policy) {
         var old = policies.put(dir, policy);
 
         // 仅当实际变化时触发刷新 + 对应缓存失效
-        if (old != policy)
-        {
+        if (old != policy) {
             invalidateAppEngCache(dir);
             invalidateGenericCache(dir);
 
@@ -155,37 +145,31 @@ public class SideConfigComponent extends BaseMachineComponent
         }
     }
 
-    public @Nullable GenericInternalInventory genericInvForSide(@Nullable Direction dir)
-    {
+    public @Nullable GenericInternalInventory genericInvForSide(@Nullable Direction dir) {
         if (genericInvComponent == null) return null;
         if (dir == null) return genericInvComponent.combined();
 
         // 命中缓存（包括缓存结果为 null）
-        if (genericSideCacheComputed.contains(dir))
-        {
+        if (genericSideCacheComputed.contains(dir)) {
             return genericSideCache.get(dir);
         }
 
         SidePolicy policy = policies.get(dir);
-        @Nullable GenericInternalInventory result;
+        @Nullable
+        GenericInternalInventory result;
 
-        if (!policy.allowInsert() && !policy.allowExtract())
-        {
+        if (!policy.allowInsert() && !policy.allowExtract()) {
             result = null;
-        }
-        else
-        {
-            result = new GenericStackInvWrapper(genericInvComponent.combined())
-            {
+        } else {
+            result = new GenericStackInvWrapper(genericInvComponent.combined()) {
+
                 @Override
-                public long insert(int slot, AEKey what, long amount, Actionable mode)
-                {
+                public long insert(int slot, AEKey what, long amount, Actionable mode) {
                     return policy.allowInsert() ? super.insert(slot, what, amount, mode) : 0;
                 }
 
                 @Override
-                public long extract(int slot, AEKey what, long amount, Actionable mode)
-                {
+                public long extract(int slot, AEKey what, long amount, Actionable mode) {
                     return policy.allowExtract() ? super.extract(slot, what, amount, mode) : 0;
                 }
             };
@@ -196,37 +180,31 @@ public class SideConfigComponent extends BaseMachineComponent
         return result;
     }
 
-    public @Nullable BaseInternalInventory appEngInvForSide(@Nullable Direction dir)
-    {
+    public @Nullable BaseInternalInventory appEngInvForSide(@Nullable Direction dir) {
         if (appEngInvComponent == null) return null;
         if (dir == null) return appEngInvComponent.combined();
 
         // 命中缓存（包括缓存结果为 null）
-        if (appEngSideCacheComputed.contains(dir))
-        {
+        if (appEngSideCacheComputed.contains(dir)) {
             return appEngSideCache.get(dir);
         }
 
         SidePolicy policy = policies.get(dir);
-        @Nullable BaseInternalInventory result;
+        @Nullable
+        BaseInternalInventory result;
 
-        if (!policy.allowInsert() && !policy.allowExtract())
-        {
+        if (!policy.allowInsert() && !policy.allowExtract()) {
             result = null;
-        }
-        else
-        {
-            result = new FilteredInternalInventory(appEngInvComponent.combined(), new IAEItemFilter()
-            {
+        } else {
+            result = new FilteredInternalInventory(appEngInvComponent.combined(), new IAEItemFilter() {
+
                 @Override
-                public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack)
-                {
+                public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
                     return policy.allowInsert();
                 }
 
                 @Override
-                public boolean allowExtract(InternalInventory inv, int slot, int amount)
-                {
+                public boolean allowExtract(InternalInventory inv, int slot, int amount) {
                     return policy.allowExtract();
                 }
             });
@@ -241,8 +219,7 @@ public class SideConfigComponent extends BaseMachineComponent
      * 实际处理自动输入与自动输出
      */
     @Override
-    public void onServerTick(MachineContext ctx)
-    {
+    public void onServerTick(MachineContext ctx) {
         super.onServerTick(ctx);
 
         Level level = ctx.level();
@@ -252,26 +229,22 @@ public class SideConfigComponent extends BaseMachineComponent
         tickGenericInv(level, pos);
     }
 
-    private void tickAppEngInv(@NotNull Level level, @NotNull BlockPos pos)
-    {
+    private void tickAppEngInv(@NotNull Level level, @NotNull BlockPos pos) {
         if (level.isClientSide || appEngInvComponent == null) return;
         if (!autoImport && !autoExport) return;
-
 
         BaseInternalInventory self = appEngInvComponent.combined();
 
         // 每个方向每tick的最大搬运量
         final int TRANSFER_PER_SIDE = 576;
 
-        for (var kv : policies.entrySet())
-        {
+        for (var kv : policies.entrySet()) {
             Direction dir = kv.getKey();
             SidePolicy policy = kv.getValue();
 
             boolean doExport = autoExport && policy.allowExtract();
             boolean doImport = autoImport && policy.allowInsert();
             if (!doExport && !doImport) continue;
-
 
             // 获取目标位置
             BlockPos otherPos = pos.relative(dir);
@@ -283,15 +256,12 @@ public class SideConfigComponent extends BaseMachineComponent
             PlatformInventoryWrapper otherInv = new PlatformInventoryWrapper(otherItemHandler);
 
             // 输出
-            if (doExport)
-            {
+            if (doExport) {
                 int remaining = TRANSFER_PER_SIDE;
 
-                for (int slot = 0; slot < self.size() && remaining > 0; slot++)
-                {
+                for (int slot = 0; slot < self.size() && remaining > 0; slot++) {
                     ItemStack inside = self.getStackInSlot(slot);
-                    if (inside.isEmpty())
-                    {
+                    if (inside.isEmpty()) {
                         continue;
                     }
 
@@ -303,23 +273,20 @@ public class SideConfigComponent extends BaseMachineComponent
 
                     ItemStack overflowSim = otherInv.addItems(toTry, true);
                     int accepted = attempt - overflowSim.getCount();
-                    if (accepted <= 0)
-                    {
+                    if (accepted <= 0) {
                         continue;
                     }
 
                     // 真正抽出accepted，再塞进外部
                     ItemStack extracted = self.extractItem(slot, accepted, false);
-                    if (extracted.isEmpty())
-                    {
+                    if (extracted.isEmpty()) {
                         continue;
                     }
 
                     ItemStack overflow = otherInv.addItems(extracted, false);
 
                     // 保底回插
-                    if (!overflow.isEmpty())
-                    {
+                    if (!overflow.isEmpty()) {
                         self.addItems(overflow, false);
                     }
                     remaining -= accepted;
@@ -327,15 +294,12 @@ public class SideConfigComponent extends BaseMachineComponent
             }
 
             // 输入
-            if (doImport)
-            {
+            if (doImport) {
                 int remaining = TRANSFER_PER_SIDE;
 
-                for (int slot = 0; slot < otherInv.size() && remaining > 0; slot++)
-                {
+                for (int slot = 0; slot < otherInv.size() && remaining > 0; slot++) {
                     ItemStack out = otherInv.getStackInSlot(slot);
-                    if (out.isEmpty())
-                    {
+                    if (out.isEmpty()) {
                         continue;
                     }
 
@@ -347,23 +311,20 @@ public class SideConfigComponent extends BaseMachineComponent
 
                     ItemStack overflowSim = self.addItems(toTry, true);
                     int accepted = attempt - overflowSim.getCount();
-                    if (accepted <= 0)
-                    {
+                    if (accepted <= 0) {
                         continue;
                     }
 
                     // 真正从外部抽出accepted，塞进内部
                     ItemStack extracted = otherInv.extractItem(slot, accepted, false);
-                    if (extracted.isEmpty())
-                    {
+                    if (extracted.isEmpty()) {
                         continue;
                     }
 
                     ItemStack overflow = self.addItems(extracted, false);
 
                     // 保底回插
-                    if (!overflow.isEmpty())
-                    {
+                    if (!overflow.isEmpty()) {
                         otherInv.addItems(overflow, false);
                     }
 
@@ -373,8 +334,7 @@ public class SideConfigComponent extends BaseMachineComponent
         }
     }
 
-    private void tickGenericInv(@NotNull Level level, @NotNull BlockPos pos)
-    {
+    private void tickGenericInv(@NotNull Level level, @NotNull BlockPos pos) {
         if (level.isClientSide || genericInvComponent == null) return;
         if (!autoImport && !autoExport) return;
 
@@ -385,8 +345,7 @@ public class SideConfigComponent extends BaseMachineComponent
         final long TRANSFER_PER_SIDE = 576L;
         IActionSource source = IActionSource.empty();
 
-        for (var kv : policies.entrySet())
-        {
+        for (var kv : policies.entrySet()) {
             Direction dir = kv.getKey();
             SidePolicy policy = kv.getValue();
 
@@ -399,28 +358,22 @@ public class SideConfigComponent extends BaseMachineComponent
             BlockEntity otherBe = level.getBlockEntity(otherPos);
 
             // 遍历优先使用 GenericInternalInventory
-            GenericInternalInventory otherInv =
-                    GenericStackInvHelper.getGenericInternalInv(level, otherPos, otherBe, otherSide);
+            GenericInternalInventory otherInv = GenericStackInvHelper.getGenericInternalInv(level, otherPos, otherBe, otherSide);
 
             // 对于普通仓库使用MEStorage包装（getBetterInteractMEStorage只取包装能力，不直接取MEStorage能力，防止从ME接口直接拿到整个网络存储）
-            MEStorage otherStorage =
-                    GenericStackInvHelper.getBetterInteractMEStorage(level, otherPos, otherSide);
+            MEStorage otherStorage = GenericStackInvHelper.getBetterInteractMEStorage(level, otherPos, otherSide);
 
-            if (otherInv == null && otherStorage == null)
-            {
+            if (otherInv == null && otherStorage == null) {
                 continue;
             }
 
             // 输出
-            if (doExport)
-            {
+            if (doExport) {
                 long remaining = TRANSFER_PER_SIDE;
 
                 // 如果有Inv，则只操作Inv
-                if (otherInv != null)
-                {
-                    for (int slot = 0; slot < self.size() && remaining > 0; slot++)
-                    {
+                if (otherInv != null) {
+                    for (int slot = 0; slot < self.size() && remaining > 0; slot++) {
                         GenericStack inside = self.getStack(slot);
                         if (inside == null || inside.amount() <= 0) continue;
 
@@ -440,18 +393,15 @@ public class SideConfigComponent extends BaseMachineComponent
 
                         // 保底回插到
                         long overflow = extracted - inserted;
-                        if (overflow > 0)
-                        {
+                        if (overflow > 0) {
                             GenericStackInvHelper.reinsertToInvPreferSlot(self, slot, what, overflow);
                         }
 
                         remaining -= inserted;
                     }
-                }
-                else // 其次尝试Storage
+                } else // 其次尝试Storage
                 {
-                    for (int slot = 0; slot < self.size() && remaining > 0; slot++)
-                    {
+                    for (int slot = 0; slot < self.size() && remaining > 0; slot++) {
                         GenericStack in = self.getStack(slot);
                         if (in == null || in.amount() <= 0) continue;
 
@@ -467,8 +417,7 @@ public class SideConfigComponent extends BaseMachineComponent
                         long inserted = otherStorage.insert(what, extracted, Actionable.MODULATE, source);
 
                         long overflow = extracted - inserted;
-                        if (overflow > 0)
-                        {
+                        if (overflow > 0) {
                             GenericStackInvHelper.reinsertToInvPreferSlot(self, slot, what, overflow);
                         }
 
@@ -478,15 +427,12 @@ public class SideConfigComponent extends BaseMachineComponent
             }
 
             // 输入
-            if (doImport)
-            {
+            if (doImport) {
                 long remaining = TRANSFER_PER_SIDE;
 
                 // 优先Inv
-                if (otherInv != null)
-                {
-                    for (int s = 0; s < otherInv.size() && remaining > 0; s++)
-                    {
+                if (otherInv != null) {
+                    for (int s = 0; s < otherInv.size() && remaining > 0; s++) {
                         GenericStack out = otherInv.getStack(s);
                         if (out == null || out.amount() <= 0) continue;
 
@@ -506,19 +452,16 @@ public class SideConfigComponent extends BaseMachineComponent
 
                         // 保底回插
                         long overflow = extracted - inserted;
-                        if (overflow > 0)
-                        {
+                        if (overflow > 0) {
                             GenericStackInvHelper.reinsertToInvPreferSlot(otherInv, s, what, overflow);
                         }
 
                         remaining -= inserted;
                     }
-                }
-                else // 无Inv，使用Storage
+                } else // 无Inv，使用Storage
                 {
                     KeyCounter counter = otherStorage.getAvailableStacks();
-                    for (AEKey what : counter.keySet())
-                    {
+                    for (AEKey what : counter.keySet()) {
                         if (remaining <= 0) break;
 
                         long available = counter.get(what);
@@ -535,8 +478,7 @@ public class SideConfigComponent extends BaseMachineComponent
                         long inserted = self.insert(what, extracted, Actionable.MODULATE, source);
 
                         long overflow = extracted - inserted;
-                        if (overflow > 0)
-                        {
+                        if (overflow > 0) {
                             otherStorage.insert(what, overflow, Actionable.MODULATE, source);
                         }
 
@@ -548,19 +490,15 @@ public class SideConfigComponent extends BaseMachineComponent
     }
 
     @Override
-    public void importSettings(MachineContext ctx, DataComponentMap input, @Nullable Player player)
-    {
+    public void importSettings(MachineContext ctx, DataComponentMap input, @Nullable Player player) {
         super.importSettings(ctx, input, player);
 
         SideConfigField configField = input.get(AECSDataComponents.SIDE_CONFIG_FOR_MEMORY_CARD.get());
-        if (configField != null)
-        {
+        if (configField != null) {
             this.autoImport = configField.autoImport();
             this.autoExport = configField.autoExport();
-            for (var kv : configField.sidePolicies().entrySet())
-            {
-                if (kv.getKey() != null && kv.getValue() != null)
-                {
+            for (var kv : configField.sidePolicies().entrySet()) {
+                if (kv.getKey() != null && kv.getValue() != null) {
                     this.policies.put(kv.getKey(), kv.getValue());
                 }
             }
@@ -571,8 +509,7 @@ public class SideConfigComponent extends BaseMachineComponent
     }
 
     @Override
-    public void exportSettings(MachineContext ctx, DataComponentMap.Builder builder, @Nullable Player player)
-    {
+    public void exportSettings(MachineContext ctx, DataComponentMap.Builder builder, @Nullable Player player) {
         super.exportSettings(ctx, builder, player);
 
         SideConfigField configField = new SideConfigField(this.policies.clone(), this.autoImport, this.autoExport);
@@ -580,22 +517,19 @@ public class SideConfigComponent extends BaseMachineComponent
     }
 
     @Override
-    public void onLoad(MachineContext ctx)
-    {
+    public void onLoad(MachineContext ctx) {
         super.onLoad(ctx);
         invalidateAllCaches();
         ctx.host().invalidCap();
     }
 
     @Override
-    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries)
-    {
+    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
         tag.putBoolean("side_config_auto_import", this.autoImport);
         tag.putBoolean("side_config_auto_export", this.autoExport);
 
         CompoundTag polTag = new CompoundTag();
-        for (Direction dir : Direction.values())
-        {
+        for (Direction dir : Direction.values()) {
             SidePolicy policy = this.policies.get(dir);
             if (policy == null) continue;
 
@@ -605,39 +539,32 @@ public class SideConfigComponent extends BaseMachineComponent
     }
 
     @Override
-    public void readNbt(CompoundTag tag, HolderLookup.Provider registries)
-    {
+    public void readNbt(CompoundTag tag, HolderLookup.Provider registries) {
         this.autoImport = tag.getBoolean("side_config_auto_import");
         this.autoExport = tag.getBoolean("side_config_auto_export");
 
         this.policies.clear();
 
-        if (tag.contains("side_policies", CompoundTag.TAG_COMPOUND))
-        {
+        if (tag.contains("side_policies", CompoundTag.TAG_COMPOUND)) {
             CompoundTag polTag = tag.getCompound("side_policies");
 
-            for (Direction dir : Direction.values())
-            {
+            for (Direction dir : Direction.values()) {
                 String dirKey = dir.getName();
 
                 if (!polTag.contains(dirKey, CompoundTag.TAG_STRING))
                     continue;
 
                 String name = polTag.getString(dirKey);
-                try
-                {
+                try {
                     this.policies.put(dir, SidePolicy.valueOf(name));
-                }
-                catch (IllegalArgumentException ignored)
-                {
+                } catch (IllegalArgumentException ignored) {
                     // 方便以后存档兼容
                 }
             }
         }
 
         SidePolicy def = SidePolicy.ALL;
-        for (Direction dir : Direction.values())
-        {
+        for (Direction dir : Direction.values()) {
             this.policies.putIfAbsent(dir, def);
         }
 

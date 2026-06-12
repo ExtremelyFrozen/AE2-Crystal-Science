@@ -1,6 +1,7 @@
 package io.github.lounode.ae2cs.common.item.tools;
 
 import appeng.core.localization.GuiText;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -13,22 +14,19 @@ import java.util.List;
 /**
  * copy from applied energistics 2
  */
-public final class IntrinsicEnchantment
-{
+public final class IntrinsicEnchantment {
+
     private final ResourceKey<Enchantment> enchantment;
     private final int level;
 
-    public IntrinsicEnchantment(ResourceKey<Enchantment> enchantment, int level)
-    {
+    public IntrinsicEnchantment(ResourceKey<Enchantment> enchantment, int level) {
         this.enchantment = enchantment;
         this.level = level;
     }
 
-    public void appendHoverText(Item.TooltipContext context, List<Component> tooltipComponents)
-    {
+    public void appendHoverText(Item.TooltipContext context, List<Component> tooltipComponents) {
         var registries = context.registries();
-        if (registries == null)
-        {
+        if (registries == null) {
             return;
         }
 
@@ -38,8 +36,7 @@ public final class IntrinsicEnchantment
         });
     }
 
-    public int getLevel(Holder<Enchantment> enchantment)
-    {
+    public int getLevel(Holder<Enchantment> enchantment) {
         return enchantment.is(this.enchantment) ? level : 0;
     }
 }

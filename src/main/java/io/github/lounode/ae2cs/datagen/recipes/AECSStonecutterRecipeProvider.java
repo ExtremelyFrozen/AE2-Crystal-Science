@@ -1,33 +1,33 @@
 package io.github.lounode.ae2cs.datagen.recipes;
 
-import appeng.core.definitions.AEItems;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
+
+import appeng.core.definitions.AEItems;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 
-public class AECSStonecutterRecipeProvider extends AECSRecipeProvider
-{
-    public AECSStonecutterRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries)
-    {
+public class AECSStonecutterRecipeProvider extends AECSRecipeProvider {
+
+    public AECSStonecutterRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries);
     }
 
     @Override
-    public @NotNull String getName()
-    {
+    public @NotNull String getName() {
         return "AECS Stonecutter Recipes";
     }
 
     @Override
-    protected void buildRecipes(@NotNull RecipeOutput recipeOutput, HolderLookup.@NotNull Provider registries)
-    {
+    protected void buildRecipes(@NotNull RecipeOutput recipeOutput, HolderLookup.@NotNull Provider registries) {
         super.buildRecipes(recipeOutput, registries);
 
         // 木齿轮（已经包含去皮原木）

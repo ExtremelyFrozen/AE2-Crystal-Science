@@ -1,27 +1,28 @@
 package io.github.lounode.ae2cs.client.gui;
 
+import io.github.lounode.ae2cs.api.settings.AECSSettings;
+import io.github.lounode.ae2cs.api.settings.SoundMode;
+import io.github.lounode.ae2cs.client.gui.widgets.AECSServerSettingToggleButton;
+import io.github.lounode.ae2cs.common.menu.QuartzOscillatorClockMenu;
+
 import appeng.api.config.RedstoneMode;
 import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.NumberEntryWidget;
 import appeng.core.definitions.AEItems;
-import io.github.lounode.ae2cs.api.settings.AECSSettings;
-import io.github.lounode.ae2cs.api.settings.SoundMode;
-import io.github.lounode.ae2cs.client.gui.widgets.AECSServerSettingToggleButton;
-import io.github.lounode.ae2cs.common.menu.QuartzOscillatorClockMenu;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-public class QuartzOscillatorClockGUI extends UpgradeableScreen<QuartzOscillatorClockMenu>
-{
+public class QuartzOscillatorClockGUI extends UpgradeableScreen<QuartzOscillatorClockMenu> {
+
     private final AECSServerSettingToggleButton<SoundMode> soundModeButton;
     private final AECSServerSettingToggleButton<RedstoneMode> redstoneMode;
     private final NumberEntryWidget levelCountHold;
     private final NumberEntryWidget levelPulseWidth;
 
-    public QuartzOscillatorClockGUI(QuartzOscillatorClockMenu menu, Inventory playerInventory, Component title, ScreenStyle style)
-    {
+    public QuartzOscillatorClockGUI(QuartzOscillatorClockMenu menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
         this.soundModeButton = new AECSServerSettingToggleButton<>(AECSSettings.SOUND_MODE, SoundMode.UNMUTE);
         this.addToLeftToolbar(soundModeButton);
@@ -40,8 +41,7 @@ public class QuartzOscillatorClockGUI extends UpgradeableScreen<QuartzOscillator
     }
 
     @Override
-    protected void updateBeforeRender()
-    {
+    protected void updateBeforeRender() {
         super.updateBeforeRender();
 
         this.soundModeButton.set(menu.soundMode);
@@ -52,19 +52,16 @@ public class QuartzOscillatorClockGUI extends UpgradeableScreen<QuartzOscillator
 
         this.levelCountHold.setLongValue(this.menu.pulseCountHold);
         this.levelPulseWidth.setLongValue(this.menu.pulseWidthTicks);
-
     }
 
-    private void onCountDownChange()
-    {
+    private void onCountDownChange() {
         this.levelCountHold.getIntValue().ifPresent(value -> {
             if (value != menu.pulseCountHold)
                 menu.sendChangePulseCountHold(value);
         });
     }
 
-    private void onPulseWidthChange()
-    {
+    private void onPulseWidthChange() {
         this.levelPulseWidth.getIntValue().ifPresent(value -> {
             if (value != menu.pulseWidthTicks)
                 menu.sendChangePulseWidthTicks(value);

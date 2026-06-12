@@ -5,14 +5,14 @@ import java.lang.annotation.*;
 @Repeatable(ProvideCaps.List.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface ProvideCaps
-{
+public @interface ProvideCaps {
+
     Class<?> value();
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)
-    @interface List
-    {
+    @interface List {
+
         ProvideCaps[] value();
     }
 }

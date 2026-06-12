@@ -1,12 +1,14 @@
 package io.github.lounode.ae2cs.client.gui.linker.broadcast;
 
+import io.github.lounode.ae2cs.api.linker.broadcast.networking.BroadcastBandsField;
+import io.github.lounode.ae2cs.common.menu.linker.broadcast.FrequencyBandMenu;
+
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.AESubScreen;
 import appeng.client.gui.style.StyleManager;
 import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.Scrollbar;
-import io.github.lounode.ae2cs.api.linker.broadcast.networking.BroadcastBandsField;
-import io.github.lounode.ae2cs.common.menu.linker.broadcast.FrequencyBandMenu;
+
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -16,8 +18,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-public class FrequencyBandGUI extends AEBaseScreen<FrequencyBandMenu>
-{
+public class FrequencyBandGUI extends AEBaseScreen<FrequencyBandMenu> {
+
     /**
      * 可用于显示频段的区域（相对 GUI 左上角）
      */
@@ -52,8 +54,7 @@ public class FrequencyBandGUI extends AEBaseScreen<FrequencyBandMenu>
     private int totalRows = 0;
     private int lastTopRow = -1;
 
-    public FrequencyBandGUI(FrequencyBandMenu menu, Inventory inv, Component title)
-    {
+    public FrequencyBandGUI(FrequencyBandMenu menu, Inventory inv, Component title) {
         super(menu, inv, title, StyleManager.loadStyleDoc("/screens/frequency_band_menu.json"));
         AESubScreen.addBackButton(menu, "back_button", widgets);
 
@@ -74,8 +75,7 @@ public class FrequencyBandGUI extends AEBaseScreen<FrequencyBandMenu>
     }
 
     @Override
-    protected void init()
-    {
+    protected void init() {
         super.init();
         this.visibleRows = Math.max(1, PANEL_AREA.getHeight() / ROW_H);
         this.scrollbar.setHeight(SCROLL_HEIGHT);
@@ -86,8 +86,7 @@ public class FrequencyBandGUI extends AEBaseScreen<FrequencyBandMenu>
     }
 
     @Override
-    protected void updateBeforeRender()
-    {
+    protected void updateBeforeRender() {
         super.updateBeforeRender();
 
         // 如果服务端同步过来了新数据刷新频段排布
@@ -95,8 +94,7 @@ public class FrequencyBandGUI extends AEBaseScreen<FrequencyBandMenu>
 
         // 滚动位置变化时重排
         int topRow = scrollbar.getCurrentScroll();
-        if (topRow != lastTopRow)
-        {
+        if (topRow != lastTopRow) {
             lastTopRow = topRow;
             reLayoutVisiblePanels();
         }
@@ -105,16 +103,13 @@ public class FrequencyBandGUI extends AEBaseScreen<FrequencyBandMenu>
     /**
      * 从menu读取bandsInfo，若变化则刷新排布
      */
-    private void refreshBandsFromMenuIfNeeded(boolean force)
-    {
+    private void refreshBandsFromMenuIfNeeded(boolean force) {
         BroadcastBandsField current = menu.bandsInfo;
-        if (current == null)
-        {
+        if (current == null) {
             current = new BroadcastBandsField(List.of());
         }
 
-        if (!force && Objects.equals(current, lastBandsInfo))
-        {
+        if (!force && Objects.equals(current, lastBandsInfo)) {
             return;
         }
 
@@ -131,10 +126,8 @@ public class FrequencyBandGUI extends AEBaseScreen<FrequencyBandMenu>
     /**
      * 确保面板数量能够显示全部频段
      */
-    private void ensurePanelPoolUpToDate()
-    {
-        for (int i = panelPool.size(); i < bands.size(); i++)
-        {
+    private void ensurePanelPoolUpToDate() {
+        for (int i = panelPool.size(); i < bands.size(); i++) {
             var p = new FrequencyBandInfoPanel(HIDE_X, HIDE_Y, menu);
             p.active = false;
             p.visible = false;
@@ -143,8 +136,7 @@ public class FrequencyBandGUI extends AEBaseScreen<FrequencyBandMenu>
         }
 
         // 隐藏多余面板
-        for (int i = bands.size(); i < panelPool.size(); i++)
-        {
+        for (int i = bands.size(); i < panelPool.size(); i++) {
             var p = panelPool.get(i);
             p.active = false;
             p.visible = false;
@@ -156,26 +148,19 @@ public class FrequencyBandGUI extends AEBaseScreen<FrequencyBandMenu>
     /**
      * 重建过滤索引
      */
-    private void rebuildFilter()
-    {
+    private void rebuildFilter() {
         filteredIndex.clear();
 
-        if (bands.isEmpty())
-        {
+        if (bands.isEmpty()) {
             return;
         }
 
-        if (searchQuery.isEmpty())
-        {
+        if (searchQuery.isEmpty()) {
             for (int i = 0; i < bands.size(); i++) filteredIndex.add(i);
-        }
-        else
-        {
-            for (int i = 0; i < bands.size(); i++)
-            {
+        } else {
+            for (int i = 0; i < bands.size(); i++) {
                 String name = bands.get(i).name();
-                if (name != null && name.toLowerCase(Locale.ROOT).contains(searchQuery.toLowerCase(Locale.ROOT)))
-                {
+                if (name != null && name.toLowerCase(Locale.ROOT).contains(searchQuery.toLowerCase(Locale.ROOT))) {
                     filteredIndex.add(i);
                 }
             }
@@ -185,16 +170,14 @@ public class FrequencyBandGUI extends AEBaseScreen<FrequencyBandMenu>
     /**
      * 根据filteredIndex更新滚动范围
      */
-    private void updateScrollbarRangeByFilteredSize()
-    {
+    private void updateScrollbarRangeByFilteredSize() {
         this.totalRows = filteredIndex.size();
         int maxScroll = Math.max(0, totalRows - visibleRows);
 
         // 每格滚动 1 行
         scrollbar.setRange(0, maxScroll, 1);
 
-        if (scrollbar.getCurrentScroll() > maxScroll)
-        {
+        if (scrollbar.getCurrentScroll() > maxScroll) {
             scrollbar.setCurrentScroll(maxScroll);
         }
     }
@@ -202,18 +185,15 @@ public class FrequencyBandGUI extends AEBaseScreen<FrequencyBandMenu>
     /**
      * 按当前滚动和过滤情况，排布频段面板
      */
-    private void reLayoutVisiblePanels()
-    {
-        for (FrequencyBandInfoPanel p : panelPool)
-        {
+    private void reLayoutVisiblePanels() {
+        for (FrequencyBandInfoPanel p : panelPool) {
             p.active = false;
             p.visible = false;
             p.setX(HIDE_X);
             p.setY(HIDE_Y);
         }
 
-        if (filteredIndex.isEmpty())
-        {
+        if (filteredIndex.isEmpty()) {
             return;
         }
 
@@ -224,8 +204,7 @@ public class FrequencyBandGUI extends AEBaseScreen<FrequencyBandMenu>
         int x0 = leftPos + PANEL_AREA.getX();
         int y0 = topPos + PANEL_AREA.getY();
 
-        for (int row = startRow; row < endExclusive; row++)
-        {
+        for (int row = startRow; row < endExclusive; row++) {
             int idxInBands = filteredIndex.get(row);
             var entry = bands.get(idxInBands);
 

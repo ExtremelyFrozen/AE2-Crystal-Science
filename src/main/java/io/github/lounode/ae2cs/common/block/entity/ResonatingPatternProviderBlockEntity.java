@@ -1,5 +1,11 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
+import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
+import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.init.AECSMenus;
+import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderHost;
+import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderLogic;
+
 import appeng.api.AECapabilities;
 import appeng.api.stacks.AEItemKey;
 import appeng.blockentity.crafting.PatternProviderBlockEntity;
@@ -7,11 +13,7 @@ import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuHostLocator;
-import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
-import io.github.lounode.ae2cs.common.init.AECSBlocks;
-import io.github.lounode.ae2cs.common.init.AECSMenus;
-import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderHost;
-import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderLogic;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -19,71 +21,60 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
-public class ResonatingPatternProviderBlockEntity extends PatternProviderBlockEntity implements ResonatingPatternProviderHost
-{
-    public ResonatingPatternProviderBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState)
-    {
+public class ResonatingPatternProviderBlockEntity extends PatternProviderBlockEntity implements ResonatingPatternProviderHost {
+
+    public ResonatingPatternProviderBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
     }
 
     @Override
-    protected PatternProviderLogic createLogic()
-    {
+    protected PatternProviderLogic createLogic() {
         int patternSize = isExtended() ? 36 : 9;
         return new ResonatingPatternProviderLogic(getMainNode(), this, patternSize);
     }
 
     @Override
-    public boolean isExtended()
-    {
+    public boolean isExtended() {
         return getType() == AECSBlockEntities.EX_RESONATING_PATTERN_PROVIDER_BLOCK_ENTITY.get();
     }
 
     /**
      * 注册AE节点和能量能力
      */
-    public static void onRegisterCaps(RegisterCapabilitiesEvent event)
-    {
+    public static void onRegisterCaps(RegisterCapabilitiesEvent event) {
         event.registerBlockEntity(
                 AECapabilities.GENERIC_INTERNAL_INV,
                 AECSBlockEntities.RESONATING_PATTERN_PROVIDER_BLOCK_ENTITY.get(),
-                (be, direction) -> be.getLogic().getReturnInv()
-        );
+                (be, direction) -> be.getLogic().getReturnInv());
 
         event.registerBlockEntity(
                 AECapabilities.GENERIC_INTERNAL_INV,
                 AECSBlockEntities.EX_RESONATING_PATTERN_PROVIDER_BLOCK_ENTITY.get(),
-                (be, direction) -> be.getLogic().getReturnInv()
-        );
+                (be, direction) -> be.getLogic().getReturnInv());
     }
 
     @Override
-    public void openMenu(Player player, MenuHostLocator locator)
-    {
+    public void openMenu(Player player, MenuHostLocator locator) {
         MenuOpener.open(AECSMenus.RESONATING_PATTERN_PROVIDER_MENU.get(), player, locator);
     }
 
     @Override
-    public void returnToMainMenu(Player player, ISubMenu subMenu)
-    {
+    public void returnToMainMenu(Player player, ISubMenu subMenu) {
         MenuOpener.returnTo(AECSMenus.RESONATING_PATTERN_PROVIDER_MENU.get(), player, subMenu.getLocator());
     }
 
     @Override
-    public AEItemKey getTerminalIcon()
-    {
+    public AEItemKey getTerminalIcon() {
         return AEItemKey.of(AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK);
     }
 
     @Override
-    public ItemStack getMainMenuIcon()
-    {
+    public ItemStack getMainMenuIcon() {
         return AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK.toStack();
     }
 
     @Override
-    public ResonatingPatternProviderLogic getResonatingLogic()
-    {
+    public ResonatingPatternProviderLogic getResonatingLogic() {
         return (ResonatingPatternProviderLogic) getLogic();
     }
 }

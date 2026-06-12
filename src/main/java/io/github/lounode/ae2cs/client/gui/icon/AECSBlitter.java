@@ -1,13 +1,12 @@
 package io.github.lounode.ae2cs.client.gui.icon;
 
-import appeng.client.gui.style.Blitter;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 
-public final class AECSBlitter
-{
-    private AECSBlitter()
-    {
-    }
+import appeng.client.gui.style.Blitter;
+
+public final class AECSBlitter {
+
+    private AECSBlitter() {}
 
     public static final Blitter energyProgress = Blitter.texture(AE2CrystalScience.makeId("textures/gui/circuit_etcher_menu.png"))
             .src(176, 34, 6, 18);

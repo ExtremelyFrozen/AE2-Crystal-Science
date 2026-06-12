@@ -17,14 +17,14 @@ import appeng.menu.ToolboxMenu;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.RestrictedInputSlot;
+
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
 /**
  * 防止被他人mixin PatternProviderMenu的副作用影响
  */
-public class UpgradeablePatternProviderMenu extends AEBaseMenu
-{
+public class UpgradeablePatternProviderMenu extends AEBaseMenu {
 
     protected final PatternProviderLogic logic;
     private final ToolboxMenu toolbox;
@@ -41,8 +41,7 @@ public class UpgradeablePatternProviderMenu extends AEBaseMenu
     public GenericStack unlockStack = null;
 
     public UpgradeablePatternProviderMenu(MenuType<? extends UpgradeablePatternProviderMenu> menuType, int id, Inventory playerInventory,
-                                          PatternProviderLogicHost host)
-    {
+                                          PatternProviderLogicHost host) {
         super(menuType, id, playerInventory, host);
         this.toolbox = new ToolboxMenu(this);
 
@@ -50,34 +49,28 @@ public class UpgradeablePatternProviderMenu extends AEBaseMenu
 
         this.logic = host.getLogic();
 
-        if (host instanceof IUpgradeableObject upgradeableHost)
-        {
+        if (host instanceof IUpgradeableObject upgradeableHost) {
             setupUpgrades(upgradeableHost.getUpgrades());
         }
 
         var patternInv = logic.getPatternInv();
-        for (int x = 0; x < patternInv.size(); x++)
-        {
+        for (int x = 0; x < patternInv.size(); x++) {
             this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.PROVIDER_PATTERN,
-                            patternInv, x),
+                    patternInv, x),
                     SlotSemantics.ENCODED_PATTERN);
         }
 
         var returnInv = logic.getReturnInv().createMenuWrapper();
-        for (int i = 0; i < PatternProviderReturnInventory.NUMBER_OF_SLOTS; i++)
-        {
-            if (i < returnInv.size())
-            {
+        for (int i = 0; i < PatternProviderReturnInventory.NUMBER_OF_SLOTS; i++) {
+            if (i < returnInv.size()) {
                 this.addSlot(new AppEngSlot(returnInv, i), SlotSemantics.STORAGE);
             }
         }
     }
 
     @Override
-    public void broadcastChanges()
-    {
-        if (isServerSide())
-        {
+    public void broadcastChanges() {
+        if (isServerSide()) {
             blockingMode = logic.getConfigManager().getSetting(Settings.BLOCKING_MODE);
             showInAccessTerminal = logic.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL);
             lockCraftingMode = logic.getConfigManager().getSetting(Settings.LOCK_CRAFTING_MODE);
@@ -88,43 +81,35 @@ public class UpgradeablePatternProviderMenu extends AEBaseMenu
         super.broadcastChanges();
     }
 
-    public GenericStackInv getReturnInv()
-    {
+    public GenericStackInv getReturnInv() {
         return logic.getReturnInv();
     }
 
-    public YesNo getBlockingMode()
-    {
+    public YesNo getBlockingMode() {
         return blockingMode;
     }
 
-    public LockCraftingMode getLockCraftingMode()
-    {
+    public LockCraftingMode getLockCraftingMode() {
         return lockCraftingMode;
     }
 
-    public LockCraftingMode getCraftingLockedReason()
-    {
+    public LockCraftingMode getCraftingLockedReason() {
         return craftingLockedReason;
     }
 
-    public GenericStack getUnlockStack()
-    {
+    public GenericStack getUnlockStack() {
         return unlockStack;
     }
 
-    public YesNo getShowInAccessTerminal()
-    {
+    public YesNo getShowInAccessTerminal() {
         return showInAccessTerminal;
     }
 
-    public ToolboxMenu getToolbox()
-    {
+    public ToolboxMenu getToolbox() {
         return toolbox;
     }
 
-    public IUpgradeInventory getUpgrades()
-    {
+    public IUpgradeInventory getUpgrades() {
         if (logic instanceof IUpgradeableObject upgradeableLogic)
             return upgradeableLogic.getUpgrades();
         else

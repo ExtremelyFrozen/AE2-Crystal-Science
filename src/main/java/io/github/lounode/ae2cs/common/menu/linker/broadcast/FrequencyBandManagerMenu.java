@@ -1,9 +1,5 @@
 package io.github.lounode.ae2cs.common.menu.linker.broadcast;
 
-import appeng.api.storage.ISubMenuHost;
-import appeng.menu.AEBaseMenu;
-import appeng.menu.MenuOpener;
-import appeng.menu.guisync.GuiSync;
 import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastFrequencyBand;
 import io.github.lounode.ae2cs.api.linker.broadcast.FrequencyBandManager;
 import io.github.lounode.ae2cs.api.linker.broadcast.networking.FrequencyBandDetailInfo;
@@ -11,6 +7,12 @@ import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenu;
 import io.github.lounode.ae2cs.api.util.GlobalPosJson;
 import io.github.lounode.ae2cs.common.block.entity.EnderBroadcasterBlockEntity;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
+
+import appeng.api.storage.ISubMenuHost;
+import appeng.menu.AEBaseMenu;
+import appeng.menu.MenuOpener;
+import appeng.menu.guisync.GuiSync;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
@@ -25,8 +27,8 @@ import java.util.Set;
 /**
  * 用来管理单一频道，包括修改设置、增改白名单
  */
-public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturnableSubMenu
-{
+public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturnableSubMenu {
+
     private static final String changePasswordAction = "change_password";
     private static final String changePublicAction = "change_public";
     private static final String changeAllowMemoryCardAction = "change_allow_memory_card";
@@ -48,8 +50,7 @@ public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturn
     @GuiSync(3)
     public long usedChannels = 0;
 
-    public FrequencyBandManagerMenu(int id, Inventory playerInventory, EnderBroadcasterBlockEntity host)
-    {
+    public FrequencyBandManagerMenu(int id, Inventory playerInventory, EnderBroadcasterBlockEntity host) {
         super(AECSMenus.FREQUENCY_BAND_MANAGER_MENU.get(), id, playerInventory, host);
         this.host = host;
         this.band = FrequencyBandManager.getBand(this.host.getBandName());
@@ -64,82 +65,62 @@ public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturn
     }
 
     // 动作机制-客户端
-    public void sendChangePasswordAction(String newPassword)
-    {
+    public void sendChangePasswordAction(String newPassword) {
         sendClientAction(changePasswordAction, newPassword);
     }
 
-    public void sendChangePublicAction(boolean publicMode)
-    {
+    public void sendChangePublicAction(boolean publicMode) {
         sendClientAction(changePublicAction, publicMode);
     }
 
-    public void sendChangeAllowMemoryCardAction(boolean allowMemoryCard)
-    {
+    public void sendChangeAllowMemoryCardAction(boolean allowMemoryCard) {
         sendClientAction(changeAllowMemoryCardAction, allowMemoryCard);
     }
 
-    public void sendDisconnectBroadcasterAction(GlobalPos pos)
-    {
+    public void sendDisconnectBroadcasterAction(GlobalPos pos) {
         GlobalPosJson json = GlobalPosJson.from(pos);
         sendClientAction(tryDisconnectBroadcasterAction, json);
     }
 
-    public void sendTapToBroadcasterAction(GlobalPos pos)
-    {
+    public void sendTapToBroadcasterAction(GlobalPos pos) {
         GlobalPosJson json = GlobalPosJson.from(pos);
         sendClientAction(tryTapToBroadcasterAction, json);
     }
 
-    public void sendOpenBandManagerMenu()
-    {
+    public void sendOpenBandManagerMenu() {
         sendClientAction(openBandWhiteManagerAction);
     }
 
-    public void sendDeleteBand()
-    {
+    public void sendDeleteBand() {
         sendClientAction(removeBandAction);
     }
 
     // 动作机制-服务端
-    private void changePasswordAction(String newPassword)
-    {
-        if (band.getOwner().equals(getPlayer().getUUID()))
-        {
+    private void changePasswordAction(String newPassword) {
+        if (band.getOwner().equals(getPlayer().getUUID())) {
             band.setPassword(newPassword);
-        }
-        else
-        {
+        } else {
             getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.frequency_manager.you_not_owner"), true);
         }
     }
 
-    private void changePublicAction(boolean publicMode)
-    {
-        if (band.getOwner().equals(getPlayer().getUUID()))
-        {
+    private void changePublicAction(boolean publicMode) {
+        if (band.getOwner().equals(getPlayer().getUUID())) {
             band.setPublic(publicMode);
-        }
-        else
-        {
+        } else {
             getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.frequency_manager.you_not_owner"), true);
         }
     }
 
-    private void changeAllowMemoryCardAction(boolean allowMemoryCard)
-    {
-        if (band.getOwner().equals(getPlayer().getUUID()))
-        {
+    private void changeAllowMemoryCardAction(boolean allowMemoryCard) {
+        if (band.getOwner().equals(getPlayer().getUUID())) {
             band.setAllowedMemoryCardCopy(allowMemoryCard);
-        }
-        else
-        {
+        } else {
             getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.frequency_manager.you_not_owner"), true);
         }
     }
 
-    private void tryDisconnectBroadcasterAction(GlobalPosJson jsonPos)
-    {
+    private void tryDisconnectBroadcasterAction(GlobalPosJson jsonPos) {
         MinecraftServer server = getPlayer().getServer();
         if (server == null) return;
 
@@ -148,8 +129,7 @@ public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturn
         BlockPos pos = globalPos.pos();
         if (level == null) return;
 
-        if (!level.isLoaded(pos))
-        {
+        if (!level.isLoaded(pos)) {
             level.getChunk(pos);
         }
         if (!(level.getBlockEntity(pos) instanceof EnderBroadcasterBlockEntity be)) return;
@@ -157,8 +137,7 @@ public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturn
         be.cleanConnectionPermanent();
     }
 
-    private void tryTapToBroadcasterAction(GlobalPosJson jsonPos)
-    {
+    private void tryTapToBroadcasterAction(GlobalPosJson jsonPos) {
         MinecraftServer server = getPlayer().getServer();
         if (server == null) return;
 
@@ -167,8 +146,7 @@ public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturn
         BlockPos pos = globalPos.pos();
         if (level == null) return;
 
-        if (!level.isLoaded(pos))
-        {
+        if (!level.isLoaded(pos)) {
             level.getChunk(pos);
         }
         if (!(level.getBlockEntity(pos) instanceof EnderBroadcasterBlockEntity be)) return;
@@ -179,30 +157,23 @@ public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturn
         getPlayer().teleportTo(level, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, Set.of(), getPlayer().getYRot(), getPlayer().getXRot());
     }
 
-    private void openBandWhiteManagerAction()
-    {
+    private void openBandWhiteManagerAction() {
         MenuOpener.open(AECSMenus.BAND_WHITE_LIST_MANAGER_MENU.get(), getPlayer(), getLocator());
     }
 
-    private void onRemoveBand()
-    {
-        if (band.getOwner().equals(getPlayer().getUUID()))
-        {
+    private void onRemoveBand() {
+        if (band.getOwner().equals(getPlayer().getUUID())) {
             getPlayer().closeContainer();
             FrequencyBandManager.deleteBand(band.getName());
-        }
-        else
-        {
+        } else {
             getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.frequency_manager.you_not_owner"), true);
         }
     }
 
     @Override
-    public void broadcastChanges()
-    {
+    public void broadcastChanges() {
         this.tick++;
-        if (this.tick >= 1 && getPlayer().getServer() != null)
-        {
+        if (this.tick >= 1 && getPlayer().getServer() != null) {
             bandDetailInfo = new FrequencyBandDetailInfo(band.getName(),
                     !band.getPassword().isEmpty(),
                     band.isPublic(),
@@ -210,8 +181,7 @@ public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturn
                     band.getErrorState(),
                     List.of(), // 这个UI中我们用不到它
                     band.getDeclaredSenders().stream().toList(),
-                    band.getDeclaredReceivers().stream().toList()
-            );
+                    band.getDeclaredReceivers().stream().toList());
             this.tick = 0;
         }
 
@@ -222,14 +192,12 @@ public class FrequencyBandManagerMenu extends AEBaseMenu implements CustomReturn
     }
 
     @Override
-    public MenuType<?> getReturnToMenuType()
-    {
+    public MenuType<?> getReturnToMenuType() {
         return AECSMenus.ENDER_BROADCASTER_MENU.get();
     }
 
     @Override
-    public ISubMenuHost getHost()
-    {
+    public ISubMenuHost getHost() {
         return this.host;
     }
 }

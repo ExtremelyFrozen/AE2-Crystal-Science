@@ -1,5 +1,11 @@
 package io.github.lounode.ae2cs.common.me.part;
 
+import io.github.lounode.ae2cs.AE2CrystalScience;
+import io.github.lounode.ae2cs.common.init.AECSMenus;
+import io.github.lounode.ae2cs.common.init.AECSParts;
+import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderHost;
+import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderLogic;
+
 import appeng.api.AECapabilities;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
@@ -13,17 +19,13 @@ import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuHostLocator;
 import appeng.parts.PartModel;
 import appeng.parts.crafting.PatternProviderPart;
-import io.github.lounode.ae2cs.AE2CrystalScience;
-import io.github.lounode.ae2cs.common.init.AECSMenus;
-import io.github.lounode.ae2cs.common.init.AECSParts;
-import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderHost;
-import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderLogic;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-public class ResonatingPatternProviderPart extends PatternProviderPart implements ResonatingPatternProviderHost
-{
+public class ResonatingPatternProviderPart extends PatternProviderPart implements ResonatingPatternProviderHost {
+
     public static final ResourceLocation MODEL_BASE = AE2CrystalScience.makeId(
             "part/resonating_pattern_provider/base");
 
@@ -54,80 +56,64 @@ public class ResonatingPatternProviderPart extends PatternProviderPart implement
     public static final PartModel EXTENDED_MODELS_HAS_CHANNEL = new PartModel(MODEL_EXTENDED,
             AppEng.makeId("part/interface_has_channel"));
 
-    public ResonatingPatternProviderPart(IPartItem<?> partItem)
-    {
+    public ResonatingPatternProviderPart(IPartItem<?> partItem) {
         super(partItem);
     }
 
     /**
      * 注册能力
      */
-    public static void onRegisterCaps(RegisterPartCapabilitiesEvent event)
-    {
+    public static void onRegisterCaps(RegisterPartCapabilitiesEvent event) {
         event.register(
                 AECapabilities.GENERIC_INTERNAL_INV,
                 (part, direction) -> part.getLogic().getReturnInv(),
-                ResonatingPatternProviderPart.class
-        );
+                ResonatingPatternProviderPart.class);
     }
 
     @Override
-    public IPartModel getStaticModels()
-    {
-        if (this.isActive() && this.isPowered())
-        {
+    public IPartModel getStaticModels() {
+        if (this.isActive() && this.isPowered()) {
             return isExtended() ? EXTENDED_MODELS_HAS_CHANNEL : MODELS_HAS_CHANNEL;
-        }
-        else if (this.isPowered())
-        {
+        } else if (this.isPowered()) {
             return isExtended() ? EXTENDED_MODELS_ON : MODELS_ON;
-        }
-        else
-        {
+        } else {
             return isExtended() ? EXTENDED_MODELS_OFF : MODELS_OFF;
         }
     }
 
     @Override
-    public boolean isExtended()
-    {
+    public boolean isExtended() {
         return getPartItem() == AECSParts.EX_RESONATING_PATTERN_PROVIDER_PART.get();
     }
 
     @Override
-    protected PatternProviderLogic createLogic()
-    {
+    protected PatternProviderLogic createLogic() {
         int patternSize = isExtended() ? 36 : 9;
         return new ResonatingPatternProviderLogic(getMainNode(), this, patternSize);
     }
 
     @Override
-    public void openMenu(Player player, MenuHostLocator locator)
-    {
+    public void openMenu(Player player, MenuHostLocator locator) {
         MenuOpener.open(AECSMenus.RESONATING_PATTERN_PROVIDER_MENU.get(), player, locator);
     }
 
     @Override
-    public void returnToMainMenu(Player player, ISubMenu subMenu)
-    {
+    public void returnToMainMenu(Player player, ISubMenu subMenu) {
         MenuOpener.returnTo(AECSMenus.RESONATING_PATTERN_PROVIDER_MENU.get(), player, subMenu.getLocator());
     }
 
     @Override
-    public AEItemKey getTerminalIcon()
-    {
+    public AEItemKey getTerminalIcon() {
         return AEItemKey.of(getPartItem());
     }
 
     @Override
-    public ItemStack getMainMenuIcon()
-    {
+    public ItemStack getMainMenuIcon() {
         return new ItemStack(getPartItem());
     }
 
     @Override
-    public ResonatingPatternProviderLogic getResonatingLogic()
-    {
+    public ResonatingPatternProviderLogic getResonatingLogic() {
         return (ResonatingPatternProviderLogic) getLogic();
     }
 }

@@ -8,11 +8,7 @@ import io.github.lounode.ae2cs.common.init.AECSRecipeTypes;
 import io.github.lounode.ae2cs.common.recipe.circuit_etcher.CircuitEtcherRecipe;
 import io.github.lounode.ae2cs.common.recipe.crystal_aggregator.CrystalAggregatorRecipe;
 import io.github.lounode.ae2cs.common.recipe.crystal_pulverizer.CrystalPulverizerRecipe;
-import mezz.jei.api.IModPlugin;
-import mezz.jei.api.neoforge.NeoForgeTypes;
-import mezz.jei.api.registration.IRecipeCatalystRegistration;
-import mezz.jei.api.registration.IRecipeCategoryRegistration;
-import mezz.jei.api.registration.IRecipeRegistration;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -20,23 +16,27 @@ import net.minecraft.world.level.material.Fluids;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.registries.DeferredHolder;
+
+import mezz.jei.api.IModPlugin;
+import mezz.jei.api.neoforge.NeoForgeTypes;
+import mezz.jei.api.registration.IRecipeCatalystRegistration;
+import mezz.jei.api.registration.IRecipeCategoryRegistration;
+import mezz.jei.api.registration.IRecipeRegistration;
 import org.jetbrains.annotations.NotNull;
 import tamaized.ae2jeiintegration.integration.modules.jei.categories.EntropyManipulatorCategory;
 
 import java.util.List;
 
 @mezz.jei.api.JeiPlugin
-public class JeiPlugin implements IModPlugin
-{
+public class JeiPlugin implements IModPlugin {
+
     @Override
-    public @NotNull ResourceLocation getPluginUid()
-    {
+    public @NotNull ResourceLocation getPluginUid() {
         return AE2CrystalScience.makeId("jei_plugin");
     }
 
     @Override
-    public void registerCategories(@NotNull IRecipeCategoryRegistration registration)
-    {
+    public void registerCategories(@NotNull IRecipeCategoryRegistration registration) {
         IModPlugin.super.registerCategories(registration);
         registration.addRecipeCategories(new CircuitEtcherRecipeCategory(registration.getJeiHelpers()));
         registration.addRecipeCategories(new CrystalAggregatorRecipeCategory(registration.getJeiHelpers()));
@@ -45,8 +45,7 @@ public class JeiPlugin implements IModPlugin
     }
 
     @Override
-    public void registerRecipes(@NotNull IRecipeRegistration registration)
-    {
+    public void registerRecipes(@NotNull IRecipeRegistration registration) {
         var level = Minecraft.getInstance().level;
         if (level == null) return;
 
@@ -83,44 +82,34 @@ public class JeiPlugin implements IModPlugin
     }
 
     @Override
-    public void registerRecipeCatalysts(@NotNull IRecipeCatalystRegistration registration)
-    {
+    public void registerRecipeCatalysts(@NotNull IRecipeCatalystRegistration registration) {
         registration.addRecipeCatalyst(
                 AECSBlocks.CIRCUIT_ETCHER_BLOCK,
-                CircuitEtcherRecipeCategory.RECIPE_TYPE
-        );
+                CircuitEtcherRecipeCategory.RECIPE_TYPE);
 
         registration.addRecipeCatalyst(
                 AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK,
-                CrystalAggregatorRecipeCategory.RECIPE_TYPE
-        );
+                CrystalAggregatorRecipeCategory.RECIPE_TYPE);
 
         registration.addRecipeCatalyst(
                 AECSBlocks.CRYSTAL_PULVERIZER_BLOCK,
-                CrystalPulverizerRecipeCategory.RECIPE_TYPE
-        );
+                CrystalPulverizerRecipeCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(
                 AECSBlocks.QUARTZ_GRINDSTONE_BLOCK,
-                CrystalPulverizerRecipeCategory.RECIPE_TYPE
-        );
+                CrystalPulverizerRecipeCategory.RECIPE_TYPE);
 
         registration.addRecipeCatalyst(
                 AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK,
-                CrystalGrowthCategory.RECIPE_TYPE
-        );
+                CrystalGrowthCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(
                 NeoForgeTypes.FLUID_STACK,
                 new FluidStack(Fluids.WATER, 1000),
-                CrystalGrowthCategory.RECIPE_TYPE
-        );
+                CrystalGrowthCategory.RECIPE_TYPE);
 
-        if (ModList.get().isLoaded(AECSConstants.JEI_AE_INTEGRATION_ID))
-        {
+        if (ModList.get().isLoaded(AECSConstants.JEI_AE_INTEGRATION_ID)) {
             registration.addRecipeCatalyst(
                     AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK,
-                    EntropyManipulatorCategory.RECIPE_TYPE
-            );
+                    EntropyManipulatorCategory.RECIPE_TYPE);
         }
     }
-
 }

@@ -1,18 +1,20 @@
 package io.github.lounode.ae2cs.common.menu;
 
+import io.github.lounode.ae2cs.common.block.entity.CrystalPulverizerBlockEntity;
+import io.github.lounode.ae2cs.common.init.AECSMenus;
+
 import appeng.api.util.IConfigManager;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.UpgradeableMenu;
 import appeng.menu.slot.AppEngSlot;
 import appeng.util.inv.AppEngInternalInventory;
-import io.github.lounode.ae2cs.common.block.entity.CrystalPulverizerBlockEntity;
-import io.github.lounode.ae2cs.common.init.AECSMenus;
+
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 
-public class CrystalPulverizerMenu extends UpgradeableMenu<CrystalPulverizerBlockEntity>
-{
+public class CrystalPulverizerMenu extends UpgradeableMenu<CrystalPulverizerBlockEntity> {
+
     @GuiSync(10)
     public int recipeProgress;
 
@@ -25,24 +27,20 @@ public class CrystalPulverizerMenu extends UpgradeableMenu<CrystalPulverizerBloc
     @GuiSync(13)
     public double maxEnergy;
 
-    public CrystalPulverizerMenu(int id, Inventory ip, CrystalPulverizerBlockEntity host)
-    {
+    public CrystalPulverizerMenu(int id, Inventory ip, CrystalPulverizerBlockEntity host) {
         super(AECSMenus.CRYSTAL_PULVERIZER_MENU.get(), id, ip, host);
 
         AppEngInternalInventory inputInv = getHost().getInputInv();
         AppEngInternalInventory outputInv = getHost().getOutputInv();
-        for (int i = 0; i < inputInv.size(); i++)
-        {
+        for (int i = 0; i < inputInv.size(); i++) {
             AppEngSlot inputSlot = new AppEngSlot(inputInv, i);
             this.addSlot(inputSlot, SlotSemantics.MACHINE_INPUT);
         }
-        for (int i = 0; i < outputInv.size(); i++)
-        {
-            AppEngSlot outputSlot = new AppEngSlot(outputInv, i)
-            {
+        for (int i = 0; i < outputInv.size(); i++) {
+            AppEngSlot outputSlot = new AppEngSlot(outputInv, i) {
+
                 @Override
-                public boolean mayPlace(ItemStack stack)
-                {
+                public boolean mayPlace(ItemStack stack) {
                     return false;
                 }
             };
@@ -51,13 +49,10 @@ public class CrystalPulverizerMenu extends UpgradeableMenu<CrystalPulverizerBloc
     }
 
     @Override
-    protected void loadSettingsFromHost(IConfigManager cm)
-    {
-    }
+    protected void loadSettingsFromHost(IConfigManager cm) {}
 
     @Override
-    public void broadcastChanges()
-    {
+    public void broadcastChanges() {
         recipeNeedTicks = getHost().getActiveRecipeEnergyCost();
         recipeProgress = getHost().getRecipeProgress();
         maxEnergy = getHost().getAEMaxPower();

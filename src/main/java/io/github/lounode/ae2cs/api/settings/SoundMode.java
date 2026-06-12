@@ -1,7 +1,6 @@
 package io.github.lounode.ae2cs.api.settings;
 
-public enum SoundMode
-{
+public enum SoundMode {
     /**
      * 静音
      */

@@ -5,6 +5,7 @@ import appeng.api.config.Actionable;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
+
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -17,20 +18,17 @@ import org.jetbrains.annotations.Nullable;
  * <p>
  * 代码来自 Applied Pneumatics
  */
-public class CombinedGenericInternalInventory implements GenericInternalInventory
-{
+public class CombinedGenericInternalInventory implements GenericInternalInventory {
 
     protected final GenericInternalInventory[] delegates; // 底层库存
     protected final int[] baseIndex; // 各库存尺寸的前缀和（用于槽位映射）
     protected final int slotCount;   // 总槽位数量
 
-    public CombinedGenericInternalInventory(GenericInternalInventory... delegates)
-    {
+    public CombinedGenericInternalInventory(GenericInternalInventory... delegates) {
         this.delegates = delegates == null ? new GenericInternalInventory[0] : delegates.clone();
         this.baseIndex = new int[this.delegates.length];
         int sum = 0;
-        for (int i = 0; i < this.delegates.length; i++)
-        {
+        for (int i = 0; i < this.delegates.length; i++) {
             GenericInternalInventory inv = this.delegates[i];
             int sz = inv == null ? 0 : inv.size();
             sum += sz;
@@ -42,13 +40,10 @@ public class CombinedGenericInternalInventory implements GenericInternalInventor
     // === 槽位映射辅助（思路同 CombinedInvWrapper） ===
 
     // 根据扁平槽位返回对应的委托库存索引；非法返回 -1。
-    protected int getIndexForSlot(int slot)
-    {
+    protected int getIndexForSlot(int slot) {
         if (slot < 0) return -1;
-        for (int i = 0; i < baseIndex.length; i++)
-        {
-            if (slot - baseIndex[i] < 0)
-            {
+        for (int i = 0; i < baseIndex.length; i++) {
+            if (slot - baseIndex[i] < 0) {
                 return i;
             }
         }
@@ -56,10 +51,8 @@ public class CombinedGenericInternalInventory implements GenericInternalInventor
     }
 
     // 通过索引返回委托库存；越界时返回空实现。
-    protected GenericInternalInventory getInventoryFromIndex(int index)
-    {
-        if (index < 0 || index >= delegates.length)
-        {
+    protected GenericInternalInventory getInventoryFromIndex(int index) {
+        if (index < 0 || index >= delegates.length) {
             return EmptyInventory.INSTANCE;
         }
         GenericInternalInventory inv = delegates[index];
@@ -67,10 +60,8 @@ public class CombinedGenericInternalInventory implements GenericInternalInventor
     }
 
     // 将扁平槽位映射为该索引对应委托库存中的本地槽位
-    protected int getLocalSlot(int slot, int index)
-    {
-        if (index <= 0 || index >= baseIndex.length)
-        {
+    protected int getLocalSlot(int slot, int index) {
+        if (index <= 0 || index >= baseIndex.length) {
             return slot;
         }
         return slot - baseIndex[index - 1];
@@ -79,14 +70,12 @@ public class CombinedGenericInternalInventory implements GenericInternalInventor
     // === GenericInternalInventory 接口实现 ===
 
     @Override
-    public int size()
-    {
+    public int size() {
         return slotCount;
     }
 
     @Override
-    public @Nullable GenericStack getStack(int slot)
-    {
+    public @Nullable GenericStack getStack(int slot) {
         int idx = getIndexForSlot(slot);
         GenericInternalInventory inv = getInventoryFromIndex(idx);
         int local = getLocalSlot(slot, idx);
@@ -94,8 +83,7 @@ public class CombinedGenericInternalInventory implements GenericInternalInventor
     }
 
     @Override
-    public @Nullable AEKey getKey(int slot)
-    {
+    public @Nullable AEKey getKey(int slot) {
         int idx = getIndexForSlot(slot);
         GenericInternalInventory inv = getInventoryFromIndex(idx);
         int local = getLocalSlot(slot, idx);
@@ -103,8 +91,7 @@ public class CombinedGenericInternalInventory implements GenericInternalInventor
     }
 
     @Override
-    public long getAmount(int slot)
-    {
+    public long getAmount(int slot) {
         int idx = getIndexForSlot(slot);
         GenericInternalInventory inv = getInventoryFromIndex(idx);
         int local = getLocalSlot(slot, idx);
@@ -116,12 +103,10 @@ public class CombinedGenericInternalInventory implements GenericInternalInventor
      * （该方法不包含具体槽位的上下文；这里取任一底层槽位可能支持的最大能力值。）
      */
     @Override
-    public long getMaxAmount(AEKey key)
-    {
+    public long getMaxAmount(AEKey key) {
         if (key == null) return 0L;
         long max = 0L;
-        for (GenericInternalInventory inv : delegates)
-        {
+        for (GenericInternalInventory inv : delegates) {
             if (inv == null) continue;
             long v = inv.getMaxAmount(key);
             if (v > max) max = v;
@@ -134,12 +119,10 @@ public class CombinedGenericInternalInventory implements GenericInternalInventor
      * 对给定类型返回所有委托库存容量的饱和求和。
      */
     @Override
-    public long getCapacity(AEKeyType keyType)
-    {
+    public long getCapacity(AEKeyType keyType) {
         if (keyType == null) return 0L;
         long sum = 0L;
-        for (GenericInternalInventory inv : delegates)
-        {
+        for (GenericInternalInventory inv : delegates) {
             if (inv == null) continue;
             long c = inv.getCapacity(keyType);
             if (c < 0) c = 0; // 防御性处理
@@ -150,28 +133,23 @@ public class CombinedGenericInternalInventory implements GenericInternalInventor
     }
 
     @Override
-    public boolean canInsert()
-    {
-        for (GenericInternalInventory inv : delegates)
-        {
+    public boolean canInsert() {
+        for (GenericInternalInventory inv : delegates) {
             if (inv != null && inv.canInsert()) return true;
         }
         return false;
     }
 
     @Override
-    public boolean canExtract()
-    {
-        for (GenericInternalInventory inv : delegates)
-        {
+    public boolean canExtract() {
+        for (GenericInternalInventory inv : delegates) {
             if (inv != null && inv.canExtract()) return true;
         }
         return false;
     }
 
     @Override
-    public void setStack(int slot, @Nullable GenericStack newStack)
-    {
+    public void setStack(int slot, @Nullable GenericStack newStack) {
         int idx = getIndexForSlot(slot);
         GenericInternalInventory inv = getInventoryFromIndex(idx);
         int local = getLocalSlot(slot, idx);
@@ -179,19 +157,16 @@ public class CombinedGenericInternalInventory implements GenericInternalInventor
     }
 
     @Override
-    public boolean isSupportedType(AEKeyType type)
-    {
+    public boolean isSupportedType(AEKeyType type) {
         if (type == null) return false;
-        for (GenericInternalInventory inv : delegates)
-        {
+        for (GenericInternalInventory inv : delegates) {
             if (inv != null && inv.isSupportedType(type)) return true;
         }
         return false;
     }
 
     @Override
-    public boolean isAllowedIn(int slot, AEKey what)
-    {
+    public boolean isAllowedIn(int slot, AEKey what) {
         int idx = getIndexForSlot(slot);
         GenericInternalInventory inv = getInventoryFromIndex(idx);
         int local = getLocalSlot(slot, idx);
@@ -199,8 +174,7 @@ public class CombinedGenericInternalInventory implements GenericInternalInventor
     }
 
     @Override
-    public long insert(int slot, AEKey what, long amount, Actionable mode)
-    {
+    public long insert(int slot, AEKey what, long amount, Actionable mode) {
         int idx = getIndexForSlot(slot);
         GenericInternalInventory inv = getInventoryFromIndex(idx);
         int local = getLocalSlot(slot, idx);
@@ -208,8 +182,7 @@ public class CombinedGenericInternalInventory implements GenericInternalInventor
     }
 
     @Override
-    public long extract(int slot, AEKey what, long amount, Actionable mode)
-    {
+    public long extract(int slot, AEKey what, long amount, Actionable mode) {
         int idx = getIndexForSlot(slot);
         GenericInternalInventory inv = getInventoryFromIndex(idx);
         int local = getLocalSlot(slot, idx);
@@ -217,45 +190,36 @@ public class CombinedGenericInternalInventory implements GenericInternalInventor
     }
 
     @Override
-    public void beginBatch()
-    {
-        for (GenericInternalInventory inv : delegates)
-        {
+    public void beginBatch() {
+        for (GenericInternalInventory inv : delegates) {
             if (inv != null) inv.beginBatch();
         }
     }
 
     @Override
-    public void endBatch()
-    {
-        for (GenericInternalInventory inv : delegates)
-        {
+    public void endBatch() {
+        for (GenericInternalInventory inv : delegates) {
             if (inv != null) inv.endBatch();
         }
     }
 
     @Override
-    public void endBatchSuppressed()
-    {
-        for (GenericInternalInventory inv : delegates)
-        {
+    public void endBatchSuppressed() {
+        for (GenericInternalInventory inv : delegates) {
             if (inv != null) inv.endBatchSuppressed();
         }
     }
 
     @Override
-    public void onChange()
-    {
-        for (GenericInternalInventory inv : delegates)
-        {
+    public void onChange() {
+        for (GenericInternalInventory inv : delegates) {
             if (inv != null) inv.onChange();
         }
     }
 
     // === 辅助方法 ===
 
-    private static long saturatingAdd(long a, long b)
-    {
+    private static long saturatingAdd(long a, long b) {
         // 两者预期为非负；发生溢出时饱和到 Long.MAX_VALUE
         long limit = Long.MAX_VALUE - a;
         if (b > limit) return Long.MAX_VALUE;
@@ -264,105 +228,83 @@ public class CombinedGenericInternalInventory implements GenericInternalInventor
     }
 
     // 当槽位/委托索引非法时使用的最小空库存，确保调用安全。
-    private static final class EmptyInventory implements GenericInternalInventory
-    {
+    private static final class EmptyInventory implements GenericInternalInventory {
+
         static final EmptyInventory INSTANCE = new EmptyInventory();
 
         @Override
-        public int size()
-        {
+        public int size() {
             return 0;
         }
 
         @Override
-        public @Nullable GenericStack getStack(int slot)
-        {
+        public @Nullable GenericStack getStack(int slot) {
             return null;
         }
 
         @Override
-        public @Nullable AEKey getKey(int slot)
-        {
+        public @Nullable AEKey getKey(int slot) {
             return null;
         }
 
         @Override
-        public long getAmount(int slot)
-        {
+        public long getAmount(int slot) {
             return 0;
         }
 
         @Override
-        public long getMaxAmount(AEKey key)
-        {
+        public long getMaxAmount(AEKey key) {
             return 0;
         }
 
         @Override
-        public long getCapacity(AEKeyType keyType)
-        {
+        public long getCapacity(AEKeyType keyType) {
             return 0;
         }
 
         @Override
-        public boolean canInsert()
-        {
+        public boolean canInsert() {
             return false;
         }
 
         @Override
-        public boolean canExtract()
-        {
+        public boolean canExtract() {
             return false;
         }
 
         @Override
-        public void setStack(int slot, @Nullable GenericStack newStack)
-        {
-        }
+        public void setStack(int slot, @Nullable GenericStack newStack) {}
 
         @Override
-        public boolean isSupportedType(AEKeyType type)
-        {
+        public boolean isSupportedType(AEKeyType type) {
             return false;
         }
 
         @Override
-        public boolean isAllowedIn(int slot, AEKey what)
-        {
+        public boolean isAllowedIn(int slot, AEKey what) {
             return false;
         }
 
         @Override
-        public long insert(int slot, AEKey what, long amount, Actionable mode)
-        {
+        public long insert(int slot, AEKey what, long amount, Actionable mode) {
             return 0;
         }
 
         @Override
-        public long extract(int slot, AEKey what, long amount, Actionable mode)
-        {
+        public long extract(int slot, AEKey what, long amount, Actionable mode) {
             return 0;
         }
 
         @Override
-        public void beginBatch()
-        {
-        }
+        public void beginBatch() {}
 
         @Override
-        public void endBatch()
-        {
-        }
+        public void endBatch() {}
 
         @Override
-        public void endBatchSuppressed()
-        {
-        }
+        public void endBatchSuppressed() {}
 
         @Override
-        public void onChange()
-        {
-        }
+        public void onChange() {}
     }
 }

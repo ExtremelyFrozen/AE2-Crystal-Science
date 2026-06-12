@@ -1,5 +1,8 @@
 package io.github.lounode.ae2cs.common.menu;
 
+import io.github.lounode.ae2cs.api.settings.AECSSettings;
+import io.github.lounode.ae2cs.common.block.entity.EntropyVariationReactionChamberBlockEntity;
+
 import appeng.api.inventories.InternalInventory;
 import appeng.api.util.IConfigManager;
 import appeng.menu.SlotSemantics;
@@ -7,14 +10,13 @@ import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.UpgradeableMenu;
 import appeng.menu.slot.AppEngSlot;
 import appeng.recipes.entropy.EntropyMode;
-import io.github.lounode.ae2cs.api.settings.AECSSettings;
-import io.github.lounode.ae2cs.common.block.entity.EntropyVariationReactionChamberBlockEntity;
+
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
-public class EntropyVariationReactionChamberMenu extends UpgradeableMenu<EntropyVariationReactionChamberBlockEntity>
-{
+public class EntropyVariationReactionChamberMenu extends UpgradeableMenu<EntropyVariationReactionChamberBlockEntity> {
+
     @GuiSync(10)
     public int recipeProgress;
 
@@ -30,24 +32,20 @@ public class EntropyVariationReactionChamberMenu extends UpgradeableMenu<Entropy
     @GuiSync(14)
     public EntropyMode entropyMode;
 
-    public EntropyVariationReactionChamberMenu(MenuType<?> menuType, int id, Inventory ip, EntropyVariationReactionChamberBlockEntity host)
-    {
+    public EntropyVariationReactionChamberMenu(MenuType<?> menuType, int id, Inventory ip, EntropyVariationReactionChamberBlockEntity host) {
         super(menuType, id, ip, host);
 
         InternalInventory inputInv = getHost().getInputInv().createMenuWrapper();
         InternalInventory outputInv = getHost().getOutputInv().createMenuWrapper();
-        for (int i = 0; i < inputInv.size(); i++)
-        {
+        for (int i = 0; i < inputInv.size(); i++) {
             AppEngSlot inputSlot = new AppEngSlot(inputInv, i);
             this.addSlot(inputSlot, SlotSemantics.MACHINE_INPUT);
         }
-        for (int i = 0; i < outputInv.size(); i++)
-        {
-            AppEngSlot outputSlot = new AppEngSlot(outputInv, i)
-            {
+        for (int i = 0; i < outputInv.size(); i++) {
+            AppEngSlot outputSlot = new AppEngSlot(outputInv, i) {
+
                 @Override
-                public boolean mayPlace(ItemStack stack)
-                {
+                public boolean mayPlace(ItemStack stack) {
                     return false;
                 }
             };
@@ -56,14 +54,12 @@ public class EntropyVariationReactionChamberMenu extends UpgradeableMenu<Entropy
     }
 
     @Override
-    protected void loadSettingsFromHost(IConfigManager cm)
-    {
+    protected void loadSettingsFromHost(IConfigManager cm) {
         this.entropyMode = cm.getSetting(AECSSettings.ENTROPY_CHANGE_MODE);
     }
 
     @Override
-    public void broadcastChanges()
-    {
+    public void broadcastChanges() {
         recipeNeedTicks = getHost().getActiveRecipeEnergyCost();
         recipeProgress = getHost().getRecipeProgress();
         maxEnergy = getHost().getAEMaxPower();

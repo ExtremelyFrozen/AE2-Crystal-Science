@@ -4,8 +4,8 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
-public class GuiRenderHelper
-{
+public class GuiRenderHelper {
+
     /**
      * 在水平区间 [xA, xB] 的中央绘制一段文本。
      *
@@ -24,8 +24,7 @@ public class GuiRenderHelper
                                             int xA, int xB,
                                             int y,
                                             int color,
-                                            boolean dropShadow)
-    {
+                                            boolean dropShadow) {
         // 1) 规范化左右边界
         int left = Math.min(xA, xB);
         int right = Math.max(xA, xB);
@@ -47,8 +46,7 @@ public class GuiRenderHelper
                                            int xRight,
                                            int y,
                                            int color,
-                                           boolean dropShadow)
-    {
+                                           boolean dropShadow) {
         int xStart = xRight - font.width(text);
         guiGraphics.drawString(font, text, xStart, y, color, dropShadow);
     }
