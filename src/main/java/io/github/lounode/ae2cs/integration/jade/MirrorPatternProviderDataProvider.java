@@ -28,7 +28,7 @@ public final class MirrorPatternProviderDataProvider implements IBlockComponentP
     private static final String TARGET_SIDE = "target_side";
     private static final String HAS_TARGET = "has_target";
     private static final String HAS_TARGET_SIDE = "has_target_side";
-    private static final ResourceLocation UID = AE2CrystalScience.makeId("jade/mirror_pattern_provider");
+    private static final ResourceLocation UID = AE2CrystalScience.makeId("mirror_pattern_provider");
 
     private MirrorPatternProviderDataProvider() {}
 

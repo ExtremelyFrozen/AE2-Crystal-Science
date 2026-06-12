@@ -19,7 +19,7 @@ public final class EnderEmitterDataProvider implements IBlockComponentProvider {
 
     public static final EnderEmitterDataProvider INSTANCE = new EnderEmitterDataProvider();
 
-    private static final ResourceLocation UID = AE2CrystalScience.makeId("jade/ender_emitter");
+    private static final ResourceLocation UID = AE2CrystalScience.makeId("ender_emitter");
 
     private EnderEmitterDataProvider() {}
 

@@ -28,7 +28,7 @@ public final class EnderBroadcasterDataProvider implements IBlockComponentProvid
     private static final int MODE_SENDER = 1;
     private static final int MODE_RECEIVER = 2;
     private static final int MODE_NONE = 3;
-    private static final ResourceLocation UID = AE2CrystalScience.makeId("jade/ender_broadcaster");
+    private static final ResourceLocation UID = AE2CrystalScience.makeId("ender_broadcaster");
 
     private EnderBroadcasterDataProvider() {}
 

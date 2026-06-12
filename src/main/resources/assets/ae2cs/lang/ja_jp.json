@@ -215,6 +215,13 @@
   "jade.ae2cs.mirror_pattern_provider.target.side": "面: %s",
   "jade.ae2cs.mirror_pattern_provider.target.side.block": "ブロック",
   "jade.ae2cs.mirror_pattern_provider.target.unbound": "対象: 未バインド",
+  "config.jade.plugin_ae2cs.ender_emitter": "MEエンダーエミッター情報",
+  "config.jade.plugin_ae2cs.ender_broadcaster": "MEエンダーブロードキャスター情報",
+  "config.jade.plugin_ae2cs.mirror_pattern_provider": "ミラーパターンプロバイダー情報",
+  "config.jade.plugin_ae2cs.ender_channels": "エンダーチャンネル情報",
+  "config.jade.plugin_ae2cs.jade/ender_emitter": "MEエンダーエミッター情報",
+  "config.jade.plugin_ae2cs.jade/ender_broadcaster": "MEエンダーブロードキャスター情報",
+  "config.jade.plugin_ae2cs.jade/mirror_pattern_provider": "ミラーパターンプロバイダー情報",
   "config.jade.plugin_ae2cs.jade/ender_channels": "エンダーチャンネル情報",
 
   "ae2cs.menu.title.frequency_bands": "周波数帯域",

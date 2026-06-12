@@ -22,9 +22,14 @@ tasks.register('printVersion') {
 // Create run-folders for non-client configs to avoid pollution of dev envs
 tasks.matching { it.name.startsWith('prepare') }.configureEach {
     doFirst {
-        mkdir('run/client')
-        mkdir('run/server')
-        mkdir('run/gametest')
+        mkdir('run/all/client')
+        mkdir('run/all/server')
+        mkdir('run/clean/client')
+        mkdir('run/clean/server')
+        mkdir('run/login/client')
+        mkdir('run/login/server')
+        mkdir('run/gametest/client')
+        mkdir('run/gametest/server')
         mkdir('run/data')
     }
 }
