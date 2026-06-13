@@ -13,4 +13,6 @@ public class AECSConstants {
     public static final String AG_ID = "appgen";
     public static final String AF_ID = "appflux";
     public static final String CREATE_ID = "create";
+    public static final String AE2LT_ID = "ae2lt";
+    public static final String NEOECOAE_ID = "neoecoae";
 }

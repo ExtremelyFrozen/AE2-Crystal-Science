@@ -51,6 +51,8 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider {
                 AECSItems.PURE_METEOR_CRYSTAL, AECSBlocks.PURE_METEOR_CRYSTAL_BLOCK);
         packAndUnpack3x3(recipeOutput, RecipeCategory.MISC, RecipeCategory.MISC,
                 AECSItems.PURE_ENDER_QUARTZ, AECSBlocks.PURE_ENDER_QUARTZ_BLOCK);
+        packAndUnpack2x2(recipeOutput, RecipeCategory.MISC, RecipeCategory.MISC,
+                AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, AECSBlocks.CHARGED_CERTUS_QUARTZ_BLOCK);
         packAndUnpack3x3(recipeOutput, RecipeCategory.MISC, RecipeCategory.MISC,
                 AEItems.SILICON, AECSBlocks.SILICON_BLOCK);
 

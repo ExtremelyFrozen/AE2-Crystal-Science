@@ -93,10 +93,12 @@ public class DataGenerators {
         generator.addProvider(event.includeServer(), new AECSCompatAAERecipeProvider(packOutput, lookupProvider));
         generator.addProvider(event.includeServer(), new AECSCompatAFRecipeProvider(packOutput, lookupProvider));
         generator.addProvider(event.includeServer(), new AECSCompatAGRecipeProvider(packOutput, lookupProvider));
+        generator.addProvider(event.includeServer(), new AECSCompatAE2LTRecipeProvider(packOutput, lookupProvider));
         generator.addProvider(event.includeServer(), new AECSCompatCreateRecipeProvider(packOutput, lookupProvider));
         generator.addProvider(event.includeServer(), new AECSCompatEAERecipeProvider(packOutput, lookupProvider));
         generator.addProvider(event.includeServer(), new AECSCompatMegaCellRecipeProvider(packOutput, lookupProvider));
         generator.addProvider(event.includeServer(), new AECSCompatMEKRecipeProvider(packOutput, lookupProvider));
+        generator.addProvider(event.includeServer(), new AECSCompatNeoECORecipeProvider(packOutput, lookupProvider));
         generator.addProvider(event.includeServer(), new AECSCompatOCRecipeProvider(packOutput, lookupProvider));
     }
 }
