@@ -56,6 +56,10 @@ public class AECSTags {
         public static final TagKey<Item> PURE_IRRADIATED_CRYSTAL = aecsTag("pure_crystal/irradiated_crystal");
         public static final TagKey<Item> PURE_EMBER_CRYSTAL = aecsTag("pure_crystal/ember_crystal");
         public static final TagKey<Item> PURE_LINK_CRYSTAL = aecsTag("pure_crystal/link_crystal");
+        public static final TagKey<Item> PURE_OVERLOAD_CRYSTAL = aecsTag("pure_crystal/overload_crystal");
+        public static final TagKey<Item> PURE_DATA_CRYSTAL = aecsTag("pure_crystal/data_crystal");
+        public static final TagKey<Item> PURE_ENERGIZED_FLUIX_CRYSTAL = aecsTag("pure_crystal/energized_fluix_crystal");
+        public static final TagKey<Item> PURE_ENERGIZED_CERTUS_QUARTZ_CRYSTAL = aecsTag("pure_crystal/energized_certus_quartz_crystal");
 
         public static final TagKey<Item> DUST_RESONATING = tag("dusts/resonating");
         public static final TagKey<Item> DUST_QUARTZ = tag("dusts/quartz");

@@ -16,6 +16,10 @@ public class AECSItemIds {
     public static final String PURE_IRRADIATED_CRYSTAL = "purified_irradiated_crystal";
     public static final String PURE_EMBER_CRYSTAL = "purified_ember_crystal";
     public static final String PURE_LINK_CRYSTAL = "purified_link_crystal";
+    public static final String PURE_OVERLOAD_CRYSTAL = "purified_overload_crystal";
+    public static final String PURE_DATA_CRYSTAL = "purified_data_crystal";
+    public static final String PURE_ENERGIZED_FLUIX_CRYSTAL = "purified_energized_fluix_crystal";
+    public static final String PURE_ENERGIZED_CERTUS_QUARTZ_CRYSTAL = "purified_energized_certus_quartz_crystal";
 
     // 种子
     public static final String CERTUS_QUARTZ_SEED = "certus_quartz_seed";
@@ -31,6 +35,10 @@ public class AECSItemIds {
     public static final String IRRADIATED_SEED = "irradiated_seed";
     public static final String EMBER_SEED = "ember_seed";
     public static final String LINK_CRYSTAL_SEED = "link_crystal_seed";
+    public static final String OVERLOAD_CRYSTAL_SEED = "overload_crystal_seed";
+    public static final String DATA_CRYSTAL_SEED = "data_crystal_seed";
+    public static final String ENERGIZED_FLUIX_CRYSTAL_SEED = "energized_fluix_crystal_seed";
+    public static final String ENERGIZED_CERTUS_QUARTZ_SEED = "energized_certus_quartz_seed";
 
     // 粉尘
     public static final String NETHER_QUARTZ_DUST = "nether_quartz_dust";

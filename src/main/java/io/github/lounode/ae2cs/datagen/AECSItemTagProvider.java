@@ -50,7 +50,11 @@ public class AECSItemTagProvider extends ItemTagsProvider {
                 .addTag(AECSTags.Items.PURE_ROSE_QUARTZ)
                 .addTag(AECSTags.Items.PURE_IRRADIATED_CRYSTAL)
                 .addTag(AECSTags.Items.PURE_EMBER_CRYSTAL)
-                .addTag(AECSTags.Items.PURE_LINK_CRYSTAL);
+                .addTag(AECSTags.Items.PURE_LINK_CRYSTAL)
+                .addTag(AECSTags.Items.PURE_OVERLOAD_CRYSTAL)
+                .addTag(AECSTags.Items.PURE_DATA_CRYSTAL)
+                .addTag(AECSTags.Items.PURE_ENERGIZED_FLUIX_CRYSTAL)
+                .addTag(AECSTags.Items.PURE_ENERGIZED_CERTUS_QUARTZ_CRYSTAL);
         tag(AECSTags.Items.PURE_CERTUS_QUARTZ_CRYSTAL)
                 .add(AECSItems.PURE_CERTUS_QUARTZ_CRYSTAL.get());
         tag(AECSTags.Items.PURE_FLUIX_CRYSTAL)
@@ -77,6 +81,14 @@ public class AECSItemTagProvider extends ItemTagsProvider {
                 .add(AECSItems.PURE_EMBER_CRYSTAL.get());
         tag(AECSTags.Items.PURE_LINK_CRYSTAL)
                 .add(AECSItems.PURE_LINK_CRYSTAL.get());
+        tag(AECSTags.Items.PURE_OVERLOAD_CRYSTAL)
+                .add(AECSItems.PURE_OVERLOAD_CRYSTAL.get());
+        tag(AECSTags.Items.PURE_DATA_CRYSTAL)
+                .add(AECSItems.PURE_DATA_CRYSTAL.get());
+        tag(AECSTags.Items.PURE_ENERGIZED_FLUIX_CRYSTAL)
+                .add(AECSItems.PURE_ENERGIZED_FLUIX_CRYSTAL.get());
+        tag(AECSTags.Items.PURE_ENERGIZED_CERTUS_QUARTZ_CRYSTAL)
+                .add(AECSItems.PURE_ENERGIZED_CERTUS_QUARTZ_CRYSTAL.get());
 
         // 粉尘
         tag(Tags.Items.DUSTS)
