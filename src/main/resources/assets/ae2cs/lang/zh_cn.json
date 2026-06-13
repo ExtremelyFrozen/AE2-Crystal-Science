@@ -219,10 +219,6 @@
   "config.jade.plugin_ae2cs.ender_broadcaster": "末影广播装置信息",
   "config.jade.plugin_ae2cs.mirror_pattern_provider": "镜像样板供应器信息",
   "config.jade.plugin_ae2cs.ender_channels": "末影频道信息",
-  "config.jade.plugin_ae2cs.jade/ender_emitter": "末影发信器信息",
-  "config.jade.plugin_ae2cs.jade/ender_broadcaster": "末影广播装置信息",
-  "config.jade.plugin_ae2cs.jade/mirror_pattern_provider": "镜像样板供应器信息",
-  "config.jade.plugin_ae2cs.jade/ender_channels": "末影频道信息",
 
   "ae2cs.menu.title.frequency_bands": "频段菜单",
   "ae2cs.menu.widgets.frequency_info_panel.encrypted": "已加密",

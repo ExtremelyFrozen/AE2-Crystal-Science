@@ -219,10 +219,6 @@
   "config.jade.plugin_ae2cs.ender_broadcaster": "MEエンダーブロードキャスター情報",
   "config.jade.plugin_ae2cs.mirror_pattern_provider": "ミラーパターンプロバイダー情報",
   "config.jade.plugin_ae2cs.ender_channels": "エンダーチャンネル情報",
-  "config.jade.plugin_ae2cs.jade/ender_emitter": "MEエンダーエミッター情報",
-  "config.jade.plugin_ae2cs.jade/ender_broadcaster": "MEエンダーブロードキャスター情報",
-  "config.jade.plugin_ae2cs.jade/mirror_pattern_provider": "ミラーパターンプロバイダー情報",
-  "config.jade.plugin_ae2cs.jade/ender_channels": "エンダーチャンネル情報",
 
   "ae2cs.menu.title.frequency_bands": "周波数帯域",
   "ae2cs.menu.widgets.frequency_info_panel.encrypted": "暗号化済み",

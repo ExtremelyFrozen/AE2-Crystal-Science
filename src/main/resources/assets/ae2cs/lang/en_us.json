@@ -219,10 +219,6 @@
   "config.jade.plugin_ae2cs.ender_broadcaster": "Ender Broadcaster Info",
   "config.jade.plugin_ae2cs.mirror_pattern_provider": "Mirror Pattern Provider Info",
   "config.jade.plugin_ae2cs.ender_channels": "Ender Channel Info",
-  "config.jade.plugin_ae2cs.jade/ender_emitter": "Ender Emitter Info",
-  "config.jade.plugin_ae2cs.jade/ender_broadcaster": "Ender Broadcaster Info",
-  "config.jade.plugin_ae2cs.jade/mirror_pattern_provider": "Mirror Pattern Provider Info",
-  "config.jade.plugin_ae2cs.jade/ender_channels": "Ender Channel Info",
 
   "ae2cs.menu.title.frequency_bands": "Frequency Bands",
   "ae2cs.menu.widgets.frequency_info_panel.encrypted": "Encrypted",
