@@ -15,6 +15,7 @@ dependencies {
 
     // AE2 addons
     compileOnly(forge.ae2ji)
+    compileOnly(forge.de)
     compileOnly(forge.eae)
     compileOnly(forge.aelt)
     compileOnly(forge.applied.flux)
@@ -64,6 +65,7 @@ dependencies {
     // Runtime AE2 addons
     localRuntime(forge.ae2ji)
     localRuntime(forge.guideme)
+    localRuntime(forge.de)
     localRuntime(forge.ae2wt)
     localRuntime(forge.eae)
     localRuntime(forge.aelt)
