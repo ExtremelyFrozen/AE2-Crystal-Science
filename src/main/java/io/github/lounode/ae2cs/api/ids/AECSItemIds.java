@@ -76,6 +76,7 @@ public class AECSItemIds {
     public static final String RESONATING_MEMORY_CARD = "resonating_memory_card";
     public static final String RESONATING_PATTERN = "resonating_pattern";
     public static final String RESONATING_PATTERN_CONVERTER = "resonating_pattern_converter";
+    public static final String WIRELESS_RESONANT_TERMINAL = "wireless_resonant_terminal";
 
     public static final String ENDER_CRYSTAL_SWORD = "ender_crystal_sword";
     public static final String ENDER_CRYSTAL_AXE = "ender_crystal_axe";

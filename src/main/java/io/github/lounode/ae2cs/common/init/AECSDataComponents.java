@@ -11,6 +11,7 @@ import io.github.lounode.ae2cs.common.me.logic.MirroredPatternProviderTarget;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.neoforged.bus.api.IEventBus;
@@ -90,6 +91,12 @@ public class AECSDataComponents {
             .persistent(ResonatingProviderDefaults.Defaults.CODEC)
             .networkSynchronized(ResonatingProviderDefaults.Defaults.STREAM_CODEC)
             .cacheEncoding());
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> WIRELESS_RESONANT_TERMINAL_DATA =
+            register("wireless_resonant_terminal_data", b -> b
+                    .persistent(CompoundTag.CODEC)
+                    .networkSynchronized(ByteBufCodecs.COMPOUND_TAG)
+                    .cacheEncoding());
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<MirroredPatternProviderTarget>> MIRROR_PATTERN_PROVIDER_TARGET = register("mirror_pattern_provider_target", b -> b
             .persistent(MirroredPatternProviderTarget.CODEC)

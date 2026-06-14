@@ -79,5 +79,9 @@ public class AECSScreens {
         event.<ResonatingPatternConverterMenu, ResonatingPatternConverterGUI>register(AECSMenus.RESONATING_PATTERN_CONVERTER_MENU.get(),
                 (menu, inv, title) -> new ResonatingPatternConverterGUI(menu, inv, title,
                         StyleManager.loadStyleDoc("/screens/resonating_pattern_converter_menu.json")));
+
+        event.<ResonantTemplateCodingTermMenu, ResonantTemplateCodingTermScreen>register(AECSMenus.RESONANT_TEMPLATE_CODING_TERM_MENU.get(),
+                (menu, inv, title) -> new ResonantTemplateCodingTermScreen(menu, inv, title,
+                        StyleManager.loadStyleDoc("/screens/resonant_template_coding_terminal.json")));
     }
 }

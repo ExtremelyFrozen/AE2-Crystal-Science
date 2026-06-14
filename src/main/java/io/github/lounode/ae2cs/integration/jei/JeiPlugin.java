@@ -4,11 +4,13 @@ import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
+import io.github.lounode.ae2cs.common.init.AECSMenus;
 import io.github.lounode.ae2cs.common.init.AECSRecipeTypes;
 import io.github.lounode.ae2cs.common.recipe.circuit_etcher.CircuitEtcherRecipe;
 import io.github.lounode.ae2cs.common.recipe.crystal_aggregator.CrystalAggregatorRecipe;
 import io.github.lounode.ae2cs.common.recipe.crystal_pulverizer.CrystalPulverizerRecipe;
 
+import mezz.jei.api.registration.IRecipeTransferRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -26,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import tamaized.ae2jeiintegration.integration.modules.jei.categories.EntropyManipulatorCategory;
 
 import java.util.List;
+import java.util.Objects;
 
 @mezz.jei.api.JeiPlugin
 public class JeiPlugin implements IModPlugin {
@@ -79,6 +82,23 @@ public class JeiPlugin implements IModPlugin {
         {
             registration.addRecipes(CrystalGrowthCategory.RECIPE_TYPE, AECSItems.getCrystalSeeds().stream().map(DeferredHolder::get).toList());
         }
+    }
+
+    @Override
+    public void registerRecipeTransferHandlers(@NotNull IRecipeTransferRegistration registration) {
+        if (!ModList.get().isLoaded(AECSConstants.JEI_AE_INTEGRATION_ID)) {
+            return;
+        }
+
+        var jeiHelpers = registration.getJeiHelpers();
+        var menuType = Objects.requireNonNull(AECSMenus.RESONANT_TEMPLATE_CODING_TERM_MENU.get());
+        var transferHelper = Objects.requireNonNull(registration.getTransferHelper());
+        var ingredientVisibility = Objects.requireNonNull(jeiHelpers.getIngredientVisibility());
+        registration.addUniversalRecipeTransferHandler(new ResonantEncodePatternTransferHandler(
+                menuType,
+                transferHelper,
+                ingredientVisibility
+        ));
     }
 
     @Override
