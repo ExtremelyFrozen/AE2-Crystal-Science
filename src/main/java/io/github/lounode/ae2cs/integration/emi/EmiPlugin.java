@@ -6,7 +6,9 @@ import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.stack.EmiStack;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
+import io.github.lounode.ae2cs.common.init.AECSMenus;
 import io.github.lounode.ae2cs.common.init.AECSRecipeTypes;
+import io.github.lounode.ae2cs.common.menu.ResonantTemplateCodingTermMenu;
 import net.minecraft.world.level.material.Fluids;
 
 @EmiEntrypoint
@@ -15,6 +17,9 @@ public class EmiPlugin implements dev.emi.emi.api.EmiPlugin
     @Override
     public void register(EmiRegistry registry)
     {
+        registry.addRecipeHandler(AECSMenus.RESONANT_TEMPLATE_CODING_TERM_MENU.get(),
+                new ResonantEmiEncodePatternHandler());
+
         registry.addWorkstation(EmiEntropyRecipe.CATEGORY, EmiStack.of(AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK));
 
         registry.addCategory(CircuitEtcherRecipeCategory.RECIPE_TYPE);

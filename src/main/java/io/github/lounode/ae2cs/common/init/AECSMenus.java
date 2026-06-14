@@ -1,5 +1,6 @@
 package io.github.lounode.ae2cs.common.init;
 
+import appeng.helpers.IPatternTerminalMenuHost;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.implementations.PatternProviderMenu;
@@ -10,6 +11,7 @@ import io.github.lounode.ae2cs.common.block.entity.*;
 import io.github.lounode.ae2cs.common.me.logic.*;
 import io.github.lounode.ae2cs.common.me.menuhost.ResonatingPatternConverterMenuHost;
 import io.github.lounode.ae2cs.common.menu.*;
+import io.github.lounode.ae2cs.common.menu.ResonantTemplateCodingTermMenu;
 import io.github.lounode.ae2cs.common.menu.linker.broadcast.*;
 import io.github.lounode.ae2cs.common.menu.submenu.SideConfigMenu;
 import net.minecraft.core.registries.Registries;
@@ -137,6 +139,11 @@ public class AECSMenus
     public static final Supplier<MenuType<ResonatingPatternConverterMenu>> RESONATING_PATTERN_CONVERTER_MENU = MENU_TYPES.register("resonating_pattern_converter_menu",
             () -> MenuTypeBuilder.create(ResonatingPatternConverterMenu::new, ResonatingPatternConverterMenuHost.class)
                     .build(AE2CrystalScience.makeId("resonating_pattern_converter_menu"))
+    );
+
+    public static final Supplier<MenuType<ResonantTemplateCodingTermMenu>> RESONANT_TEMPLATE_CODING_TERM_MENU = MENU_TYPES.register("resonant_template_coding_term_menu",
+            () -> MenuTypeBuilder.create(ResonantTemplateCodingTermMenu::new, IPatternTerminalMenuHost.class)
+                    .build(AE2CrystalScience.makeId("resonant_template_coding_term_menu"))
     );
 
     public static void registerMenus(IEventBus eventBus)

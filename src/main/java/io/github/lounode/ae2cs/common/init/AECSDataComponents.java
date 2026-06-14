@@ -8,6 +8,7 @@ import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.neoforged.bus.api.IEventBus;
@@ -97,6 +98,12 @@ public class AECSDataComponents
             register("resonating_converter_inv", b -> b
                     .persistent(ItemContainerContents.CODEC)
                     .networkSynchronized(ItemContainerContents.STREAM_CODEC)
+                    .cacheEncoding());
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> WIRELESS_RESONANT_TERMINAL_DATA =
+            register("wireless_resonant_terminal_data", b -> b
+                    .persistent(CompoundTag.CODEC)
+                    .networkSynchronized(ByteBufCodecs.COMPOUND_TAG)
                     .cacheEncoding());
 
 
