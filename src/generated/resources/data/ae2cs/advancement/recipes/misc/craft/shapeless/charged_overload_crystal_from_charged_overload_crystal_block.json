@@ -7,11 +7,11 @@
   ],
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_overload_crystal_block": {
+    "has_charged_overload_crystal_block": {
       "conditions": {
         "items": [
           {
-            "items": "ae2cs:overload_crystal_block"
+            "items": "ae2cs:charged_overload_crystal_block"
           }
         ]
       },
@@ -19,7 +19,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2cs:craft/shapeless/overload_crystal_from_overload_crystal_block"
+        "recipe": "ae2cs:craft/shapeless/charged_overload_crystal_from_charged_overload_crystal_block"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -27,12 +27,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_overload_crystal_block"
+      "has_charged_overload_crystal_block"
     ]
   ],
   "rewards": {
     "recipes": [
-      "ae2cs:craft/shapeless/overload_crystal_from_overload_crystal_block"
+      "ae2cs:craft/shapeless/charged_overload_crystal_from_charged_overload_crystal_block"
     ]
   }
 }

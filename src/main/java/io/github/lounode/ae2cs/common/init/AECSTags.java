@@ -24,7 +24,7 @@ public class AECSTags {
         public static final TagKey<Block> STORAGE_BLOCK_PURE_CRYSTAL_ROSE_QUARTZ = aecsTag("storage_blocks/pure_crystal/rose_quartz_block");
         public static final TagKey<Block> STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL = aecsTag("storage_blocks/pure_crystal/irradiated_crystal_block");
         public static final TagKey<Block> STORAGE_BLOCK_PURE_CRYSTAL_LINK_CRYSTAL = aecsTag("storage_blocks/pure_crystal/link_crystal_block");
-        public static final TagKey<Block> STORAGE_BLOCK_PURE_CRYSTAL_OVERLOAD_CRYSTAL = aecsTag("storage_blocks/pure_crystal/overload_crystal_block");
+        public static final TagKey<Block> STORAGE_BLOCK_PURE_CRYSTAL_CHARGED_OVERLOAD_CRYSTAL = aecsTag("storage_blocks/pure_crystal/charged_overload_crystal_block");
         public static final TagKey<Block> STORAGE_BLOCK_PURE_CRYSTAL_GRID = aecsTag("storage_blocks/pure_crystal/crystal_grid_block");
         public static final TagKey<Block> STORAGE_BLOCK_PURE_CRYSTAL_CHARGED_CERTUS_QUARTZ = aecsTag("storage_blocks/pure_crystal/charged_certus_quartz_block");
         public static final TagKey<Block> STORAGE_BLOCK_SILICON = tag("storage_blocks/silicon");
@@ -90,7 +90,7 @@ public class AECSTags {
         public static final TagKey<Item> STORAGE_BLOCK_PURE_CRYSTAL_ROSE_QUARTZ = tag("storage_blocks/pure_crystal/rose_quartz_block");
         public static final TagKey<Item> STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL = tag("storage_blocks/pure_crystal/irradiated_crystal_block");
         public static final TagKey<Item> STORAGE_BLOCK_PURE_CRYSTAL_LINK_CRYSTAL = tag("storage_blocks/pure_crystal/link_crystal_block");
-        public static final TagKey<Item> STORAGE_BLOCK_PURE_CRYSTAL_OVERLOAD_CRYSTAL = tag("storage_blocks/pure_crystal/overload_crystal_block");
+        public static final TagKey<Item> STORAGE_BLOCK_PURE_CRYSTAL_CHARGED_OVERLOAD_CRYSTAL = tag("storage_blocks/pure_crystal/charged_overload_crystal_block");
         public static final TagKey<Item> STORAGE_BLOCK_PURE_CRYSTAL_GRID = tag("storage_blocks/pure_crystal/crystal_grid_block");
         public static final TagKey<Item> STORAGE_BLOCK_PURE_CRYSTAL_CHARGED_CERTUS_QUARTZ = tag("storage_blocks/pure_crystal/charged_certus_quartz_block");
         public static final TagKey<Item> STORAGE_BLOCK_SILICON = tag("storage_blocks/silicon");

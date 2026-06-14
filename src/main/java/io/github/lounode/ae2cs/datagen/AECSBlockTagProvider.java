@@ -36,7 +36,7 @@ public class AECSBlockTagProvider extends BlockTagsProvider {
                 .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_ROSE_QUARTZ)
                 .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL)
                 .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_LINK_CRYSTAL)
-                .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_OVERLOAD_CRYSTAL)
+                .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_CHARGED_OVERLOAD_CRYSTAL)
                 .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_GRID)
                 .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_CHARGED_CERTUS_QUARTZ);
 
@@ -80,7 +80,7 @@ public class AECSBlockTagProvider extends BlockTagsProvider {
                 .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_ROSE_QUARTZ)
                 .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL)
                 .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_LINK_CRYSTAL)
-                .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_OVERLOAD_CRYSTAL)
+                .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_CHARGED_OVERLOAD_CRYSTAL)
                 .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_GRID)
                 .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_CHARGED_CERTUS_QUARTZ);
         tag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_ENDER_QUARTZ)
@@ -99,8 +99,8 @@ public class AECSBlockTagProvider extends BlockTagsProvider {
                 .add(AECSBlocks.IRRADIATED_CRYSTAL_BLOCK.get());
         tag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_LINK_CRYSTAL)
                 .add(AECSBlocks.PURE_LINK_CRYSTAL_BLOCK.get());
-        tag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_OVERLOAD_CRYSTAL)
-                .add(AECSBlocks.PURE_OVERLOAD_CRYSTAL_BLOCK.get());
+        tag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_CHARGED_OVERLOAD_CRYSTAL)
+                .add(AECSBlocks.CHARGED_OVERLOAD_CRYSTAL_BLOCK.get());
         tag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_GRID)
                 .add(AECSBlocks.PURE_CRYSTAL_GRID_BLOCK.get());
         tag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL_CHARGED_CERTUS_QUARTZ)

@@ -11,7 +11,7 @@ public class AECSBlockIds {
     public static final String ROSE_QUARTZ_BLOCK = "rose_quartz_block";
     public static final String IRRADIATED_CRYSTAL_BLOCK = "irradiated_crystal_block";
     public static final String LINK_CRYSTAL_BLOCK = "link_crystal_block";
-    public static final String OVERLOAD_CRYSTAL_BLOCK = "overload_crystal_block";
+    public static final String CHARGED_OVERLOAD_CRYSTAL_BLOCK = "charged_overload_crystal_block";
     public static final String CRYSTAL_GRID_BLOCK = "crystal_grid_block";
     public static final String CHARGED_CERTUS_QUARTZ_BLOCK = "charged_certus_quartz_block";
     public static final String SILICON_BLOCK = "silicon_block";

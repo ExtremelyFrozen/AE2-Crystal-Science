@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "ae2cs:overload_crystal_block"
+          "name": "ae2cs:charged_overload_crystal_block"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "ae2cs:blocks/overload_crystal_block"
+  "random_sequence": "ae2cs:blocks/charged_overload_crystal_block"
 }

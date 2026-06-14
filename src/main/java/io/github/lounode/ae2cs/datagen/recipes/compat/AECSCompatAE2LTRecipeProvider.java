@@ -33,7 +33,7 @@ public class AECSCompatAE2LTRecipeProvider extends AECSRecipeProvider {
         super.buildRecipes(compatOut, registries);
 
         packAndUnpack2x2(compatOut, RecipeCategory.MISC, RecipeCategory.MISC,
-                externalItem(AECSConstants.AE2LT_ID, "overload_crystal"), AECSBlocks.PURE_OVERLOAD_CRYSTAL_BLOCK);
+                externalItem(AECSConstants.AE2LT_ID, "charged_overload_crystal"), AECSBlocks.CHARGED_OVERLOAD_CRYSTAL_BLOCK);
     }
 
     private static Item externalItem(String namespace, String path) {

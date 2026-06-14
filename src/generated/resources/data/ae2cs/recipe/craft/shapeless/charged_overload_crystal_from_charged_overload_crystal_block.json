@@ -9,11 +9,11 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "ae2cs:overload_crystal_block"
+      "item": "ae2cs:charged_overload_crystal_block"
     }
   ],
   "result": {
     "count": 4,
-    "id": "ae2lt:overload_crystal"
+    "id": "ae2lt:charged_overload_crystal"
   }
 }

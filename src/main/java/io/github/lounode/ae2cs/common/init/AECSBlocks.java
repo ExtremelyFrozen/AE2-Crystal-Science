@@ -57,7 +57,7 @@ public class AECSBlocks {
     public static final DeferredBlock<Block> PURE_ROSE_QUARTZ_BLOCK = registerCrystalBlock(AECSBlockIds.ROSE_QUARTZ_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
     public static final DeferredBlock<Block> IRRADIATED_CRYSTAL_BLOCK = registerCrystalBlock(AECSBlockIds.IRRADIATED_CRYSTAL_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
     public static final DeferredBlock<Block> PURE_LINK_CRYSTAL_BLOCK = registerCrystalBlock(AECSBlockIds.LINK_CRYSTAL_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
-    public static final DeferredBlock<Block> PURE_OVERLOAD_CRYSTAL_BLOCK = registerCrystalBlock(AECSBlockIds.OVERLOAD_CRYSTAL_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
+    public static final DeferredBlock<Block> CHARGED_OVERLOAD_CRYSTAL_BLOCK = registerCrystalBlock(AECSBlockIds.CHARGED_OVERLOAD_CRYSTAL_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
     public static final DeferredBlock<Block> PURE_CRYSTAL_GRID_BLOCK = registerCrystalBlock(AECSBlockIds.CRYSTAL_GRID_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
     public static final DeferredBlock<Block> CHARGED_CERTUS_QUARTZ_BLOCK = registerCrystalBlock(AECSBlockIds.CHARGED_CERTUS_QUARTZ_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
 
