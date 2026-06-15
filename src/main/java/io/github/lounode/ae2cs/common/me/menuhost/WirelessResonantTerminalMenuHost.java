@@ -14,6 +14,7 @@ import appeng.util.inv.InternalInventoryHost;
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
 import io.github.lounode.ae2cs.common.item.WirelessResonantTerminalItem;
 import io.github.lounode.ae2cs.common.me.part.IResonantTemplateCodingTerminalHost;
+import io.github.lounode.ae2cs.common.menu.ResonantTemplateCodingTermMenu;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
@@ -26,6 +27,8 @@ public class WirelessResonantTerminalMenuHost
         InternalInventoryHost {
     private static final String TAG_PULL_RECIPE_INPUTS_TO_REAL_GRID = "PullRecipeInputsToRealGrid";
     private static final String TAG_PULLED_ANVIL_MODE = "PulledAnvilMode";
+    private static final String TAG_ENCODE_RESONATING_PATTERN = "EncodeResonatingPattern";
+    private static final String TAG_PROCESSING_INGREDIENT_TRANSFER_MODE = "ProcessingIngredientTransferMode";
     private static final String TAG_PULLED_CRAFTING_INPUTS = "PulledCraftingInputs";
     private static final String TAG_PULLED_PROCESSING_INPUTS = "PulledProcessingInputs";
     private static final String TAG_PULLED_SMITHING_INPUTS = "PulledSmithingInputs";
@@ -41,6 +44,9 @@ public class WirelessResonantTerminalMenuHost
     private final AppEngInternalInventory pulledAnvilInputInv = new AppEngInternalInventory(this, 2);
     private boolean pullRecipeInputsToRealGrid;
     private boolean pulledAnvilMode;
+    private boolean encodeResonatingPattern;
+    private ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode processingIngredientTransferMode =
+            ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode.MERGE;
     private boolean loading = true;
 
     public WirelessResonantTerminalMenuHost(WirelessResonantTerminalItem item, Player player,
@@ -76,6 +82,8 @@ public class WirelessResonantTerminalMenuHost
         this.logic.writeToNBT(data, registries);
         data.putBoolean(TAG_PULL_RECIPE_INPUTS_TO_REAL_GRID, this.pullRecipeInputsToRealGrid);
         data.putBoolean(TAG_PULLED_ANVIL_MODE, this.pulledAnvilMode);
+        data.putBoolean(TAG_ENCODE_RESONATING_PATTERN, this.encodeResonatingPattern);
+        data.putString(TAG_PROCESSING_INGREDIENT_TRANSFER_MODE, this.processingIngredientTransferMode.name());
         this.pulledCraftingInputInv.writeToNBT(data, TAG_PULLED_CRAFTING_INPUTS, registries);
         this.pulledProcessingInputInv.writeToNBT(data, TAG_PULLED_PROCESSING_INPUTS, registries);
         this.pulledSmithingInputInv.writeToNBT(data, TAG_PULLED_SMITHING_INPUTS, registries);
@@ -119,6 +127,41 @@ public class WirelessResonantTerminalMenuHost
     }
 
     @Override
+    public boolean isEncodeResonatingPattern() {
+        return this.encodeResonatingPattern;
+    }
+
+    @Override
+    public void setEncodeResonatingPattern(boolean encodeResonatingPattern) {
+        if (this.encodeResonatingPattern == encodeResonatingPattern) {
+            return;
+        }
+
+        this.encodeResonatingPattern = encodeResonatingPattern;
+        markForSave();
+    }
+
+    @Override
+    public ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode getProcessingIngredientTransferMode() {
+        return this.processingIngredientTransferMode;
+    }
+
+    @Override
+    public void setProcessingIngredientTransferMode(
+            ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode processingIngredientTransferMode) {
+        if (processingIngredientTransferMode == null) {
+            processingIngredientTransferMode =
+                    ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode.MERGE;
+        }
+        if (this.processingIngredientTransferMode == processingIngredientTransferMode) {
+            return;
+        }
+
+        this.processingIngredientTransferMode = processingIngredientTransferMode;
+        markForSave();
+    }
+
+    @Override
     public AppEngInternalInventory getPulledCraftingInputInv() {
         return this.pulledCraftingInputInv;
     }
@@ -158,6 +201,8 @@ public class WirelessResonantTerminalMenuHost
         this.logic.readFromNBT(data, registries);
         this.pullRecipeInputsToRealGrid = data.getBoolean(TAG_PULL_RECIPE_INPUTS_TO_REAL_GRID);
         this.pulledAnvilMode = this.pullRecipeInputsToRealGrid && data.getBoolean(TAG_PULLED_ANVIL_MODE);
+        this.encodeResonatingPattern = data.getBoolean(TAG_ENCODE_RESONATING_PATTERN);
+        this.processingIngredientTransferMode = readProcessingIngredientTransferMode(data);
         this.pulledCraftingInputInv.clear();
         this.pulledProcessingInputInv.clear();
         this.pulledSmithingInputInv.clear();
@@ -168,5 +213,19 @@ public class WirelessResonantTerminalMenuHost
         this.pulledSmithingInputInv.readFromNBT(data, TAG_PULLED_SMITHING_INPUTS, registries);
         this.pulledStonecuttingInputInv.readFromNBT(data, TAG_PULLED_STONECUTTING_INPUTS, registries);
         this.pulledAnvilInputInv.readFromNBT(data, TAG_PULLED_ANVIL_INPUTS, registries);
+    }
+
+    private static ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode readProcessingIngredientTransferMode(
+            CompoundTag data) {
+        if (!data.contains(TAG_PROCESSING_INGREDIENT_TRANSFER_MODE)) {
+            return ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode.MERGE;
+        }
+
+        try {
+            return ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode.valueOf(
+                    data.getString(TAG_PROCESSING_INGREDIENT_TRANSFER_MODE));
+        } catch (IllegalArgumentException ignored) {
+            return ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode.MERGE;
+        }
     }
 }

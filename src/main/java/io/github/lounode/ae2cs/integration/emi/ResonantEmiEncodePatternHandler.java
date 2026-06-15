@@ -105,6 +105,10 @@ public class ResonantEmiEncodePatternHandler implements StandardRecipeHandler<Re
 
         RecipeHolder<?> holder = getRecipeHolder(context.getScreenHandler(), recipe);
         Recipe<?> backingRecipe = holder != null ? holder.value() : null;
+        if (context.getScreenHandler().pullProcessingRecipeInputs
+                && ResonantPatternEncodingTransferHelper.isNonCraftingRealGridRecipe(holder)) {
+            return true;
+        }
         return !isCraftingRecipe(backingRecipe, recipe) || fitsIn3x3Grid(holder);
     }
 
@@ -118,12 +122,24 @@ public class ResonantEmiEncodePatternHandler implements StandardRecipeHandler<Re
         RecipeHolder<?> holder = getRecipeHolder(menu, recipe);
         Recipe<?> backingRecipe = holder != null ? holder.value() : null;
 
-        if (isCraftingRecipe(backingRecipe, recipe)) {
-            ResonantPatternEncodingTransferHelper.encodeCraftingRecipe(menu, holder, getGuiIngredientsForCrafting(recipe),
-                    stack -> true);
+        if (menu.pullProcessingRecipeInputs
+                && ResonantPatternEncodingTransferHelper.isNonCraftingRealGridRecipe(holder)) {
+            ResonantPatternEncodingTransferHelper.encodeCraftingLikeRecipeToRealGrid(menu, holder,
+                    EmiStackHelper.ofInputs(recipe));
+        } else if (isCraftingRecipe(backingRecipe, recipe)) {
+            if (menu.pullProcessingRecipeInputs) {
+                ResonantPatternEncodingTransferHelper.transferCraftingRecipeToRealGrid(menu, holder, stack -> true,
+                        AbstractContainerScreen.hasControlDown());
+            } else {
+                ResonantPatternEncodingTransferHelper.encodeCraftingRecipe(menu, holder,
+                        getGuiIngredientsForCrafting(recipe), stack -> true);
+            }
         } else {
-            ResonantPatternEncodingTransferHelper.encodeProcessingRecipe(menu, EmiStackHelper.ofInputs(recipe),
-                    EmiStackHelper.ofOutputs(recipe));
+            List<List<GenericStack>> inputs = EmiStackHelper.ofInputs(recipe);
+            if (!ResonantPatternEncodingTransferHelper.encodeCraftingLikeRecipeToRealGrid(menu, holder, inputs)) {
+                ResonantPatternEncodingTransferHelper.encodeProcessingRecipe(menu, inputs, EmiStackHelper.ofOutputs(recipe),
+                        AbstractContainerScreen.hasControlDown());
+            }
         }
 
         Minecraft.getInstance().setScreen(context.getScreen());

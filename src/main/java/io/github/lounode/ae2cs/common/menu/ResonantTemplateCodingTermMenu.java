@@ -9,13 +9,16 @@ import java.util.Map;
 import appeng.api.config.Actionable;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.PatternDetailsHelper;
+import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.StorageHelper;
+import appeng.helpers.ICraftingGridMenu;
 import appeng.helpers.InventoryAction;
 import appeng.helpers.IPatternTerminalMenuHost;
 import appeng.integration.modules.itemlists.EncodingHelper;
 import appeng.menu.me.common.GridInventoryEntry;
+import appeng.menu.me.crafting.CraftConfirmMenu;
 import appeng.menu.SlotSemantic;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
@@ -58,7 +61,7 @@ import net.minecraft.sounds.SoundSource;
  * 谐振样板编码终端菜单 — 继承原版编码逻辑，处理样板模式使用 4×4 可视输入网格。
  * 继承 PatternEncodingTermMenu 获得完整编码逻辑。
  */
-public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu {
+public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu implements ICraftingGridMenu {
     private static final java.util.Comparator<GridInventoryEntry> ENTRY_COMPARATOR =
             java.util.Comparator.comparing(GridInventoryEntry::isCraftable)
                     .thenComparing(ResonantTemplateCodingTermMenu::isUndamaged)
@@ -72,12 +75,16 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu {
     private static final String ACTION_PREPARE_TRANSFER_MODE = "prepareTransferMode";
     private static final String ACTION_PULL_TRANSFER_TO_GRID = "pullTransferToGrid";
     private static final String ACTION_PULL_PROCESSING_TRANSFER_TO_GRID = "pullProcessingTransferToGrid";
+    private static final String ACTION_PULL_PROCESSING_TRANSFER_TO_GRID_AND_REQUEST_AUTO_CRAFT =
+            "pullProcessingTransferToGridAndRequestAutoCraft";
     private static final String ACTION_SET_PROCESSING_INGREDIENT_TRANSFER_MODE = "setProcessingIngredientTransferMode";
     private static final String ACTION_CYCLE_PROCESSING_INGREDIENT_TRANSFER_MODE = "cycleProcessingIngredientTransferMode";
     private static final String ACTION_SET_PULLED_ANVIL_MODE = "setPulledAnvilMode";
     private static final String ACTION_SET_PULLED_ANVIL_ITEM_NAME = "setPulledAnvilItemName";
     private static final String ACTION_CLEAR_PULLED_ANVIL_INPUTS_TO_NETWORK = "clearPulledAnvilInputsToNetwork";
     private static final String ACTION_CLEAR_PULLED_ANVIL_INPUTS_TO_PLAYER = "clearPulledAnvilInputsToPlayer";
+    private static final String ACTION_REQUEST_MISSING_PULLED_PROCESSING_INPUTS_AUTO_CRAFT =
+            "requestMissingPulledProcessingInputsAutoCraft";
     private static final Field ENCODING_LOGIC_FIELD = getEncodingLogicField();
     private static final Field STONECUTTING_INPUT_SLOT_FIELD = getSlotField("stonecuttingInputSlot");
     public static final SlotSemantic PULLED_CRAFTING_INPUTS =
@@ -123,6 +130,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu {
     private long lastPulledAnvilSoundTime = -1;
     private boolean suppressPulledInputSync = false;
     private ItemStack lastPulledStonecuttingInputForRecipes = ItemStack.EMPTY;
+    private ItemStack lastEncodedPatternForPulledAnvilExit = ItemStack.EMPTY;
 
     @GuiSync(93)
     public boolean encodeResonatingPattern = false;
@@ -149,6 +157,10 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu {
                 && this.resonantHost.isPullRecipeInputsToRealGrid();
         this.pulledAnvilMode = this.pullProcessingRecipeInputs && this.resonantHost != null
                 && this.resonantHost.isPulledAnvilMode();
+        if (this.resonantHost != null) {
+            this.encodeResonatingPattern = this.resonantHost.isEncodeResonatingPattern();
+            this.processingIngredientTransferMode = this.resonantHost.getProcessingIngredientTransferMode();
+        }
         this.pulledCraftingInputInv = this.resonantHost != null
                 ? this.resonantHost.getPulledCraftingInputInv()
                 : new AppEngInternalInventory(this.getCraftingGridSlots().length);
@@ -221,6 +233,8 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu {
         this.registerClientAction(ACTION_PREPARE_TRANSFER_MODE, EncodingMode.class, this::prepareTransferMode);
         this.registerClientAction(ACTION_PULL_TRANSFER_TO_GRID, EncodingMode.class, this::pullTransferToGrid);
         this.registerClientAction(ACTION_PULL_PROCESSING_TRANSFER_TO_GRID, this::pullProcessingTransferToGrid);
+        this.registerClientAction(ACTION_PULL_PROCESSING_TRANSFER_TO_GRID_AND_REQUEST_AUTO_CRAFT,
+                this::pullProcessingTransferToGridAndRequestAutoCraft);
         this.registerClientAction(ACTION_SET_PROCESSING_INGREDIENT_TRANSFER_MODE,
                 ProcessingIngredientTransferMode.class, this::setProcessingIngredientTransferMode);
         this.registerClientAction(ACTION_CYCLE_PROCESSING_INGREDIENT_TRANSFER_MODE,
@@ -229,9 +243,12 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu {
         this.registerClientAction(ACTION_SET_PULLED_ANVIL_ITEM_NAME, String.class, this::setPulledAnvilItemName);
         this.registerClientAction(ACTION_CLEAR_PULLED_ANVIL_INPUTS_TO_NETWORK, this::clearPulledAnvilInputsToNetwork);
         this.registerClientAction(ACTION_CLEAR_PULLED_ANVIL_INPUTS_TO_PLAYER, this::clearPulledAnvilInputsToPlayer);
+        this.registerClientAction(ACTION_REQUEST_MISSING_PULLED_PROCESSING_INPUTS_AUTO_CRAFT,
+                this::requestMissingPulledProcessingInputsAutoCraft);
         if (this.isServerSide()) {
             syncCurrentPulledInputsToEncodedSlots();
             this.pulledAnvilItemName = this.pulledAnvilMode ? getPulledAnvilInputName() : "";
+            this.lastEncodedPatternForPulledAnvilExit = getEncodedPatternStack().copy();
             updatePulledResult();
         }
     }
@@ -250,6 +267,9 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu {
             this.sendClientAction(ACTION_SET_RESONATING_PATTERN_ENCODING, encodeResonatingPattern);
         } else {
             this.encodeResonatingPattern = encodeResonatingPattern;
+            if (this.resonantHost != null) {
+                this.resonantHost.setEncodeResonatingPattern(encodeResonatingPattern);
+            }
         }
     }
 
@@ -267,7 +287,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu {
                 if (this.resonantHost != null) {
                     this.resonantHost.setPulledAnvilMode(false);
                 }
-                clearPulledInputsToPlayer(this.getPlayer());
+                clearPulledInputsToNetwork(this.getPlayer());
             } else {
                 pullEncodedInputsToGrid();
             }
@@ -276,22 +296,36 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu {
 
     @Override
     public void setMode(EncodingMode mode) {
-        if (this.isServerSide() && mode != this.getMode()) {
-            if (this.pullProcessingRecipeInputs) {
-                if (this.pulledAnvilMode) {
-                    setPulledAnvilMode(false);
-                } else {
-                    clearCurrentPulledModeInputsToPlayer(this.getPlayer());
-                }
-            } else {
-                clearPulledInputsToPlayer(this.getPlayer());
+        if (this.isClientSide() && mode != this.getMode()) {
+            if (this.pullProcessingRecipeInputs && this.pulledAnvilMode) {
+                this.pendingExitPulledAnvilModeForModeChange();
             }
         }
         super.setMode(mode);
     }
 
+    private void pendingExitPulledAnvilModeForModeChange() {
+        this.pulledAnvilMode = false;
+        this.pulledAnvilItemName = "";
+        this.sendClientAction(ACTION_SET_PULLED_ANVIL_MODE, false);
+    }
+
     public AppEngSlot[] getPulledCraftingInputSlots() {
         return this.pulledCraftingInputSlots;
+    }
+
+    public Slot[] getEncodingInputSlotsForMode(EncodingMode mode) {
+        return getEncodedInputSlotsForMode(mode);
+    }
+
+    @Override
+    public InternalInventory getCraftingMatrix() {
+        return this.pulledCraftingInputInv;
+    }
+
+    @Override
+    public void startAutoCrafting(List<AutoCraftEntry> toCraft) {
+        CraftConfirmMenu.openWithCraftingList(getActionHost(), (ServerPlayer) getPlayer(), getLocator(), toCraft);
     }
 
     public Slot getPulledCraftingResultSlot() {
@@ -347,9 +381,9 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu {
         }
 
         if (nextMode) {
-            clearCurrentPulledModeInputsToPlayer(this.getPlayer());
+            clearCurrentPulledModeInputsToNetwork(this.getPlayer());
         } else {
-            clearPulledAnvilInputsToPlayer(this.getPlayer());
+            clearPulledAnvilInputsToNetwork();
         }
         this.pulledAnvilMode = nextMode;
         this.pulledAnvilItemName = nextMode ? getPulledAnvilInputName() : "";
@@ -357,6 +391,71 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu {
             this.resonantHost.setPulledAnvilMode(nextMode);
         }
         updatePulledResult();
+    }
+
+    public void requestMissingPulledProcessingInputsAutoCraft() {
+        if (this.isClientSide()) {
+            this.sendClientAction(ACTION_REQUEST_MISSING_PULLED_PROCESSING_INPUTS_AUTO_CRAFT);
+            return;
+        }
+
+        requestMissingPulledProcessingInputsAutoCraft(captureEncodedInputs(EncodingMode.PROCESSING));
+    }
+
+    private void requestMissingPulledProcessingInputsAutoCraft(List<GenericStack> desiredInputs) {
+        if (this.isClientSide()) {
+            return;
+        }
+
+        if (!this.pullProcessingRecipeInputs || this.pulledAnvilMode || this.getMode() != EncodingMode.PROCESSING) {
+            return;
+        }
+
+        var toCraft = new ArrayList<ICraftingGridMenu.AutoCraftEntry>();
+        for (int i = 0; i < this.pulledProcessingInputSlots.length && i < desiredInputs.size(); i++) {
+            GenericStack encodedStack = desiredInputs.get(i);
+            if (encodedStack == null || !(encodedStack.what() instanceof AEItemKey itemKey)) {
+                continue;
+            }
+
+            AppEngSlot slot = this.pulledProcessingInputSlots[i];
+            ItemStack currentStack = slot.getItem();
+            int present = itemKey.matches(currentStack) ? currentStack.getCount() : 0;
+            int desired = (int) Math.min(encodedStack.amount(),
+                    Math.min(slot.getMaxStackSize(itemKey.toStack()), itemKey.getMaxStackSize()));
+            int missing = desired - present;
+            if (missing <= 0 || !canAutoCraft(itemKey)) {
+                continue;
+            }
+
+            var requestedSlots = new ArrayList<Integer>(missing);
+            for (int missingIndex = 0; missingIndex < missing; missingIndex++) {
+                requestedSlots.add(i);
+            }
+            toCraft.add(new ICraftingGridMenu.AutoCraftEntry(itemKey, requestedSlots));
+        }
+
+        if (!toCraft.isEmpty()) {
+            startAutoCrafting(toCraft);
+        }
+    }
+
+    private List<GenericStack> captureEncodedInputs(EncodingMode mode) {
+        AppEngSlot[] targetSlots = getPulledInputSlotsForMode(mode);
+        var inputs = new ArrayList<GenericStack>(targetSlots.length);
+        for (int i = 0; i < targetSlots.length; i++) {
+            inputs.add(getEncodedInputStack(mode, i));
+        }
+        return inputs;
+    }
+
+    private boolean canAutoCraft(AEItemKey itemKey) {
+        var node = this.getGridNode();
+        if (node == null || !this.getLinkStatus().connected()) {
+            return false;
+        }
+
+        return node.getGrid().getCraftingService().getFuzzyCraftable(itemKey, itemKey::equals) != null;
     }
 
     public void setPulledAnvilItemName(String itemName) {
@@ -385,7 +484,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu {
 
         this.suppressPulledInputSync = true;
         try {
-            clearPulledInputsToPlayer(this.getPlayer());
+            clearPulledInputsToNetwork(this.getPlayer());
         } finally {
             this.suppressPulledInputSync = false;
         }
@@ -442,6 +541,15 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu {
         pullTransferToGrid(EncodingMode.PROCESSING);
     }
 
+    public void pullProcessingTransferToGridAndRequestAutoCraft() {
+        if (this.isClientSide()) {
+            this.sendClientAction(ACTION_PULL_PROCESSING_TRANSFER_TO_GRID_AND_REQUEST_AUTO_CRAFT);
+            return;
+        }
+
+        pullTransferToGrid(EncodingMode.PROCESSING, true);
+    }
+
     public void prepareTransferMode(EncodingMode targetMode) {
         if (this.isClientSide()) {
             this.sendClientAction(ACTION_PREPARE_TRANSFER_MODE, targetMode);
@@ -457,6 +565,10 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu {
     }
 
     public void pullTransferToGrid(EncodingMode targetMode) {
+        pullTransferToGrid(targetMode, false);
+    }
+
+    private void pullTransferToGrid(EncodingMode targetMode, boolean requestAutoCraft) {
         if (this.isClientSide()) {
             this.sendClientAction(ACTION_PULL_TRANSFER_TO_GRID, targetMode);
             return;
@@ -469,12 +581,18 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu {
         setPulledAnvilMode(false);
         switchPulledTransferMode(targetMode);
 
+        List<GenericStack> desiredInputs = requestAutoCraft && targetMode == EncodingMode.PROCESSING
+                ? captureEncodedInputs(targetMode)
+                : List.of();
         clearPulledModeInputsToNetwork(targetMode, this.getPlayer());
         pullEncodedItemsToSlots(targetMode);
         if (targetMode == EncodingMode.STONECUTTING) {
             refreshStonecuttingRecipesFromCurrentInput();
         }
         updatePulledResult();
+        if (requestAutoCraft && targetMode == EncodingMode.PROCESSING) {
+            requestMissingPulledProcessingInputsAutoCraft(desiredInputs);
+        }
     }
 
     private void switchPulledTransferMode(EncodingMode targetMode) {
@@ -559,7 +677,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu {
     private void setEncodedAndPulledSlots(List<GenericStack> inputs, Slot[] encodedSlots, AppEngSlot[] targetSlots) {
         this.suppressPulledInputSync = true;
         try {
-            clearPulledInputsToPlayer(this.getPlayer());
+            clearPulledInputsToNetwork(this.getPlayer());
             for (int i = 0; i < encodedSlots.length && i < targetSlots.length; i++) {
                 GenericStack input = i < inputs.size() ? inputs.get(i) : null;
                 ItemStack encodedStack = input == null ? ItemStack.EMPTY : GenericStack.wrapInItemStack(input);
@@ -652,10 +770,19 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu {
             }
         }
         if (this.isServerSide() && this.isEncodedPatternSlot(s)) {
-            exitPulledAnvilModeForLoadedPattern(s.getItem());
+            exitPulledAnvilModeForLoadedPatternIfChanged(s.getItem());
             this.loadResonatingPatternIntoEncodingArea(s.getItem());
         }
         super.onSlotChange(s);
+    }
+
+    @Override
+    public void slotsChanged(Container container) {
+        super.slotsChanged(container);
+        if (this.isServerSide() && this.pullProcessingRecipeInputs) {
+            syncCurrentPulledInputsToEncodedSlots();
+            updatePulledResult();
+        }
     }
 
     @Override
@@ -687,7 +814,13 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu {
         if (this.isClientSide()) {
             this.sendClientAction(ACTION_SET_PROCESSING_INGREDIENT_TRANSFER_MODE, mode);
         } else {
+            if (mode == null) {
+                mode = ProcessingIngredientTransferMode.MERGE;
+            }
             this.processingIngredientTransferMode = mode;
+            if (this.resonantHost != null) {
+                this.resonantHost.setProcessingIngredientTransferMode(mode);
+            }
         }
     }
 
@@ -768,6 +901,9 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu {
             this.sendClientAction(ACTION_CYCLE_PROCESSING_INGREDIENT_TRANSFER_MODE);
         } else {
             this.processingIngredientTransferMode = this.processingIngredientTransferMode.next();
+            if (this.resonantHost != null) {
+                this.resonantHost.setProcessingIngredientTransferMode(this.processingIngredientTransferMode);
+            }
         }
     }
 
@@ -785,8 +921,16 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu {
         return this.getSlots(SlotSemantics.ENCODED_PATTERN).contains(slot);
     }
 
-    private void exitPulledAnvilModeForLoadedPattern(ItemStack stack) {
-        if (this.pullProcessingRecipeInputs && this.pulledAnvilMode && PatternDetailsHelper.isEncodedPattern(stack)) {
+    private ItemStack getEncodedPatternStack() {
+        return this.getSlots(SlotSemantics.ENCODED_PATTERN).getFirst().getItem();
+    }
+
+    private void exitPulledAnvilModeForLoadedPatternIfChanged(ItemStack stack) {
+        boolean changed = !ItemStack.isSameItemSameComponents(stack, this.lastEncodedPatternForPulledAnvilExit)
+                || stack.getCount() != this.lastEncodedPatternForPulledAnvilExit.getCount();
+        this.lastEncodedPatternForPulledAnvilExit = stack.copy();
+        if (changed && this.pullProcessingRecipeInputs && this.pulledAnvilMode
+                && PatternDetailsHelper.isEncodedPattern(stack)) {
             setPulledAnvilMode(false);
         }
     }
@@ -808,6 +952,9 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu {
 
         this.mode = EncodingMode.PROCESSING;
         this.encodeResonatingPattern = true;
+        if (this.resonantHost != null) {
+            this.resonantHost.setEncodeResonatingPattern(true);
+        }
     }
 
     private PatternEncodingLogic getEncodingLogic() {
@@ -1001,13 +1148,17 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu {
 
         if (this.stonecuttingRecipeId != null
                 && this.getStonecuttingRecipes().stream().noneMatch(recipe -> recipe.id().equals(this.stonecuttingRecipeId))) {
-            setStonecuttingRecipeId(null);
+            if (this.isClientSide()) {
+                this.stonecuttingRecipeId = null;
+            } else {
+                setStonecuttingRecipeId(null);
+            }
         }
         updatePulledResult();
     }
 
-    private void refreshPulledStonecuttingRecipesIfInputChanged() {
-        if (!this.isServerSide() || !this.pullProcessingRecipeInputs || this.pulledAnvilMode
+    public void refreshPulledStonecuttingRecipesIfInputChanged() {
+        if (!this.pullProcessingRecipeInputs || this.pulledAnvilMode
                 || this.getMode() != EncodingMode.STONECUTTING) {
             return;
         }
@@ -1015,7 +1166,11 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu {
         ItemStack inputStack = this.pulledStonecuttingInputSlot.getItem();
         if (!ItemStack.isSameItemSameComponents(inputStack, this.lastPulledStonecuttingInputForRecipes)
                 || inputStack.getCount() != this.lastPulledStonecuttingInputForRecipes.getCount()) {
-            syncEncodedInputFromPulledSlot(this.pulledStonecuttingInputSlot);
+            if (this.isServerSide()) {
+                syncEncodedInputFromPulledSlot(this.pulledStonecuttingInputSlot);
+            } else {
+                refreshStonecuttingRecipesFromCurrentInput();
+            }
         }
     }
 

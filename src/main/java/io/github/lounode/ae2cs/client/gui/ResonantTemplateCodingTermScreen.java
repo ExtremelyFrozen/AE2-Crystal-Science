@@ -82,8 +82,10 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
     private static final String ANVIL_NAME_FIELD_ID = "pulledAnvilName";
     private static final String ANVIL_COST_TEXT_ID = "pulledAnvilCost";
     private static final String STYLE_PATH = "/screens/resonant_template_coding_terminal.json";
-    private static final String PATTERN_ENCODING_MODE_TEXT = "样板编码模式";
-    private static final String CRAFTING_TERMINAL_MODE_TEXT = "合成终端模式";
+    private static final Component PATTERN_ENCODING_MODE_TEXT =
+            Component.translatable("ae2cs.menu.resonant_template_coding_terminal.mode.pattern_encoding");
+    private static final Component CRAFTING_TERMINAL_MODE_TEXT =
+            Component.translatable("ae2cs.menu.resonant_template_coding_terminal.mode.crafting_terminal");
     private static final String CRAFTING_MODE_PANEL_BACKGROUND_ID = "resonantCraftingModePanel";
     private static final String SMITHING_MODE_PANEL_BACKGROUND_ID = "resonantSmithingModePanel";
     private static final String SMITHING_PULLED_MODE_PANEL_BACKGROUND_ID = "resonantSmithingPulledModePanel";
@@ -145,6 +147,9 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
     public ResonantTemplateCodingTermScreen(ResonantTemplateCodingTermMenu menu, Inventory playerInventory,
             Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
+        if (menu.pullProcessingRecipeInputs && menu.pulledAnvilMode) {
+            this.pulledDisplayMode = PulledDisplayMode.ANVIL;
+        }
         this.encodeResonatingPatternButton = new ResonatingPatternEncodingButton(
                 menu::setEncodeResonatingPattern);
         this.encodeResonatingPatternButton.setHalfSize(true);
@@ -235,8 +240,9 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
         this.splitProcessingIngredientsButton.setVisibility(this.menu.getMode() == EncodingMode.PROCESSING
                 && !isPulledAnvilModeSelected());
         setTextContent("crafting_grid_title", this.menu.pullProcessingRecipeInputs
-                ? Component.literal("合成终端")
+                ? Component.translatable("ae2cs.menu.resonant_template_coding_terminal.title.crafting_terminal")
                 : Component.translatable("gui.ae2.PatternEncoding"));
+        this.menu.refreshPulledStonecuttingRecipesIfInputChanged();
         updateModeTabTooltips();
         updateModeTabButtons();
         updatePulledModeButtons();
@@ -266,6 +272,10 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (Minecraft.getInstance().options.keyInventory.matches(keyCode, scanCode)) {
+            return super.keyPressed(keyCode, scanCode, modifiers);
+        }
+
         if (AECSKeyMappings.TOGGLE_RESONANT_TEMPLATE_CODING_SLOT_MODE.matches(keyCode, scanCode)) {
             this.menu.setPullProcessingRecipeInputs(!this.menu.pullProcessingRecipeInputs);
             if (this.menu.pullProcessingRecipeInputs && isPulledAnvilModeSelected()) {
@@ -299,6 +309,10 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
     }
 
     private boolean shouldShowCraftableIndicatorForPulledSlot(Slot slot) {
+        if (this.menu.pullProcessingRecipeInputs) {
+            return false;
+        }
+
         SlotSemantic semantic = this.menu.getSlotSemantic(slot);
         if (semantic != ResonantTemplateCodingTermMenu.PULLED_CRAFTING_INPUTS
                 && semantic != ResonantTemplateCodingTermMenu.PULLED_PROCESSING_INPUTS
@@ -636,16 +650,16 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
         }
         TabButton anvilTab = getModeTabButton("modeTabButton4");
         if (anvilTab != null) {
-            anvilTab.setMessage(Component.literal("铁砧"));
+            anvilTab.setMessage(Component.translatable("ae2cs.menu.resonant_template_coding_terminal.mode_tab.anvil"));
         }
     }
 
     private Component getPulledModeTabMessage(int modeIndex) {
         return switch (modeIndex) {
-            case 0 -> Component.literal("工作台");
-            case 1 -> Component.literal("处理配方");
-            case 2 -> Component.literal("锻造台");
-            case 3 -> Component.literal("切石机");
+            case 0 -> Component.translatable("ae2cs.menu.resonant_template_coding_terminal.mode_tab.crafting");
+            case 1 -> Component.translatable("ae2cs.menu.resonant_template_coding_terminal.mode_tab.processing");
+            case 2 -> Component.translatable("ae2cs.menu.resonant_template_coding_terminal.mode_tab.smithing");
+            case 3 -> Component.translatable("ae2cs.menu.resonant_template_coding_terminal.mode_tab.stonecutting");
             default -> throw new IllegalArgumentException("Unknown mode tab index " + modeIndex);
         };
     }
@@ -711,7 +725,7 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
             }
 
             ResonantModeTabButton anvilTab = new ResonantModeTabButton(4, Icon.CRAFT_HAMMER,
-                    Component.literal("铁砧"), button -> {
+                    Component.translatable("ae2cs.menu.resonant_template_coding_terminal.mode_tab.anvil"), button -> {
                 if (this.menu.pullProcessingRecipeInputs) {
                     this.pulledDisplayMode = PulledDisplayMode.ANVIL;
                     this.pendingPulledAnvilMode = true;
@@ -1046,12 +1060,11 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
 
         @Override
         public List<Component> getTooltipMessage() {
-            String targetMode = this.state ? PATTERN_ENCODING_MODE_TEXT : CRAFTING_TERMINAL_MODE_TEXT;
+            Component targetMode = this.state ? PATTERN_ENCODING_MODE_TEXT : CRAFTING_TERMINAL_MODE_TEXT;
             return List.of(
-                    Component.literal("点击切换：" + targetMode),
-                    Component.literal("按下快捷键 ")
-                            .append(getSlotModeKeyName().withStyle(ChatFormatting.BLUE))
-                            .append(Component.literal(" 可切换")));
+                    Component.translatable("ae2cs.menu.resonant_template_coding_terminal.slot_mode.switch", targetMode),
+                    Component.translatable("ae2cs.menu.resonant_template_coding_terminal.slot_mode.hotkey",
+                            getSlotModeKeyName().withStyle(ChatFormatting.BLUE)));
         }
 
         @Override

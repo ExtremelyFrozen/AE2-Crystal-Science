@@ -233,7 +233,7 @@
       "texture": "ae2cs:textures/gui/resonant_terminal_coding_area.png",
       "textureWidth": 256,
       "textureHeight": 256,
-      "srcRect": [128, 173, 124, 84]
+      "srcRect": [128, 172, 124, 84]
     }
   },
   "widgets": {
@@ -349,47 +349,47 @@
     "pulledAnvilName": {
       "_comment": "铁砧真实拉取槽模式下，物品命名输入栏坐标和尺寸。",
       "left": 14,
-      "bottom": 167,
-      "width": 102,
+      "bottom": 166,
+      "width": 103,
       "height": 10
     },
     "pulledAnvilInput0": {
       "_comment": "铁砧真实拉取槽模式下，第一个物品输入槽坐标。",
       "left": 15,
-      "bottom": 148,
+      "bottom": 147,
       "width": 16,
       "height": 16
     },
     "pulledAnvilInput1": {
       "_comment": "铁砧真实拉取槽模式下，第二个物品输入槽坐标。",
       "left": 49,
-      "bottom": 148,
+      "bottom": 147,
       "width": 16,
       "height": 16
     },
     "pulledAnvilResult": {
       "_comment": "铁砧真实拉取槽模式下，输出槽坐标。",
       "left": 106,
-      "bottom": 148,
+      "bottom": 147,
       "width": 16,
       "height": 16
     },
     "pulledAnvilCost": {
       "_comment": "铁砧真实拉取槽模式下，附魔消耗文字坐标。",
       "left": 15,
-      "bottom": 128,
+      "bottom": 118,
       "width": 107,
       "height": 10
     },
     "clearPulledAnvilInputsToNetwork": {
       "_comment": "铁砧真实拉取槽模式下，将铁砧真实槽物品放回 ME 网络按钮坐标。",
       "left": 14,
-      "bottom": 129
+      "bottom": 128
     },
     "clearPulledAnvilInputsToPlayer": {
       "_comment": "铁砧真实拉取槽模式下，将铁砧真实槽物品取回玩家物品栏按钮坐标。",
       "left": 24,
-      "bottom": 129
+      "bottom": 128
     },
     "encodeResonatingPattern": {
       "_comment": "处理样板普通/谐振编码模式按钮坐标。",

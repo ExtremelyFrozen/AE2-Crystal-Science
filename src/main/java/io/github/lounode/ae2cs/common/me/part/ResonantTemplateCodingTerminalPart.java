@@ -9,6 +9,7 @@ import appeng.parts.encoding.PatternEncodingTerminalPart;
 import appeng.util.inv.AppEngInternalInventory;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
+import io.github.lounode.ae2cs.common.menu.ResonantTemplateCodingTermMenu;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -26,6 +27,8 @@ public class ResonantTemplateCodingTerminalPart extends PatternEncodingTerminalP
         implements IResonantTemplateCodingTerminalHost {
     private static final String TAG_PULL_RECIPE_INPUTS_TO_REAL_GRID = "PullRecipeInputsToRealGrid";
     private static final String TAG_PULLED_ANVIL_MODE = "PulledAnvilMode";
+    private static final String TAG_ENCODE_RESONATING_PATTERN = "EncodeResonatingPattern";
+    private static final String TAG_PROCESSING_INGREDIENT_TRANSFER_MODE = "ProcessingIngredientTransferMode";
     private static final String TAG_PULLED_CRAFTING_INPUTS = "PulledCraftingInputs";
     private static final String TAG_PULLED_PROCESSING_INPUTS = "PulledProcessingInputs";
     private static final String TAG_PULLED_SMITHING_INPUTS = "PulledSmithingInputs";
@@ -45,6 +48,9 @@ public class ResonantTemplateCodingTerminalPart extends PatternEncodingTerminalP
 
     private boolean pullRecipeInputsToRealGrid;
     private boolean pulledAnvilMode;
+    private boolean encodeResonatingPattern;
+    private ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode processingIngredientTransferMode =
+            ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode.MERGE;
     private final AppEngInternalInventory pulledCraftingInputInv = new AppEngInternalInventory(this, 9);
     private final AppEngInternalInventory pulledProcessingInputInv =
             new AppEngInternalInventory(this, AEProcessingPattern.MAX_INPUT_SLOTS);
@@ -61,6 +67,8 @@ public class ResonantTemplateCodingTerminalPart extends PatternEncodingTerminalP
         super.readFromNBT(data, registries);
         this.pullRecipeInputsToRealGrid = data.getBoolean(TAG_PULL_RECIPE_INPUTS_TO_REAL_GRID);
         this.pulledAnvilMode = data.getBoolean(TAG_PULLED_ANVIL_MODE);
+        this.encodeResonatingPattern = data.getBoolean(TAG_ENCODE_RESONATING_PATTERN);
+        this.processingIngredientTransferMode = readProcessingIngredientTransferMode(data);
         this.pulledCraftingInputInv.clear();
         this.pulledProcessingInputInv.clear();
         this.pulledSmithingInputInv.clear();
@@ -78,6 +86,8 @@ public class ResonantTemplateCodingTerminalPart extends PatternEncodingTerminalP
         super.writeToNBT(data, registries);
         data.putBoolean(TAG_PULL_RECIPE_INPUTS_TO_REAL_GRID, this.pullRecipeInputsToRealGrid);
         data.putBoolean(TAG_PULLED_ANVIL_MODE, this.pulledAnvilMode);
+        data.putBoolean(TAG_ENCODE_RESONATING_PATTERN, this.encodeResonatingPattern);
+        data.putString(TAG_PROCESSING_INGREDIENT_TRANSFER_MODE, this.processingIngredientTransferMode.name());
         this.pulledCraftingInputInv.writeToNBT(data, TAG_PULLED_CRAFTING_INPUTS, registries);
         this.pulledProcessingInputInv.writeToNBT(data, TAG_PULLED_PROCESSING_INPUTS, registries);
         this.pulledSmithingInputInv.writeToNBT(data, TAG_PULLED_SMITHING_INPUTS, registries);
@@ -130,7 +140,7 @@ public class ResonantTemplateCodingTerminalPart extends PatternEncodingTerminalP
         if (!pullRecipeInputsToRealGrid) {
             this.pulledAnvilMode = false;
         }
-        this.markForSave();
+        this.saveChanges();
     }
 
     @Override
@@ -146,7 +156,42 @@ public class ResonantTemplateCodingTerminalPart extends PatternEncodingTerminalP
         }
 
         this.pulledAnvilMode = pulledAnvilMode;
-        this.markForSave();
+        this.saveChanges();
+    }
+
+    @Override
+    public boolean isEncodeResonatingPattern() {
+        return this.encodeResonatingPattern;
+    }
+
+    @Override
+    public void setEncodeResonatingPattern(boolean encodeResonatingPattern) {
+        if (this.encodeResonatingPattern == encodeResonatingPattern) {
+            return;
+        }
+
+        this.encodeResonatingPattern = encodeResonatingPattern;
+        this.saveChanges();
+    }
+
+    @Override
+    public ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode getProcessingIngredientTransferMode() {
+        return this.processingIngredientTransferMode;
+    }
+
+    @Override
+    public void setProcessingIngredientTransferMode(
+            ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode processingIngredientTransferMode) {
+        if (processingIngredientTransferMode == null) {
+            processingIngredientTransferMode =
+                    ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode.MERGE;
+        }
+        if (this.processingIngredientTransferMode == processingIngredientTransferMode) {
+            return;
+        }
+
+        this.processingIngredientTransferMode = processingIngredientTransferMode;
+        this.saveChanges();
     }
 
     @Override
@@ -174,11 +219,34 @@ public class ResonantTemplateCodingTerminalPart extends PatternEncodingTerminalP
         return this.pulledAnvilInputInv;
     }
 
+    @Override
+    public void saveChangedInventory(AppEngInternalInventory inv) {
+        this.saveChanges();
+    }
+
+    public void saveChanges() {
+        this.getHost().markForSave();
+    }
+
     private static void addInventoryDrops(List<ItemStack> drops, AppEngInternalInventory inv) {
         for (ItemStack stack : inv) {
             if (!stack.isEmpty()) {
                 drops.add(stack);
             }
+        }
+    }
+
+    private static ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode readProcessingIngredientTransferMode(
+            CompoundTag data) {
+        if (!data.contains(TAG_PROCESSING_INGREDIENT_TRANSFER_MODE)) {
+            return ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode.MERGE;
+        }
+
+        try {
+            return ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode.valueOf(
+                    data.getString(TAG_PROCESSING_INGREDIENT_TRANSFER_MODE));
+        } catch (IllegalArgumentException ignored) {
+            return ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode.MERGE;
         }
     }
 }

@@ -30,6 +30,7 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.recipe.transfer.IUniversalRecipeTransferHandler;
 import mezz.jei.api.runtime.IIngredientVisibility;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.world.entity.player.Player;
@@ -80,12 +81,26 @@ public class ResonantEncodePatternTransferHandler
         }
 
         if (doTransfer) {
-            if (craftingRecipe) {
-                ResonantPatternEncodingTransferHelper.encodeCraftingRecipe(menu, recipeHolder,
-                        getGuiIngredientsForCrafting(slotsView), this::isIngredientVisible);
+            List<List<GenericStack>> inputs = null;
+            if (menu.pullProcessingRecipeInputs
+                    && ResonantPatternEncodingTransferHelper.isNonCraftingRealGridRecipe(recipeHolder)) {
+                inputs = GenericEntryStackHelper.ofInputs(slotsView);
+                ResonantPatternEncodingTransferHelper.encodeCraftingLikeRecipeToRealGrid(menu, recipeHolder, inputs);
+            } else if (craftingRecipe) {
+                if (menu.pullProcessingRecipeInputs) {
+                    ResonantPatternEncodingTransferHelper.transferCraftingRecipeToRealGrid(menu, recipeHolder,
+                            this::isIngredientVisible, AbstractContainerScreen.hasControlDown());
+                } else {
+                    ResonantPatternEncodingTransferHelper.encodeCraftingRecipe(menu, recipeHolder,
+                            getGuiIngredientsForCrafting(slotsView), this::isIngredientVisible);
+                }
             } else {
-                ResonantPatternEncodingTransferHelper.encodeProcessingRecipe(menu, GenericEntryStackHelper.ofInputs(slotsView),
-                        GenericEntryStackHelper.ofOutputs(slotsView));
+                inputs = inputs == null ? GenericEntryStackHelper.ofInputs(slotsView) : inputs;
+                if (!ResonantPatternEncodingTransferHelper.encodeCraftingLikeRecipeToRealGrid(menu, recipeHolder,
+                        inputs)) {
+                    ResonantPatternEncodingTransferHelper.encodeProcessingRecipe(menu, inputs,
+                            GenericEntryStackHelper.ofOutputs(slotsView), AbstractContainerScreen.hasControlDown());
+                }
             }
         } else {
             boolean moveItems = menu.pullProcessingRecipeInputs;
