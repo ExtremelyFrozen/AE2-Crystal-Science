@@ -1,6 +1,7 @@
 package io.github.lounode.ae2cs.common.init;
 
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
+import io.github.lounode.ae2cs.common.recipe.ResonatingLinkerClearRecipe;
 import io.github.lounode.ae2cs.common.recipe.ResonatingPatternUpgradeRecipe;
 import io.github.lounode.ae2cs.common.recipe.circuit_etcher.CircuitEtcherRecipe;
 import io.github.lounode.ae2cs.common.recipe.circuit_etcher.CircuitEtcherRecipeSerializer;
@@ -28,6 +29,8 @@ public class AECSRecipeSerializers {
     public static final Supplier<RecipeSerializer<CrystalPulverizerRecipe>> CRYSTAL_PULVERIZER = RECIPE_SERIALIZERS.register("crystal_pulverizer_recipe_serializer", CrystalPulverizerRecipeSerializer::new);
 
     public static final Supplier<RecipeSerializer<ResonatingPatternUpgradeRecipe>> RESONATING_PATTERN_UPGRADE = RECIPE_SERIALIZERS.register("resonating_pattern_upgrade", () -> new SimpleCraftingRecipeSerializer<>(ResonatingPatternUpgradeRecipe::new));
+
+    public static final Supplier<RecipeSerializer<ResonatingLinkerClearRecipe>> RESONATING_LINKER_CLEAR = RECIPE_SERIALIZERS.register("resonating_linker_clear", () -> new SimpleCraftingRecipeSerializer<>(ResonatingLinkerClearRecipe::new));
 
     public static void register(IEventBus modEventBus) {
         RECIPE_SERIALIZERS.register(modEventBus);

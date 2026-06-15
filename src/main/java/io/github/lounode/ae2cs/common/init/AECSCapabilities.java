@@ -32,6 +32,7 @@ public class AECSCapabilities {
         IntegratedInterfaceBlockEntity.onRegisterCaps(event);
         MeteoritePatternProviderBlockEntity.onRegisterCaps(event);
         SimplePatternProviderBlockEntity.onRegisterCaps(event);
+        MirrorPatternProviderBlockEntity.onRegisterCaps(event);
         EnderInterfaceBlockEntity.onRegisterCaps(event);
         ResonatingPatternProviderBlockEntity.onRegisterCaps(event);
 
@@ -104,6 +105,7 @@ public class AECSCapabilities {
         IntegratedInterfacePart.onRegisterCaps(event);
         MeteoritePatternProviderPart.onRegisterCaps(event);
         SimplePatternProviderPart.onRegisterCaps(event);
+        MirrorPatternProviderPart.onRegisterCaps(event);
         EnderInterfacePart.onRegisterCaps(event);
         ResonatingPatternProviderPart.onRegisterCaps(event);
     }

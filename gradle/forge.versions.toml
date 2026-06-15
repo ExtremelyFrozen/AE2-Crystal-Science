@@ -31,6 +31,7 @@ guideme = "8129788"
 geckolib = "7707149"
 glodium = "5821676"
 ae2ji = "7727898"
+de = "8237622"
 eae = "8025439"
 aae = "7849217"
 aecs = "8036407"
@@ -82,9 +83,9 @@ modernfix           = { module = "maven.modrinth:modernfix", version.ref = "mode
 geckolib            = { module = "curse.maven:geckolib-388172", version.ref = "geckolib" }
 glodium             = { module = "curse.maven:glodium-957920", version.ref = "glodium" }
 ae2ji               = { module = "curse.maven:ae2-jei-integration-1074338", version.ref = "ae2ji" }
+de                  = { module = "curse.maven:data-energistics-1565514", version.ref = "de" }
 eae                 = { module = "curse.maven:ex-pattern-provider-892005", version.ref = "eae"}
 aae                 = { module = "curse.maven:advancedae-1084104", version.ref = "aae" }
-aecs                = { module = "curse.maven:ae2-crystal-science-1435174", version.ref = "aecs" }
 aelt                = { module = "curse.maven:ae2-lightning-tech-1527395", version.ref = "aelt" }
 eco                 = { module = "curse.maven:neo-eco-ae-extension-1460639", version.ref = "eco" }
 extendedae-plus     = { module = "curse.maven:extendedae-plus-1337639", version.ref = "extendedae-plus" }

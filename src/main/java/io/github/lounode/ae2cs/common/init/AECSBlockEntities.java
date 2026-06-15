@@ -120,6 +120,15 @@ public class AECSBlockEntities {
             AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK);
 
     /**
+     * 镜像样板供应器
+     */
+    public static final DeferredBlockEntityType<MirrorPatternProviderBlockEntity> MIRROR_PATTERN_PROVIDER_BLOCK_ENTITY = create(
+            AECSBlockIds.MIRROR_PATTERN_PROVIDER,
+            MirrorPatternProviderBlockEntity.class,
+            MirrorPatternProviderBlockEntity::new,
+            AECSBlocks.MIRROR_PATTERN_PROVIDER_BLOCK);
+
+    /**
      * 水晶聚合器
      */
     public static final DeferredBlockEntityType<CrystalAggregatorBlockEntity> CRYSTAL_AGGREGATOR_BLOCK_ENTITY = create(

@@ -6,6 +6,7 @@
     "ae2cs:extended_integrated_interface",
     "ae2cs:resonating_pattern_provider",
     "ae2cs:extended_resonating_pattern_provider",
+    "ae2cs:mirror_pattern_provider",
     "ae2cs:simple_pattern_provider",
     "ae2cs:meteorite_pattern_provider",
     "ae2cs:quartz_oscillator_clock"

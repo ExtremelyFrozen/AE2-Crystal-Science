@@ -1,6 +1,7 @@
 package io.github.lounode.ae2cs.common.init;
 
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
+import io.github.lounode.ae2cs.network.c2s.MirrorLinkerBatchApplyPacket;
 import io.github.lounode.ae2cs.network.c2s.ScrollResonatingPatternSelectPacket;
 import io.github.lounode.ae2cs.network.c2s.SideConfigMenuOpenPacket;
 
@@ -31,5 +32,12 @@ public class AECSPackets {
                 new DirectionalPayloadHandler<>(
                         SideConfigMenuOpenPacket::handle,
                         SideConfigMenuOpenPacket::handle));
+
+        registrar.playBidirectional(
+                MirrorLinkerBatchApplyPacket.TYPE,
+                MirrorLinkerBatchApplyPacket.STREAM_CODEC,
+                new DirectionalPayloadHandler<>(
+                        MirrorLinkerBatchApplyPacket::handle,
+                        MirrorLinkerBatchApplyPacket::handle));
     }
 }

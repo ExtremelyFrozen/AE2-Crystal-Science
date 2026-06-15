@@ -34,7 +34,6 @@ import org.jetbrains.annotations.UnknownNullability;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 /**
  * 频段：持久化数据（纯数据） + 运行时在线端/连接/分配（下一 tick 重算）
@@ -48,18 +47,6 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag> {
      * 当AE使用无线频段时，我们统计可用频段总数时直接返回此值
      */
     private static final long INFINITE_USABLE_CHANNELS = 1L << 60;
-
-    /**
-     * 每个接收者最多能分配到多少频道
-     */
-    private static final Supplier<Integer> MAX_RECEIVER_CHANNELS = () -> {
-        ChannelMode mode = AEConfig.instance().getChannelMode();
-        if (mode == ChannelMode.INFINITE) {
-            return Integer.MAX_VALUE;
-        } else {
-            return 32 * mode.getCableCapacityFactor();
-        }
-    };
 
     // ----------------- 持久化（纯数据） -----------------
 
@@ -403,8 +390,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag> {
         this.usableChannels = totalUsable;
 
         // 3) 分配
-        int capPerReceiver = MAX_RECEIVER_CHANNELS.get();
-        allocateToAllReceivers(totalUsable, capPerReceiver);
+        allocateToAllReceivers(totalUsable);
     }
 
     /**
@@ -462,10 +448,9 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag> {
     /**
      * 将频道分配到所有接收端
      *
-     * @param totalUsable    可用频道的总数量
-     * @param capPerReceiver 每个接收端所能被分配的频道的硬上限
+     * @param totalUsable 可用频道的总数量
      */
-    private void allocateToAllReceivers(long totalUsable, int capPerReceiver) {
+    private void allocateToAllReceivers(long totalUsable) {
         long remaining = totalUsable;
 
         for (GlobalPos rp : declaredReceivers) {
@@ -474,10 +459,8 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag> {
             if (receiverNode == null || host == null) continue;
 
             if (receiverNode.getOwner() instanceof BroadcastReceiverHost receiverHost) {
-                int alloc = computeAllocChannels(remaining, capPerReceiver, receiverHost.getExpectedChannels());
-                if (capPerReceiver != Integer.MAX_VALUE) {
-                    remaining -= alloc;
-                }
+                int alloc = computeAllocChannels(remaining, receiverHost.getExpectedChannels());
+                remaining -= alloc;
 
                 applyReceiver(rp, receiverNode, host, alloc);
             }
@@ -500,13 +483,12 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag> {
     }
 
     /**
-     * 输入剩余频道总数、频道硬限制、期望频道数，返回当前应该给此接收端分配的频道量
+     * 输入剩余频道总数和期望频道数，返回当前应该给此接收端分配的频道量
      */
-    private int computeAllocChannels(long remaining, int capPerReceiver, int expectedChannels) {
+    private int computeAllocChannels(long remaining, int expectedChannels) {
         if (expectedChannels <= 0) return 0;
         if (remaining <= 0) return 0;
-        if (capPerReceiver == Integer.MAX_VALUE) return Integer.MAX_VALUE;
-        long give = Math.min(Math.min(capPerReceiver, remaining), expectedChannels);
+        long give = Math.min(remaining, expectedChannels);
         return (int) give;
     }
 

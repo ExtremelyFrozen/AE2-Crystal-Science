@@ -5,8 +5,10 @@ import io.github.lounode.ae2cs.api.settings.AECSSettings;
 import io.github.lounode.ae2cs.api.settings.PullMode;
 import io.github.lounode.ae2cs.api.util.GenericStackInvHelper;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.init.AECSDataComponents;
 import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern;
 import io.github.lounode.ae2cs.common.me.crafting.ResonatingPatternDetails;
+import io.github.lounode.ae2cs.common.me.crafting.ResonatingProviderDefaults;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.LockCraftingMode;
@@ -45,6 +47,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -52,12 +55,21 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
  * 谐振样板供应器，对于谐振样板，尝试将标记了位置的原料发送到指定位置
  */
 public class ResonatingPatternProviderLogic extends PatternProviderLogic implements IUpgradeableObject {
+
+    private static final String TAG_DEFAULTS = "resonating_provider_defaults";
+    private static final String TAG_SELECTED_INPUT = "selected_input";
+    private static final String TAG_TARGETS = "targets";
+    private static final String TAG_SLOT = "slot";
+    private static final String TAG_DIMENSION = "dim";
+    private static final String TAG_POS = "pos";
+    private static final String TAG_FACE = "face";
 
     private final IActionSource actionSource;
     private final PatternProviderLogicHost host;
@@ -74,6 +86,8 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
      * 用于未标记目的地发送材料的round-robin
      */
     private int localRoundRobinIndex = 0;
+    private List<Optional<EncodedResonatingPattern.Target>> defaultInputTargets = ResonatingProviderDefaults.emptyTargets();
+    private int defaultSelectedInput = 0;
 
     public ResonatingPatternProviderLogic(IManagedGridNode mainNode, PatternProviderLogicHost host) {
         this(mainNode, host, 9);
@@ -118,6 +132,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
         super.writeToNBT(tag, registries);
 
         this.upgrades.writeToNBT(tag, "upgrades", registries);
+        writeDefaultsToNBT(tag);
 
         var list = new ListTag();
         for (var p : resonatingSendList) {
@@ -136,6 +151,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
         super.readFromNBT(tag, registries);
 
         this.upgrades.readFromNBT(tag, "upgrades", registries);
+        readDefaultsFromNBT(tag);
 
         resonatingSendList.clear();
         if (!tag.contains("resonating_send_list", Tag.TAG_LIST)) {
@@ -164,6 +180,110 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
                 AE2CrystalScience.LOGGER.warn("Failed to read pending resonating send entry from NBT: {}", e, ex);
             }
         }
+    }
+
+    public void readDefaultsFromItem(ItemStack stack) {
+        this.defaultInputTargets = ResonatingProviderDefaults.readTargets(stack);
+        this.defaultSelectedInput = ResonatingProviderDefaults.getSelectedInput(stack);
+        saveChanges();
+    }
+
+    public void readDefaultsFromSettings(net.minecraft.core.component.DataComponentMap input) {
+        var defaults = input.get(AECSDataComponents.RESONATING_PROVIDER_DEFAULTS.get());
+        if (defaults == null) {
+            return;
+        }
+
+        this.defaultInputTargets = defaults.targets();
+        this.defaultSelectedInput = defaults.selectedInput();
+        saveChanges();
+    }
+
+    public void writeDefaultsToSettings(net.minecraft.core.component.DataComponentMap.Builder output) {
+        output.set(AECSDataComponents.RESONATING_PROVIDER_DEFAULTS.get(),
+                new ResonatingProviderDefaults.Defaults(defaultSelectedInput, defaultInputTargets));
+    }
+
+    public void writeDefaultsToStack(ItemStack stack) {
+        ResonatingProviderDefaults.writeTargets(stack, this.defaultInputTargets);
+        ResonatingProviderDefaults.setSelectedInput(stack, this.defaultSelectedInput);
+    }
+
+    public void writeDefaultsToDrops(List<ItemStack> drops, ItemLike selfItem) {
+        for (ItemStack drop : drops) {
+            if (drop.is(selfItem.asItem())) {
+                writeDefaultsToStack(drop);
+                return;
+            }
+        }
+    }
+
+    public List<Optional<EncodedResonatingPattern.Target>> getDefaultInputTargets() {
+        return defaultInputTargets;
+    }
+
+    public int getDefaultSelectedInput() {
+        return defaultSelectedInput;
+    }
+
+    private void writeDefaultsToNBT(CompoundTag tag) {
+        var defaults = new CompoundTag();
+        defaults.putInt(TAG_SELECTED_INPUT, defaultSelectedInput);
+
+        var targets = new ListTag();
+        for (int i = 0; i < defaultInputTargets.size(); i++) {
+            var target = defaultInputTargets.get(i);
+            if (target.isEmpty()) {
+                continue;
+            }
+
+            var e = new CompoundTag();
+            e.putInt(TAG_SLOT, i);
+            e.putString(TAG_DIMENSION, target.get().pos().dimension().location().toString());
+            e.putLong(TAG_POS, target.get().pos().pos().asLong());
+            e.putByte(TAG_FACE, (byte) target.get().face().get3DDataValue());
+            targets.add(e);
+        }
+
+        defaults.put(TAG_TARGETS, targets);
+        tag.put(TAG_DEFAULTS, defaults);
+    }
+
+    private void readDefaultsFromNBT(CompoundTag tag) {
+        this.defaultInputTargets = ResonatingProviderDefaults.emptyTargets();
+        this.defaultSelectedInput = 0;
+
+        if (!tag.contains(TAG_DEFAULTS, Tag.TAG_COMPOUND)) {
+            return;
+        }
+
+        var defaults = tag.getCompound(TAG_DEFAULTS);
+        this.defaultSelectedInput = ResonatingProviderDefaults.clampSelected(defaults.getInt(TAG_SELECTED_INPUT));
+
+        if (!defaults.contains(TAG_TARGETS, Tag.TAG_LIST)) {
+            return;
+        }
+
+        var targets = new ArrayList<>(this.defaultInputTargets);
+        var list = defaults.getList(TAG_TARGETS, Tag.TAG_COMPOUND);
+        for (int i = 0; i < list.size(); i++) {
+            var e = list.getCompound(i);
+            int slot = e.getInt(TAG_SLOT);
+            if (slot < 0 || slot >= ResonatingProviderDefaults.DEFAULT_INPUT_SLOTS) {
+                continue;
+            }
+
+            try {
+                var rl = ResourceLocation.parse(e.getString(TAG_DIMENSION));
+                var dimKey = ResourceKey.create(Registries.DIMENSION, rl);
+                var gp = GlobalPos.of(dimKey, BlockPos.of(e.getLong(TAG_POS)));
+                var face = Direction.from3DDataValue(e.getByte(TAG_FACE));
+                targets.set(slot, Optional.of(new EncodedResonatingPattern.Target(gp, face)));
+            } catch (Exception ex) {
+                AE2CrystalScience.LOGGER.warn("Failed to read resonating provider default target from NBT: {}", e, ex);
+            }
+        }
+        this.defaultInputTargets = new ResonatingProviderDefaults.Defaults(defaultSelectedInput, targets).targets();
     }
 
     @Override
@@ -245,7 +365,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
                 var adjPos = be.getBlockPos().relative(dir);
                 var adjSide = dir.getOpposite();
 
-                var adapter = PatternProviderTarget.get(level, adjPos, null, adjSide, actionSource);
+                var adapter = PatternProviderTarget.get(level, adjPos, level.getBlockEntity(adjPos), adjSide, actionSource);
                 if (adapter == null) continue;
 
                 if (this.isBlocking() && adapter.containsPatternInput(this.patternInputs)) {
@@ -492,7 +612,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
         var pos = target.pos().pos();
         if (!isTargetChunkLoaded(targetLevel, pos)) return null;
 
-        return PatternProviderTarget.get(targetLevel, pos, null, target.face(), actionSource);
+        return PatternProviderTarget.get(targetLevel, pos, targetLevel.getBlockEntity(pos), target.face(), actionSource);
     }
 
     private boolean hasResonatingWorkToDo() {

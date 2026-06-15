@@ -1,22 +1,27 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
 import io.github.lounode.ae2cs.Config;
+import io.github.lounode.ae2cs.api.CustomChannelProviderHost;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
+import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastFrequencyBand;
+import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastReceiverHost;
+import io.github.lounode.ae2cs.api.linker.broadcast.FrequencyBandManager;
 import io.github.lounode.ae2cs.api.render.ICustomRenderBounding;
 import io.github.lounode.ae2cs.api.settings.AECSSettings;
 import io.github.lounode.ae2cs.api.settings.AutoLinkCableMode;
 import io.github.lounode.ae2cs.api.settings.AutoLinkMode;
 import io.github.lounode.ae2cs.api.settings.ShowRangeMode;
+import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
 import io.github.lounode.ae2cs.api.util.GlobalChunkPos;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
+import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.util.ChunkHelper;
 import io.github.lounode.ae2cs.util.VecHelper;
 
 import appeng.api.AECapabilities;
 import appeng.api.networking.*;
-import appeng.api.networking.pathing.ChannelMode;
 import appeng.api.networking.pathing.ControllerState;
-import appeng.api.networking.pathing.IPathingService;
+import appeng.api.orientation.BlockOrientation;
 import appeng.api.parts.IPart;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.util.IConfigManager;
@@ -30,6 +35,7 @@ import appeng.parts.CableBusContainer;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -38,6 +44,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -54,10 +61,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 @EventBusSubscriber(modid = AECSConstants.MODID)
 public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements ServerTickingBlockEntity,
-                                     IUpgradeableObject, ClientTickingBlockEntity, IConfigurableObject, ICustomRenderBounding {
+                                     IUpgradeableObject, ClientTickingBlockEntity, IConfigurableObject, ICustomRenderBounding,
+                                     CustomChannelProviderHost, BroadcastReceiverHost, CustomReturnableSubMenuHost {
 
     /**
      * 以全局区块坐标为索引的发信器位置表，用来快速寻找发信器，每个区块key下的set集合都对应周围3x3区块范围内所有发信器
@@ -69,7 +78,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
     public static final int autoAreaFactor = Config.INSTANCE.startUpConfig.enderEmitterAutoAreaFactor.getAsInt();
 
     // 最大可连接距离，半径，计算时使用直线距离
-    public static final int maxLinkDistance = 16 * autoAreaFactor;
+    public static final Supplier<Integer> maxLinkDistance = () -> 16 * autoAreaFactor;
 
     // 客户端 + 服务端字段
     private final IConfigManager configManager;
@@ -90,6 +99,11 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
     private boolean allowAutoLinkCableLike = false;
     private int maxLinkDistanceForClient = 16;
     private boolean showLinkStatus = false;
+    private String bandId = "";
+    private int bandUsedChannelsForClient = 0;
+    private int bandTotalChannelsForClient = 0;
+    private int customMaxChannels = 0;
+    private boolean enabledCustomChannel = false;
 
     public EnderEmitterBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -121,8 +135,129 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         return showLinkStatus;
     }
 
+    public boolean isConnectedToBand() {
+        return bandId != null && !bandId.isEmpty();
+    }
+
+    public String getBandName() {
+        return bandId == null ? "" : bandId;
+    }
+
+    public int getBandUsedChannelsForClient() {
+        return bandUsedChannelsForClient;
+    }
+
+    public int getBandTotalChannelsForClient() {
+        return bandTotalChannelsForClient;
+    }
+
+    public int getUsedChannelsForClient() {
+        return getUsedLinkChannels();
+    }
+
+    public void connectToBand(String bandId) {
+        if (level == null || level.isClientSide()) return;
+
+        MinecraftServer server = level.getServer();
+        if (server == null) return;
+
+        BroadcastFrequencyBand newBand = FrequencyBandManager.getBand(bandId);
+        if (newBand == null) return;
+
+        GlobalPos globalPos = GlobalPos.of(level.dimension(), worldPosition);
+        if (!this.bandId.isEmpty()) {
+            BroadcastFrequencyBand oldBand = FrequencyBandManager.getBand(this.bandId);
+            if (oldBand != null) {
+                oldBand.onReceiverOffline(server, globalPos);
+                if (oldBand != newBand) {
+                    oldBand.undeclareReceiver(globalPos);
+                }
+            }
+        }
+
+        newBand.declareReceiver(globalPos);
+        setEnabledCustomChannel(true);
+        setMaxChannels(0);
+
+        IGridNode node = getMainNode().getNode();
+        if (node != null) {
+            newBand.onReceiverOnline(server, globalPos, node, this);
+        }
+
+        this.bandId = newBand.getName();
+        setChanged();
+        markForClientUpdate();
+    }
+
+    @Override
+    public void cleanConnectionPermanent() {
+        if (level == null || level.isClientSide()) return;
+
+        MinecraftServer server = level.getServer();
+        if (server == null) return;
+
+        if (!bandId.isEmpty()) {
+            BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
+            if (band != null) {
+                GlobalPos globalPos = GlobalPos.of(level.dimension(), worldPosition);
+                band.onReceiverOffline(server, globalPos);
+                band.undeclareReceiver(globalPos);
+            }
+        }
+
+        bandId = "";
+        setEnabledCustomChannel(false);
+        setMaxChannels(0);
+        setChanged();
+        markForClientUpdate();
+    }
+
+    @Override
+    public Set<Direction> getGridConnectableSides(BlockOrientation orientation) {
+        if (isConnectedToBand()) {
+            return EnumSet.noneOf(Direction.class);
+        }
+        return EnumSet.allOf(Direction.class);
+    }
+
+    @Override
+    public int getMaxChannels() {
+        return Math.max(0, customMaxChannels);
+    }
+
+    @Override
+    public void setMaxChannels(int maxChannels) {
+        this.customMaxChannels = Math.max(0, maxChannels);
+    }
+
+    @Override
+    public boolean isEnabledCustomChannel() {
+        return enabledCustomChannel;
+    }
+
+    @Override
+    public void setEnabledCustomChannel(boolean enabled) {
+        this.enabledCustomChannel = enabled;
+    }
+
+    @Override
+    public int getExpectedChannels() {
+        if (bandId != null && !bandId.isEmpty()) {
+            BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
+            if (band != null) {
+                return clampChannelCount(band.getUsableChannels());
+            }
+        }
+        return Integer.MAX_VALUE;
+    }
+
+    private static int clampChannelCount(long channels) {
+        if (channels <= 0) return 0;
+        return channels >= Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) channels;
+    }
+
     public void setLinkDistance(int newLinkDistance) {
-        newLinkDistance = Math.max(0, Math.min(newLinkDistance, maxLinkDistance));
+        newLinkDistance = Math.max(0, Math.min(newLinkDistance, maxLinkDistance.get()));
         if (newLinkDistance != this.linkDistance) {
             this.linkDistance = newLinkDistance;
             markForClientUpdate();
@@ -179,6 +314,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         if (level == null) return;
         IGridNode selfNode = getMainNode().getNode();
         if (selfNode == null) return;
+        refreshClientDisplayState();
         if (active != selfNode.isActive()) {
             active = selfNode.isActive();
             markForClientUpdate();
@@ -288,19 +424,52 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         this.recentAddedPosCountdown = 2;
     }
 
-    private int getMaxLinkChannels() {
-        IGrid grid = getMainNode().getGrid();
-        if (grid == null) return 0;
+    public int getMaxLinkChannels() {
+        IGridNode node = getMainNode().getNode();
+        return node == null ? 0 : node.getMaxChannels();
+    }
 
-        IPathingService pathingService = grid.getPathingService();
-        ChannelMode mode = pathingService.getChannelMode();
+    public int getUsedLinkChannels() {
+        IGridNode node = getMainNode().getNode();
+        return node == null ? 0 : node.getUsedChannels();
+    }
 
-        if (mode == ChannelMode.INFINITE) return Integer.MAX_VALUE;
+    private void refreshClientDisplayState() {
+        long newBandUsedChannels = 0;
+        long newBandTotalChannels = 0;
 
-        if (pathingService.getControllerState() == ControllerState.CONTROLLER_ONLINE) {
-            return 32 * mode.getCableCapacityFactor();
-        } else {
-            return mode.getAdHocNetworkChannels();
+        if (!bandId.isEmpty()) {
+            BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
+            if (band != null) {
+                newBandUsedChannels = band.getUsedChannels();
+                newBandTotalChannels = band.getUsableChannels();
+            }
+        }
+
+        int newBandUsedChannelsForClient = clampChannelCount(newBandUsedChannels);
+        int newBandTotalChannelsForClient = clampChannelCount(newBandTotalChannels);
+        if (this.bandUsedChannelsForClient != newBandUsedChannelsForClient || this.bandTotalChannelsForClient != newBandTotalChannelsForClient) {
+            this.bandUsedChannelsForClient = newBandUsedChannelsForClient;
+            this.bandTotalChannelsForClient = newBandTotalChannelsForClient;
+            markForClientUpdate();
+        }
+    }
+
+    private void markBandRuntimeDirty() {
+        if (level == null || level.isClientSide()) return;
+        if (bandId.isEmpty()) return;
+
+        MinecraftServer server = level.getServer();
+        if (server == null) return;
+
+        FrequencyBandManager.markRuntimeDirty(server, bandId);
+    }
+
+    @Override
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
+        super.onMainNodeStateChanged(reason);
+        if (reason == IGridNodeListener.State.CHANNEL || reason == IGridNodeListener.State.GRID_BOOT) {
+            markBandRuntimeDirty();
         }
     }
 
@@ -323,6 +492,26 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         pendingLinkPositions.clear();
         addListPosToPending(linkedPositions);
         linkedPositions.clear();
+
+        if (level == null || level.isClientSide() || bandId.isEmpty()) return;
+
+        MinecraftServer server = level.getServer();
+        if (server == null) return;
+
+        BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
+        if (band == null) {
+            setEnabledCustomChannel(false);
+            return;
+        }
+
+        GlobalPos globalPos = GlobalPos.of(level.dimension(), worldPosition);
+        band.declareReceiver(globalPos);
+        setEnabledCustomChannel(true);
+
+        IGridNode node = getMainNode().getNode();
+        if (node != null) {
+            band.onReceiverOnline(server, globalPos, node, this);
+        }
     }
 
     @Override
@@ -350,10 +539,25 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
     }
 
     @Override
+    public void onChunkUnloaded() {
+        if (level != null && !level.isClientSide() && !bandId.isEmpty()) {
+            MinecraftServer server = level.getServer();
+            BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
+            if (server != null && band != null) {
+                band.onReceiverOffline(server, GlobalPos.of(level.dimension(), worldPosition));
+            }
+        }
+        super.onChunkUnloaded();
+    }
+
+    @Override
     public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
         super.saveAdditional(data, registries);
         configManager.writeToNBT(data, registries);
         data.putInt("link_distance", this.linkDistance);
+        data.putString("band_id", this.bandId);
+        data.putBoolean("enabled_custom_channel", this.enabledCustomChannel);
+        data.putInt("custom_max_channels", this.customMaxChannels);
 
         ListTag linkPositions = new ListTag();
         for (BlockPos pos : linkedPositions) {
@@ -375,6 +579,9 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         super.loadTag(data, registries);
         this.configManager.readFromNBT(data, registries);
         this.linkDistance = data.getInt("link_distance");
+        this.bandId = data.getString("band_id");
+        this.enabledCustomChannel = data.getBoolean("enabled_custom_channel");
+        this.customMaxChannels = data.getInt("custom_max_channels");
 
         linkedPositions.clear();
 
@@ -411,6 +618,9 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         data.writeBoolean(this.autoMode);
         data.writeBoolean(this.active);
         data.writeBoolean(this.showLinkStatus);
+        data.writeUtf(this.getBandName());
+        data.writeInt(this.bandUsedChannelsForClient);
+        data.writeInt(this.bandTotalChannelsForClient);
         data.writeInt(this.maxLinkDistanceForClient);
         data.writeInt(this.linkDistance);
         data.writeInt(this.pendingLinkPositions.size());
@@ -429,6 +639,9 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         this.autoMode = data.readBoolean();
         this.active = data.readBoolean();
         this.showLinkStatus = data.readBoolean();
+        this.bandId = data.readUtf();
+        this.bandUsedChannelsForClient = data.readInt();
+        this.bandTotalChannelsForClient = data.readInt();
         this.maxLinkDistanceForClient = data.readInt();
         this.linkDistance = data.readInt();
         this.pendingLinkPositions.clear();
@@ -444,6 +657,11 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
             this.linkedPositions.add(pos);
         }
         return true;
+    }
+
+    @Override
+    public ItemStack getMainMenuIcon() {
+        return AECSBlocks.ENDER_EMITTER_BLOCK.toStack();
     }
 
     /**
@@ -510,7 +728,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         if (emitter.getBlockPos().equals(pos)) return false;
 
         // 如果是手动连接，仅检查手动方法
-        boolean valid = byManual && VecHelper.closerThanChebyshev(emitter.worldPosition, pos, maxLinkDistance);
+        boolean valid = byManual && VecHelper.closerThanChebyshev(emitter.worldPosition, pos, maxLinkDistance.get());
 
         // 自动连接额外检查
         if (!valid) {
@@ -562,7 +780,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
 
         List<BlockPos> availablePositions = new ArrayList<>(linkPositions.size());
         for (BlockPos linkPos : linkPositions) {
-            if (VecHelper.closerThanChebyshev(linkPos, targetPos, maxLinkDistance)) {
+            if (VecHelper.closerThanChebyshev(linkPos, targetPos, maxLinkDistance.get())) {
                 availablePositions.add(linkPos);
             }
         }

@@ -31,7 +31,7 @@ public class FrequencyBandManagerGUI extends AEBaseScreen<FrequencyBandManagerMe
     private static final int ROW_H = 17;
     private static final int HIDE_X = -10000;
     private static final int HIDE_Y = -10000;
-    private static final int SCROLL_HEIGHT = 120;
+    private static final int SCROLL_HEIGHT = 118;
 
     private Component bandName = Component.empty();
     private Component channelUsage = Component.empty();

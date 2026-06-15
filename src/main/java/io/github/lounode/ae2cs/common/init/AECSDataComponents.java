@@ -3,7 +3,10 @@ package io.github.lounode.ae2cs.common.init;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.linker.broadcast.MemoryCardBandInfo;
 import io.github.lounode.ae2cs.api.networking.SideConfigField;
+import io.github.lounode.ae2cs.common.item.ResonatingMemoryCardStorage;
 import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern;
+import io.github.lounode.ae2cs.common.me.crafting.ResonatingProviderDefaults;
+import io.github.lounode.ae2cs.common.me.logic.MirroredPatternProviderTarget;
 
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponentType;
@@ -81,6 +84,21 @@ public class AECSDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ItemContainerContents>> RESONATING_CONVERTER_INV = register("resonating_converter_inv", b -> b
             .persistent(ItemContainerContents.CODEC)
             .networkSynchronized(ItemContainerContents.STREAM_CODEC)
+            .cacheEncoding());
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResonatingProviderDefaults.Defaults>> RESONATING_PROVIDER_DEFAULTS = register("resonating_provider_defaults", b -> b
+            .persistent(ResonatingProviderDefaults.Defaults.CODEC)
+            .networkSynchronized(ResonatingProviderDefaults.Defaults.STREAM_CODEC)
+            .cacheEncoding());
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<MirroredPatternProviderTarget>> MIRROR_PATTERN_PROVIDER_TARGET = register("mirror_pattern_provider_target", b -> b
+            .persistent(MirroredPatternProviderTarget.CODEC)
+            .networkSynchronized(MirroredPatternProviderTarget.STREAM_CODEC)
+            .cacheEncoding());
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResonatingMemoryCardStorage>> RESONATING_MEMORY_CARD_STORAGE = register("resonating_memory_card_storage", b -> b
+            .persistent(ResonatingMemoryCardStorage.CODEC)
+            .networkSynchronized(ResonatingMemoryCardStorage.STREAM_CODEC)
             .cacheEncoding());
 
     public static void register(IEventBus eventBus) {

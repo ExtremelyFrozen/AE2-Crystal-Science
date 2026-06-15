@@ -5,6 +5,7 @@ import io.github.lounode.ae2cs.api.settings.AutoLinkCableMode;
 import io.github.lounode.ae2cs.api.settings.AutoLinkMode;
 import io.github.lounode.ae2cs.api.settings.ShowRangeMode;
 import io.github.lounode.ae2cs.client.gui.icon.AECSIcon;
+import io.github.lounode.ae2cs.client.gui.icon.AdaptedAE2Icon;
 import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSIconButton;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSServerSettingToggleButton;
@@ -27,6 +28,8 @@ public class EnderEmitterGUI extends UpgradeableScreen<EnderEmitterMenu> {
     private AECSServerSettingToggleButton<ShowRangeMode> showRangeModeButton;
     private AECSIconButton trySacnAllButton;
     private AECSIconButton destroyAllButton;
+    private AECSIconButton openBandMenuButton;
+    private AECSIconButton cleanBandConnectionButton;
 
     public EnderEmitterGUI(EnderEmitterMenu menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
@@ -89,6 +92,26 @@ public class EnderEmitterGUI extends UpgradeableScreen<EnderEmitterMenu> {
         };
         this.destroyAllButton.setMessage(Component.translatable("ae2cs.menu.ender_emitter.button.destroy_all"));
         addToLeftToolbar(destroyAllButton);
+
+        this.openBandMenuButton = new AECSIconButton(button -> menu.sendOpenBandMenu()) {
+
+            @Override
+            protected @NotNull IButtonIcon getIcon() {
+                return AECSIcon.BAND_VIEW;
+            }
+        };
+        this.openBandMenuButton.setMessage(Component.translatable("ae2cs.menu.ender_emitter.button.open_frequency_view_menu"));
+        addToLeftToolbar(openBandMenuButton);
+
+        this.cleanBandConnectionButton = new AECSIconButton(button -> menu.sendCleanBandConnection()) {
+
+            @Override
+            protected @NotNull IButtonIcon getIcon() {
+                return AdaptedAE2Icon.CLEAR;
+            }
+        };
+        this.cleanBandConnectionButton.setMessage(Component.translatable("ae2cs.menu.ender_emitter.button.clean_band_connection"));
+        addToLeftToolbar(cleanBandConnectionButton);
     }
 
     @Override
@@ -98,7 +121,13 @@ public class EnderEmitterGUI extends UpgradeableScreen<EnderEmitterMenu> {
         this.autoLinkCableButton.set(menu.autoLinkCableMode);
         this.showRangeModeButton.set(menu.showRangeMode);
 
-        setTextContent("max_distance", Component.translatable("ae2cs.menu.ender_emitter.max_distance", menu.maxLinkDistance));
-        setTextContent("distance", Component.translatable("ae2cs.menu.ender_emitter.distance", menu.linkDistance));
+        setTextHidden("max_distance", true);
+        setTextContent("band_name", Component.translatable("ae2cs.menu.ender_emitter.current_band",
+                menu.bandName.isEmpty() ? Component.translatable("ae2cs.menu.ender_broadcaster.none") : Component.literal(menu.bandName)));
+        setTextContent("band_channels", Component.translatable("ae2cs.menu.ender_emitter.band_channels", menu.bandUsedChannels, menu.bandTotalChannels));
+        setTextContent("emitter_channels", Component.translatable("ae2cs.menu.ender_emitter.linked_channels", menu.emitterUsedChannels));
+        setTextContent("distance", Component.translatable("ae2cs.menu.ender_emitter.distance", menu.linkDistance, menu.maxLinkDistance));
+        setTextHidden("band_channels", menu.bandName.isEmpty());
+        this.cleanBandConnectionButton.setVisibility(!menu.bandName.isEmpty());
     }
 }

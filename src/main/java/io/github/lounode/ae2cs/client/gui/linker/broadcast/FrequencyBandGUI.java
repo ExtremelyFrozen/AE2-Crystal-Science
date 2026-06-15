@@ -36,7 +36,7 @@ public class FrequencyBandGUI extends AEBaseScreen<FrequencyBandMenu> {
     private static final int HIDE_X = -10000;
     private static final int HIDE_Y = -10000;
 
-    private static final int SCROLL_HEIGHT = 171;
+    private static final int SCROLL_HEIGHT = 169;
 
     private final Scrollbar scrollbar;
     private final AETextField searchField;

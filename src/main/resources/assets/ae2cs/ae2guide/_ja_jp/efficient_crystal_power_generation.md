@@ -35,12 +35,10 @@ AECSでは、すべての種類の精製水晶が以下の2つの電力関連属
 | <ItemImage id="ae2cs:purified_ender_quartz" /> | 900 | 800 | 720,000 |
 | <ItemImage id="ae2cs:purified_meteor_crystal" /> | 1200 | 1500 | 1,800,000 |
 | <ItemImage id="ae2cs:purified_resonating_crystal" /> | 2500 | 2400 | 6,000,000 |
-| <ItemImage id="ae2cs:purified_entro_crystal" /> | 2000 | 2400 | 4,800,000 |
 | <ItemImage id="ae2cs:purified_redstone_crystal" /> | 1800 | 2000 | 3,600,000 |
 | <ItemImage id="ae2cs:purified_quantum_crystal" /> | 2320 | 3000 | 6,960,000 |
 | <ItemImage id="ae2cs:purified_rose_quartz" /> | 2000 | 1800 | 3,600,000 |
 | <ItemImage id="ae2cs:purified_irradiated_crystal" /> | 2900 | 2400 | 6,960,000 |
-| <ItemImage id="ae2cs:purified_ember_crystal" /> | 2000 | 3600 | 7,200,000 |
 
 ---
 

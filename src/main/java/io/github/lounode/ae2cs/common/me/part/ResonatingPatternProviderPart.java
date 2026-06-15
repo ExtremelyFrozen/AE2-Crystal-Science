@@ -19,10 +19,16 @@ import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuHostLocator;
 import appeng.parts.PartModel;
 import appeng.parts.crafting.PatternProviderPart;
+import appeng.util.SettingsFrom;
 
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class ResonatingPatternProviderPart extends PatternProviderPart implements ResonatingPatternProviderHost {
 
@@ -115,5 +121,34 @@ public class ResonatingPatternProviderPart extends PatternProviderPart implement
     @Override
     public ResonatingPatternProviderLogic getResonatingLogic() {
         return (ResonatingPatternProviderLogic) getLogic();
+    }
+
+    @Override
+    public void importSettings(SettingsFrom mode, DataComponentMap input, @Nullable Player player) {
+        super.importSettings(mode, input, player);
+        if (mode == SettingsFrom.DISMANTLE_ITEM || mode == SettingsFrom.MEMORY_CARD) {
+            getResonatingLogic().readDefaultsFromSettings(input);
+        }
+    }
+
+    @Override
+    public void exportSettings(SettingsFrom mode, DataComponentMap.Builder output) {
+        super.exportSettings(mode, output);
+        if (mode == SettingsFrom.DISMANTLE_ITEM || mode == SettingsFrom.MEMORY_CARD) {
+            getResonatingLogic().writeDefaultsToSettings(output);
+        }
+    }
+
+    @Override
+    public void addAdditionalDrops(List<ItemStack> drops, boolean wrenched) {
+        super.addAdditionalDrops(drops, wrenched);
+        getResonatingLogic().writeDefaultsToDrops(drops, getPartItem());
+    }
+
+    @Override
+    public void markForLogicClientUpdate() {
+        if (this.getBlockEntity().getLevel() != null && !this.getBlockEntity().getLevel().isClientSide()) {
+            this.getHost().markForUpdate();
+        }
     }
 }

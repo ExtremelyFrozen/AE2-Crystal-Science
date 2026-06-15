@@ -49,7 +49,12 @@ public class AECSItemTagProvider extends ItemTagsProvider {
                 .addTag(AECSTags.Items.PURE_QUANTUM_CRYSTAL)
                 .addTag(AECSTags.Items.PURE_ROSE_QUARTZ)
                 .addTag(AECSTags.Items.PURE_IRRADIATED_CRYSTAL)
-                .addTag(AECSTags.Items.PURE_EMBER_CRYSTAL);
+                .addTag(AECSTags.Items.PURE_EMBER_CRYSTAL)
+                .addTag(AECSTags.Items.PURE_LINK_CRYSTAL)
+                .addTag(AECSTags.Items.PURE_OVERLOAD_CRYSTAL)
+                .addTag(AECSTags.Items.PURE_DATA_CRYSTAL)
+                .addTag(AECSTags.Items.PURE_ENERGIZED_FLUIX_CRYSTAL)
+                .addTag(AECSTags.Items.PURE_ENERGIZED_CERTUS_QUARTZ_CRYSTAL);
         tag(AECSTags.Items.PURE_CERTUS_QUARTZ_CRYSTAL)
                 .add(AECSItems.PURE_CERTUS_QUARTZ_CRYSTAL.get());
         tag(AECSTags.Items.PURE_FLUIX_CRYSTAL)
@@ -74,6 +79,16 @@ public class AECSItemTagProvider extends ItemTagsProvider {
                 .add(AECSItems.PURE_IRRADIATED_CRYSTAL.get());
         tag(AECSTags.Items.PURE_EMBER_CRYSTAL)
                 .add(AECSItems.PURE_EMBER_CRYSTAL.get());
+        tag(AECSTags.Items.PURE_LINK_CRYSTAL)
+                .add(AECSItems.PURE_LINK_CRYSTAL.get());
+        tag(AECSTags.Items.PURE_OVERLOAD_CRYSTAL)
+                .add(AECSItems.PURE_OVERLOAD_CRYSTAL.get());
+        tag(AECSTags.Items.PURE_DATA_CRYSTAL)
+                .add(AECSItems.PURE_DATA_CRYSTAL.get());
+        tag(AECSTags.Items.PURE_ENERGIZED_FLUIX_CRYSTAL)
+                .add(AECSItems.PURE_ENERGIZED_FLUIX_CRYSTAL.get());
+        tag(AECSTags.Items.PURE_ENERGIZED_CERTUS_QUARTZ_CRYSTAL)
+                .add(AECSItems.PURE_ENERGIZED_CERTUS_QUARTZ_CRYSTAL.get());
 
         // 粉尘
         tag(Tags.Items.DUSTS)
@@ -192,6 +207,7 @@ public class AECSItemTagProvider extends ItemTagsProvider {
                 .add(AECSBlocks.EX_INTEGRATED_INTERFACE_BLOCK.asItem())
                 .add(AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK.asItem())
                 .add(AECSBlocks.EX_RESONATING_PATTERN_PROVIDER_BLOCK.asItem())
+                .add(AECSBlocks.MIRROR_PATTERN_PROVIDER_BLOCK.asItem())
                 .add(AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK.asItem())
                 .add(AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK.asItem())
                 .add(AECSBlocks.QUARTZ_OSCILLATOR_CLOCK_BLOCK.asItem());
@@ -202,6 +218,7 @@ public class AECSItemTagProvider extends ItemTagsProvider {
                 .add(AECSParts.EX_INTEGRATE_INTERFACE_PART.get())
                 .add(AECSParts.RESONATING_PATTERN_PROVIDER_PART.get())
                 .add(AECSParts.EX_RESONATING_PATTERN_PROVIDER_PART.get())
+                .add(AECSParts.MIRROR_PATTERN_PROVIDER_PART.get())
                 .add(AECSParts.SIMPLE_PATTERN_PROVIDER_PART.get())
                 .add(AECSParts.METEORITE_PATTERN_PROVIDER_PART.get())
                 .add(AECSParts.QUARTZ_OSCILLATOR_CLOCK_PART.get());
@@ -214,7 +231,11 @@ public class AECSItemTagProvider extends ItemTagsProvider {
                 .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_REDSTONE_CRYSTAL)
                 .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_QUANTUM_CRYSTAL)
                 .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_ROSE_QUARTZ)
-                .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL);
+                .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL)
+                .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_LINK_CRYSTAL)
+                .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_CHARGED_OVERLOAD_CRYSTAL)
+                .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_GRID)
+                .addTag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_CHARGED_CERTUS_QUARTZ);
         tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_ENDER_QUARTZ)
                 .add(AECSBlocks.PURE_ENDER_QUARTZ_BLOCK.asItem());
         tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_RESONATING_CRYSTAL)
@@ -229,6 +250,14 @@ public class AECSItemTagProvider extends ItemTagsProvider {
                 .add(AECSBlocks.PURE_ROSE_QUARTZ_BLOCK.asItem());
         tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_IRRADIATED_CRYSTAL)
                 .add(AECSBlocks.IRRADIATED_CRYSTAL_BLOCK.asItem());
+        tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_LINK_CRYSTAL)
+                .add(AECSBlocks.PURE_LINK_CRYSTAL_BLOCK.asItem());
+        tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_CHARGED_OVERLOAD_CRYSTAL)
+                .add(AECSBlocks.CHARGED_OVERLOAD_CRYSTAL_BLOCK.asItem());
+        tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_GRID)
+                .add(AECSBlocks.PURE_CRYSTAL_GRID_BLOCK.asItem());
+        tag(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_CHARGED_CERTUS_QUARTZ)
+                .add(AECSBlocks.CHARGED_CERTUS_QUARTZ_BLOCK.asItem());
 
         // 存储方块
         tag(Tags.Items.STORAGE_BLOCKS)

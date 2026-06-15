@@ -2,6 +2,8 @@ package io.github.lounode.ae2cs.common.init;
 
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.ids.AECSPartIds;
+import io.github.lounode.ae2cs.common.item.MirrorPatternProviderPartItem;
+import io.github.lounode.ae2cs.common.item.ResonatingPatternProviderPartItem;
 import io.github.lounode.ae2cs.common.me.part.*;
 
 import appeng.api.parts.IPart;
@@ -46,20 +48,25 @@ public class AECSParts {
             IntegratedInterfacePart.class,
             IntegratedInterfacePart::new);
 
-    public static final DeferredItem<PartItem<ResonatingPatternProviderPart>> RESONATING_PATTERN_PROVIDER_PART = registerPart(
+    public static final DeferredItem<PartItem<ResonatingPatternProviderPart>> RESONATING_PATTERN_PROVIDER_PART = registerCustomPartItem(
             AECSPartIds.RESONATING_PATTERN_PROVIDER,
             ResonatingPatternProviderPart.class,
-            ResonatingPatternProviderPart::new);
+            ResonatingPatternProviderPartItem::new);
 
-    public static final DeferredItem<PartItem<ResonatingPatternProviderPart>> EX_RESONATING_PATTERN_PROVIDER_PART = registerPart(
+    public static final DeferredItem<PartItem<ResonatingPatternProviderPart>> EX_RESONATING_PATTERN_PROVIDER_PART = registerCustomPartItem(
             AECSPartIds.EX_RESONATING_PATTERN_PROVIDER,
             ResonatingPatternProviderPart.class,
-            ResonatingPatternProviderPart::new);
+            ResonatingPatternProviderPartItem::new);
 
     public static final DeferredItem<PartItem<SimplePatternProviderPart>> SIMPLE_PATTERN_PROVIDER_PART = registerPart(
             AECSPartIds.SIMPLE_PATTERN_PROVIDER,
             SimplePatternProviderPart.class,
             SimplePatternProviderPart::new);
+
+    public static final DeferredItem<PartItem<MirrorPatternProviderPart>> MIRROR_PATTERN_PROVIDER_PART = registerCustomPartItem(
+            AECSPartIds.MIRROR_PATTERN_PROVIDER,
+            MirrorPatternProviderPart.class,
+            MirrorPatternProviderPartItem::new);
 
     public static final DeferredItem<PartItem<MeteoritePatternProviderPart>> METEORITE_PATTERN_PROVIDER_PART = registerPart(
             AECSPartIds.METEORITE_PATTERN_PROVIDER,

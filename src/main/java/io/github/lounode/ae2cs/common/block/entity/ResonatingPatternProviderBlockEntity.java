@@ -77,4 +77,9 @@ public class ResonatingPatternProviderBlockEntity extends PatternProviderBlockEn
     public ResonatingPatternProviderLogic getResonatingLogic() {
         return (ResonatingPatternProviderLogic) getLogic();
     }
+
+    @Override
+    public void markForLogicClientUpdate() {
+        markForUpdate();
+    }
 }

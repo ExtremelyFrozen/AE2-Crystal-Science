@@ -68,13 +68,23 @@ public class AppEngInvComponent extends BaseMachineComponent {
                 case INPUT -> {
                     if (added.contains(portEntry.getValue())) continue;
                     added.add(portEntry.getValue());
-                    FilteredInternalInventory wrapper = new FilteredInternalInventory(portEntry.getValue(), new IAEItemFilter() {
+                    var rawInv = portEntry.getValue();
+                    FilteredInternalInventory wrapper = new FilteredInternalInventory(rawInv, new IAEItemFilter() {
 
                         @Override
                         public boolean allowExtract(InternalInventory inv, int slot, int amount) {
-                            return false;
+                            return true;
                         }
-                    });
+                    }) {
+
+                        @Override
+                        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+                            if (simulate) {
+                                return rawInv.extractItem(slot, amount, true);
+                            }
+                            return ItemStack.EMPTY;
+                        }
+                    };
                     list.add(wrapper);
                     portWrappers.put(InvPort.INPUT, wrapper);
                 }

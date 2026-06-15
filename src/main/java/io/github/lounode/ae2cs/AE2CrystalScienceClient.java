@@ -37,9 +37,7 @@ public class AE2CrystalScienceClient {
                     .collect(Collectors.toSet());
 
             for (var seed : seeds) {
-                ItemProperties.register(seed, makeId("age"), (stack, level, player, s) -> {
-                    return seed.getGrowProcess(stack);
-                });
+                ItemProperties.register(seed, makeId("age"), (stack, level, player, s) -> seed.getGrowProcess(stack));
             }
         });
     }

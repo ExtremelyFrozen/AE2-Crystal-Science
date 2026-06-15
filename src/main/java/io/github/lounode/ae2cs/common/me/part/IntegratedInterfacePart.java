@@ -6,12 +6,15 @@ import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceHost;
 import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceLogic;
 
 import appeng.api.AECapabilities;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.parts.RegisterPartCapabilitiesEvent;
 import appeng.api.stacks.AEItemKey;
 import appeng.core.AppEng;
+import appeng.helpers.externalstorage.GenericStackFluidStorage;
+import appeng.helpers.externalstorage.GenericStackItemStorage;
 import appeng.items.parts.PartModels;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.AEBasePart;
@@ -26,6 +29,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.capabilities.Capabilities;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -79,6 +83,26 @@ public class IntegratedInterfacePart extends AEBasePart implements IntegratedInt
                 AECapabilities.ME_STORAGE,
                 (part, direction) -> part.getLogic().getExposedMEStorage(direction),
                 IntegratedInterfacePart.class);
+        event.register(
+                Capabilities.ItemHandler.BLOCK,
+                (part, direction) -> {
+                    var inv = part.getLogic().getStorageInv();
+                    return inv != null ? new GenericStackItemStorage(inv) : null;
+                },
+                IntegratedInterfacePart.class);
+        event.register(
+                Capabilities.FluidHandler.BLOCK,
+                (part, direction) -> {
+                    var inv = part.getLogic().getStorageInv();
+                    return inv != null ? new GenericStackFluidStorage(inv) : null;
+                },
+                IntegratedInterfacePart.class);
+    }
+
+    @Override
+    protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
+        super.onMainNodeStateChanged(reason);
+        this.logic.onMainNodeStateChanged();
     }
 
     @Override
@@ -171,12 +195,14 @@ public class IntegratedInterfacePart extends AEBasePart implements IntegratedInt
     @Override
     public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
         super.writeToNBT(data, registries);
+        this.logic.save(data, registries);
         data.putInt("priority", this.priority);
     }
 
     @Override
     public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
         super.readFromNBT(data, registries);
+        this.logic.load(data, registries);
         this.priority = data.getInt("priority");
     }
 

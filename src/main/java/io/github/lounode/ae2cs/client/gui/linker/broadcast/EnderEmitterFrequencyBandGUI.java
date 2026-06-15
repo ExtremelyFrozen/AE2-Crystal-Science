@@ -1,0 +1,174 @@
+package io.github.lounode.ae2cs.client.gui.linker.broadcast;
+
+import io.github.lounode.ae2cs.api.linker.broadcast.networking.BroadcastBandsField;
+import io.github.lounode.ae2cs.common.menu.linker.broadcast.EnderEmitterFrequencyBandMenu;
+
+import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.implementations.AESubScreen;
+import appeng.client.gui.style.StyleManager;
+import appeng.client.gui.widgets.AETextField;
+import appeng.client.gui.widgets.Scrollbar;
+
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+
+public class EnderEmitterFrequencyBandGUI extends AEBaseScreen<EnderEmitterFrequencyBandMenu> {
+
+    private static final Rect2i PANEL_AREA = new Rect2i(9, 39, 158, 170);
+    private static final int ROW_H = 17;
+    private static final int HIDE_X = -10000;
+    private static final int HIDE_Y = -10000;
+    private static final int SCROLL_HEIGHT = 169;
+
+    private final Scrollbar scrollbar;
+    private final AETextField searchField;
+
+    private BroadcastBandsField lastBandsInfo = null;
+    private List<BroadcastBandsField.Entry> bands = List.of();
+    private String searchQuery = "";
+    private final List<Integer> filteredIndex = new ArrayList<>();
+    private final List<EnderEmitterFrequencyBandInfoPanel> panelPool = new ArrayList<>();
+    private int visibleRows = 0;
+    private int totalRows = 0;
+    private int lastTopRow = -1;
+
+    public EnderEmitterFrequencyBandGUI(EnderEmitterFrequencyBandMenu menu, Inventory inv, Component title) {
+        super(menu, inv, title, StyleManager.loadStyleDoc("/screens/frequency_band_menu.json"));
+        AESubScreen.addBackButton(menu, "back_button", widgets);
+
+        this.scrollbar = widgets.addScrollBar("scrollbar", Scrollbar.DEFAULT);
+        this.searchField = widgets.addTextField("search");
+        this.scrollbar.setHeight(SCROLL_HEIGHT);
+        this.scrollbar.setRange(0, 0, 1);
+
+        this.searchField.setResponder(s -> {
+            this.searchQuery = (s == null ? "" : s.trim().toLowerCase(Locale.ROOT));
+            rebuildFilter();
+            updateScrollbarRangeByFilteredSize();
+            this.scrollbar.setCurrentScroll(0);
+            this.lastTopRow = -1;
+            reLayoutVisiblePanels();
+        });
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        this.visibleRows = Math.max(1, PANEL_AREA.getHeight() / ROW_H);
+        this.scrollbar.setHeight(SCROLL_HEIGHT);
+        panelPool.clear();
+        refreshBandsFromMenuIfNeeded(true);
+    }
+
+    @Override
+    protected void updateBeforeRender() {
+        super.updateBeforeRender();
+        refreshBandsFromMenuIfNeeded(false);
+        int topRow = scrollbar.getCurrentScroll();
+        if (topRow != lastTopRow) {
+            lastTopRow = topRow;
+            reLayoutVisiblePanels();
+        }
+    }
+
+    private void refreshBandsFromMenuIfNeeded(boolean force) {
+        BroadcastBandsField current = menu.bandsInfo;
+        if (current == null) {
+            current = new BroadcastBandsField(List.of());
+        }
+
+        if (!force && Objects.equals(current, lastBandsInfo)) {
+            return;
+        }
+
+        this.lastBandsInfo = current;
+        this.bands = current.bands();
+        ensurePanelPoolUpToDate();
+        rebuildFilter();
+        updateScrollbarRangeByFilteredSize();
+        this.lastTopRow = -1;
+        reLayoutVisiblePanels();
+    }
+
+    private void ensurePanelPoolUpToDate() {
+        for (int i = panelPool.size(); i < bands.size(); i++) {
+            var p = new EnderEmitterFrequencyBandInfoPanel(HIDE_X, HIDE_Y, menu);
+            p.active = false;
+            p.visible = false;
+            addRenderableWidget(p);
+            panelPool.add(p);
+        }
+
+        for (int i = bands.size(); i < panelPool.size(); i++) {
+            var p = panelPool.get(i);
+            p.active = false;
+            p.visible = false;
+            p.setX(HIDE_X);
+            p.setY(HIDE_Y);
+        }
+    }
+
+    private void rebuildFilter() {
+        filteredIndex.clear();
+        if (bands.isEmpty()) {
+            return;
+        }
+
+        if (searchQuery.isEmpty()) {
+            for (int i = 0; i < bands.size(); i++) filteredIndex.add(i);
+        } else {
+            for (int i = 0; i < bands.size(); i++) {
+                String name = bands.get(i).name();
+                if (name != null && name.toLowerCase(Locale.ROOT).contains(searchQuery)) {
+                    filteredIndex.add(i);
+                }
+            }
+        }
+    }
+
+    private void updateScrollbarRangeByFilteredSize() {
+        this.totalRows = filteredIndex.size();
+        int maxScroll = Math.max(0, totalRows - visibleRows);
+        scrollbar.setRange(0, maxScroll, 1);
+        if (scrollbar.getCurrentScroll() > maxScroll) {
+            scrollbar.setCurrentScroll(maxScroll);
+        }
+    }
+
+    private void reLayoutVisiblePanels() {
+        for (var p : panelPool) {
+            p.active = false;
+            p.visible = false;
+            p.setX(HIDE_X);
+            p.setY(HIDE_Y);
+        }
+
+        if (filteredIndex.isEmpty()) {
+            return;
+        }
+
+        int maxTop = Math.max(0, totalRows - visibleRows);
+        int startRow = Math.min(scrollbar.getCurrentScroll(), maxTop);
+        int endExclusive = Math.min(startRow + visibleRows, totalRows);
+        int x0 = leftPos + PANEL_AREA.getX();
+        int y0 = topPos + PANEL_AREA.getY();
+
+        for (int row = startRow; row < endExclusive; row++) {
+            int idxInBands = filteredIndex.get(row);
+            var entry = bands.get(idxInBands);
+
+            var panel = panelPool.get(idxInBands);
+            panel.setInfo(entry.name(), entry.isEncrypted());
+            panel.setX(x0);
+            panel.setY(y0 + (row - startRow) * ROW_H);
+            panel.active = true;
+            panel.visible = true;
+        }
+    }
+}

@@ -11,6 +11,11 @@
     "#ae2cs:pure_crystal/quantum_crystal",
     "#ae2cs:pure_crystal/rose_quartz",
     "#ae2cs:pure_crystal/irradiated_crystal",
-    "#ae2cs:pure_crystal/ember_crystal"
+    "#ae2cs:pure_crystal/ember_crystal",
+    "#ae2cs:pure_crystal/link_crystal",
+    "#ae2cs:pure_crystal/overload_crystal",
+    "#ae2cs:pure_crystal/data_crystal",
+    "#ae2cs:pure_crystal/energized_fluix_crystal",
+    "#ae2cs:pure_crystal/energized_certus_quartz_crystal"
   ]
 }
