@@ -11,8 +11,11 @@ import appeng.api.upgrades.Upgrades;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
+import appeng.core.localization.GuiText;
+import appeng.items.tools.powered.WirelessTerminalItem;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -30,6 +33,7 @@ public class AEPlugin {
     private static String EX_ENDER_INTERFACE_GROUP_NAME = "block.ae2cs.extended_ender_interface";
     private static String QUARTZ_OSCILLATOR_CLOCK_GROUP_NAME = "block.ae2cs.quartz_oscillator_clock";
     private static String RESONATING_PATTERN_PROVIDER_GROUP_NAME = "block.ae2cs.resonating_pattern_provider";
+    private static String WIRELESS_TERMINAL_GROUP_NAME = GuiText.WirelessTerminals.getTranslationKey();
 
     /**
      * 在mod入口点调用
@@ -67,6 +71,13 @@ public class AEPlugin {
 
         Upgrades.add(AEItems.REDSTONE_CARD, AECSBlocks.QUARTZ_OSCILLATOR_CLOCK_BLOCK, 1, QUARTZ_OSCILLATOR_CLOCK_GROUP_NAME);
         Upgrades.add(AEItems.REDSTONE_CARD, AECSParts.QUARTZ_OSCILLATOR_CLOCK_PART, 1, QUARTZ_OSCILLATOR_CLOCK_GROUP_NAME);
+
+        GridLinkables.register(AECSItems.WIRELESS_RESONANT_TERMINAL, WirelessTerminalItem.LINKABLE_HANDLER);
+        Upgrades.add(AEItems.ENERGY_CARD, AECSItems.WIRELESS_RESONANT_TERMINAL, 2, WIRELESS_TERMINAL_GROUP_NAME);
+        BuiltInRegistries.ITEM
+                .getOptional(ResourceLocation.fromNamespaceAndPath("megacells", "greater_energy_card"))
+                .ifPresent(card -> Upgrades.add(card, AECSItems.WIRELESS_RESONANT_TERMINAL, 2,
+                        WIRELESS_TERMINAL_GROUP_NAME));
 
         addGrowthCardSupport();
     }

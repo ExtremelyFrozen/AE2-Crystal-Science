@@ -78,6 +78,11 @@ public class AECSParts {
             QuartzOscillatorClockPart.class,
             QuartzOscillatorClockPart::new);
 
+    public static final DeferredItem<PartItem<ResonantTemplateCodingTerminalPart>> RESONANT_TEMPLATE_CODING_TERMINAL_PART = registerPart(
+            AECSPartIds.RESONANT_TEMPLATE_CODING_TERMINAL,
+            ResonantTemplateCodingTerminalPart.class,
+            ResonantTemplateCodingTerminalPart::new);
+
     public static List<DeferredItem<? extends PartItem<?>>> getAll() {
         return Collections.unmodifiableList(ALL);
     }

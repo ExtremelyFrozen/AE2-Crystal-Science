@@ -9,6 +9,7 @@ import io.github.lounode.ae2cs.common.item.tools.resonating.*;
 import io.github.lounode.ae2cs.common.item.upgrades.*;
 
 import appeng.api.upgrades.Upgrades;
+import appeng.core.AEConfig;
 
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
@@ -136,6 +137,10 @@ public class AECSItems {
     public static final DeferredItem<ResonatingMemoryCardItem> RESONATING_MEMORY_CARD = registerOtherItem(AECSItemIds.RESONATING_MEMORY_CARD, () -> new ResonatingMemoryCardItem(defaultBuilder()));
     public static final DeferredItem<ResonatingPatternItem> RESONATING_PATTERN = registerOtherItem(AECSItemIds.RESONATING_PATTERN, () -> new ResonatingPatternItem(defaultBuilder()));
     public static final DeferredItem<ResonatingPatternConverterItem> RESONATING_PATTERN_CONVERTER = registerOtherItem(AECSItemIds.RESONATING_PATTERN_CONVERTER, () -> new ResonatingPatternConverterItem(defaultBuilder().stacksTo(1)));
+    public static final DeferredItem<WirelessResonantTerminalItem> WIRELESS_RESONANT_TERMINAL = registerOtherItem(
+            AECSItemIds.WIRELESS_RESONANT_TERMINAL,
+            () -> new WirelessResonantTerminalItem(AEConfig.instance().getWirelessTerminalBattery(),
+                    defaultBuilder().stacksTo(1)));
 
     public static final DeferredItem<EnderSwordItem> ENDER_CRYSTAL_SWORD = registerToolsItem(AECSItemIds.ENDER_CRYSTAL_SWORD, () -> new EnderSwordItem(defaultBuilder().stacksTo(1)));
     public static final DeferredItem<EnderAxeItem> ENDER_CRYSTAL_AXE = registerToolsItem(AECSItemIds.ENDER_CRYSTAL_AXE, () -> new EnderAxeItem(defaultBuilder().stacksTo(1)));

@@ -12,4 +12,5 @@ public class AECSPartIds {
     public static final String MIRROR_PATTERN_PROVIDER = "mirror_pattern_provider_part";
     public static final String METEORITE_PATTERN_PROVIDER = "meteorite_pattern_provider_part";
     public static final String QUARTZ_OSCILLATOR_CLOCK = "quartz_oscillator_clock_part";
+    public static final String RESONANT_TEMPLATE_CODING_TERMINAL = "resonant_template_coding_terminal_part";
 }
