@@ -1,39 +1,20 @@
 package io.github.lounode.ae2cs.integration.emi;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
+import io.github.lounode.ae2cs.common.menu.ResonantTemplateCodingTermMenu;
+import io.github.lounode.ae2cs.integration.ResonantPatternEncodingTransferHelper;
 
-import appeng.core.localization.ItemModText;
-import appeng.core.AEConfig;
-import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
+import appeng.core.AEConfig;
+import appeng.core.localization.ItemModText;
 import appeng.integration.modules.emi.EmiStackHelper;
 import appeng.integration.modules.itemlists.EncodingHelper;
 import appeng.integration.modules.itemlists.TransferHelper;
 import appeng.menu.SlotSemantics;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.IClientRepo;
-import com.mojang.blaze3d.vertex.PoseStack;
-import dev.emi.emi.api.recipe.EmiPlayerInventory;
-import dev.emi.emi.api.recipe.EmiRecipe;
-import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
-import dev.emi.emi.api.recipe.handler.EmiCraftContext;
-import dev.emi.emi.api.recipe.handler.StandardRecipeHandler;
-import dev.emi.emi.api.stack.EmiIngredient;
-import dev.emi.emi.api.stack.EmiStack;
-import dev.emi.emi.api.widget.Bounds;
-import dev.emi.emi.api.widget.SlotWidget;
-import dev.emi.emi.api.widget.Widget;
-import io.github.lounode.ae2cs.integration.ResonantPatternEncodingTransferHelper;
-import io.github.lounode.ae2cs.common.menu.ResonantTemplateCodingTermMenu;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -46,7 +27,30 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import dev.emi.emi.api.recipe.EmiPlayerInventory;
+import dev.emi.emi.api.recipe.EmiRecipe;
+import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
+import dev.emi.emi.api.recipe.handler.EmiCraftContext;
+import dev.emi.emi.api.recipe.handler.StandardRecipeHandler;
+import dev.emi.emi.api.stack.EmiIngredient;
+import dev.emi.emi.api.stack.EmiStack;
+import dev.emi.emi.api.widget.Bounds;
+import dev.emi.emi.api.widget.SlotWidget;
+import dev.emi.emi.api.widget.Widget;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 public class ResonantEmiEncodePatternHandler implements StandardRecipeHandler<ResonantTemplateCodingTermMenu> {
+
     @Override
     public List<Slot> getInputSources(ResonantTemplateCodingTermMenu menu) {
         var slots = new ArrayList<Slot>();
@@ -105,8 +109,7 @@ public class ResonantEmiEncodePatternHandler implements StandardRecipeHandler<Re
 
         RecipeHolder<?> holder = getRecipeHolder(context.getScreenHandler(), recipe);
         Recipe<?> backingRecipe = holder != null ? holder.value() : null;
-        if (context.getScreenHandler().pullProcessingRecipeInputs
-                && ResonantPatternEncodingTransferHelper.isNonCraftingRealGridRecipe(holder)) {
+        if (context.getScreenHandler().pullProcessingRecipeInputs && ResonantPatternEncodingTransferHelper.isNonCraftingRealGridRecipe(holder)) {
             return true;
         }
         return !isCraftingRecipe(backingRecipe, recipe) || fitsIn3x3Grid(holder);
@@ -122,8 +125,7 @@ public class ResonantEmiEncodePatternHandler implements StandardRecipeHandler<Re
         RecipeHolder<?> holder = getRecipeHolder(menu, recipe);
         Recipe<?> backingRecipe = holder != null ? holder.value() : null;
 
-        if (menu.pullProcessingRecipeInputs
-                && ResonantPatternEncodingTransferHelper.isNonCraftingRealGridRecipe(holder)) {
+        if (menu.pullProcessingRecipeInputs && ResonantPatternEncodingTransferHelper.isNonCraftingRealGridRecipe(holder)) {
             ResonantPatternEncodingTransferHelper.encodeCraftingLikeRecipeToRealGrid(menu, holder,
                     EmiStackHelper.ofInputs(recipe));
         } else if (isCraftingRecipe(backingRecipe, recipe)) {
@@ -148,11 +150,9 @@ public class ResonantEmiEncodePatternHandler implements StandardRecipeHandler<Re
 
     @Override
     public List<ClientTooltipComponent> getTooltip(EmiRecipe recipe,
-            EmiCraftContext<ResonantTemplateCodingTermMenu> context) {
+                                                   EmiCraftContext<ResonantTemplateCodingTermMenu> context) {
         ResonantTemplateCodingTermMenu menu = context.getScreenHandler();
-        ProcessingTransferPreview preview = menu.pullProcessingRecipeInputs
-                ? getProcessingTransferPreview(menu, recipe.getInputs())
-                : getEncodingPreview(menu, recipe.getInputs());
+        ProcessingTransferPreview preview = menu.pullProcessingRecipeInputs ? getProcessingTransferPreview(menu, recipe.getInputs()) : getEncodingPreview(menu, recipe.getInputs());
         if (!menu.pullProcessingRecipeInputs && !preview.anyCraftable()) {
             return StandardRecipeHandler.super.getTooltip(recipe, context);
         }
@@ -178,15 +178,12 @@ public class ResonantEmiEncodePatternHandler implements StandardRecipeHandler<Re
 
     @Override
     public void render(EmiRecipe recipe, EmiCraftContext<ResonantTemplateCodingTermMenu> context, List<Widget> widgets,
-            GuiGraphics draw) {
+                       GuiGraphics draw) {
         StandardRecipeHandler.super.render(recipe, context, widgets, draw);
 
         ResonantTemplateCodingTermMenu menu = context.getScreenHandler();
-        ProcessingTransferPreview preview = menu.pullProcessingRecipeInputs
-                ? getProcessingTransferPreview(menu, recipe.getInputs())
-                : getEncodingPreview(menu, recipe.getInputs());
-        if ((!menu.pullProcessingRecipeInputs && !preview.anyCraftable())
-                || (menu.pullProcessingRecipeInputs && !preview.anyMissingOrCraftable())) {
+        ProcessingTransferPreview preview = menu.pullProcessingRecipeInputs ? getProcessingTransferPreview(menu, recipe.getInputs()) : getEncodingPreview(menu, recipe.getInputs());
+        if ((!menu.pullProcessingRecipeInputs && !preview.anyCraftable()) || (menu.pullProcessingRecipeInputs && !preview.anyMissingOrCraftable())) {
             return;
         }
 
@@ -213,20 +210,18 @@ public class ResonantEmiEncodePatternHandler implements StandardRecipeHandler<Re
     }
 
     private static ProcessingTransferPreview getProcessingTransferPreview(ResonantTemplateCodingTermMenu menu,
-            List<EmiIngredient> ingredients) {
+                                                                          List<EmiIngredient> ingredients) {
         IClientRepo repo = menu.getClientRepo();
         Map<AEKey, Long> availableAmounts = new HashMap<>();
-        Set<AEKey> craftableKeys = repo == null
-                ? Collections.emptySet()
-                : repo.getAllEntries().stream()
-                    .peek(entry -> {
-                        if (entry.getWhat() != null && entry.getStoredAmount() > 0) {
-                            availableAmounts.merge(entry.getWhat(), entry.getStoredAmount(), Long::sum);
-                        }
-                    })
-                    .filter(entry -> entry.getWhat() != null && entry.isCraftable())
-                    .map(GridInventoryEntry::getWhat)
-                    .collect(Collectors.toSet());
+        Set<AEKey> craftableKeys = repo == null ? Collections.emptySet() : repo.getAllEntries().stream()
+                .peek(entry -> {
+                    if (entry.getWhat() != null && entry.getStoredAmount() > 0) {
+                        availableAmounts.merge(entry.getWhat(), entry.getStoredAmount(), Long::sum);
+                    }
+                })
+                .filter(entry -> entry.getWhat() != null && entry.isCraftable())
+                .map(GridInventoryEntry::getWhat)
+                .collect(Collectors.toSet());
 
         var missingSlots = new HashSet<Integer>();
         var craftableSlots = new HashSet<Integer>();
@@ -256,14 +251,12 @@ public class ResonantEmiEncodePatternHandler implements StandardRecipeHandler<Re
     }
 
     private static ProcessingTransferPreview getEncodingPreview(ResonantTemplateCodingTermMenu menu,
-            List<EmiIngredient> ingredients) {
+                                                                List<EmiIngredient> ingredients) {
         IClientRepo repo = menu.getClientRepo();
-        Set<AEKey> craftableKeys = repo == null
-                ? Collections.emptySet()
-                : repo.getAllEntries().stream()
-                    .filter(entry -> entry.getWhat() != null && entry.isCraftable())
-                    .map(GridInventoryEntry::getWhat)
-                    .collect(Collectors.toSet());
+        Set<AEKey> craftableKeys = repo == null ? Collections.emptySet() : repo.getAllEntries().stream()
+                .filter(entry -> entry.getWhat() != null && entry.isCraftable())
+                .map(GridInventoryEntry::getWhat)
+                .collect(Collectors.toSet());
 
         var craftableSlots = new HashSet<Integer>();
         for (int i = 0; i < ingredients.size(); i++) {
@@ -280,12 +273,11 @@ public class ResonantEmiEncodePatternHandler implements StandardRecipeHandler<Re
     }
 
     private static boolean isCraftingRecipe(Recipe<?> recipe, EmiRecipe emiRecipe) {
-        return EncodingHelper.isSupportedCraftingRecipe(recipe)
-                || emiRecipe.getCategory().equals(VanillaEmiRecipeCategories.CRAFTING);
+        return EncodingHelper.isSupportedCraftingRecipe(recipe) || emiRecipe.getCategory().equals(VanillaEmiRecipeCategories.CRAFTING);
     }
 
     private static List<Slot> getPulledCraftingSlots(Recipe<?> recipe, EmiRecipe emiRecipe,
-            ResonantTemplateCodingTermMenu menu) {
+                                                     ResonantTemplateCodingTermMenu menu) {
         if (recipe != null && recipe.getType() == RecipeType.SMITHING) {
             return Arrays.asList(menu.getPulledSmithingInputSlots());
         }
@@ -312,13 +304,14 @@ public class ResonantEmiEncodePatternHandler implements StandardRecipeHandler<Re
     }
 
     private static appeng.menu.me.items.CraftingTermMenu.MissingIngredientSlots toMissingIngredientSlots(
-            ProcessingTransferPreview preview) {
+                                                                                                         ProcessingTransferPreview preview) {
         return new appeng.menu.me.items.CraftingTermMenu.MissingIngredientSlots(
                 preview.missingSlots(),
                 preview.craftableSlots());
     }
 
     private record ProcessingTransferPreview(Set<Integer> missingSlots, Set<Integer> craftableSlots) {
+
         private boolean anyMissingOrCraftable() {
             return anyMissing() || anyCraftable();
         }

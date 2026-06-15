@@ -1,6 +1,5 @@
 package io.github.lounode.ae2cs.common.init;
 
-import appeng.helpers.IPatternTerminalMenuHost;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
@@ -12,6 +11,7 @@ import io.github.lounode.ae2cs.common.menu.ResonantTemplateCodingTermMenu;
 import io.github.lounode.ae2cs.common.menu.linker.broadcast.*;
 import io.github.lounode.ae2cs.common.menu.submenu.SideConfigMenu;
 
+import appeng.helpers.IPatternTerminalMenuHost;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.implementations.PatternProviderMenu;
@@ -129,8 +129,7 @@ public class AECSMenus {
 
     public static final Supplier<MenuType<ResonantTemplateCodingTermMenu>> RESONANT_TEMPLATE_CODING_TERM_MENU = MENU_TYPES.register("resonant_template_coding_term_menu",
             () -> MenuTypeBuilder.create(ResonantTemplateCodingTermMenu::new, IPatternTerminalMenuHost.class)
-                    .build(AE2CrystalScience.makeId("resonant_template_coding_term_menu"))
-    );
+                    .build(AE2CrystalScience.makeId("resonant_template_coding_term_menu")));
 
     public static void registerMenus(IEventBus eventBus) {
         MENU_TYPES.register(eventBus);

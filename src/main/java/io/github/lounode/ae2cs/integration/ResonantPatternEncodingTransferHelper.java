@@ -1,12 +1,6 @@
 package io.github.lounode.ae2cs.integration;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Predicate;
+import io.github.lounode.ae2cs.common.menu.ResonantTemplateCodingTermMenu;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
@@ -21,7 +15,7 @@ import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.slot.FakeSlot;
 import appeng.parts.encoding.EncodingMode;
 import appeng.util.CraftingRecipeUtil;
-import io.github.lounode.ae2cs.common.menu.ResonantTemplateCodingTermMenu;
+
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
@@ -32,17 +26,24 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-public final class ResonantPatternEncodingTransferHelper {
-    private static final Comparator<GridInventoryEntry> ENTRY_COMPARATOR =
-            Comparator.comparing(GridInventoryEntry::isCraftable)
-                    .thenComparing(ResonantPatternEncodingTransferHelper::isUndamaged)
-                    .thenComparing(GridInventoryEntry::getStoredAmount);
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Predicate;
 
-    private ResonantPatternEncodingTransferHelper() {
-    }
+public final class ResonantPatternEncodingTransferHelper {
+
+    private static final Comparator<GridInventoryEntry> ENTRY_COMPARATOR = Comparator.comparing(GridInventoryEntry::isCraftable)
+            .thenComparing(ResonantPatternEncodingTransferHelper::isUndamaged)
+            .thenComparing(GridInventoryEntry::getStoredAmount);
+
+    private ResonantPatternEncodingTransferHelper() {}
 
     public static void encodeCraftingRecipe(ResonantTemplateCodingTermMenu menu, RecipeHolder<?> recipe,
-            List<List<GenericStack>> genericIngredients, Predicate<ItemStack> visiblePredicate) {
+                                            List<List<GenericStack>> genericIngredients, Predicate<ItemStack> visiblePredicate) {
         if (!menu.pullProcessingRecipeInputs) {
             EncodingHelper.encodeCraftingRecipe(menu, recipe, genericIngredients, visiblePredicate);
             return;
@@ -108,7 +109,7 @@ public final class ResonantPatternEncodingTransferHelper {
     }
 
     public static void transferCraftingRecipeToRealGrid(ResonantTemplateCodingTermMenu menu, RecipeHolder<?> recipe,
-            Predicate<ItemStack> visiblePredicate, boolean craftMissing) {
+                                                        Predicate<ItemStack> visiblePredicate, boolean craftMissing) {
         ResourceLocation recipeId = recipe != null ? recipe.id() : null;
         if (recipeId != null && menu.getPlayer().level().getRecipeManager().byKey(recipeId).isEmpty()) {
             AELog.debug("Cannot send recipe id %s to server because it's transient", recipeId);
@@ -121,7 +122,7 @@ public final class ResonantPatternEncodingTransferHelper {
     }
 
     public static boolean encodeCraftingLikeRecipeToRealGrid(ResonantTemplateCodingTermMenu menu,
-            RecipeHolder<?> recipe, List<List<GenericStack>> genericIngredients) {
+                                                             RecipeHolder<?> recipe, List<List<GenericStack>> genericIngredients) {
         if (!menu.pullProcessingRecipeInputs || recipe == null) {
             return false;
         }
@@ -164,7 +165,7 @@ public final class ResonantPatternEncodingTransferHelper {
     }
 
     private static NonNullList<ItemStack> findGoodTemplateItems(ResonantTemplateCodingTermMenu menu,
-            RecipeHolder<?> recipe, Predicate<ItemStack> visiblePredicate) {
+                                                                RecipeHolder<?> recipe, Predicate<ItemStack> visiblePredicate) {
         Map<AEKey, Integer> prioritizedNetworkInv = EncodingHelper.getIngredientPriorities(menu, ENTRY_COMPARATOR);
         NonNullList<ItemStack> templateItems = NonNullList.withSize(menu.getCraftingGridSlots().length,
                 ItemStack.EMPTY);
@@ -199,24 +200,20 @@ public final class ResonantPatternEncodingTransferHelper {
     }
 
     public static void encodeProcessingRecipe(ResonantTemplateCodingTermMenu menu,
-            List<List<GenericStack>> genericIngredients, List<GenericStack> genericResults) {
+                                              List<List<GenericStack>> genericIngredients, List<GenericStack> genericResults) {
         encodeProcessingRecipe(menu, genericIngredients, genericResults, false);
     }
 
     public static void encodeProcessingRecipe(ResonantTemplateCodingTermMenu menu,
-            List<List<GenericStack>> genericIngredients, List<GenericStack> genericResults, boolean craftMissing) {
+                                              List<List<GenericStack>> genericIngredients, List<GenericStack> genericResults, boolean craftMissing) {
         if (!menu.pullProcessingRecipeInputs) {
             menu.setMode(EncodingMode.PROCESSING);
         } else {
             menu.prepareTransferMode(EncodingMode.PROCESSING);
         }
-        Map<AEKey, Integer> ingredientPriorities = menu.pullProcessingRecipeInputs
-                ? EncodingHelper.getIngredientPriorities(menu, ENTRY_COMPARATOR)
-                : Map.of();
+        Map<AEKey, Integer> ingredientPriorities = menu.pullProcessingRecipeInputs ? EncodingHelper.getIngredientPriorities(menu, ENTRY_COMPARATOR) : Map.of();
 
-        var transferMode = menu.pullProcessingRecipeInputs
-                ? ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode.MERGE
-                : menu.processingIngredientTransferMode;
+        var transferMode = menu.pullProcessingRecipeInputs ? ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode.MERGE : menu.processingIngredientTransferMode;
         List<GenericStack> inputs = switch (transferMode) {
             case MERGE -> mergeIngredients(genericIngredients, ingredientPriorities);
             case PARTIAL_SPLIT -> partiallySplitIngredients(genericIngredients, ingredientPriorities);
@@ -251,12 +248,12 @@ public final class ResonantPatternEncodingTransferHelper {
     }
 
     private static void encodeBestMatchingStacksIntoSlotsWithoutMerging(List<List<GenericStack>> possibleInputsBySlot,
-            Map<AEKey, Integer> ingredientPriorities, FakeSlot[] slots) {
+                                                                        Map<AEKey, Integer> ingredientPriorities, FakeSlot[] slots) {
         encodeStacksIntoSlots(fullySplitIngredients(possibleInputsBySlot, ingredientPriorities), slots);
     }
 
     private static List<GenericStack> fullySplitIngredients(List<List<GenericStack>> possibleInputsBySlot,
-            Map<AEKey, Integer> ingredientPriorities) {
+                                                            Map<AEKey, Integer> ingredientPriorities) {
         return possibleInputsBySlot.stream()
                 .map(possibleIngredients -> possibleIngredients.stream()
                         .filter(ResonantPatternEncodingTransferHelper::isPresentIngredient)
@@ -267,7 +264,7 @@ public final class ResonantPatternEncodingTransferHelper {
     }
 
     private static List<GenericStack> partiallySplitIngredients(List<List<GenericStack>> possibleInputsBySlot,
-            Map<AEKey, Integer> ingredientPriorities) {
+                                                                Map<AEKey, Integer> ingredientPriorities) {
         List<GenericStack> fullySplit = fullySplitIngredients(possibleInputsBySlot, ingredientPriorities);
         if (fullySplit.isEmpty()) {
             return List.of();
@@ -289,7 +286,7 @@ public final class ResonantPatternEncodingTransferHelper {
     }
 
     private static List<GenericStack> mergeIngredients(List<List<GenericStack>> possibleInputsBySlot,
-            Map<AEKey, Integer> ingredientPriorities) {
+                                                       Map<AEKey, Integer> ingredientPriorities) {
         ArrayList<GenericStack> result = new ArrayList<>();
         for (GenericStack stack : fullySplitIngredients(possibleInputsBySlot, ingredientPriorities)) {
             addOrMerge(result, stack);
@@ -333,7 +330,7 @@ public final class ResonantPatternEncodingTransferHelper {
     }
 
     private static GenericStack findBestIngredient(Map<AEKey, Integer> ingredientPriorities,
-            List<GenericStack> possibleIngredients) {
+                                                   List<GenericStack> possibleIngredients) {
         return possibleIngredients.stream()
                 .max(Comparator.comparingInt(stack -> ingredientPriorities.getOrDefault(stack.what(), Integer.MIN_VALUE)))
                 .orElseThrow();

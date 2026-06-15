@@ -10,7 +10,6 @@ import io.github.lounode.ae2cs.common.recipe.circuit_etcher.CircuitEtcherRecipe;
 import io.github.lounode.ae2cs.common.recipe.crystal_aggregator.CrystalAggregatorRecipe;
 import io.github.lounode.ae2cs.common.recipe.crystal_pulverizer.CrystalPulverizerRecipe;
 
-import mezz.jei.api.registration.IRecipeTransferRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -24,6 +23,7 @@ import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.registration.IRecipeTransferRegistration;
 import org.jetbrains.annotations.NotNull;
 import tamaized.ae2jeiintegration.integration.modules.jei.categories.EntropyManipulatorCategory;
 
@@ -97,8 +97,7 @@ public class JeiPlugin implements IModPlugin {
         registration.addUniversalRecipeTransferHandler(new ResonantEncodePatternTransferHandler(
                 menuType,
                 transferHelper,
-                ingredientVisibility
-        ));
+                ingredientVisibility));
     }
 
     @Override

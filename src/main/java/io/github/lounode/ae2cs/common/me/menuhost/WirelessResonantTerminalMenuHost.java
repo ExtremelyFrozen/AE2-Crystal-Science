@@ -1,6 +1,9 @@
 package io.github.lounode.ae2cs.common.me.menuhost;
 
-import java.util.function.BiConsumer;
+import io.github.lounode.ae2cs.common.init.AECSDataComponents;
+import io.github.lounode.ae2cs.common.item.WirelessResonantTerminalItem;
+import io.github.lounode.ae2cs.common.me.part.IResonantTemplateCodingTerminalHost;
+import io.github.lounode.ae2cs.common.menu.ResonantTemplateCodingTermMenu;
 
 import appeng.crafting.pattern.AEProcessingPattern;
 import appeng.helpers.IPatternTerminalLogicHost;
@@ -11,20 +14,20 @@ import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.parts.encoding.PatternEncodingLogic;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
-import io.github.lounode.ae2cs.common.init.AECSDataComponents;
-import io.github.lounode.ae2cs.common.item.WirelessResonantTerminalItem;
-import io.github.lounode.ae2cs.common.me.part.IResonantTemplateCodingTerminalHost;
-import io.github.lounode.ae2cs.common.menu.ResonantTemplateCodingTermMenu;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import java.util.function.BiConsumer;
+
 public class WirelessResonantTerminalMenuHost
-        extends WirelessTerminalMenuHost<WirelessResonantTerminalItem>
-        implements IPatternTerminalLogicHost, IPatternTerminalMenuHost, IResonantTemplateCodingTerminalHost,
-        InternalInventoryHost {
+                                              extends WirelessTerminalMenuHost<WirelessResonantTerminalItem>
+                                              implements IPatternTerminalLogicHost, IPatternTerminalMenuHost, IResonantTemplateCodingTerminalHost,
+                                              InternalInventoryHost {
+
     private static final String TAG_PULL_RECIPE_INPUTS_TO_REAL_GRID = "PullRecipeInputsToRealGrid";
     private static final String TAG_PULLED_ANVIL_MODE = "PulledAnvilMode";
     private static final String TAG_ENCODE_RESONATING_PATTERN = "EncodeResonatingPattern";
@@ -37,20 +40,18 @@ public class WirelessResonantTerminalMenuHost
 
     private final PatternEncodingLogic logic = new PatternEncodingLogic(this);
     private final AppEngInternalInventory pulledCraftingInputInv = new AppEngInternalInventory(this, 9);
-    private final AppEngInternalInventory pulledProcessingInputInv =
-            new AppEngInternalInventory(this, AEProcessingPattern.MAX_INPUT_SLOTS);
+    private final AppEngInternalInventory pulledProcessingInputInv = new AppEngInternalInventory(this, AEProcessingPattern.MAX_INPUT_SLOTS);
     private final AppEngInternalInventory pulledSmithingInputInv = new AppEngInternalInventory(this, 3);
     private final AppEngInternalInventory pulledStonecuttingInputInv = new AppEngInternalInventory(this, 1);
     private final AppEngInternalInventory pulledAnvilInputInv = new AppEngInternalInventory(this, 2);
     private boolean pullRecipeInputsToRealGrid;
     private boolean pulledAnvilMode;
     private boolean encodeResonatingPattern;
-    private ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode processingIngredientTransferMode =
-            ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode.MERGE;
+    private ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode processingIngredientTransferMode = ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode.MERGE;
     private boolean loading = true;
 
     public WirelessResonantTerminalMenuHost(WirelessResonantTerminalItem item, Player player,
-            ItemMenuHostLocator locator, BiConsumer<Player, ISubMenu> returnToMainMenu) {
+                                            ItemMenuHostLocator locator, BiConsumer<Player, ISubMenu> returnToMainMenu) {
         super(item, player, locator, returnToMainMenu);
         readFromItem();
         this.loading = false;
@@ -148,10 +149,9 @@ public class WirelessResonantTerminalMenuHost
 
     @Override
     public void setProcessingIngredientTransferMode(
-            ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode processingIngredientTransferMode) {
+                                                    ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode processingIngredientTransferMode) {
         if (processingIngredientTransferMode == null) {
-            processingIngredientTransferMode =
-                    ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode.MERGE;
+            processingIngredientTransferMode = ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode.MERGE;
         }
         if (this.processingIngredientTransferMode == processingIngredientTransferMode) {
             return;
@@ -216,7 +216,7 @@ public class WirelessResonantTerminalMenuHost
     }
 
     private static ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode readProcessingIngredientTransferMode(
-            CompoundTag data) {
+                                                                                                                        CompoundTag data) {
         if (!data.contains(TAG_PROCESSING_INGREDIENT_TRANSFER_MODE)) {
             return ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode.MERGE;
         }

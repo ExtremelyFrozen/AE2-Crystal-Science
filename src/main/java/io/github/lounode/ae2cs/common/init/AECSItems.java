@@ -1,6 +1,5 @@
 package io.github.lounode.ae2cs.common.init;
 
-import appeng.core.AEConfig;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.ids.AECSItemIds;
 import io.github.lounode.ae2cs.common.item.*;
@@ -10,6 +9,7 @@ import io.github.lounode.ae2cs.common.item.tools.resonating.*;
 import io.github.lounode.ae2cs.common.item.upgrades.*;
 
 import appeng.api.upgrades.Upgrades;
+import appeng.core.AEConfig;
 
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;

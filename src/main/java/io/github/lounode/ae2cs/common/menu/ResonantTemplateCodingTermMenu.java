@@ -1,10 +1,8 @@
 package io.github.lounode.ae2cs.common.menu;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import io.github.lounode.ae2cs.common.init.AECSMenus;
+import io.github.lounode.ae2cs.common.me.crafting.ResonatingPatternDetails;
+import io.github.lounode.ae2cs.common.me.part.IResonantTemplateCodingTerminalHost;
 
 import appeng.api.config.Actionable;
 import appeng.api.crafting.IPatternDetails;
@@ -14,14 +12,14 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.StorageHelper;
 import appeng.helpers.ICraftingGridMenu;
-import appeng.helpers.InventoryAction;
 import appeng.helpers.IPatternTerminalMenuHost;
+import appeng.helpers.InventoryAction;
 import appeng.integration.modules.itemlists.EncodingHelper;
-import appeng.menu.me.common.GridInventoryEntry;
-import appeng.menu.me.crafting.CraftConfirmMenu;
 import appeng.menu.SlotSemantic;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
+import appeng.menu.me.common.GridInventoryEntry;
+import appeng.menu.me.crafting.CraftConfirmMenu;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.menu.slot.AppEngSlot;
 import appeng.parts.encoding.EncodingMode;
@@ -29,16 +27,16 @@ import appeng.parts.encoding.PatternEncodingLogic;
 import appeng.util.ConfigInventory;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.PlayerInternalInventory;
-import io.github.lounode.ae2cs.common.init.AECSMenus;
-import io.github.lounode.ae2cs.common.me.crafting.ResonatingPatternDetails;
-import io.github.lounode.ae2cs.common.me.part.IResonantTemplateCodingTerminalHost;
+
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AnvilMenu;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.ContainerLevelAccess;
@@ -54,18 +52,22 @@ import net.minecraft.world.item.crafting.SmithingRecipe;
 import net.minecraft.world.item.crafting.SmithingRecipeInput;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.Level;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 谐振样板编码终端菜单 — 继承原版编码逻辑，处理样板模式使用 4×4 可视输入网格。
  * 继承 PatternEncodingTermMenu 获得完整编码逻辑。
  */
 public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu implements ICraftingGridMenu {
-    private static final java.util.Comparator<GridInventoryEntry> ENTRY_COMPARATOR =
-            java.util.Comparator.comparing(GridInventoryEntry::isCraftable)
-                    .thenComparing(ResonantTemplateCodingTermMenu::isUndamaged)
-                    .thenComparing(GridInventoryEntry::getStoredAmount);
+
+    private static final java.util.Comparator<GridInventoryEntry> ENTRY_COMPARATOR = java.util.Comparator.comparing(GridInventoryEntry::isCraftable)
+            .thenComparing(ResonantTemplateCodingTermMenu::isUndamaged)
+            .thenComparing(GridInventoryEntry::getStoredAmount);
     private static final String ACTION_SET_RESONATING_PATTERN_ENCODING = "setResonatingPatternEncoding";
     private static final String ACTION_SET_PULL_PROCESSING_RECIPE_INPUTS = "setPullProcessingRecipeInputs";
     private static final String ACTION_PULL_ENCODED_INPUTS_TO_GRID = "pullEncodedInputsToGrid";
@@ -75,36 +77,25 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
     private static final String ACTION_PREPARE_TRANSFER_MODE = "prepareTransferMode";
     private static final String ACTION_PULL_TRANSFER_TO_GRID = "pullTransferToGrid";
     private static final String ACTION_PULL_PROCESSING_TRANSFER_TO_GRID = "pullProcessingTransferToGrid";
-    private static final String ACTION_PULL_PROCESSING_TRANSFER_TO_GRID_AND_REQUEST_AUTO_CRAFT =
-            "pullProcessingTransferToGridAndRequestAutoCraft";
+    private static final String ACTION_PULL_PROCESSING_TRANSFER_TO_GRID_AND_REQUEST_AUTO_CRAFT = "pullProcessingTransferToGridAndRequestAutoCraft";
     private static final String ACTION_SET_PROCESSING_INGREDIENT_TRANSFER_MODE = "setProcessingIngredientTransferMode";
     private static final String ACTION_CYCLE_PROCESSING_INGREDIENT_TRANSFER_MODE = "cycleProcessingIngredientTransferMode";
     private static final String ACTION_SET_PULLED_ANVIL_MODE = "setPulledAnvilMode";
     private static final String ACTION_SET_PULLED_ANVIL_ITEM_NAME = "setPulledAnvilItemName";
     private static final String ACTION_CLEAR_PULLED_ANVIL_INPUTS_TO_NETWORK = "clearPulledAnvilInputsToNetwork";
     private static final String ACTION_CLEAR_PULLED_ANVIL_INPUTS_TO_PLAYER = "clearPulledAnvilInputsToPlayer";
-    private static final String ACTION_REQUEST_MISSING_PULLED_PROCESSING_INPUTS_AUTO_CRAFT =
-            "requestMissingPulledProcessingInputsAutoCraft";
+    private static final String ACTION_REQUEST_MISSING_PULLED_PROCESSING_INPUTS_AUTO_CRAFT = "requestMissingPulledProcessingInputsAutoCraft";
     private static final Field ENCODING_LOGIC_FIELD = getEncodingLogicField();
     private static final Field STONECUTTING_INPUT_SLOT_FIELD = getSlotField("stonecuttingInputSlot");
-    public static final SlotSemantic PULLED_CRAFTING_INPUTS =
-            SlotSemantics.register("AE2CS_PULLED_CRAFTING_INPUTS", false);
-    public static final SlotSemantic PULLED_CRAFTING_RESULT =
-            SlotSemantics.register("AE2CS_PULLED_CRAFTING_RESULT", false);
-    public static final SlotSemantic PULLED_PROCESSING_INPUTS =
-            SlotSemantics.register("AE2CS_PULLED_PROCESSING_INPUTS", false);
-    public static final SlotSemantic PULLED_SMITHING_TABLE_INPUTS =
-            SlotSemantics.register("AE2CS_PULLED_SMITHING_TABLE_INPUTS", false);
-    public static final SlotSemantic PULLED_SMITHING_TABLE_RESULT =
-            SlotSemantics.register("AE2CS_PULLED_SMITHING_TABLE_RESULT", false);
-    public static final SlotSemantic PULLED_STONECUTTING_INPUT =
-            SlotSemantics.register("AE2CS_PULLED_STONECUTTING_INPUT", false);
-    public static final SlotSemantic PULLED_STONECUTTING_RESULT =
-            SlotSemantics.register("AE2CS_PULLED_STONECUTTING_RESULT", false);
-    public static final SlotSemantic PULLED_ANVIL_INPUTS =
-            SlotSemantics.register("AE2CS_PULLED_ANVIL_INPUTS", false);
-    public static final SlotSemantic PULLED_ANVIL_RESULT =
-            SlotSemantics.register("AE2CS_PULLED_ANVIL_RESULT", false);
+    public static final SlotSemantic PULLED_CRAFTING_INPUTS = SlotSemantics.register("AE2CS_PULLED_CRAFTING_INPUTS", false);
+    public static final SlotSemantic PULLED_CRAFTING_RESULT = SlotSemantics.register("AE2CS_PULLED_CRAFTING_RESULT", false);
+    public static final SlotSemantic PULLED_PROCESSING_INPUTS = SlotSemantics.register("AE2CS_PULLED_PROCESSING_INPUTS", false);
+    public static final SlotSemantic PULLED_SMITHING_TABLE_INPUTS = SlotSemantics.register("AE2CS_PULLED_SMITHING_TABLE_INPUTS", false);
+    public static final SlotSemantic PULLED_SMITHING_TABLE_RESULT = SlotSemantics.register("AE2CS_PULLED_SMITHING_TABLE_RESULT", false);
+    public static final SlotSemantic PULLED_STONECUTTING_INPUT = SlotSemantics.register("AE2CS_PULLED_STONECUTTING_INPUT", false);
+    public static final SlotSemantic PULLED_STONECUTTING_RESULT = SlotSemantics.register("AE2CS_PULLED_STONECUTTING_RESULT", false);
+    public static final SlotSemantic PULLED_ANVIL_INPUTS = SlotSemantics.register("AE2CS_PULLED_ANVIL_INPUTS", false);
+    public static final SlotSemantic PULLED_ANVIL_RESULT = SlotSemantics.register("AE2CS_PULLED_ANVIL_RESULT", false);
 
     private final AppEngInternalInventory pulledCraftingInputInv;
     private final AppEngSlot[] pulledCraftingInputSlots;
@@ -144,26 +135,24 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
     public boolean pulledAnvilMode = false;
     @GuiSync(88)
     public String pulledAnvilItemName = "";
+    @GuiSync(87)
+    public int blankPatternSlotCount = 0;
 
     public ResonantTemplateCodingTermMenu(int id, Inventory ip, IPatternTerminalMenuHost host) {
         this(AECSMenus.RESONANT_TEMPLATE_CODING_TERM_MENU.get(), id, ip, host, true);
     }
 
     public ResonantTemplateCodingTermMenu(MenuType<?> menuType, int id, Inventory ip,
-            IPatternTerminalMenuHost host, boolean bindInventory) {
+                                          IPatternTerminalMenuHost host, boolean bindInventory) {
         super(menuType, id, ip, host, bindInventory);
         this.resonantHost = host instanceof IResonantTemplateCodingTerminalHost typedHost ? typedHost : null;
-        this.pullProcessingRecipeInputs = this.resonantHost != null
-                && this.resonantHost.isPullRecipeInputsToRealGrid();
-        this.pulledAnvilMode = this.pullProcessingRecipeInputs && this.resonantHost != null
-                && this.resonantHost.isPulledAnvilMode();
+        this.pullProcessingRecipeInputs = this.resonantHost != null && this.resonantHost.isPullRecipeInputsToRealGrid();
+        this.pulledAnvilMode = this.pullProcessingRecipeInputs && this.resonantHost != null && this.resonantHost.isPulledAnvilMode();
         if (this.resonantHost != null) {
             this.encodeResonatingPattern = this.resonantHost.isEncodeResonatingPattern();
             this.processingIngredientTransferMode = this.resonantHost.getProcessingIngredientTransferMode();
         }
-        this.pulledCraftingInputInv = this.resonantHost != null
-                ? this.resonantHost.getPulledCraftingInputInv()
-                : new AppEngInternalInventory(this.getCraftingGridSlots().length);
+        this.pulledCraftingInputInv = this.resonantHost != null ? this.resonantHost.getPulledCraftingInputInv() : new AppEngInternalInventory(this.getCraftingGridSlots().length);
         this.pulledCraftingInputSlots = new AppEngSlot[this.getCraftingGridSlots().length];
         for (int i = 0; i < this.pulledCraftingInputSlots.length; i++) {
             AppEngSlot slot = new PulledInputSlot(this.pulledCraftingInputInv, i, EncodingMode.CRAFTING);
@@ -174,9 +163,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
         this.pulledCraftingResultSlot = this.addSlot(new PulledResultSlot(this.pulledCraftingResultInv, 0,
                 EncodingMode.CRAFTING), PULLED_CRAFTING_RESULT);
 
-        this.pulledProcessingInputInv = this.resonantHost != null
-                ? this.resonantHost.getPulledProcessingInputInv()
-                : new AppEngInternalInventory(this.getProcessingInputSlots().length);
+        this.pulledProcessingInputInv = this.resonantHost != null ? this.resonantHost.getPulledProcessingInputInv() : new AppEngInternalInventory(this.getProcessingInputSlots().length);
         this.pulledProcessingInputSlots = new AppEngSlot[this.getProcessingInputSlots().length];
         for (int i = 0; i < this.pulledProcessingInputSlots.length; i++) {
             AppEngSlot slot = new PulledInputSlot(this.pulledProcessingInputInv, i, EncodingMode.PROCESSING);
@@ -185,9 +172,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
             this.addSlot(slot, PULLED_PROCESSING_INPUTS);
         }
 
-        this.pulledSmithingInputInv = this.resonantHost != null
-                ? this.resonantHost.getPulledSmithingInputInv()
-                : new AppEngInternalInventory(3);
+        this.pulledSmithingInputInv = this.resonantHost != null ? this.resonantHost.getPulledSmithingInputInv() : new AppEngInternalInventory(3);
         this.pulledSmithingInputSlots = new AppEngSlot[3];
         for (int i = 0; i < this.pulledSmithingInputSlots.length; i++) {
             AppEngSlot slot = new PulledSmithingInputSlot(this.pulledSmithingInputInv, i);
@@ -198,9 +183,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
         this.pulledSmithingResultSlot = this.addSlot(new PulledResultSlot(this.pulledSmithingResultInv, 0,
                 EncodingMode.SMITHING_TABLE), PULLED_SMITHING_TABLE_RESULT);
 
-        this.pulledStonecuttingInputInv = this.resonantHost != null
-                ? this.resonantHost.getPulledStonecuttingInputInv()
-                : new AppEngInternalInventory(1);
+        this.pulledStonecuttingInputInv = this.resonantHost != null ? this.resonantHost.getPulledStonecuttingInputInv() : new AppEngInternalInventory(1);
         this.pulledStonecuttingInputSlot = new PulledInputSlot(this.pulledStonecuttingInputInv, 0,
                 EncodingMode.STONECUTTING);
         this.pulledStonecuttingInputSlot.setActive(false);
@@ -208,9 +191,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
         this.pulledStonecuttingResultSlot = this.addSlot(new PulledResultSlot(this.pulledStonecuttingResultInv, 0,
                 EncodingMode.STONECUTTING), PULLED_STONECUTTING_RESULT);
 
-        this.pulledAnvilInputInv = this.resonantHost != null
-                ? this.resonantHost.getPulledAnvilInputInv()
-                : new AppEngInternalInventory(2);
+        this.pulledAnvilInputInv = this.resonantHost != null ? this.resonantHost.getPulledAnvilInputInv() : new AppEngInternalInventory(2);
         this.pulledAnvilInputSlots = new AppEngSlot[2];
         for (int i = 0; i < this.pulledAnvilInputSlots.length; i++) {
             AppEngSlot slot = new PulledAnvilInputSlot(this.pulledAnvilInputInv, i);
@@ -581,9 +562,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
         setPulledAnvilMode(false);
         switchPulledTransferMode(targetMode);
 
-        List<GenericStack> desiredInputs = requestAutoCraft && targetMode == EncodingMode.PROCESSING
-                ? captureEncodedInputs(targetMode)
-                : List.of();
+        List<GenericStack> desiredInputs = requestAutoCraft && targetMode == EncodingMode.PROCESSING ? captureEncodedInputs(targetMode) : List.of();
         clearPulledModeInputsToNetwork(targetMode, this.getPlayer());
         pullEncodedItemsToSlots(targetMode);
         if (targetMode == EncodingMode.STONECUTTING) {
@@ -654,10 +633,8 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
     }
 
     private List<GenericStack> selectCraftingInputs(RecipeHolder<?> recipe, List<List<GenericStack>> genericIngredients,
-            int slotCount) {
-        Map<appeng.api.stacks.AEKey, Integer> priorities = this.getClientRepo() != null
-                ? EncodingHelper.getIngredientPriorities(this, ENTRY_COMPARATOR)
-                : Map.of();
+                                                    int slotCount) {
+        Map<appeng.api.stacks.AEKey, Integer> priorities = this.getClientRepo() != null ? EncodingHelper.getIngredientPriorities(this, ENTRY_COMPARATOR) : Map.of();
         var result = new ArrayList<GenericStack>(slotCount);
         for (int i = 0; i < slotCount; i++) {
             List<GenericStack> candidates = i < genericIngredients.size() ? genericIngredients.get(i) : List.of();
@@ -667,7 +644,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
     }
 
     private GenericStack findBestIngredient(Map<appeng.api.stacks.AEKey, Integer> priorities,
-            List<GenericStack> candidates) {
+                                            List<GenericStack> candidates) {
         return candidates.stream()
                 .filter(stack -> stack != null && stack.what() != null && stack.amount() > 0)
                 .max(java.util.Comparator.comparingInt(stack -> priorities.getOrDefault(stack.what(), Integer.MIN_VALUE)))
@@ -765,6 +742,9 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
     @Override
     public void onSlotChange(Slot s) {
         if (this.isServerSide()) {
+            if (this.getSlotSemantic(s) == SlotSemantics.BLANK_PATTERN) {
+                updateSyncedBlankPatternSlotCount();
+            }
             if (syncEncodedInputFromPulledSlot(s) && !this.suppressPulledInputSync) {
                 updatePulledResult();
             }
@@ -788,7 +768,18 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
     @Override
     public void broadcastChanges() {
         refreshPulledStonecuttingRecipesIfInputChanged();
+        updateSyncedBlankPatternSlotCount();
         super.broadcastChanges();
+        updateSyncedBlankPatternSlotCount();
+    }
+
+    private void updateSyncedBlankPatternSlotCount() {
+        if (!this.isServerSide()) {
+            return;
+        }
+
+        var slots = this.getSlots(SlotSemantics.BLANK_PATTERN);
+        this.blankPatternSlotCount = slots.isEmpty() ? 0 : slots.getFirst().getItem().getCount();
     }
 
     @Override
@@ -830,17 +821,13 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
             Slot slot = this.getSlot(slotId);
             if (slot instanceof PulledAnvilResultSlot resultSlot && resultSlot.isActive()) {
                 if (!this.isClientSide()) {
-                    resultSlot.doClick(clickType == ClickType.QUICK_MOVE
-                            ? InventoryAction.CRAFT_SHIFT
-                            : InventoryAction.CRAFT_ITEM, player);
+                    resultSlot.doClick(clickType == ClickType.QUICK_MOVE ? InventoryAction.CRAFT_SHIFT : InventoryAction.CRAFT_ITEM, player);
                 }
                 return;
             }
             if (slot instanceof PulledResultSlot resultSlot && resultSlot.isActive()) {
                 if (!this.isClientSide()) {
-                    resultSlot.doClick(clickType == ClickType.QUICK_MOVE
-                            ? InventoryAction.CRAFT_SHIFT
-                            : InventoryAction.CRAFT_ITEM, player);
+                    resultSlot.doClick(clickType == ClickType.QUICK_MOVE ? InventoryAction.CRAFT_SHIFT : InventoryAction.CRAFT_ITEM, player);
                 }
                 return;
             }
@@ -878,8 +865,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
                         resultSlot.doClick(action, player);
                         return;
                     }
-                    default -> {
-                    }
+                    default -> {}
                 }
             }
             if (clickedSlot instanceof PulledResultSlot resultSlot && resultSlot.isActive()) {
@@ -888,8 +874,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
                         resultSlot.doClick(action, player);
                         return;
                     }
-                    default -> {
-                    }
+                    default -> {}
                 }
             }
         }
@@ -926,11 +911,9 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
     }
 
     private void exitPulledAnvilModeForLoadedPatternIfChanged(ItemStack stack) {
-        boolean changed = !ItemStack.isSameItemSameComponents(stack, this.lastEncodedPatternForPulledAnvilExit)
-                || stack.getCount() != this.lastEncodedPatternForPulledAnvilExit.getCount();
+        boolean changed = !ItemStack.isSameItemSameComponents(stack, this.lastEncodedPatternForPulledAnvilExit) || stack.getCount() != this.lastEncodedPatternForPulledAnvilExit.getCount();
         this.lastEncodedPatternForPulledAnvilExit = stack.copy();
-        if (changed && this.pullProcessingRecipeInputs && this.pulledAnvilMode
-                && PatternDetailsHelper.isEncodedPattern(stack)) {
+        if (changed && this.pullProcessingRecipeInputs && this.pulledAnvilMode && PatternDetailsHelper.isEncodedPattern(stack)) {
             setPulledAnvilMode(false);
         }
     }
@@ -1040,14 +1023,11 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
 
     private void updatePulledResult() {
         this.pulledCraftingResultInv.setItem(0,
-                !this.pulledAnvilMode && this.getMode() == EncodingMode.CRAFTING ? getPulledCraftingResult()
-                        : ItemStack.EMPTY);
+                !this.pulledAnvilMode && this.getMode() == EncodingMode.CRAFTING ? getPulledCraftingResult() : ItemStack.EMPTY);
         this.pulledSmithingResultInv.setItem(0,
-                !this.pulledAnvilMode && this.getMode() == EncodingMode.SMITHING_TABLE ? getPulledSmithingResult()
-                        : ItemStack.EMPTY);
+                !this.pulledAnvilMode && this.getMode() == EncodingMode.SMITHING_TABLE ? getPulledSmithingResult() : ItemStack.EMPTY);
         this.pulledStonecuttingResultInv.setItem(0,
-                !this.pulledAnvilMode && this.getMode() == EncodingMode.STONECUTTING ? getPulledStonecuttingResult()
-                        : ItemStack.EMPTY);
+                !this.pulledAnvilMode && this.getMode() == EncodingMode.STONECUTTING ? getPulledStonecuttingResult() : ItemStack.EMPTY);
         this.pulledAnvilResultInv.setItem(0,
                 this.pulledAnvilMode ? getPulledAnvilResult() : ItemStack.EMPTY);
     }
@@ -1093,10 +1073,8 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
 
         SingleRecipeInput input = new SingleRecipeInput(inputStack);
         Level level = this.getPlayer().level();
-        RecipeHolder<StonecutterRecipe> recipe = this.getStonecuttingRecipeId() == null
-                ? level.getRecipeManager().getRecipeFor(RecipeType.STONECUTTING, input, level).orElse(null)
-                : level.getRecipeManager().getRecipeFor(RecipeType.STONECUTTING, input, level,
-                        this.getStonecuttingRecipeId()).orElse(null);
+        RecipeHolder<StonecutterRecipe> recipe = this.getStonecuttingRecipeId() == null ? level.getRecipeManager().getRecipeFor(RecipeType.STONECUTTING, input, level).orElse(null) : level.getRecipeManager().getRecipeFor(RecipeType.STONECUTTING, input, level,
+                this.getStonecuttingRecipeId()).orElse(null);
         return recipe == null ? ItemStack.EMPTY : recipe.value().assemble(input, level.registryAccess());
     }
 
@@ -1135,9 +1113,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
     private void refreshStonecuttingRecipesFromCurrentInput() {
         this.getStonecuttingRecipes().clear();
 
-        ItemStack inputStack = this.pullProcessingRecipeInputs
-                ? this.pulledStonecuttingInputSlot.getItem()
-                : this.getStonecuttingInputSlotReflective().getItem();
+        ItemStack inputStack = this.pullProcessingRecipeInputs ? this.pulledStonecuttingInputSlot.getItem() : this.getStonecuttingInputSlotReflective().getItem();
         this.lastPulledStonecuttingInputForRecipes = inputStack.copy();
         if (!inputStack.isEmpty()) {
             SingleRecipeInput input = new SingleRecipeInput(inputStack);
@@ -1146,8 +1122,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
                     .getRecipesFor(RecipeType.STONECUTTING, input, level));
         }
 
-        if (this.stonecuttingRecipeId != null
-                && this.getStonecuttingRecipes().stream().noneMatch(recipe -> recipe.id().equals(this.stonecuttingRecipeId))) {
+        if (this.stonecuttingRecipeId != null && this.getStonecuttingRecipes().stream().noneMatch(recipe -> recipe.id().equals(this.stonecuttingRecipeId))) {
             if (this.isClientSide()) {
                 this.stonecuttingRecipeId = null;
             } else {
@@ -1158,14 +1133,12 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
     }
 
     public void refreshPulledStonecuttingRecipesIfInputChanged() {
-        if (!this.pullProcessingRecipeInputs || this.pulledAnvilMode
-                || this.getMode() != EncodingMode.STONECUTTING) {
+        if (!this.pullProcessingRecipeInputs || this.pulledAnvilMode || this.getMode() != EncodingMode.STONECUTTING) {
             return;
         }
 
         ItemStack inputStack = this.pulledStonecuttingInputSlot.getItem();
-        if (!ItemStack.isSameItemSameComponents(inputStack, this.lastPulledStonecuttingInputForRecipes)
-                || inputStack.getCount() != this.lastPulledStonecuttingInputForRecipes.getCount()) {
+        if (!ItemStack.isSameItemSameComponents(inputStack, this.lastPulledStonecuttingInputForRecipes) || inputStack.getCount() != this.lastPulledStonecuttingInputForRecipes.getCount()) {
             if (this.isServerSide()) {
                 syncEncodedInputFromPulledSlot(this.pulledStonecuttingInputSlot);
             } else {
@@ -1333,10 +1306,8 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
 
         SingleRecipeInput input = new SingleRecipeInput(inputStack);
         Level level = player.level();
-        RecipeHolder<StonecutterRecipe> recipe = this.getStonecuttingRecipeId() == null
-                ? level.getRecipeManager().getRecipeFor(RecipeType.STONECUTTING, input, level).orElse(null)
-                : level.getRecipeManager().getRecipeFor(RecipeType.STONECUTTING, input, level,
-                        this.getStonecuttingRecipeId()).orElse(null);
+        RecipeHolder<StonecutterRecipe> recipe = this.getStonecuttingRecipeId() == null ? level.getRecipeManager().getRecipeFor(RecipeType.STONECUTTING, input, level).orElse(null) : level.getRecipeManager().getRecipeFor(RecipeType.STONECUTTING, input, level,
+                this.getStonecuttingRecipeId()).orElse(null);
         if (recipe == null) {
             return ItemStack.EMPTY;
         }
@@ -1376,7 +1347,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
     }
 
     private void consumePulledInputs(EncodingMode mode, AppEngSlot[] slots, Slot[] encodedSlots,
-            NonNullList<ItemStack> remaining, Player player) {
+                                     NonNullList<ItemStack> remaining, Player player) {
         int[] desiredCounts = new int[slots.length];
         for (int i = 0; i < slots.length; i++) {
             desiredCounts[i] = slots[i].getItem().getCount();
@@ -1393,8 +1364,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
 
                 ItemStack remainder = i < remaining.size() ? remaining.get(i) : ItemStack.EMPTY;
                 if (!remainder.isEmpty()) {
-                    ItemStack overflow = slots[i].getItem().isEmpty() ? slots[i].safeInsert(remainder.copy())
-                            : remainder.copy();
+                    ItemStack overflow = slots[i].getItem().isEmpty() ? slots[i].safeInsert(remainder.copy()) : remainder.copy();
                     if (!overflow.isEmpty()) {
                         player.getInventory().placeItemBackInInventory(overflow);
                     }
@@ -1559,6 +1529,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
     }
 
     private class PulledInputSlot extends AppEngSlot {
+
         private final EncodingMode mode;
 
         private PulledInputSlot(AppEngInternalInventory inv, int invSlot, EncodingMode mode) {
@@ -1604,6 +1575,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
     }
 
     private class PulledSmithingInputSlot extends PulledInputSlot {
+
         private final int smithingSlot;
 
         private PulledSmithingInputSlot(AppEngInternalInventory inv, int invSlot) {
@@ -1634,6 +1606,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
     }
 
     private class PulledAnvilInputSlot extends AppEngSlot {
+
         private PulledAnvilInputSlot(AppEngInternalInventory inv, int invSlot) {
             super(inv, invSlot);
         }
@@ -1678,6 +1651,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
     }
 
     private class PulledResultSlot extends Slot {
+
         private final EncodingMode mode;
 
         private PulledResultSlot(Container container, int slot, EncodingMode mode) {
@@ -1727,9 +1701,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
             }
 
             int howManyPerCraft = itemAtStart.getCount();
-            int maxTimesToCraft = action == InventoryAction.CRAFT_SHIFT
-                    ? Math.max(1, itemAtStart.getMaxStackSize() / howManyPerCraft)
-                    : Math.max(1, itemAtStart.getMaxStackSize() / howManyPerCraft * 36);
+            int maxTimesToCraft = action == InventoryAction.CRAFT_SHIFT ? Math.max(1, itemAtStart.getMaxStackSize() / howManyPerCraft) : Math.max(1, itemAtStart.getMaxStackSize() / howManyPerCraft * 36);
             PlayerInternalInventory target = new PlayerInternalInventory(player.getInventory());
 
             for (int i = 0; i < maxTimesToCraft; i++) {
@@ -1777,9 +1749,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
             }
 
             ItemStack carried = getCarried();
-            int remainingSpace = carried.isEmpty()
-                    ? result.getMaxStackSize()
-                    : carried.getMaxStackSize() - carried.getCount();
+            int remainingSpace = carried.isEmpty() ? result.getMaxStackSize() : carried.getMaxStackSize() - carried.getCount();
             return Math.max(0, remainingSpace / result.getCount());
         }
 
@@ -1788,8 +1758,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
             if (carried.isEmpty()) {
                 return true;
             }
-            return ItemStack.isSameItemSameComponents(carried, stack)
-                    && carried.getCount() + stack.getCount() <= carried.getMaxStackSize();
+            return ItemStack.isSameItemSameComponents(carried, stack) && carried.getCount() + stack.getCount() <= carried.getMaxStackSize();
         }
 
         private void addToCarried(ItemStack stack) {
@@ -1804,6 +1773,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
     }
 
     private class PulledAnvilResultSlot extends Slot {
+
         private PulledAnvilResultSlot(Container container, int slot) {
             super(container, slot, 0, 0);
         }
@@ -1820,8 +1790,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
 
         @Override
         public boolean mayPickup(Player player) {
-            return this.isActive() && !this.getItem().isEmpty()
-                    && (player.getAbilities().instabuild || player.experienceLevel >= pulledAnvilCost);
+            return this.isActive() && !this.getItem().isEmpty() && (player.getAbilities().instabuild || player.experienceLevel >= pulledAnvilCost);
         }
 
         @Override
@@ -1881,8 +1850,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
             if (carried.isEmpty()) {
                 return true;
             }
-            return ItemStack.isSameItemSameComponents(carried, stack)
-                    && carried.getCount() + stack.getCount() <= carried.getMaxStackSize();
+            return ItemStack.isSameItemSameComponents(carried, stack) && carried.getCount() + stack.getCount() <= carried.getMaxStackSize();
         }
 
         private void addToCarried(ItemStack stack) {
@@ -1897,6 +1865,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
     }
 
     private static class PulledAnvilDelegateMenu extends AnvilMenu {
+
         private PulledAnvilDelegateMenu(int id, Inventory inventory) {
             super(id, inventory, ContainerLevelAccess.NULL);
         }
@@ -1940,6 +1909,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
     }
 
     public enum ProcessingIngredientTransferMode {
+
         MERGE,
         PARTIAL_SPLIT,
         FULL_SPLIT;
@@ -1951,6 +1921,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
     }
 
     private record PulledAnvilResult(ItemStack result, int cost, int repairItemCountCost) {
+
         private static final PulledAnvilResult EMPTY = new PulledAnvilResult(ItemStack.EMPTY, 0, 0);
     }
 }

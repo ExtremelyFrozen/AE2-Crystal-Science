@@ -92,11 +92,10 @@ public class AECSDataComponents {
             .networkSynchronized(ResonatingProviderDefaults.Defaults.STREAM_CODEC)
             .cacheEncoding());
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> WIRELESS_RESONANT_TERMINAL_DATA =
-            register("wireless_resonant_terminal_data", b -> b
-                    .persistent(CompoundTag.CODEC)
-                    .networkSynchronized(ByteBufCodecs.COMPOUND_TAG)
-                    .cacheEncoding());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> WIRELESS_RESONANT_TERMINAL_DATA = register("wireless_resonant_terminal_data", b -> b
+            .persistent(CompoundTag.CODEC)
+            .networkSynchronized(ByteBufCodecs.COMPOUND_TAG)
+            .cacheEncoding());
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<MirroredPatternProviderTarget>> MIRROR_PATTERN_PROVIDER_TARGET = register("mirror_pattern_provider_target", b -> b
             .persistent(MirroredPatternProviderTarget.CODEC)

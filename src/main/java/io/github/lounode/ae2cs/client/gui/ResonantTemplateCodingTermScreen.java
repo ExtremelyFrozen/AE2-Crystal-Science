@@ -1,56 +1,48 @@
 package io.github.lounode.ae2cs.client.gui;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
+import io.github.lounode.ae2cs.common.init.client.AECSKeyMappings;
+import io.github.lounode.ae2cs.common.menu.ResonantTemplateCodingTermMenu;
+import io.github.lounode.ae2cs.common.menu.ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode;
 
 import appeng.api.config.ActionItems;
 import appeng.api.stacks.GenericStack;
-import appeng.client.gui.Tooltip;
-import appeng.client.gui.AEBaseScreen;
 import appeng.client.Point;
-import appeng.client.gui.me.common.StackSizeRenderer;
-import appeng.client.gui.Icon;
+import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.ICompositeWidget;
+import appeng.client.gui.Icon;
+import appeng.client.gui.Tooltip;
 import appeng.client.gui.WidgetContainer;
-import appeng.client.gui.style.Blitter;
-import appeng.client.gui.me.items.ProcessingEncodingPanel;
+import appeng.client.gui.me.common.StackSizeRenderer;
 import appeng.client.gui.me.items.PatternEncodingTermScreen;
+import appeng.client.gui.me.items.ProcessingEncodingPanel;
 import appeng.client.gui.me.items.StonecuttingEncodingPanel;
+import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.StyleManager;
 import appeng.client.gui.style.WidgetStyle;
-import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.AETextField;
+import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.IconButton;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.TabButton;
 import appeng.client.gui.widgets.ToggleButton;
-import appeng.menu.slot.FakeSlot;
-import appeng.menu.slot.AppEngSlot;
+import appeng.core.definitions.AEItems;
 import appeng.menu.SlotSemantic;
 import appeng.menu.SlotSemantics;
+import appeng.menu.slot.AppEngSlot;
+import appeng.menu.slot.FakeSlot;
 import appeng.parts.encoding.EncodingMode;
-import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.lounode.ae2cs.common.init.client.AECSKeyMappings;
-import io.github.lounode.ae2cs.common.menu.ResonantTemplateCodingTermMenu;
-import io.github.lounode.ae2cs.common.menu.ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode;
+
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -64,13 +56,26 @@ import net.minecraft.world.item.SmithingTemplateItem;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.Level;
-import net.minecraft.ChatFormatting;
+
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.vertex.PoseStack;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
 
 /**
  * 谐振样板编码终端界面 - 固定尺寸 195x268，处理样板模式使用 4x4 输入网格带滑块。
  * 布局坐标来自 assets/ae2/screens/resonant_template_coding_terminal.json。
  */
 public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<ResonantTemplateCodingTermMenu> {
+
     private static final int PROCESSING_INPUT_COLUMNS = 4;
     private static final int VISIBLE_PROCESSING_INPUT_ROWS = 4;
     private static final int VISIBLE_PROCESSING_OUTPUT_ROWS = 4;
@@ -82,43 +87,29 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
     private static final String ANVIL_NAME_FIELD_ID = "pulledAnvilName";
     private static final String ANVIL_COST_TEXT_ID = "pulledAnvilCost";
     private static final String STYLE_PATH = "/screens/resonant_template_coding_terminal.json";
-    private static final Component PATTERN_ENCODING_MODE_TEXT =
-            Component.translatable("ae2cs.menu.resonant_template_coding_terminal.mode.pattern_encoding");
-    private static final Component CRAFTING_TERMINAL_MODE_TEXT =
-            Component.translatable("ae2cs.menu.resonant_template_coding_terminal.mode.crafting_terminal");
+    private static final Component PATTERN_ENCODING_MODE_TEXT = Component.translatable("ae2cs.menu.resonant_template_coding_terminal.mode.pattern_encoding");
+    private static final Component CRAFTING_TERMINAL_MODE_TEXT = Component.translatable("ae2cs.menu.resonant_template_coding_terminal.mode.crafting_terminal");
     private static final String CRAFTING_MODE_PANEL_BACKGROUND_ID = "resonantCraftingModePanel";
     private static final String SMITHING_MODE_PANEL_BACKGROUND_ID = "resonantSmithingModePanel";
     private static final String SMITHING_PULLED_MODE_PANEL_BACKGROUND_ID = "resonantSmithingPulledModePanel";
     private static final String STONECUTTING_VIRTUAL_MODE_PANEL_BACKGROUND_ID = "resonantStonecuttingVirtualModePanel";
     private static final String STONECUTTING_PULLED_MODE_PANEL_BACKGROUND_ID = "resonantStonecuttingPulledModePanel";
     private static final String ANVIL_PULLED_MODE_PANEL_BACKGROUND_ID = "resonantAnvilPulledModePanel";
-    private static final ResourceLocation TERMINAL_ICON_TEXTURE =
-            ResourceLocation.fromNamespaceAndPath("ae2cs", "textures/gui/terminal_icon.png");
+    private static final ResourceLocation TERMINAL_ICON_TEXTURE = ResourceLocation.fromNamespaceAndPath("ae2cs", "textures/gui/terminal_icon.png");
     private static final List<ResourceLocation> EMPTY_SMITHING_TEMPLATE_SLOT_ICONS = List.of(
             ResourceLocation.withDefaultNamespace("item/empty_slot_smithing_template_armor_trim"),
             ResourceLocation.withDefaultNamespace("item/empty_slot_smithing_template_netherite_upgrade"));
-    private static final Component MISSING_SMITHING_TEMPLATE_TOOLTIP =
-            Component.translatable("container.upgrade.missing_template_tooltip");
-    private static final Blitter STONECUTTING_RECIPE_SLOT =
-            Blitter.texture("guis/pattern_modes.png").src(124, 140, 20, 22);
-    private static final Blitter STONECUTTING_RECIPE_SLOT_SELECTED =
-            Blitter.texture("guis/pattern_modes.png").src(124, 162, 20, 22);
-    private static final Blitter STONECUTTING_RECIPE_SLOT_HOVER =
-            Blitter.texture("guis/pattern_modes.png").src(124, 184, 20, 22);
-    private static final Blitter VIRTUAL_SLOT_MODE_ICON =
-            Blitter.texture(TERMINAL_ICON_TEXTURE, 80, 64).src(0, 16, 16, 16);
-    private static final Blitter REAL_SLOT_MODE_ICON =
-            Blitter.texture(TERMINAL_ICON_TEXTURE, 80, 64).src(16, 16, 16, 16);
-    private static final Blitter NORMAL_PATTERN_ENCODING_ICON =
-            Blitter.texture(TERMINAL_ICON_TEXTURE, 80, 64).src(32, 16, 16, 16);
-    private static final Blitter RESONATING_PATTERN_ENCODING_ICON =
-            Blitter.texture(TERMINAL_ICON_TEXTURE, 80, 64).src(48, 16, 16, 16);
-    private static final Blitter PROCESSING_TRANSFER_MERGE_ICON =
-            Blitter.texture(TERMINAL_ICON_TEXTURE, 80, 64).src(0, 40, 8, 8);
-    private static final Blitter PROCESSING_TRANSFER_PARTIAL_SPLIT_ICON =
-            Blitter.texture(TERMINAL_ICON_TEXTURE, 80, 64).src(0, 48, 8, 8);
-    private static final Blitter PROCESSING_TRANSFER_FULL_SPLIT_ICON =
-            Blitter.texture(TERMINAL_ICON_TEXTURE, 80, 64).src(0, 56, 8, 8);
+    private static final Component MISSING_SMITHING_TEMPLATE_TOOLTIP = Component.translatable("container.upgrade.missing_template_tooltip");
+    private static final Blitter STONECUTTING_RECIPE_SLOT = Blitter.texture("guis/pattern_modes.png").src(124, 140, 20, 22);
+    private static final Blitter STONECUTTING_RECIPE_SLOT_SELECTED = Blitter.texture("guis/pattern_modes.png").src(124, 162, 20, 22);
+    private static final Blitter STONECUTTING_RECIPE_SLOT_HOVER = Blitter.texture("guis/pattern_modes.png").src(124, 184, 20, 22);
+    private static final Blitter VIRTUAL_SLOT_MODE_ICON = Blitter.texture(TERMINAL_ICON_TEXTURE, 80, 64).src(0, 16, 16, 16);
+    private static final Blitter REAL_SLOT_MODE_ICON = Blitter.texture(TERMINAL_ICON_TEXTURE, 80, 64).src(16, 16, 16, 16);
+    private static final Blitter NORMAL_PATTERN_ENCODING_ICON = Blitter.texture(TERMINAL_ICON_TEXTURE, 80, 64).src(32, 16, 16, 16);
+    private static final Blitter RESONATING_PATTERN_ENCODING_ICON = Blitter.texture(TERMINAL_ICON_TEXTURE, 80, 64).src(48, 16, 16, 16);
+    private static final Blitter PROCESSING_TRANSFER_MERGE_ICON = Blitter.texture(TERMINAL_ICON_TEXTURE, 80, 64).src(0, 40, 8, 8);
+    private static final Blitter PROCESSING_TRANSFER_PARTIAL_SPLIT_ICON = Blitter.texture(TERMINAL_ICON_TEXTURE, 80, 64).src(0, 48, 8, 8);
+    private static final Blitter PROCESSING_TRANSFER_FULL_SPLIT_ICON = Blitter.texture(TERMINAL_ICON_TEXTURE, 80, 64).src(0, 56, 8, 8);
 
     private static final Field SCREEN_STYLE_FIELD = getField(AEBaseScreen.class, "style");
     private static final Field WIDGET_CONTAINER_STYLE_FIELD = getField(WidgetContainer.class, "style");
@@ -145,7 +136,7 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
     private String lastPulledAnvilMenuName = "";
 
     public ResonantTemplateCodingTermScreen(ResonantTemplateCodingTermMenu menu, Inventory playerInventory,
-            Component title, ScreenStyle style) {
+                                            Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
         if (menu.pullProcessingRecipeInputs && menu.pulledAnvilMode) {
             this.pulledDisplayMode = PulledDisplayMode.ANVIL;
@@ -165,12 +156,10 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
         this.widgets.add(CRAFTING_MODE_PANEL_BACKGROUND_ID, new ModePanelBackground(CRAFTING_MODE_PANEL_BACKGROUND_ID,
                 "modePanel0", () -> this.menu.getMode() == EncodingMode.CRAFTING));
         this.widgets.add(SMITHING_MODE_PANEL_BACKGROUND_ID, new ModePanelBackground(SMITHING_MODE_PANEL_BACKGROUND_ID,
-                "modePanel2", () -> this.menu.getMode() == EncodingMode.SMITHING_TABLE
-                        && !this.menu.pullProcessingRecipeInputs));
+                "modePanel2", () -> this.menu.getMode() == EncodingMode.SMITHING_TABLE && !this.menu.pullProcessingRecipeInputs));
         this.widgets.add(SMITHING_PULLED_MODE_PANEL_BACKGROUND_ID,
                 new ModePanelBackground(SMITHING_PULLED_MODE_PANEL_BACKGROUND_ID, "modePanel2",
-                        () -> this.menu.getMode() == EncodingMode.SMITHING_TABLE
-                                && this.menu.pullProcessingRecipeInputs && !isPulledAnvilModeSelected()));
+                        () -> this.menu.getMode() == EncodingMode.SMITHING_TABLE && this.menu.pullProcessingRecipeInputs && !isPulledAnvilModeSelected()));
         this.widgets.add(ANVIL_PULLED_MODE_PANEL_BACKGROUND_ID,
                 new ModePanelBackground(ANVIL_PULLED_MODE_PANEL_BACKGROUND_ID, "modePanel4",
                         () -> this.menu.pullProcessingRecipeInputs && isPulledAnvilModeSelected()));
@@ -232,16 +221,12 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
         if (this.pendingPulledAnvilMode != null && this.menu.pulledAnvilMode == this.pendingPulledAnvilMode) {
             this.pendingPulledAnvilMode = null;
         }
-        if (this.pendingPulledAnvilMode == null
-                && this.menu.pullProcessingRecipeInputs && this.menu.pulledAnvilMode && !isPulledAnvilModeSelected()) {
+        if (this.pendingPulledAnvilMode == null && this.menu.pullProcessingRecipeInputs && this.menu.pulledAnvilMode && !isPulledAnvilModeSelected()) {
             this.pulledDisplayMode = PulledDisplayMode.ANVIL;
         }
         this.splitProcessingIngredientsButton.setMode(this.menu.processingIngredientTransferMode);
-        this.splitProcessingIngredientsButton.setVisibility(this.menu.getMode() == EncodingMode.PROCESSING
-                && !isPulledAnvilModeSelected());
-        setTextContent("crafting_grid_title", this.menu.pullProcessingRecipeInputs
-                ? Component.translatable("ae2cs.menu.resonant_template_coding_terminal.title.crafting_terminal")
-                : Component.translatable("gui.ae2.PatternEncoding"));
+        this.splitProcessingIngredientsButton.setVisibility(this.menu.getMode() == EncodingMode.PROCESSING && !isPulledAnvilModeSelected());
+        setTextContent("crafting_grid_title", this.menu.pullProcessingRecipeInputs ? Component.translatable("ae2cs.menu.resonant_template_coding_terminal.title.crafting_terminal") : Component.translatable("gui.ae2.PatternEncoding"));
         this.menu.refreshPulledStonecuttingRecipesIfInputChanged();
         updateModeTabTooltips();
         updateModeTabButtons();
@@ -262,9 +247,7 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
             return;
         }
 
-        Component costText = this.menu.isPulledAnvilTooExpensive()
-                ? Component.translatable("container.repair.expensive")
-                : Component.translatable("container.repair.cost", this.menu.pulledAnvilCost);
+        Component costText = this.menu.isPulledAnvilTooExpensive() ? Component.translatable("container.repair.expensive") : Component.translatable("container.repair.cost", this.menu.pulledAnvilCost);
         Rect2i bounds = getStyledWidgetBounds(ANVIL_COST_TEXT_ID);
         int color = shouldRenderPulledAnvilCostAsError() ? 0xFF6060 : 0x80FF20;
         guiGraphics.drawString(this.font, costText, bounds.getX(), bounds.getY(), color, true);
@@ -290,14 +273,13 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
 
     private boolean shouldRenderPulledAnvilCostAsError() {
         var player = Minecraft.getInstance().player;
-        return this.menu.isPulledAnvilTooExpensive()
-                || player != null && !player.getAbilities().instabuild
-                        && player.experienceLevel < this.menu.pulledAnvilCost;
+        return this.menu.isPulledAnvilTooExpensive() || player != null && !player.getAbilities().instabuild && player.experienceLevel < this.menu.pulledAnvilCost;
     }
 
     @Override
     public void renderSlot(GuiGraphics guiGraphics, Slot slot) {
         super.renderSlot(guiGraphics, slot);
+        renderSyncedBlankPatternSlot(guiGraphics, slot);
         if (shouldShowCraftableIndicatorForPulledSlot(slot)) {
             PoseStack poseStack = guiGraphics.pose();
             poseStack.pushPose();
@@ -308,16 +290,23 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
         renderEmptyPulledSmithingSlotIcon(guiGraphics, slot);
     }
 
+    private void renderSyncedBlankPatternSlot(GuiGraphics guiGraphics, Slot slot) {
+        if (this.menu.blankPatternSlotCount <= 0 || this.menu.getSlotSemantic(slot) != SlotSemantics.BLANK_PATTERN || !slot.getItem().isEmpty()) {
+            return;
+        }
+
+        ItemStack stack = AEItems.BLANK_PATTERN.stack(this.menu.blankPatternSlotCount);
+        guiGraphics.renderItem(stack, slot.x, slot.y);
+        guiGraphics.renderItemDecorations(this.font, stack, slot.x, slot.y);
+    }
+
     private boolean shouldShowCraftableIndicatorForPulledSlot(Slot slot) {
         if (this.menu.pullProcessingRecipeInputs) {
             return false;
         }
 
         SlotSemantic semantic = this.menu.getSlotSemantic(slot);
-        if (semantic != ResonantTemplateCodingTermMenu.PULLED_CRAFTING_INPUTS
-                && semantic != ResonantTemplateCodingTermMenu.PULLED_PROCESSING_INPUTS
-                && semantic != ResonantTemplateCodingTermMenu.PULLED_SMITHING_TABLE_INPUTS
-                && semantic != ResonantTemplateCodingTermMenu.PULLED_STONECUTTING_INPUT) {
+        if (semantic != ResonantTemplateCodingTermMenu.PULLED_CRAFTING_INPUTS && semantic != ResonantTemplateCodingTermMenu.PULLED_PROCESSING_INPUTS && semantic != ResonantTemplateCodingTermMenu.PULLED_SMITHING_TABLE_INPUTS && semantic != ResonantTemplateCodingTermMenu.PULLED_STONECUTTING_INPUT) {
             return false;
         }
 
@@ -326,8 +315,7 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
     }
 
     private void renderEmptyPulledSmithingSlotIcon(GuiGraphics guiGraphics, Slot slot) {
-        if (!this.menu.pullProcessingRecipeInputs || this.menu.getMode() != EncodingMode.SMITHING_TABLE
-                || slot.hasItem()) {
+        if (!this.menu.pullProcessingRecipeInputs || this.menu.getMode() != EncodingMode.SMITHING_TABLE || slot.hasItem()) {
             return;
         }
 
@@ -361,9 +349,7 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
         }
 
         ItemStack templateStack = pulledSlots[0].getItem();
-        return !templateStack.isEmpty() && templateStack.getItem() instanceof SmithingTemplateItem smithingTemplateItem
-                ? java.util.Optional.of(smithingTemplateItem)
-                : java.util.Optional.empty();
+        return !templateStack.isEmpty() && templateStack.getItem() instanceof SmithingTemplateItem smithingTemplateItem ? java.util.Optional.of(smithingTemplateItem) : java.util.Optional.empty();
     }
 
     private ResourceLocation getCyclingSlotIcon(List<ResourceLocation> icons) {
@@ -386,14 +372,12 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
     }
 
     private Component getPulledSmithingOnboardingTooltip() {
-        if (!this.menu.pullProcessingRecipeInputs || this.menu.getMode() != EncodingMode.SMITHING_TABLE
-                || this.hoveredSlot == null || this.hoveredSlot.hasItem()) {
+        if (!this.menu.pullProcessingRecipeInputs || this.menu.getMode() != EncodingMode.SMITHING_TABLE || this.hoveredSlot == null || this.hoveredSlot.hasItem()) {
             return null;
         }
 
         AppEngSlot[] pulledSlots = this.menu.getPulledSmithingInputSlots();
-        if (pulledSlots.length > 0 && this.hoveredSlot == pulledSlots[0]
-                && getPulledSmithingTemplateItem().isEmpty()) {
+        if (pulledSlots.length > 0 && this.hoveredSlot == pulledSlots[0] && getPulledSmithingTemplateItem().isEmpty()) {
             return MISSING_SMITHING_TEMPLATE_TOOLTIP;
         }
 
@@ -443,8 +427,7 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
     }
 
     private void repopulateWidgetsFromLiveStyle() throws ReflectiveOperationException {
-        POPULATE_SCREEN_METHOD.invoke(this.widgets, (Consumer<AbstractWidget>) widget -> {
-        }, new Rect2i(this.leftPos, this.topPos, this.imageWidth, this.imageHeight), this);
+        POPULATE_SCREEN_METHOD.invoke(this.widgets, (Consumer<AbstractWidget>) widget -> {}, new Rect2i(this.leftPos, this.topPos, this.imageWidth, this.imageHeight), this);
     }
 
     private void layoutProcessingSlots(int scrollRows) {
@@ -551,7 +534,7 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
     }
 
     private void layoutPulledSlot(net.minecraft.world.inventory.Slot sourceSlot,
-            net.minecraft.world.inventory.Slot pulledSlot, boolean visible) {
+                                  net.minecraft.world.inventory.Slot pulledSlot, boolean visible) {
         if (visible) {
             pulledSlot.x = sourceSlot.x;
             pulledSlot.y = sourceSlot.y;
@@ -586,10 +569,8 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
         boolean pulled = this.menu.pullProcessingRecipeInputs;
         EncodingMode mode = this.menu.getMode();
 
-        this.pullEncodedInputsToGridButtons.forEach((buttonMode, button) ->
-                button.setVisibility(pulled && buttonMode == mode && !isPulledAnvilModeSelected()));
-        this.clearPulledInputsToPlayerButtons.forEach((buttonMode, button) ->
-                button.setVisibility(pulled && buttonMode == mode && !isPulledAnvilModeSelected()));
+        this.pullEncodedInputsToGridButtons.forEach((buttonMode, button) -> button.setVisibility(pulled && buttonMode == mode && !isPulledAnvilModeSelected()));
+        this.clearPulledInputsToPlayerButtons.forEach((buttonMode, button) -> button.setVisibility(pulled && buttonMode == mode && !isPulledAnvilModeSelected()));
         this.clearPulledAnvilInputsToNetworkButton.setVisibility(pulled && isPulledAnvilModeSelected());
         this.clearPulledAnvilInputsToPlayerButton.setVisibility(pulled && isPulledAnvilModeSelected());
 
@@ -641,9 +622,7 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
                 continue;
             }
 
-            Component message = this.menu.pullProcessingRecipeInputs
-                    ? getPulledModeTabMessage(i)
-                    : this.defaultModeTabMessages.get(widgetId);
+            Component message = this.menu.pullProcessingRecipeInputs ? getPulledModeTabMessage(i) : this.defaultModeTabMessages.get(widgetId);
             if (message != null) {
                 tabButton.setMessage(message);
             }
@@ -710,15 +689,15 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
                 int modeIndex = i;
                 ResonantModeTabButton replacement = new ResonantModeTabButton(modeIndex,
                         getDefaultModeTabIcon(modeIndex), original.getMessage(), button -> {
-                    this.pulledDisplayMode = PulledDisplayMode.FOLLOW_ENCODING_MODE;
-                    this.pendingPulledAnvilMode = false;
-                    this.menu.setPulledAnvilMode(false);
-                    if (this.menu.pullProcessingRecipeInputs) {
-                        this.menu.prepareTransferMode(getEncodingMode(modeIndex));
-                    } else {
-                        this.menu.setMode(getEncodingMode(modeIndex));
-                    }
-                });
+                            this.pulledDisplayMode = PulledDisplayMode.FOLLOW_ENCODING_MODE;
+                            this.pendingPulledAnvilMode = false;
+                            this.menu.setPulledAnvilMode(false);
+                            if (this.menu.pullProcessingRecipeInputs) {
+                                this.menu.prepareTransferMode(getEncodingMode(modeIndex));
+                            } else {
+                                this.menu.setMode(getEncodingMode(modeIndex));
+                            }
+                        });
                 replacement.setStyle(original.getStyle());
                 replacement.setDisableBackground(original.isDisableBackground());
                 widgetMap.put(widgetId, replacement);
@@ -726,12 +705,12 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
 
             ResonantModeTabButton anvilTab = new ResonantModeTabButton(4, Icon.CRAFT_HAMMER,
                     Component.translatable("ae2cs.menu.resonant_template_coding_terminal.mode_tab.anvil"), button -> {
-                if (this.menu.pullProcessingRecipeInputs) {
-                    this.pulledDisplayMode = PulledDisplayMode.ANVIL;
-                    this.pendingPulledAnvilMode = true;
-                    this.menu.setPulledAnvilMode(true);
-                }
-            });
+                        if (this.menu.pullProcessingRecipeInputs) {
+                            this.pulledDisplayMode = PulledDisplayMode.ANVIL;
+                            this.pendingPulledAnvilMode = true;
+                            this.menu.setPulledAnvilMode(true);
+                        }
+                    });
             anvilTab.setStyle(TabButton.Style.HORIZONTAL);
             anvilTab.visible = false;
             anvilTab.active = false;
@@ -881,8 +860,7 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
     }
 
     private int getMaxFirstVisibleProcessingInputRow() {
-        return Math.max(0, Math.ceilDiv(this.menu.getProcessingInputSlots().length, PROCESSING_INPUT_COLUMNS)
-                - VISIBLE_PROCESSING_INPUT_ROWS);
+        return Math.max(0, Math.ceilDiv(this.menu.getProcessingInputSlots().length, PROCESSING_INPUT_COLUMNS) - VISIBLE_PROCESSING_INPUT_ROWS);
     }
 
     private Point getStyledSlotPosition(SlotSemantic semantic) {
@@ -900,8 +878,7 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
     @SuppressWarnings("unchecked")
     private void replaceVanillaProcessingPanel() {
         try {
-            Map<String, ICompositeWidget> compositeWidgets =
-                    (Map<String, ICompositeWidget>) COMPOSITE_WIDGETS_FIELD.get(this.widgets);
+            Map<String, ICompositeWidget> compositeWidgets = (Map<String, ICompositeWidget>) COMPOSITE_WIDGETS_FIELD.get(this.widgets);
             ICompositeWidget processingPanel = compositeWidgets.get(PROCESSING_MODE_PANEL_ID);
             if (!(processingPanel instanceof ProcessingEncodingPanel)) {
                 return;
@@ -921,8 +898,7 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
     @SuppressWarnings("unchecked")
     private void replaceVanillaStonecuttingPanel() {
         try {
-            Map<String, ICompositeWidget> compositeWidgets =
-                    (Map<String, ICompositeWidget>) COMPOSITE_WIDGETS_FIELD.get(this.widgets);
+            Map<String, ICompositeWidget> compositeWidgets = (Map<String, ICompositeWidget>) COMPOSITE_WIDGETS_FIELD.get(this.widgets);
             ICompositeWidget stonecuttingPanel = compositeWidgets.get(STONECUTTING_MODE_PANEL_ID);
             if (!(stonecuttingPanel instanceof StonecuttingEncodingPanel)) {
                 return;
@@ -961,6 +937,7 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
     }
 
     private class ModePanelBackground implements ICompositeWidget {
+
         private final String imageId;
         private final String positionWidgetId;
         private final BooleanSupplier visible;
@@ -979,8 +956,7 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
         }
 
         @Override
-        public void setPosition(Point position) {
-        }
+        public void setPosition(Point position) {}
 
         @Override
         public void setSize(int width, int height) {
@@ -1004,6 +980,7 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
     }
 
     private static class ResonatingPatternEncodingButton extends ToggleButton {
+
         private boolean state;
 
         private ResonatingPatternEncodingButton(Listener listener) {
@@ -1036,6 +1013,7 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
     }
 
     private static class TerminalSlotModeButton extends IconButton {
+
         private final ToggleButton.Listener listener;
         private boolean state;
 
@@ -1074,9 +1052,7 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
             }
 
             int yOffset = this.isHovered() ? 1 : 0;
-            Icon backgroundIcon = this.isHovered() ? Icon.TOOLBAR_BUTTON_BACKGROUND_HOVER
-                    : this.isFocused() ? Icon.TOOLBAR_BUTTON_BACKGROUND_FOCUS
-                    : Icon.TOOLBAR_BUTTON_BACKGROUND;
+            Icon backgroundIcon = this.isHovered() ? Icon.TOOLBAR_BUTTON_BACKGROUND_HOVER : this.isFocused() ? Icon.TOOLBAR_BUTTON_BACKGROUND_FOCUS : Icon.TOOLBAR_BUTTON_BACKGROUND;
             int bgX = this.getX() - 1;
             int bgY = this.getY() + yOffset;
             int bgWidth = 18;
@@ -1103,6 +1079,7 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
     }
 
     private class ResonantModeTabButton extends TabButton {
+
         private final int iconIndex;
 
         private ResonantModeTabButton(int iconIndex, Icon fallbackIcon, Component message, OnPress onPress) {
@@ -1121,8 +1098,7 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
             }
 
             Icon backdrop = switch (this.getStyle()) {
-                case CORNER -> this.isFocused() ? Icon.TAB_BUTTON_BACKGROUND_BORDERLESS_FOCUS
-                        : Icon.TAB_BUTTON_BACKGROUND_BORDERLESS;
+                case CORNER -> this.isFocused() ? Icon.TAB_BUTTON_BACKGROUND_BORDERLESS_FOCUS : Icon.TAB_BUTTON_BACKGROUND_BORDERLESS;
                 case BOX -> this.isFocused() ? Icon.TAB_BUTTON_BACKGROUND_FOCUS : Icon.TAB_BUTTON_BACKGROUND;
                 case HORIZONTAL -> {
                     if (this.isFocused()) {
@@ -1144,6 +1120,7 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
     }
 
     private static class ProcessingIngredientTransferModeButton extends IconButton {
+
         private ProcessingIngredientTransferMode mode = ProcessingIngredientTransferMode.MERGE;
 
         private ProcessingIngredientTransferModeButton(Runnable onPress) {
@@ -1199,6 +1176,7 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
     }
 
     private class ResonantProcessingPanel implements ICompositeWidget {
+
         private final appeng.client.gui.widgets.Scrollbar scrollbar;
 
         private ResonantProcessingPanel(appeng.client.gui.widgets.Scrollbar scrollbar) {
@@ -1213,12 +1191,10 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
         }
 
         @Override
-        public void setPosition(Point position) {
-        }
+        public void setPosition(Point position) {}
 
         @Override
-        public void setSize(int width, int height) {
-        }
+        public void setSize(int width, int height) {}
 
         @Override
         public Rect2i getBounds() {
@@ -1247,10 +1223,10 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
             this.scrollbar.setPosition(new Point(bounds.getX(), bounds.getY()));
             this.scrollbar.setSize(bounds.getWidth(), bounds.getHeight());
         }
-
     }
 
     private class ResonantStonecuttingPanel implements ICompositeWidget {
+
         private static final int RECIPE_COLUMNS = 4;
         private static final int VISIBLE_RECIPE_ROWS = 3;
 
@@ -1268,12 +1244,10 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
         }
 
         @Override
-        public void setPosition(Point position) {
-        }
+        public void setPosition(Point position) {}
 
         @Override
-        public void setSize(int width, int height) {
-        }
+        public void setSize(int width, int height) {}
 
         @Override
         public Rect2i getBounds() {
@@ -1293,9 +1267,7 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
         public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
             Rect2i panelBounds = getBounds();
             Point drawPosition = new Point(panelBounds.getX(), panelBounds.getY()).move(bounds.getX(), bounds.getY());
-            String imageId = menu.pullProcessingRecipeInputs
-                    ? STONECUTTING_PULLED_MODE_PANEL_BACKGROUND_ID
-                    : STONECUTTING_VIRTUAL_MODE_PANEL_BACKGROUND_ID;
+            String imageId = menu.pullProcessingRecipeInputs ? STONECUTTING_PULLED_MODE_PANEL_BACKGROUND_ID : STONECUTTING_VIRTUAL_MODE_PANEL_BACKGROUND_ID;
             getStyle().getImage(imageId)
                     .dest(drawPosition.getX(), drawPosition.getY(), panelBounds.getWidth(), panelBounds.getHeight())
                     .blit(guiGraphics);
@@ -1312,9 +1284,7 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
                 Rect2i recipeBounds = getRecipeBounds(i - startIndex);
                 RecipeHolder<StonecutterRecipe> recipe = recipes.get(i);
                 boolean selected = selectedRecipe != null && selectedRecipe.equals(recipe.id());
-                Blitter slotBackground = selected ? STONECUTTING_RECIPE_SLOT_SELECTED
-                        : mouse.isIn(recipeBounds) ? STONECUTTING_RECIPE_SLOT_HOVER
-                        : STONECUTTING_RECIPE_SLOT;
+                Blitter slotBackground = selected ? STONECUTTING_RECIPE_SLOT_SELECTED : mouse.isIn(recipeBounds) ? STONECUTTING_RECIPE_SLOT_HOVER : STONECUTTING_RECIPE_SLOT;
                 int renderX = bounds.getX() + recipeBounds.getX();
                 int renderY = bounds.getY() + recipeBounds.getY();
                 slotBackground.dest(renderX, renderY).blit(guiGraphics);

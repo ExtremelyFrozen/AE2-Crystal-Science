@@ -1,14 +1,7 @@
 package io.github.lounode.ae2cs.integration.jei;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import io.github.lounode.ae2cs.common.menu.ResonantTemplateCodingTermMenu;
+import io.github.lounode.ae2cs.integration.ResonantPatternEncodingTransferHelper;
 
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
@@ -17,9 +10,17 @@ import appeng.integration.modules.itemlists.EncodingHelper;
 import appeng.integration.modules.itemlists.TransferHelper;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.IClientRepo;
+
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.lounode.ae2cs.common.menu.ResonantTemplateCodingTermMenu;
-import io.github.lounode.ae2cs.integration.ResonantPatternEncodingTransferHelper;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotView;
@@ -30,25 +31,28 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.recipe.transfer.IUniversalRecipeTransferHandler;
 import mezz.jei.api.runtime.IIngredientVisibility;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.FormattedText;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.Nullable;
 import tamaized.ae2jeiintegration.integration.modules.jei.GenericEntryStackHelper;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 public class ResonantEncodePatternTransferHandler
-        implements IUniversalRecipeTransferHandler<ResonantTemplateCodingTermMenu> {
+                                                  implements IUniversalRecipeTransferHandler<ResonantTemplateCodingTermMenu> {
+
     private final MenuType<ResonantTemplateCodingTermMenu> menuType;
     private final IRecipeTransferHandlerHelper helper;
     private final IIngredientVisibility ingredientVisibility;
 
     public ResonantEncodePatternTransferHandler(MenuType<ResonantTemplateCodingTermMenu> menuType,
-            IRecipeTransferHandlerHelper helper, IIngredientVisibility ingredientVisibility) {
+                                                IRecipeTransferHandlerHelper helper, IIngredientVisibility ingredientVisibility) {
         this.menuType = menuType;
         this.helper = helper;
         this.ingredientVisibility = ingredientVisibility;
@@ -67,7 +71,7 @@ public class ResonantEncodePatternTransferHandler
     @Override
     @Nullable
     public IRecipeTransferError transferRecipe(ResonantTemplateCodingTermMenu menu, Object recipeBase,
-            IRecipeSlotsView slotsView, Player player, boolean maxTransfer, boolean doTransfer) {
+                                               IRecipeSlotsView slotsView, Player player, boolean maxTransfer, boolean doTransfer) {
         Recipe<?> recipe = null;
         RecipeHolder<?> recipeHolder = null;
         if (recipeBase instanceof RecipeHolder<?> holder) {
@@ -82,8 +86,7 @@ public class ResonantEncodePatternTransferHandler
 
         if (doTransfer) {
             List<List<GenericStack>> inputs = null;
-            if (menu.pullProcessingRecipeInputs
-                    && ResonantPatternEncodingTransferHelper.isNonCraftingRealGridRecipe(recipeHolder)) {
+            if (menu.pullProcessingRecipeInputs && ResonantPatternEncodingTransferHelper.isNonCraftingRealGridRecipe(recipeHolder)) {
                 inputs = GenericEntryStackHelper.ofInputs(slotsView);
                 ResonantPatternEncodingTransferHelper.encodeCraftingLikeRecipeToRealGrid(menu, recipeHolder, inputs);
             } else if (craftingRecipe) {
@@ -104,9 +107,7 @@ public class ResonantEncodePatternTransferHandler
             }
         } else {
             boolean moveItems = menu.pullProcessingRecipeInputs;
-            TransferPreview preview = moveItems
-                    ? findTransferPreview(menu, slotsView)
-                    : findEncodingPreview(menu, slotsView);
+            TransferPreview preview = moveItems ? findTransferPreview(menu, slotsView) : findEncodingPreview(menu, slotsView);
             return new ErrorRenderer(preview, moveItems);
         }
 
@@ -135,7 +136,7 @@ public class ResonantEncodePatternTransferHandler
     }
 
     private static TransferPreview findTransferPreview(ResonantTemplateCodingTermMenu menu,
-            IRecipeSlotsView slotsView) {
+                                                       IRecipeSlotsView slotsView) {
         IClientRepo repo = menu.getClientRepo();
         if (repo == null) {
             return new TransferPreview(List.of(), List.of());
@@ -180,7 +181,7 @@ public class ResonantEncodePatternTransferHandler
     }
 
     private static TransferPreview findEncodingPreview(ResonantTemplateCodingTermMenu menu,
-            IRecipeSlotsView slotsView) {
+                                                       IRecipeSlotsView slotsView) {
         IClientRepo repo = menu.getClientRepo();
         if (repo == null) {
             return new TransferPreview(List.of(), List.of());
@@ -210,6 +211,7 @@ public class ResonantEncodePatternTransferHandler
     }
 
     private record TransferPreview(List<IRecipeSlotView> missingSlots, List<IRecipeSlotView> craftableSlots) {
+
         private boolean anyMissing() {
             return !this.missingSlots.isEmpty();
         }
@@ -220,6 +222,7 @@ public class ResonantEncodePatternTransferHandler
     }
 
     private record ErrorRenderer(TransferPreview preview, boolean moveItems) implements IRecipeTransferError {
+
         @Override
         public Type getType() {
             return Type.COSMETIC;
@@ -227,14 +230,12 @@ public class ResonantEncodePatternTransferHandler
 
         @Override
         public int getButtonHighlightColor() {
-            return this.moveItems && this.preview.anyCraftable()
-                    ? TransferHelper.BLUE_PLUS_BUTTON_COLOR
-                    : 0;
+            return this.moveItems && this.preview.anyCraftable() ? TransferHelper.BLUE_PLUS_BUTTON_COLOR : 0;
         }
 
         @Override
         public void showError(GuiGraphics guiGraphics, int mouseX, int mouseY, IRecipeSlotsView recipeSlotsView,
-                int recipeX, int recipeY) {
+                              int recipeX, int recipeY) {
             if (!this.moveItems && !this.preview.anyCraftable()) {
                 return;
             }
@@ -266,7 +267,7 @@ public class ResonantEncodePatternTransferHandler
     }
 
     private static appeng.menu.me.items.CraftingTermMenu.MissingIngredientSlots toMissingIngredientSlots(
-            TransferPreview preview) {
+                                                                                                         TransferPreview preview) {
         return new appeng.menu.me.items.CraftingTermMenu.MissingIngredientSlots(
                 preview.anyMissing() ? Set.of(0) : Set.of(),
                 preview.anyCraftable() ? Set.of(0) : Set.of());

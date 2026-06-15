@@ -1,5 +1,9 @@
 package io.github.lounode.ae2cs.common.me.part;
 
+import io.github.lounode.ae2cs.AE2CrystalScience;
+import io.github.lounode.ae2cs.common.init.AECSMenus;
+import io.github.lounode.ae2cs.common.menu.ResonantTemplateCodingTermMenu;
+
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.crafting.pattern.AEProcessingPattern;
@@ -7,9 +11,7 @@ import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 import appeng.parts.encoding.PatternEncodingTerminalPart;
 import appeng.util.inv.AppEngInternalInventory;
-import io.github.lounode.ae2cs.AE2CrystalScience;
-import io.github.lounode.ae2cs.common.init.AECSMenus;
-import io.github.lounode.ae2cs.common.menu.ResonantTemplateCodingTermMenu;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -24,7 +26,8 @@ import java.util.List;
  * 继承 PatternEncodingTerminalPart 获得完整 NBT / 掉落物 / logic 逻辑。
  */
 public class ResonantTemplateCodingTerminalPart extends PatternEncodingTerminalPart
-        implements IResonantTemplateCodingTerminalHost {
+                                                implements IResonantTemplateCodingTerminalHost {
+
     private static final String TAG_PULL_RECIPE_INPUTS_TO_REAL_GRID = "PullRecipeInputsToRealGrid";
     private static final String TAG_PULLED_ANVIL_MODE = "PulledAnvilMode";
     private static final String TAG_ENCODE_RESONATING_PATTERN = "EncodeResonatingPattern";
@@ -49,11 +52,9 @@ public class ResonantTemplateCodingTerminalPart extends PatternEncodingTerminalP
     private boolean pullRecipeInputsToRealGrid;
     private boolean pulledAnvilMode;
     private boolean encodeResonatingPattern;
-    private ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode processingIngredientTransferMode =
-            ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode.MERGE;
+    private ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode processingIngredientTransferMode = ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode.MERGE;
     private final AppEngInternalInventory pulledCraftingInputInv = new AppEngInternalInventory(this, 9);
-    private final AppEngInternalInventory pulledProcessingInputInv =
-            new AppEngInternalInventory(this, AEProcessingPattern.MAX_INPUT_SLOTS);
+    private final AppEngInternalInventory pulledProcessingInputInv = new AppEngInternalInventory(this, AEProcessingPattern.MAX_INPUT_SLOTS);
     private final AppEngInternalInventory pulledSmithingInputInv = new AppEngInternalInventory(this, 3);
     private final AppEngInternalInventory pulledStonecuttingInputInv = new AppEngInternalInventory(this, 1);
     private final AppEngInternalInventory pulledAnvilInputInv = new AppEngInternalInventory(this, 2);
@@ -181,10 +182,9 @@ public class ResonantTemplateCodingTerminalPart extends PatternEncodingTerminalP
 
     @Override
     public void setProcessingIngredientTransferMode(
-            ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode processingIngredientTransferMode) {
+                                                    ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode processingIngredientTransferMode) {
         if (processingIngredientTransferMode == null) {
-            processingIngredientTransferMode =
-                    ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode.MERGE;
+            processingIngredientTransferMode = ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode.MERGE;
         }
         if (this.processingIngredientTransferMode == processingIngredientTransferMode) {
             return;
@@ -237,7 +237,7 @@ public class ResonantTemplateCodingTerminalPart extends PatternEncodingTerminalP
     }
 
     private static ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode readProcessingIngredientTransferMode(
-            CompoundTag data) {
+                                                                                                                        CompoundTag data) {
         if (!data.contains(TAG_PROCESSING_INGREDIENT_TRANSFER_MODE)) {
             return ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode.MERGE;
         }

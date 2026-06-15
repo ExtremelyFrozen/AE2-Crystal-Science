@@ -11,9 +11,9 @@ import appeng.api.upgrades.Upgrades;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
-
 import appeng.core.localization.GuiText;
 import appeng.items.tools.powered.WirelessTerminalItem;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.EventPriority;

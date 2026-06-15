@@ -1,9 +1,11 @@
 package io.github.lounode.ae2cs.common.me.part;
 
-import appeng.util.inv.AppEngInternalInventory;
 import io.github.lounode.ae2cs.common.menu.ResonantTemplateCodingTermMenu;
 
+import appeng.util.inv.AppEngInternalInventory;
+
 public interface IResonantTemplateCodingTerminalHost {
+
     boolean isPullRecipeInputsToRealGrid();
 
     void setPullRecipeInputsToRealGrid(boolean pullRecipeInputsToRealGrid);
@@ -19,7 +21,7 @@ public interface IResonantTemplateCodingTerminalHost {
     ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode getProcessingIngredientTransferMode();
 
     void setProcessingIngredientTransferMode(
-            ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode processingIngredientTransferMode);
+                                             ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode processingIngredientTransferMode);
 
     AppEngInternalInventory getPulledCraftingInputInv();
 
