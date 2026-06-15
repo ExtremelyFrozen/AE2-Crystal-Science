@@ -19,7 +19,7 @@ runs:
     - name: Set up JDK
       uses: actions/setup-java@v4
       env:
-        REF: ${{ inputs.ref || github.ref }}
+        REF: ${{ inputs.ref || github.base_ref || github.ref }}
       with:
         distribution: temurin
         java-version: ${{ contains(env.REF, '26.1') && '25' || contains(env.REF, '1.21.1') && '21' || '17' }}
