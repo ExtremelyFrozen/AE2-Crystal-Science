@@ -41,6 +41,11 @@ public class AECSItems
     private static final List<RegistryItem<PureCrystalItem>> PURE_CRYSTAL = new ArrayList<>();
 
     /**
+     * 工具类（用于手持动画）
+     */
+    private static final List<RegistryItem<? extends Item>> TOOLS = new ArrayList<>();
+
+    /**
      * 杂项物品
      */
     private static final List<RegistryItem<? extends Item>> OTHERS = new ArrayList<>();
@@ -75,6 +80,9 @@ public class AECSItems
     public static final RegistryItem<PureCrystalItem> PURE_IRRADIATED_CRYSTAL =
             registerPureCrystalItem(AECSItemIds.PURE_IRRADIATED_CRYSTAL,
                     () -> new PureCrystalItem(defaultBuilder(), 2900d, 2400));
+    public static final RegistryItem<PureCrystalItem> PURE_LINK_CRYSTAL =
+            registerPureCrystalItem(AECSItemIds.PURE_LINK_CRYSTAL,
+                    () -> new PureCrystalItem(defaultBuilder(), 1800d, 1800));
 
     public static final RegistryItem<CrystalSeedItem> CERTUS_QUARTZ_SEED = registerCrystalSeedItem(AECSItemIds.CERTUS_QUARTZ_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_CERTUS_QUARTZ_CRYSTAL));
     public static final RegistryItem<CrystalSeedItem> FLUIX_CRYSTAL_SEED = registerCrystalSeedItem(AECSItemIds.FLUIX_CRYSTAL_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_FLUIX_CRYSTAL));
@@ -86,12 +94,14 @@ public class AECSItems
     public static final RegistryItem<CrystalSeedItem> QUANTUM_CRYSTAL_SEED = registerCrystalSeedItem(AECSItemIds.QUANTUM_CRYSTAL_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_QUANTUM_CRYSTAL));
     public static final RegistryItem<CrystalSeedItem> ROSE_QUARTZ_SEED = registerCrystalSeedItem(AECSItemIds.ROSE_QUARTZ_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_ROSE_QUARTZ));
     public static final RegistryItem<CrystalSeedItem> IRRADIATED_SEED = registerCrystalSeedItem(AECSItemIds.IRRADIATED_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_IRRADIATED_CRYSTAL));
+    public static final RegistryItem<CrystalSeedItem> LINK_CRYSTAL_SEED = registerCrystalSeedItem(AECSItemIds.LINK_CRYSTAL_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_LINK_CRYSTAL));
 
     public static final RegistryItem<Item> NETHER_QUARTZ_DUST = registerOtherItem(AECSItemIds.NETHER_QUARTZ_DUST, () -> new Item(defaultBuilder()));
     public static final RegistryItem<Item> RESONATING_DUST = registerOtherItem(AECSItemIds.RESONATING_DUST, () -> new Item(defaultBuilder()));
     public static final RegistryItem<Item> REDSTONE_CRYSTAL_DUST = registerOtherItem(AECSItemIds.REDSTONE_CRYSTAL_DUST, () -> new Item(defaultBuilder()));
     public static final RegistryItem<Item> QUANTUM_CRYSTAL_DUST = registerOtherItem(AECSItemIds.QUANTUM_CRYSTAL_DUST, () -> new Item(defaultBuilder()));
     public static final RegistryItem<Item> IRRADIATED_CRYSTAL_DUST = registerOtherItem(AECSItemIds.IRRADIATED_CRYSTAL_DUST, () -> new Item(defaultBuilder()));
+    public static final RegistryItem<Item> LINK_CRYSTAL_DUST = registerOtherItem(AECSItemIds.LINK_CRYSTAL_DUST, () -> new Item(defaultBuilder()));
 
     public static final RegistryItem<Item> RESONATING_PRINT_PRESS = registerOtherItem(AECSItemIds.RESONATING_PRINT_PRESS, () -> new Item(defaultBuilder()));
     public static final RegistryItem<Item> RESONATING_CIRCUIT_PRINT = registerOtherItem(AECSItemIds.RESONATING_CIRCUIT_PRINT, () -> new Item(defaultBuilder()));
@@ -113,27 +123,31 @@ public class AECSItems
     public static final RegistryItem<MeteorPatternProviderUpgradeItem> METEOR_PATTERN_PROVIDER_UPGRADE = registerOtherItem(AECSItemIds.METEOR_PATTERN_PROVIDER_UPGRADE, () -> new MeteorPatternProviderUpgradeItem(defaultBuilder()));
 
     public static final RegistryItem<Item> crystalGrowthCard = registerOtherItem(AECSItemIds.CRYSTAL_GROWTH_CARD, () -> Upgrades.createUpgradeCardItem(defaultBuilder()));
+    public static final RegistryItem<Item> OVERLOAD_CARD = registerOtherItem(AECSItemIds.OVERLOAD_CARD, () -> Upgrades.createUpgradeCardItem(defaultBuilder()));
     public static final RegistryItem<EnderLinkerItem> enderLink = registerOtherItem(AECSItemIds.ENDER_LINKER, () -> new EnderLinkerItem(defaultBuilder()));
+    public static final RegistryItem<ResonatingLinkerItem> RESONATING_LINKER = registerOtherItem(AECSItemIds.RESONATING_LINKER, () -> new ResonatingLinkerItem(defaultBuilder()));
+    public static final RegistryItem<MirrorLinkerItem> MIRROR_LINKER = registerOtherItem(AECSItemIds.MIRROR_LINKER, () -> new MirrorLinkerItem(defaultBuilder()));
+    public static final RegistryItem<ResonatingMemoryCardItem> RESONATING_MEMORY_CARD = registerOtherItem(AECSItemIds.RESONATING_MEMORY_CARD, () -> new ResonatingMemoryCardItem(defaultBuilder()));
     public static final RegistryItem<ResonatingPatternItem> RESONATING_PATTERN = registerOtherItem(AECSItemIds.RESONATING_PATTERN, () -> new ResonatingPatternItem(defaultBuilder()));
     public static final RegistryItem<ResonatingPatternConverterItem> RESONATING_PATTERN_CONVERTER = registerOtherItem(AECSItemIds.RESONATING_PATTERN_CONVERTER, () -> new ResonatingPatternConverterItem(defaultBuilder().stacksTo(1)));
 
-    public static final RegistryItem<EnderSwordItem> ENDER_CRYSTAL_SWORD = registerOtherItem(AECSItemIds.ENDER_CRYSTAL_SWORD, () -> new EnderSwordItem(defaultBuilder().stacksTo(1)));
-    public static final RegistryItem<EnderAxeItem> ENDER_CRYSTAL_AXE = registerOtherItem(AECSItemIds.ENDER_CRYSTAL_AXE, () -> new EnderAxeItem(defaultBuilder().stacksTo(1)));
-    public static final RegistryItem<EnderPickaxeItem> ENDER_CRYSTAL_PICKAXE = registerOtherItem(AECSItemIds.ENDER_CRYSTAL_PICKAXE, () -> new EnderPickaxeItem(defaultBuilder().stacksTo(1)));
-    public static final RegistryItem<EnderShovelItem> ENDER_CRYSTAL_SHOVEL = registerOtherItem(AECSItemIds.ENDER_CRYSTAL_SHOVEL, () -> new EnderShovelItem(defaultBuilder().stacksTo(1)));
-    public static final RegistryItem<EnderHoeItem> ENDER_CRYSTAL_HOE = registerOtherItem(AECSItemIds.ENDER_CRYSTAL_HOE, () -> new EnderHoeItem(defaultBuilder().stacksTo(1)));
+    public static final RegistryItem<EnderSwordItem> ENDER_CRYSTAL_SWORD = registerToolsItem(AECSItemIds.ENDER_CRYSTAL_SWORD, () -> new EnderSwordItem(defaultBuilder().stacksTo(1)));
+    public static final RegistryItem<EnderAxeItem> ENDER_CRYSTAL_AXE = registerToolsItem(AECSItemIds.ENDER_CRYSTAL_AXE, () -> new EnderAxeItem(defaultBuilder().stacksTo(1)));
+    public static final RegistryItem<EnderPickaxeItem> ENDER_CRYSTAL_PICKAXE = registerToolsItem(AECSItemIds.ENDER_CRYSTAL_PICKAXE, () -> new EnderPickaxeItem(defaultBuilder().stacksTo(1)));
+    public static final RegistryItem<EnderShovelItem> ENDER_CRYSTAL_SHOVEL = registerToolsItem(AECSItemIds.ENDER_CRYSTAL_SHOVEL, () -> new EnderShovelItem(defaultBuilder().stacksTo(1)));
+    public static final RegistryItem<EnderHoeItem> ENDER_CRYSTAL_HOE = registerToolsItem(AECSItemIds.ENDER_CRYSTAL_HOE, () -> new EnderHoeItem(defaultBuilder().stacksTo(1)));
 
-    public static final RegistryItem<MeteorSwordItem> METEOR_CRYSTAL_SWORD = registerOtherItem(AECSItemIds.METEOR_CRYSTAL_SWORD, () -> new MeteorSwordItem(defaultBuilder().stacksTo(1)));
-    public static final RegistryItem<MeteorAxeItem> METEOR_CRYSTAL_AXE = registerOtherItem(AECSItemIds.METEOR_CRYSTAL_AXE, () -> new MeteorAxeItem(defaultBuilder().stacksTo(1)));
-    public static final RegistryItem<MeteorPickaxeItem> METEOR_CRYSTAL_PICKAXE = registerOtherItem(AECSItemIds.METEOR_CRYSTAL_PICKAXE, () -> new MeteorPickaxeItem(defaultBuilder().stacksTo(1)));
-    public static final RegistryItem<MeteorShovelItem> METEOR_CRYSTAL_SHOVEL = registerOtherItem(AECSItemIds.METEOR_CRYSTAL_SHOVEL, () -> new MeteorShovelItem(defaultBuilder().stacksTo(1)));
-    public static final RegistryItem<MeteorHoeItem> METEOR_CRYSTAL_HOE = registerOtherItem(AECSItemIds.METEOR_CRYSTAL_HOE, () -> new MeteorHoeItem(defaultBuilder().stacksTo(1)));
+    public static final RegistryItem<MeteorSwordItem> METEOR_CRYSTAL_SWORD = registerToolsItem(AECSItemIds.METEOR_CRYSTAL_SWORD, () -> new MeteorSwordItem(defaultBuilder().stacksTo(1)));
+    public static final RegistryItem<MeteorAxeItem> METEOR_CRYSTAL_AXE = registerToolsItem(AECSItemIds.METEOR_CRYSTAL_AXE, () -> new MeteorAxeItem(defaultBuilder().stacksTo(1)));
+    public static final RegistryItem<MeteorPickaxeItem> METEOR_CRYSTAL_PICKAXE = registerToolsItem(AECSItemIds.METEOR_CRYSTAL_PICKAXE, () -> new MeteorPickaxeItem(defaultBuilder().stacksTo(1)));
+    public static final RegistryItem<MeteorShovelItem> METEOR_CRYSTAL_SHOVEL = registerToolsItem(AECSItemIds.METEOR_CRYSTAL_SHOVEL, () -> new MeteorShovelItem(defaultBuilder().stacksTo(1)));
+    public static final RegistryItem<MeteorHoeItem> METEOR_CRYSTAL_HOE = registerToolsItem(AECSItemIds.METEOR_CRYSTAL_HOE, () -> new MeteorHoeItem(defaultBuilder().stacksTo(1)));
 
-    public static final RegistryItem<ResonatingSwordItem> RESONATING_CRYSTAL_SWORD = registerOtherItem(AECSItemIds.RESONATING_CRYSTAL_SWORD, () -> new ResonatingSwordItem(defaultBuilder().stacksTo(1)));
-    public static final RegistryItem<ResonatingAxeItem> RESONATING_CRYSTAL_AXE = registerOtherItem(AECSItemIds.RESONATING_CRYSTAL_AXE, () -> new ResonatingAxeItem(defaultBuilder().stacksTo(1)));
-    public static final RegistryItem<ResonatingPickaxeItem> RESONATING_CRYSTAL_PICKAXE = registerOtherItem(AECSItemIds.RESONATING_CRYSTAL_PICKAXE, () -> new ResonatingPickaxeItem(defaultBuilder().stacksTo(1)));
-    public static final RegistryItem<ResonatingShovelItem> RESONATING_CRYSTAL_SHOVEL = registerOtherItem(AECSItemIds.RESONATING_CRYSTAL_SHOVEL, () -> new ResonatingShovelItem(defaultBuilder().stacksTo(1)));
-    public static final RegistryItem<ResonatingHoeItem> RESONATING_CRYSTAL_HOE = registerOtherItem(AECSItemIds.RESONATING_CRYSTAL_HOE, () -> new ResonatingHoeItem(defaultBuilder().stacksTo(1)));
+    public static final RegistryItem<ResonatingSwordItem> RESONATING_CRYSTAL_SWORD = registerToolsItem(AECSItemIds.RESONATING_CRYSTAL_SWORD, () -> new ResonatingSwordItem(defaultBuilder().stacksTo(1)));
+    public static final RegistryItem<ResonatingAxeItem> RESONATING_CRYSTAL_AXE = registerToolsItem(AECSItemIds.RESONATING_CRYSTAL_AXE, () -> new ResonatingAxeItem(defaultBuilder().stacksTo(1)));
+    public static final RegistryItem<ResonatingPickaxeItem> RESONATING_CRYSTAL_PICKAXE = registerToolsItem(AECSItemIds.RESONATING_CRYSTAL_PICKAXE, () -> new ResonatingPickaxeItem(defaultBuilder().stacksTo(1)));
+    public static final RegistryItem<ResonatingShovelItem> RESONATING_CRYSTAL_SHOVEL = registerToolsItem(AECSItemIds.RESONATING_CRYSTAL_SHOVEL, () -> new ResonatingShovelItem(defaultBuilder().stacksTo(1)));
+    public static final RegistryItem<ResonatingHoeItem> RESONATING_CRYSTAL_HOE = registerToolsItem(AECSItemIds.RESONATING_CRYSTAL_HOE, () -> new ResonatingHoeItem(defaultBuilder().stacksTo(1)));
 
     public static final RegistryItem<Item> FLOUR = registerOtherItem(AECSItemIds.FLOUR, () -> new Item(defaultBuilder()));
     public static final RegistryItem<Item> WOODEN_GEAR = registerOtherItem(AECSItemIds.WOODEN_GEAR, () -> new Item(defaultBuilder()));
@@ -158,6 +172,11 @@ public class AECSItems
     public static List<RegistryItem<PureCrystalItem>> getPureCrystal()
     {
         return Collections.unmodifiableList(PURE_CRYSTAL);
+    }
+
+    public static List<RegistryItem<? extends Item>> getTools()
+    {
+        return Collections.unmodifiableList(TOOLS);
     }
 
     public static List<RegistryItem<? extends Item>> getOthers()
@@ -188,6 +207,13 @@ public class AECSItems
     {
         RegistryItem<PureCrystalItem> obj = registerItem(name, sup);
         PURE_CRYSTAL.add(obj);
+        return obj;
+    }
+
+    private static <T extends Item> RegistryItem<T> registerToolsItem(String name, Supplier<T> sup)
+    {
+        RegistryItem<T> obj = registerItem(name, sup);
+        TOOLS.add(obj);
         return obj;
     }
 

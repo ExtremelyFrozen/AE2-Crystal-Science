@@ -15,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class EnderBroadcasterMenu extends UpgradeableMenu<EnderBroadcasterBlockEntity>
 {
-    private static final String changeExpectedChannelsAction = "change_expected_channels";
     private static final String openFrequencyBandMenuAction = "open_frequency_band_menu";
     private static final String openFrequencyBandCreateMenuAction = "open_frequency_band_create_menu";
     private static final String openFrequencyBandManagerMenuAction = "open_frequency_band_manager_menu";
@@ -29,19 +28,24 @@ public class EnderBroadcasterMenu extends UpgradeableMenu<EnderBroadcasterBlockE
     public EnderBroadcasterBlockEntity.ConnectionType connectionType = EnderBroadcasterBlockEntity.ConnectionType.NO_CONNECTION;
 
     @GuiSync(12)
-    public int receiverExpectedChannels = 0;
+    public int receiverTotalChannels = 0;
 
     @GuiSync(13)
-    public int receiverActualChannels = 0;
+    public int receiverUsedChannels = 0;
 
     @GuiSync(14)
-    public int senderSentChannels = 0;
+    public int senderAvailableChannels = 0;
+
+    @GuiSync(15)
+    public long bandUsedChannels = 0;
+
+    @GuiSync(16)
+    public long bandTotalChannels = 0;
 
 
     public EnderBroadcasterMenu(int id, Inventory playerInv, @NotNull EnderBroadcasterBlockEntity host)
     {
         super(AECSMenus.ENDER_BROADCASTER_MENU.get(), id, playerInv, host);
-        registerClientAction(changeExpectedChannelsAction, Integer.class, this::acceptChangeExpectedChannelsAction);
         registerClientAction(openFrequencyBandMenuAction, this::openFrequencyBandMenuAction);
         registerClientAction(openFrequencyBandCreateMenuAction, this::openFrequencyBandCreateMenuAction);
         registerClientAction(openFrequencyBandManagerMenuAction, this::openFrequencyBandManagerMenuAction);
@@ -57,17 +61,16 @@ public class EnderBroadcasterMenu extends UpgradeableMenu<EnderBroadcasterBlockE
 
         this.bandName = host.getBandName();
         this.connectionType = host.getConnectionType();
-        this.receiverExpectedChannels = host.getExpectedChannels();
-        this.receiverActualChannels = host.isEnabledCustomChannel() ? host.getMaxChannels() : 0; // 即为CustomChannelProvider中被Band设定的值
-        this.senderSentChannels = host.getCouldSendChannels();
+        var node = host.getMainNode().getNode();
+        this.receiverTotalChannels = node == null ? 0 : node.getMaxChannels();
+        this.receiverUsedChannels = node == null ? 0 : node.getUsedChannels();
+        this.senderAvailableChannels = host.getCouldSendChannels();
+
+        BroadcastFrequencyBand band = bandName.isEmpty() ? null : FrequencyBandManager.getBand(bandName);
+        this.bandUsedChannels = band == null ? 0 : band.getUsedChannels();
+        this.bandTotalChannels = band == null ? 0 : band.getUsableChannels();
 
         super.broadcastChanges();
-    }
-
-    // 动作机制：客户端发送
-    public void sendChangeExpectedChannels(int delta)
-    {
-        sendClientAction(changeExpectedChannelsAction, delta);
     }
 
     public void sendFrequencyBandMenuAction()
@@ -93,12 +96,6 @@ public class EnderBroadcasterMenu extends UpgradeableMenu<EnderBroadcasterBlockE
     public void sendCleanLinkerConnectionAction()
     {
         sendClientAction(cleanLinkerConnectionAction);
-    }
-
-    // 动作机制：服务端处理
-    private void acceptChangeExpectedChannelsAction(int delta)
-    {
-        getHost().setExpectedChannels(receiverExpectedChannels + delta);
     }
 
     private void openFrequencyBandMenuAction()

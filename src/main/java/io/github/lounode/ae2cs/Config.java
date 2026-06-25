@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs;
 
 
 import io.github.lounode.ae2cs.common.block.entity.EnderEmitterBlockEntity;
+import io.github.lounode.ae2cs.api.linker.broadcast.FrequencyBandManager;
 import io.github.lounode.ae2cs.common.item.PureCrystalItem;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -47,6 +48,8 @@ public class Config
         public final ForgeConfigSpec.IntValue enderEmitterAutoAreaFactor;
         // 高纯水晶能量系数
         public final ForgeConfigSpec.DoubleValue pureCrystalBurnMultiplier;
+        // 频段频道超限后的自动恢复重试间隔
+        public final ForgeConfigSpec.IntValue broadcastBandOverflowRetryInterval;
 
         public CommonConfig()
         {
@@ -67,6 +70,14 @@ public class Config
                             )
                             .defineInRange("pure_crystal_burn_multiplier", 1d, 0.01d, 100d);
 
+            broadcastBandOverflowRetryInterval =
+                    builder.comment(
+                                    "Retry interval in ticks for broadcast bands that entered channel overflow shutdown.",
+                                    "Set to 0 to disable automatic recovery attempts.",
+                                    "Default: 40 ticks (2 seconds)."
+                            )
+                            .defineInRange("broadcast_band_overflow_retry_interval", 40, 0, Integer.MAX_VALUE);
+
             this.spec = builder.build();
         }
 
@@ -74,6 +85,7 @@ public class Config
         {
             EnderEmitterBlockEntity.autoAreaFactor = enderEmitterAutoAreaFactor.get();
             PureCrystalItem.energyMultiplier = pureCrystalBurnMultiplier.get();
+            FrequencyBandManager.overflowRetryInterval = broadcastBandOverflowRetryInterval.get();
         }
     }
 }

@@ -10,6 +10,8 @@ import appeng.items.parts.PartModelsHelper;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.ids.AECSPartIds;
 import io.github.lounode.ae2cs.api.util.RegistryItem;
+import io.github.lounode.ae2cs.common.item.MirrorPatternProviderPartItem;
+import io.github.lounode.ae2cs.common.item.ResonatingPatternProviderPartItem;
 import io.github.lounode.ae2cs.common.me.part.*;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -50,22 +52,28 @@ public class AECSParts
             IntegratedInterfacePart::new
     );
 
-    public static final RegistryItem<PartItem<ResonatingPatternProviderPart>> RESONATING_PATTERN_PROVIDER_PART = registerPart(
+    public static final RegistryItem<PartItem<ResonatingPatternProviderPart>> RESONATING_PATTERN_PROVIDER_PART = registerCustomPartItem(
             AECSPartIds.RESONATING_PATTERN_PROVIDER,
             ResonatingPatternProviderPart.class,
-            ResonatingPatternProviderPart::new
+            ResonatingPatternProviderPartItem::new
     );
 
-    public static final RegistryItem<PartItem<ResonatingPatternProviderPart>> EX_RESONATING_PATTERN_PROVIDER_PART = registerPart(
+    public static final RegistryItem<PartItem<ResonatingPatternProviderPart>> EX_RESONATING_PATTERN_PROVIDER_PART = registerCustomPartItem(
             AECSPartIds.EX_RESONATING_PATTERN_PROVIDER,
             ResonatingPatternProviderPart.class,
-            ResonatingPatternProviderPart::new
+            ResonatingPatternProviderPartItem::new
     );
 
     public static final RegistryItem<PartItem<SimplePatternProviderPart>> SIMPLE_PATTERN_PROVIDER_PART = registerPart(
             AECSPartIds.SIMPLE_PATTERN_PROVIDER,
             SimplePatternProviderPart.class,
             SimplePatternProviderPart::new
+    );
+
+    public static final RegistryItem<PartItem<MirrorPatternProviderPart>> MIRROR_PATTERN_PROVIDER_PART = registerCustomPartItem(
+            AECSPartIds.MIRROR_PATTERN_PROVIDER,
+            MirrorPatternProviderPart.class,
+            MirrorPatternProviderPartItem::new
     );
 
     public static final RegistryItem<PartItem<MeteoritePatternProviderPart>> METEORITE_PATTERN_PROVIDER_PART = registerPart(

@@ -13,6 +13,7 @@ public class AECSItemIds
     public static final String PURE_QUANTUM_CRYSTAL = "purified_quantum_crystal";
     public static final String PURE_ROSE_QUARTZ = "purified_rose_quartz";
     public static final String PURE_IRRADIATED_CRYSTAL = "purified_irradiated_crystal";
+    public static final String PURE_LINK_CRYSTAL = "purified_link_crystal";
 
     // 种子
     public static final String CERTUS_QUARTZ_SEED = "certus_quartz_seed";
@@ -25,6 +26,7 @@ public class AECSItemIds
     public static final String QUANTUM_CRYSTAL_SEED = "quantum_crystal_seed";
     public static final String ROSE_QUARTZ_SEED = "rose_quartz_seed";
     public static final String IRRADIATED_SEED = "irradiated_seed";
+    public static final String LINK_CRYSTAL_SEED = "link_crystal_seed";
 
     // 粉尘
     public static final String NETHER_QUARTZ_DUST = "nether_quartz_dust";
@@ -32,6 +34,7 @@ public class AECSItemIds
     public static final String REDSTONE_CRYSTAL_DUST = "redstone_crystal_dust";
     public static final String QUANTUM_CRYSTAL_DUST = "quantum_crystal_dust";
     public static final String IRRADIATED_CRYSTAL_DUST = "irradiated_crystal_dust";
+    public static final String LINK_CRYSTAL_DUST = "link_crystal_dust";
 
     // 杂项
     public static final String RESONATING_PRINT_PRESS = "resonating_print_press";
@@ -54,7 +57,11 @@ public class AECSItemIds
     public static final String METEOR_PATTERN_PROVIDER_UPGRADE = "meteor_pattern_provider_upgrade";
 
     public static final String CRYSTAL_GROWTH_CARD = "crystal_growth_card";
+    public static final String OVERLOAD_CARD = "overload_card";
     public static final String ENDER_LINKER = "ender_linker";
+    public static final String RESONATING_LINKER = "resonating_linker";
+    public static final String MIRROR_LINKER = "mirror_linker";
+    public static final String RESONATING_MEMORY_CARD = "resonating_memory_card";
     public static final String RESONATING_PATTERN = "resonating_pattern";
     public static final String RESONATING_PATTERN_CONVERTER = "resonating_pattern_converter";
 

@@ -4,6 +4,8 @@ import appeng.util.InteractionUtil;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
 import io.github.lounode.ae2cs.common.init.AECSPackets;
+import io.github.lounode.ae2cs.common.item.IScrollCycleItem;
+import io.github.lounode.ae2cs.common.item.IResonatingTargetModeItem;
 import io.github.lounode.ae2cs.common.item.ResonatingPatternItem;
 import io.github.lounode.ae2cs.network.c2s.ScrollResonatingPatternSelectPacket;
 import net.minecraft.client.Minecraft;
@@ -27,10 +29,15 @@ public class ResonatingPatternListener
         if (!InteractionUtil.isInAlternateUseMode(player)) return;
 
         ItemStack stack = player.getMainHandItem();
-        if (!(stack.getItem() instanceof ResonatingPatternItem)) return;
+        if (!(stack.getItem() instanceof ResonatingPatternItem)
+                && !(stack.getItem() instanceof IResonatingTargetModeItem)
+                && !(stack.getItem() instanceof IScrollCycleItem)) return;
 
-        var encoded = AECSDataComponents.getEncodedResonatingPattern(stack);
-        if (encoded == null) return;
+        if (stack.getItem() instanceof ResonatingPatternItem)
+        {
+            var encoded = AECSDataComponents.getEncodedResonatingPattern(stack);
+            if (encoded == null) return;
+        }
 
         double dy = event.getScrollDelta();
         if (dy == 0) return;

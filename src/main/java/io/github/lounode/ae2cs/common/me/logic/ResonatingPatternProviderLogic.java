@@ -30,6 +30,7 @@ import io.github.lounode.ae2cs.api.settings.PullMode;
 import io.github.lounode.ae2cs.api.util.GenericStackInvHelper;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern;
+import io.github.lounode.ae2cs.common.me.crafting.ResonatingProviderDefaults;
 import io.github.lounode.ae2cs.common.me.crafting.ResonatingPatternDetails;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -38,6 +39,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -47,6 +49,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -70,6 +73,10 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
      * 用于未标记目的地发送材料的round-robin
      */
     private int localRoundRobinIndex = 0;
+    private List<java.util.Optional<EncodedResonatingPattern.Target>> defaultInputTargets = ResonatingProviderDefaults.emptyTargets();
+    private int defaultSelectedInput = 0;
+    @Nullable
+    private Set<AEKey> cachedPullableOutputs;
 
     public ResonatingPatternProviderLogic(IManagedGridNode mainNode, PatternProviderLogicHost host)
     {
@@ -135,16 +142,21 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
             list.add(e);
         }
         tag.put("resonating_send_list", list);
+        ResonatingProviderDefaults.writeTargets(tag, defaultInputTargets);
+        ResonatingProviderDefaults.setSelectedInput(tag, defaultSelectedInput);
     }
 
     @Override
     public void readFromNBT(CompoundTag tag)
     {
         super.readFromNBT(tag);
+        invalidatePullableOutputsCache();
 
         this.upgrades.readFromNBT(tag, "upgrades");
 
         resonatingSendList.clear();
+        defaultInputTargets = ResonatingProviderDefaults.readTargets(tag);
+        defaultSelectedInput = ResonatingProviderDefaults.getSelectedInput(tag);
         if (!tag.contains("resonating_send_list", Tag.TAG_LIST))
         {
             return;
@@ -182,8 +194,8 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
     @Override
     public boolean pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder)
     {
-        // 非谐振走原版
-        if (!(patternDetails instanceof ResonatingPatternDetails resonating))
+        RoutedPatternData routed = buildRoutedPatternData(patternDetails);
+        if (routed == null)
         {
             return super.pushPattern(patternDetails, inputHolder);
         }
@@ -208,37 +220,28 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
             return false;
         }
 
-        // 复制用于unmarked fallback
-        KeyCounter[] remaining = copyKeyCounters(inputHolder);
-
-        // 收集marked，并从remaining扣掉对应数量
+        // 收集marked / unmarked，严格按 sparse 输入槽位处理，避免同种物品混合时错位
         record Marked(AEKey key, long amount, EncodedResonatingPattern.Target target)
         {
         }
         var marked = new ArrayList<Marked>();
+        var unmarked = new ArrayList<GenericStack>();
 
-        var sparseInputs = resonating.getSparseInputs();
+        var sparseInputs = routed.sparseInputs();
         for (int sparseIndex = 0; sparseIndex < sparseInputs.size(); sparseIndex++)
         {
             var sparse = sparseInputs.get(sparseIndex);
             if (sparse == null) continue;
 
-            var optTarget = resonating.getTargetForSparseInputIndex(sparseIndex);
+            var optTarget = routed.getTargetForSparseInputIndex(sparseIndex);
             if (optTarget.isEmpty())
             {
-                continue; // 无target：留给unmarked fallback
+                unmarked.add(sparse);
+                continue;
             }
 
             var target = optTarget.get();
-            var key = sparse.what();
-            var amount = sparse.amount();
-
-            if (!removeFromRemaining(remaining, key, amount))
-            {
-                return false;
-            }
-
-            marked.add(new Marked(key, amount, target));
+            marked.add(new Marked(sparse.what(), sparse.amount(), target));
         }
 
         // 预先尝试marked材料是否能完整发配
@@ -254,17 +257,12 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
             if (simulated < m.amount()) return false;
         }
 
-        // remaining存在，则按照原版逻辑模拟发配
+        // unmarked 存在，则为其选择一个本地 fallback 目标
         Direction chosenDirection = null;
         PatternProviderTarget chosenAdapter = null;
 
-        if (!isEmpty(remaining))
+        if (!unmarked.isEmpty())
         {
-            if (!patternDetails.supportsPushInputsToExternalInventory())
-            {
-                return false;
-            }
-
             record PushTarget(Direction direction, PatternProviderTarget target)
             {
             }
@@ -292,7 +290,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
             {
                 var p = possibleTargets.get(i);
 
-                if (adapterAcceptsAllLocal(p.target(), remaining))
+                if (adapterAcceptsAllLocal(p.target(), unmarked))
                 {
                     chosenDirection = p.direction();
                     chosenAdapter = p.target();
@@ -325,18 +323,19 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
             }
         }
 
-        // 无目的地材料走原版
+        // 未标记材料逐槽走本地 fallback，保持与 marked 相同的槽位语义
         if (chosenAdapter != null)
         {
-            final var adapterFinal = chosenAdapter;
+            for (var sparse : unmarked)
+            {
+                if (sparse == null) continue;
 
-            patternDetails.pushInputsToExternalInventory(remaining, (what, amount) -> {
-                var inserted = adapterFinal.insert(what, amount, Actionable.MODULATE);
-                if (inserted < amount)
+                var inserted = chosenAdapter.insert(sparse.what(), sparse.amount(), Actionable.MODULATE);
+                if (inserted < sparse.amount())
                 {
-                    addToSendList(what, amount - inserted);
+                    addToSendList(sparse.what(), sparse.amount() - inserted);
                 }
-            });
+            }
 
             this.sendDirection = chosenDirection;
         }
@@ -355,6 +354,97 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
         }
 
         return true;
+    }
+
+    @Nullable
+    private RoutedPatternData buildRoutedPatternData(IPatternDetails patternDetails)
+    {
+        if (patternDetails instanceof ResonatingPatternDetails resonating)
+        {
+            return new RoutedPatternData(resonating.getSparseInputs(), resonating.getInputTargets());
+        }
+
+        if (!ResonatingProviderDefaults.hasAnyTarget(defaultInputTargets))
+        {
+            return null;
+        }
+
+        var src = io.github.lounode.ae2cs.api.util.PatternHelper.getAEProcessingPattern(patternDetails.getDefinition().toStack());
+        if (src == null)
+        {
+            return null;
+        }
+
+        var sparseInputs = new ArrayList<GenericStack>(java.util.Arrays.asList(src.getSparseInputs()));
+        var targets = new ArrayList<java.util.Optional<EncodedResonatingPattern.Target>>(sparseInputs.size());
+        for (int i = 0; i < sparseInputs.size(); i++)
+        {
+            targets.add(i < defaultInputTargets.size() ? defaultInputTargets.get(i) : java.util.Optional.empty());
+        }
+        return new RoutedPatternData(sparseInputs, targets);
+    }
+
+    public void readDefaultsFromItem(ItemStack stack)
+    {
+        readDefaultsFromItemTag(stack.getTag());
+        saveChanges();
+    }
+
+    public void readDefaultsFromItemTag(@Nullable CompoundTag tag)
+    {
+        this.defaultInputTargets = ResonatingProviderDefaults.readTargets(tag);
+        this.defaultSelectedInput = ResonatingProviderDefaults.getSelectedInput(tag);
+    }
+
+    public void writeDefaultsToStack(ItemStack stack)
+    {
+        writeDefaultsToItemTag(stack.getOrCreateTag());
+    }
+
+    public void writeDefaultsToItemTag(CompoundTag tag)
+    {
+        ResonatingProviderDefaults.writeTargets(tag, defaultInputTargets);
+        ResonatingProviderDefaults.setSelectedInput(tag, defaultSelectedInput);
+    }
+
+    public void writeDefaultsToDrops(List<ItemStack> drops, net.minecraft.world.item.Item selfItem)
+    {
+        for (ItemStack drop : drops)
+        {
+            if (drop.is(selfItem))
+            {
+                writeDefaultsToStack(drop);
+                return;
+            }
+        }
+    }
+
+    public List<java.util.Optional<EncodedResonatingPattern.Target>> getDefaultInputTargets()
+    {
+        return defaultInputTargets;
+    }
+
+    public int getDefaultSelectedInput()
+    {
+        return defaultSelectedInput;
+    }
+
+    public void writeVisualSync(FriendlyByteBuf data)
+    {
+        data.writeVarInt(defaultSelectedInput);
+        ResonatingProviderDefaults.writeTargets(data, defaultInputTargets);
+    }
+
+    public boolean readVisualSync(FriendlyByteBuf data)
+    {
+        int newSelected = ResonatingProviderDefaults.clampSelected(data.readVarInt());
+        var newTargets = ResonatingProviderDefaults.readTargets(data);
+
+        boolean changed = newSelected != this.defaultSelectedInput
+                || !newTargets.equals(this.defaultInputTargets);
+        this.defaultSelectedInput = newSelected;
+        this.defaultInputTargets = newTargets;
+        return changed;
     }
 
     @Override
@@ -377,6 +467,8 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
         if (!mainNode.isActive()) return false;
 
         var returnInv = getReturnInv();
+        var pullableOutputs = getPullableOutputs();
+        if (pullableOutputs.isEmpty()) return false;
 
         var sides = getActiveSidesFiltered();
         if (sides.isEmpty()) return false;
@@ -400,6 +492,8 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
                 if (scanned++ >= maxKeysPerTick) return false;
 
                 var key = stack.getKey();
+                if (key == null || !pullableOutputs.contains(key)) continue;
+
                 long available = stack.getLongValue();
                 if (available <= 0) continue;
 
@@ -424,6 +518,40 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
         return false;
     }
 
+    private Set<AEKey> getPullableOutputs()
+    {
+        if (cachedPullableOutputs != null)
+        {
+            return cachedPullableOutputs;
+        }
+
+        Set<AEKey> outputs = new HashSet<>();
+        for (IPatternDetails patternDetails : getAvailablePatterns())
+        {
+            for (GenericStack output : patternDetails.getOutputs())
+            {
+                if (output != null && output.what() != null)
+                {
+                    outputs.add(output.what());
+                }
+            }
+        }
+        cachedPullableOutputs = outputs;
+        return outputs;
+    }
+
+    @Override
+    public void updatePatterns()
+    {
+        super.updatePatterns();
+        invalidatePullableOutputsCache();
+    }
+
+    private void invalidatePullableOutputsCache()
+    {
+        cachedPullableOutputs = null;
+    }
+
 
     // -------------------辅助方法-------------------------
 
@@ -431,55 +559,6 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
     {
         return this.isBlocking() && adapter.containsPatternInput(this.patternInputs);
     }
-
-    private static KeyCounter[] copyKeyCounters(KeyCounter[] inputHolder)
-    {
-        var out = new KeyCounter[inputHolder.length];
-        for (int i = 0; i < inputHolder.length; i++)
-        {
-            out[i] = new KeyCounter();
-            out[i].addAll(inputHolder[i]);
-        }
-        return out;
-    }
-
-    private static boolean removeFromRemaining(KeyCounter[] remaining, AEKey key, long amount)
-    {
-        long toRemove = amount;
-
-        for (var counter : remaining)
-        {
-            long avail = counter.get(key);
-            if (avail <= 0) continue;
-
-            long take = Math.min(avail, toRemove);
-            counter.remove(key, take);
-            toRemove -= take;
-
-            if (toRemove <= 0)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private static boolean isEmpty(KeyCounter[] holders)
-    {
-        for (var h : holders)
-        {
-            for (var entry : h)
-            {
-                if (entry.getLongValue() > 0)
-                {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
 
     private static <T> void rearrangeRoundRobin(List<T> list, int roundRobinIndex)
     {
@@ -498,17 +577,16 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
         rearrangeRoundRobin(list, localRoundRobinIndex);
     }
 
-    private boolean adapterAcceptsAllLocal(PatternProviderTarget target, KeyCounter[] inputHolder)
+    private boolean adapterAcceptsAllLocal(PatternProviderTarget target, List<GenericStack> sparseInputs)
     {
-        for (var inputList : inputHolder)
+        for (var input : sparseInputs)
         {
-            for (var input : inputList)
+            if (input == null) continue;
+
+            var inserted = target.insert(input.what(), input.amount(), Actionable.SIMULATE);
+            if (inserted < input.amount())
             {
-                var inserted = target.insert(input.getKey(), input.getLongValue(), Actionable.SIMULATE);
-                if (inserted == 0)
-                {
-                    return false;
-                }
+                return false;
             }
         }
         return true;
@@ -662,5 +740,18 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
 
     private record PendingSend(EncodedResonatingPattern.Target target, GenericStack stack)
     {
+    }
+
+    private record RoutedPatternData(List<GenericStack> sparseInputs,
+                                     List<java.util.Optional<EncodedResonatingPattern.Target>> targets)
+    {
+        private java.util.Optional<EncodedResonatingPattern.Target> getTargetForSparseInputIndex(int sparseIndex)
+        {
+            if (sparseIndex < 0 || sparseIndex >= targets.size())
+            {
+                return java.util.Optional.empty();
+            }
+            return targets.get(sparseIndex);
+        }
     }
 }

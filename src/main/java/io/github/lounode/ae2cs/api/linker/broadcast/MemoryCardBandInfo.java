@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs.api.linker.broadcast;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * 给内存卡复制band信息用
@@ -16,10 +17,10 @@ public record MemoryCardBandInfo(String bandName, boolean asSender)
         return tag;
     }
 
-    public static MemoryCardBandInfo readFromNBT(CompoundTag tag)
+    public static @Nullable MemoryCardBandInfo readFromNBT(CompoundTag tag)
     {
         if (!tag.contains("band_name") || !tag.contains("as_sender"))
-            throw new IllegalArgumentException("Invalid tag format for MemoryCardBandInfo");
+            return null;
         else
             return new MemoryCardBandInfo(tag.getString("band_name"), tag.getBoolean("as_sender"));
     }

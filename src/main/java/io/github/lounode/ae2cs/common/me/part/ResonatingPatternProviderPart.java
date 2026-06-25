@@ -8,7 +8,9 @@ import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.items.parts.PartModels;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuLocators;
 import appeng.menu.locator.MenuLocator;
+import appeng.util.SettingsFrom;
 import appeng.parts.PartModel;
 import appeng.parts.crafting.PatternProviderPart;
 import io.github.lounode.ae2cs.AE2CrystalScience;
@@ -19,6 +21,12 @@ import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderLogic;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class ResonatingPatternProviderPart extends PatternProviderPart implements ResonatingPatternProviderHost
 {
@@ -94,6 +102,16 @@ public class ResonatingPatternProviderPart extends PatternProviderPart implement
     }
 
     @Override
+    public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos)
+    {
+        if (!player.getCommandSenderWorld().isClientSide())
+        {
+            openMenu(player, MenuLocators.forPart(this));
+        }
+        return true;
+    }
+
+    @Override
     public void returnToMainMenu(Player player, ISubMenu subMenu)
     {
         MenuOpener.returnTo(AECSMenus.RESONATING_PATTERN_PROVIDER_MENU.get(), player, subMenu.getLocator());
@@ -115,5 +133,78 @@ public class ResonatingPatternProviderPart extends PatternProviderPart implement
     public ResonatingPatternProviderLogic getResonatingLogic()
     {
         return (ResonatingPatternProviderLogic) getLogic();
+    }
+
+    @Override
+    public void importSettings(SettingsFrom mode, net.minecraft.nbt.CompoundTag input, @Nullable Player player)
+    {
+        super.importSettings(mode, input, player);
+        if (mode == SettingsFrom.DISMANTLE_ITEM || mode == SettingsFrom.MEMORY_CARD)
+        {
+            getResonatingLogic().readDefaultsFromItemTag(input);
+            saveChanges();
+            markForLogicClientUpdate();
+        }
+    }
+
+    @Override
+    public void exportSettings(SettingsFrom mode, net.minecraft.nbt.CompoundTag output)
+    {
+        super.exportSettings(mode, output);
+        if (mode == SettingsFrom.DISMANTLE_ITEM || mode == SettingsFrom.MEMORY_CARD)
+        {
+            getResonatingLogic().writeDefaultsToItemTag(output);
+        }
+    }
+
+    @Override
+    public void writeToStream(FriendlyByteBuf data)
+    {
+        super.writeToStream(data);
+        getResonatingLogic().writeVisualSync(data);
+    }
+
+    @Override
+    public boolean readFromStream(FriendlyByteBuf data)
+    {
+        boolean redraw = super.readFromStream(data);
+        return getResonatingLogic().readVisualSync(data) || redraw;
+    }
+
+    @Override
+    public void markForLogicClientUpdate()
+    {
+        if (this.getBlockEntity().getLevel() != null && !this.getBlockEntity().getLevel().isClientSide())
+        {
+            this.getHost().markForUpdate();
+        }
+    }
+
+    @Override
+    public void writeToNBT(net.minecraft.nbt.CompoundTag data)
+    {
+        super.writeToNBT(data);
+        getResonatingLogic().writeToNBT(data);
+    }
+
+    @Override
+    public void readFromNBT(net.minecraft.nbt.CompoundTag data)
+    {
+        super.readFromNBT(data);
+        getResonatingLogic().readFromNBT(data);
+    }
+
+    @Override
+    public void addAdditionalDrops(List<ItemStack> drops, boolean wrenched)
+    {
+        super.addAdditionalDrops(drops, wrenched);
+        getResonatingLogic().addDrops(drops);
+    }
+
+    @Override
+    public void clearContent()
+    {
+        super.clearContent();
+        getResonatingLogic().clearContent();
     }
 }

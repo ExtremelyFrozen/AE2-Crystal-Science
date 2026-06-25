@@ -1,6 +1,0 @@
-// 1.20.1	2026-02-24T21:46:06.8438114	Registries
-d479420aae01859c582bb48dd0a215ef91895c13 data/ae2cs/forge/biome_modifier/add_certus_quartz_ores.json
-e42371af409bafa8f0a4a9baf0998f7d3007a185 data/ae2cs/worldgen/configured_feature/certus_quartz_ore.json
-2e1d44af96fa2d4a06990e8d16ce569d4393b415 data/ae2cs/worldgen/configured_feature/charged_certus_quartz_ore.json
-f6e1f35d87bcae8b79873cdb3f987a5bcf642df8 data/ae2cs/worldgen/placed_feature/certus_quartz_ore_placed.json
-a20b8b4d2852ca01b5af71fecef12663121a116b data/ae2cs/worldgen/placed_feature/charged_certus_quartz_ore_placed.json

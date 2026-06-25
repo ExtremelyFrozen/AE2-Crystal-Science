@@ -29,6 +29,7 @@ and other AE-series mods.
 
 <Row gap="16">
   <BlockImage id="ae2cs:ender_quartz_block" scale="2" />
+  <BlockImage id="ae2cs:link_crystal_block" scale="2" />
   <BlockImage id="ae2cs:meteor_crystal_block" scale="2" />
   <BlockImage id="ae2cs:resonating_crystal_block" scale="2" />
 </Row>

@@ -10,6 +10,7 @@ public class AECSBlockIds
     public static final String QUANTUM_CRYSTAL_BLOCK = "quantum_crystal_block";
     public static final String ROSE_QUARTZ_BLOCK = "rose_quartz_block";
     public static final String IRRADIATED_CRYSTAL_BLOCK = "irradiated_crystal_block";
+    public static final String LINK_CRYSTAL_BLOCK = "link_crystal_block";
     public static final String SILICON_BLOCK = "silicon_block";
 
     // 矿石
@@ -37,6 +38,7 @@ public class AECSBlockIds
     public static final String RESONATING_PATTERN_PROVIDER = "resonating_pattern_provider";
     public static final String EX_RESONATING_PATTERN_PROVIDER = "extended_resonating_pattern_provider";
     public static final String SIMPLE_PATTERN_PROVIDER = "simple_pattern_provider";
+    public static final String MIRROR_PATTERN_PROVIDER = "mirror_pattern_provider";
     public static final String METEORITE_PATTERN_PROVIDER = "meteorite_pattern_provider";
     public static final String QUARTZ_OSCILLATOR_CLOCK = "quartz_oscillator_clock";
 }

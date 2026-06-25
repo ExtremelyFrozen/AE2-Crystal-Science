@@ -1,6 +1,8 @@
 package io.github.lounode.ae2cs.network.c2s;
 
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
+import io.github.lounode.ae2cs.common.item.IScrollCycleItem;
+import io.github.lounode.ae2cs.common.item.IResonatingTargetModeItem;
 import io.github.lounode.ae2cs.common.item.ResonatingPatternItem;
 import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern;
 import net.minecraft.network.FriendlyByteBuf;
@@ -33,12 +35,25 @@ public record ScrollResonatingPatternSelectPacket(boolean next)
         if (sp == null) return;
 
         var stack = sp.getMainHandItem();
-        if (!(stack.getItem() instanceof ResonatingPatternItem)) return;
+        if (stack.getItem() instanceof ResonatingPatternItem)
+        {
+            EncodedResonatingPattern encoded = AECSDataComponents.getEncodedResonatingPattern(stack);
+            if (encoded == null) return;
 
-        EncodedResonatingPattern encoded = AECSDataComponents.getEncodedResonatingPattern(stack);
-        if (encoded == null) return;
+            ResonatingPatternItem.scrollSelectedInputAndToast(sp, stack, encoded, this.next());
+            return;
+        }
 
-        ResonatingPatternItem.scrollSelectedInputAndToast(sp, stack, encoded, this.next());
+        if (stack.getItem() instanceof IResonatingTargetModeItem selectable)
+        {
+            selectable.scrollSelectedInputAndToast(sp, stack, this.next());
+            return;
+        }
+
+        if (stack.getItem() instanceof IScrollCycleItem cycleItem)
+        {
+            cycleItem.scrollSelection(sp, stack, this.next());
+        }
     }
 
     private void handleInClient(NetworkEvent.Context context)

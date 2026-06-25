@@ -12,13 +12,26 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.core.BlockPos;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class EnderLinkerItem extends Item
 {
     public EnderLinkerItem(Properties properties)
     {
         super(properties.stacksTo(1));
+    }
+
+    public static boolean isHoldingLinker(@Nullable Player player)
+    {
+        if (player == null)
+        {
+            return false;
+        }
+
+        return player.getMainHandItem().getItem() instanceof EnderLinkerItem
+                || player.getOffhandItem().getItem() instanceof EnderLinkerItem;
     }
 
     @Override

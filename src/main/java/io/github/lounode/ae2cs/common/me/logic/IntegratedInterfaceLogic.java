@@ -177,7 +177,7 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
      * 是否配置了备货内容（有 config 的话对外暴露本地库存，没有的话暴露网络）
      */
     private boolean hasConfig = false;
-
+    private boolean needsPatternReRegister = false;
     /**
      * 本地库存的 MEStorage 视图，用于给存储总线看
      */
@@ -364,10 +364,17 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         patternInputs.clear();
 
         BlockEntity blockEntity = host.getBlockEntity();
+        Level level = blockEntity != null ? blockEntity.getLevel() : null;
+        if (level == null)
+        {
+            needsPatternReRegister = true;
+            ICraftingProvider.requestUpdate(mainNode);
+            return;
+        }
 
         for (ItemStack stack : this.patternInventory)
         {
-            IPatternDetails details = PatternDetailsHelper.decodePattern(stack, blockEntity.getLevel());
+            IPatternDetails details = PatternDetailsHelper.decodePattern(stack, level);
 
             if (details != null)
             {
@@ -961,6 +968,12 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
                 return TickRateModulation.SLEEP;
             }
 
+            if (needsPatternReRegister)
+            {
+                updatePatterns();
+                needsPatternReRegister = false;
+            }
+
             boolean didSomething = updateStorage() | sendStacksOut();
 
             boolean stillHasWork = hasStorageWork() || !sendList.isEmpty();
@@ -1034,6 +1047,10 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         // 升级
         this.upgrades.readFromNBT(tag, "upgrades");
 
+        // 先恢复样板槽，再统一重建 decoded pattern cache。
+        this.patternInventory.clear();
+        this.patternInventory.readFromNBT(tag, "patterns");
+
         // 配置
         this.configInv.readFromChildTag(tag, "config");
 
@@ -1046,31 +1063,18 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         // 机器配置
         this.configManager.readFromNBT(tag);
 
-        // 样板槽
-        this.patternInventory.readFromNBT(tag, "patterns");
-
         // 配置读完后要重新计算 hasConfig + plannedWork
         readConfig();
 
         // 样板槽更新 patternInputs / patterns 列表
         updatePatterns();
+        needsPatternReRegister = true;
 
         // 样板推送状态
         this.roundRobinIndex = tag.getInt("roundRobinIndex");
-        this.redstoneState = YesNo.values()[tag.getByte("redstoneState")];
+        this.redstoneState = readEnum(tag, "redstoneState", YesNo.values(), YesNo.UNDECIDED);
 
-        if (tag.contains("unlockEvent"))
-        {
-            byte u = tag.getByte("unlockEvent");
-            if (u >= 0 && u < UnlockCraftingEvent.values().length)
-            {
-                this.unlockEvent = UnlockCraftingEvent.values()[u];
-            }
-        }
-        else
-        {
-            this.unlockEvent = null;
-        }
+        this.unlockEvent = readEnum(tag, "unlockEvent", UnlockCraftingEvent.values(), null);
 
         if (tag.contains("unlockStack"))
         {
@@ -1103,6 +1107,23 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         {
             this.sendDirection = null;
         }
+    }
+
+    @Nullable
+    private static <T extends Enum<T>> T readEnum(CompoundTag tag, String key, T[] values, @Nullable T fallback)
+    {
+        if (!tag.contains(key))
+        {
+            return fallback;
+        }
+
+        byte value = tag.getByte(key);
+        if (value < 0 || value >= values.length)
+        {
+            return fallback;
+        }
+
+        return values[value];
     }
 
     /**

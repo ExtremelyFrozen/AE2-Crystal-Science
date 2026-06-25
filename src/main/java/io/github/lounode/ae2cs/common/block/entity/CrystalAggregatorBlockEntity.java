@@ -11,6 +11,7 @@ import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSRecipeTypes;
 import io.github.lounode.ae2cs.common.machine.component.AppEngInvComponent;
 import io.github.lounode.ae2cs.common.machine.component.InvPort;
@@ -298,6 +299,10 @@ public class CrystalAggregatorBlockEntity extends AENetworkedSelfPoweredBlockEnt
 
     private double getEnergyPerTick()
     {
+        if (upgrades.isInstalled(AECSItems.OVERLOAD_CARD.get()) && activeRecipeEnergyCost > 0)
+        {
+            return Math.max(1, (activeRecipeEnergyCost + 3) / 4.0);
+        }
         return BASIC_ENERGY_COST_PER_TICK * getSpeedMultiplier();
     }
 

@@ -9,7 +9,6 @@ import io.github.lounode.ae2cs.client.gui.widgets.AECSIconButton;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSToggleButton;
 import io.github.lounode.ae2cs.common.block.entity.EnderBroadcasterBlockEntity;
 import io.github.lounode.ae2cs.common.menu.linker.broadcast.EnderBroadcasterMenu;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -22,13 +21,6 @@ public class EnderBroadcasterGUI extends UpgradeableScreen<EnderBroadcasterMenu>
     private final AECSIconButton openFrequencyBandManagerMenuButton;
     private final AECSToggleButton toggleBandLinkButton;
     private final AECSIconButton cleanLinkerConnectionButton;
-    // 接收端
-    private final Button addReceiver1ChannelsButton;
-    private final Button addReceiver10ChannelsButton;
-    private final Button reduceReceiver1ChannelsButton;
-    private final Button reduceReceiver10ChannelsButton;
-
-
     public EnderBroadcasterGUI(EnderBroadcasterMenu menu, Inventory inv, Component title)
     {
         super(menu, inv, title, StyleManager.loadStyleDoc("/screens/ender_broadcaster_menu.json"));
@@ -83,30 +75,6 @@ public class EnderBroadcasterGUI extends UpgradeableScreen<EnderBroadcasterMenu>
         };
         this.cleanLinkerConnectionButton.setMessage(Component.translatable("ae2cs.menu.ender_broadcaster.button.clean_linker_connection"));
         addToLeftToolbar(cleanLinkerConnectionButton);
-
-        addReceiver1ChannelsButton = Button.builder(Component.literal("+1"), button -> {
-            int mult = hasShiftDown() ? 5 : 1;
-            menu.sendChangeExpectedChannels(1 * mult);
-        }).build();
-        widgets.add("add_receiver_expected_channels_button_1", addReceiver1ChannelsButton);
-
-        addReceiver10ChannelsButton = Button.builder(Component.literal("+10"), button -> {
-            int mult = hasShiftDown() ? 5 : 1;
-            menu.sendChangeExpectedChannels(10 * mult);
-        }).build();
-        widgets.add("add_receiver_expected_channels_button_10", addReceiver10ChannelsButton);
-
-        reduceReceiver1ChannelsButton = Button.builder(Component.literal("-1"), button -> {
-            int mult = hasShiftDown() ? 5 : 1;
-            menu.sendChangeExpectedChannels(-1 * mult);
-        }).build();
-        widgets.add("reduce_receiver_expected_channels_button_1", reduceReceiver1ChannelsButton);
-
-        reduceReceiver10ChannelsButton = Button.builder(Component.literal("-10"), button -> {
-            int mult = hasShiftDown() ? 5 : 1;
-            menu.sendChangeExpectedChannels(-10 * mult);
-        }).build();
-        widgets.add("reduce_receiver_expected_channels_button_10", reduceReceiver10ChannelsButton);
     }
 
     @Override
@@ -130,18 +98,13 @@ public class EnderBroadcasterGUI extends UpgradeableScreen<EnderBroadcasterMenu>
 
         setTextContent("band_name", Component.translatable("ae2cs.menu.ender_broadcaster.current_band", bandValue));
         setTextContent("connect_status", Component.translatable("ae2cs.menu.ender_broadcaster.connect_status", typeText));
+        setTextContent("band_channels", Component.translatable("ae2cs.menu.ender_broadcaster.band_channels", menu.bandUsedChannels, menu.bandTotalChannels));
+        setTextHidden("band_channels", !isReceiver && !isSender);
 
-        setTextContent("receiver_actual_channels", Component.translatable("ae2cs.menu.ender_broadcaster.receiver_actual_channels", menu.receiverActualChannels));
-        setTextHidden("receiver_actual_channels", !isReceiver);
-
-        setTextContent("receiver_expected_channels_title", Component.translatable("ae2cs.menu.ender_broadcaster.receiver_expected_channels_title"));
-        setTextHidden("receiver_expected_channels_title", !isReceiver);
-
-        setTextContent("receiver_expected_channels_count", Component.literal(String.valueOf(menu.receiverExpectedChannels)));
-        setTextHidden("receiver_expected_channels_count", !isReceiver);
-
-        setTextContent("sender_sent_channels", Component.translatable("ae2cs.menu.ender_broadcaster.sender_sent_channels", menu.senderSentChannels));
-        setTextHidden("sender_sent_channels", !isSender);
+        setTextContent("mode_details_value", isReceiver
+                ? Component.translatable("ae2cs.menu.ender_broadcaster.receiver_actual_channels", menu.receiverUsedChannels)
+                : Component.translatable("ae2cs.menu.ender_broadcaster.sender_sent_channels", menu.senderAvailableChannels));
+        setTextHidden("mode_details_value", !isReceiver && !isSender);
 
 
         toggleBandLinkButton.setState(isSender);
@@ -149,14 +112,5 @@ public class EnderBroadcasterGUI extends UpgradeableScreen<EnderBroadcasterMenu>
 
         openFrequencyBandManagerMenuButton.setVisibility(menu.connectionType != EnderBroadcasterBlockEntity.ConnectionType.NO_CONNECTION);
         cleanLinkerConnectionButton.setVisibility(menu.connectionType != EnderBroadcasterBlockEntity.ConnectionType.NO_CONNECTION);
-
-        this.addReceiver1ChannelsButton.active = isReceiver;
-        this.addReceiver1ChannelsButton.visible = isReceiver;
-        this.addReceiver10ChannelsButton.active = isReceiver;
-        this.addReceiver10ChannelsButton.visible = isReceiver;
-        this.reduceReceiver1ChannelsButton.active = isReceiver;
-        this.reduceReceiver1ChannelsButton.visible = isReceiver;
-        this.reduceReceiver10ChannelsButton.active = isReceiver;
-        this.reduceReceiver10ChannelsButton.visible = isReceiver;
     }
 }

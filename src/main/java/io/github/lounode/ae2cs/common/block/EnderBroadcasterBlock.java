@@ -30,7 +30,12 @@ public class EnderBroadcasterBlock extends AEBaseEntityBlock<EnderBroadcasterBlo
     public @NotNull InteractionResult use(BlockState state, Level level, BlockPos pos,
                                           Player player, InteractionHand hand, BlockHitResult hitResult)
     {
-        super.use(state, level, pos, player, hand, hitResult);
+        InteractionResult result = super.use(state, level, pos, player, hand, hitResult);
+        if (result.consumesAction())
+        {
+            return result;
+        }
+
         if (!level.isClientSide() && !player.isShiftKeyDown())
         {
             if (level.getBlockEntity(pos) instanceof EnderBroadcasterBlockEntity be)

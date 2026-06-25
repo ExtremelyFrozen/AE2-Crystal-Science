@@ -52,6 +52,8 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
         packAndUnpack3x3(recipeOutput, RecipeCategory.MISC, RecipeCategory.MISC,
                 AECSItems.PURE_ENDER_QUARTZ, AECSBlocks.PURE_ENDER_QUARTZ_BLOCK);
         packAndUnpack3x3(recipeOutput, RecipeCategory.MISC, RecipeCategory.MISC,
+                AECSItems.PURE_LINK_CRYSTAL, AECSBlocks.PURE_LINK_CRYSTAL_BLOCK);
+        packAndUnpack3x3(recipeOutput, RecipeCategory.MISC, RecipeCategory.MISC,
                 AEItems.SILICON, AECSBlocks.SILICON_BLOCK);
 
         // 工具配方
@@ -70,6 +72,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
         swap1x1(recipeOutput, RecipeCategory.MISC, AECSBlocks.INTEGRATED_INTERFACE_BLOCK, AECSParts.INTEGRATE_INTERFACE_PART);
         swap1x1(recipeOutput, RecipeCategory.MISC, AECSBlocks.EX_INTEGRATED_INTERFACE_BLOCK, AECSParts.EX_INTEGRATE_INTERFACE_PART);
         swap1x1(recipeOutput, RecipeCategory.MISC, AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK, AECSParts.SIMPLE_PATTERN_PROVIDER_PART);
+        swap1x1(recipeOutput, RecipeCategory.MISC, AECSBlocks.MIRROR_PATTERN_PROVIDER_BLOCK, AECSParts.MIRROR_PATTERN_PROVIDER_PART);
         swap1x1(recipeOutput, RecipeCategory.MISC, AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK, AECSParts.METEORITE_PATTERN_PROVIDER_PART);
         swap1x1(recipeOutput, RecipeCategory.MISC, AECSBlocks.ENDER_INTERFACE_BLOCK, AECSParts.ENDER_INTERFACE_PART);
         swap1x1(recipeOutput, RecipeCategory.MISC, AECSBlocks.EX_ENDER_INTERFACE_BLOCK, AECSParts.EX_ENDER_INTERFACE_PART);
@@ -313,14 +316,27 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .unlockedBy(getHasName(AECSItems.SIMPLE_PROCESSOR), has(AECSItems.SIMPLE_PROCESSOR))
                 .save(recipeOutput, getCrafterPath(AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK, true));
 
+        // 镜像样板供应器
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSBlocks.MIRROR_PATTERN_PROVIDER_BLOCK)
+                .pattern("aba")
+                .pattern("cdc")
+                .pattern("aea")
+                .define('a', AECSItems.PURE_LINK_CRYSTAL)
+                .define('b', AECSTags.Items.GEARS_WOOD)
+                .define('c', AECSItems.SIMPLE_PROCESSOR)
+                .define('d', AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK)
+                .define('e', AECSItems.RESONATING_PROCESSOR)
+                .unlockedBy(getHasName(AECSItems.PURE_LINK_CRYSTAL), has(AECSItems.PURE_LINK_CRYSTAL))
+                .save(recipeOutput, getCrafterPath(AECSBlocks.MIRROR_PATTERN_PROVIDER_BLOCK, true));
+
         // 末影广播装置
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSBlocks.ENDER_BROADCASTER_BLOCK)
                 .pattern("aba")
                 .pattern("bcb")
                 .pattern("ada")
-                .define('a', AEItems.MATTER_BALL)
+                .define('a', AEBlocks.QUANTUM_RING)
                 .define('b', AEParts.ME_P2P_TUNNEL)
-                .define('c', AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_RESONATING_CRYSTAL)
+                .define('c', AEItems.QUANTUM_ENTANGLED_SINGULARITY)
                 .define('d', AECSItems.RESONATING_PROCESSOR)
                 .unlockedBy(getHasName(AECSItems.RESONATING_PROCESSOR), has(AECSItems.RESONATING_PROCESSOR))
                 .save(recipeOutput, getCrafterPath(AECSBlocks.ENDER_BROADCASTER_BLOCK, true));
@@ -334,7 +350,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider
                 .define('b', AEBlocks.WIRELESS_ACCESS_POINT)
                 .define('c', AECSItems.RESONATING_PROCESSOR)
                 .define('d', ConventionTags.SMART_CABLE)
-                .define('e', AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_ENDER_QUARTZ)
+                .define('e', AECSBlocks.ENDER_BROADCASTER_BLOCK)
                 .unlockedBy(getHasName(AECSItems.RESONATING_PROCESSOR), has(AECSItems.RESONATING_PROCESSOR))
                 .save(recipeOutput, getCrafterPath(AECSBlocks.ENDER_EMITTER_BLOCK, true));
 

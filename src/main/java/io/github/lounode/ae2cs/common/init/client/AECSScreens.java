@@ -11,6 +11,7 @@ import io.github.lounode.ae2cs.common.init.AECSMenus;
 import io.github.lounode.ae2cs.common.menu.*;
 import io.github.lounode.ae2cs.common.menu.submenu.SideConfigMenu;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -40,7 +41,7 @@ public class AECSScreens
             MenuScreens.<MeteoritePatternProviderMenu, MeteoritePatternProviderGUI>register(AECSMenus.METEORITE_PATTERN_PROVIDER_MENU.get(),
                     (menu, id, inv) -> new MeteoritePatternProviderGUI(menu, id, inv, StyleManager.loadStyleDoc("/screens/meteorite_pattern_provider_menu.json")));
             MenuScreens.<PatternProviderMenu, PatternProviderScreen<PatternProviderMenu>>register(AECSMenus.SIMPLE_PATTERN_PROVIDER_MENU.get(),
-                    (menu, id, inv) -> new PatternProviderScreen<>(menu, id, inv, StyleManager.loadStyleDoc("/screens/simple_pattern_provider_menu.json")));
+                    (menu, inv, title) -> new PatternProviderScreen<>(menu, inv, Component.translatable("block.ae2cs.simple_pattern_provider"), StyleManager.loadStyleDoc("/screens/simple_pattern_provider_menu.json")));
             MenuScreens.register(AECSMenus.ENDER_BROADCASTER_MENU.get(), EnderBroadcasterGUI::new);
             MenuScreens.register(AECSMenus.FREQUENCY_BAND_MENU.get(), FrequencyBandGUI::new);
             MenuScreens.register(AECSMenus.FREQUENCY_BAND_LINK_MENU.get(), FrequencyBandLinkGUI::new);
@@ -51,6 +52,8 @@ public class AECSScreens
             MenuScreens.<EnderEmitterMenu, EnderEmitterGUI>register(AECSMenus.ENDER_EMITTER_MENU.get(),
                     (menu, inv, title) -> new EnderEmitterGUI(menu, inv, title,
                             StyleManager.loadStyleDoc("/screens/ender_emitter_menu.json")));
+            MenuScreens.register(AECSMenus.ENDER_EMITTER_FREQUENCY_BAND_MENU.get(), EnderEmitterFrequencyBandGUI::new);
+            MenuScreens.register(AECSMenus.ENDER_EMITTER_FREQUENCY_BAND_LINK_MENU.get(), EnderEmitterFrequencyBandLinkGUI::new);
 
             MenuScreens.<EnderInterfaceMenu, EnderInterfaceGUI>register(AECSMenus.ENDER_INTERFACE_MENU.get(),
                     (menu, inv, title) -> new EnderInterfaceGUI(menu, inv, title,

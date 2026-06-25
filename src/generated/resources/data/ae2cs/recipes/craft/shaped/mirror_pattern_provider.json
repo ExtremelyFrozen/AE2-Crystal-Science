@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "ae2cs:purified_link_crystal"
+    },
+    "b": {
+      "tag": "forge:gears/wood"
+    },
+    "c": {
+      "item": "ae2cs:simple_processor"
+    },
+    "d": {
+      "item": "ae2cs:simple_pattern_provider"
+    },
+    "e": {
+      "item": "ae2cs:resonating_processor"
+    }
+  },
+  "pattern": [
+    "aba",
+    "cdc",
+    "aea"
+  ],
+  "result": {
+    "item": "ae2cs:mirror_pattern_provider"
+  },
+  "show_notification": true
+}

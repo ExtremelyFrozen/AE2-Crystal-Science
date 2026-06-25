@@ -32,22 +32,22 @@ public class AECSEtcherRecipeProvider extends AECSRecipeProvider
     protected void buildRecipes(@NotNull Consumer<FinishedRecipe> recipeOutput)
     {
 
-        CircuitEtcherRecipeBuilder.etching(AECSItems.RESONATING_PROCESSOR, 9, 14400)
-                .require(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_RESONATING_CRYSTAL, 1)
-                .require(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_METEOR_CRYSTAL, 1)
-                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 1)
+        CircuitEtcherRecipeBuilder.etching(AECSItems.RESONATING_PROCESSOR, 36, 14400)
+                .require(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_RESONATING_CRYSTAL, 4)
+                .require(AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_METEOR_CRYSTAL, 4)
+                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 4)
                 .save(recipeOutput);
 
-        CircuitEtcherRecipeBuilder.etching(AEItems.ENGINEERING_PROCESSOR, 9, 14400)
-                .require(Tags.Items.STORAGE_BLOCKS_DIAMOND, 1)
-                .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 1)
-                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 1)
+        CircuitEtcherRecipeBuilder.etching(AEItems.ENGINEERING_PROCESSOR, 36, 14400)
+                .require(Tags.Items.STORAGE_BLOCKS_DIAMOND, 4)
+                .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 4)
+                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 4)
                 .save(recipeOutput);
 
-        CircuitEtcherRecipeBuilder.etching(AEItems.LOGIC_PROCESSOR, 9, 14400)
-                .require(Tags.Items.STORAGE_BLOCKS_GOLD, 1)
-                .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 1)
-                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 1)
+        CircuitEtcherRecipeBuilder.etching(AEItems.LOGIC_PROCESSOR, 36, 14400)
+                .require(Tags.Items.STORAGE_BLOCKS_GOLD, 4)
+                .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 4)
+                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 4)
                 .save(recipeOutput);
 
         CircuitEtcherRecipeBuilder.etching(AEItems.CALCULATION_PROCESSOR, 36, 57600)

@@ -5,6 +5,7 @@ import appeng.api.parts.IPartItem;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import io.github.lounode.ae2cs.common.block.entity.EnderEmitterBlockEntity;
+import io.github.lounode.ae2cs.common.item.ResonatingMemoryCardHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -32,6 +33,10 @@ public class CableBusBlockEntityMixin extends AEBaseBlockEntity
         if (cir.getReturnValue() != null && level != null)
         {
             EnderEmitterBlockEntity.addPosToRecentEmitter(level, worldPosition);
+            if (!level.isClientSide() && player != null)
+            {
+                ResonatingMemoryCardHelper.tryApplyToPart(player, cir.getReturnValue());
+            }
         }
     }
 
@@ -42,6 +47,10 @@ public class CableBusBlockEntityMixin extends AEBaseBlockEntity
         if (cir.getReturnValue() != null && level != null)
         {
             EnderEmitterBlockEntity.addPosToRecentEmitter(level, worldPosition);
+            if (!level.isClientSide())
+            {
+                ResonatingMemoryCardHelper.tryApplyToPart(owner, cir.getReturnValue());
+            }
         }
     }
 

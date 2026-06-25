@@ -37,6 +37,10 @@ public class AECSItemModelProvider extends ItemModelProvider
         {
             basicItem(item.get());
         }
+        for (RegistryItem<? extends Item> item : AECSItems.getTools())
+        {
+            handheldItemModel(item.get());
+        }
         for (RegistryItem<? extends Item> item : AECSItems.getOthers())
         {
             basicItem(item.get());
@@ -88,6 +92,14 @@ public class AECSItemModelProvider extends ItemModelProvider
                 .parent(new ModelFile.UncheckedModelFile("item/generated"))
                 .texture("layer0", ResourceLocation.tryBuild(item.getNamespace(), "item/" + item.getPath() + "_2"));
         return main;
+    }
+
+    public ItemModelBuilder handheldItemModel(Item item)
+    {
+        ResourceLocation id = Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(item));
+        return getBuilder(id.toString())
+                .parent(new ModelFile.UncheckedModelFile("item/handheld"))
+                .texture("layer0", ResourceLocation.tryBuild(id.getNamespace(), "item/" + id.getPath()));
     }
 
 }

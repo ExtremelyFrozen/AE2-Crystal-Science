@@ -7,6 +7,8 @@ import io.github.lounode.ae2cs.api.ids.AECSBlockIds;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.util.RegistryBlock;
 import io.github.lounode.ae2cs.common.block.*;
+import io.github.lounode.ae2cs.common.item.MirrorPatternProviderBlockItem;
+import io.github.lounode.ae2cs.common.item.ResonatingPatternProviderBlockItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -54,6 +56,7 @@ public class AECSBlocks
     public static final RegistryBlock<Block> PURE_QUANTUM_CRYSTAL_BLOCK = registerCrystalBlock(AECSBlockIds.QUANTUM_CRYSTAL_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
     public static final RegistryBlock<Block> PURE_ROSE_QUARTZ_BLOCK = registerCrystalBlock(AECSBlockIds.ROSE_QUARTZ_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
     public static final RegistryBlock<Block> IRRADIATED_CRYSTAL_BLOCK = registerCrystalBlock(AECSBlockIds.IRRADIATED_CRYSTAL_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
+    public static final RegistryBlock<Block> PURE_LINK_CRYSTAL_BLOCK = registerCrystalBlock(AECSBlockIds.LINK_CRYSTAL_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
 
     /**
      * 硅块
@@ -173,17 +176,29 @@ public class AECSBlocks
     /**
      * 谐振样板供应器
      */
-    public static final RegistryBlock<PatternProviderBlock> RESONATING_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.RESONATING_PATTERN_PROVIDER, PatternProviderBlock::new);
+    public static final RegistryBlock<ResonatingPatternProviderBlock> RESONATING_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.RESONATING_PATTERN_PROVIDER,
+            ResonatingPatternProviderBlock::new,
+            block -> new ResonatingPatternProviderBlockItem(block.get(), new Item.Properties()));
 
     /**
      * 扩展谐振样板供应器
      */
-    public static final RegistryBlock<PatternProviderBlock> EX_RESONATING_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.EX_RESONATING_PATTERN_PROVIDER, PatternProviderBlock::new);
+    public static final RegistryBlock<ResonatingPatternProviderBlock> EX_RESONATING_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.EX_RESONATING_PATTERN_PROVIDER,
+            ResonatingPatternProviderBlock::new,
+            block -> new ResonatingPatternProviderBlockItem(block.get(), new Item.Properties()));
 
     /**
      * 初级样板供应器
      */
-    public static final RegistryBlock<PatternProviderBlock> SIMPLE_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.SIMPLE_PATTERN_PROVIDER, PatternProviderBlock::new);
+    public static final RegistryBlock<PatternProviderBlock> SIMPLE_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.SIMPLE_PATTERN_PROVIDER,
+            PatternProviderBlock::new);
+
+    /**
+     * 镜像样板供应器
+     */
+    public static final RegistryBlock<MirrorPatternProviderBlock> MIRROR_PATTERN_PROVIDER_BLOCK = registerOtherBlock(AECSBlockIds.MIRROR_PATTERN_PROVIDER,
+            MirrorPatternProviderBlock::new,
+            block -> new MirrorPatternProviderBlockItem(block.get(), new Item.Properties()));
 
     /**
      * 陨石样板供应器
@@ -234,6 +249,15 @@ public class AECSBlocks
     {
         RegistryBlock<T> toReturn = registerBlock(name, block);
         OTHERS.add(toReturn);
+        return toReturn;
+    }
+
+    private static <T extends Block> RegistryBlock<T> registerOtherBlock(String name, Supplier<T> block,
+                                                                          java.util.function.Function<RegistryBlock<T>, Item> itemFactory)
+    {
+        RegistryBlock<T> toReturn = registerOnlyBlock(name, block);
+        OTHERS.add(toReturn);
+        AECSItems.ITEMS.register(name, () -> itemFactory.apply(toReturn));
         return toReturn;
     }
 

@@ -52,6 +52,9 @@ public class AECSMiscRecipeProvider extends AECSRecipeProvider
         SpecialRecipeBuilder.special(AECSRecipeSerializers.RESONATING_PATTERN_UPGRADE.get())
                 .save(recipeOutput, "aecs_resonating_pattern_upgrade");
 
+        SpecialRecipeBuilder.special(AECSRecipeSerializers.RESONATING_LINKER_CLEAR.get())
+                .save(recipeOutput, "aecs_resonating_linker_clear");
+
         // 添加谐振样板拆解
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEItems.BLANK_PATTERN)
                 .requires(AECSItems.RESONATING_PATTERN)

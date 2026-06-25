@@ -30,7 +30,6 @@ import org.jetbrains.annotations.UnknownNullability;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 /**
  * 频段：持久化数据（纯数据） + 运行时在线端/连接/分配（下一 tick 重算）
@@ -44,22 +43,6 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
      * 当AE使用无线频段时，我们统计可用频段总数时直接返回此值
      */
     private static final long INFINITE_USABLE_CHANNELS = 1L << 60;
-
-    /**
-     * 每个接收者最多能分配到多少频道
-     */
-    private static final Supplier<Integer> MAX_RECEIVER_CHANNELS = () ->
-    {
-        ChannelMode mode = AEConfig.instance().getChannelMode();
-        if (mode == ChannelMode.INFINITE)
-        {
-            return Integer.MAX_VALUE;
-        }
-        else
-        {
-            return 32 * mode.getCableCapacityFactor();
-        }
-    };
 
     // ----------------- 持久化（纯数据） -----------------
 
@@ -145,6 +128,8 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
      * 给接收端分配频道时，应该让接收段连接到的控制器节点
      */
     private transient @Nullable IGridNode controllerNode;
+
+    private transient boolean overflowShutdown;
 
     private long usableChannels;
 
@@ -322,12 +307,14 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
     public void onSenderOnline(MinecraftServer server, GlobalPos pos, IGridNode node)
     {
         if (!declaredSenders.contains(pos)) return;
+        clearOverflowState();
         onlineSenderNodes.put(pos, node);
         FrequencyBandManager.markRuntimeDirty(server, name);
     }
 
     public void onSenderOffline(MinecraftServer server, GlobalPos pos)
     {
+        clearOverflowState();
         onlineSenderNodes.remove(pos);
         FrequencyBandManager.markRuntimeDirty(server, name);
     }
@@ -335,6 +322,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
     public void onReceiverOnline(MinecraftServer server, GlobalPos pos, IGridNode node, CustomChannelProviderHost host)
     {
         if (!declaredReceivers.contains(pos)) return;
+        clearOverflowState();
         onlineReceiverNodes.put(pos, node);
         onlineReceiverHosts.put(pos, host);
         FrequencyBandManager.markRuntimeDirty(server, name);
@@ -342,6 +330,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
 
     public void onReceiverOffline(MinecraftServer server, GlobalPos pos)
     {
+        clearOverflowState();
         onlineReceiverNodes.remove(pos);
 
         CustomChannelProviderHost host = onlineReceiverHosts.remove(pos);
@@ -444,9 +433,26 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         long totalUsable = computeTotalUsableChannels();
         this.usableChannels = totalUsable;
 
-        // 3) 分配
-        int capPerReceiver = MAX_RECEIVER_CHANNELS.get();
-        allocateToAllReceivers(totalUsable, capPerReceiver);
+        if (overflowShutdown)
+        {
+            this.errorState = BandError.CHANNEL_OVERFLOW;
+            this.usedChannels = totalReceiverUsedChannels();
+            dropAllReceiversToVanillaAndDisconnect();
+            return;
+        }
+
+        // 3) 接收端共享整个频段的频道池
+        applySharedChannelsToAllReceivers(totalUsable);
+
+        // 4) 若总消耗超限，则瘫痪整个频段
+        long actualUsed = totalReceiverUsedChannels();
+        this.usedChannels = actualUsed;
+        if (actualUsed > totalUsable)
+        {
+            this.errorState = BandError.CHANNEL_OVERFLOW;
+            this.overflowShutdown = true;
+            dropAllReceiversToVanillaAndDisconnect();
+        }
     }
 
     /**
@@ -513,11 +519,10 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
      * 将频道分配到所有接收端
      *
      * @param totalUsable    可用频道的总数量
-     * @param capPerReceiver 每个接收端所能被分配的频道的硬上限
      */
-    private void allocateToAllReceivers(long totalUsable, int capPerReceiver)
+    private void applySharedChannelsToAllReceivers(long totalUsable)
     {
-        long remaining = totalUsable;
+        int sharedChannels = toReceiverCapacity(totalUsable);
 
         for (GlobalPos rp : declaredReceivers)
         {
@@ -525,19 +530,8 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
             CustomChannelProviderHost host = onlineReceiverHosts.get(rp);
             if (receiverNode == null || host == null) continue;
 
-            if (receiverNode.getOwner() instanceof BroadcastReceiverHost receiverHost)
-            {
-                int alloc = computeAllocChannels(remaining, capPerReceiver, receiverHost.getExpectedChannels());
-                if (capPerReceiver != Integer.MAX_VALUE)
-                {
-                    remaining -= alloc;
-                }
-
-                applyReceiver(rp, receiverNode, host, alloc);
-            }
+            applyReceiver(rp, receiverNode, host, sharedChannels);
         }
-
-        this.usedChannels = totalUsable - remaining;
 
         // 在线但未声明的 receiver，一律恢复原版并断开
         for (var entry : onlineReceiverHosts.object2ObjectEntrySet())
@@ -555,16 +549,29 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         }
     }
 
-    /**
-     * 输入剩余频道总数、频道硬限制、期望频道数，返回当前应该给此接收端分配的频道量
-     */
-    private int computeAllocChannels(long remaining, int capPerReceiver, int expectedChannels)
+    private int toReceiverCapacity(long totalUsable)
     {
-        if (expectedChannels <= 0) return 0;
-        if (remaining <= 0) return 0;
-        if (capPerReceiver == Integer.MAX_VALUE) return Integer.MAX_VALUE;
-        long give = Math.min(Math.min(capPerReceiver, remaining), expectedChannels);
-        return (int) give;
+        if (totalUsable <= 0) return 0;
+        return totalUsable >= Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) totalUsable;
+    }
+
+    private long totalReceiverUsedChannels()
+    {
+        long total = 0;
+
+        for (GlobalPos rp : declaredReceivers)
+        {
+            IGridNode receiverNode = onlineReceiverNodes.get(rp);
+            if (receiverNode == null) continue;
+
+            total += Math.max(0, receiverNode.getUsedChannels());
+            if (total >= INFINITE_USABLE_CHANNELS)
+            {
+                return INFINITE_USABLE_CHANNELS;
+            }
+        }
+
+        return total;
     }
 
     /**
@@ -656,6 +663,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         usableChannels = 0;
         usedChannels = 0;
         errorState = BandError.FINE;
+        overflowShutdown = false;
     }
 
     /**
@@ -808,6 +816,12 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         MISSING_CONTROLLER, // 缺失控制器
         CONTROLLER_CONFLICT, // 发射端接在了不同控制器网络中
         SENDER_ERROR, // 某个发送端处于无控制器网络，或发送端自身未就绪
-        NO_SENDER // 网络中无发射端
+        NO_SENDER, // 网络中无发射端
+        CHANNEL_OVERFLOW // 接收端总消耗超出频段可提供频道
+    }
+
+    void clearOverflowState()
+    {
+        this.overflowShutdown = false;
     }
 }

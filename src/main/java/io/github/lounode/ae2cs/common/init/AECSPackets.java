@@ -1,6 +1,7 @@
 package io.github.lounode.ae2cs.common.init;
 
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
+import io.github.lounode.ae2cs.network.c2s.MirrorLinkerBatchApplyPacket;
 import io.github.lounode.ae2cs.network.c2s.ScrollResonatingPatternSelectPacket;
 import io.github.lounode.ae2cs.network.c2s.SideConfigMenuOpenPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -35,6 +36,14 @@ public class AECSPackets
                 SideConfigMenuOpenPacket::encode,
                 SideConfigMenuOpenPacket::decode,
                 SideConfigMenuOpenPacket::handle
+        );
+
+        INSTANCE.registerMessage(
+                packetId++,
+                MirrorLinkerBatchApplyPacket.class,
+                MirrorLinkerBatchApplyPacket::encode,
+                MirrorLinkerBatchApplyPacket::decode,
+                MirrorLinkerBatchApplyPacket::handle
         );
     }
 }

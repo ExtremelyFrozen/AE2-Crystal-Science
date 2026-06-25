@@ -104,6 +104,7 @@ After unlocking the **<ItemLink id="ae2cs:crystal_aggregator" />**, you can aggr
   <ItemImage id="ae2cs:purified_fluix_crystal" scale="2" />
   <ItemImage id="ae2cs:purified_nether_quartz_crystal" scale="2" />
   <ItemImage id="ae2cs:purified_ender_quartz" scale="2" />
+  <ItemImage id="ae2cs:purified_link_crystal" scale="2" />
   <ItemImage id="ae2cs:purified_meteor_crystal" scale="2" />
   <ItemImage id="ae2cs:purified_resonating_crystal" scale="2" />
 </Row>
@@ -133,6 +134,7 @@ The first Resonating Crystal Dust must be obtained through a specific transforma
 <Row gap="16">
   <ItemImage id="ae2cs:purified_redstone_crystal" scale="2" />
   <ItemImage id="ae2cs:purified_quantum_crystal" scale="2" />
+  <ItemImage id="ae2cs:purified_link_crystal" scale="2" />
   <ItemImage id="ae2cs:purified_rose_quartz" scale="2" />
   <ItemImage id="ae2cs:purified_irradiated_crystal" scale="2" />
 </Row>

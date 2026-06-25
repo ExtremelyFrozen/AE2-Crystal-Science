@@ -178,6 +178,12 @@ public class ResonatingPatternDetails implements IPatternDetails
     }
 
     @Override
+    public boolean supportsPushInputsToExternalInventory()
+    {
+        return true;
+    }
+
+    @Override
     public void pushInputsToExternalInventory(KeyCounter[] inputHolder, PatternInputSink inputSink)
     {
         if (sparseInputs.size() == inputs.length)

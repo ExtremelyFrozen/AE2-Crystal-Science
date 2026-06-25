@@ -108,6 +108,16 @@ public class AECSMenus
                     .build("ender_emitter_menu")
     );
 
+    public static final Supplier<MenuType<EnderEmitterFrequencyBandMenu>> ENDER_EMITTER_FREQUENCY_BAND_MENU = MENU_TYPES.register("ender_emitter_frequency_band_menu",
+            () -> MenuTypeBuilder.create(EnderEmitterFrequencyBandMenu::new, EnderEmitterBlockEntity.class)
+                    .build("ender_emitter_frequency_band_menu")
+    );
+
+    public static final Supplier<MenuType<EnderEmitterFrequencyBandLinkMenu>> ENDER_EMITTER_FREQUENCY_BAND_LINK_MENU = MENU_TYPES.register("ender_emitter_frequency_band_link_menu",
+            () -> MenuTypeBuilder.create(EnderEmitterFrequencyBandLinkMenu::new, EnderEmitterBlockEntity.class)
+                    .build("ender_emitter_frequency_band_link_menu")
+    );
+
     public static final Supplier<MenuType<EnderInterfaceMenu>> ENDER_INTERFACE_MENU = MENU_TYPES.register("ender_interface_menu",
             () -> MenuTypeBuilder.create(EnderInterfaceMenu::new, EnderInterfaceHost.class)
                     .build("ender_interface_menu")

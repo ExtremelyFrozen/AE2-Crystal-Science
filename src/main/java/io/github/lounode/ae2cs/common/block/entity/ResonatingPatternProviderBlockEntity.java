@@ -6,16 +6,20 @@ import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocator;
+import appeng.util.SettingsFrom;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderHost;
 import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderLogic;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 public class ResonatingPatternProviderBlockEntity extends PatternProviderBlockEntity implements ResonatingPatternProviderHost
 {
@@ -66,5 +70,50 @@ public class ResonatingPatternProviderBlockEntity extends PatternProviderBlockEn
     public ResonatingPatternProviderLogic getResonatingLogic()
     {
         return (ResonatingPatternProviderLogic) getLogic();
+    }
+
+    @Override
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player)
+    {
+        super.importSettings(mode, input, player);
+        if (mode == SettingsFrom.DISMANTLE_ITEM || mode == SettingsFrom.MEMORY_CARD)
+        {
+            getResonatingLogic().readDefaultsFromItemTag(input);
+            setChanged();
+            markForLogicClientUpdate();
+        }
+    }
+
+    @Override
+    public void exportSettings(SettingsFrom mode, CompoundTag output, @Nullable Player player)
+    {
+        super.exportSettings(mode, output, player);
+        if (mode == SettingsFrom.DISMANTLE_ITEM || mode == SettingsFrom.MEMORY_CARD)
+        {
+            getResonatingLogic().writeDefaultsToItemTag(output);
+        }
+    }
+
+    @Override
+    public void markForLogicClientUpdate()
+    {
+        if (level != null && !level.isClientSide())
+        {
+            this.markForUpdate();
+        }
+    }
+
+    @Override
+    protected void writeToStream(FriendlyByteBuf data)
+    {
+        super.writeToStream(data);
+        getResonatingLogic().writeVisualSync(data);
+    }
+
+    @Override
+    protected boolean readFromStream(FriendlyByteBuf data)
+    {
+        boolean redraw = super.readFromStream(data);
+        return getResonatingLogic().readVisualSync(data) || redraw;
     }
 }

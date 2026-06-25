@@ -66,7 +66,13 @@ public class EnderEmitterBlock extends AEBaseEntityBlock<EnderEmitterBlockEntity
             pos = pos.below();
             state = level.getBlockState(pos);
         }
-        super.use(state, level, pos, player, hand, hitResult);
+
+        InteractionResult result = super.use(state, level, pos, player, hand, hitResult);
+        if (result.consumesAction())
+        {
+            return result;
+        }
+
         if (!level.isClientSide() && !player.isShiftKeyDown())
         {
             if (level.getBlockEntity(pos) instanceof EnderEmitterBlockEntity be)
@@ -111,6 +117,7 @@ public class EnderEmitterBlock extends AEBaseEntityBlock<EnderEmitterBlockEntity
             // 放置另一半方块掉落
             preventDropFromBottomPart(level, pos, state, player);
         }
+        super.playerWillDestroy(level, pos, state, player);
     }
 
 
@@ -119,6 +126,11 @@ public class EnderEmitterBlock extends AEBaseEntityBlock<EnderEmitterBlockEntity
     {
         if (!level.isClientSide && state.is(this) && !newState.is(this))
         {
+            BlockPos basePos = state.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.UPPER ? pos.below() : pos;
+            if (level.getBlockEntity(basePos) instanceof EnderEmitterBlockEntity be)
+            {
+                be.cleanConnectionPermanent();
+            }
             removeOtherHalfNoDrops(level, pos, state);
         }
         super.onRemove(state, level, pos, newState, movedByPiston);

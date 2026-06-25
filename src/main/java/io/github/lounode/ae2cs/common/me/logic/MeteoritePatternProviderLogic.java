@@ -26,6 +26,7 @@ import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.me.helpers.MachineSource;
 import io.github.lounode.ae2cs.api.util.AEKeyHelper;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.util.KeyCounterHelper;
 import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.core.NonNullList;
@@ -108,7 +109,7 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
 
     private void onUpgradesChange()
     {
-        this.maxWorksInRound = 8 << getInstalledUpgrades(AEItems.SPEED_CARD);
+        this.maxWorksInRound = 8 << getInstalledUpgrades(AEItems.SPEED_CARD) + 256 * getInstalledUpgrades(AECSItems.OVERLOAD_CARD);
         this.saveChanges();
     }
 

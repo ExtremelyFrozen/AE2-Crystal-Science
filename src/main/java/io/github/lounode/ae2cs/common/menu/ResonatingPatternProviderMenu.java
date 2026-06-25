@@ -37,4 +37,9 @@ public class ResonatingPatternProviderMenu extends UpgradeablePatternProviderMen
     {
         return logic.getUpgrades();
     }
+
+    public ResonatingPatternProviderHost getProviderHost()
+    {
+        return (ResonatingPatternProviderHost) getTarget();
+    }
 }

@@ -87,6 +87,55 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider
                 .require(AECSItems.RESONATING_PROCESSOR, 1)
                 .save(recipeOutput);
 
+        // 链接水晶粉
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.LINK_CRYSTAL_DUST, 8, 16000)
+                .require(AECSTags.Items.DUST_QUARTZ, 8)
+                .require(Items.CHAIN, 16)
+                .require(ConventionTags.ENDER_PEARL_DUST, 8)
+                .save(recipeOutput);
+
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.LINK_CRYSTAL_SEED, 32, 16000)
+                .require(AECSItems.LINK_CRYSTAL_DUST, 16)
+                .require(Items.CHAIN, 16)
+                .require(AECSTags.Items.DUST_QUARTZ, 8)
+                .save(recipeOutput);
+
+        CrystalAggregatorRecipeBuilder.aggregating(AECSBlocks.MIRROR_PATTERN_PROVIDER_BLOCK.toStack(), 16000)
+                .require(AECSItems.PURE_LINK_CRYSTAL, 4)
+                .require(AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK, 1)
+                .require(AECSItems.RESONATING_PROCESSOR, 1)
+                .save(recipeOutput, "aggregator/mirror_pattern_provider");
+
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.MIRROR_LINKER.toStack(), 16000)
+                .require(AEItems.WIRELESS_RECEIVER, 1)
+                .require(AECSItems.PURE_LINK_CRYSTAL, 4)
+                .require(AECSItems.RESONATING_PROCESSOR, 1)
+                .save(recipeOutput, "aggregator/mirror_linker");
+
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.RESONATING_LINKER.toStack(), 16000)
+                .require(AEItems.WIRELESS_RECEIVER, 1)
+                .require(AECSItems.PURE_RESONATING_CRYSTAL, 4)
+                .require(AECSItems.RESONATING_PROCESSOR, 1)
+                .save(recipeOutput, "aggregator/resonating_linker");
+
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.OVERLOAD_CARD.toStack(), 16000)
+                .require(AECSBlocks.PURE_METEOR_CRYSTAL_BLOCK, 1)
+                .require(AEItems.SPEED_CARD, 8)
+                .require(AECSItems.RESONATING_PROCESSOR, 2)
+                .save(recipeOutput, "aggregator/overload_card");
+
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.RESONATING_MEMORY_CARD.toStack(), 16000)
+                .require(AEItems.ENGINEERING_PROCESSOR, 1)
+                .require(AEItems.MEMORY_CARD, 1)
+                .require(AECSItems.RESONATING_PROCESSOR, 1)
+                .save(recipeOutput, "aggregator/resonating_memory_card");
+
+        CrystalAggregatorRecipeBuilder.aggregating(AEItems.QUANTUM_ENTANGLED_SINGULARITY, 64, 51200)
+                .require(AEItems.SINGULARITY, 32)
+                .require(ConventionTags.ENDER_PEARL_DUST, 32)
+                .require(AEBlocks.TINY_TNT, 1)
+                .save(recipeOutput, "aggregator/quantum_entangled_singularity");
+
         // 种子
         CrystalAggregatorRecipeBuilder.aggregating(AECSItems.RESONATING_SEED, 32, 51200)
                 .require(AECSTags.Items.DUST_RESONATING, 16)

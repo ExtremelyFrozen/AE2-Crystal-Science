@@ -58,9 +58,9 @@ and thereby pooling a large number of channels into the band for later use.
 
 When operating as a receiver:
 
-- Retrieves a configurable number of channels from the specified band
-- The acquired channels can be directly used to build or extend an ME network
-- The number of channels received can be adjusted as needed
+- It acts as a local network node connected to the selected band
+- The band dynamically assigns it a channel capacity limit based on currently available channels
+- Those channels can then be used directly by the local ME network built around the receiver
 
 In this way,
 network structures that are logically connected to the original network
@@ -82,12 +82,21 @@ Through the band mechanism:
 
 The Ender Broadcaster supports configuration copying via Memory Cards:
 
-- Quickly copy link states between broadcasters
-- Synchronize operating modes and related settings
-- Avoid repetitive manual configuration of large numbers of devices
+- Quickly copy band link states between broadcasters
+- Copy whether the broadcaster is linked as a sender or a receiver
+- Only works if the target band allows Memory Card copying
 
 Whether Memory Card copying is allowed
 is determined by the band’s own settings.
+
+---
+
+## Working with the Ender Emitter
+
+Bands are not limited to Ender Broadcaster receivers.
+
+The **<ItemLink id="ae2cs:ender_emitter" />** can also connect to a band as a receiver,
+which makes it possible to bring channels into an area first and then continue local short-range wireless linking from there.
 
 ---
 
