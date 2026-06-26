@@ -25,38 +25,44 @@ public final class AECSEnchantments {
      */
     public static final RegistryObject<Enchantment> ENDER_LINK = ENCHANTMENTS.register(
             "ender_link",
-            () -> new Enchantment(Enchantment.Rarity.VERY_RARE, TOOLS_CATEGORY, new EquipmentSlot[] { EquipmentSlot.MAINHAND }) {
+            EnderLinkEnchantment::new);
 
-                @Override
-                public int getMaxLevel() {
-                    return 1;
-                }
+    private static final class EnderLinkEnchantment extends Enchantment {
 
-                @Override
-                public int getMinCost(int level) {
-                    return 1;
-                }
+        private EnderLinkEnchantment() {
+            super(Enchantment.Rarity.VERY_RARE, TOOLS_CATEGORY, new EquipmentSlot[] { EquipmentSlot.MAINHAND });
+        }
 
-                @Override
-                public int getMaxCost(int level) {
-                    return 1;
-                }
+        @Override
+        public int getMaxLevel() {
+            return 1;
+        }
 
-                @Override
-                public boolean isTradeable() {
-                    return false;
-                }
+        @Override
+        public int getMinCost(int level) {
+            return 1;
+        }
 
-                @Override
-                public boolean isDiscoverable() {
-                    return false;
-                }
+        @Override
+        public int getMaxCost(int level) {
+            return 1;
+        }
 
-                @Override
-                public boolean canApplyAtEnchantingTable(@NotNull ItemStack stack) {
-                    return false;
-                }
-            });
+        @Override
+        public boolean isTradeable() {
+            return false;
+        }
+
+        @Override
+        public boolean isDiscoverable() {
+            return false;
+        }
+
+        @Override
+        public boolean canApplyAtEnchantingTable(@NotNull ItemStack stack) {
+            return false;
+        }
+    }
 
     private AECSEnchantments() {}
 
