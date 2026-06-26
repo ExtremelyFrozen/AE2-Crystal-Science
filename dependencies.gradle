@@ -1,0 +1,146 @@
+dependencies {
+    compileOnly(libs.jetbrains.annotations)
+
+    // Mixin (& Extras)
+    annotationProcessor(variantOf(libs.mixin) { classifier("processor") })
+    compileOnly(annotationProcessor(forge.mixinExtras.common.get()))
+    jarJar(api(forge.mixinExtras.forge.get())).version {
+        require("[${forge.versions.mixinExtras.get()},)")
+    }
+
+    // Misc libraries
+    modCompileOnly(forge.curios)
+
+    // AE2
+    modCompileOnly(forge.ae2) {
+        accessTransformers.configure(it) {
+            config = project.file('src/main/resources/META-INF/accesstransformer.cfg')
+        }
+    }
+    modCompileOnly(forge.guideme)
+//    modCompileOnly(forge.ae2wt)
+//    modCompileOnly(forge.ae2wt.api)
+
+    // AE2 addons
+    modCompileOnly(forge.eae)
+    modCompileOnly(forge.aelt)
+    modCompileOnly(forge.applied.flux)
+    modCompileOnly(forge.applied.create)
+    modCompileOnly(forge.mega.cells)
+    modCompileOnly(forge.aae)
+    modCompileOnly(forge.amek)
+    modCompileOnly(forge.mek)
+
+    modCompileOnly(forge.create)
+
+    // FTB
+    modCompileOnly(forge.ftbultimine)
+
+    // Recipe viewers
+    modCompileOnly(forge.bundles.jei)
+    modCompileOnly(forge.emi)
+
+    // WAILA-likes
+    modCompileOnly(forge.jade)
+
+    // Standard runtime mods
+    modLocalRuntime(forge.spark)
+    modCompileOnly "com.tterrag.registrate:Registrate:MC1.20-1.3.11"
+    modCompileOnly "io.github.pedroksl:ae2addonlib:1.0.3-1.20.1"
+    // FTB //
+    modLocalRuntime(forge.architectury)
+    modLocalRuntime(forge.ftblibrary)
+    modLocalRuntime(forge.ftbultimine)
+
+    modLocalRuntime(forge.jade)
+    modLocalRuntime(forge.curios)
+    modLocalRuntime(forge.modernfix)
+    modLocalRuntime(forge.ae2)
+    modLocalRuntime(forge.glodium)
+    modLocalRuntime(forge.geckolib)
+    modLocalRuntime(forge.cloth.config)
+    modLocalRuntime(forge.kotlinforforge)
+    modLocalRuntime(variantOf(forge.create) { classifier("slim") })
+
+    // Runtime AE2 addons
+    modLocalRuntime(forge.guideme)
+//    modLocalRuntime(forge.ae2wt)
+    modLocalRuntime(forge.eae)
+    modLocalRuntime(forge.aelt)
+    modLocalRuntime(forge.applied.flux)
+    modLocalRuntime(forge.applied.create)
+    modLocalRuntime(forge.aae)
+    modLocalRuntime(forge.extendedae.plus)
+    modLocalRuntime(forge.applied.pneumatics)
+    modLocalRuntime(forge.mega.cells)
+    modLocalRuntime(forge.amek)
+    modLocalRuntime(forge.mek)
+
+    // Runtime recipe viewers
+    modLocalRuntime(forge.emi)
+    modLocalRuntime(forge.jei.forge.impl)
+    // AG
+    implementation "curse.maven:applied-generators-1320369:7161908"
+    // OMNI CELL
+    implementation "curse.maven:omni-cells-1359517:7169531"
+
+    // Client-only runtime mods
+    modExtraLocalRuntime(forge.jech)
+    modExtraLocalRuntime(forge.embeddium)
+    modExtraLocalRuntime(forge.oculus)
+    renderNurseCfg(libs.renderNurse)
+
+    //////////////////////////////////////////////////////
+    // Runtime mods for dev testing with unclean client //
+    //////////////////////////////////////////////////////
+}
+
+//
+//dependencies {
+//    modCompileOnly "org.jetbrains:annotations:26.0.2"
+//
+//    annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
+//    modCompileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.5"))
+//    implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.3.5"))
+//
+//    // AE2与GuideME
+//    modImplementation "curse.maven:guideme-1173950:7127447"
+//    modImplementation("curse.maven:applied-energistics-2-223794:7148487"){
+//        accessTransformers.configure(it) {
+//            config = project.file('src/main/resources/META-INF/accesstransformer.cfg')
+//        }
+//    }
+//
+//
+//    modCompileOnly "curse.maven:emi-580555:6420945"
+//    modLocalRuntime "curse.maven:emi-580555:6420945"
+//
+//    modCompileOnly "mezz.jei:jei-1.20.1-common-api:15.20.0.129"
+//    modCompileOnly "mezz.jei:jei-1.20.1-forge-api:15.20.0.129"
+//    modLocalRuntime "mezz.jei:jei-1.20.1-forge:15.20.0.129"
+
+//    modCompileOnly "maven.modrinth:jade:11.13.2+forge"
+//    modLocalRuntime "maven.modrinth:jade:11.13.2+forge"
+//
+//    // 联动前置
+//    modImplementation "curse.maven:glodium-957920:5226922"
+//    modImplementation "curse.maven:geckolib-388172:7025129"
+//
+//    // MEK
+//    modImplementation "curse.maven:mekanism-268560:6552911"
+//    // OMNI CELL
+//    modImplementation "curse.maven:omni-cells-1359517:7169531"
+//    // MEGA CELL
+//    modImplementation "curse.maven:cloth-config-348521:5729105"
+//    modImplementation "curse.maven:mega-cells-622112:6175008"
+//    // EAE
+//    modImplementation "curse.maven:ex-pattern-provider-892005:7472662"
+//    // AAE
+//    modImplementation "curse.maven:advancedae-1084104:7159779"
+//    modCompileOnly "io.github.pedroksl:ae2addonlib:1.0.3-1.20.1"
+//    // AF
+//    modImplementation "curse.maven:applied-flux-965012:7072853"
+//    // Create
+//    modImplementation "curse.maven:create-328085:7178761"
+//    modCompileOnly "com.tterrag.registrate:Registrate:MC1.20-1.3.11"
+//}
