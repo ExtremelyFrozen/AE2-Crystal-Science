@@ -1,5 +1,10 @@
 package io.github.lounode.ae2cs.api.linker.broadcast;
 
+import io.github.lounode.ae2cs.AE2CrystalScience;
+import io.github.lounode.ae2cs.api.CustomChannelProviderHost;
+import io.github.lounode.ae2cs.api.util.AECSGridHelper;
+import io.github.lounode.ae2cs.util.BlockPosHelper;
+
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridConnection;
@@ -7,13 +12,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.pathing.ChannelMode;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.core.AEConfig;
-import com.mojang.serialization.DataResult;
-import io.github.lounode.ae2cs.AE2CrystalScience;
-import io.github.lounode.ae2cs.api.CustomChannelProviderHost;
-import io.github.lounode.ae2cs.api.util.AECSGridHelper;
-import io.github.lounode.ae2cs.util.BlockPosHelper;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.*;
@@ -23,6 +22,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.server.ServerLifecycleHooks;
+
+import com.mojang.serialization.DataResult;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -37,8 +40,8 @@ import java.util.UUID;
  * - online*：运行时（由端上报在线/离线）
  * - recomputeRuntime：由 FrequencyBandManager 统一触发
  */
-public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
-{
+public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag> {
+
     /**
      * 当AE使用无线频段时，我们统计可用频段总数时直接返回此值
      */
@@ -137,8 +140,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
 
     private BandError errorState = BandError.FINE;
 
-    public BroadcastFrequencyBand(@NotNull String name, @NotNull String password, @NotNull UUID owner, boolean isPublic, boolean allowedMemoryCardCopy)
-    {
+    public BroadcastFrequencyBand(@NotNull String name, @NotNull String password, @NotNull UUID owner, boolean isPublic, boolean allowedMemoryCardCopy) {
         this.name = name;
         this.password = password;
         this.owner = owner;
@@ -150,153 +152,129 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
 
     // ----------------- getter & sender -----------------
 
-    public @NotNull String getName()
-    {
+    public @NotNull String getName() {
         return name;
     }
 
-    public boolean validPassword(String password)
-    {
+    public boolean validPassword(String password) {
         if (this.password.isEmpty()) return true;
         return this.password.equals(password);
     }
 
-    public @NotNull String getPassword()
-    {
+    public @NotNull String getPassword() {
         return password;
     }
 
-    public void setPassword(String password)
-    {
+    public void setPassword(String password) {
         if (this.password.equals(password)) return;
 
         this.password = password;
         FrequencyBandManager.markDirty();
     }
 
-    public @NotNull UUID getOwner()
-    {
+    public @NotNull UUID getOwner() {
         return owner;
     }
 
-    public void setOwner(@NotNull UUID owner)
-    {
+    public void setOwner(@NotNull UUID owner) {
         if (this.owner.equals(owner)) return;
 
         this.owner = owner;
         FrequencyBandManager.markDirty();
     }
 
-    public boolean isPublic()
-    {
+    public boolean isPublic() {
         return isPublic;
     }
 
-    public void setPublic(boolean isPublic)
-    {
+    public void setPublic(boolean isPublic) {
         if (this.isPublic == isPublic) return;
 
         this.isPublic = isPublic;
         FrequencyBandManager.markDirty();
     }
 
-    public boolean isAllowedMemoryCardCopy()
-    {
+    public boolean isAllowedMemoryCardCopy() {
         return allowedMemoryCardCopy;
     }
 
-    public void setAllowedMemoryCardCopy(boolean allowedMemoryCardCopy)
-    {
+    public void setAllowedMemoryCardCopy(boolean allowedMemoryCardCopy) {
         if (this.allowedMemoryCardCopy == allowedMemoryCardCopy) return;
 
         this.allowedMemoryCardCopy = allowedMemoryCardCopy;
         FrequencyBandManager.markDirty();
     }
 
-    public boolean validWhiteList(UUID uuid)
-    {
+    public boolean validWhiteList(UUID uuid) {
         return owner.equals(uuid) || whiteList.contains(uuid);
     }
 
     /**
      * 不要修改！只读！
      */
-    public @NotNull Set<UUID> getWhiteList()
-    {
+    public @NotNull Set<UUID> getWhiteList() {
         return whiteList;
     }
 
-    public void addToWhiteList(UUID uuid)
-    {
+    public void addToWhiteList(UUID uuid) {
         if (whiteList.contains(uuid)) return;
 
         whiteList.add(uuid);
         FrequencyBandManager.markDirty();
     }
 
-    public void removeFromWhiteList(UUID uuid)
-    {
+    public void removeFromWhiteList(UUID uuid) {
         if (!whiteList.contains(uuid)) return;
 
         whiteList.remove(uuid);
         FrequencyBandManager.markDirty();
     }
 
-    public @NotNull Set<GlobalPos> getDeclaredReceivers()
-    {
+    public @NotNull Set<GlobalPos> getDeclaredReceivers() {
         return declaredReceivers;
     }
 
-    public @NotNull Set<GlobalPos> getDeclaredSenders()
-    {
+    public @NotNull Set<GlobalPos> getDeclaredSenders() {
         return declaredSenders;
     }
 
-    public long getUsableChannels()
-    {
+    public long getUsableChannels() {
         return usableChannels;
     }
 
-    public long getUsedChannels()
-    {
+    public long getUsedChannels() {
         return usedChannels;
     }
 
-    public @Nullable IGrid getBindGrid()
-    {
+    public @Nullable IGrid getBindGrid() {
         return bindGrid;
     }
 
-    public BandError getErrorState()
-    {
+    public BandError getErrorState() {
         return errorState;
     }
 
     // ----------------- 纯数据 API（只改 declared，不查节点/不动连接） -----------------
 
-    public boolean declareSender(GlobalPos pos)
-    {
+    public boolean declareSender(GlobalPos pos) {
         boolean changed = declaredSenders.add(pos);
         if (changed) FrequencyBandManager.markDirty();
         return changed;
     }
 
-    public boolean undeclareSender(GlobalPos pos)
-    {
+    public boolean undeclareSender(GlobalPos pos) {
         boolean changed = declaredSenders.remove(pos);
         if (changed) FrequencyBandManager.markDirty();
         return changed;
     }
 
-    public boolean declareReceiver(GlobalPos pos)
-    {
+    public boolean declareReceiver(GlobalPos pos) {
         boolean changed = declaredReceivers.add(pos);
         if (changed) FrequencyBandManager.markDirty();
         return changed;
     }
 
-    public boolean undeclareReceiver(GlobalPos pos)
-    {
+    public boolean undeclareReceiver(GlobalPos pos) {
         boolean changed = declaredReceivers.remove(pos);
         if (changed) FrequencyBandManager.markDirty();
         return changed;
@@ -304,23 +282,20 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
 
     // ----------------- 运行时 API（在线/离线，只登记 + 标记下一 tick 重算） -----------------
 
-    public void onSenderOnline(MinecraftServer server, GlobalPos pos, IGridNode node)
-    {
+    public void onSenderOnline(MinecraftServer server, GlobalPos pos, IGridNode node) {
         if (!declaredSenders.contains(pos)) return;
         clearOverflowState();
         onlineSenderNodes.put(pos, node);
         FrequencyBandManager.markRuntimeDirty(server, name);
     }
 
-    public void onSenderOffline(MinecraftServer server, GlobalPos pos)
-    {
+    public void onSenderOffline(MinecraftServer server, GlobalPos pos) {
         clearOverflowState();
         onlineSenderNodes.remove(pos);
         FrequencyBandManager.markRuntimeDirty(server, name);
     }
 
-    public void onReceiverOnline(MinecraftServer server, GlobalPos pos, IGridNode node, CustomChannelProviderHost host)
-    {
+    public void onReceiverOnline(MinecraftServer server, GlobalPos pos, IGridNode node, CustomChannelProviderHost host) {
         if (!declaredReceivers.contains(pos)) return;
         clearOverflowState();
         onlineReceiverNodes.put(pos, node);
@@ -328,14 +303,12 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         FrequencyBandManager.markRuntimeDirty(server, name);
     }
 
-    public void onReceiverOffline(MinecraftServer server, GlobalPos pos)
-    {
+    public void onReceiverOffline(MinecraftServer server, GlobalPos pos) {
         clearOverflowState();
         onlineReceiverNodes.remove(pos);
 
         CustomChannelProviderHost host = onlineReceiverHosts.remove(pos);
-        if (host != null)
-        {
+        if (host != null) {
             // 接收端打算离线时，将其最大频道承载量还原至原版情况
             host.setEnabledCustomChannel(false);
         }
@@ -354,47 +327,38 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
      *
      * @see FrequencyBandManager#tick(TickEvent.ServerTickEvent)
      */
-    void recomputeRuntime()
-    {
+    void recomputeRuntime() {
         // 1) 选择 bindGrid：sender所在网络必须有控制器，且所有在线sender必须同一grid，否则视为冲突，所有接收端断链
         IGrid newBindGrid = null;
         this.errorState = BandError.FINE;
 
-        for (var entry : onlineSenderNodes.object2ObjectEntrySet())
-        {
+        for (var entry : onlineSenderNodes.object2ObjectEntrySet()) {
             IGridNode senderNode = entry.getValue();
-            if (senderNode == null)
-            {
+            if (senderNode == null) {
                 this.errorState = BandError.SENDER_ERROR;
                 break;
             }
 
             IGrid grid = senderNode.getGrid();
-            if (grid == null)
-            {
+            if (grid == null) {
                 this.errorState = BandError.SENDER_ERROR;
                 break;
             }
 
-            if (grid.getPathingService().getControllerState() != ControllerState.CONTROLLER_ONLINE)
-            {
+            if (grid.getPathingService().getControllerState() != ControllerState.CONTROLLER_ONLINE) {
                 this.errorState = BandError.SENDER_ERROR;
                 break;
             }
 
-            if (newBindGrid == null)
-            {
+            if (newBindGrid == null) {
                 newBindGrid = grid;
-            }
-            else if (newBindGrid != grid)
-            {
+            } else if (newBindGrid != grid) {
                 this.errorState = BandError.CONTROLLER_CONFLICT;
                 break;
             }
         }
 
-        if (this.errorState != BandError.FINE || newBindGrid == null)
-        {
+        if (this.errorState != BandError.FINE || newBindGrid == null) {
             if (newBindGrid == null)
                 this.errorState = BandError.NO_SENDER;
 
@@ -406,8 +370,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
 
         // 找控制器节点，用于让接收端建立直连
         IGridNode newController = AECSGridHelper.getControlNode(newBindGrid);
-        if (newController == null)
-        {
+        if (newController == null) {
             this.errorState = BandError.MISSING_CONTROLLER;
             bindGrid = null;
             controllerNode = null;
@@ -420,10 +383,8 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         controllerNode = newController;
 
         // controller 变更：断开旧连接
-        if (controllerChanged)
-        {
-            for (IGridConnection conn : receiverConnections.values())
-            {
+        if (controllerChanged) {
+            for (IGridConnection conn : receiverConnections.values()) {
                 if (conn != null) conn.destroy();
             }
             receiverConnections.clear();
@@ -433,8 +394,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         long totalUsable = computeTotalUsableChannels();
         this.usableChannels = totalUsable;
 
-        if (overflowShutdown)
-        {
+        if (overflowShutdown) {
             this.errorState = BandError.CHANNEL_OVERFLOW;
             this.usedChannels = totalReceiverUsedChannels();
             dropAllReceiversToVanillaAndDisconnect();
@@ -447,8 +407,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         // 4) 若总消耗超限，则瘫痪整个频段
         long actualUsed = totalReceiverUsedChannels();
         this.usedChannels = actualUsed;
-        if (actualUsed > totalUsable)
-        {
+        if (actualUsed > totalUsable) {
             this.errorState = BandError.CHANNEL_OVERFLOW;
             this.overflowShutdown = true;
             dropAllReceiversToVanillaAndDisconnect();
@@ -458,11 +417,9 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
     /**
      * 统计 sender 提供的总可用频道量
      */
-    private long computeTotalUsableChannels()
-    {
+    private long computeTotalUsableChannels() {
         boolean infinite = (AEConfig.instance().getChannelMode() == ChannelMode.INFINITE);
-        if (infinite)
-        {
+        if (infinite) {
             return INFINITE_USABLE_CHANNELS;
         }
 
@@ -470,22 +427,19 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
 
         long maxNeed = INFINITE_USABLE_CHANNELS;
 
-        for (var entry : onlineSenderNodes.object2ObjectEntrySet())
-        {
+        for (var entry : onlineSenderNodes.object2ObjectEntrySet()) {
             IGridNode senderNode = entry.getValue();
             if (senderNode == null) continue;
 
             int usable = 0;
-            if (senderNode.getOwner() instanceof BroadcastSenderHost senderHost)
-            {
+            if (senderNode.getOwner() instanceof BroadcastSenderHost senderHost) {
                 usable = senderHost.getCouldSendChannels();
             }
 
             if (usable < 0) usable = 0;
 
             totalUsable += usable;
-            if (totalUsable >= maxNeed)
-            {
+            if (totalUsable >= maxNeed) {
                 totalUsable = maxNeed;
                 break;
             }
@@ -497,19 +451,16 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
     /**
      * 无 sender/冲突时：所有在线 receiver 恢复原版并断开连接
      */
-    private void dropAllReceiversToVanillaAndDisconnect()
-    {
+    private void dropAllReceiversToVanillaAndDisconnect() {
         // 恢复原版逻辑
-        for (var entry : onlineReceiverHosts.object2ObjectEntrySet())
-        {
+        for (var entry : onlineReceiverHosts.object2ObjectEntrySet()) {
             CustomChannelProviderHost host = entry.getValue();
             if (host != null) host.setEnabledCustomChannel(false);
         }
 
         receiverAllocated.clear();
 
-        for (IGridConnection conn : receiverConnections.values())
-        {
+        for (IGridConnection conn : receiverConnections.values()) {
             if (conn != null) conn.destroy();
         }
         receiverConnections.clear();
@@ -518,14 +469,12 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
     /**
      * 将频道分配到所有接收端
      *
-     * @param totalUsable    可用频道的总数量
+     * @param totalUsable 可用频道的总数量
      */
-    private void applySharedChannelsToAllReceivers(long totalUsable)
-    {
+    private void applySharedChannelsToAllReceivers(long totalUsable) {
         int sharedChannels = toReceiverCapacity(totalUsable);
 
-        for (GlobalPos rp : declaredReceivers)
-        {
+        for (GlobalPos rp : declaredReceivers) {
             IGridNode receiverNode = onlineReceiverNodes.get(rp);
             CustomChannelProviderHost host = onlineReceiverHosts.get(rp);
             if (receiverNode == null || host == null) continue;
@@ -534,11 +483,9 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         }
 
         // 在线但未声明的 receiver，一律恢复原版并断开
-        for (var entry : onlineReceiverHosts.object2ObjectEntrySet())
-        {
+        for (var entry : onlineReceiverHosts.object2ObjectEntrySet()) {
             GlobalPos rp = entry.getKey();
-            if (!declaredReceivers.contains(rp))
-            {
+            if (!declaredReceivers.contains(rp)) {
                 CustomChannelProviderHost host = entry.getValue();
                 if (host != null) host.setEnabledCustomChannel(false);
 
@@ -549,24 +496,20 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         }
     }
 
-    private int toReceiverCapacity(long totalUsable)
-    {
+    private int toReceiverCapacity(long totalUsable) {
         if (totalUsable <= 0) return 0;
         return totalUsable >= Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) totalUsable;
     }
 
-    private long totalReceiverUsedChannels()
-    {
+    private long totalReceiverUsedChannels() {
         long total = 0;
 
-        for (GlobalPos rp : declaredReceivers)
-        {
+        for (GlobalPos rp : declaredReceivers) {
             IGridNode receiverNode = onlineReceiverNodes.get(rp);
             if (receiverNode == null) continue;
 
             total += Math.max(0, receiverNode.getUsedChannels());
-            if (total >= INFINITE_USABLE_CHANNELS)
-            {
+            if (total >= INFINITE_USABLE_CHANNELS) {
                 return INFINITE_USABLE_CHANNELS;
             }
         }
@@ -584,13 +527,11 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
      * @param host         接收者的频段承载对象
      * @param newAlloc     分配到此节点的频道数
      */
-    private void applyReceiver(GlobalPos receiverPos, IGridNode receiverNode, CustomChannelProviderHost host, int newAlloc)
-    {
+    private void applyReceiver(GlobalPos receiverPos, IGridNode receiverNode, CustomChannelProviderHost host, int newAlloc) {
         int oldAlloc = receiverAllocated.getInt(receiverPos);
         boolean allocChanged = (oldAlloc != newAlloc);
 
-        if (newAlloc <= 0)
-        {
+        if (newAlloc <= 0) {
             receiverAllocated.removeInt(receiverPos);
             host.setEnabledCustomChannel(false);
 
@@ -599,20 +540,17 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
             return;
         }
 
-        if (!host.isEnabledCustomChannel())
-        {
+        if (!host.isEnabledCustomChannel()) {
             host.setEnabledCustomChannel(true);
             allocChanged = true;
         }
 
-        if (allocChanged)
-        {
+        if (allocChanged) {
             receiverAllocated.put(receiverPos, newAlloc);
             host.setMaxChannels(newAlloc);
         }
 
-        if (controllerNode == null)
-        {
+        if (controllerNode == null) {
             host.setEnabledCustomChannel(false);
             IGridConnection oldConn = receiverConnections.remove(receiverPos);
             if (oldConn != null) oldConn.destroy();
@@ -624,8 +562,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         // 这里的目的是尽量减少重连次数，但是如果后续发现频道传递不及时/不稳定，最好把这里改成true
         boolean needRebuild = conn == null || allocChanged;
 
-        if (needRebuild)
-        {
+        if (needRebuild) {
             if (conn != null) conn.destroy();
             // 这里我们知道它肯定是BE，但是我们不做强制转换
             if (!(controllerNode.getOwner() instanceof BlockEntity controllerBE)) return;
@@ -642,12 +579,10 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
      * 频段被删除前的清理：恢复所有在线 receiver 为原版并断开连接，清空运行时缓存
      * 包可见，供 FrequencyBandManager 调用
      */
-    void onRemoved()
-    {
+    void onRemoved() {
         // 清除所有可能存在的持久化链接，数据声明在此自动清空
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        if (server != null)
-        {
+        if (server != null) {
             cleanupDeclaredBlockEntities(server);
         }
 
@@ -671,47 +606,36 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
      * - 若区块未加载则尝试加载
      * - 找到 BE 后若实现了 BandLinkHost，则调用 cleanConnectionPermanent()
      */
-    private void cleanupDeclaredBlockEntities(MinecraftServer server)
-    {
+    private void cleanupDeclaredBlockEntities(MinecraftServer server) {
         var targets = new LinkedHashSet<GlobalPos>();
         targets.addAll(declaredSenders);
         targets.addAll(declaredReceivers);
 
-        for (GlobalPos gp : targets)
-        {
+        for (GlobalPos gp : targets) {
             if (gp == null) continue;
 
             ServerLevel level = server.getLevel(gp.dimension());
             if (level == null) continue;
 
             BlockPos pos = gp.pos();
-            try
-            {
+            try {
                 level.getChunk(pos);
-            }
-            catch (Throwable ignored)
-            {
+            } catch (Throwable ignored) {
                 continue;
             }
 
             BlockEntity be = level.getBlockEntity(pos);
-            if (be instanceof BandLinkHost linkHost)
-            {
-                try
-                {
+            if (be instanceof BandLinkHost linkHost) {
+                try {
                     linkHost.cleanConnectionPermanent();
-                }
-                catch (Throwable ignored)
-                {
-                }
+                } catch (Throwable ignored) {}
             }
         }
     }
 
     // ----------------- 持久化 -----------------
     @Override
-    public @UnknownNullability CompoundTag serializeNBT()
-    {
+    public @UnknownNullability CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         tag.putString("name", name);
         tag.putString("password", password);
@@ -720,15 +644,13 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         tag.putBoolean("allowed_memory_card_copy", allowedMemoryCardCopy);
 
         ListTag whiteListTag = new ListTag();
-        for (UUID id : whiteList)
-        {
+        for (UUID id : whiteList) {
             if (id != null) whiteListTag.add(StringTag.valueOf(id.toString()));
         }
         tag.put("white_list", whiteListTag);
 
         ListTag senderListTag = new ListTag();
-        for (GlobalPos sender : declaredSenders)
-        {
+        for (GlobalPos sender : declaredSenders) {
             if (sender == null) continue;
             DataResult<Tag> encoded = GlobalPos.CODEC.encodeStart(NbtOps.INSTANCE, sender);
             encoded.result().ifPresent(senderListTag::add);
@@ -736,8 +658,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         tag.put("sender_list", senderListTag);
 
         ListTag receiverListTag = new ListTag();
-        for (GlobalPos receiver : declaredReceivers)
-        {
+        for (GlobalPos receiver : declaredReceivers) {
             if (receiver == null) continue;
             DataResult<Tag> encoded = GlobalPos.CODEC.encodeStart(NbtOps.INSTANCE, receiver);
             encoded.result().ifPresent(receiverListTag::add);
@@ -748,8 +669,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
     }
 
     @Override
-    public void deserializeNBT(@NotNull CompoundTag compoundTag)
-    {
+    public void deserializeNBT(@NotNull CompoundTag compoundTag) {
         this.name = compoundTag.getString("name");
         this.password = compoundTag.getString("password");
         this.owner = UUID.fromString(compoundTag.getString("owner"));
@@ -764,8 +684,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         this.onlineReceiverNodes.clear();
         this.onlineReceiverHosts.clear();
         this.receiverAllocated.clear();
-        for (IGridConnection conn : receiverConnections.values())
-        {
+        for (IGridConnection conn : receiverConnections.values()) {
             if (conn != null) conn.destroy();
         }
         this.receiverConnections.clear();
@@ -773,45 +692,35 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         this.controllerNode = null;
 
         ListTag whiteListTag = compoundTag.getList("white_list", 8);
-        for (Tag t : whiteListTag)
-        {
-            if (t instanceof StringTag stringTag)
-            {
-                try
-                {
+        for (Tag t : whiteListTag) {
+            if (t instanceof StringTag stringTag) {
+                try {
                     UUID id = UUID.fromString(stringTag.getAsString());
                     this.whiteList.add(id);
-                }
-                catch (Throwable e)
-                {
+                } catch (Throwable e) {
                     AE2CrystalScience.LOGGER.error("Failed to convert String to UUID: " + stringTag.getAsString(), e);
                 }
             }
         }
 
         ListTag senderListTag = compoundTag.getList("sender_list", 10);
-        for (Tag t : senderListTag)
-        {
+        for (Tag t : senderListTag) {
             DataResult<GlobalPos> parsed = GlobalPos.CODEC.parse(NbtOps.INSTANCE, t);
             parsed.result().ifPresentOrElse(
                     this.declaredSenders::add,
-                    () -> AE2CrystalScience.LOGGER.error("Failed to parse GlobalPos from sender_list entry: {}", t)
-            );
+                    () -> AE2CrystalScience.LOGGER.error("Failed to parse GlobalPos from sender_list entry: {}", t));
         }
 
         ListTag receiverListTag = compoundTag.getList("receiver_list", 10);
-        for (Tag t : receiverListTag)
-        {
+        for (Tag t : receiverListTag) {
             DataResult<GlobalPos> parsed = GlobalPos.CODEC.parse(NbtOps.INSTANCE, t);
             parsed.result().ifPresentOrElse(
                     this.declaredReceivers::add,
-                    () -> AE2CrystalScience.LOGGER.error("Failed to parse GlobalPos from receiver_list entry: {}", t)
-            );
+                    () -> AE2CrystalScience.LOGGER.error("Failed to parse GlobalPos from receiver_list entry: {}", t));
         }
     }
 
-    public static enum BandError
-    {
+    public static enum BandError {
         FINE, // 工作正常
         MISSING_CONTROLLER, // 缺失控制器
         CONTROLLER_CONFLICT, // 发射端接在了不同控制器网络中
@@ -820,8 +729,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag>
         CHANNEL_OVERFLOW // 接收端总消耗超出频段可提供频道
     }
 
-    void clearOverflowState()
-    {
+    void clearOverflowState() {
         this.overflowShutdown = false;
     }
 }

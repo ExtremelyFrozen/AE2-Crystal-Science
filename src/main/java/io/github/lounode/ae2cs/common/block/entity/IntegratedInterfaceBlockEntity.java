@@ -1,5 +1,10 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
+import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
+import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceHost;
+import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceLogic;
+
 import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.orientation.BlockOrientation;
@@ -10,10 +15,7 @@ import appeng.block.crafting.PushDirection;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.capabilities.Capabilities;
 import appeng.util.SettingsFrom;
-import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
-import io.github.lounode.ae2cs.common.init.AECSBlocks;
-import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceHost;
-import io.github.lounode.ae2cs.common.me.logic.IntegratedInterfaceLogic;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -24,6 +26,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,37 +39,30 @@ import java.util.Set;
  * 同时包含ME样板供应器与ME接口的能力。即旧版ME接口。
  * 接口形态见{@link io.github.lounode.ae2cs.common.me.part.IntegratedInterfacePart}
  */
-public class IntegratedInterfaceBlockEntity extends AENetworkBlockEntity implements IntegratedInterfaceHost
-{
+public class IntegratedInterfaceBlockEntity extends AENetworkBlockEntity implements IntegratedInterfaceHost {
+
     IntegratedInterfaceLogic logic = createLogic();
     private LazyOptional<GenericInternalInventory> genericInvOpt = LazyOptional.empty();
     private LazyOptional<MEStorage> storageOpt = LazyOptional.empty();
     private final EnumMap<Direction, LazyOptional<MEStorage>> sidedStorageOpts = new EnumMap<>(Direction.class);
     private int priority;
 
-    public IntegratedInterfaceBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState)
-    {
+    public IntegratedInterfaceBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side)
-    {
-        if (cap == Capabilities.GENERIC_INTERNAL_INV)
-        {
-            if (!genericInvOpt.isPresent())
-            {
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+        if (cap == Capabilities.GENERIC_INTERNAL_INV) {
+            if (!genericInvOpt.isPresent()) {
                 genericInvOpt = LazyOptional.of(() -> getLogic().getStorageInv());
             }
             return genericInvOpt.cast();
         }
 
-        if (cap == Capabilities.STORAGE)
-        {
-            if (side == null)
-            {
-                if (!storageOpt.isPresent())
-                {
+        if (cap == Capabilities.STORAGE) {
+            if (side == null) {
+                if (!storageOpt.isPresent()) {
                     MEStorage storage = getLogic().getExposedMEStorage(null);
                     storageOpt = storage == null ? LazyOptional.empty() : LazyOptional.of(() -> storage);
                 }
@@ -74,8 +70,7 @@ public class IntegratedInterfaceBlockEntity extends AENetworkBlockEntity impleme
             }
 
             var opt = sidedStorageOpts.get(side);
-            if (opt == null)
-            {
+            if (opt == null) {
                 MEStorage storage = getLogic().getExposedMEStorage(side);
                 opt = storage == null ? LazyOptional.empty() : LazyOptional.of(() -> storage);
                 sidedStorageOpts.put(side, opt);
@@ -87,8 +82,7 @@ public class IntegratedInterfaceBlockEntity extends AENetworkBlockEntity impleme
     }
 
     @Override
-    public void invalidateCaps()
-    {
+    public void invalidateCaps() {
         super.invalidateCaps();
 
         if (genericInvOpt.isPresent()) genericInvOpt.invalidate();
@@ -97,28 +91,24 @@ public class IntegratedInterfaceBlockEntity extends AENetworkBlockEntity impleme
         if (storageOpt.isPresent()) storageOpt.invalidate();
         storageOpt = LazyOptional.empty();
 
-        for (var opt : sidedStorageOpts.values())
-        {
+        for (var opt : sidedStorageOpts.values()) {
             if (opt.isPresent()) opt.invalidate();
         }
         sidedStorageOpts.clear();
     }
 
     @Override
-    public boolean isExtended()
-    {
+    public boolean isExtended() {
         return getType() == AECSBlockEntities.EX_INTEGRATED_INTERFACE_BLOCK_ENTITY.get();
     }
 
-    protected IntegratedInterfaceLogic createLogic()
-    {
+    protected IntegratedInterfaceLogic createLogic() {
         int size = isExtended() ? 36 : 9;
         return new IntegratedInterfaceLogic(this.getMainNode(), this, size, size);
     }
 
     @Override
-    public IntegratedInterfaceLogic getLogic()
-    {
+    public IntegratedInterfaceLogic getLogic() {
         return logic;
     }
 
@@ -126,15 +116,11 @@ public class IntegratedInterfaceBlockEntity extends AENetworkBlockEntity impleme
      * 获取接口对应的目标面
      */
     @Override
-    public EnumSet<Direction> getTargets()
-    {
+    public EnumSet<Direction> getTargets() {
         PushDirection pushDirection = getPushDirection();
-        if (pushDirection.getDirection() == null)
-        {
+        if (pushDirection.getDirection() == null) {
             return EnumSet.allOf(Direction.class);
-        }
-        else
-        {
+        } else {
             return EnumSet.of(pushDirection.getDirection());
         }
     }
@@ -143,46 +129,38 @@ public class IntegratedInterfaceBlockEntity extends AENetworkBlockEntity impleme
      * 可以用线缆进行连接的面，即除了目标面之外的面
      */
     @Override
-    public Set<Direction> getGridConnectableSides(BlockOrientation orientation)
-    {
+    public Set<Direction> getGridConnectableSides(BlockOrientation orientation) {
         Direction pushDirection = getPushDirection().getDirection();
-        if (pushDirection == null)
-        {
+        if (pushDirection == null) {
             return EnumSet.allOf(Direction.class);
         }
         return EnumSet.complementOf(EnumSet.of(pushDirection));
     }
 
     @Override
-    public void onMainNodeStateChanged(IGridNodeListener.State reason)
-    {
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
         this.logic.onMainNodeStateChanged();
     }
 
     @Override
-    public AEItemKey getTerminalIcon()
-    {
+    public AEItemKey getTerminalIcon() {
         return AEItemKey.of(AECSBlocks.INTEGRATED_INTERFACE_BLOCK.get());
     }
 
     @Override
-    public ItemStack getMainMenuIcon()
-    {
+    public ItemStack getMainMenuIcon() {
         return new ItemStack(AECSBlocks.INTEGRATED_INTERFACE_BLOCK.get());
     }
 
-    private PushDirection getPushDirection()
-    {
+    private PushDirection getPushDirection() {
         return getBlockState().getValue(PatternProviderBlock.PUSH_DIRECTION);
     }
 
     @Override
-    public void exportSettings(SettingsFrom mode, CompoundTag builder, @Nullable Player player)
-    {
+    public void exportSettings(SettingsFrom mode, CompoundTag builder, @Nullable Player player) {
         super.exportSettings(mode, builder, player);
 
-        if (mode == SettingsFrom.MEMORY_CARD)
-        {
+        if (mode == SettingsFrom.MEMORY_CARD) {
             this.logic.exportSettings(builder);
             PushDirection pushDirection = this.getPushDirection();
             builder.putByte("push_direction", (byte) pushDirection.ordinal());
@@ -190,21 +168,16 @@ public class IntegratedInterfaceBlockEntity extends AENetworkBlockEntity impleme
     }
 
     @Override
-    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player)
-    {
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
         super.importSettings(mode, input, player);
 
-        if (mode == SettingsFrom.MEMORY_CARD)
-        {
+        if (mode == SettingsFrom.MEMORY_CARD) {
             this.logic.importSettings(input, player);
-            if (input.contains(PatternProviderBlock.PUSH_DIRECTION.getName(), 1))
-            {
+            if (input.contains(PatternProviderBlock.PUSH_DIRECTION.getName(), 1)) {
                 byte pushDirection = input.getByte(PatternProviderBlock.PUSH_DIRECTION.getName());
-                if (pushDirection >= 0 && pushDirection < PushDirection.values().length)
-                {
+                if (pushDirection >= 0 && pushDirection < PushDirection.values().length) {
                     Level level = this.getLevel();
-                    if (level != null)
-                    {
+                    if (level != null) {
                         level.setBlockAndUpdate(this.getBlockPos(), this.getBlockState().setValue(PatternProviderBlock.PUSH_DIRECTION, PushDirection.values()[pushDirection]));
                     }
                 }
@@ -213,44 +186,38 @@ public class IntegratedInterfaceBlockEntity extends AENetworkBlockEntity impleme
     }
 
     @Override
-    public void saveAdditional(CompoundTag data)
-    {
+    public void saveAdditional(CompoundTag data) {
         super.saveAdditional(data);
         this.logic.save(data);
         data.putInt("priority", this.priority);
     }
 
     @Override
-    public void loadTag(CompoundTag data)
-    {
+    public void loadTag(CompoundTag data) {
         super.loadTag(data);
         this.logic.load(data);
         this.priority = data.getInt("priority");
     }
 
     @Override
-    public int getPriority()
-    {
+    public int getPriority() {
         return this.priority;
     }
 
     @Override
-    public void setPriority(int newValue)
-    {
+    public void setPriority(int newValue) {
         this.priority = newValue;
         setChanged();
     }
 
     @Override
-    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops)
-    {
+    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
         super.addAdditionalDrops(level, pos, drops);
         getLogic().addDrops(drops);
     }
 
     @Override
-    public void clearContent()
-    {
+    public void clearContent() {
         super.clearContent();
         getLogic().cleanContent();
     }

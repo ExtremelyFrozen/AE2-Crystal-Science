@@ -1,47 +1,41 @@
 package io.github.lounode.ae2cs;
 
-
-import io.github.lounode.ae2cs.common.block.entity.EnderEmitterBlockEntity;
 import io.github.lounode.ae2cs.api.linker.broadcast.FrequencyBandManager;
+import io.github.lounode.ae2cs.common.block.entity.EnderEmitterBlockEntity;
 import io.github.lounode.ae2cs.common.item.PureCrystalItem;
+
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 
-public class Config
-{
+public class Config {
+
     public final Config.CommonConfig commonConfig = new Config.CommonConfig();
 
     public static Config INSTANCE;
 
-    private Config(ModLoadingContext container, IEventBus modEventBus)
-    {
+    private Config(ModLoadingContext container, IEventBus modEventBus) {
         container.registerConfig(ModConfig.Type.COMMON, commonConfig.spec);
-        modEventBus.addListener((ModConfigEvent.Loading evt) ->
-        {
-            if (evt.getConfig().getSpec() == commonConfig.spec)
-            {
+        modEventBus.addListener((ModConfigEvent.Loading evt) -> {
+            if (evt.getConfig().getSpec() == commonConfig.spec) {
                 commonConfig.onLoaded();
             }
         });
-        modEventBus.addListener((ModConfigEvent.Reloading evt) ->
-        {
-            if (evt.getConfig().getSpec() == commonConfig.spec)
-            {
+        modEventBus.addListener((ModConfigEvent.Reloading evt) -> {
+            if (evt.getConfig().getSpec() == commonConfig.spec) {
                 commonConfig.onLoaded();
             }
         });
     }
 
-    public static void register(ModLoadingContext container, IEventBus modEventBus)
-    {
+    public static void register(ModLoadingContext container, IEventBus modEventBus) {
         INSTANCE = new Config(container, modEventBus);
     }
 
-    public static class CommonConfig
-    {
+    public static class CommonConfig {
+
         public final ForgeConfigSpec spec;
 
         // 末影发信器自动范围系数
@@ -51,38 +45,30 @@ public class Config
         // 频段频道超限后的自动恢复重试间隔
         public final ForgeConfigSpec.IntValue broadcastBandOverflowRetryInterval;
 
-        public CommonConfig()
-        {
+        public CommonConfig() {
             ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
 
-            enderEmitterAutoAreaFactor =
-                    builder.comment(
-                                    "Controls the auto-link search area for the Ender Emitter.",
-                                    "Final area size is computed as: 16 * value."
-                            )
-                            .defineInRange("ender_emitter_auto_area_factor", 1, 1, 100);
+            enderEmitterAutoAreaFactor = builder.comment(
+                    "Controls the auto-link search area for the Ender Emitter.",
+                    "Final area size is computed as: 16 * value.")
+                    .defineInRange("ender_emitter_auto_area_factor", 1, 1, 100);
 
-            pureCrystalBurnMultiplier =
-                    builder.comment(
-                                    "Global multiplier applied to Pure Crystal energy generation rate (AE/t).",
-                                    "Final AE/t = baseAEPerTick * multiplier.",
-                                    "Range: 0.01..100 (default: 1)."
-                            )
-                            .defineInRange("pure_crystal_burn_multiplier", 1d, 0.01d, 100d);
+            pureCrystalBurnMultiplier = builder.comment(
+                    "Global multiplier applied to Pure Crystal energy generation rate (AE/t).",
+                    "Final AE/t = baseAEPerTick * multiplier.",
+                    "Range: 0.01..100 (default: 1).")
+                    .defineInRange("pure_crystal_burn_multiplier", 1d, 0.01d, 100d);
 
-            broadcastBandOverflowRetryInterval =
-                    builder.comment(
-                                    "Retry interval in ticks for broadcast bands that entered channel overflow shutdown.",
-                                    "Set to 0 to disable automatic recovery attempts.",
-                                    "Default: 40 ticks (2 seconds)."
-                            )
-                            .defineInRange("broadcast_band_overflow_retry_interval", 40, 0, Integer.MAX_VALUE);
+            broadcastBandOverflowRetryInterval = builder.comment(
+                    "Retry interval in ticks for broadcast bands that entered channel overflow shutdown.",
+                    "Set to 0 to disable automatic recovery attempts.",
+                    "Default: 40 ticks (2 seconds).")
+                    .defineInRange("broadcast_band_overflow_retry_interval", 40, 0, Integer.MAX_VALUE);
 
             this.spec = builder.build();
         }
 
-        public void onLoaded()
-        {
+        public void onLoaded() {
             EnderEmitterBlockEntity.autoAreaFactor = enderEmitterAutoAreaFactor.get();
             PureCrystalItem.energyMultiplier = pureCrystalBurnMultiplier.get();
             FrequencyBandManager.overflowRetryInterval = broadcastBandOverflowRetryInterval.get();

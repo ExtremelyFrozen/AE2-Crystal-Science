@@ -1,5 +1,7 @@
 package io.github.lounode.ae2cs.common.me.logic;
 
+import io.github.lounode.ae2cs.common.init.AECSBlocks;
+
 import appeng.api.config.*;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.PatternDetailsHelper;
@@ -39,9 +41,7 @@ import appeng.util.ConfigInventory;
 import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.PlayerInternalInventory;
-import com.google.common.collect.ImmutableSet;
-import io.github.lounode.ae2cs.common.init.AECSBlocks;
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -52,14 +52,17 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
+import com.google.common.collect.ImmutableSet;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Predicate;
 
 public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeableObject,
-        ICraftingProvider, ICraftingRequester
-{
+                                      ICraftingProvider, ICraftingRequester {
+
     /**
      * 实际载体，可能是特定be，也可能是ae的线缆部件
      */
@@ -95,12 +98,10 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
      */
     private final IConfigManager configManager;
 
-
     /**
      * 升级槽 - 允许UI以及右键机器
      */
-    private final IUpgradeInventory upgrades =
-            UpgradeInventories.forMachine(AECSBlocks.INTEGRATED_INTERFACE_BLOCK.get(), 1, this::onUpgradesChanged);
+    private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(AECSBlocks.INTEGRATED_INTERFACE_BLOCK.get(), 1, this::onUpgradesChanged);
 
     /**
      * 包含了所有样板输入项的集合，用来给阻塞模式快速判断
@@ -148,9 +149,12 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
     private GenericStack unlockStack;
 
     /**
-     * 每个方块面的 PatternProviderTarget 缓存：<p>
-     * 索引 = side.get3DDataValue()（0~5，对应 6 个方向）。<p>
-     * 用于快速找到某一面的“外部目标”（如机器 / 容器），<p>
+     * 每个方块面的 PatternProviderTarget 缓存：
+     * <p>
+     * 索引 = side.get3DDataValue()（0~5，对应 6 个方向）。
+     * <p>
+     * 用于快速找到某一面的“外部目标”（如机器 / 容器），
+     * <p>
      * 避免每次 pushPattern 都重新扫描世界方块。
      */
     private final PatternProviderTargetCache[] targetCaches = new PatternProviderTargetCache[6];
@@ -161,9 +165,12 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
     private final IActionSource actionSource;
 
     /**
-     * 用于跟踪通过“合成卡”发起的自动合成任务：<p>
-     * - 为每个槽位维护一个 ICraftingLink；<p>
-     * - 负责在任务完成时把产物插回 storage；<p>
+     * 用于跟踪通过“合成卡”发起的自动合成任务：
+     * <p>
+     * - 为每个槽位维护一个 ICraftingLink；
+     * <p>
+     * - 负责在任务完成时把产物插回 storage；
+     * <p>
      * - 也支持取消所有挂起任务（移除合成卡时）。
      */
     private final MultiCraftingTracker craftingTracker;
@@ -188,8 +195,7 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
 
     private final int patternSize;
 
-    public IntegratedInterfaceLogic(IManagedGridNode mainNode, IntegratedInterfaceHost host, int storageSize, int patternSize)
-    {
+    public IntegratedInterfaceLogic(IManagedGridNode mainNode, IntegratedInterfaceHost host, int storageSize, int patternSize) {
         this.host = host;
 
         this.mainNode = mainNode.setFlags(GridFlags.REQUIRE_CHANNEL) // 需要频道
@@ -210,17 +216,15 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         this.storage = ConfigInventory.storage(storageSize, this::onStorageChanged);
         this.plannedWork = new GenericStack[storageSize];
 
-        this.patternInventory = new AppEngInternalInventory(null, patternSize, 1)
-        {
+        this.patternInventory = new AppEngInternalInventory(null, patternSize, 1) {
+
             @Override
-            public boolean isItemValid(int slot, ItemStack stack)
-            {
+            public boolean isItemValid(int slot, ItemStack stack) {
                 return super.isItemValid(slot, stack) && stack.getItem() instanceof EncodedPatternItem;
             }
 
             @Override
-            protected void onContentsChanged(int slot)
-            {
+            protected void onContentsChanged(int slot) {
                 super.onContentsChanged(slot);
                 updatePatterns();
             }
@@ -234,43 +238,36 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         this.storage.useRegisteredCapacities();
     }
 
-    public @Nullable GenericStack getUnlockStack()
-    {
+    public @Nullable GenericStack getUnlockStack() {
         return unlockStack;
     }
 
     // IConfigurableObject
     @Override
-    public IConfigManager getConfigManager()
-    {
+    public IConfigManager getConfigManager() {
         return this.configManager;
     }
 
-    //IUpgradeableObject
+    // IUpgradeableObject
     @Override
-    public IUpgradeInventory getUpgrades()
-    {
+    public IUpgradeInventory getUpgrades() {
         return upgrades;
     }
 
     // ICraftingProvider
     @Override
-    public List<IPatternDetails> getAvailablePatterns()
-    {
+    public List<IPatternDetails> getAvailablePatterns() {
         return this.patterns;
     }
 
     @Override
-    public int getPatternPriority()
-    {
+    public int getPatternPriority() {
         return this.host.getPriority();
     }
 
     @Override
-    public boolean pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder)
-    {
-        if (!sendList.isEmpty() || !this.mainNode.isActive() || !this.patterns.contains(patternDetails))
-        {
+    public boolean pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder) {
+        if (!sendList.isEmpty() || !this.mainNode.isActive() || !this.patterns.contains(patternDetails)) {
             return false;
         }
 
@@ -281,23 +278,18 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
 
         if (getCraftingLockedReason() != LockCraftingMode.NONE) return false;
 
-        record PushTarget(Direction direction, PatternProviderTarget target)
-        {
-        }
+        record PushTarget(Direction direction, PatternProviderTarget target) {}
         ArrayList<PushTarget> possibleTargets = new ArrayList<>();
 
         // 首先尝试给ICraftingMachine推送合成
         // 如果没有，则再找可能的目标，并加入possibleTargets
-        for (Direction direction : host.getTargets())
-        {
+        for (Direction direction : host.getTargets()) {
             BlockPos adjPos = blockEntity.getBlockPos().relative(direction);
             Direction adjBeSide = direction.getOpposite();
 
             ICraftingMachine craftingMachine = ICraftingMachine.of(level, adjPos, adjBeSide, level.getBlockEntity(adjPos));
-            if (craftingMachine != null && craftingMachine.acceptsPlans())
-            {
-                if (craftingMachine.pushPattern(patternDetails, inputHolder, adjBeSide))
-                {
+            if (craftingMachine != null && craftingMachine.acceptsPlans()) {
+                if (craftingMachine.pushPattern(patternDetails, inputHolder, adjBeSide)) {
                     onPushPatternSuccess(patternDetails);
                     return true;
                 }
@@ -312,8 +304,7 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         }
 
         // 如果没有合适的ICraftingMachine，且此配方并不支持外部仓库运行，则到此停止
-        if (!patternDetails.supportsPushInputsToExternalInventory())
-        {
+        if (!patternDetails.supportsPushInputsToExternalInventory()) {
             return false;
         }
 
@@ -321,26 +312,22 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         rearrangeRoundRobin(possibleTargets);
 
         // 向其他类型的方块推送样板
-        for (int i = 0; i < possibleTargets.size(); ++i)
-        {
+        for (int i = 0; i < possibleTargets.size(); ++i) {
             PushTarget target = possibleTargets.get(i);
             Direction direction = target.direction();
             PatternProviderTarget adapter = target.target();
 
             // 如果开启了阻塞模式，且对方包含我们的某个样板输入
-            if (this.isBlocking() && adapter.containsPatternInput(this.patternInputs))
-            {
+            if (this.isBlocking() && adapter.containsPatternInput(this.patternInputs)) {
                 continue;
             }
 
             // 只要目标能接收样板中所有种类的输入，我们就推送
             // 无论本次是否真的完全推送了所有资源，都视为完成，所有未完成资源添加到sendList，等待其他逻辑重新推送
-            if (this.adapterAcceptsAll(adapter, inputHolder))
-            {
+            if (this.adapterAcceptsAll(adapter, inputHolder)) {
                 patternDetails.pushInputsToExternalInventory(inputHolder, (what, amount) -> {
                     long inserted = adapter.insert(what, amount, Actionable.MODULATE);
-                    if (inserted < amount)
-                    {
+                    if (inserted < amount) {
                         this.addToSendList(what, amount - inserted);
                     }
                 });
@@ -358,32 +345,26 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
     /**
      * 重新解析样板信息，并通知ae网络获取
      */
-    public void updatePatterns()
-    {
+    public void updatePatterns() {
         patterns.clear();
         patternInputs.clear();
 
         BlockEntity blockEntity = host.getBlockEntity();
         Level level = blockEntity != null ? blockEntity.getLevel() : null;
-        if (level == null)
-        {
+        if (level == null) {
             needsPatternReRegister = true;
             ICraftingProvider.requestUpdate(mainNode);
             return;
         }
 
-        for (ItemStack stack : this.patternInventory)
-        {
+        for (ItemStack stack : this.patternInventory) {
             IPatternDetails details = PatternDetailsHelper.decodePattern(stack, level);
 
-            if (details != null)
-            {
+            if (details != null) {
                 patterns.add(details);
 
-                for (IPatternDetails.IInput iinput : details.getInputs())
-                {
-                    for (GenericStack inputCandidate : iinput.getPossibleInputs())
-                    {
+                for (IPatternDetails.IInput iinput : details.getInputs()) {
+                    for (GenericStack inputCandidate : iinput.getPossibleInputs()) {
                         patternInputs.add(inputCandidate.what().dropSecondary());
                     }
                 }
@@ -398,29 +379,20 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
      *
      * @return 如果未被锁定则返回null
      */
-    public LockCraftingMode getCraftingLockedReason()
-    {
+    public LockCraftingMode getCraftingLockedReason() {
         var lockMode = configManager.getSetting(Settings.LOCK_CRAFTING_MODE);
-        if (lockMode == LockCraftingMode.LOCK_WHILE_LOW && !getRedstoneState())
-        {
+        if (lockMode == LockCraftingMode.LOCK_WHILE_LOW && !getRedstoneState()) {
             // Crafting locked by redstone signal
             return LockCraftingMode.LOCK_WHILE_LOW;
-        }
-        else if (lockMode == LockCraftingMode.LOCK_WHILE_HIGH && getRedstoneState())
-        {
+        } else if (lockMode == LockCraftingMode.LOCK_WHILE_HIGH && getRedstoneState()) {
             return LockCraftingMode.LOCK_WHILE_HIGH;
-        }
-        else if (unlockEvent != null)
-        {
+        } else if (unlockEvent != null) {
             // Crafting locked by waiting for unlock event
-            switch (unlockEvent)
-            {
-                case REDSTONE_POWER, REDSTONE_PULSE ->
-                {
+            switch (unlockEvent) {
+                case REDSTONE_POWER, REDSTONE_PULSE -> {
                     return LockCraftingMode.LOCK_UNTIL_PULSE;
                 }
-                case RESULT ->
-                {
+                case RESULT -> {
                     return LockCraftingMode.LOCK_UNTIL_RESULT;
                 }
             }
@@ -431,30 +403,23 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
     /**
      * 当样板推送完成，刷新一次锁定状态
      */
-    private void onPushPatternSuccess(IPatternDetails pattern)
-    {
+    private void onPushPatternSuccess(IPatternDetails pattern) {
         resetCraftingLock();
 
         LockCraftingMode lockMode = configManager.getSetting(Settings.LOCK_CRAFTING_MODE);
-        switch (lockMode)
-        {
-            case LOCK_UNTIL_PULSE ->
-            {
-                if (getRedstoneState())
-                {
+        switch (lockMode) {
+            case LOCK_UNTIL_PULSE -> {
+                if (getRedstoneState()) {
                     // 已经有信号，等待无信号时切换到 REDSTONE_POWER
                     unlockEvent = UnlockCraftingEvent.REDSTONE_PULSE;
-                }
-                else
-                {
+                } else {
                     // 当前无信号，等待信号
                     unlockEvent = UnlockCraftingEvent.REDSTONE_POWER;
                 }
                 redstoneState = YesNo.UNDECIDED; // 在下次更新时检查红石状态
                 saveChanges();
             }
-            case LOCK_UNTIL_RESULT ->
-            {
+            case LOCK_UNTIL_RESULT -> {
                 unlockEvent = UnlockCraftingEvent.RESULT;
                 unlockStack = pattern.getPrimaryOutput();
                 saveChanges();
@@ -466,10 +431,8 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
      * 将目标方向的MEStorage或者其他合适能力包装成PatternProviderTarget
      */
     @Nullable
-    private PatternProviderTarget findAdapter(Direction side)
-    {
-        if (targetCaches[side.get3DDataValue()] == null)
-        {
+    private PatternProviderTarget findAdapter(Direction side) {
+        if (targetCaches[side.get3DDataValue()] == null) {
             BlockEntity thisBe = host.getBlockEntity();
             targetCaches[side.get3DDataValue()] = new PatternProviderTargetCache(
                     (ServerLevel) thisBe.getLevel(),
@@ -484,38 +447,30 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
     /**
      * 对列表应用轮询
      */
-    private <T> void rearrangeRoundRobin(List<T> list)
-    {
-        if (list.isEmpty())
-        {
+    private <T> void rearrangeRoundRobin(List<T> list) {
+        if (list.isEmpty()) {
             return;
         }
 
         roundRobinIndex %= list.size();
-        for (int i = 0; i < roundRobinIndex; ++i)
-        {
+        for (int i = 0; i < roundRobinIndex; ++i) {
             list.add(list.get(i));
         }
         list.subList(0, roundRobinIndex).clear();
     }
 
-    public boolean isBlocking()
-    {
+    public boolean isBlocking() {
         return this.configManager.getSetting(Settings.BLOCKING_MODE) == YesNo.YES;
     }
 
     /**
      * 检查目标是否能接收此样板所有输入种类（不包含具体的数量验证）
      */
-    private boolean adapterAcceptsAll(PatternProviderTarget target, KeyCounter[] inputHolder)
-    {
-        for (KeyCounter inputList : inputHolder)
-        {
-            for (Object2LongMap.Entry<AEKey> input : inputList)
-            {
+    private boolean adapterAcceptsAll(PatternProviderTarget target, KeyCounter[] inputHolder) {
+        for (KeyCounter inputList : inputHolder) {
+            for (Object2LongMap.Entry<AEKey> input : inputList) {
                 long inserted = target.insert(input.getKey(), input.getLongValue(), Actionable.SIMULATE);
-                if (inserted == 0)
-                {
+                if (inserted == 0) {
                     return false;
                 }
             }
@@ -526,10 +481,8 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
     /**
      * 将物品加入待发送列表，然后加速接口运行
      */
-    private void addToSendList(AEKey what, long amount)
-    {
-        if (amount > 0)
-        {
+    private void addToSendList(AEKey what, long amount) {
+        if (amount > 0) {
             this.sendList.add(new GenericStack(what, amount));
 
             this.mainNode.ifPresent((grid, node) -> grid.getTickManager().alertDevice(node));
@@ -539,76 +492,58 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
     /**
      * 尝试将sendList中的东西向外发送
      */
-    private boolean sendStacksOut()
-    {
-        if (sendDirection == null)
-        {
-            if (!sendList.isEmpty())
-            {
+    private boolean sendStacksOut() {
+        if (sendDirection == null) {
+            if (!sendList.isEmpty()) {
                 throw new IllegalStateException("Invalid pattern provider state, this is a bug.");
             }
             return false;
         }
 
         PatternProviderTarget adapter = findAdapter(sendDirection);
-        if (adapter == null)
-        {
+        if (adapter == null) {
             return false;
         }
 
         boolean didSomething = false;
 
-        for (ListIterator<GenericStack> it = sendList.listIterator(); it.hasNext(); )
-        {
+        for (ListIterator<GenericStack> it = sendList.listIterator(); it.hasNext();) {
             GenericStack stack = it.next();
             AEKey what = stack.what();
             long amount = stack.amount();
 
             long inserted = adapter.insert(what, amount, Actionable.MODULATE);
-            if (inserted >= amount)
-            {
+            if (inserted >= amount) {
                 it.remove();
                 didSomething = true;
-            }
-            else if (inserted > 0)
-            {
+            } else if (inserted > 0) {
                 it.set(new GenericStack(what, amount - inserted));
                 didSomething = true;
             }
         }
 
-        if (sendList.isEmpty())
-        {
+        if (sendList.isEmpty()) {
             sendDirection = null;
         }
 
         return didSomething;
     }
 
-    private boolean getRedstoneState()
-    {
-        if (redstoneState == YesNo.UNDECIDED)
-        {
+    private boolean getRedstoneState() {
+        if (redstoneState == YesNo.UNDECIDED) {
             BlockEntity be = this.host.getBlockEntity();
             Level level = be.getLevel();
-            if (level == null)
-            {
+            if (level == null) {
                 redstoneState = YesNo.UNDECIDED;
-            }
-            else
-            {
-                redstoneState = be.getLevel().hasNeighborSignal(be.getBlockPos())
-                        ? YesNo.YES
-                        : YesNo.NO;
+            } else {
+                redstoneState = be.getLevel().hasNeighborSignal(be.getBlockPos()) ? YesNo.YES : YesNo.NO;
             }
         }
         return redstoneState == YesNo.YES;
     }
 
-    public void resetCraftingLock()
-    {
-        if (unlockEvent != null)
-        {
+    public void resetCraftingLock() {
+        if (unlockEvent != null) {
             unlockEvent = null;
             unlockStack = null;
             saveChanges();
@@ -619,57 +554,48 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
      * 当前供应器是否繁忙
      */
     @Override
-    public boolean isBusy()
-    {
+    public boolean isBusy() {
         return !sendList.isEmpty();
     }
 
     // ICraftingRequester
     @Override
-    public ImmutableSet<ICraftingLink> getRequestedJobs()
-    {
+    public ImmutableSet<ICraftingLink> getRequestedJobs() {
         return this.craftingTracker.getRequestedJobs();
     }
 
     @Override
-    public long insertCraftedItems(ICraftingLink link, AEKey what, long amount, Actionable mode)
-    {
+    public long insertCraftedItems(ICraftingLink link, AEKey what, long amount, Actionable mode) {
         int slot = this.craftingTracker.getSlot(link);
         return storage.insert(slot, what, amount, mode);
     }
 
     @Override
-    public void jobStateChange(ICraftingLink link)
-    {
+    public void jobStateChange(ICraftingLink link) {
         this.craftingTracker.jobStateChange(link);
     }
 
-    private void onConfigChanged()
-    {
+    private void onConfigChanged() {
         this.saveChanges();
         // FUZZY_MODE 变了也会走这里，所以要重算计划
         updatePlan();
     }
 
-    private void onConfigRowChanged()
-    {
+    private void onConfigRowChanged() {
         this.saveChanges();
         readConfig();
     }
 
-    private void onStorageChanged()
-    {
+    private void onStorageChanged() {
         this.saveChanges();
         updatePlan();
     }
 
-    private void onUpgradesChanged()
-    {
+    private void onUpgradesChanged() {
         this.saveChanges();
 
         // 移除合成卡时，取消所有挂起的合成任务
-        if (!upgrades.isInstalled(AEItems.CRAFTING_CARD))
-        {
+        if (!upgrades.isInstalled(AEItems.CRAFTING_CARD)) {
             cancelCrafting();
         }
 
@@ -677,8 +603,7 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         updatePlan();
     }
 
-    private void readConfig()
-    {
+    private void readConfig() {
         BlockEntity be = this.host.getBlockEntity();
         Level level = be.getLevel();
         this.hasConfig = !this.configInv.isEmpty();
@@ -688,12 +613,9 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
             be.invalidateCaps();
     }
 
-    private boolean hasStorageWork()
-    {
-        for (GenericStack work : this.plannedWork)
-        {
-            if (work != null)
-            {
+    private boolean hasStorageWork() {
+        for (GenericStack work : this.plannedWork) {
+            if (work != null) {
                 return true;
             }
         }
@@ -703,25 +625,19 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
     /**
      * 重新计算所有槽位的 plannedWork，并根据有无工作唤醒/睡眠设备
      */
-    private void updatePlan()
-    {
+    private void updatePlan() {
         boolean hadWork = hasStorageWork();
 
-        for (int i = 0; i < this.configInv.size(); i++)
-        {
+        for (int i = 0; i < this.configInv.size(); i++) {
             updatePlan(i);
         }
 
         boolean hasWork = hasStorageWork();
-        if (hadWork != hasWork)
-        {
+        if (hadWork != hasWork) {
             mainNode.ifPresent((grid, node) -> {
-                if (hasWork)
-                {
+                if (hasWork) {
                     grid.getTickManager().alertDevice(node);
-                }
-                else
-                {
+                } else {
                     grid.getTickManager().sleepDevice(node);
                 }
             });
@@ -731,51 +647,34 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
     /**
      * 单槽位：根据 config vs storage 生成 plannedWork[slot]
      */
-    private void updatePlan(int slot)
-    {
+    private void updatePlan(int slot) {
         var req = this.configInv.getStack(slot); // 想要的
         var stored = this.storage.getStack(slot); // 现在有的
 
-        if (req == null && stored != null)
-        {
+        if (req == null && stored != null) {
             // 不想存，但现在有东西 -> 全部退回网络
             this.plannedWork[slot] = new GenericStack(stored.what(), -stored.amount());
-        }
-        else if (req != null)
-        {
-            if (stored == null)
-            {
+        } else if (req != null) {
+            if (stored == null) {
                 // 想存但现在空 -> 从网络拉 req
                 this.plannedWork[slot] = req;
-            }
-            else if (storedRequestEquals(req.what(), stored.what()))
-            {
+            } else if (storedRequestEquals(req.what(), stored.what())) {
                 long delta = req.amount() - stored.amount();
-                this.plannedWork[slot] = (delta != 0)
-                        ? new GenericStack(req.what(), delta)
-                        : null;
-            }
-            else
-            {
+                this.plannedWork[slot] = (delta != 0) ? new GenericStack(req.what(), delta) : null;
+            } else {
                 // 槽里是别的东西 -> 先全部退回网络
                 this.plannedWork[slot] = new GenericStack(stored.what(), -stored.amount());
             }
-        }
-        else
-        {
+        } else {
             // req == null && stored == null
             this.plannedWork[slot] = null;
         }
     }
 
-    private boolean storedRequestEquals(AEKey request, AEKey stored)
-    {
-        if (upgrades.isInstalled(AEItems.FUZZY_CARD) && request.supportsFuzzyRangeSearch())
-        {
+    private boolean storedRequestEquals(AEKey request, AEKey stored) {
+        if (upgrades.isInstalled(AEItems.FUZZY_CARD) && request.supportsFuzzyRangeSearch()) {
             return request.fuzzyEquals(stored, configManager.getSetting(Settings.FUZZY_MODE));
-        }
-        else
-        {
+        } else {
             return request.equals(stored);
         }
     }
@@ -783,18 +682,14 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
     /**
      * 执行存储相关的计划（plannedWork），返回本 tick 是否做成了任何事情
      */
-    private boolean updateStorage()
-    {
+    private boolean updateStorage() {
         boolean didSomething = false;
 
-        for (int slot = 0; slot < plannedWork.length; slot++)
-        {
+        for (int slot = 0; slot < plannedWork.length; slot++) {
             GenericStack work = plannedWork[slot];
-            if (work != null)
-            {
+            if (work != null) {
                 int amount = (int) work.amount();
-                if (usePlan(slot, work.what(), amount))
-                {
+                if (usePlan(slot, work.what(), amount)) {
                     didSomething = true;
                 }
             }
@@ -803,11 +698,9 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         return didSomething;
     }
 
-    private boolean usePlan(int slot, AEKey what, int amount)
-    {
+    private boolean usePlan(int slot, AEKey what, int amount) {
         boolean changed = tryUsePlan(slot, what, amount);
-        if (changed)
-        {
+        if (changed) {
             updatePlan(slot);
         }
         return changed;
@@ -816,11 +709,9 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
     /**
      * 根据配置plan拉取/退回资源
      */
-    private boolean tryUsePlan(int slot, AEKey what, int amount)
-    {
+    private boolean tryUsePlan(int slot, AEKey what, int amount) {
         var grid = mainNode.getGrid();
-        if (grid == null)
-        {
+        if (grid == null) {
             return false;
         }
 
@@ -828,13 +719,11 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         var energySrc = grid.getEnergyService();
 
         // amount < 0 - 从接口推回网络
-        if (amount < 0)
-        {
+        if (amount < 0) {
             amount = -amount;
 
             GenericStack inSlot = storage.getStack(slot);
-            if (inSlot == null || !what.matches(inSlot) || inSlot.amount() < amount)
-            {
+            if (inSlot == null || !what.matches(inSlot) || inSlot.amount() < amount) {
                 // 槽位状态改了，要求重新规划
                 return true;
             }
@@ -845,11 +734,9 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
                     networkInv,
                     what,
                     amount,
-                    this.actionSource
-            );
+                    this.actionSource);
 
-            if (inserted > 0)
-            {
+            if (inserted > 0) {
                 // 从本地仓扣掉
                 storage.extract(slot, what, inserted, Actionable.MODULATE);
 
@@ -861,36 +748,29 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         }
 
         // 如果该槽位已经有挂起的合成任务，优先走合成处理
-        if (this.craftingTracker.isBusy(slot))
-        {
+        if (this.craftingTracker.isBusy(slot)) {
             return handleCrafting(slot, what, amount);
         }
 
         // amount > 0 - 从网络拉货进接口
-        if (amount > 0)
-        {
+        if (amount > 0) {
             // 先模拟是否能插满 amount，避免计划过期
             long canInsert = storage.insert(slot, what, amount, Actionable.SIMULATE);
-            if (canInsert != amount)
-            {
+            if (canInsert != amount) {
                 return true; // 槽位状态变了，重新规划
             }
 
             // 尝试直接从网络抽取指定 key
-            if (acquireFromNetwork(energySrc, networkInv, slot, what, amount))
-            {
+            if (acquireFromNetwork(energySrc, networkInv, slot, what, amount)) {
                 return true;
             }
 
             // 如果这个槽现在还空，并且有 FUZZY 卡，则尝试模糊拉货
-            if (storage.getStack(slot) == null && upgrades.isInstalled(AEItems.FUZZY_CARD))
-            {
+            if (storage.getStack(slot) == null && upgrades.isInstalled(AEItems.FUZZY_CARD)) {
                 FuzzyMode fuzzyMode = configManager.getSetting(Settings.FUZZY_MODE);
-                for (var entry : grid.getStorageService().getCachedInventory().findFuzzy(what, fuzzyMode))
-                {
+                for (var entry : grid.getStorageService().getCachedInventory().findFuzzy(what, fuzzyMode)) {
                     long maxAmount = storage.insert(slot, entry.getKey(), amount, Actionable.SIMULATE);
-                    if (acquireFromNetwork(energySrc, networkInv, slot, entry.getKey(), maxAmount))
-                    {
+                    if (acquireFromNetwork(energySrc, networkInv, slot, entry.getKey(), maxAmount)) {
                         return true;
                     }
                 }
@@ -907,27 +787,22 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
      * 从网络中拉指定 key 进入 storage[slot]，返回是否成功拉到一点
      */
     private boolean acquireFromNetwork(IEnergyService energySrc, MEStorage networkInv,
-                                       int slot, AEKey what, long amount)
-    {
+                                       int slot, AEKey what, long amount) {
         long acquired = StorageHelper.poweredExtraction(energySrc, networkInv, what, amount, this.actionSource);
-        if (acquired > 0)
-        {
+        if (acquired > 0) {
             long inserted = storage.insert(slot, what, acquired, Actionable.MODULATE);
-            if (inserted < acquired)
-            {
+            if (inserted < acquired) {
                 // TODO 添加Log，而不直接报异常
-                //throw new IllegalStateException("Bad inventory plan: voided items: " + (acquired - inserted));
+                // throw new IllegalStateException("Bad inventory plan: voided items: " + (acquired - inserted));
             }
             return true;
         }
         return false;
     }
 
-    private boolean handleCrafting(int slot, AEKey key, long amount)
-    {
+    private boolean handleCrafting(int slot, AEKey key, long amount) {
         IGrid grid = mainNode.getGrid();
-        if (grid != null && upgrades.isInstalled(AEItems.CRAFTING_CARD) && key != null)
-        {
+        if (grid != null && upgrades.isInstalled(AEItems.CRAFTING_CARD) && key != null) {
             return this.craftingTracker.handleCrafting(
                     slot,
                     key,
@@ -939,37 +814,31 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         return false;
     }
 
-    private void cancelCrafting()
-    {
+    private void cancelCrafting() {
         this.craftingTracker.cancel();
     }
 
     @Override
-    public @Nullable IGridNode getActionableNode()
-    {
+    public @Nullable IGridNode getActionableNode() {
         return mainNode.getNode();
     }
 
-    private class Ticker implements IGridTickable
-    {
+    private class Ticker implements IGridTickable {
+
         @Override
-        public TickingRequest getTickingRequest(IGridNode node)
-        {
+        public TickingRequest getTickingRequest(IGridNode node) {
             // 有工作就醒着，没有工作就可以睡
             boolean idle = !hasStorageWork() && sendList.isEmpty();
             return new TickingRequest(TickRates.Interface, idle, true);
         }
 
         @Override
-        public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall)
-        {
-            if (!mainNode.isActive())
-            {
+        public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
+            if (!mainNode.isActive()) {
                 return TickRateModulation.SLEEP;
             }
 
-            if (needsPatternReRegister)
-            {
+            if (needsPatternReRegister) {
                 updatePatterns();
                 needsPatternReRegister = false;
             }
@@ -978,23 +847,17 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
 
             boolean stillHasWork = hasStorageWork() || !sendList.isEmpty();
 
-            if (!stillHasWork)
-            {
+            if (!stillHasWork) {
                 return TickRateModulation.SLEEP;
-            }
-            else if (didSomething)
-            {
+            } else if (didSomething) {
                 return TickRateModulation.URGENT;
-            }
-            else
-            {
+            } else {
                 return TickRateModulation.SLOWER;
             }
         }
     }
 
-    public void save(CompoundTag tag)
-    {
+    public void save(CompoundTag tag) {
         // 配置 / 存储
         this.configInv.writeToChildTag(tag, "config");
         this.storage.writeToChildTag(tag, "storage");
@@ -1015,32 +878,26 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         tag.putInt("roundRobinIndex", this.roundRobinIndex);
         tag.putByte("redstoneState", (byte) this.redstoneState.ordinal());
 
-        if (unlockEvent != null)
-        {
+        if (unlockEvent != null) {
             tag.putByte("unlockEvent", (byte) unlockEvent.ordinal());
         }
-        if (unlockStack != null)
-        {
+        if (unlockStack != null) {
             tag.put("unlockStack", GenericStack.writeTag(unlockStack));
         }
 
-        if (!sendList.isEmpty())
-        {
+        if (!sendList.isEmpty()) {
             var list = new ListTag();
-            for (var gs : sendList)
-            {
+            for (var gs : sendList) {
                 list.add(GenericStack.writeTag(gs));
             }
             tag.put("sendList", list);
         }
-        if (sendDirection != null)
-        {
+        if (sendDirection != null) {
             tag.putByte("sendDirection", (byte) sendDirection.get3DDataValue());
         }
     }
 
-    public void load(CompoundTag tag)
-    {
+    public void load(CompoundTag tag) {
         // 合成跟踪必须先读（里面可能依赖其它字段）
         this.craftingTracker.readFromNBT(tag);
 
@@ -1076,50 +933,38 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
 
         this.unlockEvent = readEnum(tag, "unlockEvent", UnlockCraftingEvent.values(), null);
 
-        if (tag.contains("unlockStack"))
-        {
+        if (tag.contains("unlockStack")) {
             this.unlockStack = GenericStack.readTag(tag.getCompound("unlockStack"));
-        }
-        else
-        {
+        } else {
             this.unlockStack = null;
         }
 
         this.sendList.clear();
-        if (tag.contains("sendList"))
-        {
+        if (tag.contains("sendList")) {
             var list = tag.getList("sendList", net.minecraft.nbt.Tag.TAG_COMPOUND);
-            for (int i = 0; i < list.size(); i++)
-            {
+            for (int i = 0; i < list.size(); i++) {
                 var gs = GenericStack.readTag(list.getCompound(i));
-                if (gs != null)
-                {
+                if (gs != null) {
                     this.sendList.add(gs);
                 }
             }
         }
 
-        if (tag.contains("sendDirection"))
-        {
+        if (tag.contains("sendDirection")) {
             this.sendDirection = Direction.from3DDataValue(tag.getByte("sendDirection"));
-        }
-        else
-        {
+        } else {
             this.sendDirection = null;
         }
     }
 
     @Nullable
-    private static <T extends Enum<T>> T readEnum(CompoundTag tag, String key, T[] values, @Nullable T fallback)
-    {
-        if (!tag.contains(key))
-        {
+    private static <T extends Enum<T>> T readEnum(CompoundTag tag, String key, T[] values, @Nullable T fallback) {
+        if (!tag.contains(key)) {
             return fallback;
         }
 
         byte value = tag.getByte(key);
-        if (value < 0 || value >= values.length)
-        {
+        if (value < 0 || value >= values.length) {
             return fallback;
         }
 
@@ -1129,34 +974,26 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
     /**
      * 邻居红石变化时调用，处理 LOCK_UNTIL_PULSE
      */
-    public void updateRedstoneState()
-    {
-        if (unlockEvent == UnlockCraftingEvent.REDSTONE_POWER && getRedstoneState())
-        {
+    public void updateRedstoneState() {
+        if (unlockEvent == UnlockCraftingEvent.REDSTONE_POWER && getRedstoneState()) {
             // 等待有电 -> 现在有电 -> 解锁
             unlockEvent = null;
             saveChanges();
-        }
-        else if (unlockEvent == UnlockCraftingEvent.REDSTONE_PULSE && !getRedstoneState())
-        {
+        } else if (unlockEvent == UnlockCraftingEvent.REDSTONE_PULSE && !getRedstoneState()) {
             // 等待断电再等下一次上电
             unlockEvent = UnlockCraftingEvent.REDSTONE_POWER;
             redstoneState = YesNo.UNDECIDED;
             saveChanges();
-        }
-        else
-        {
+        } else {
             // 其他情况仅仅重置缓存，下次读取重新测红石
             redstoneState = YesNo.UNDECIDED;
         }
     }
 
     // 后续在能力暴露中使用即可
-    public MEStorage getExposedMEStorage(Direction side)
-    {
+    public MEStorage getExposedMEStorage(Direction side) {
         var grid = mainNode.getGrid();
-        if (!hasConfig && grid != null)
-        {
+        if (!hasConfig && grid != null) {
             // 没配备货，就直接暴露整个网络
             return grid.getStorageService().getInventory();
         }
@@ -1164,16 +1001,13 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         return storage;
     }
 
-    private void onStackReturnedToNetwork(GenericStack stack)
-    {
+    private void onStackReturnedToNetwork(GenericStack stack) {
         // 当前不是 RESULT 模式，直接忽略
-        if (unlockEvent != UnlockCraftingEvent.RESULT)
-        {
+        if (unlockEvent != UnlockCraftingEvent.RESULT) {
             return;
         }
 
-        if (unlockStack == null)
-        {
+        if (unlockStack == null) {
             // 状态不一致，直接解锁防止死锁
             unlockEvent = null;
             saveChanges();
@@ -1181,21 +1015,17 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         }
 
         // 只统计主输出类型
-        if (!unlockStack.what().equals(stack.what()))
-        {
+        if (!unlockStack.what().equals(stack.what())) {
             return;
         }
 
         long remaining = unlockStack.amount() - stack.amount();
 
-        if (remaining <= 0)
-        {
+        if (remaining <= 0) {
             // 数量足够了，解锁
             unlockStack = null;
             unlockEvent = null;
-        }
-        else
-        {
+        } else {
             // 继续等待
             unlockStack = new GenericStack(unlockStack.what(), remaining);
         }
@@ -1203,18 +1033,14 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         saveChanges();
     }
 
-    public void saveChanges()
-    {
+    public void saveChanges() {
         this.host.saveChanges();
     }
 
     // 把所有样板转成空白样板并给玩家
-    private void clearPatternInventory(Player player)
-    {
-        if (player.getAbilities().instabuild)
-        {
-            for (int i = 0; i < patternInventory.size(); i++)
-            {
+    private void clearPatternInventory(Player player) {
+        if (player.getAbilities().instabuild) {
+            for (int i = 0; i < patternInventory.size(); i++) {
                 patternInventory.setItemDirect(i, ItemStack.EMPTY);
             }
             return;
@@ -1224,39 +1050,27 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
 
         // 清空样板并给玩家
         int blankPatternCount = 0;
-        for (int i = 0; i < patternInventory.size(); i++)
-        {
+        for (int i = 0; i < patternInventory.size(); i++) {
             ItemStack pattern = patternInventory.getStackInSlot(i);
-            if (pattern.is(AEItems.CRAFTING_PATTERN.asItem())
-                    || pattern.is(AEItems.PROCESSING_PATTERN.asItem())
-                    || pattern.is(AEItems.SMITHING_TABLE_PATTERN.asItem())
-                    || pattern.is(AEItems.STONECUTTING_PATTERN.asItem())
-                    || pattern.is(AEItems.BLANK_PATTERN.asItem()))
-            {
+            if (pattern.is(AEItems.CRAFTING_PATTERN.asItem()) || pattern.is(AEItems.PROCESSING_PATTERN.asItem()) || pattern.is(AEItems.SMITHING_TABLE_PATTERN.asItem()) || pattern.is(AEItems.STONECUTTING_PATTERN.asItem()) || pattern.is(AEItems.BLANK_PATTERN.asItem())) {
                 blankPatternCount += pattern.getCount();
-            }
-            else
-            {
+            } else {
                 playerInv.placeItemBackInInventory(pattern);
             }
             patternInventory.setItemDirect(i, ItemStack.EMPTY);
         }
 
-        if (blankPatternCount > 0)
-        {
+        if (blankPatternCount > 0) {
             playerInv.placeItemBackInInventory(AEItems.BLANK_PATTERN.stack(blankPatternCount), false);
         }
     }
 
-    public void exportSettings(CompoundTag builder)
-    {
+    public void exportSettings(CompoundTag builder) {
         this.patternInventory.writeToNBT(builder, "patterns");
     }
 
-    public void importSettings(CompoundTag input, @Nullable Player player)
-    {
-        if (player != null && input.contains("patterns") && !player.level().isClientSide)
-        {
+    public void importSettings(CompoundTag input, @Nullable Player player) {
+        if (player != null && input.contains("patterns") && !player.level().isClientSide) {
             this.clearPatternInventory(player);
             AppEngInternalInventory desiredPatterns = new AppEngInternalInventory(this.patternInventory.size());
             desiredPatterns.readFromNBT(input, "patterns");
@@ -1264,83 +1078,67 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
             int blankPatternsAvailable = player.getAbilities().instabuild ? Integer.MAX_VALUE : playerInv.countItem(AEItems.BLANK_PATTERN.asItem());
             int blankPatternsUsed = 0;
 
-            for (int i = 0; i < desiredPatterns.size(); ++i)
-            {
+            for (int i = 0; i < desiredPatterns.size(); ++i) {
                 IPatternDetails pattern = PatternDetailsHelper.decodePattern(desiredPatterns.getStackInSlot(i), this.host.getBlockEntity().getLevel(), true);
-                if (pattern != null)
-                {
+                if (pattern != null) {
                     ++blankPatternsUsed;
-                    if (blankPatternsAvailable >= blankPatternsUsed && !this.patternInventory.addItems(pattern.getDefinition().toStack()).isEmpty())
-                    {
+                    if (blankPatternsAvailable >= blankPatternsUsed && !this.patternInventory.addItems(pattern.getDefinition().toStack()).isEmpty()) {
                         AELog.warn("Failed to add pattern to pattern provider", new Object[0]);
                         --blankPatternsUsed;
                     }
                 }
             }
 
-            if (blankPatternsUsed > 0 && !player.getAbilities().instabuild)
-            {
+            if (blankPatternsUsed > 0 && !player.getAbilities().instabuild) {
                 (new PlayerInternalInventory(playerInv)).removeItems(blankPatternsUsed, AEItems.BLANK_PATTERN.stack(), (Predicate) null);
             }
 
-            if (blankPatternsUsed > blankPatternsAvailable)
-            {
-                player.sendSystemMessage(PlayerMessages.MissingBlankPatterns.text(new Object[]{blankPatternsUsed - blankPatternsAvailable}));
+            if (blankPatternsUsed > blankPatternsAvailable) {
+                player.sendSystemMessage(PlayerMessages.MissingBlankPatterns.text(new Object[] { blankPatternsUsed - blankPatternsAvailable }));
             }
         }
     }
 
-    public void onMainNodeStateChanged()
-    {
-        if (this.mainNode.isActive())
-        {
+    public void onMainNodeStateChanged() {
+        if (this.mainNode.isActive()) {
             this.mainNode.ifPresent((grid, node) -> {
                 grid.getTickManager().alertDevice(node);
             });
         }
     }
 
-    public ConfigInventory getConfigInv()
-    {
+    public ConfigInventory getConfigInv() {
         return configInv;
     }
 
-    public ConfigInventory getStorageInv()
-    {
+    public ConfigInventory getStorageInv() {
         return storage;
     }
 
-    public AppEngInternalInventory getPatternInventory()
-    {
+    public AppEngInternalInventory getPatternInventory() {
         return patternInventory;
     }
 
     @Nullable
-    public IGrid getGrid()
-    {
+    public IGrid getGrid() {
         return mainNode.getGrid();
     }
 
-    public void addDrops(List<ItemStack> drops)
-    {
-        for (ItemStack stack : this.patternInventory)
-        {
+    public void addDrops(List<ItemStack> drops) {
+        for (ItemStack stack : this.patternInventory) {
             drops.add(stack);
         }
 
-        for (ItemStack stack : upgrades)
-        {
+        for (ItemStack stack : upgrades) {
             drops.add(stack);
         }
 
-        for (GenericStack stack : this.sendList)
-        {
+        for (GenericStack stack : this.sendList) {
             stack.what().addDrops(stack.amount(), drops, this.host.getBlockEntity().getLevel(),
                     this.host.getBlockEntity().getBlockPos());
         }
 
-        for (int i = 0; i < this.getStorageInv().size(); i++)
-        {
+        for (int i = 0; i < this.getStorageInv().size(); i++) {
             GenericStack stack = this.getStorageInv().getStack(i);
 
             if (stack == null) continue;
@@ -1350,8 +1148,7 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         }
     }
 
-    public void cleanContent()
-    {
+    public void cleanContent() {
         this.patternInventory.clear();
         this.upgrades.clear();
         this.sendList.clear();

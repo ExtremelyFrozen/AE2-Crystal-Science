@@ -2,17 +2,15 @@ package io.github.lounode.ae2cs.common.machine.component;
 
 import appeng.api.networking.IManagedGridNode;
 
-public abstract class NetworkMachineComponent extends BaseMachineComponent
-{
+public abstract class NetworkMachineComponent extends BaseMachineComponent {
+
     IManagedGridNode node;
 
-    public NetworkMachineComponent(IManagedGridNode node)
-    {
+    public NetworkMachineComponent(IManagedGridNode node) {
         this.node = node;
     }
 
-    public IManagedGridNode getMainNode()
-    {
+    public IManagedGridNode getMainNode() {
         return node;
     }
 }

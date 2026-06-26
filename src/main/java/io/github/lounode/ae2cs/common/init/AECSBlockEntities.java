@@ -1,13 +1,14 @@
 package io.github.lounode.ae2cs.common.init;
 
+import io.github.lounode.ae2cs.api.ids.AECSBlockIds;
+import io.github.lounode.ae2cs.api.ids.AECSConstants;
+import io.github.lounode.ae2cs.common.block.entity.*;
+
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.ClientTickingBlockEntity;
 import appeng.blockentity.ServerTickingBlockEntity;
-import com.google.common.base.Preconditions;
-import io.github.lounode.ae2cs.api.ids.AECSBlockIds;
-import io.github.lounode.ae2cs.api.ids.AECSConstants;
-import io.github.lounode.ae2cs.common.block.entity.*;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -18,6 +19,8 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import com.google.common.base.Preconditions;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,10 +28,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
-public class AECSBlockEntities
-{
-    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES =
-            DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, AECSConstants.MODID);
+public class AECSBlockEntities {
+
+    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, AECSConstants.MODID);
 
     /**
      * 注册的所有方块实体
@@ -42,8 +44,7 @@ public class AECSBlockEntities
             AECSBlockIds.CRYSTAL_GROWTH_CHAMBER,
             CrystalGrowthChamberBlockEntity.class,
             CrystalGrowthChamberBlockEntity::new,
-            AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK
-    );
+            AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK);
 
     /**
      * 集成接口
@@ -52,8 +53,7 @@ public class AECSBlockEntities
             AECSBlockIds.INTEGRATED_INTERFACE,
             IntegratedInterfaceBlockEntity.class,
             IntegratedInterfaceBlockEntity::new,
-            AECSBlocks.INTEGRATED_INTERFACE_BLOCK
-    );
+            AECSBlocks.INTEGRATED_INTERFACE_BLOCK);
 
     /**
      * 扩展集成接口
@@ -62,8 +62,7 @@ public class AECSBlockEntities
             AECSBlockIds.EX_INTEGRATED_INTERFACE,
             IntegratedInterfaceBlockEntity.class,
             IntegratedInterfaceBlockEntity::new,
-            AECSBlocks.EX_INTEGRATED_INTERFACE_BLOCK
-    );
+            AECSBlocks.EX_INTEGRATED_INTERFACE_BLOCK);
 
     /**
      * 晶能谐振器
@@ -72,8 +71,7 @@ public class AECSBlockEntities
             AECSBlockIds.CRYSTAL_VIBRATION_CHAMBER,
             CrystalVibrationChamberBlockEntity.class,
             CrystalVibrationChamberBlockEntity::new,
-            AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK
-    );
+            AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK);
 
     /**
      * 电路蚀刻器
@@ -82,8 +80,7 @@ public class AECSBlockEntities
             AECSBlockIds.CIRCUIT_ETCHER,
             CircuitEtcherBlockEntity.class,
             CircuitEtcherBlockEntity::new,
-            AECSBlocks.CIRCUIT_ETCHER_BLOCK
-    );
+            AECSBlocks.CIRCUIT_ETCHER_BLOCK);
 
     /**
      * 陨石样板供应器
@@ -92,8 +89,7 @@ public class AECSBlockEntities
             AECSBlockIds.METEORITE_PATTERN_PROVIDER,
             MeteoritePatternProviderBlockEntity.class,
             MeteoritePatternProviderBlockEntity::new,
-            AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK
-    );
+            AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK);
 
     /**
      * 晶能粉碎机
@@ -102,8 +98,7 @@ public class AECSBlockEntities
             AECSBlockIds.CRYSTAL_PULVERIZER,
             CrystalPulverizerBlockEntity.class,
             CrystalPulverizerBlockEntity::new,
-            AECSBlocks.CRYSTAL_PULVERIZER_BLOCK
-    );
+            AECSBlocks.CRYSTAL_PULVERIZER_BLOCK);
 
     /**
      * 石英磨具
@@ -112,8 +107,7 @@ public class AECSBlockEntities
             AECSBlockIds.QUARTZ_GRINDSTONE,
             QuartzGrindstoneBlockEntity.class,
             QuartzGrindstoneBlockEntity::new,
-            AECSBlocks.QUARTZ_GRINDSTONE_BLOCK
-    );
+            AECSBlocks.QUARTZ_GRINDSTONE_BLOCK);
 
     /**
      * 初级样板供应器
@@ -122,8 +116,7 @@ public class AECSBlockEntities
             AECSBlockIds.SIMPLE_PATTERN_PROVIDER,
             SimplePatternProviderBlockEntity.class,
             SimplePatternProviderBlockEntity::new,
-            AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK
-    );
+            AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK);
 
     /**
      * 镜像样板供应器
@@ -132,8 +125,7 @@ public class AECSBlockEntities
             AECSBlockIds.MIRROR_PATTERN_PROVIDER,
             MirrorPatternProviderBlockEntity.class,
             MirrorPatternProviderBlockEntity::new,
-            AECSBlocks.MIRROR_PATTERN_PROVIDER_BLOCK
-    );
+            AECSBlocks.MIRROR_PATTERN_PROVIDER_BLOCK);
 
     /**
      * 水晶聚合器
@@ -142,8 +134,7 @@ public class AECSBlockEntities
             AECSBlockIds.CRYSTAL_AGGREGATOR,
             CrystalAggregatorBlockEntity.class,
             CrystalAggregatorBlockEntity::new,
-            AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK
-    );
+            AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK);
 
     /**
      * 末影广播装置
@@ -152,8 +143,7 @@ public class AECSBlockEntities
             AECSBlockIds.ENDER_BROADCASTER,
             EnderBroadcasterBlockEntity.class,
             EnderBroadcasterBlockEntity::new,
-            AECSBlocks.ENDER_BROADCASTER_BLOCK
-    );
+            AECSBlocks.ENDER_BROADCASTER_BLOCK);
 
     /**
      * 末影广播装置
@@ -162,8 +152,7 @@ public class AECSBlockEntities
             AECSBlockIds.ENDER_EMITTER,
             EnderEmitterBlockEntity.class,
             EnderEmitterBlockEntity::new,
-            AECSBlocks.ENDER_EMITTER_BLOCK
-    );
+            AECSBlocks.ENDER_EMITTER_BLOCK);
 
     /**
      * 末影接口
@@ -172,8 +161,7 @@ public class AECSBlockEntities
             AECSBlockIds.ENDER_INTERFACE,
             EnderInterfaceBlockEntity.class,
             EnderInterfaceBlockEntity::new,
-            AECSBlocks.ENDER_INTERFACE_BLOCK
-    );
+            AECSBlocks.ENDER_INTERFACE_BLOCK);
 
     /**
      * 扩展末影接口
@@ -182,8 +170,7 @@ public class AECSBlockEntities
             AECSBlockIds.EX_ENDER_INTERFACE,
             EnderInterfaceBlockEntity.class,
             EnderInterfaceBlockEntity::new,
-            AECSBlocks.EX_ENDER_INTERFACE_BLOCK
-    );
+            AECSBlocks.EX_ENDER_INTERFACE_BLOCK);
 
     /**
      * 谐振样板供应器
@@ -192,8 +179,7 @@ public class AECSBlockEntities
             AECSBlockIds.RESONATING_PATTERN_PROVIDER,
             ResonatingPatternProviderBlockEntity.class,
             ResonatingPatternProviderBlockEntity::new,
-            AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK
-    );
+            AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK);
 
     /**
      * 扩展谐振样板供应器
@@ -202,8 +188,7 @@ public class AECSBlockEntities
             AECSBlockIds.EX_RESONATING_PATTERN_PROVIDER,
             ResonatingPatternProviderBlockEntity.class,
             ResonatingPatternProviderBlockEntity::new,
-            AECSBlocks.EX_RESONATING_PATTERN_PROVIDER_BLOCK
-    );
+            AECSBlocks.EX_RESONATING_PATTERN_PROVIDER_BLOCK);
 
     /**
      * 熵变反应仓
@@ -212,8 +197,7 @@ public class AECSBlockEntities
             AECSBlockIds.ENTROPY_VARIATION_REACTION_CHAMBER,
             EntropyVariationReactionChamberBlockEntity.class,
             EntropyVariationReactionChamberBlockEntity::new,
-            AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK
-    );
+            AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK);
 
     /**
      * 石英震荡器
@@ -222,14 +206,12 @@ public class AECSBlockEntities
             AECSBlockIds.QUARTZ_OSCILLATOR_CLOCK,
             QuartzOscillatorClockBlockEntity.class,
             QuartzOscillatorClockBlockEntity::new,
-            AECSBlocks.QUARTZ_OSCILLATOR_CLOCK_BLOCK
-    );
+            AECSBlocks.QUARTZ_OSCILLATOR_CLOCK_BLOCK);
 
     /**
      * 注册监听
      */
-    public static void register(IEventBus eventBus)
-    {
+    public static void register(IEventBus eventBus) {
         BLOCK_ENTITY_TYPES.register(eventBus);
     }
 
@@ -240,20 +222,17 @@ public class AECSBlockEntities
      */
     @SafeVarargs
     public static <T extends AEBaseBlockEntity> DeferredBlockEntityType<T> create(
-            String id,
-            Class<T> entityClass,
-            BlockEntityFactory<T> factory,
-            Supplier<? extends AEBaseEntityBlock<?>>... blockSuppliers
-    )
-    {
+                                                                                  String id,
+                                                                                  Class<T> entityClass,
+                                                                                  BlockEntityFactory<T> factory,
+                                                                                  Supplier<? extends AEBaseEntityBlock<?>>... blockSuppliers) {
         Preconditions.checkArgument(blockSuppliers.length > 0, "At least one block is required");
 
         var deferred = BLOCK_ENTITY_TYPES.register(id, () -> {
             // 把 BlockEntityType 反向塞入 BE 构造用
             AtomicReference<BlockEntityType<T>> typeRef = new AtomicReference<>();
 
-            BlockEntityType.BlockEntitySupplier<T> supplier = (pos, state) ->
-                    factory.create(typeRef.get(), pos, state);
+            BlockEntityType.BlockEntitySupplier<T> supplier = (pos, state) -> factory.create(typeRef.get(), pos, state);
 
             // 解包方块
             AEBaseEntityBlock<?>[] blocks = Arrays.stream(blockSuppliers)
@@ -269,30 +248,23 @@ public class AECSBlockEntities
             typeRef.set(type);
 
             // 把“物品形态”绑定给这个 BE 类型（AE 用于记忆卡/设置导入导出/tooltip 等）
-            try
-            {
+            try {
                 var item = blocks[0].asItem();
                 AEBaseBlockEntity.registerBlockEntityItem(type, item);
-            }
-            catch (Throwable ignored)
-            {
-            }
+            } catch (Throwable ignored) {}
 
             // 自动生成 tickers（如果实现了 AE 的标记接口）
             BlockEntityTicker<T> serverTicker = null;
-            if (ServerTickingBlockEntity.class.isAssignableFrom(entityClass))
-            {
+            if (ServerTickingBlockEntity.class.isAssignableFrom(entityClass)) {
                 serverTicker = (lvl, p, st, be) -> ((ServerTickingBlockEntity) be).serverTick();
             }
             BlockEntityTicker<T> clientTicker = null;
-            if (ClientTickingBlockEntity.class.isAssignableFrom(entityClass))
-            {
+            if (ClientTickingBlockEntity.class.isAssignableFrom(entityClass)) {
                 clientTicker = (lvl, p, st, be) -> ((ClientTickingBlockEntity) be).clientTick();
             }
 
             // 把 “type + tickers + 具体 BE 类” 绑定到每个方块上
-            for (var b : blocks)
-            {
+            for (var b : blocks) {
                 @SuppressWarnings("unchecked")
                 AEBaseEntityBlock<T> base = (AEBaseEntityBlock<T>) b;
                 base.setBlockEntity(entityClass, type, clientTicker, serverTicker);
@@ -312,12 +284,10 @@ public class AECSBlockEntities
      */
     @SafeVarargs
     public static <T extends AEBaseBlockEntity> DeferredBlockEntityType<T> create(
-            String id,
-            Class<T> entityClass,
-            BiFunction<BlockPos, BlockState, T> ctorPosState,
-            Supplier<? extends AEBaseEntityBlock<?>>... blockSuppliers
-    )
-    {
+                                                                                  String id,
+                                                                                  Class<T> entityClass,
+                                                                                  BiFunction<BlockPos, BlockState, T> ctorPosState,
+                                                                                  Supplier<? extends AEBaseEntityBlock<?>>... blockSuppliers) {
         return create(id, entityClass, (type, pos, state) -> ctorPosState.apply(pos, state), blockSuppliers);
     }
 
@@ -325,13 +295,10 @@ public class AECSBlockEntities
      * 返回实现类是 baseClass 的所有 BlockEntityType
      */
     @SuppressWarnings("unchecked")
-    public static <T extends BlockEntity> List<BlockEntityType<? extends T>> getSubclassesOf(Class<T> baseClass)
-    {
+    public static <T extends BlockEntity> List<BlockEntityType<? extends T>> getSubclassesOf(Class<T> baseClass) {
         var result = new ArrayList<BlockEntityType<? extends T>>();
-        for (var t : ALL)
-        {
-            if (baseClass.isAssignableFrom(t.getBlockEntityClass()))
-            {
+        for (var t : ALL) {
+            if (baseClass.isAssignableFrom(t.getBlockEntityClass())) {
                 result.add((BlockEntityType<? extends T>) t.get());
             }
         }
@@ -342,13 +309,10 @@ public class AECSBlockEntities
      * 返回实现了某接口的所有 BlockEntityType
      * AE用类似方法配合ALL列表统一注册能力，但我更喜欢手动管理
      */
-    public static List<BlockEntityType<?>> getImplementorsOf(Class<?> iface)
-    {
+    public static List<BlockEntityType<?>> getImplementorsOf(Class<?> iface) {
         var result = new ArrayList<BlockEntityType<?>>();
-        for (var t : ALL)
-        {
-            if (iface.isAssignableFrom(t.getBlockEntityClass()))
-            {
+        for (var t : ALL) {
+            if (iface.isAssignableFrom(t.getBlockEntityClass())) {
                 result.add(t.get());
             }
         }
@@ -358,24 +322,21 @@ public class AECSBlockEntities
     /**
      * 包装类型
      */
-    public static final class DeferredBlockEntityType<T extends BlockEntity> implements Supplier<BlockEntityType<T>>
-    {
+    public static final class DeferredBlockEntityType<T extends BlockEntity> implements Supplier<BlockEntityType<T>> {
+
         private final Class<T> entityClass;
         private final Supplier<BlockEntityType<T>> delegate;
 
-        private DeferredBlockEntityType(Class<T> cls, Supplier<BlockEntityType<T>> delegate)
-        {
+        private DeferredBlockEntityType(Class<T> cls, Supplier<BlockEntityType<T>> delegate) {
             this.entityClass = cls;
             this.delegate = delegate;
         }
 
-        public BlockEntityType<T> get()
-        {
+        public BlockEntityType<T> get() {
             return delegate.get();
         }
 
-        public Class<T> getBlockEntityClass()
-        {
+        public Class<T> getBlockEntityClass() {
             return entityClass;
         }
     }
@@ -384,8 +345,8 @@ public class AECSBlockEntities
      * 三参构造版接口
      */
     @FunctionalInterface
-    public interface BlockEntityFactory<T extends AEBaseBlockEntity>
-    {
+    public interface BlockEntityFactory<T extends AEBaseBlockEntity> {
+
         T create(BlockEntityType<T> type, BlockPos pos, BlockState state);
     }
 }

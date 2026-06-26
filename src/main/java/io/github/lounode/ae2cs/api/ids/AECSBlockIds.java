@@ -1,7 +1,7 @@
 package io.github.lounode.ae2cs.api.ids;
 
-public class AECSBlockIds
-{
+public class AECSBlockIds {
+
     // 普通方块
     public static final String ENDER_QUARTZ_BLOCK = "ender_quartz_block";
     public static final String RESONATING_CRYSTAL_BLOCK = "resonating_crystal_block";

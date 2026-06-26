@@ -1,9 +1,8 @@
 package io.github.lounode.ae2cs.common.block.render;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.lounode.ae2cs.common.block.entity.EnderBroadcasterBlockEntity;
 import io.github.lounode.ae2cs.common.init.client.AECSAdditionalModels;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -11,6 +10,9 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraftforge.client.model.data.ModelData;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -18,33 +20,27 @@ import org.joml.Vector3f;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class EnderBroadcasterRender implements BlockEntityRenderer<EnderBroadcasterBlockEntity>
-{
+public class EnderBroadcasterRender implements BlockEntityRenderer<EnderBroadcasterBlockEntity> {
+
     // 缓存参数，避免每帧重复生成
     private static final Map<String, AnimParams> PARAM_CACHE = new ConcurrentHashMap<>();
 
-    public EnderBroadcasterRender(BlockEntityRendererProvider.Context ctx)
-    {
-    }
+    public EnderBroadcasterRender(BlockEntityRendererProvider.Context ctx) {}
 
     @Override
     public void render(@NotNull EnderBroadcasterBlockEntity be, float partialTick, @NotNull PoseStack poseStack,
-                       @NotNull MultiBufferSource buffer, int packedLight, int packedOverlay)
-    {
+                       @NotNull MultiBufferSource buffer, int packedLight, int packedOverlay) {
         var level = be.getLevel();
         if (level == null) return;
 
         // 拿到核心的 baked model
         BakedModel coreModel;
-        if (be.isActiveForClient())
-        {
+        if (be.isActiveForClient()) {
             if (be.isAsSenderForClient())
                 coreModel = Minecraft.getInstance().getModelManager().getModel(AECSAdditionalModels.BROADCASTER_SENDER_CORE_MODEL);
             else
                 coreModel = Minecraft.getInstance().getModelManager().getModel(AECSAdditionalModels.BROADCASTER_RECEIVER_CORE_MODEL);
-        }
-        else
-        {
+        } else {
             coreModel = Minecraft.getInstance().getModelManager().getModel(AECSAdditionalModels.BROADCASTER_OFF_CORE);
         }
 
@@ -68,22 +64,17 @@ public class EnderBroadcasterRender implements BlockEntityRenderer<EnderBroadcas
         float scale;
         Quaternionf q; // 当前姿态（旋转）
 
-        if (t < aEnd)
-        {
+        if (t < aEnd) {
             float u = t / aEnd;
             float e = easeInOut(u);
             scale = lerp(1.0f, p.minScale, e); // 只缩小
             q = slerp(new Quaternionf(), p.qA, e);
-        }
-        else if (t < bEnd)
-        {
+        } else if (t < bEnd) {
             float u = (t - aEnd) / p.phaseB;
             float e = easeInOut(u);
             scale = lerp(p.minScale, 1.0f, e); // 放大回原大小
             q = slerp(new Quaternionf(p.qA), p.qAB, e);
-        }
-        else
-        {
+        } else {
             float u = (t - bEnd) / p.phaseC;
             float e = easeInOut(u);
             scale = 1.0f; // 保持原大小
@@ -111,23 +102,20 @@ public class EnderBroadcasterRender implements BlockEntityRenderer<EnderBroadcas
                 packedLight,
                 packedOverlay,
                 ModelData.EMPTY,
-                rt
-        );
+                rt);
         poseStack.popPose();
     }
 
     // ------------------辅助工具---------------------
 
     private record AnimParams(
-            int cycleTicks,
-            float phaseA, float phaseB, float phaseC,
-            float minScale,
-            Quaternionf qA,
-            Quaternionf qAB
-    )
-    {
-        static AnimParams fromName(String name)
-        {
+                              int cycleTicks,
+                              float phaseA, float phaseB, float phaseC,
+                              float minScale,
+                              Quaternionf qA,
+                              Quaternionf qAB) {
+
+        static AnimParams fromName(String name) {
             long seed = fnv1a64(name);
 
             SplitMix64 rng = new SplitMix64(seed);
@@ -139,8 +127,7 @@ public class EnderBroadcasterRender implements BlockEntityRenderer<EnderBroadcas
             float a = 0.25f + rng.nextFloat() * 0.20f;
             float b = 0.25f + rng.nextFloat() * 0.20f;
             float c = 1.0f - a - b;
-            if (c < 0.15f)
-            {
+            if (c < 0.15f) {
                 // 强制给 C 留出足够回正时间
                 float deficit = 0.15f - c;
                 a -= deficit * 0.5f;
@@ -171,30 +158,25 @@ public class EnderBroadcasterRender implements BlockEntityRenderer<EnderBroadcas
         }
     }
 
-    private static float lerp(float from, float to, float time)
-    {
+    private static float lerp(float from, float to, float time) {
         return from + (to - from) * time;
     }
 
     // 平滑插值
-    private static float easeInOut(float t)
-    {
+    private static float easeInOut(float t) {
         return t * t * (3f - 2f * t);
     }
 
-    private static Quaternionf slerp(Quaternionf from, Quaternionf to, float t)
-    {
+    private static Quaternionf slerp(Quaternionf from, Quaternionf to, float t) {
         Quaternionf out = new Quaternionf(from);
         out.slerp(to, t);
         return out;
     }
 
     // 12个固定轴，让不同name变化更明显
-    private static Vector3f pickAxis(int idx)
-    {
+    private static Vector3f pickAxis(int idx) {
         idx = Math.floorMod(idx, 12);
-        return switch (idx)
-        {
+        return switch (idx) {
             case 0 -> new Vector3f(1, 0, 0);
             case 1 -> new Vector3f(0, 1, 0);
             case 2 -> new Vector3f(0, 0, 1);
@@ -210,46 +192,39 @@ public class EnderBroadcasterRender implements BlockEntityRenderer<EnderBroadcas
         };
     }
 
-    private static long fnv1a64(String s)
-    {
+    private static long fnv1a64(String s) {
         long h = 0xcbf29ce484222325L;
-        for (int i = 0; i < s.length(); i++)
-        {
+        for (int i = 0; i < s.length(); i++) {
             h ^= s.charAt(i);
             h *= 0x100000001b3L;
         }
         return h;
     }
 
-    private static final class SplitMix64
-    {
+    private static final class SplitMix64 {
+
         private long x;
 
-        SplitMix64(long seed)
-        {
+        SplitMix64(long seed) {
             this.x = seed;
         }
 
-        long nextLong()
-        {
+        long nextLong() {
             long z = (x += 0x9E3779B97F4A7C15L);
             z = (z ^ (z >>> 30)) * 0xBF58476D1CE4E5B9L;
             z = (z ^ (z >>> 27)) * 0x94D049BB133111EBL;
             return z ^ (z >>> 31);
         }
 
-        float nextFloat()
-        {
+        float nextFloat() {
             return (nextLong() >>> 40) / (float) (1 << 24);
         }
 
-        boolean nextBoolean()
-        {
+        boolean nextBoolean() {
             return (nextLong() & 1L) != 0;
         }
 
-        int nextIntBounded(int bound)
-        {
+        int nextIntBounded(int bound) {
             long r = nextLong();
             long m = (r >>> 1) % bound;
             return (int) m;

@@ -1,13 +1,15 @@
 package io.github.lounode.ae2cs.client.eventlistener;
 
-import appeng.util.InteractionUtil;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
 import io.github.lounode.ae2cs.common.init.AECSPackets;
-import io.github.lounode.ae2cs.common.item.IScrollCycleItem;
 import io.github.lounode.ae2cs.common.item.IResonatingTargetModeItem;
+import io.github.lounode.ae2cs.common.item.IScrollCycleItem;
 import io.github.lounode.ae2cs.common.item.ResonatingPatternItem;
 import io.github.lounode.ae2cs.network.c2s.ScrollResonatingPatternSelectPacket;
+
+import appeng.util.InteractionUtil;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -17,11 +19,10 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = AECSConstants.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
-public class ResonatingPatternListener
-{
+public class ResonatingPatternListener {
+
     @SubscribeEvent
-    public static void onMouseScroll(InputEvent.MouseScrollingEvent event)
-    {
+    public static void onMouseScroll(InputEvent.MouseScrollingEvent event) {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) return;
 
@@ -29,12 +30,9 @@ public class ResonatingPatternListener
         if (!InteractionUtil.isInAlternateUseMode(player)) return;
 
         ItemStack stack = player.getMainHandItem();
-        if (!(stack.getItem() instanceof ResonatingPatternItem)
-                && !(stack.getItem() instanceof IResonatingTargetModeItem)
-                && !(stack.getItem() instanceof IScrollCycleItem)) return;
+        if (!(stack.getItem() instanceof ResonatingPatternItem) && !(stack.getItem() instanceof IResonatingTargetModeItem) && !(stack.getItem() instanceof IScrollCycleItem)) return;
 
-        if (stack.getItem() instanceof ResonatingPatternItem)
-        {
+        if (stack.getItem() instanceof ResonatingPatternItem) {
             var encoded = AECSDataComponents.getEncodedResonatingPattern(stack);
             if (encoded == null) return;
         }

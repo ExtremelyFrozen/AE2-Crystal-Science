@@ -1,5 +1,11 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
+import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
+import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.init.AECSMenus;
+import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderHost;
+import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderLogic;
+
 import appeng.api.stacks.AEItemKey;
 import appeng.blockentity.crafting.PatternProviderBlockEntity;
 import appeng.helpers.patternprovider.PatternProviderLogic;
@@ -7,11 +13,7 @@ import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocator;
 import appeng.util.SettingsFrom;
-import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
-import io.github.lounode.ae2cs.common.init.AECSBlocks;
-import io.github.lounode.ae2cs.common.init.AECSMenus;
-import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderHost;
-import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderLogic;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -19,65 +21,55 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+
 import org.jetbrains.annotations.Nullable;
 
-public class ResonatingPatternProviderBlockEntity extends PatternProviderBlockEntity implements ResonatingPatternProviderHost
-{
+public class ResonatingPatternProviderBlockEntity extends PatternProviderBlockEntity implements ResonatingPatternProviderHost {
 
-    public ResonatingPatternProviderBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState)
-    {
+    public ResonatingPatternProviderBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
     }
 
     @Override
-    protected PatternProviderLogic createLogic()
-    {
+    protected PatternProviderLogic createLogic() {
         int patternSize = isExtended() ? 36 : 9;
         return new ResonatingPatternProviderLogic(getMainNode(), this, patternSize);
     }
 
     @Override
-    public boolean isExtended()
-    {
+    public boolean isExtended() {
         return getType() == AECSBlockEntities.EX_RESONATING_PATTERN_PROVIDER_BLOCK_ENTITY.get();
     }
 
     @Override
-    public void openMenu(Player player, MenuLocator locator)
-    {
+    public void openMenu(Player player, MenuLocator locator) {
         MenuOpener.open(AECSMenus.RESONATING_PATTERN_PROVIDER_MENU.get(), player, locator);
     }
 
     @Override
-    public void returnToMainMenu(Player player, ISubMenu subMenu)
-    {
+    public void returnToMainMenu(Player player, ISubMenu subMenu) {
         MenuOpener.returnTo(AECSMenus.RESONATING_PATTERN_PROVIDER_MENU.get(), player, subMenu.getLocator());
     }
 
     @Override
-    public AEItemKey getTerminalIcon()
-    {
+    public AEItemKey getTerminalIcon() {
         return AEItemKey.of(AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK.get());
     }
 
     @Override
-    public ItemStack getMainMenuIcon()
-    {
+    public ItemStack getMainMenuIcon() {
         return new ItemStack(AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK.get());
     }
 
     @Override
-    public ResonatingPatternProviderLogic getResonatingLogic()
-    {
+    public ResonatingPatternProviderLogic getResonatingLogic() {
         return (ResonatingPatternProviderLogic) getLogic();
     }
 
     @Override
-    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player)
-    {
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
         super.importSettings(mode, input, player);
-        if (mode == SettingsFrom.DISMANTLE_ITEM || mode == SettingsFrom.MEMORY_CARD)
-        {
+        if (mode == SettingsFrom.DISMANTLE_ITEM || mode == SettingsFrom.MEMORY_CARD) {
             getResonatingLogic().readDefaultsFromItemTag(input);
             setChanged();
             markForLogicClientUpdate();
@@ -85,34 +77,28 @@ public class ResonatingPatternProviderBlockEntity extends PatternProviderBlockEn
     }
 
     @Override
-    public void exportSettings(SettingsFrom mode, CompoundTag output, @Nullable Player player)
-    {
+    public void exportSettings(SettingsFrom mode, CompoundTag output, @Nullable Player player) {
         super.exportSettings(mode, output, player);
-        if (mode == SettingsFrom.DISMANTLE_ITEM || mode == SettingsFrom.MEMORY_CARD)
-        {
+        if (mode == SettingsFrom.DISMANTLE_ITEM || mode == SettingsFrom.MEMORY_CARD) {
             getResonatingLogic().writeDefaultsToItemTag(output);
         }
     }
 
     @Override
-    public void markForLogicClientUpdate()
-    {
-        if (level != null && !level.isClientSide())
-        {
+    public void markForLogicClientUpdate() {
+        if (level != null && !level.isClientSide()) {
             this.markForUpdate();
         }
     }
 
     @Override
-    protected void writeToStream(FriendlyByteBuf data)
-    {
+    protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         getResonatingLogic().writeVisualSync(data);
     }
 
     @Override
-    protected boolean readFromStream(FriendlyByteBuf data)
-    {
+    protected boolean readFromStream(FriendlyByteBuf data) {
         boolean redraw = super.readFromStream(data);
         return getResonatingLogic().readVisualSync(data) || redraw;
     }

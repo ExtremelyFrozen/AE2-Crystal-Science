@@ -1,8 +1,7 @@
 package io.github.lounode.ae2cs.common.recipe.crystal_aggregator;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
 import io.github.lounode.ae2cs.common.recipe.SizedIngredient;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -10,22 +9,23 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class CrystalAggregatorRecipeSerializer implements RecipeSerializer<CrystalAggregatorRecipe>
-{
+public class CrystalAggregatorRecipeSerializer implements RecipeSerializer<CrystalAggregatorRecipe> {
+
     private static final SizedIngredient EMPTY = new SizedIngredient(Ingredient.EMPTY, 1);
 
     @Override
-    public @NotNull CrystalAggregatorRecipe fromJson(@NotNull ResourceLocation id, @NotNull JsonObject json)
-    {
+    public @NotNull CrystalAggregatorRecipe fromJson(@NotNull ResourceLocation id, @NotNull JsonObject json) {
         SizedIngredient a = readSizedIngredientOptional(json, "input_a");
         SizedIngredient b = readSizedIngredientOptional(json, "input_b");
         SizedIngredient c = readSizedIngredientOptional(json, "input_c");
 
-        if (!json.has("result"))
-        {
+        if (!json.has("result")) {
             throw new JsonSyntaxException("Missing required field 'result'");
         }
         ItemStack result = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
@@ -36,8 +36,7 @@ public class CrystalAggregatorRecipeSerializer implements RecipeSerializer<Cryst
     }
 
     @Override
-    public @Nullable CrystalAggregatorRecipe fromNetwork(@NotNull ResourceLocation id, @NotNull FriendlyByteBuf buf)
-    {
+    public @Nullable CrystalAggregatorRecipe fromNetwork(@NotNull ResourceLocation id, @NotNull FriendlyByteBuf buf) {
         SizedIngredient a = SizedIngredient.fromNetwork(buf);
         SizedIngredient b = SizedIngredient.fromNetwork(buf);
         SizedIngredient c = SizedIngredient.fromNetwork(buf);
@@ -49,8 +48,7 @@ public class CrystalAggregatorRecipeSerializer implements RecipeSerializer<Cryst
     }
 
     @Override
-    public void toNetwork(@NotNull FriendlyByteBuf buf, @NotNull CrystalAggregatorRecipe recipe)
-    {
+    public void toNetwork(@NotNull FriendlyByteBuf buf, @NotNull CrystalAggregatorRecipe recipe) {
         recipe.inputA().toNetwork(buf);
         recipe.inputB().toNetwork(buf);
         recipe.inputC().toNetwork(buf);
@@ -59,10 +57,8 @@ public class CrystalAggregatorRecipeSerializer implements RecipeSerializer<Cryst
         buf.writeVarInt(recipe.energyCost());
     }
 
-    private static SizedIngredient readSizedIngredientOptional(JsonObject json, String key)
-    {
-        if (!json.has(key) || json.get(key).isJsonNull())
-        {
+    private static SizedIngredient readSizedIngredientOptional(JsonObject json, String key) {
+        if (!json.has(key) || json.get(key).isJsonNull()) {
             return EMPTY;
         }
 

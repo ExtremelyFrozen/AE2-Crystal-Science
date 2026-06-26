@@ -1,14 +1,17 @@
 package io.github.lounode.ae2cs.api.settings;
 
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.Setting;
-import appeng.recipes.entropy.EntropyMode;
 import io.github.lounode.ae2cs.client.gui.icon.AECSIcon;
 import io.github.lounode.ae2cs.client.gui.icon.AdaptedAE2Icon;
 import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
+
+import appeng.api.config.RedstoneMode;
+import appeng.api.config.Setting;
+import appeng.recipes.entropy.EntropyMode;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,12 +20,11 @@ import java.util.*;
 /**
  * 用于给自定义设置添加外观
  */
-public final class AECSSettingAppearances
-{
+public final class AECSSettingAppearances {
+
     private static final Map<AppearanceKey<?>, Appearance> APPEARANCES = new HashMap<>();
 
-    static
-    {
+    static {
         // REDSTONE_CONTROLLED_NO_PULSE
         register(AdaptedAE2Icon.REDSTONE_IGNORE,
                 AECSSettings.REDSTONE_CONTROLLED_NO_PULSE, RedstoneMode.IGNORE,
@@ -102,18 +104,13 @@ public final class AECSSettingAppearances
 
     }
 
-    private AECSSettingAppearances()
-    {
-    }
+    private AECSSettingAppearances() {}
 
     public static <T extends Enum<T>> void register(IButtonIcon icon, Setting<T> setting, T val,
-                                                    Component title, Component... extraLines)
-    {
-
+                                                    Component title, Component... extraLines) {
         var lines = new ArrayList<Component>(1 + (extraLines == null ? 0 : extraLines.length));
         lines.add(title);
-        if (extraLines != null && extraLines.length > 0)
-        {
+        if (extraLines != null && extraLines.length > 0) {
             Collections.addAll(lines, extraLines);
         }
 
@@ -122,13 +119,10 @@ public final class AECSSettingAppearances
     }
 
     public static <T extends Enum<T>> void register(ItemLike item, Setting<T> setting, T val,
-                                                    Component title, Component... extraLines)
-    {
-
+                                                    Component title, Component... extraLines) {
         var lines = new ArrayList<Component>(1 + (extraLines == null ? 0 : extraLines.length));
         lines.add(title);
-        if (extraLines != null && extraLines.length > 0)
-        {
+        if (extraLines != null && extraLines.length > 0) {
             Collections.addAll(lines, extraLines);
         }
 
@@ -137,51 +131,42 @@ public final class AECSSettingAppearances
     }
 
     public static <T extends Enum<T>> void register(IButtonIcon icon, Setting<T> setting, T val,
-                                                    Component title, Component hintLine)
-    {
-        register(icon, setting, val, title, new Component[]{hintLine});
+                                                    Component title, Component hintLine) {
+        register(icon, setting, val, title, new Component[] { hintLine });
     }
 
     @Nullable
-    public static <T extends Enum<T>> Appearance getOrNull(Setting<T> setting, T value)
-    {
+    public static <T extends Enum<T>> Appearance getOrNull(Setting<T> setting, T value) {
         return APPEARANCES.get(new AppearanceKey<>(setting, value));
     }
 
-    public static <T extends Enum<T>> Appearance getOrDefault(Setting<T> setting, T value, Appearance fallback)
-    {
+    public static <T extends Enum<T>> Appearance getOrDefault(Setting<T> setting, T value, Appearance fallback) {
         var a = getOrNull(setting, value);
         return a != null ? a : fallback;
     }
 
-    public static void clear()
-    {
+    public static void clear() {
         APPEARANCES.clear();
     }
 
-    public static Map<AppearanceKey<?>, Appearance> view()
-    {
+    public static Map<AppearanceKey<?>, Appearance> view() {
         return Collections.unmodifiableMap(APPEARANCES);
     }
 
-    public record AppearanceKey<T extends Enum<T>>(@NotNull Setting<T> setting, @NotNull T value)
-    {
+    public record AppearanceKey<T extends Enum<T>>(@NotNull Setting<T> setting, @NotNull T value) {
+
         @Override
-        public boolean equals(Object obj)
-        {
+        public boolean equals(Object obj) {
             if (this == obj) return true;
             if (!(obj instanceof AppearanceKey<?> other)) return false;
             return this.setting == other.setting && this.value == other.value;
         }
 
         @Override
-        public int hashCode()
-        {
+        public int hashCode() {
             return System.identityHashCode(setting) ^ System.identityHashCode(value);
         }
     }
 
-    public record Appearance(@Nullable IButtonIcon icon, @Nullable Item item, @NotNull List<Component> tooltipLines)
-    {
-    }
+    public record Appearance(@Nullable IButtonIcon icon, @Nullable Item item, @NotNull List<Component> tooltipLines) {}
 }

@@ -1,20 +1,22 @@
 package io.github.lounode.ae2cs.integration.emi;
 
-import appeng.integration.modules.emi.EmiEntropyRecipe;
-import dev.emi.emi.api.EmiEntrypoint;
-import dev.emi.emi.api.EmiRegistry;
-import dev.emi.emi.api.stack.EmiStack;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSRecipeTypes;
+
+import appeng.integration.modules.emi.EmiEntropyRecipe;
+
 import net.minecraft.world.level.material.Fluids;
 
+import dev.emi.emi.api.EmiEntrypoint;
+import dev.emi.emi.api.EmiRegistry;
+import dev.emi.emi.api.stack.EmiStack;
+
 @EmiEntrypoint
-public class EmiPlugin implements dev.emi.emi.api.EmiPlugin
-{
+public class EmiPlugin implements dev.emi.emi.api.EmiPlugin {
+
     @Override
-    public void register(EmiRegistry registry)
-    {
+    public void register(EmiRegistry registry) {
         registry.addWorkstation(EmiEntropyRecipe.CATEGORY, EmiStack.of(AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK));
 
         registry.addCategory(CircuitEtcherRecipeCategory.RECIPE_TYPE);

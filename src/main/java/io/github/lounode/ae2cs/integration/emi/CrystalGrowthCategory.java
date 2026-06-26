@@ -1,25 +1,26 @@
 package io.github.lounode.ae2cs.integration.emi;
 
-import dev.emi.emi.api.recipe.BasicEmiRecipe;
-import dev.emi.emi.api.recipe.EmiRecipeCategory;
-import dev.emi.emi.api.stack.EmiStack;
-import dev.emi.emi.api.widget.WidgetHolder;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.item.CrystalSeedItem;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 
-public class CrystalGrowthCategory extends BasicEmiRecipe
-{
+import dev.emi.emi.api.recipe.BasicEmiRecipe;
+import dev.emi.emi.api.recipe.EmiRecipeCategory;
+import dev.emi.emi.api.stack.EmiStack;
+import dev.emi.emi.api.widget.WidgetHolder;
+
+public class CrystalGrowthCategory extends BasicEmiRecipe {
+
     public static final EmiRecipeCategory RECIPE_TYPE = new EmiRecipeCategory(AE2CrystalScience.makeId("crystal_growth"),
-            EmiStack.of(AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK))
-    {
+            EmiStack.of(AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK)) {
+
         @Override
-        public Component getName()
-        {
+        public Component getName() {
             return Component.translatable("ae2cs.integration.jei.recipe_category.crystal_growth");
         }
     };
@@ -28,8 +29,7 @@ public class CrystalGrowthCategory extends BasicEmiRecipe
     private static final int W = 135;
     private static final int H = 58;
 
-    public CrystalGrowthCategory(CrystalSeedItem seedItem)
-    {
+    public CrystalGrowthCategory(CrystalSeedItem seedItem) {
         super(RECIPE_TYPE, getGrowthId(seedItem), 135, 58);
 
         this.inputs.add(EmiStack.of(seedItem));
@@ -37,8 +37,7 @@ public class CrystalGrowthCategory extends BasicEmiRecipe
     }
 
     @Override
-    public void addWidgets(WidgetHolder widgets)
-    {
+    public void addWidgets(WidgetHolder widgets) {
         widgets.addTexture(BG, 0, 0, W, H, 0, 0, W, H, 256, 256);
 
         int xIn = 22;
@@ -52,13 +51,11 @@ public class CrystalGrowthCategory extends BasicEmiRecipe
         widgets.addFillingArrow(53, 22, 5000);
     }
 
-    public static ResourceLocation getGrowthId(CrystalSeedItem item)
-    {
+    public static ResourceLocation getGrowthId(CrystalSeedItem item) {
         return AE2CrystalScience.makeId("crystal_growth/" + getItemName(item) + "_from_" + getItemName(item.getGrowTo()));
     }
 
-    protected static String getItemName(ItemLike itemLike)
-    {
+    protected static String getItemName(ItemLike itemLike) {
         return BuiltInRegistries.ITEM.getKey(itemLike.asItem()).getPath();
     }
 }

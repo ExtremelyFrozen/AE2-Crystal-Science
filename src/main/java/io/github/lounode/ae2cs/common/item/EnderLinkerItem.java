@@ -1,8 +1,10 @@
 package io.github.lounode.ae2cs.common.item;
 
-import appeng.api.networking.GridHelper;
 import io.github.lounode.ae2cs.common.block.entity.EnderEmitterBlockEntity;
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
+
+import appeng.api.networking.GridHelper;
+
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -12,77 +14,60 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.core.BlockPos;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class EnderLinkerItem extends Item
-{
-    public EnderLinkerItem(Properties properties)
-    {
+public class EnderLinkerItem extends Item {
+
+    public EnderLinkerItem(Properties properties) {
         super(properties.stacksTo(1));
     }
 
-    public static boolean isHoldingLinker(@Nullable Player player)
-    {
-        if (player == null)
-        {
+    public static boolean isHoldingLinker(@Nullable Player player) {
+        if (player == null) {
             return false;
         }
 
-        return player.getMainHandItem().getItem() instanceof EnderLinkerItem
-                || player.getOffhandItem().getItem() instanceof EnderLinkerItem;
+        return player.getMainHandItem().getItem() instanceof EnderLinkerItem || player.getOffhandItem().getItem() instanceof EnderLinkerItem;
     }
 
     @Override
-    public @NotNull InteractionResult onItemUseFirst(@NotNull ItemStack stack, UseOnContext context)
-    {
+    public @NotNull InteractionResult onItemUseFirst(@NotNull ItemStack stack, UseOnContext context) {
         Player player = context.getPlayer();
         Level level = context.getLevel();
         if (context.getHand() != InteractionHand.MAIN_HAND) return InteractionResult.PASS;
         if (player == null) return InteractionResult.PASS;
-        if (level.isClientSide())
-        {
+        if (level.isClientSide()) {
             if (player.isShiftKeyDown()) return InteractionResult.SUCCESS;
             else return InteractionResult.PASS;
         }
 
-        if (player.isShiftKeyDown() && level.getBlockEntity(context.getClickedPos()) instanceof EnderEmitterBlockEntity)
-        {
+        if (player.isShiftKeyDown() && level.getBlockEntity(context.getClickedPos()) instanceof EnderEmitterBlockEntity) {
             AECSDataComponents.setEnderEmitterPos(stack, GlobalPos.of(level.dimension(), context.getClickedPos()));
             player.displayClientMessage(Component.translatable("ae2cs.msg.item.ender_linker.bing_to_emitter"), true);
-        }
-        else if (!player.isShiftKeyDown() &&
-                GridHelper.getNodeHost(level, context.getClickedPos()) != null)
-        {
-            GlobalPos linkerPos = AECSDataComponents.getEnderEmitterPos(stack);
-            if (linkerPos == null || !linkerPos.dimension().equals(level.dimension()))
-                return InteractionResult.SUCCESS;
+        } else if (!player.isShiftKeyDown() &&
+                GridHelper.getNodeHost(level, context.getClickedPos()) != null) {
+                    GlobalPos linkerPos = AECSDataComponents.getEnderEmitterPos(stack);
+                    if (linkerPos == null || !linkerPos.dimension().equals(level.dimension()))
+                        return InteractionResult.SUCCESS;
 
-            if (level.getBlockEntity(linkerPos.pos()) instanceof EnderEmitterBlockEntity emitter)
-            {
-                if (emitter.getLinkedRenderPositionsSnapshot().contains(context.getClickedPos())
-                        || emitter.getPendingRenderPositionsSnapshot().contains(context.getClickedPos()))
-                {
-                    EnderEmitterBlockEntity.removePosFromEmitter(emitter, context.getClickedPos());
-                }
-                else if (!emitter.getBlockPos().equals(context.getClickedPos()))
-                {
-                    // 如果能成功添加的话，我们额外做一次移除，以实现类似换绑的功能
-                    if (EnderEmitterBlockEntity.addPosToEmitter(emitter, context.getClickedPos(), true, false))
-                    {
-                        EnderEmitterBlockEntity.removePosFromRecentEmitter(level, context.getClickedPos());
-                        EnderEmitterBlockEntity.addPosToEmitter(emitter, context.getClickedPos(), true, false);
-                        player.displayClientMessage(Component.translatable("ae2cs.msg.item.ender_linker.success_to_link"), true);
+                    if (level.getBlockEntity(linkerPos.pos()) instanceof EnderEmitterBlockEntity emitter) {
+                        if (emitter.getLinkedRenderPositionsSnapshot().contains(context.getClickedPos()) || emitter.getPendingRenderPositionsSnapshot().contains(context.getClickedPos())) {
+                            EnderEmitterBlockEntity.removePosFromEmitter(emitter, context.getClickedPos());
+                        } else if (!emitter.getBlockPos().equals(context.getClickedPos())) {
+                            // 如果能成功添加的话，我们额外做一次移除，以实现类似换绑的功能
+                            if (EnderEmitterBlockEntity.addPosToEmitter(emitter, context.getClickedPos(), true, false)) {
+                                EnderEmitterBlockEntity.removePosFromRecentEmitter(level, context.getClickedPos());
+                                EnderEmitterBlockEntity.addPosToEmitter(emitter, context.getClickedPos(), true, false);
+                                player.displayClientMessage(Component.translatable("ae2cs.msg.item.ender_linker.success_to_link"), true);
+                            } else {
+                                player.displayClientMessage(Component.translatable("ae2cs.msg.item.ender_linker.failed_to_link"), true);
+                            }
+                        }
                     }
-                    else
-                    {
-                        player.displayClientMessage(Component.translatable("ae2cs.msg.item.ender_linker.failed_to_link"), true);
-                    }
+                    return InteractionResult.SUCCESS;
                 }
-            }
-            return InteractionResult.SUCCESS;
-        }
         return InteractionResult.PASS;
     }
 }

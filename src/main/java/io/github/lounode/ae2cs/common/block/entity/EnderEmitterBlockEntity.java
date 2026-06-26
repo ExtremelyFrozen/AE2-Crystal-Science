@@ -1,5 +1,26 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
+import io.github.lounode.ae2cs.api.CustomChannelProviderHost;
+import io.github.lounode.ae2cs.api.ids.AECSConstants;
+import io.github.lounode.ae2cs.api.linker.broadcast.BandLinkHost;
+import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastFrequencyBand;
+import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastReceiverHost;
+import io.github.lounode.ae2cs.api.linker.broadcast.FrequencyBandManager;
+import io.github.lounode.ae2cs.api.linker.broadcast.MemoryCardBandInfo;
+import io.github.lounode.ae2cs.api.render.ICustomRenderBounding;
+import io.github.lounode.ae2cs.api.settings.AECSSettings;
+import io.github.lounode.ae2cs.api.settings.AutoLinkCableMode;
+import io.github.lounode.ae2cs.api.settings.AutoLinkMode;
+import io.github.lounode.ae2cs.api.settings.ShowRangeMode;
+import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
+import io.github.lounode.ae2cs.api.util.GlobalChunkPos;
+import io.github.lounode.ae2cs.client.render.EnderEmitterClientRenderHelper;
+import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
+import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.item.ResonatingMemoryCardHelper;
+import io.github.lounode.ae2cs.util.ChunkHelper;
+import io.github.lounode.ae2cs.util.VecHelper;
+
 import appeng.api.networking.*;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.api.parts.IPart;
@@ -14,25 +35,7 @@ import appeng.blockentity.networking.ControllerBlockEntity;
 import appeng.parts.CableBusContainer;
 import appeng.util.ConfigManager;
 import appeng.util.SettingsFrom;
-import io.github.lounode.ae2cs.api.CustomChannelProviderHost;
-import io.github.lounode.ae2cs.api.linker.broadcast.BandLinkHost;
-import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastFrequencyBand;
-import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastReceiverHost;
-import io.github.lounode.ae2cs.api.linker.broadcast.FrequencyBandManager;
-import io.github.lounode.ae2cs.api.linker.broadcast.MemoryCardBandInfo;
-import io.github.lounode.ae2cs.api.ids.AECSConstants;
-import io.github.lounode.ae2cs.api.render.ICustomRenderBounding;
-import io.github.lounode.ae2cs.api.settings.AECSSettings;
-import io.github.lounode.ae2cs.api.settings.AutoLinkCableMode;
-import io.github.lounode.ae2cs.api.settings.AutoLinkMode;
-import io.github.lounode.ae2cs.api.settings.ShowRangeMode;
-import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
-import io.github.lounode.ae2cs.api.util.GlobalChunkPos;
-import io.github.lounode.ae2cs.common.init.AECSBlocks;
-import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
-import io.github.lounode.ae2cs.common.item.ResonatingMemoryCardHelper;
-import io.github.lounode.ae2cs.util.ChunkHelper;
-import io.github.lounode.ae2cs.util.VecHelper;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
@@ -58,8 +61,9 @@ import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.common.Mod;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -68,9 +72,9 @@ import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid = AECSConstants.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements ServerTickingBlockEntity,
-        IUpgradeableObject, ClientTickingBlockEntity, IConfigurableObject, ICustomRenderBounding,
-        CustomChannelProviderHost, BroadcastReceiverHost, BandLinkHost, CustomReturnableSubMenuHost
-{
+                                     IUpgradeableObject, ClientTickingBlockEntity, IConfigurableObject, ICustomRenderBounding,
+                                     CustomChannelProviderHost, BroadcastReceiverHost, BandLinkHost, CustomReturnableSubMenuHost {
+
     /**
      * 以全局区块坐标为索引的发信器位置表，用来快速寻找发信器，每个区块key下的set集合都对应周围3x3区块范围内所有发信器
      */
@@ -111,8 +115,7 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     private boolean enabledCustomChannel = false;
     private int lastBandReceiverUsedChannels = 0;
 
-    public EnderEmitterBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState)
-    {
+    public EnderEmitterBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
         getMainNode().setFlags(GridFlags.DENSE_CAPACITY);
         configManager = new ConfigManager(this::onConfigChanged);
@@ -121,76 +124,61 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
         configManager.registerSetting(AECSSettings.SHOW_RANGE_MODE, ShowRangeMode.HIDE_RANGE);
     }
 
-    public boolean isActive()
-    {
+    public boolean isActive() {
         return active;
     }
 
-    public boolean isAutoMode()
-    {
+    public boolean isAutoMode() {
         return autoMode;
     }
 
-    public int getLinkDistance()
-    {
+    public int getLinkDistance() {
         return linkDistance;
     }
 
-    public String getBandName()
-    {
+    public String getBandName() {
         return bandId;
     }
 
-    public boolean isConnectedToBand()
-    {
+    public boolean isConnectedToBand() {
         return bandId != null && !bandId.isEmpty();
     }
 
     @Override
-    public Set<Direction> getGridConnectableSides(appeng.api.orientation.BlockOrientation orientation)
-    {
-        if (isConnectedToBand())
-        {
+    public Set<Direction> getGridConnectableSides(appeng.api.orientation.BlockOrientation orientation) {
+        if (isConnectedToBand()) {
             return EnumSet.noneOf(Direction.class);
         }
         return EnumSet.allOf(Direction.class);
     }
 
-    public long getBandUsedChannelsForClient()
-    {
+    public long getBandUsedChannelsForClient() {
         return bandUsedChannelsForClient;
     }
 
-    public long getBandTotalChannelsForClient()
-    {
+    public long getBandTotalChannelsForClient() {
         return bandTotalChannelsForClient;
     }
 
-    public int getUsedChannelsForClient()
-    {
+    public int getUsedChannelsForClient() {
         return usedChannelsForClient;
     }
 
-    public int getTotalChannelsForClient()
-    {
+    public int getTotalChannelsForClient() {
         return totalChannelsForClient;
     }
 
-    public boolean allowAutoLinkCableLike()
-    {
+    public boolean allowAutoLinkCableLike() {
         return allowAutoLinkCableLike;
     }
 
-    public boolean isShowLinkStatus()
-    {
+    public boolean isShowLinkStatus() {
         return showLinkStatus;
     }
 
-    public void setLinkDistance(int newLinkDistance)
-    {
+    public void setLinkDistance(int newLinkDistance) {
         newLinkDistance = Math.max(0, Math.min(newLinkDistance, maxLinkDistance.get()));
-        if (newLinkDistance != this.linkDistance)
-        {
+        if (newLinkDistance != this.linkDistance) {
             this.linkDistance = newLinkDistance;
             markForClientUpdate();
             setChanged();
@@ -200,57 +188,48 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     /**
      * 来自高版本移植
      */
-    public void markForClientUpdate()
-    {
+    public void markForClientUpdate() {
         this.requestModelDataUpdate();
 
-        if (this.level != null && !this.isRemoved() && !notLoaded())
-        {
+        if (this.level != null && !this.isRemoved() && !notLoaded()) {
             this.level.sendBlockUpdated(this.worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
         }
     }
 
-    public int getMaxLinkDistanceForClient()
-    {
+    public int getMaxLinkDistanceForClient() {
         return maxLinkDistanceForClient;
     }
 
-    public List<BlockPos> getPendingRenderPositionsSnapshot()
-    {
+    public List<BlockPos> getPendingRenderPositionsSnapshot() {
         return this.pendingLinkPositions.isEmpty() ? List.of() : List.copyOf(this.pendingLinkPositions);
     }
 
-    public List<BlockPos> getLinkedRenderPositionsSnapshot()
-    {
+    public List<BlockPos> getLinkedRenderPositionsSnapshot() {
         return this.linkedPositions.isEmpty() ? List.of() : List.copyOf(this.linkedPositions);
     }
 
-    public boolean shouldRenderLinkStatusForClient()
-    {
-        if (isShowLinkStatus())
-        {
+    public boolean shouldRenderLinkStatusForClient() {
+        if (isShowLinkStatus()) {
             return true;
         }
 
-        return DistExecutor.unsafeCallWhenOn(Dist.CLIENT,
-                () -> () -> io.github.lounode.ae2cs.common.item.EnderLinkerItem.isHoldingLinker(net.minecraft.client.Minecraft.getInstance().player));
+        Boolean isHoldingLinker = DistExecutor.safeCallWhenOn(Dist.CLIENT,
+                () -> EnderEmitterClientRenderHelper::shouldRenderLinkStatus);
+        return Boolean.TRUE.equals(isHoldingLinker);
     }
 
     @Override
-    public boolean enableCustomRenderBounding()
-    {
+    public boolean enableCustomRenderBounding() {
         return shouldRenderLinkStatusForClient();
     }
 
     @Override
-    public int getRange()
-    {
+    public int getRange() {
         return this.maxLinkDistanceForClient * 2;
     }
 
     @Override
-    public AABB getCustomBoundingBox(BlockPos centerPos)
-    {
+    public AABB getCustomBoundingBox(BlockPos centerPos) {
         if (enableCustomRenderBounding())
             return ICustomRenderBounding.super.getCustomBoundingBox(centerPos);
         else
@@ -258,19 +237,16 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     }
 
     @Override
-    public AABB getRenderBoundingBox()
-    {
+    public AABB getRenderBoundingBox() {
         return this.getCustomBoundingBox(this.getBlockPos());
     }
 
     @Override
-    public IConfigManager getConfigManager()
-    {
+    public IConfigManager getConfigManager() {
         return configManager;
     }
 
-    protected void onConfigChanged()
-    {
+    protected void onConfigChanged() {
         this.autoMode = configManager.getSetting(AECSSettings.AUTO_LINK_MODE) == AutoLinkMode.ENABLE;
         this.allowAutoLinkCableLike = configManager.getSetting(AECSSettings.AUTO_LINK_CABLE_MODE) == AutoLinkCableMode.ENABLE;
         this.showLinkStatus = configManager.getSetting(AECSSettings.SHOW_RANGE_MODE) == ShowRangeMode.SHOW_RANGE;
@@ -279,52 +255,41 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     }
 
     @Override
-    public void serverTick()
-    {
+    public void serverTick() {
         if (isRecentAddedPos()) return;
         if (level == null) return;
         IGridNode selfNode = getMainNode().getNode();
         if (selfNode == null) return;
         refreshClientDisplayState(selfNode);
-        if (active != selfNode.isActive())
-        {
+        if (active != selfNode.isActive()) {
             active = selfNode.isActive();
             markForClientUpdate();
         }
         if (!active) return;
-        if (!bandId.isEmpty())
-        {
+        if (!bandId.isEmpty()) {
             BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
-            if (band != null && band.getErrorState() == BroadcastFrequencyBand.BandError.CHANNEL_OVERFLOW)
-            {
+            if (band != null && band.getErrorState() == BroadcastFrequencyBand.BandError.CHANNEL_OVERFLOW) {
                 suspendEmitterLinksForBandOverflow();
                 return;
             }
         }
 
-        if (!bandId.isEmpty())
-        {
+        if (!bandId.isEmpty()) {
             int usedChannels = Math.max(0, selfNode.getUsedChannels());
-            if (usedChannels != this.lastBandReceiverUsedChannels)
-            {
+            if (usedChannels != this.lastBandReceiverUsedChannels) {
                 this.lastBandReceiverUsedChannels = usedChannels;
                 BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
-                if (band != null && band.getErrorState() != BroadcastFrequencyBand.BandError.CHANNEL_OVERFLOW)
-                {
+                if (band != null && band.getErrorState() != BroadcastFrequencyBand.BandError.CHANNEL_OVERFLOW) {
                     FrequencyBandManager.markRuntimeDirty(level.getServer(), bandId);
                 }
             }
-        }
-        else
-        {
+        } else {
             this.lastBandReceiverUsedChannels = 0;
         }
 
-        if (selfNode.getUsedChannels() >= getMaxLinkChannels())
-        {
+        if (selfNode.getUsedChannels() >= getMaxLinkChannels()) {
             // 当无可用频道时清除pending
-            if (!pendingLinkPositions.isEmpty())
-            {
+            if (!pendingLinkPositions.isEmpty()) {
                 pendingLinkPositions.clear();
                 setChanged();
                 markForClientUpdate();
@@ -333,8 +298,7 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
         }
 
         int pendingSize = pendingLinkPositions.size();
-        for (Iterator<BlockPos> it = pendingLinkPositions.iterator(); it.hasNext(); )
-        {
+        for (Iterator<BlockPos> it = pendingLinkPositions.iterator(); it.hasNext();) {
             BlockPos targetPos = it.next();
 
             // 不处理未加载区块的情况
@@ -342,12 +306,9 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
 
             // 如果目标位置已有旧链接，先摧毁
             List<IGridConnection> oldConnections = linkedConnections.remove(targetPos);
-            if (oldConnections != null)
-            {
-                for (IGridConnection connection : oldConnections)
-                {
-                    if (connection != null)
-                    {
+            if (oldConnections != null) {
+                for (IGridConnection connection : oldConnections) {
+                    if (connection != null) {
                         connection.destroy();
                     }
                 }
@@ -355,22 +316,18 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
 
             // 尝试建立连接，这里targets会自动筛掉不符合条件的
             List<IGridNode> targetNodes = getConnectableNodes(level, targetPos);
-            if (targetNodes.isEmpty())
-            {
+            if (targetNodes.isEmpty()) {
                 // 无任何可连接节点
                 it.remove();
                 continue;
             }
 
             ArrayList<IGridConnection> newConnections = new ArrayList<>();
-            for (IGridNode targetNode : targetNodes)
-            {
+            for (IGridNode targetNode : targetNodes) {
                 IGrid targetGrid = targetNode.getGrid();
                 IGrid selfGrid = selfNode.getGrid();
-                if (targetGrid != null && selfGrid != null)
-                {
-                    if (targetGrid.getPathingService().getControllerState() != ControllerState.NO_CONTROLLER)
-                    {
+                if (targetGrid != null && selfGrid != null) {
+                    if (targetGrid.getPathingService().getControllerState() != ControllerState.NO_CONTROLLER) {
                         if (targetGrid != selfGrid)
                             continue; // 不连接导致冲突的网络
                         else if (targetNode.meetsChannelRequirements())
@@ -378,18 +335,14 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
                     }
                 }
 
-                try
-                {
+                try {
                     newConnections.add(GridHelper.createConnection(selfNode, targetNode));
-                }
-                catch (IllegalStateException e)
-                {
+                } catch (IllegalStateException e) {
                     // 此错误说明两者之间已有连接，无需log记录
                 }
             }
 
-            if (newConnections.isEmpty())
-            {
+            if (newConnections.isEmpty()) {
                 // 本轮没有完成任何连接
                 it.remove();
                 continue;
@@ -402,35 +355,27 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
             break;
         }
 
-        if (pendingSize != pendingLinkPositions.size())
-        {
+        if (pendingSize != pendingLinkPositions.size()) {
             setChanged();
             markForClientUpdate();
         }
     }
 
-    private void refreshClientDisplayState(IGridNode selfNode)
-    {
+    private void refreshClientDisplayState(IGridNode selfNode) {
         int newUsedChannels = Math.max(0, selfNode.getUsedChannels());
         int newTotalChannels = Math.max(0, selfNode.getMaxChannels());
         long newBandUsedChannels = 0;
         long newBandTotalChannels = 0;
 
-        if (!bandId.isEmpty())
-        {
+        if (!bandId.isEmpty()) {
             BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
-            if (band != null)
-            {
+            if (band != null) {
                 newBandUsedChannels = band.getUsedChannels();
                 newBandTotalChannels = band.getUsableChannels();
             }
         }
 
-        if (this.usedChannelsForClient != newUsedChannels
-                || this.totalChannelsForClient != newTotalChannels
-                || this.bandUsedChannelsForClient != newBandUsedChannels
-                || this.bandTotalChannelsForClient != newBandTotalChannels)
-        {
+        if (this.usedChannelsForClient != newUsedChannels || this.totalChannelsForClient != newTotalChannels || this.bandUsedChannelsForClient != newBandUsedChannels || this.bandTotalChannelsForClient != newBandTotalChannels) {
             this.usedChannelsForClient = newUsedChannels;
             this.totalChannelsForClient = newTotalChannels;
             this.bandUsedChannelsForClient = newBandUsedChannels;
@@ -439,20 +384,15 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
         }
     }
 
-    private void suspendEmitterLinksForBandOverflow()
-    {
-        if (linkedConnections.isEmpty() && linkedPositions.isEmpty())
-        {
+    private void suspendEmitterLinksForBandOverflow() {
+        if (linkedConnections.isEmpty() && linkedPositions.isEmpty()) {
             return;
         }
 
         pendingLinkPositions.addAll(linkedPositions);
-        for (Collection<IGridConnection> connections : linkedConnections.values())
-        {
-            for (IGridConnection connection : connections)
-            {
-                if (connection != null)
-                {
+        for (Collection<IGridConnection> connections : linkedConnections.values()) {
+            for (IGridConnection connection : connections) {
+                if (connection != null) {
                     connection.destroy();
                 }
             }
@@ -465,12 +405,10 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     }
 
     @Override
-    public void clientTick()
-    {
+    public void clientTick() {
         if (level == null) return;
         BlockState state = getBlockState();
-        if (state.hasProperty(AECSBlockProperties.ACTIVE) && state.getValue(AECSBlockProperties.ACTIVE) != active)
-        {
+        if (state.hasProperty(AECSBlockProperties.ACTIVE) && state.getValue(AECSBlockProperties.ACTIVE) != active) {
             level.setBlock(worldPosition, getBlockState().setValue(AECSBlockProperties.ACTIVE, active), 2);
         }
     }
@@ -478,66 +416,55 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     /**
      * 如果返回真，则说明最近添加了新pos，需要延后工作
      */
-    private boolean isRecentAddedPos()
-    {
-        if (recentAddedPosCountdown > 0)
-        {
+    private boolean isRecentAddedPos() {
+        if (recentAddedPosCountdown > 0) {
             recentAddedPosCountdown--;
             return true;
         }
         return false;
     }
 
-    private void addPosToPending(BlockPos pos)
-    {
+    private void addPosToPending(BlockPos pos) {
         this.pendingLinkPositions.add(pos);
         this.recentAddedPosCountdown = 2;
     }
 
-    private void addListPosToPending(Collection<BlockPos> posList)
-    {
+    private void addListPosToPending(Collection<BlockPos> posList) {
         this.pendingLinkPositions.addAll(posList);
         this.recentAddedPosCountdown = 2;
     }
 
-    public int getMaxLinkChannels()
-    {
+    public int getMaxLinkChannels() {
         IGridNode node = getMainNode().getNode();
         return node == null ? 0 : node.getMaxChannels();
     }
 
-    public int getUsedLinkChannels()
-    {
+    public int getUsedLinkChannels() {
         IGridNode node = getMainNode().getNode();
         return node == null ? 0 : node.getUsedChannels();
     }
 
     @Override
-    public int getMaxChannels()
-    {
+    public int getMaxChannels() {
         return Math.max(0, customMaxChannels);
     }
 
     @Override
-    public void setMaxChannels(int maxChannels)
-    {
+    public void setMaxChannels(int maxChannels) {
         this.customMaxChannels = Math.max(0, maxChannels);
     }
 
     @Override
-    public boolean isEnabledCustomChannel()
-    {
+    public boolean isEnabledCustomChannel() {
         return enabledCustomChannel;
     }
 
     @Override
-    public void setEnabledCustomChannel(boolean enabled)
-    {
+    public void setEnabledCustomChannel(boolean enabled) {
         this.enabledCustomChannel = enabled;
     }
 
-    public void connectToBand(String newBandId)
-    {
+    public void connectToBand(String newBandId) {
         if (level == null || level.isClientSide()) return;
 
         MinecraftServer server = level.getServer();
@@ -547,14 +474,11 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
         if (newBand == null) return;
 
         GlobalPos globalPos = GlobalPos.of(level.dimension(), worldPosition);
-        if (!bandId.isEmpty())
-        {
+        if (!bandId.isEmpty()) {
             BroadcastFrequencyBand oldBand = FrequencyBandManager.getBand(bandId);
-            if (oldBand != null)
-            {
+            if (oldBand != null) {
                 oldBand.onReceiverOffline(server, globalPos);
-                if (oldBand != newBand)
-                {
+                if (oldBand != newBand) {
                     oldBand.undeclareReceiver(globalPos);
                 }
             }
@@ -565,8 +489,7 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
         setMaxChannels(0);
 
         IGridNode node = getMainNode().getNode();
-        if (node != null)
-        {
+        if (node != null) {
             newBand.onReceiverOnline(server, globalPos, node, this);
         }
 
@@ -577,18 +500,15 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     }
 
     @Override
-    public void cleanConnectionPermanent()
-    {
+    public void cleanConnectionPermanent() {
         if (level == null || level.isClientSide()) return;
 
         MinecraftServer server = level.getServer();
         if (server == null) return;
 
-        if (!bandId.isEmpty())
-        {
+        if (!bandId.isEmpty()) {
             BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
-            if (band != null)
-            {
+            if (band != null) {
                 GlobalPos globalPos = GlobalPos.of(level.dimension(), worldPosition);
                 band.onReceiverOffline(server, globalPos);
                 band.undeclareReceiver(globalPos);
@@ -604,8 +524,7 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
         setChanged();
     }
 
-    private void markBandRuntimeDirty()
-    {
+    private void markBandRuntimeDirty() {
         if (level == null || level.isClientSide()) return;
         if (bandId.isEmpty()) return;
 
@@ -617,39 +536,30 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     }
 
     @Override
-    public void onReady()
-    {
+    public void onReady() {
         super.onReady();
 
-        if (level != null && !level.isClientSide() && !bandId.isEmpty())
-        {
+        if (level != null && !level.isClientSide() && !bandId.isEmpty()) {
             MinecraftServer server = level.getServer();
-            if (server != null)
-            {
+            if (server != null) {
                 BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
                 IGridNode node = getMainNode().getNode();
-                if (band != null && node != null)
-                {
+                if (band != null && node != null) {
                     GlobalPos gp = GlobalPos.of(level.dimension(), worldPosition);
                     band.declareReceiver(gp);
                     setEnabledCustomChannel(true);
                     band.onReceiverOnline(server, gp, node, this);
-                }
-                else
-                {
+                } else {
                     setEnabledCustomChannel(false);
                 }
             }
         }
 
         // 节点准备好之后加入到缓存表
-        if (level != null && !level.isClientSide())
-        {
+        if (level != null && !level.isClientSide()) {
             ChunkPos center = new ChunkPos(worldPosition);
-            for (int offsetX = -autoAreaFactor; offsetX <= autoAreaFactor; offsetX++)
-            {
-                for (int offsetZ = -autoAreaFactor; offsetZ <= autoAreaFactor; offsetZ++)
-                {
+            for (int offsetX = -autoAreaFactor; offsetX <= autoAreaFactor; offsetX++) {
+                for (int offsetZ = -autoAreaFactor; offsetZ <= autoAreaFactor; offsetZ++) {
                     GlobalChunkPos chunkKey = new GlobalChunkPos(level.dimension(), center.x + offsetX, center.z + offsetZ);
                     EMITTER_CHUNK_POSITIONS
                             .computeIfAbsent(chunkKey, key -> new HashSet<>())
@@ -664,16 +574,12 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     }
 
     @Override
-    public void onChunkUnloaded()
-    {
-        if (level != null && !level.isClientSide() && !bandId.isEmpty())
-        {
+    public void onChunkUnloaded() {
+        if (level != null && !level.isClientSide() && !bandId.isEmpty()) {
             MinecraftServer server = level.getServer();
-            if (server != null)
-            {
+            if (server != null) {
                 BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
-                if (band != null)
-                {
+                if (band != null) {
                     band.onReceiverOffline(server, GlobalPos.of(level.dimension(), worldPosition));
                 }
             }
@@ -682,37 +588,29 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     }
 
     @Override
-    public void onMainNodeStateChanged(IGridNodeListener.State reason)
-    {
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
         super.onMainNodeStateChanged(reason);
-        if (reason == IGridNodeListener.State.CHANNEL || reason == IGridNodeListener.State.GRID_BOOT)
-        {
+        if (reason == IGridNodeListener.State.CHANNEL || reason == IGridNodeListener.State.GRID_BOOT) {
             markBandRuntimeDirty();
         }
     }
 
     @Override
-    public void setRemoved()
-    {
+    public void setRemoved() {
         super.setRemoved();
         // 方块被移除或区块卸载时从全局索引移除
-        if (level != null && !level.isClientSide())
-        {
+        if (level != null && !level.isClientSide()) {
             ChunkPos center = new ChunkPos(worldPosition);
             BlockPos posKey = worldPosition.immutable();
 
-            for (int offsetX = -autoAreaFactor; offsetX <= autoAreaFactor; offsetX++)
-            {
-                for (int offsetZ = -autoAreaFactor; offsetZ <= autoAreaFactor; offsetZ++)
-                {
+            for (int offsetX = -autoAreaFactor; offsetX <= autoAreaFactor; offsetX++) {
+                for (int offsetZ = -autoAreaFactor; offsetZ <= autoAreaFactor; offsetZ++) {
                     GlobalChunkPos chunkKey = new GlobalChunkPos(level.dimension(), center.x + offsetX, center.z + offsetZ);
 
                     Set<BlockPos> set = EMITTER_CHUNK_POSITIONS.get(chunkKey);
-                    if (set != null)
-                    {
+                    if (set != null) {
                         set.remove(posKey);
-                        if (set.isEmpty())
-                        {
+                        if (set.isEmpty()) {
                             EMITTER_CHUNK_POSITIONS.remove(chunkKey);
                         }
                     }
@@ -722,8 +620,7 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     }
 
     @Override
-    public void saveAdditional(CompoundTag data)
-    {
+    public void saveAdditional(CompoundTag data) {
         super.saveAdditional(data);
         data.putString("band_id", bandId);
         data.putBoolean("enabled_custom_channel", enabledCustomChannel);
@@ -732,15 +629,11 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
         data.putInt("link_distance", this.linkDistance);
 
         ListTag linkPositions = new ListTag();
-        for (BlockPos pos : linkedPositions)
-        {
-            try
-            {
+        for (BlockPos pos : linkedPositions) {
+            try {
                 Tag t = NbtUtils.writeBlockPos(pos);
                 linkPositions.add(t);
-            }
-            catch (Throwable e)
-            {
+            } catch (Throwable e) {
                 // 静默
             }
         }
@@ -749,8 +642,7 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     }
 
     @Override
-    public void loadTag(CompoundTag data)
-    {
+    public void loadTag(CompoundTag data) {
         super.loadTag(data);
         this.bandId = data.getString("band_id");
         this.enabledCustomChannel = data.getBoolean("enabled_custom_channel");
@@ -763,15 +655,11 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
         Tag root = data.get("linked_positions");
         if (!(root instanceof ListTag list)) return;
 
-        for (Tag t : list)
-        {
-            try
-            {
+        for (Tag t : list) {
+            try {
                 BlockPos pos = NbtUtils.readBlockPos((CompoundTag) t);
                 linkedPositions.add(pos);
-            }
-            catch (Throwable e)
-            {
+            } catch (Throwable e) {
                 // 忽略
             }
         }
@@ -784,25 +672,20 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     }
 
     @Override
-    public void onLoad()
-    {
+    public void onLoad() {
         super.onLoad();
         onConfigChanged(); // 确保字段与配置始终同步
     }
 
     @Override
-    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable net.minecraft.world.entity.player.Player player)
-    {
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable net.minecraft.world.entity.player.Player player) {
         super.importSettings(mode, input, player);
-        if (mode == SettingsFrom.MEMORY_CARD)
-        {
-            if (input.contains("memory_card_link_distance", Tag.TAG_INT))
-            {
+        if (mode == SettingsFrom.MEMORY_CARD) {
+            if (input.contains("memory_card_link_distance", Tag.TAG_INT)) {
                 setLinkDistance(input.getInt("memory_card_link_distance"));
             }
 
-            if (input.contains("memory_card_band_info", Tag.TAG_COMPOUND))
-            {
+            if (input.contains("memory_card_band_info", Tag.TAG_COMPOUND)) {
                 MemoryCardBandInfo targetLink = MemoryCardBandInfo.readFromNBT(input.getCompound("memory_card_band_info"));
                 if (targetLink == null || targetLink.asSender()) return;
 
@@ -816,15 +699,12 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     }
 
     @Override
-    public void exportSettings(SettingsFrom mode, CompoundTag builder, @Nullable net.minecraft.world.entity.player.Player player)
-    {
+    public void exportSettings(SettingsFrom mode, CompoundTag builder, @Nullable net.minecraft.world.entity.player.Player player) {
         super.exportSettings(mode, builder, player);
-        if (mode == SettingsFrom.MEMORY_CARD)
-        {
+        if (mode == SettingsFrom.MEMORY_CARD) {
             builder.putInt("memory_card_link_distance", this.linkDistance);
 
-            if (!bandId.isEmpty())
-            {
+            if (!bandId.isEmpty()) {
                 BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
                 if (band == null || !band.isAllowedMemoryCardCopy()) return;
 
@@ -834,15 +714,13 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     }
 
     @Override
-    public ItemStack getMainMenuIcon()
-    {
+    public ItemStack getMainMenuIcon() {
         return new ItemStack(AECSBlocks.ENDER_EMITTER_BLOCK.get());
     }
 
     // 把重要信息和pengding和linked写表，用于客户端显示
     @Override
-    protected void writeToStream(FriendlyByteBuf data)
-    {
+    protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         BroadcastFrequencyBand band = bandId.isEmpty() ? null : FrequencyBandManager.getBand(bandId);
         data.writeBoolean(this.autoMode);
@@ -856,20 +734,17 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
         data.writeLong(band == null ? 0 : band.getUsedChannels());
         data.writeLong(band == null ? 0 : band.getUsableChannels());
         data.writeInt(this.pendingLinkPositions.size());
-        for (BlockPos pos : this.pendingLinkPositions)
-        {
+        for (BlockPos pos : this.pendingLinkPositions) {
             data.writeBlockPos(pos);
         }
         data.writeInt(this.linkedPositions.size());
-        for (BlockPos pos : this.linkedPositions)
-        {
+        for (BlockPos pos : this.linkedPositions) {
             data.writeBlockPos(pos);
         }
     }
 
     @Override
-    protected boolean readFromStream(FriendlyByteBuf data)
-    {
+    protected boolean readFromStream(FriendlyByteBuf data) {
         super.readFromStream(data);
         this.autoMode = data.readBoolean();
         this.active = data.readBoolean();
@@ -883,15 +758,13 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
         this.bandTotalChannelsForClient = data.readLong();
         this.pendingLinkPositions.clear();
         int pendingSize = data.readInt();
-        for (int i = 0; i < pendingSize; i++)
-        {
+        for (int i = 0; i < pendingSize; i++) {
             BlockPos pos = data.readBlockPos();
             this.pendingLinkPositions.add(pos);
         }
         this.linkedPositions.clear();
         int linkSize = data.readInt();
-        for (int i = 0; i < linkSize; i++)
-        {
+        for (int i = 0; i < linkSize; i++) {
             BlockPos pos = data.readBlockPos();
             this.linkedPositions.add(pos);
         }
@@ -901,8 +774,7 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     /**
      * 获取目标位置中最适合被无线连接的一个或一群节点，其内部元素亦不为null
      */
-    public static List<IGridNode> getConnectableNodes(Level level, BlockPos pos)
-    {
+    public static List<IGridNode> getConnectableNodes(Level level, BlockPos pos) {
         ArrayList<IGridNode> nodes = new ArrayList<>();
 
         IInWorldGridNodeHost nodeHost = GridHelper.getNodeHost(level, pos);
@@ -910,35 +782,25 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
 
         // 无线连接拒绝控制器
         if (nodeHost instanceof ControllerBlockEntity) return nodes;
-        else if (nodeHost instanceof CableBusBlockEntity cable)
-        {
+        else if (nodeHost instanceof CableBusBlockEntity cable) {
             // 线缆节点，优先获取中间节点，如不存在则将六个面的节点都加入
             CableBusContainer cableBus = cable.getCableBus();
             IPart center = cableBus.getPart(null);
-            if (center != null)
-            {
+            if (center != null) {
                 nodes.add(center.getGridNode());
-            }
-            else
-            {
-                for (Direction direction : Direction.values())
-                {
+            } else {
+                for (Direction direction : Direction.values()) {
                     IPart part = cableBus.getPart(direction);
-                    if (part != null)
-                    {
+                    if (part != null) {
                         nodes.add(part.getGridNode());
                     }
                 }
             }
-        }
-        else
-        {
+        } else {
             // 普通节点，任意一面取得即可
-            for (Direction direction : Direction.values())
-            {
+            for (Direction direction : Direction.values()) {
                 IGridNode node = nodeHost.getGridNode(direction);
-                if (node != null)
-                {
+                if (node != null) {
                     nodes.add(node);
                     break;
                 }
@@ -951,30 +813,24 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
 
     // 用于自动链接方块-------------------------------------------------------
     @SubscribeEvent
-    public static void onBlockPlace(BlockEvent.EntityPlaceEvent event)
-    {
+    public static void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
         LevelAccessor levelAccessor = event.getLevel();
-        if (levelAccessor instanceof ServerLevelAccessor sla)
-        {
+        if (levelAccessor instanceof ServerLevelAccessor sla) {
             addPosToRecentEmitter(sla.getLevel(), event.getPos());
         }
 
-        if (!event.getLevel().isClientSide() && event.getEntity() instanceof net.minecraft.world.entity.player.Player player)
-        {
+        if (!event.getLevel().isClientSide() && event.getEntity() instanceof net.minecraft.world.entity.player.Player player) {
             BlockEntity be = event.getLevel().getBlockEntity(event.getPos());
-            if (be != null)
-            {
+            if (be != null) {
                 ResonatingMemoryCardHelper.tryApplyToBlockEntity(player, be);
             }
         }
     }
 
     @SubscribeEvent
-    public static void onBlockBreak(BlockEvent.BreakEvent event)
-    {
+    public static void onBlockBreak(BlockEvent.BreakEvent event) {
         LevelAccessor targetLevelAccessor = event.getLevel();
-        if (targetLevelAccessor instanceof ServerLevelAccessor sla)
-        {
+        if (targetLevelAccessor instanceof ServerLevelAccessor sla) {
             removePosFromRecentEmitter(sla.getLevel(), event.getPos());
         }
     }
@@ -982,28 +838,22 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     /**
      * 将需要连接的位置添加到指定发信器
      */
-    public static boolean addPosToEmitter(@NotNull EnderEmitterBlockEntity emitter, @NotNull BlockPos pos, boolean byManual, boolean forceAuto)
-    {
+    public static boolean addPosToEmitter(@NotNull EnderEmitterBlockEntity emitter, @NotNull BlockPos pos, boolean byManual, boolean forceAuto) {
         if (emitter.getBlockPos().equals(pos)) return false;
 
         // 如果是手动连接，仅检查手动方法
         boolean valid = byManual && VecHelper.closerThanChebyshev(emitter.worldPosition, pos, maxLinkDistance.get());
 
         // 自动连接额外检查
-        if (!valid)
-        {
+        if (!valid) {
             if (emitter.level == null) return false;
             IGridNode emitterNode = emitter.getMainNode().getNode();
             if (emitterNode == null || !emitterNode.isActive()) return false;
             IInWorldGridNodeHost targetNodeHost = GridHelper.getNodeHost(emitter.level, pos);
-            valid = (forceAuto || emitter.isAutoMode())
-                    && emitterNode.getUsedChannels() < emitter.getMaxLinkChannels()
-                    && (!(targetNodeHost instanceof CableBusBlockEntity) || emitter.allowAutoLinkCableLike())
-                    && VecHelper.closerThanChebyshev(emitter.worldPosition, pos, emitter.linkDistance);
+            valid = (forceAuto || emitter.isAutoMode()) && emitterNode.getUsedChannels() < emitter.getMaxLinkChannels() && (!(targetNodeHost instanceof CableBusBlockEntity) || emitter.allowAutoLinkCableLike()) && VecHelper.closerThanChebyshev(emitter.worldPosition, pos, emitter.linkDistance);
         }
 
-        if (valid)
-        {
+        if (valid) {
             emitter.addPosToPending(pos);
             emitter.markForClientUpdate();
             emitter.setChanged();
@@ -1015,15 +865,12 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     /**
      * 从发信器中移除某个特定的位置
      */
-    public static void removePosFromEmitter(@NotNull EnderEmitterBlockEntity emitter, @NotNull BlockPos targetPos)
-    {
+    public static void removePosFromEmitter(@NotNull EnderEmitterBlockEntity emitter, @NotNull BlockPos targetPos) {
         emitter.pendingLinkPositions.remove(targetPos);
         emitter.linkedPositions.remove(targetPos);
         var connections = emitter.linkedConnections.remove(targetPos);
-        if (connections != null && !connections.isEmpty())
-        {
-            for (IGridConnection connection : connections)
-            {
+        if (connections != null && !connections.isEmpty()) {
+            for (IGridConnection connection : connections) {
                 if (connection != null)
                     connection.destroy();
             }
@@ -1035,8 +882,7 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     /**
      * 自动将当前位置添加到最近一个可用发信器
      */
-    public static void addPosToRecentEmitter(@NotNull Level targetLevel, @NotNull BlockPos targetPos)
-    {
+    public static void addPosToRecentEmitter(@NotNull Level targetLevel, @NotNull BlockPos targetPos) {
         // 确认目标方块状态
         IInWorldGridNodeHost targetNodeHost = GridHelper.getNodeHost(targetLevel, targetPos);
         if (targetNodeHost == null) return;
@@ -1047,10 +893,8 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
         if (linkPositions == null || linkPositions.isEmpty()) return;
 
         List<BlockPos> availablePositions = new ArrayList<>(linkPositions.size());
-        for (BlockPos linkPos : linkPositions)
-        {
-            if (VecHelper.closerThanChebyshev(linkPos, targetPos, maxLinkDistance.get()))
-            {
+        for (BlockPos linkPos : linkPositions) {
+            if (VecHelper.closerThanChebyshev(linkPos, targetPos, maxLinkDistance.get())) {
                 availablePositions.add(linkPos);
             }
         }
@@ -1060,13 +904,10 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
         availablePositions.sort(Comparator.comparingDouble(pos -> pos.distSqr(targetPos)));
 
         // 迭代寻找可用发信器并与之连接
-        for (BlockPos linkPos : availablePositions)
-        {
-            if (targetLevel.getBlockEntity(linkPos) instanceof EnderEmitterBlockEntity emitter)
-            {
+        for (BlockPos linkPos : availablePositions) {
+            if (targetLevel.getBlockEntity(linkPos) instanceof EnderEmitterBlockEntity emitter) {
                 // 打开自动模式、检查emitter的独特距离，最后再尝试加入到emitter
-                if (addPosToEmitter(emitter, targetPos, false, false))
-                {
+                if (addPosToEmitter(emitter, targetPos, false, false)) {
                     return;
                 }
             }
@@ -1076,8 +917,7 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     /**
      * 将指定位置信息从附近的发信器索引中移除
      */
-    public static void removePosFromRecentEmitter(@NotNull Level targetLevel, @NotNull BlockPos targetPos)
-    {
+    public static void removePosFromRecentEmitter(@NotNull Level targetLevel, @NotNull BlockPos targetPos) {
         IInWorldGridNodeHost targetNodeHost = GridHelper.getNodeHost(targetLevel, targetPos);
         if (targetNodeHost == null) return;
 
@@ -1085,10 +925,8 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
         GlobalChunkPos targetChunkPos = new GlobalChunkPos(targetLevel.dimension(), targetPos);
         Set<BlockPos> linkPositions = EMITTER_CHUNK_POSITIONS.get(targetChunkPos);
         if (linkPositions == null || linkPositions.isEmpty()) return;
-        for (BlockPos linkPos : linkPositions)
-        {
-            if (targetLevel.getBlockEntity(linkPos) instanceof EnderEmitterBlockEntity emitter)
-            {
+        for (BlockPos linkPos : linkPositions) {
+            if (targetLevel.getBlockEntity(linkPos) instanceof EnderEmitterBlockEntity emitter) {
                 removePosFromEmitter(emitter, targetPos);
             }
         }
@@ -1097,15 +935,12 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     /**
      * 用来主动将附近区块的be全部添加进表
      */
-    public static void addAllRecentBEtoEmitter(@NotNull EnderEmitterBlockEntity emitter)
-    {
+    public static void addAllRecentBEtoEmitter(@NotNull EnderEmitterBlockEntity emitter) {
         Level targetLevel = emitter.level;
-        if (targetLevel instanceof ServerLevel serverLevel)
-        {
+        if (targetLevel instanceof ServerLevel serverLevel) {
             ChunkPos centerChunk = new ChunkPos(emitter.worldPosition);
             List<BlockEntity> blockEntities = ChunkHelper.getBlockEntitiesInChunks(serverLevel, centerChunk, autoAreaFactor);
-            for (BlockEntity be : blockEntities)
-            {
+            for (BlockEntity be : blockEntities) {
                 addPosToEmitter(emitter, be.getBlockPos(), false, true);
             }
         }
@@ -1114,12 +949,9 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     /**
      * 手动显式清除所有连接
      */
-    public static void removeAllLinkedFromEmitter(@NotNull EnderEmitterBlockEntity emitter)
-    {
-        for (Collection<IGridConnection> connections : emitter.linkedConnections.values())
-        {
-            for (IGridConnection connection : connections)
-            {
+    public static void removeAllLinkedFromEmitter(@NotNull EnderEmitterBlockEntity emitter) {
+        for (Collection<IGridConnection> connections : emitter.linkedConnections.values()) {
+            for (IGridConnection connection : connections) {
                 connection.destroy();
             }
         }
@@ -1131,30 +963,25 @@ public class EnderEmitterBlockEntity extends AENetworkBlockEntity implements Ser
     }
 
     // 用来确定缓存表可用性-----------------------------------------------------
-    public static void ensureBound(@Nullable MinecraftServer server)
-    {
-        if (server == null)
-        {
+    public static void ensureBound(@Nullable MinecraftServer server) {
+        if (server == null) {
             EMITTER_CHUNK_POSITIONS.clear();
             boundServer = null;
             return;
         }
-        if (boundServer != server)
-        {
+        if (boundServer != server) {
             EMITTER_CHUNK_POSITIONS.clear();
             boundServer = server;
         }
     }
 
     @SubscribeEvent
-    public static void onServerStarting(ServerStartingEvent e)
-    {
+    public static void onServerStarting(ServerStartingEvent e) {
         ensureBound(e.getServer());
     }
 
     @SubscribeEvent
-    public static void onServerStopped(ServerStoppedEvent e)
-    {
+    public static void onServerStopped(ServerStoppedEvent e) {
         EMITTER_CHUNK_POSITIONS.clear();
         boundServer = null;
     }

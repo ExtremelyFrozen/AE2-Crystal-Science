@@ -8,127 +8,114 @@ import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
-import com.google.common.base.Preconditions;
+
 import net.minecraft.network.chat.Component;
+
+import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * 将一个 {@link GenericInternalInventory} 适配成同时实现 {@link MEStorage} 与 {@link GenericInternalInventory} 的包装器。
  *
- * <p>GenericInternalInventory 负责“按槽”的插入/提取与过滤（isAllowedIn 等）。
- * <p>MEStorage 视角下的 insert/extract 会跨槽聚合调用 delegate 的 slot insert/extract。
- * <p>其目的是简化{@link CombinedGenericInternalInventory}的批量插入/取出
+ * <p>
+ * GenericInternalInventory 负责“按槽”的插入/提取与过滤（isAllowedIn 等）。
+ * <p>
+ * MEStorage 视角下的 insert/extract 会跨槽聚合调用 delegate 的 slot insert/extract。
+ * <p>
+ * 其目的是简化{@link CombinedGenericInternalInventory}的批量插入/取出
  */
-public class GenericInvStorageAdapter implements MEStorage, GenericInternalInventory
-{
+public class GenericInvStorageAdapter implements MEStorage, GenericInternalInventory {
+
     protected final GenericInternalInventory delegate;
     private Component description = Component.empty();
 
-    public GenericInvStorageAdapter(GenericInternalInventory delegate)
-    {
+    public GenericInvStorageAdapter(GenericInternalInventory delegate) {
         this(delegate, Component.empty());
     }
 
-    public GenericInvStorageAdapter(GenericInternalInventory delegate, Component description)
-    {
+    public GenericInvStorageAdapter(GenericInternalInventory delegate, Component description) {
         this.delegate = Preconditions.checkNotNull(delegate, "delegate");
         this.description = description == null ? Component.empty() : description;
     }
 
     // GenericInternalInventory：直接委托
     @Override
-    public int size()
-    {
+    public int size() {
         return delegate.size();
     }
 
     @Override
-    public @Nullable GenericStack getStack(int slot)
-    {
+    public @Nullable GenericStack getStack(int slot) {
         return delegate.getStack(slot);
     }
 
     @Override
-    public @Nullable AEKey getKey(int slot)
-    {
+    public @Nullable AEKey getKey(int slot) {
         return delegate.getKey(slot);
     }
 
     @Override
-    public long getAmount(int slot)
-    {
+    public long getAmount(int slot) {
         return delegate.getAmount(slot);
     }
 
     @Override
-    public long getMaxAmount(AEKey key)
-    {
+    public long getMaxAmount(AEKey key) {
         return delegate.getMaxAmount(key);
     }
 
     @Override
-    public long getCapacity(AEKeyType keyType)
-    {
+    public long getCapacity(AEKeyType keyType) {
         return delegate.getCapacity(keyType);
     }
 
     @Override
-    public boolean canInsert()
-    {
+    public boolean canInsert() {
         return delegate.canInsert();
     }
 
     @Override
-    public boolean canExtract()
-    {
+    public boolean canExtract() {
         return delegate.canExtract();
     }
 
     @Override
-    public void setStack(int slot, @Nullable GenericStack newStack)
-    {
+    public void setStack(int slot, @Nullable GenericStack newStack) {
         delegate.setStack(slot, newStack);
     }
 
     @Override
-    public boolean isAllowed(AEKey aeKey)
-    {
+    public boolean isAllowed(AEKey aeKey) {
         return delegate.isAllowed(aeKey);
     }
 
     @Override
-    public long insert(int slot, AEKey what, long amount, Actionable mode)
-    {
+    public long insert(int slot, AEKey what, long amount, Actionable mode) {
         return delegate.insert(slot, what, amount, mode);
     }
 
     @Override
-    public long extract(int slot, AEKey what, long amount, Actionable mode)
-    {
+    public long extract(int slot, AEKey what, long amount, Actionable mode) {
         return delegate.extract(slot, what, amount, mode);
     }
 
     @Override
-    public void beginBatch()
-    {
+    public void beginBatch() {
         delegate.beginBatch();
     }
 
     @Override
-    public void endBatch()
-    {
+    public void endBatch() {
         delegate.endBatch();
     }
 
     @Override
-    public void endBatchSuppressed()
-    {
+    public void endBatchSuppressed() {
         delegate.endBatchSuppressed();
     }
 
     @Override
-    public void onChange()
-    {
+    public void onChange() {
         delegate.onChange();
     }
 
@@ -139,14 +126,11 @@ public class GenericInvStorageAdapter implements MEStorage, GenericInternalInven
      * ps：其实我觉得这个函数不太可能被调用
      */
     @Override
-    public boolean isPreferredStorageFor(AEKey what, IActionSource source)
-    {
+    public boolean isPreferredStorageFor(AEKey what, IActionSource source) {
         ObjectsCheck.checkPreconditions(what, 0, Actionable.SIMULATE, source);
-        for (int i = 0; i < size(); i++)
-        {
+        for (int i = 0; i < size(); i++) {
             AEKey key = getKey(i);
-            if (key != null && key.equals(what))
-            {
+            if (key != null && key.equals(what)) {
                 return true;
             }
         }
@@ -154,21 +138,17 @@ public class GenericInvStorageAdapter implements MEStorage, GenericInternalInven
     }
 
     @Override
-    public long insert(AEKey what, long amount, Actionable mode, IActionSource source)
-    {
+    public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
         ObjectsCheck.checkPreconditions(what, amount, mode, source);
 
-        if (amount == 0 || !canInsert() || !isAllowed(what))
-        {
+        if (amount == 0 || !canInsert() || !isAllowed(what)) {
             return 0;
         }
 
         long inserted = 0;
-        for (int slot = 0; slot < size() && inserted < amount; slot++)
-        {
+        for (int slot = 0; slot < size() && inserted < amount; slot++) {
             long delta = insert(slot, what, amount - inserted, mode);
-            if (delta > 0)
-            {
+            if (delta > 0) {
                 inserted += delta;
             }
         }
@@ -177,27 +157,22 @@ public class GenericInvStorageAdapter implements MEStorage, GenericInternalInven
     }
 
     @Override
-    public long extract(AEKey what, long amount, Actionable mode, IActionSource source)
-    {
+    public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
         ObjectsCheck.checkPreconditions(what, amount, mode, source);
 
-        if (amount == 0 || !canExtract())
-        {
+        if (amount == 0 || !canExtract()) {
             return 0;
         }
 
         long extracted = 0;
-        for (int slot = 0; slot < size() && extracted < amount; slot++)
-        {
+        for (int slot = 0; slot < size() && extracted < amount; slot++) {
             AEKey key = getKey(slot);
-            if (key == null || !key.equals(what))
-            {
+            if (key == null || !key.equals(what)) {
                 continue;
             }
 
             long delta = extract(slot, what, amount - extracted, mode);
-            if (delta > 0)
-            {
+            if (delta > 0) {
                 extracted += delta;
             }
         }
@@ -205,44 +180,36 @@ public class GenericInvStorageAdapter implements MEStorage, GenericInternalInven
         return extracted;
     }
 
-
     @Override
-    public void getAvailableStacks(KeyCounter out)
-    {
+    public void getAvailableStacks(KeyCounter out) {
         Preconditions.checkNotNull(out, "out");
-        for (int i = 0; i < size(); i++)
-        {
+        for (int i = 0; i < size(); i++) {
             GenericStack stack = getStack(i);
-            if (stack != null && stack.amount() > 0)
-            {
+            if (stack != null && stack.amount() > 0) {
                 out.add(stack.what(), stack.amount());
             }
         }
     }
 
     @Override
-    public Component getDescription()
-    {
+    public Component getDescription() {
         return description;
     }
 
-    public void setDescription(Component description)
-    {
+    public void setDescription(Component description) {
         this.description = description == null ? Component.empty() : description;
     }
 
-    public GenericInternalInventory getDelegate()
-    {
+    public GenericInternalInventory getDelegate() {
         return delegate;
     }
 
     /**
      * 小工具：复用 MEStorage 的前置条件检查风格，但不强依赖 AE 的静态方法（避免包依赖/可拷贝）。
      */
-    private static final class ObjectsCheck
-    {
-        static void checkPreconditions(AEKey what, long amount, Actionable mode, IActionSource source)
-        {
+    private static final class ObjectsCheck {
+
+        static void checkPreconditions(AEKey what, long amount, Actionable mode, IActionSource source) {
             Preconditions.checkNotNull(what, "what");
             Preconditions.checkNotNull(mode, "mode");
             Preconditions.checkNotNull(source, "source");

@@ -1,12 +1,13 @@
 package io.github.lounode.ae2cs.common.machine.component;
 
 import net.minecraft.util.StringRepresentable;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
-public enum SidePolicy implements StringRepresentable
-{
+public enum SidePolicy implements StringRepresentable {
+
     INSERT(true, false),
     EXTRACT(false, true),
     NONE(false, false),
@@ -15,25 +16,21 @@ public enum SidePolicy implements StringRepresentable
     final boolean allowInsert;
     final boolean allowExtract;
 
-    SidePolicy(boolean allowInsert, boolean allowExtract)
-    {
+    SidePolicy(boolean allowInsert, boolean allowExtract) {
         this.allowInsert = allowInsert;
         this.allowExtract = allowExtract;
     }
 
-    public boolean allowExtract()
-    {
+    public boolean allowExtract() {
         return allowExtract;
     }
 
-    public boolean allowInsert()
-    {
+    public boolean allowInsert() {
         return allowInsert;
     }
 
     @Override
-    public @NotNull String getSerializedName()
-    {
+    public @NotNull String getSerializedName() {
         return this.name().toLowerCase(Locale.ROOT);
     }
 }

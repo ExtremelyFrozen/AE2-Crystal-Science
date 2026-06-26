@@ -1,11 +1,10 @@
 package io.github.lounode.ae2cs.common.block.render;
 
-import appeng.api.orientation.IOrientationStrategy;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
 import io.github.lounode.ae2cs.common.block.entity.EnderEmitterBlockEntity;
 import io.github.lounode.ae2cs.common.init.client.AECSAdditionalModels;
+
+import appeng.api.orientation.IOrientationStrategy;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
@@ -24,15 +23,18 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.ModelData;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
 import java.util.List;
 
-public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlockEntity>
-{
-    private static final ResourceLocation WHITE_TEX =
-            ResourceLocation.tryBuild("minecraft", "textures/misc/white.png");
+public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlockEntity> {
+
+    private static final ResourceLocation WHITE_TEX = ResourceLocation.tryBuild("minecraft", "textures/misc/white.png");
 
     // 相机离 emitter 多近时显示
     private static final double SHOW_RANGE = 96.0;
@@ -52,21 +54,17 @@ public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlo
     // 最大连接范围（偏黄橙）
     private static final float MAX_R = 1.00f, MAX_G = 0.85f, MAX_B = 0.15f;
 
-    public EnderEmitterRenderer(BlockEntityRendererProvider.Context ctx)
-    {
-    }
+    public EnderEmitterRenderer(BlockEntityRendererProvider.Context ctx) {}
 
     @Override
     public void render(@NotNull EnderEmitterBlockEntity be, float partialTick,
                        @NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer,
-                       int packedLight, int packedOverlay)
-    {
+                       int packedLight, int packedOverlay) {
         var level = be.getLevel();
         if (level == null) return;
 
         // link status：必须放在 orientation 之外，否则线框/光束会被旋转
-        if (shouldRenderLinkStatus(be))
-        {
+        if (shouldRenderLinkStatus(be)) {
             renderLinkStatus(be, partialTick, poseStack, buffer);
         }
 
@@ -77,16 +75,13 @@ public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlo
         boolean active = be.isActive();
 
         BakedModel model = Minecraft.getInstance().getModelManager().getModel(
-                active ? AECSAdditionalModels.EMITTER_TOP_ON_MODEL : AECSAdditionalModels.EMITTER_TOP_OFF_MODEL
-        );
+                active ? AECSAdditionalModels.EMITTER_TOP_ON_MODEL : AECSAdditionalModels.EMITTER_TOP_OFF_MODEL);
 
         poseStack.pushPose();
-        try
-        {
+        try {
             applyAe2Orientation(state, poseStack);
 
-            if (active)
-            {
+            if (active) {
                 float angleDeg = ((level.getGameTime() + partialTick) * 6.0f) % 360.0f;
                 poseStack.translate(0.5, 0.5, 0.5);
                 poseStack.mulPose(Axis.YP.rotationDegrees(angleDeg));
@@ -103,11 +98,8 @@ public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlo
                     packedLight,
                     packedOverlay,
                     ModelData.EMPTY,
-                    rt
-            );
-        }
-        finally
-        {
+                    rt);
+        } finally {
             poseStack.popPose();
         }
     }
@@ -115,15 +107,13 @@ public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlo
     // ====== Offscreen & Culling Control ======
 
     @Override
-    public boolean shouldRenderOffScreen(@NotNull EnderEmitterBlockEntity be)
-    {
+    public boolean shouldRenderOffScreen(@NotNull EnderEmitterBlockEntity be) {
         // link status 打开时，允许离屏渲染（否则 BER 根本不会被调用）
         return shouldRenderLinkStatus(be);
     }
 
     @Override
-    public int getViewDistance()
-    {
+    public int getViewDistance() {
         return 96;
     }
 
@@ -131,8 +121,7 @@ public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlo
      * 渲染线框与光束
      */
     private static void renderLinkStatus(EnderEmitterBlockEntity be, float partialTick,
-                                         PoseStack poseStack, MultiBufferSource buffer)
-    {
+                                         PoseStack poseStack, MultiBufferSource buffer) {
         Level level = be.getLevel();
         if (level == null) return;
 
@@ -149,8 +138,7 @@ public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlo
         int packedOverlay = OverlayTexture.NO_OVERLAY;
 
         poseStack.pushPose();
-        try
-        {
+        try {
             // 画范围线框（局部坐标）
             renderChebyshevRangesLocal(poseStack, buffer, be);
 
@@ -165,14 +153,12 @@ public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlo
             Vector3f camL = new Vector3f(
                     (float) (camPosW.x - bePos.getX()),
                     (float) (camPosW.y - bePos.getY()),
-                    (float) (camPosW.z - bePos.getZ())
-            );
+                    (float) (camPosW.z - bePos.getZ()));
 
             // pending（淡红）
             List<BlockPos> pending = be.getPendingRenderPositionsSnapshot();
             int c1 = 0;
-            for (BlockPos target : pending)
-            {
+            for (BlockPos target : pending) {
                 if (++c1 > MAX_BEAMS_PER_SET) break;
                 if (!level.isLoaded(target)) continue;
 
@@ -189,8 +175,7 @@ public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlo
             // linked（深紫）
             List<BlockPos> linked = be.getLinkedRenderPositionsSnapshot();
             int c2 = 0;
-            for (BlockPos target : linked)
-            {
+            for (BlockPos target : linked) {
                 if (++c2 > MAX_BEAMS_PER_SET) break;
                 if (!level.isLoaded(target)) continue;
 
@@ -203,15 +188,12 @@ public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlo
                         0.55f, 0.05f, 1.00f, 0.80f,
                         packedLight, packedOverlay);
             }
-        }
-        finally
-        {
+        } finally {
             poseStack.popPose();
         }
     }
 
-    private static boolean shouldRenderLinkStatus(EnderEmitterBlockEntity be)
-    {
+    private static boolean shouldRenderLinkStatus(EnderEmitterBlockEntity be) {
         return be.shouldRenderLinkStatusForClient();
     }
 
@@ -220,8 +202,7 @@ public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlo
      */
     private static void renderChebyshevRangesLocal(PoseStack poseStack,
                                                    MultiBufferSource buffer,
-                                                   EnderEmitterBlockEntity be)
-    {
+                                                   EnderEmitterBlockEntity be) {
         int autoR = Mth.clamp(be.getLinkDistance(), 0, 512);
         int maxR = Mth.clamp(be.getMaxLinkDistanceForClient(), 0, 512);
         if (maxR < autoR) maxR = autoR;
@@ -231,15 +212,13 @@ public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlo
         AABB base = new AABB(0, 0, 0, 1, 1, 1);
 
         // 外层（最大范围）
-        if (maxR > 0)
-        {
+        if (maxR > 0) {
             AABB maxBox = base.inflate(maxR).inflate(RANGE_BOX_EPS);
             LevelRenderer.renderLineBox(poseStack, lineVc, maxBox, MAX_R, MAX_G, MAX_B, RANGE_LINE_ALPHA);
         }
 
         // 内层（自动范围）
-        if (autoR > 0)
-        {
+        if (autoR > 0) {
             AABB autoBox = base.inflate(autoR).inflate(RANGE_BOX_EPS);
             LevelRenderer.renderLineBox(poseStack, lineVc, autoBox, AUTO_R, AUTO_G, AUTO_B, RANGE_LINE_ALPHA);
         }
@@ -252,8 +231,7 @@ public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlo
                                            Vector3f startL, Vector3f endL, Vector3f camL,
                                            float width,
                                            float r, float g, float b, float a,
-                                           int packedLight, int packedOverlay)
-    {
+                                           int packedLight, int packedOverlay) {
         Vector3f dir = new Vector3f(endL).sub(startL);
         if (dir.lengthSquared() < 1.0e-6f) return;
         dir.normalize();
@@ -264,8 +242,7 @@ public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlo
         else toCam.normalize();
 
         Vector3f side1 = new Vector3f(dir).cross(toCam);
-        if (side1.lengthSquared() < 1.0e-6f)
-        {
+        if (side1.lengthSquared() < 1.0e-6f) {
             Vector3f fallback = Math.abs(dir.y()) < 0.99f ? new Vector3f(0, 1, 0) : new Vector3f(1, 0, 0);
             side1 = new Vector3f(dir).cross(fallback);
         }
@@ -283,8 +260,7 @@ public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlo
     private static void drawBeamQuadLocal(PoseStack.Pose pose, VertexConsumer vc,
                                           Vector3f startL, Vector3f endL, Vector3f side,
                                           float r, float g, float b, float a,
-                                          int packedLight, int packedOverlay)
-    {
+                                          int packedLight, int packedOverlay) {
         Vector3f s1 = new Vector3f(startL).add(side);
         Vector3f s2 = new Vector3f(startL).sub(side);
         Vector3f e1 = new Vector3f(endL).add(side);
@@ -308,8 +284,7 @@ public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlo
                                   Vector3f p, float u, float v,
                                   float r, float g, float b, float a,
                                   int packedLight, int packedOverlay,
-                                  float nx, float ny, float nz)
-    {
+                                  float nx, float ny, float nz) {
         vc.vertex(pose.pose(), p.x(), p.y(), p.z())
                 .color(r, g, b, a)
                 .uv(u, v)
@@ -319,8 +294,7 @@ public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlo
                 .endVertex();
     }
 
-    private static void applyAe2Orientation(BlockState state, PoseStack poseStack)
-    {
+    private static void applyAe2Orientation(BlockState state, PoseStack poseStack) {
         IOrientationStrategy strategy = IOrientationStrategy.get(state);
         Direction facing = strategy.getFacing(state);
         int spin = Mth.positiveModulo(strategy.getSpin(state), 4);
@@ -332,11 +306,9 @@ public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlo
         rotateNorthToFacing(facing, poseStack);
 
         // 围绕 facing 轴做 spin（0/90/180/270）
-        if (spin != 0)
-        {
+        if (spin != 0) {
             float deg = spin * 90.0f;
-            switch (facing.getAxis())
-            {
+            switch (facing.getAxis()) {
                 case X -> poseStack.mulPose((facing == Direction.EAST ? Axis.XP : Axis.XN).rotationDegrees(deg));
                 case Y -> poseStack.mulPose((facing == Direction.UP ? Axis.YP : Axis.YN).rotationDegrees(deg));
                 case Z -> poseStack.mulPose((facing == Direction.SOUTH ? Axis.ZP : Axis.ZN).rotationDegrees(deg));
@@ -346,13 +318,9 @@ public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlo
         poseStack.translate(-0.5, -0.5, -0.5);
     }
 
-    private static void rotateNorthToFacing(Direction facing, PoseStack poseStack)
-    {
-        switch (facing)
-        {
-            case NORTH ->
-            {
-            }
+    private static void rotateNorthToFacing(Direction facing, PoseStack poseStack) {
+        switch (facing) {
+            case NORTH -> {}
             case SOUTH -> poseStack.mulPose(Axis.YP.rotationDegrees(180.0f));
 
             case EAST -> poseStack.mulPose(Axis.YP.rotationDegrees(-90.0f));

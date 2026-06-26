@@ -1,7 +1,5 @@
 package io.github.lounode.ae2cs.client.gui.linker.broadcast;
 
-import appeng.client.gui.implementations.UpgradeableScreen;
-import appeng.client.gui.style.StyleManager;
 import io.github.lounode.ae2cs.client.gui.icon.AECSIcon;
 import io.github.lounode.ae2cs.client.gui.icon.AdaptedAE2Icon;
 import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
@@ -9,49 +7,51 @@ import io.github.lounode.ae2cs.client.gui.widgets.AECSIconButton;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSToggleButton;
 import io.github.lounode.ae2cs.common.block.entity.EnderBroadcasterBlockEntity;
 import io.github.lounode.ae2cs.common.menu.linker.broadcast.EnderBroadcasterMenu;
+
+import appeng.client.gui.implementations.UpgradeableScreen;
+import appeng.client.gui.style.StyleManager;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+
 import org.jetbrains.annotations.NotNull;
 
-public class EnderBroadcasterGUI extends UpgradeableScreen<EnderBroadcasterMenu>
-{
+public class EnderBroadcasterGUI extends UpgradeableScreen<EnderBroadcasterMenu> {
+
     // 通用
     private final AECSIconButton openFrequencyViewMenuButton;
     private final AECSIconButton openFrequencyBandCreateMenuButton;
     private final AECSIconButton openFrequencyBandManagerMenuButton;
     private final AECSToggleButton toggleBandLinkButton;
     private final AECSIconButton cleanLinkerConnectionButton;
-    public EnderBroadcasterGUI(EnderBroadcasterMenu menu, Inventory inv, Component title)
-    {
+
+    public EnderBroadcasterGUI(EnderBroadcasterMenu menu, Inventory inv, Component title) {
         super(menu, inv, title, StyleManager.loadStyleDoc("/screens/ender_broadcaster_menu.json"));
 
-        openFrequencyViewMenuButton = new AECSIconButton(button -> menu.sendFrequencyBandMenuAction())
-        {
+        openFrequencyViewMenuButton = new AECSIconButton(button -> menu.sendFrequencyBandMenuAction()) {
+
             @Override
-            protected @NotNull IButtonIcon getIcon()
-            {
+            protected @NotNull IButtonIcon getIcon() {
                 return AECSIcon.BAND_VIEW;
             }
         };
         this.openFrequencyViewMenuButton.setMessage(Component.translatable("ae2cs.menu.ender_broadcaster.button.open_frequency_view_menu"));
         addToLeftToolbar(openFrequencyViewMenuButton);
 
-        openFrequencyBandCreateMenuButton = new AECSIconButton(button -> menu.sendOpenFrequencyBandCreateMenuAction())
-        {
+        openFrequencyBandCreateMenuButton = new AECSIconButton(button -> menu.sendOpenFrequencyBandCreateMenuAction()) {
+
             @Override
-            protected @NotNull IButtonIcon getIcon()
-            {
+            protected @NotNull IButtonIcon getIcon() {
                 return AECSIcon.BAND_CREATE;
             }
         };
         this.openFrequencyBandCreateMenuButton.setMessage(Component.translatable("ae2cs.menu.ender_broadcaster.button.open_frequency_create_menu"));
         addToLeftToolbar(openFrequencyBandCreateMenuButton);
 
-        openFrequencyBandManagerMenuButton = new AECSIconButton(button -> menu.sendOpenFrequencyBandManagerMenuAction())
-        {
+        openFrequencyBandManagerMenuButton = new AECSIconButton(button -> menu.sendOpenFrequencyBandManagerMenuAction()) {
+
             @Override
-            protected @NotNull IButtonIcon getIcon()
-            {
+            protected @NotNull IButtonIcon getIcon() {
                 return AECSIcon.BAND_MANAGER;
             }
         };
@@ -65,11 +65,10 @@ public class EnderBroadcasterGUI extends UpgradeableScreen<EnderBroadcasterMenu>
                 state -> menu.sendToggleLinkerSideAction());
         addToLeftToolbar(toggleBandLinkButton);
 
-        cleanLinkerConnectionButton = new AECSIconButton(button -> menu.sendCleanLinkerConnectionAction())
-        {
+        cleanLinkerConnectionButton = new AECSIconButton(button -> menu.sendCleanLinkerConnectionAction()) {
+
             @Override
-            protected @NotNull IButtonIcon getIcon()
-            {
+            protected @NotNull IButtonIcon getIcon() {
                 return AdaptedAE2Icon.CLEAR;
             }
         };
@@ -78,16 +77,12 @@ public class EnderBroadcasterGUI extends UpgradeableScreen<EnderBroadcasterMenu>
     }
 
     @Override
-    protected void updateBeforeRender()
-    {
+    protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        Component bandValue = menu.bandName.isEmpty()
-                ? Component.translatable("ae2cs.menu.ender_broadcaster.none")
-                : Component.literal(menu.bandName);
+        Component bandValue = menu.bandName.isEmpty() ? Component.translatable("ae2cs.menu.ender_broadcaster.none") : Component.literal(menu.bandName);
 
-        Component typeText = switch (menu.connectionType)
-        {
+        Component typeText = switch (menu.connectionType) {
             case AS_SENDER -> Component.translatable("ae2cs.menu.ender_broadcaster.connection_type.as_sender");
             case AS_RECEIVER -> Component.translatable("ae2cs.menu.ender_broadcaster.connection_type.as_receiver");
             case NO_CONNECTION -> Component.translatable("ae2cs.menu.ender_broadcaster.connection_type.no_connection");
@@ -101,11 +96,8 @@ public class EnderBroadcasterGUI extends UpgradeableScreen<EnderBroadcasterMenu>
         setTextContent("band_channels", Component.translatable("ae2cs.menu.ender_broadcaster.band_channels", menu.bandUsedChannels, menu.bandTotalChannels));
         setTextHidden("band_channels", !isReceiver && !isSender);
 
-        setTextContent("mode_details_value", isReceiver
-                ? Component.translatable("ae2cs.menu.ender_broadcaster.receiver_actual_channels", menu.receiverUsedChannels)
-                : Component.translatable("ae2cs.menu.ender_broadcaster.sender_sent_channels", menu.senderAvailableChannels));
+        setTextContent("mode_details_value", isReceiver ? Component.translatable("ae2cs.menu.ender_broadcaster.receiver_actual_channels", menu.receiverUsedChannels) : Component.translatable("ae2cs.menu.ender_broadcaster.sender_sent_channels", menu.senderAvailableChannels));
         setTextHidden("mode_details_value", !isReceiver && !isSender);
-
 
         toggleBandLinkButton.setState(isSender);
         toggleBandLinkButton.setVisibility(isReceiver || isSender);

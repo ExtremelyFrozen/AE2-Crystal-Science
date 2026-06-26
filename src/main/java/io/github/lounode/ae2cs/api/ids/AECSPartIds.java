@@ -1,7 +1,7 @@
 package io.github.lounode.ae2cs.api.ids;
 
-public class AECSPartIds
-{
+public class AECSPartIds {
+
     public static final String ENDER_INTERFACE = "ender_interface_part";
     public static final String EX_ENDER_INTERFACE = "extended_ender_interface_part";
     public static final String INTEGRATED_INTERFACE = "integrated_interface_part";

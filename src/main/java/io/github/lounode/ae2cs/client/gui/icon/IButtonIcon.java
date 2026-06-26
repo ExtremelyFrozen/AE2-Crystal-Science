@@ -6,7 +6,7 @@ import appeng.client.gui.style.Blitter;
  * 用于提供按钮图标信息，以描述按钮如何渲染
  */
 @FunctionalInterface
-public interface IButtonIcon
-{
+public interface IButtonIcon {
+
     Blitter getBlitter();
 }

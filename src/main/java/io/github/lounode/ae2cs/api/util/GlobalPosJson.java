@@ -12,26 +12,22 @@ import java.util.Objects;
 /**
  * 用于 Gson 序列化的 GlobalPos 包装：dimensionId + x/y/z
  */
-public record GlobalPosJson(String dimensionId, int x, int y, int z)
-{
-    public static GlobalPosJson from(GlobalPos pos)
-    {
+public record GlobalPosJson(String dimensionId, int x, int y, int z) {
+
+    public static GlobalPosJson from(GlobalPos pos) {
         Objects.requireNonNull(pos, "pos");
         String dim = pos.dimension().location().toString();
         BlockPos bp = pos.pos();
         return new GlobalPosJson(dim, bp.getX(), bp.getY(), bp.getZ());
     }
 
-    public GlobalPos toGlobalPos()
-    {
-        if (dimensionId == null || dimensionId.isBlank())
-        {
+    public GlobalPos toGlobalPos() {
+        if (dimensionId == null || dimensionId.isBlank()) {
             throw new IllegalStateException("dimensionId is blank");
         }
 
         ResourceLocation id = ResourceLocation.tryParse(dimensionId);
-        if (id == null)
-        {
+        if (id == null) {
             throw new IllegalStateException("Invalid dimensionId: " + dimensionId);
         }
 

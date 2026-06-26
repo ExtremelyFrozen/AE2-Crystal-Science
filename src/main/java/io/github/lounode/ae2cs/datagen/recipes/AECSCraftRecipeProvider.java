@@ -1,14 +1,16 @@
 package io.github.lounode.ae2cs.datagen.recipes;
 
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
-import appeng.core.definitions.AEParts;
-import appeng.datagen.providers.tags.ConventionTags;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSParts;
 import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
+
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.core.definitions.AEParts;
+import appeng.datagen.providers.tags.ConventionTags;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -18,28 +20,25 @@ import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-public class AECSCraftRecipeProvider extends AECSRecipeProvider
-{
-    public AECSCraftRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries)
-    {
+public class AECSCraftRecipeProvider extends AECSRecipeProvider {
+
+    public AECSCraftRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries);
     }
 
     @Override
-    public @NotNull String getName()
-    {
+    public @NotNull String getName() {
         return "AECS Crafting Recipes";
     }
 
     @Override
-    protected void buildRecipes(@NotNull Consumer<FinishedRecipe> recipeOutput)
-    {
-
+    protected void buildRecipes(@NotNull Consumer<FinishedRecipe> recipeOutput) {
         // 块配方
         pack2x2(recipeOutput, RecipeCategory.MISC, AECSItems.PURE_CERTUS_QUARTZ_CRYSTAL, AEBlocks.QUARTZ_BLOCK);
         pack2x2(recipeOutput, RecipeCategory.MISC, AECSItems.PURE_FLUIX_CRYSTAL, AEBlocks.FLUIX_BLOCK);

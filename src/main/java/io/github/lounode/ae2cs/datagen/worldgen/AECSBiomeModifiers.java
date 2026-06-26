@@ -1,6 +1,7 @@
 package io.github.lounode.ae2cs.datagen.worldgen;
 
 import io.github.lounode.ae2cs.AE2CrystalScience;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
@@ -15,13 +16,12 @@ import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.common.world.ForgeBiomeModifiers;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class AECSBiomeModifiers
-{
+public class AECSBiomeModifiers {
+
     public static final ResourceKey<BiomeModifier> ADD_CERTUS_QUARTZ_ORES = ResourceKey.create(
             ForgeRegistries.Keys.BIOME_MODIFIERS, AE2CrystalScience.makeId("add_certus_quartz_ores"));
 
-    public static void bootstrap(BootstapContext<BiomeModifier> context)
-    {
+    public static void bootstrap(BootstapContext<BiomeModifier> context) {
         HolderGetter<Biome> biomeLookup = context.lookup(Registries.BIOME);
         HolderGetter<PlacedFeature> placedLookup = context.lookup(Registries.PLACED_FEATURE);
 
@@ -33,7 +33,6 @@ public class AECSBiomeModifiers
         HolderSet<PlacedFeature> features = HolderSet.direct(certusPlaced, chargedPlaced);
 
         context.register(ADD_CERTUS_QUARTZ_ORES, new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
-                overworldBiomes, features, GenerationStep.Decoration.UNDERGROUND_ORES
-        ));
+                overworldBiomes, features, GenerationStep.Decoration.UNDERGROUND_ORES));
     }
 }

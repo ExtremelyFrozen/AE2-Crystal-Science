@@ -1,40 +1,39 @@
 package io.github.lounode.ae2cs.datagen.recipes;
 
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
-import appeng.datagen.providers.tags.ConventionTags;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalPulverizerRecipeBuilder;
+
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.datagen.providers.tags.ConventionTags;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-public class AECSPulverizerRecipeProvider extends AECSRecipeProvider
-{
-    public AECSPulverizerRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries)
-    {
+public class AECSPulverizerRecipeProvider extends AECSRecipeProvider {
+
+    public AECSPulverizerRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries);
     }
 
     @Override
-    public @NotNull String getName()
-    {
+    public @NotNull String getName() {
         return "AECS Pulverizer Recipes";
     }
 
     @Override
-    protected void buildRecipes(@NotNull Consumer<FinishedRecipe> recipeOutput)
-    {
-
+    protected void buildRecipes(@NotNull Consumer<FinishedRecipe> recipeOutput) {
         CrystalPulverizerRecipeBuilder.pulverizing(AECSItems.FLOUR, 2, 8000)
                 .require(Tags.Items.CROPS_WHEAT, 1)
                 .save(recipeOutput);

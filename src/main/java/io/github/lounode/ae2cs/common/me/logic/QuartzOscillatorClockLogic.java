@@ -1,5 +1,8 @@
 package io.github.lounode.ae2cs.common.me.logic;
 
+import io.github.lounode.ae2cs.api.settings.AECSSettings;
+import io.github.lounode.ae2cs.api.settings.SoundMode;
+
 import appeng.api.config.RedstoneMode;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
@@ -14,8 +17,7 @@ import appeng.api.util.IConfigurableObject;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.util.ConfigManager;
-import io.github.lounode.ae2cs.api.settings.AECSSettings;
-import io.github.lounode.ae2cs.api.settings.SoundMode;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
@@ -26,8 +28,8 @@ import net.minecraft.world.level.Level;
 
 import java.util.List;
 
-public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigurableObject
-{
+public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigurableObject {
+
     /**
      * 输出翻转后，输入采样冷却（避免输出回灌）
      */
@@ -84,8 +86,7 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
      */
     private int inputSampleCooldown = 0;
 
-    public QuartzOscillatorClockLogic(IManagedGridNode gridNode, QuartzOscillatorClockHost host, Item is)
-    {
+    public QuartzOscillatorClockLogic(IManagedGridNode gridNode, QuartzOscillatorClockHost host, Item is) {
         this.host = host;
         this.mainNode = gridNode
                 .setFlags()
@@ -98,13 +99,11 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
         this.upgrades = UpgradeInventories.forMachine(is, 1, this::onUpgradesChange);
     }
 
-    public int getCurrentHold()
-    {
+    public int getCurrentHold() {
         return currentHold;
     }
 
-    public void setCurrentHold(int currentHold)
-    {
+    public void setCurrentHold(int currentHold) {
         int newHold = Math.max(1, currentHold);
         newHold = Math.min(newHold, 12000);
         if (this.currentHold == newHold) return;
@@ -112,21 +111,18 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
         this.currentHold = newHold;
 
         // 只保证倒计时合法；真正的排程由tickServer统一修正
-        if (this.currentCountDown <= 0 || this.currentCountDown > this.currentHold)
-        {
+        if (this.currentCountDown <= 0 || this.currentCountDown > this.currentHold) {
             this.currentCountDown = this.currentHold;
         }
 
         this.host.saveChanges();
     }
 
-    public int getPulseWidthTicks()
-    {
+    public int getPulseWidthTicks() {
         return pulseWidthTicks;
     }
 
-    public void setPulseWidthTicks(int newValue)
-    {
+    public void setPulseWidthTicks(int newValue) {
         newValue = Math.max(1, newValue);
         newValue = Math.min(newValue, 12000);
         if (this.pulseWidthTicks == newValue) return;
@@ -136,23 +132,17 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
         this.host.saveChanges();
     }
 
-    private void onUpgradesChange()
-    {
-        if (this.upgrades.isInstalled(AEItems.REDSTONE_CARD))
-        {
+    private void onUpgradesChange() {
+        if (this.upgrades.isInstalled(AEItems.REDSTONE_CARD)) {
             this.currentRedStoneMode = this.cm.getSetting(AECSSettings.REDSTONE_CONTROLLED_NO_PULSE);
-        }
-        else
-        {
+        } else {
             this.currentRedStoneMode = RedstoneMode.IGNORE;
         }
         this.host.saveChanges();
     }
 
-    private void onConfigManagerChange()
-    {
-        if (!this.upgrades.isInstalled(AEItems.REDSTONE_CARD))
-        {
+    private void onConfigManagerChange() {
+        if (!this.upgrades.isInstalled(AEItems.REDSTONE_CARD)) {
             return;
         }
 
@@ -160,8 +150,7 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
         this.host.saveChanges();
     }
 
-    private boolean isPulsing(Level level)
-    {
+    private boolean isPulsing(Level level) {
         return this.pulseEndGameTime >= 0 && level.getGameTime() < this.pulseEndGameTime;
     }
 
@@ -170,17 +159,14 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
      * - 自己正在输出（或刚翻转输出）时，不采样邻居信号，直接返回缓存值，避免回灌死锁
      * - 自己不输出时：允许采样并刷新缓存
      */
-    private boolean getExternalPowered(Level level, BlockPos pos)
-    {
+    private boolean getExternalPowered(Level level, BlockPos pos) {
         // 脉冲期间不采样，避免读到自己输出形成的回灌
-        if (this.pulseEndGameTime >= 0)
-        {
+        if (this.pulseEndGameTime >= 0) {
             return this.cachedExternalPowered;
         }
 
         // 输出刚翻转后的冷却期不采样
-        if (this.inputSampleCooldown > 0)
-        {
+        if (this.inputSampleCooldown > 0) {
             this.inputSampleCooldown--;
             return this.cachedExternalPowered;
         }
@@ -190,17 +176,14 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
         return powered;
     }
 
-    private boolean isAllowedByRedstoneMode(Level level, BlockPos pos)
-    {
-        if (this.currentRedStoneMode == RedstoneMode.IGNORE)
-        {
+    private boolean isAllowedByRedstoneMode(Level level, BlockPos pos) {
+        if (this.currentRedStoneMode == RedstoneMode.IGNORE) {
             return true;
         }
 
         boolean powered = getExternalPowered(level, pos);
 
-        return switch (this.currentRedStoneMode)
-        {
+        return switch (this.currentRedStoneMode) {
             case HIGH_SIGNAL -> powered;
             case LOW_SIGNAL -> !powered;
             default -> true;
@@ -211,10 +194,8 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
      * 开始一次脉冲：只负责拉高输出并设置 pulseEndGameTime。
      * 注意：下一次脉冲的倒计时从“脉冲结束”开始，所以这里不推进/不消耗 countdown。
      */
-    private void beginPulse(Level level, BlockPos pos)
-    {
-        if (isPulsing(level))
-        {
+    private void beginPulse(Level level, BlockPos pos) {
+        if (isPulsing(level)) {
             return;
         }
 
@@ -231,8 +212,7 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
         this.inputSampleCooldown = INPUT_SAMPLE_COOLDOWN_TICKS;
 
         // 声效
-        if (getConfigManager().getSetting(AECSSettings.SOUND_MODE) == SoundMode.UNMUTE)
-        {
+        if (getConfigManager().getSetting(AECSSettings.SOUND_MODE) == SoundMode.UNMUTE) {
             level.playSound(null, pos, SoundEvents.STONE_BUTTON_CLICK_ON, SoundSource.BLOCKS);
         }
     }
@@ -240,10 +220,8 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
     /**
      * 结束脉冲，并从“当前时刻”开始排程下一次脉冲：now + hold
      */
-    private void endPulse(Level level, BlockPos pos)
-    {
-        if (this.pulseEndGameTime < 0)
-        {
+    private void endPulse(Level level, BlockPos pos) {
+        if (this.pulseEndGameTime < 0) {
             return;
         }
 
@@ -259,17 +237,14 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
         this.nextPulseGameTime = level.getGameTime() + hold;
 
         // 声效
-        if (getConfigManager().getSetting(AECSSettings.SOUND_MODE) == SoundMode.UNMUTE)
-        {
+        if (getConfigManager().getSetting(AECSSettings.SOUND_MODE) == SoundMode.UNMUTE) {
             level.playSound(null, pos, SoundEvents.STONE_BUTTON_CLICK_OFF, SoundSource.BLOCKS);
         }
     }
 
-    private void tickServer(Level level, BlockPos pos, int ticksSinceLastCall)
-    {
+    private void tickServer(Level level, BlockPos pos, int ticksSinceLastCall) {
         // 统一在首次server tick把世界输出对齐为未脉冲
-        if (this.pendingPulseSync)
-        {
+        if (this.pendingPulseSync) {
             this.pendingPulseSync = false;
 
             this.pulseEndGameTime = -1;
@@ -278,8 +253,7 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
 
             // 读档后：把 nextPulseGameTime 对齐为 “now + currentCountDown”
             int hold = Math.max(1, this.currentHold);
-            if (this.currentCountDown <= 0 || this.currentCountDown > hold)
-            {
+            if (this.currentCountDown <= 0 || this.currentCountDown > hold) {
                 this.currentCountDown = hold;
             }
             this.nextPulseGameTime = level.getGameTime() + this.currentCountDown;
@@ -289,18 +263,15 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
         }
 
         // 如果正在脉冲：只负责收尾，不推进倒计时（倒计时从脉冲结束开始）
-        if (this.pulseEndGameTime >= 0)
-        {
-            if (level.getGameTime() >= this.pulseEndGameTime)
-            {
+        if (this.pulseEndGameTime >= 0) {
+            if (level.getGameTime() >= this.pulseEndGameTime) {
                 endPulse(level, pos);
             }
             return;
         }
 
         // 红石模式不允许：不走倒计时、不触发新脉冲
-        if (!isAllowedByRedstoneMode(level, pos))
-        {
+        if (!isAllowedByRedstoneMode(level, pos)) {
             return;
         }
 
@@ -308,10 +279,8 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
         int hold = Math.max(1, this.currentHold);
 
         // 未排程则用当前倒计时排一次
-        if (this.nextPulseGameTime < 0)
-        {
-            if (this.currentCountDown <= 0 || this.currentCountDown > hold)
-            {
+        if (this.nextPulseGameTime < 0) {
+            if (this.currentCountDown <= 0 || this.currentCountDown > hold) {
                 this.currentCountDown = hold;
             }
             this.nextPulseGameTime = level.getGameTime() + this.currentCountDown;
@@ -320,8 +289,7 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
         long now = level.getGameTime();
         long remaining = this.nextPulseGameTime - now;
 
-        if (remaining > 0)
-        {
+        if (remaining > 0) {
             // 只在非脉冲时更新 countdown 显示/存档值
             this.currentCountDown = (int) Math.min(hold, remaining);
             return;
@@ -334,8 +302,7 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
     /**
      * 为了防止setPulseActive在某些实现可能跳过邻居通知，我们在这里手动进行通知，必须跟在setPulseActive后调用
      */
-    private void notifyRedstone(Level level, BlockPos pos)
-    {
+    private void notifyRedstone(Level level, BlockPos pos) {
         if (level == null || pos == null) return;
 
         // 宿主方块位置
@@ -347,8 +314,7 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
         level.updateNeighbourForOutputSignal(pos, block);
     }
 
-    public void writeToNBT(CompoundTag tag)
-    {
+    public void writeToNBT(CompoundTag tag) {
         this.upgrades.writeToNBT(tag, "upgrades");
         this.cm.writeToNBT(tag);
 
@@ -357,8 +323,7 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
         tag.putInt("current_countdown", this.currentCountDown);
     }
 
-    public void readFromNBT(CompoundTag tag)
-    {
+    public void readFromNBT(CompoundTag tag) {
         this.upgrades.readFromNBT(tag, "upgrades");
         this.cm.readFromNBT(tag);
 
@@ -383,67 +348,55 @@ public class QuartzOscillatorClockLogic implements IUpgradeableObject, IConfigur
         this.inputSampleCooldown = INPUT_SAMPLE_COOLDOWN_TICKS;
 
         int hold = Math.max(1, this.currentHold);
-        if (this.currentCountDown <= 0 || this.currentCountDown > hold)
-        {
+        if (this.currentCountDown <= 0 || this.currentCountDown > hold) {
             this.currentCountDown = hold;
         }
     }
 
     @Override
-    public IConfigManager getConfigManager()
-    {
+    public IConfigManager getConfigManager() {
         return this.cm;
     }
 
     @Override
-    public IUpgradeInventory getUpgrades()
-    {
+    public IUpgradeInventory getUpgrades() {
         return this.upgrades;
     }
 
-    public void addDrops(List<ItemStack> drops)
-    {
-        for (ItemStack stack : upgrades)
-        {
+    public void addDrops(List<ItemStack> drops) {
+        for (ItemStack stack : upgrades) {
             drops.add(stack);
         }
     }
 
-    public void clearContent()
-    {
+    public void clearContent() {
         upgrades.clear();
     }
 
+    private class Ticker implements IGridTickable {
 
-    private class Ticker implements IGridTickable
-    {
         @Override
-        public TickingRequest getTickingRequest(IGridNode node)
-        {
+        public TickingRequest getTickingRequest(IGridNode node) {
             return new TickingRequest(TickRates.IOPort, false, true);
         }
 
         @Override
-        public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall)
-        {
+        public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
             var be = host.getBlockEntity();
             var level = be.getLevel();
 
-            if (level == null || level.isClientSide)
-            {
+            if (level == null || level.isClientSide) {
                 return TickRateModulation.IDLE;
             }
 
             var pos = be.getBlockPos();
             tickServer(level, pos, ticksSinceLastCall);
 
-            if (isPulsing(level))
-            {
+            if (isPulsing(level)) {
                 return TickRateModulation.URGENT;
             }
 
-            if (isAllowedByRedstoneMode(level, pos))
-            {
+            if (isAllowedByRedstoneMode(level, pos)) {
                 return TickRateModulation.URGENT;
             }
 

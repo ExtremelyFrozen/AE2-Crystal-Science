@@ -1,5 +1,11 @@
 package io.github.lounode.ae2cs.common.me.part;
 
+import io.github.lounode.ae2cs.AE2CrystalScience;
+import io.github.lounode.ae2cs.common.init.AECSMenus;
+import io.github.lounode.ae2cs.common.init.AECSParts;
+import io.github.lounode.ae2cs.common.me.logic.EnderInterfaceHost;
+import io.github.lounode.ae2cs.common.me.logic.EnderInterfaceLogic;
+
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
@@ -10,12 +16,7 @@ import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocator;
 import appeng.parts.PartModel;
 import appeng.parts.misc.InterfacePart;
-import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.lounode.ae2cs.AE2CrystalScience;
-import io.github.lounode.ae2cs.common.init.AECSMenus;
-import io.github.lounode.ae2cs.common.init.AECSParts;
-import io.github.lounode.ae2cs.common.me.logic.EnderInterfaceHost;
-import io.github.lounode.ae2cs.common.me.logic.EnderInterfaceLogic;
+
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -27,8 +28,10 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class EnderInterfacePart extends InterfacePart implements EnderInterfaceHost
-{
+import com.mojang.blaze3d.vertex.PoseStack;
+
+public class EnderInterfacePart extends InterfacePart implements EnderInterfaceHost {
+
     public static final ResourceLocation MODEL_BASE = AE2CrystalScience.makeId(
             "part/ender_interface/base");
 
@@ -59,78 +62,62 @@ public class EnderInterfacePart extends InterfacePart implements EnderInterfaceH
     public static final PartModel EXTENDED_MODELS_HAS_CHANNEL = new PartModel(MODEL_EXTENDED,
             AppEng.makeId("part/interface_has_channel"));
 
-
-    public EnderInterfacePart(IPartItem<?> partItem)
-    {
+    public EnderInterfacePart(IPartItem<?> partItem) {
         super(partItem);
     }
 
     @Override
-    public IPartModel getStaticModels()
-    {
-        if (this.isActive() && this.isPowered())
-        {
+    public IPartModel getStaticModels() {
+        if (this.isActive() && this.isPowered()) {
             return isExtended() ? EXTENDED_MODELS_HAS_CHANNEL : MODELS_HAS_CHANNEL;
-        }
-        else if (this.isPowered())
-        {
+        } else if (this.isPowered()) {
             return isExtended() ? EXTENDED_MODELS_ON : MODELS_ON;
-        }
-        else
-        {
+        } else {
             return isExtended() ? EXTENDED_MODELS_OFF : MODELS_OFF;
         }
     }
 
     @Override
-    public boolean isExtended()
-    {
+    public boolean isExtended() {
         return this.getPartItem() == AECSParts.EX_ENDER_INTERFACE_PART.get();
     }
 
     @Override
-    protected InterfaceLogic createLogic()
-    {
+    protected InterfaceLogic createLogic() {
         int slotSize = 9;
         int absorbConfigSlots = isExtended() ? 36 : 18;
         return new EnderInterfaceLogic(getMainNode(), this, getPartItem().asItem(), slotSize, absorbConfigSlots);
     }
 
     @Override
-    public void openMenu(Player player, MenuLocator locator)
-    {
+    public void openMenu(Player player, MenuLocator locator) {
         MenuOpener.open(AECSMenus.ENDER_INTERFACE_MENU.get(), player, locator);
     }
 
     @Override
-    public void returnToMainMenu(Player player, ISubMenu subMenu)
-    {
+    public void returnToMainMenu(Player player, ISubMenu subMenu) {
         MenuOpener.returnTo(AECSMenus.ENDER_INTERFACE_MENU.get(), player, subMenu.getLocator());
     }
 
     @Override
-    public ItemStack getMainMenuIcon()
-    {
+    public ItemStack getMainMenuIcon() {
         return new ItemStack(getPartItem());
     }
 
     @Override
-    public EnderInterfaceLogic getEnderInterfaceLogic()
-    {
+    public EnderInterfaceLogic getEnderInterfaceLogic() {
         return (EnderInterfaceLogic) getInterfaceLogic();
     }
 
     @Override
-    public void writeToStream(FriendlyByteBuf data)
-    {
+    public void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeBoolean(this.getEnderInterfaceLogic().isRenderRangeInClient());
         data.writeInt(this.getEnderInterfaceLogic().getRange());
     }
 
     @Override
-    public boolean readFromStream(FriendlyByteBuf data)
-    {
+    public boolean readFromStream(FriendlyByteBuf data) {
         super.readFromStream(data);
         this.getEnderInterfaceLogic().setRenderRangeInClient(data.readBoolean());
         this.getEnderInterfaceLogic().setRange(data.readInt());
@@ -138,44 +125,37 @@ public class EnderInterfacePart extends InterfacePart implements EnderInterfaceH
     }
 
     @Override
-    public void markForLogicClientUpdate()
-    {
-        if (this.getBlockEntity().getLevel() != null && !this.getBlockEntity().getLevel().isClientSide())
-        {
+    public void markForLogicClientUpdate() {
+        if (this.getBlockEntity().getLevel() != null && !this.getBlockEntity().getLevel().isClientSide()) {
             this.getHost().markForUpdate();
         }
     }
 
     @Override
-    public boolean requireDynamicRender()
-    {
+    public boolean requireDynamicRender() {
         return true;
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void renderDynamic(float partialTicks, PoseStack poseStack, MultiBufferSource buffers, int combinedLightIn, int combinedOverlayIn)
-    {
+    public void renderDynamic(float partialTicks, PoseStack poseStack, MultiBufferSource buffers, int combinedLightIn, int combinedOverlayIn) {
         if (!getEnderInterfaceLogic().isRenderRangeInClient()) return;
 
         super.renderDynamic(partialTicks, poseStack, buffers, combinedLightIn, combinedOverlayIn);
 
         var logic = this.getEnderInterfaceLogic();
-        if (logic == null || !logic.isRenderRangeInClient())
-        {
+        if (logic == null || !logic.isRenderRangeInClient()) {
             return;
         }
 
         int r = logic.getRange();
-        if (r <= 0)
-        {
+        if (r <= 0) {
             return;
         }
 
         var aabb = new AABB(
                 -r, -r, -r,
-                r + 1.0, r + 1.0, r + 1.0
-        );
+                r + 1.0, r + 1.0, r + 1.0);
 
         var consumer = buffers.getBuffer(RenderType.lines());
 
@@ -183,7 +163,6 @@ public class EnderInterfacePart extends InterfacePart implements EnderInterfaceH
 
         LevelRenderer.renderLineBox(
                 poseStack, consumer, aabb,
-                red, green, blue, alpha
-        );
+                red, green, blue, alpha);
     }
 }

@@ -1,7 +1,7 @@
 package io.github.lounode.ae2cs.api.ids;
 
-public class AECSItemIds
-{
+public class AECSItemIds {
+
     // 水晶
     public static final String PURE_CERTUS_QUARTZ_CRYSTAL = "purified_certus_quartz_crystal";
     public static final String PURE_FLUIX_CRYSTAL = "purified_fluix_crystal";

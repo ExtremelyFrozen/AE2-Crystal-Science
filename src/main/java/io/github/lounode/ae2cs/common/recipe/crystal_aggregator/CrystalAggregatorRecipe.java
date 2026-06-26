@@ -4,6 +4,7 @@ import io.github.lounode.ae2cs.common.init.AECSRecipeSerializers;
 import io.github.lounode.ae2cs.common.init.AECSRecipeTypes;
 import io.github.lounode.ae2cs.common.recipe.SizedIngredient;
 import io.github.lounode.ae2cs.common.recipe.input.ThreeItemStackRecipeInput;
+
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
@@ -13,13 +14,14 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CrystalAggregatorRecipe implements Recipe<ThreeItemStackRecipeInput>
-{
+public class CrystalAggregatorRecipe implements Recipe<ThreeItemStackRecipeInput> {
+
     private final ResourceLocation id;
     private final SizedIngredient inputA;
     private final SizedIngredient inputB;
@@ -31,8 +33,7 @@ public class CrystalAggregatorRecipe implements Recipe<ThreeItemStackRecipeInput
     private final List<SizedIngredient> effective;
 
     public CrystalAggregatorRecipe(ResourceLocation id, SizedIngredient inputA, SizedIngredient inputB, SizedIngredient inputC,
-                                   ItemStack result, int energyCost)
-    {
+                                   ItemStack result, int energyCost) {
         this.id = id;
         this.inputA = inputA;
         this.inputB = inputB;
@@ -46,48 +47,39 @@ public class CrystalAggregatorRecipe implements Recipe<ThreeItemStackRecipeInput
         addIfRequired(this.effective, inputC);
     }
 
-    private static void addIfRequired(List<SizedIngredient> list, SizedIngredient si)
-    {
-        if (si != null && !si.ingredient().isEmpty() && si.count() > 0)
-        {
+    private static void addIfRequired(List<SizedIngredient> list, SizedIngredient si) {
+        if (si != null && !si.ingredient().isEmpty() && si.count() > 0) {
             list.add(si);
         }
     }
 
-    public SizedIngredient inputA()
-    {
+    public SizedIngredient inputA() {
         return inputA;
     }
 
-    public SizedIngredient inputB()
-    {
+    public SizedIngredient inputB() {
         return inputB;
     }
 
-    public SizedIngredient inputC()
-    {
+    public SizedIngredient inputC() {
         return inputC;
     }
 
-    public ItemStack result()
-    {
+    public ItemStack result() {
         return result;
     }
 
-    public int energyCost()
-    {
+    public int energyCost() {
         return energyCost;
     }
 
-    public List<SizedIngredient> required()
-    {
+    public List<SizedIngredient> required() {
         return effective;
     }
 
     // matches：只要 findMatch != null 就算匹配
     @Override
-    public boolean matches(@NotNull ThreeItemStackRecipeInput in, @NotNull Level level)
-    {
+    public boolean matches(@NotNull ThreeItemStackRecipeInput in, @NotNull Level level) {
         return findMatch(in) != null;
     }
 
@@ -100,8 +92,7 @@ public class CrystalAggregatorRecipe implements Recipe<ThreeItemStackRecipeInput
      * - 其它槽位可以是 ItemStack.EMPTY 或杂物，不影响匹配
      * - 不会跨槽位统一数量！
      */
-    public int[] findMatch(ThreeItemStackRecipeInput in)
-    {
+    public int[] findMatch(ThreeItemStackRecipeInput in) {
         ItemStack[] stacks = {
                 in.getInputA(),
                 in.getInputB(),
@@ -111,28 +102,23 @@ public class CrystalAggregatorRecipe implements Recipe<ThreeItemStackRecipeInput
         int effectiveSize = effective.size();
         if (effectiveSize == 0) return null;
 
-        if (effectiveSize == 1)
-        {
+        if (effectiveSize == 1) {
             SizedIngredient A = effective.get(0);
-            for (int i = 0; i < 3; i++)
-            {
-                if (A.test(stacks[i])) return new int[]{i};
+            for (int i = 0; i < 3; i++) {
+                if (A.test(stacks[i])) return new int[] { i };
             }
             return null;
         }
 
-        if (effectiveSize == 2)
-        {
+        if (effectiveSize == 2) {
             SizedIngredient A = effective.get(0);
             SizedIngredient B = effective.get(1);
 
-            for (int i = 0; i < 3; i++)
-            {
+            for (int i = 0; i < 3; i++) {
                 if (!A.test(stacks[i])) continue;
-                for (int j = 0; j < 3; j++)
-                {
+                for (int j = 0; j < 3; j++) {
                     if (j == i) continue;
-                    if (B.test(stacks[j])) return new int[]{i, j};
+                    if (B.test(stacks[j])) return new int[] { i, j };
                 }
             }
             return null;
@@ -143,62 +129,53 @@ public class CrystalAggregatorRecipe implements Recipe<ThreeItemStackRecipeInput
         SizedIngredient B = effective.get(1);
         SizedIngredient C = effective.get(2);
 
-        for (int i = 0; i < 3; i++)
-        {
+        for (int i = 0; i < 3; i++) {
             if (!A.test(stacks[i])) continue;
-            for (int j = 0; j < 3; j++)
-            {
+            for (int j = 0; j < 3; j++) {
                 if (j == i) continue;
                 if (!B.test(stacks[j])) continue;
 
                 int k = 3 - i - j;
-                if (C.test(stacks[k])) return new int[]{i, j, k};
+                if (C.test(stacks[k])) return new int[] { i, j, k };
             }
         }
         return null;
     }
 
     @Override
-    public @NotNull ItemStack assemble(@NotNull ThreeItemStackRecipeInput in, @NotNull RegistryAccess registries)
-    {
+    public @NotNull ItemStack assemble(@NotNull ThreeItemStackRecipeInput in, @NotNull RegistryAccess registries) {
         return result.copy();
     }
 
     @Override
-    public @NotNull ItemStack getResultItem(@NotNull RegistryAccess registries)
-    {
+    public @NotNull ItemStack getResultItem(@NotNull RegistryAccess registries) {
         return result;
     }
 
     @Override
-    public @NotNull ResourceLocation getId()
-    {
+    public @NotNull ResourceLocation getId() {
         return this.id;
     }
 
     @Override
-    public @NotNull NonNullList<Ingredient> getIngredients()
-    {
+    public @NotNull NonNullList<Ingredient> getIngredients() {
         NonNullList<Ingredient> list = NonNullList.create();
         for (var si : effective) list.add(si.ingredient());
         return list;
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height)
-    {
+    public boolean canCraftInDimensions(int width, int height) {
         return width * height >= effective.size();
     }
 
     @Override
-    public @NotNull RecipeType<?> getType()
-    {
+    public @NotNull RecipeType<?> getType() {
         return AECSRecipeTypes.CRYSTAL_AGGREGATOR.get();
     }
 
     @Override
-    public @NotNull RecipeSerializer<?> getSerializer()
-    {
+    public @NotNull RecipeSerializer<?> getSerializer() {
         return AECSRecipeSerializers.CRYSTAL_AGGREGATOR.get();
     }
 }

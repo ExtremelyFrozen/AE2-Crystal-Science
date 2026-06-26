@@ -1,5 +1,14 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
+import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
+import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
+import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
+import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.item.PureCrystalItem;
+import io.github.lounode.ae2cs.common.machine.component.GenericStackInvComponent;
+import io.github.lounode.ae2cs.common.machine.component.InvPort;
+import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
+
 import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -11,14 +20,7 @@ import appeng.api.util.AECableType;
 import appeng.core.definitions.AEItems;
 import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.util.ConfigInventory;
-import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
-import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
-import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
-import io.github.lounode.ae2cs.common.init.AECSBlocks;
-import io.github.lounode.ae2cs.common.item.PureCrystalItem;
-import io.github.lounode.ae2cs.common.machine.component.GenericStackInvComponent;
-import io.github.lounode.ae2cs.common.machine.component.InvPort;
-import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -27,6 +29,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,8 +37,8 @@ import java.util.EnumMap;
 import java.util.List;
 
 public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBlockEntity implements IUpgradeableObject,
-        CustomReturnableSubMenuHost
-{
+                                                CustomReturnableSubMenuHost {
+
     private LazyOptional<GenericInternalInventory> genericInvOpt = LazyOptional.empty();
     private final EnumMap<Direction, LazyOptional<GenericInternalInventory>> sidedGenericInvOpts = new EnumMap<>(Direction.class);
 
@@ -46,8 +49,7 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
     private double energyPerTick = 0;
     private int speedCards = 0;
 
-    public CrystalVibrationChamberBlockEntity(BlockPos pos, BlockState blockState)
-    {
+    public CrystalVibrationChamberBlockEntity(BlockPos pos, BlockState blockState) {
         super(AECSBlockEntities.CRYSTAL_VIBRATION_CHAMBER_BLOCK_ENTITY.get(), pos, blockState,
                 1000000, false, AccessRestriction.READ);
         this.getMainNode().setIdlePowerUsage(0);
@@ -66,20 +68,15 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
         getMachineComponents().add(new SideConfigComponent());
     }
 
-    public GenericStackInv getInv()
-    {
+    public GenericStackInv getInv() {
         return getMachineComponents().getService(GenericStackInvComponent.class).port(InvPort.WORK);
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side)
-    {
-        if (cap == appeng.capabilities.Capabilities.GENERIC_INTERNAL_INV)
-        {
-            if (side == null)
-            {
-                if (!genericInvOpt.isPresent())
-                {
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+        if (cap == appeng.capabilities.Capabilities.GENERIC_INTERNAL_INV) {
+            if (side == null) {
+                if (!genericInvOpt.isPresent()) {
                     GenericInternalInventory inv = resolveGenericInv(null);
                     genericInvOpt = inv == null ? LazyOptional.empty() : LazyOptional.of(() -> inv);
                 }
@@ -87,8 +84,7 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
             }
 
             var opt = sidedGenericInvOpts.get(side);
-            if (opt == null)
-            {
+            if (opt == null) {
                 GenericInternalInventory inv = resolveGenericInv(side);
                 opt = inv == null ? LazyOptional.empty() : LazyOptional.of(() -> inv);
                 sidedGenericInvOpts.put(side, opt);
@@ -100,63 +96,52 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
     }
 
     @Override
-    public void invalidateCaps()
-    {
+    public void invalidateCaps() {
         super.invalidateCaps();
 
         if (genericInvOpt.isPresent()) genericInvOpt.invalidate();
         genericInvOpt = LazyOptional.empty();
 
-        for (var opt : sidedGenericInvOpts.values())
-        {
+        for (var opt : sidedGenericInvOpts.values()) {
             if (opt.isPresent()) opt.invalidate();
         }
         sidedGenericInvOpts.clear();
     }
 
-    private @Nullable GenericInternalInventory resolveGenericInv(@Nullable Direction side)
-    {
-        if (getMachineComponents().hasService(SideConfigComponent.class))
-        {
+    private @Nullable GenericInternalInventory resolveGenericInv(@Nullable Direction side) {
+        if (getMachineComponents().hasService(SideConfigComponent.class)) {
             return getMachineComponents().getService(SideConfigComponent.class).genericInvForSide(side);
         }
         return getMachineComponents().getService(GenericStackInvComponent.class).combined();
     }
 
-    public int getMaxBurnTime()
-    {
+    public int getMaxBurnTime() {
         return maxBurnTime;
     }
 
-    public int getRemainingBurnTime()
-    {
+    public int getRemainingBurnTime() {
         return remainingBurnTime;
     }
 
-    public double getEnergyPerTick()
-    {
+    public double getEnergyPerTick() {
         return energyPerTick;
     }
 
-    public void checkActive(boolean active)
-    {
+    public void checkActive(boolean active) {
         if (level == null || level.isClientSide()) return;
         BlockState state = getBlockState();
-        if (state.hasProperty(AECSBlockProperties.ACTIVE) && state.getValue(AECSBlockProperties.ACTIVE) != active)
-        {
+        if (state.hasProperty(AECSBlockProperties.ACTIVE) && state.getValue(AECSBlockProperties.ACTIVE) != active) {
             level.setBlock(worldPosition, getBlockState().setValue(AECSBlockProperties.ACTIVE, active), 2);
         }
     }
 
     @Override
-    public AECableType getCableConnectionType(Direction dir)
-    {
+    public AECableType getCableConnectionType(Direction dir) {
         return AECableType.COVERED;
     }
 
     @Override
-    public void saveAdditional(CompoundTag data)
-    {
+    public void saveAdditional(CompoundTag data) {
         super.saveAdditional(data);
         this.upgrades.writeToNBT(data, "upgrades");
         data.putInt("max_burn_time", this.maxBurnTime);
@@ -165,8 +150,7 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
     }
 
     @Override
-    public void loadTag(CompoundTag data)
-    {
+    public void loadTag(CompoundTag data) {
         super.loadTag(data);
         this.upgrades.readFromNBT(data, "upgrades");
         this.maxBurnTime = data.getInt("max_burn_time");
@@ -175,45 +159,38 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
     }
 
     @Override
-    public void onLoad()
-    {
+    public void onLoad() {
         super.onLoad();
         onUpgradesChange();
     }
 
     @Override
-    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops)
-    {
+    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
         super.addAdditionalDrops(level, pos, drops);
 
-        for (var upgrade : upgrades)
-        {
+        for (var upgrade : upgrades) {
             drops.add(upgrade);
         }
     }
 
     @Override
-    public void clearContent()
-    {
+    public void clearContent() {
         super.clearContent();
         upgrades.clear();
     }
 
     @Override
-    public IUpgradeInventory getUpgrades()
-    {
+    public IUpgradeInventory getUpgrades() {
         return this.upgrades;
     }
 
-    protected void onUpgradesChange()
-    {
+    protected void onUpgradesChange() {
         this.speedCards = upgrades.getInstalledUpgrades(AEItems.SPEED_CARD);
         saveChanges();
     }
 
     @Override
-    public void serverTick()
-    {
+    public void serverTick() {
         // 每tick执行燃烧产能逻辑
         // 分为三部分
         // 1-查看当前槽位的物品，如果为合适物品就消耗掉1个，填充燃烧数据（如果正在燃烧则跳过此步）
@@ -224,16 +201,11 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
         super.serverTick();
 
         // 查看当前槽位的物品，如果为合适物品就消耗掉1个，填充燃烧数据（如果正在燃烧则跳过此步）
-        if (remainingBurnTime <= 0)
-        {
+        if (remainingBurnTime <= 0) {
             GenericStack fuel = getInv().getStack(0);
-            if (fuel != null
-                    && fuel.what().getPrimaryKey() instanceof PureCrystalItem pureCrystalItem
-                    && fuel.amount() > 0)
-            {
+            if (fuel != null && fuel.what().getPrimaryKey() instanceof PureCrystalItem pureCrystalItem && fuel.amount() > 0) {
                 long extracted = getInv().extract(0, fuel.what(), 1, Actionable.MODULATE);
-                if (extracted > 0)
-                {
+                if (extracted > 0) {
                     this.remainingBurnTime = pureCrystalItem.getBurnTime();
                     this.maxBurnTime = pureCrystalItem.getBurnTime();
                     this.energyPerTick = pureCrystalItem.getEnergyPerTick();
@@ -242,8 +214,7 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
         }
 
         // 执行燃烧逻辑
-        if (remainingBurnTime > 0)
-        {
+        if (remainingBurnTime > 0) {
             remainingBurnTime -= getSpeedupBurnTimeCost();
 
             injectAEPower(this.getSpeedupEnergyPerTick(), Actionable.MODULATE);
@@ -256,26 +227,22 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
         checkActive(remainingBurnTime > 0);
     }
 
-    private double getSpeedupEnergyPerTick()
-    {
+    private double getSpeedupEnergyPerTick() {
         return this.energyPerTick * (1 + 0.5 * speedCards);
     }
 
-    private int getSpeedupBurnTimeCost()
-    {
+    private int getSpeedupBurnTimeCost() {
         return (1 + speedCards);
     }
 
-    private void clearBurnState()
-    {
+    private void clearBurnState() {
         this.remainingBurnTime = 0;
         this.energyPerTick = 0;
         this.maxBurnTime = 0;
     }
 
     @Override
-    public ItemStack getMainMenuIcon()
-    {
+    public ItemStack getMainMenuIcon() {
         return new ItemStack(getItemFromBlockEntity());
     }
 }

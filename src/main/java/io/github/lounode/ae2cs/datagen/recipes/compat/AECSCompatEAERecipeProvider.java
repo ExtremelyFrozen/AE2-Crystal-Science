@@ -1,37 +1,37 @@
 package io.github.lounode.ae2cs.datagen.recipes.compat;
 
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
-import com.glodblock.github.extendedae.common.EPPItemAndBlock;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBuilder;
+
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
+
+import com.glodblock.github.extendedae.common.EPPItemAndBlock;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-public class AECSCompatEAERecipeProvider extends AECSRecipeProvider
-{
-    public AECSCompatEAERecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries)
-    {
+public class AECSCompatEAERecipeProvider extends AECSRecipeProvider {
+
+    public AECSCompatEAERecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries);
     }
 
     @Override
-    public @NotNull String getName()
-    {
+    public @NotNull String getName() {
         return "AECS EAE Compat Recipes";
     }
 
     @Override
-    protected void buildRecipes(@NotNull Consumer<FinishedRecipe> originalOut)
-    {
+    protected void buildRecipes(@NotNull Consumer<FinishedRecipe> originalOut) {
         var compatOut = withConditions(originalOut, modLoaded(AECSConstants.EAE_ID));
 
         CrystalAggregatorRecipeBuilder.aggregating(EPPItemAndBlock.EX_ASSEMBLER, 1, 16000)

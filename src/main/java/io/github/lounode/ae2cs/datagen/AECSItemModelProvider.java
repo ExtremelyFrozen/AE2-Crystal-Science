@@ -5,6 +5,7 @@ import io.github.lounode.ae2cs.api.util.RegistryItem;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.item.CrystalSeedItem;
 import io.github.lounode.ae2cs.common.item.PureCrystalItem;
+
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -18,60 +19,47 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Objects;
 
-public class AECSItemModelProvider extends ItemModelProvider
-{
+public class AECSItemModelProvider extends ItemModelProvider {
 
-    public AECSItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper)
-    {
+    public AECSItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
         super(output, AECSConstants.MODID, existingFileHelper);
     }
 
     @Override
-    protected void registerModels()
-    {
-        for (RegistryItem<CrystalSeedItem> item : AECSItems.getCrystalSeeds())
-        {
+    protected void registerModels() {
+        for (RegistryItem<CrystalSeedItem> item : AECSItems.getCrystalSeeds()) {
             crystalSeedItem(item.get());
         }
-        for (RegistryItem<PureCrystalItem> item : AECSItems.getPureCrystal())
-        {
+        for (RegistryItem<PureCrystalItem> item : AECSItems.getPureCrystal()) {
             basicItem(item.get());
         }
-        for (RegistryItem<? extends Item> item : AECSItems.getTools())
-        {
+        for (RegistryItem<? extends Item> item : AECSItems.getTools()) {
             handheldItemModel(item.get());
         }
-        for (RegistryItem<? extends Item> item : AECSItems.getOthers())
-        {
+        for (RegistryItem<? extends Item> item : AECSItems.getOthers()) {
             basicItem(item.get());
         }
     }
 
-
-    private String getItemName(ItemLike item)
-    {
+    private String getItemName(ItemLike item) {
         return ForgeRegistries.ITEMS.getKey(item.asItem()).getPath();
     }
 
     /**
      * 把非本模组命名空间的纹理标记为“已生成”，从而绕过存在性校验
      */
-    private void allowExternalTexture(String path)
-    {
+    private void allowExternalTexture(String path) {
         ResourceLocation rl = ResourceLocation.tryParse(path);
-        if (!rl.getNamespace().equals(AECSConstants.MODID))
-        {
+        if (!rl.getNamespace().equals(AECSConstants.MODID)) {
             this.existingFileHelper.trackGenerated(rl, ModelProvider.TEXTURE);
         }
     }
 
-    public ItemModelBuilder crystalSeedItem(Item item)
-    {
+    public ItemModelBuilder crystalSeedItem(Item item) {
         return crystalSeedItem(Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(item)));
     }
 
-    public ItemModelBuilder crystalSeedItem(ResourceLocation item)
-    {
+    public ItemModelBuilder crystalSeedItem(ResourceLocation item) {
         var main = getBuilder(item.toString())
                 .parent(new ModelFile.UncheckedModelFile("item/generated"))
                 .texture("layer0", ResourceLocation.tryBuild(item.getNamespace(), "item/" + item.getPath() + "_0"))
@@ -94,12 +82,10 @@ public class AECSItemModelProvider extends ItemModelProvider
         return main;
     }
 
-    public ItemModelBuilder handheldItemModel(Item item)
-    {
+    public ItemModelBuilder handheldItemModel(Item item) {
         ResourceLocation id = Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(item));
         return getBuilder(id.toString())
                 .parent(new ModelFile.UncheckedModelFile("item/handheld"))
                 .texture("layer0", ResourceLocation.tryBuild(id.getNamespace(), "item/" + id.getPath()));
     }
-
 }

@@ -1,8 +1,5 @@
 package io.github.lounode.ae2cs.common.init.client;
 
-import appeng.client.gui.implementations.PatternProviderScreen;
-import appeng.client.gui.style.StyleManager;
-import appeng.menu.implementations.PatternProviderMenu;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.client.gui.*;
 import io.github.lounode.ae2cs.client.gui.linker.broadcast.*;
@@ -10,6 +7,11 @@ import io.github.lounode.ae2cs.client.gui.subGUI.SideConfigGUI;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 import io.github.lounode.ae2cs.common.menu.*;
 import io.github.lounode.ae2cs.common.menu.submenu.SideConfigMenu;
+
+import appeng.client.gui.implementations.PatternProviderScreen;
+import appeng.client.gui.style.StyleManager;
+import appeng.menu.implementations.PatternProviderMenu;
+
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
@@ -18,13 +20,11 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 @Mod.EventBusSubscriber(modid = AECSConstants.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-public class AECSScreens
-{
+public class AECSScreens {
+
     @SubscribeEvent
-    public static void registerScreens(FMLClientSetupEvent event)
-    {
-        event.enqueueWork(() ->
-        {
+    public static void registerScreens(FMLClientSetupEvent event) {
+        event.enqueueWork(() -> {
             MenuScreens.register(AECSMenus.CRYSTAL_GROWTH_CHAMBER_MENU.get(), CrystalGrowthChamberGUI::new);
 
             MenuScreens.<IntegratedInterfaceMenu, IntegratedInterfaceGUI>register(AECSMenus.INTEGRATED_INTERFACE_MENU.get(), (menu, inv, title) -> new IntegratedInterfaceGUI(menu, inv, title,

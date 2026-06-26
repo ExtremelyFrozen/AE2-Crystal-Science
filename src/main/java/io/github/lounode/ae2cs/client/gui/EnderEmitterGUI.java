@@ -1,7 +1,5 @@
 package io.github.lounode.ae2cs.client.gui;
 
-import appeng.client.gui.implementations.UpgradeableScreen;
-import appeng.client.gui.style.ScreenStyle;
 import io.github.lounode.ae2cs.api.settings.AECSSettings;
 import io.github.lounode.ae2cs.api.settings.AutoLinkCableMode;
 import io.github.lounode.ae2cs.api.settings.AutoLinkMode;
@@ -12,12 +10,17 @@ import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSIconButton;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSServerSettingToggleButton;
 import io.github.lounode.ae2cs.common.menu.EnderEmitterMenu;
+
+import appeng.client.gui.implementations.UpgradeableScreen;
+import appeng.client.gui.style.ScreenStyle;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+
 import org.jetbrains.annotations.NotNull;
 
-public class EnderEmitterGUI extends UpgradeableScreen<EnderEmitterMenu>
-{
+public class EnderEmitterGUI extends UpgradeableScreen<EnderEmitterMenu> {
+
     private AECSIconButton addDistanceButton;
     private AECSIconButton reduceDistanceButton;
     private AECSServerSettingToggleButton<AutoLinkMode> autoModeButton;
@@ -28,8 +31,7 @@ public class EnderEmitterGUI extends UpgradeableScreen<EnderEmitterMenu>
     private AECSIconButton openBandMenuButton;
     private AECSIconButton cleanBandConnectionButton;
 
-    public EnderEmitterGUI(EnderEmitterMenu menu, Inventory playerInventory, Component title, ScreenStyle style)
-    {
+    public EnderEmitterGUI(EnderEmitterMenu menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
         this.addDistanceButton = new AECSIconButton(button -> {
@@ -37,11 +39,10 @@ public class EnderEmitterGUI extends UpgradeableScreen<EnderEmitterMenu>
             mult = hasControlDown() ? menu.linkDistance / 2 : mult;
             mult = Math.max(1, mult);
             menu.sendChangeDistance(1 * mult);
-        })
-        {
+        }) {
+
             @Override
-            protected @NotNull IButtonIcon getIcon()
-            {
+            protected @NotNull IButtonIcon getIcon() {
                 return AECSIcon.ADDITION_SIGN;
             }
         };
@@ -53,11 +54,10 @@ public class EnderEmitterGUI extends UpgradeableScreen<EnderEmitterMenu>
             mult = hasControlDown() ? menu.linkDistance / 2 : mult;
             mult = Math.max(1, mult);
             menu.sendChangeDistance(-1 * mult);
-        })
-        {
+        }) {
+
             @Override
-            protected @NotNull IButtonIcon getIcon()
-            {
+            protected @NotNull IButtonIcon getIcon() {
                 return AECSIcon.SUBTRACTION_SIGN;
             }
         };
@@ -73,44 +73,40 @@ public class EnderEmitterGUI extends UpgradeableScreen<EnderEmitterMenu>
         this.autoLinkCableButton = new AECSServerSettingToggleButton<>(AECSSettings.AUTO_LINK_CABLE_MODE, AutoLinkCableMode.ENABLE);
         addToLeftToolbar(autoLinkCableButton);
 
-        this.trySacnAllButton = new AECSIconButton(button -> menu.sendSacnAll())
-        {
+        this.trySacnAllButton = new AECSIconButton(button -> menu.sendSacnAll()) {
+
             @Override
-            protected @NotNull IButtonIcon getIcon()
-            {
+            protected @NotNull IButtonIcon getIcon() {
                 return AECSIcon.LINK_TO_ALL;
             }
         };
         this.trySacnAllButton.setMessage(Component.translatable("ae2cs.menu.ender_emitter.button.try_sacn_all"));
         addToLeftToolbar(trySacnAllButton);
 
-        this.destroyAllButton = new AECSIconButton(button -> menu.sendDestroyAll())
-        {
+        this.destroyAllButton = new AECSIconButton(button -> menu.sendDestroyAll()) {
+
             @Override
-            protected @NotNull IButtonIcon getIcon()
-            {
+            protected @NotNull IButtonIcon getIcon() {
                 return AECSIcon.BREAK_ALL_LINKS;
             }
         };
         this.destroyAllButton.setMessage(Component.translatable("ae2cs.menu.ender_emitter.button.destroy_all"));
         addToLeftToolbar(destroyAllButton);
 
-        this.openBandMenuButton = new AECSIconButton(button -> menu.sendOpenBandMenu())
-        {
+        this.openBandMenuButton = new AECSIconButton(button -> menu.sendOpenBandMenu()) {
+
             @Override
-            protected @NotNull IButtonIcon getIcon()
-            {
+            protected @NotNull IButtonIcon getIcon() {
                 return AECSIcon.BAND_VIEW;
             }
         };
         this.openBandMenuButton.setMessage(Component.translatable("ae2cs.menu.ender_emitter.button.open_frequency_view_menu"));
         addToLeftToolbar(openBandMenuButton);
 
-        this.cleanBandConnectionButton = new AECSIconButton(button -> menu.sendCleanBandConnection())
-        {
+        this.cleanBandConnectionButton = new AECSIconButton(button -> menu.sendCleanBandConnection()) {
+
             @Override
-            protected @NotNull IButtonIcon getIcon()
-            {
+            protected @NotNull IButtonIcon getIcon() {
                 return AdaptedAE2Icon.CLEAR;
             }
         };
@@ -119,8 +115,7 @@ public class EnderEmitterGUI extends UpgradeableScreen<EnderEmitterMenu>
     }
 
     @Override
-    protected void updateBeforeRender()
-    {
+    protected void updateBeforeRender() {
         super.updateBeforeRender();
         this.autoModeButton.set(menu.autoMode);
         this.autoLinkCableButton.set(menu.autoLinkCableMode);

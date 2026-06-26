@@ -1,5 +1,8 @@
 package io.github.lounode.ae2cs.client.gui;
 
+import io.github.lounode.ae2cs.client.gui.widgets.UpgradeablePatternProviderLockReason;
+import io.github.lounode.ae2cs.common.menu.UpgradeablePatternProviderMenu;
+
 import appeng.api.config.LockCraftingMode;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
@@ -11,16 +14,14 @@ import appeng.client.gui.widgets.*;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.menu.SlotSemantics;
-import io.github.lounode.ae2cs.client.gui.widgets.UpgradeablePatternProviderLockReason;
-import io.github.lounode.ae2cs.common.menu.UpgradeablePatternProviderMenu;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UpgradeablePatternProviderGUI<C extends UpgradeablePatternProviderMenu> extends AEBaseScreen<C>
-{
+public class UpgradeablePatternProviderGUI<C extends UpgradeablePatternProviderMenu> extends AEBaseScreen<C> {
 
     private final SettingToggleButton<YesNo> blockingModeButton;
     private final SettingToggleButton<LockCraftingMode> lockCraftingModeButton;
@@ -28,8 +29,7 @@ public class UpgradeablePatternProviderGUI<C extends UpgradeablePatternProviderM
     private final UpgradeablePatternProviderLockReason lockReason;
 
     public UpgradeablePatternProviderGUI(C menu, Inventory playerInventory, Component title,
-                                         ScreenStyle style)
-    {
+                                         ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
         this.blockingModeButton = new ServerSettingToggleButton<>(Settings.BLOCKING_MODE, YesNo.NO);
@@ -53,15 +53,13 @@ public class UpgradeablePatternProviderGUI<C extends UpgradeablePatternProviderM
                 menu.getSlots(SlotSemantics.UPGRADE),
                 this::getCompatibleUpgrades));
 
-        if (menu.getToolbox().isPresent())
-        {
+        if (menu.getToolbox().isPresent()) {
             this.widgets.add("toolbox", new ToolboxPanel(style, menu.getToolbox().getName()));
         }
     }
 
     @Override
-    protected void updateBeforeRender()
-    {
+    protected void updateBeforeRender() {
         super.updateBeforeRender();
 
         this.lockReason.setVisible(menu.getLockCraftingMode() != LockCraftingMode.NONE);
@@ -70,14 +68,12 @@ public class UpgradeablePatternProviderGUI<C extends UpgradeablePatternProviderM
         this.showInPatternAccessTerminalButton.setState(this.menu.getShowInAccessTerminal() == YesNo.YES);
     }
 
-    private void selectNextPatternProviderMode()
-    {
+    private void selectNextPatternProviderMode() {
         boolean backwards = this.isHandlingRightClick();
         NetworkHandler.instance().sendToServer(new appeng.core.sync.packets.ConfigButtonPacket(Settings.PATTERN_ACCESS_TERMINAL, backwards));
     }
 
-    private List<Component> getCompatibleUpgrades()
-    {
+    private List<Component> getCompatibleUpgrades() {
         var list = new ArrayList<Component>();
         list.add(GuiText.CompatibleUpgrades.text());
         list.addAll(Upgrades.getTooltipLinesForMachine(menu.getUpgrades().getUpgradableItem()));

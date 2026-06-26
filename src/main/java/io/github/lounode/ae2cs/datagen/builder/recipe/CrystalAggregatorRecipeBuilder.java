@@ -1,9 +1,9 @@
 package io.github.lounode.ae2cs.datagen.builder.recipe;
 
-import com.google.gson.JsonObject;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.common.recipe.SizedIngredient;
 import io.github.lounode.ae2cs.common.recipe.crystal_aggregator.CrystalAggregatorRecipe;
+
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.CriterionTriggerInstance;
@@ -22,14 +22,15 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
 
-public class CrystalAggregatorRecipeBuilder implements RecipeBuilder
-{
+public class CrystalAggregatorRecipeBuilder implements RecipeBuilder {
 
     private static final SizedIngredient EMPTY = new SizedIngredient(Ingredient.EMPTY, 1);
 
@@ -41,31 +42,25 @@ public class CrystalAggregatorRecipeBuilder implements RecipeBuilder
 
     private final List<ItemPredicate.Builder> autoUnlockPredicates = new ArrayList<>(3);
 
-    private CrystalAggregatorRecipeBuilder(ItemStack result, int energyCost)
-    {
+    private CrystalAggregatorRecipeBuilder(ItemStack result, int energyCost) {
         this.result = result;
         this.energyCost = energyCost;
     }
 
-    public static CrystalAggregatorRecipeBuilder aggregating(ItemStack result, int energyCost)
-    {
+    public static CrystalAggregatorRecipeBuilder aggregating(ItemStack result, int energyCost) {
         return new CrystalAggregatorRecipeBuilder(result, energyCost);
     }
 
-    public static CrystalAggregatorRecipeBuilder aggregating(ItemLike result, int count, int energyCost)
-    {
+    public static CrystalAggregatorRecipeBuilder aggregating(ItemLike result, int count, int energyCost) {
         return new CrystalAggregatorRecipeBuilder(new ItemStack(result, count), energyCost);
     }
 
-    public CrystalAggregatorRecipeBuilder require(Ingredient ing, int count)
-    {
-        if (ing == null || ing.isEmpty() || count <= 0)
-        {
+    public CrystalAggregatorRecipeBuilder require(Ingredient ing, int count) {
+        if (ing == null || ing.isEmpty() || count <= 0) {
             return this;
         }
 
-        if (inputs.size() >= 3)
-        {
+        if (inputs.size() >= 3) {
             throw new IllegalStateException("CrystalAggregatorRecipe supports at most 3 inputs");
         }
 
@@ -74,62 +69,51 @@ public class CrystalAggregatorRecipeBuilder implements RecipeBuilder
         return this;
     }
 
-    public CrystalAggregatorRecipeBuilder require(ItemLike item, int count)
-    {
+    public CrystalAggregatorRecipeBuilder require(ItemLike item, int count) {
         require(Ingredient.of(item), count);
         return this;
     }
 
-    public CrystalAggregatorRecipeBuilder require(TagKey<Item> tag, int count)
-    {
+    public CrystalAggregatorRecipeBuilder require(TagKey<Item> tag, int count) {
         require(Ingredient.of(tag), count);
         return this;
     }
 
     @Override
-    public @NotNull CrystalAggregatorRecipeBuilder unlockedBy(@NotNull String name, @NotNull CriterionTriggerInstance criterion)
-    {
+    public @NotNull CrystalAggregatorRecipeBuilder unlockedBy(@NotNull String name, @NotNull CriterionTriggerInstance criterion) {
         this.criteria.put(name, criterion);
         return this;
     }
 
     @Override
-    public @NotNull CrystalAggregatorRecipeBuilder group(@Nullable String group)
-    {
+    public @NotNull CrystalAggregatorRecipeBuilder group(@Nullable String group) {
         return this;
     }
 
     @Override
-    public @NotNull Item getResult()
-    {
+    public @NotNull Item getResult() {
         return result.getItem();
     }
 
     @Override
-    public void save(Consumer<FinishedRecipe> output, @NotNull ResourceLocation id)
-    {
+    public void save(Consumer<FinishedRecipe> output, @NotNull ResourceLocation id) {
         Advancement.Builder adv = Advancement.Builder.advancement()
                 .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
                 .rewards(AdvancementRewards.Builder.recipe(id))
                 .requirements(RequirementsStrategy.OR);
 
-        if (!this.criteria.isEmpty())
-        {
+        if (!this.criteria.isEmpty()) {
             this.criteria.forEach(adv::addCriterion);
-        }
-        else
-        {
+        } else {
             int idx = 0;
             Set<String> usedNames = new HashSet<>();
 
-            for (ItemPredicate.Builder p : this.autoUnlockPredicates)
-            {
+            for (ItemPredicate.Builder p : this.autoUnlockPredicates) {
                 String name = uniqueCriterionName("has_input_" + idx++, usedNames);
                 adv.addCriterion(name, InventoryChangeTrigger.TriggerInstance.hasItems(p.build()));
             }
 
-            if (this.autoUnlockPredicates.isEmpty())
-            {
+            if (this.autoUnlockPredicates.isEmpty()) {
                 adv.addCriterion("has_result", InventoryChangeTrigger.TriggerInstance.hasItems(this.result.getItem()));
             }
         }
@@ -143,31 +127,26 @@ public class CrystalAggregatorRecipeBuilder implements RecipeBuilder
     }
 
     @Override
-    public void save(@NotNull Consumer<FinishedRecipe> recipeOutput, @NotNull String id)
-    {
+    public void save(@NotNull Consumer<FinishedRecipe> recipeOutput, @NotNull String id) {
         save(recipeOutput, AE2CrystalScience.parseOrMakeId(id));
     }
 
     @Override
-    public void save(@NotNull Consumer<FinishedRecipe> recipeOutput)
-    {
+    public void save(@NotNull Consumer<FinishedRecipe> recipeOutput) {
         ResourceLocation path = AE2CrystalScience.makeId("aggregator/" + RecipeBuilder.getDefaultRecipeId(getResult()).getPath());
         save(recipeOutput, path);
     }
 
-    private void addAutoUnlockPredicateForItem(Item item)
-    {
+    private void addAutoUnlockPredicateForItem(Item item) {
         MinMaxBounds.Ints countBound = MinMaxBounds.Ints.atLeast(1);
 
         autoUnlockPredicates.add(
                 ItemPredicate.Builder.item()
                         .of(item)
-                        .withCount(countBound)
-        );
+                        .withCount(countBound));
     }
 
-    private void tryAddAutoUnlockFromIngredient(Ingredient ing)
-    {
+    private void tryAddAutoUnlockFromIngredient(Ingredient ing) {
         ItemStack[] stacks = ing.getItems();
         if (stacks.length == 0) return;
 
@@ -177,33 +156,29 @@ public class CrystalAggregatorRecipeBuilder implements RecipeBuilder
                 .distinct()
                 .toList();
 
-        if (!items.isEmpty())
-        {
+        if (!items.isEmpty()) {
             addAutoUnlockPredicateForItem(items.get(0));
         }
     }
 
-    private static String uniqueCriterionName(String base, Set<String> used)
-    {
+    private static String uniqueCriterionName(String base, Set<String> used) {
         String name = base;
         int i = 1;
-        while (!used.add(name))
-        {
+        while (!used.add(name)) {
             name = base + "_" + i++;
         }
         return name;
     }
 
-    private static class Result implements FinishedRecipe
-    {
+    private static class Result implements FinishedRecipe {
+
         private final ResourceLocation id;
         private final CrystalAggregatorRecipe recipe;
         private final Advancement.Builder advancement;
         private final ResourceLocation advancementId;
 
         private Result(ResourceLocation id, CrystalAggregatorRecipe recipe,
-                       Advancement.Builder advancement, ResourceLocation advancementId)
-        {
+                       Advancement.Builder advancement, ResourceLocation advancementId) {
             this.id = id;
             this.recipe = recipe;
             this.advancement = advancement;
@@ -211,8 +186,7 @@ public class CrystalAggregatorRecipeBuilder implements RecipeBuilder
         }
 
         @Override
-        public void serializeRecipeData(JsonObject json)
-        {
+        public void serializeRecipeData(JsonObject json) {
             json.addProperty("type", ForgeRegistries.RECIPE_SERIALIZERS.getKey(recipe.getSerializer()).toString());
             json.add("input_a", recipe.inputA().toJson());
             json.add("input_b", recipe.inputB().toJson());
@@ -220,8 +194,7 @@ public class CrystalAggregatorRecipeBuilder implements RecipeBuilder
 
             JsonObject resultJson = new JsonObject();
             resultJson.addProperty("item", ForgeRegistries.ITEMS.getKey(recipe.result().getItem()).toString());
-            if (recipe.result().getCount() != 1)
-            {
+            if (recipe.result().getCount() != 1) {
                 resultJson.addProperty("count", recipe.result().getCount());
             }
             json.add("result", resultJson);
@@ -230,26 +203,22 @@ public class CrystalAggregatorRecipeBuilder implements RecipeBuilder
         }
 
         @Override
-        public @NotNull ResourceLocation getId()
-        {
+        public @NotNull ResourceLocation getId() {
             return id;
         }
 
         @Override
-        public @NotNull RecipeSerializer<?> getType()
-        {
+        public @NotNull RecipeSerializer<?> getType() {
             return recipe.getSerializer();
         }
 
         @Override
-        public @Nullable JsonObject serializeAdvancement()
-        {
+        public @Nullable JsonObject serializeAdvancement() {
             return advancement.serializeToJson();
         }
 
         @Override
-        public @Nullable ResourceLocation getAdvancementId()
-        {
+        public @Nullable ResourceLocation getAdvancementId() {
             return advancementId;
         }
     }

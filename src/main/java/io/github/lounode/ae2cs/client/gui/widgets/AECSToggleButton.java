@@ -1,7 +1,9 @@
 package io.github.lounode.ae2cs.client.gui.widgets;
 
-import appeng.client.gui.widgets.ITooltip;
 import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
+
+import appeng.client.gui.widgets.ITooltip;
+
 import net.minecraft.network.chat.Component;
 
 import java.util.Collections;
@@ -10,8 +12,7 @@ import java.util.List;
 /**
  * {@link appeng.client.gui.widgets.ToggleButton}的改写版：基于AECSIconButton + IButtonIcon。
  */
-public class AECSToggleButton extends AECSIconButton implements ITooltip
-{
+public class AECSToggleButton extends AECSIconButton implements ITooltip {
 
     private final Listener listener;
 
@@ -25,68 +26,58 @@ public class AECSToggleButton extends AECSIconButton implements ITooltip
 
     public AECSToggleButton(IButtonIcon on, IButtonIcon off,
                             Component displayName, Component displayHint,
-                            Listener listener)
-    {
+                            Listener listener) {
         this(on, off, listener);
         setTooltipOn(List.of(displayName, displayHint));
         setTooltipOff(List.of(displayName, displayHint));
     }
 
-    public AECSToggleButton(IButtonIcon on, IButtonIcon off, Listener listener)
-    {
+    public AECSToggleButton(IButtonIcon on, IButtonIcon off, Listener listener) {
         super(null);
         this.iconOn = on;
         this.iconOff = off;
         this.listener = listener;
     }
 
-    public void setTooltipOn(List<Component> lines)
-    {
+    public void setTooltipOn(List<Component> lines) {
         this.tooltipOn = lines;
     }
 
-    public void setTooltipOff(List<Component> lines)
-    {
+    public void setTooltipOff(List<Component> lines) {
         this.tooltipOff = lines;
     }
 
     @Override
-    public void onPress()
-    {
+    public void onPress() {
         this.listener.onChange(!state);
     }
 
-    public void setState(boolean isOn)
-    {
+    public void setState(boolean isOn) {
         this.state = isOn;
     }
 
-    public boolean getState()
-    {
+    public boolean getState() {
         return this.state;
     }
 
     @Override
-    protected IButtonIcon getIcon()
-    {
+    protected IButtonIcon getIcon() {
         return this.state ? this.iconOn : this.iconOff;
     }
 
     @Override
-    public List<Component> getTooltipMessage()
-    {
+    public List<Component> getTooltipMessage() {
         return state ? tooltipOn : tooltipOff;
     }
 
     @Override
-    public boolean isTooltipAreaVisible()
-    {
+    public boolean isTooltipAreaVisible() {
         return super.isTooltipAreaVisible() && !getTooltipMessage().isEmpty();
     }
 
     @FunctionalInterface
-    public interface Listener
-    {
+    public interface Listener {
+
         void onChange(boolean state);
     }
 }

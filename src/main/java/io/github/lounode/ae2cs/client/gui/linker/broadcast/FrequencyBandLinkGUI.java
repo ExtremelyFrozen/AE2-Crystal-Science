@@ -1,25 +1,26 @@
 package io.github.lounode.ae2cs.client.gui.linker.broadcast;
 
+import io.github.lounode.ae2cs.api.linker.broadcast.networking.FrequencyBandLinkInfo;
+import io.github.lounode.ae2cs.common.menu.linker.broadcast.FrequencyBandLinkMenu;
+
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.AESubScreen;
 import appeng.client.gui.style.StyleManager;
 import appeng.client.gui.widgets.AECheckbox;
 import appeng.client.gui.widgets.AETextField;
-import io.github.lounode.ae2cs.api.linker.broadcast.networking.FrequencyBandLinkInfo;
-import io.github.lounode.ae2cs.common.menu.linker.broadcast.FrequencyBandLinkMenu;
+
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-public class FrequencyBandLinkGUI extends AEBaseScreen<FrequencyBandLinkMenu>
-{
+public class FrequencyBandLinkGUI extends AEBaseScreen<FrequencyBandLinkMenu> {
+
     private AETextField passwordInput;
     private AECheckbox linkAsSenderBox;
     private AECheckbox linkAsReceiverBox;
     private Button confirmButton;
 
-    public FrequencyBandLinkGUI(FrequencyBandLinkMenu menu, Inventory playerInventory, Component title)
-    {
+    public FrequencyBandLinkGUI(FrequencyBandLinkMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, StyleManager.loadStyleDoc("/screens/frequency_band_link_menu.json"));
         AESubScreen.addBackButton(menu, "back_button", widgets);
 
@@ -35,33 +36,28 @@ public class FrequencyBandLinkGUI extends AEBaseScreen<FrequencyBandLinkMenu>
     }
 
     @Override
-    protected void updateBeforeRender()
-    {
+    protected void updateBeforeRender() {
         super.updateBeforeRender();
 
         Component linkState = Component.translatable("ae2cs.menu.frequency_band_menu.not_connected");
-        if (menu.connected)
-        {
+        if (menu.connected) {
             linkState = Component.translatable("ae2cs.menu.frequency_band_menu.connected");
         }
 
         setTextContent("link_state", linkState);
     }
 
-    private void confirm()
-    {
+    private void confirm() {
         boolean asSender = linkAsSenderBox.isSelected();
         menu.sendLinkToBand(new FrequencyBandLinkInfo(menu.selectedBand, asSender));
     }
 
-    private void asSender()
-    {
+    private void asSender() {
         linkAsSenderBox.setSelected(true);
         linkAsReceiverBox.setSelected(false);
     }
 
-    private void asReceiver()
-    {
+    private void asReceiver() {
         linkAsReceiverBox.setSelected(true);
         linkAsSenderBox.setSelected(false);
     }

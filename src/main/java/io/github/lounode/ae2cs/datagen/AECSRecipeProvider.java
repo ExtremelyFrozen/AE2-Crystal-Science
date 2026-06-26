@@ -1,8 +1,10 @@
 package io.github.lounode.ae2cs.datagen;
 
-import appeng.recipes.handlers.ChargerRecipeBuilder;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBuilder;
+
+import appeng.recipes.handlers.ChargerRecipeBuilder;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
@@ -20,23 +22,21 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.ConditionalRecipe;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-public abstract class AECSRecipeProvider extends RecipeProvider implements IConditionBuilder
-{
+public abstract class AECSRecipeProvider extends RecipeProvider implements IConditionBuilder {
 
-    public AECSRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries)
-    {
+    public AECSRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output);
     }
 
     @Override
-    public @NotNull String getName()
-    {
+    public @NotNull String getName() {
         throw new IllegalStateException("Must be overridden");
     }
 
@@ -45,8 +45,7 @@ public abstract class AECSRecipeProvider extends RecipeProvider implements ICond
     /**
      * 1x1 双向互换
      */
-    protected static void swap1x1(Consumer<FinishedRecipe> out, RecipeCategory category, ItemLike a, ItemLike b)
-    {
+    protected static void swap1x1(Consumer<FinishedRecipe> out, RecipeCategory category, ItemLike a, ItemLike b) {
         swap1x1(out, category, category, a, b);
     }
 
@@ -57,8 +56,7 @@ public abstract class AECSRecipeProvider extends RecipeProvider implements ICond
                                   RecipeCategory aToBCategory,
                                   RecipeCategory bToACategory,
                                   ItemLike a,
-                                  ItemLike b)
-    {
+                                  ItemLike b) {
         // A -> B
         ShapelessRecipeBuilder.shapeless(aToBCategory, b, 1)
                 .requires(a)
@@ -73,12 +71,10 @@ public abstract class AECSRecipeProvider extends RecipeProvider implements ICond
     }
 
     protected static void pack2x2(
-            Consumer<FinishedRecipe> recipeOutput,
-            RecipeCategory category,
-            ItemLike input,
-            ItemLike output
-    )
-    {
+                                  Consumer<FinishedRecipe> recipeOutput,
+                                  RecipeCategory category,
+                                  ItemLike input,
+                                  ItemLike output) {
         ShapedRecipeBuilder.shaped(category, output)
                 .pattern("##")
                 .pattern("##")
@@ -88,12 +84,10 @@ public abstract class AECSRecipeProvider extends RecipeProvider implements ICond
     }
 
     protected static void unpackTo4(
-            Consumer<FinishedRecipe> recipeOutput,
-            RecipeCategory category,
-            ItemLike input,
-            ItemLike output
-    )
-    {
+                                    Consumer<FinishedRecipe> recipeOutput,
+                                    RecipeCategory category,
+                                    ItemLike input,
+                                    ItemLike output) {
         ShapelessRecipeBuilder.shapeless(category, output, 4)
                 .requires(input)
                 .unlockedBy(getHasName(input), has(input))
@@ -101,25 +95,20 @@ public abstract class AECSRecipeProvider extends RecipeProvider implements ICond
     }
 
     protected static void packAndUnpack2x2(
-            Consumer<FinishedRecipe> recipeOutput,
-            RecipeCategory packCategory,
-            RecipeCategory unpackCategory,
-            ItemLike loose,
-            ItemLike packed
-    )
-    {
+                                           Consumer<FinishedRecipe> recipeOutput,
+                                           RecipeCategory packCategory,
+                                           RecipeCategory unpackCategory,
+                                           ItemLike loose,
+                                           ItemLike packed) {
         pack2x2(recipeOutput, packCategory, loose, packed);
         unpackTo4(recipeOutput, unpackCategory, packed, loose);
     }
 
-
     protected static void pack3x3(
-            Consumer<FinishedRecipe> recipeOutput,
-            RecipeCategory category,
-            ItemLike input,
-            ItemLike output
-    )
-    {
+                                  Consumer<FinishedRecipe> recipeOutput,
+                                  RecipeCategory category,
+                                  ItemLike input,
+                                  ItemLike output) {
         ShapedRecipeBuilder.shaped(category, output)
                 .pattern("###")
                 .pattern("###")
@@ -130,12 +119,10 @@ public abstract class AECSRecipeProvider extends RecipeProvider implements ICond
     }
 
     protected static void unpackTo9(
-            Consumer<FinishedRecipe> recipeOutput,
-            RecipeCategory category,
-            ItemLike input,
-            ItemLike output
-    )
-    {
+                                    Consumer<FinishedRecipe> recipeOutput,
+                                    RecipeCategory category,
+                                    ItemLike input,
+                                    ItemLike output) {
         ShapelessRecipeBuilder.shapeless(category, output, 9)
                 .requires(input)
                 .unlockedBy(getHasName(input), has(input))
@@ -143,28 +130,24 @@ public abstract class AECSRecipeProvider extends RecipeProvider implements ICond
     }
 
     protected static void packAndUnpack3x3(
-            Consumer<FinishedRecipe> recipeOutput,
-            RecipeCategory packCategory,
-            RecipeCategory unpackCategory,
-            ItemLike loose,
-            ItemLike packed
-    )
-    {
+                                           Consumer<FinishedRecipe> recipeOutput,
+                                           RecipeCategory packCategory,
+                                           RecipeCategory unpackCategory,
+                                           ItemLike loose,
+                                           ItemLike packed) {
         pack3x3(recipeOutput, packCategory, loose, packed);
         unpackTo9(recipeOutput, unpackCategory, packed, loose);
     }
 
     // 五类工具辅助方法---------------------------------------------------------------
-    // Pickaxe 镐：  ###
-    //               |
-    //               |
+    // Pickaxe 镐： ###
+    // |
+    // |
     protected static void toolPickaxeFromItem(
-            Consumer<FinishedRecipe> recipeOutput,
-            RecipeCategory category,
-            ItemLike result,
-            ItemLike material
-    )
-    {
+                                              Consumer<FinishedRecipe> recipeOutput,
+                                              RecipeCategory category,
+                                              ItemLike result,
+                                              ItemLike material) {
         ShapedRecipeBuilder.shaped(category, result)
                 .pattern("###")
                 .pattern(" | ")
@@ -176,12 +159,10 @@ public abstract class AECSRecipeProvider extends RecipeProvider implements ICond
     }
 
     protected static void toolPickaxeFromTag(
-            Consumer<FinishedRecipe> recipeOutput,
-            RecipeCategory category,
-            ItemLike result,
-            TagKey<Item> material
-    )
-    {
+                                             Consumer<FinishedRecipe> recipeOutput,
+                                             RecipeCategory category,
+                                             ItemLike result,
+                                             TagKey<Item> material) {
         String tagId = sanitize(material.location());
         String unlockName = "has_" + tagId;
 
@@ -195,16 +176,14 @@ public abstract class AECSRecipeProvider extends RecipeProvider implements ICond
                 .save(recipeOutput, getCrafterPath(result, true));
     }
 
-    // Axe 斧：  ##
-    //          #|
-    //           |
+    // Axe 斧： ##
+    // #|
+    // |
     protected static void toolAxeFromItem(
-            Consumer<FinishedRecipe> recipeOutput,
-            RecipeCategory category,
-            ItemLike result,
-            ItemLike material
-    )
-    {
+                                          Consumer<FinishedRecipe> recipeOutput,
+                                          RecipeCategory category,
+                                          ItemLike result,
+                                          ItemLike material) {
         ShapedRecipeBuilder.shaped(category, result)
                 .pattern("## ")
                 .pattern("#| ")
@@ -216,12 +195,10 @@ public abstract class AECSRecipeProvider extends RecipeProvider implements ICond
     }
 
     protected static void toolAxeFromTag(
-            Consumer<FinishedRecipe> recipeOutput,
-            RecipeCategory category,
-            ItemLike result,
-            TagKey<Item> material
-    )
-    {
+                                         Consumer<FinishedRecipe> recipeOutput,
+                                         RecipeCategory category,
+                                         ItemLike result,
+                                         TagKey<Item> material) {
         String tagId = sanitize(material.location());
         String unlockName = "has_" + tagId;
 
@@ -236,15 +213,13 @@ public abstract class AECSRecipeProvider extends RecipeProvider implements ICond
     }
 
     // Sword 剑： #
-    //           #
-    //           |
+    // #
+    // |
     protected static void toolSwordFromItem(
-            Consumer<FinishedRecipe> recipeOutput,
-            RecipeCategory category,
-            ItemLike result,
-            ItemLike material
-    )
-    {
+                                            Consumer<FinishedRecipe> recipeOutput,
+                                            RecipeCategory category,
+                                            ItemLike result,
+                                            ItemLike material) {
         ShapedRecipeBuilder.shaped(category, result)
                 .pattern(" # ")
                 .pattern(" # ")
@@ -256,12 +231,10 @@ public abstract class AECSRecipeProvider extends RecipeProvider implements ICond
     }
 
     protected static void toolSwordFromTag(
-            Consumer<FinishedRecipe> recipeOutput,
-            RecipeCategory category,
-            ItemLike result,
-            TagKey<Item> material
-    )
-    {
+                                           Consumer<FinishedRecipe> recipeOutput,
+                                           RecipeCategory category,
+                                           ItemLike result,
+                                           TagKey<Item> material) {
         String tagId = sanitize(material.location());
         String unlockName = "has_" + tagId;
 
@@ -276,15 +249,13 @@ public abstract class AECSRecipeProvider extends RecipeProvider implements ICond
     }
 
     // Hoe 锄：##
-    //          |
-    //          |
+    // |
+    // |
     protected static void toolHoeFromItem(
-            Consumer<FinishedRecipe> recipeOutput,
-            RecipeCategory category,
-            ItemLike result,
-            ItemLike material
-    )
-    {
+                                          Consumer<FinishedRecipe> recipeOutput,
+                                          RecipeCategory category,
+                                          ItemLike result,
+                                          ItemLike material) {
         ShapedRecipeBuilder.shaped(category, result)
                 .pattern("## ")
                 .pattern(" | ")
@@ -296,12 +267,10 @@ public abstract class AECSRecipeProvider extends RecipeProvider implements ICond
     }
 
     protected static void toolHoeFromTag(
-            Consumer<FinishedRecipe> recipeOutput,
-            RecipeCategory category,
-            ItemLike result,
-            TagKey<Item> material
-    )
-    {
+                                         Consumer<FinishedRecipe> recipeOutput,
+                                         RecipeCategory category,
+                                         ItemLike result,
+                                         TagKey<Item> material) {
         String tagId = sanitize(material.location());
         String unlockName = "has_" + tagId;
 
@@ -316,15 +285,13 @@ public abstract class AECSRecipeProvider extends RecipeProvider implements ICond
     }
 
     // Shovel 铲： #
-    //            |
-    //            |
+    // |
+    // |
     protected static void toolShovelFromItem(
-            Consumer<FinishedRecipe> recipeOutput,
-            RecipeCategory category,
-            ItemLike result,
-            ItemLike material
-    )
-    {
+                                             Consumer<FinishedRecipe> recipeOutput,
+                                             RecipeCategory category,
+                                             ItemLike result,
+                                             ItemLike material) {
         ShapedRecipeBuilder.shaped(category, result)
                 .pattern(" # ")
                 .pattern(" | ")
@@ -336,12 +303,10 @@ public abstract class AECSRecipeProvider extends RecipeProvider implements ICond
     }
 
     protected static void toolShovelFromTag(
-            Consumer<FinishedRecipe> recipeOutput,
-            RecipeCategory category,
-            ItemLike result,
-            TagKey<Item> material
-    )
-    {
+                                            Consumer<FinishedRecipe> recipeOutput,
+                                            RecipeCategory category,
+                                            ItemLike result,
+                                            TagKey<Item> material) {
         String tagId = sanitize(material.location());
         String unlockName = "has_" + tagId;
 
@@ -357,31 +322,25 @@ public abstract class AECSRecipeProvider extends RecipeProvider implements ICond
 
     // 锻造台辅助方法---------------------------------------------------------------
     protected static void smithingTransform(
-            Consumer<FinishedRecipe> out,
-            RecipeCategory category,
-            ItemLike template,
-            ItemLike base,
-            ItemLike addition,
-            ItemLike result
-    )
-    {
+                                            Consumer<FinishedRecipe> out,
+                                            RecipeCategory category,
+                                            ItemLike template,
+                                            ItemLike base,
+                                            ItemLike addition,
+                                            ItemLike result) {
         SmithingTransformRecipeBuilder.smithing(
-                        Ingredient.of(template),
-                        Ingredient.of(base),
-                        Ingredient.of(addition),
-                        category,
-                        result.asItem()
-                )
+                Ingredient.of(template),
+                Ingredient.of(base),
+                Ingredient.of(addition),
+                category,
+                result.asItem())
                 .unlocks(getHasName(base), has(base))
                 .save(out, AE2CrystalScience.makeId(
-                        "smithing/" + getItemName(result) + "_from_" + getItemName(base) + "_and_" + getItemName(addition)
-                ));
+                        "smithing/" + getItemName(result) + "_from_" + getItemName(base) + "_and_" + getItemName(addition)));
     }
 
-
     // 熔炉样板辅助工具---------------------------------------------------------------
-    protected static void smeltFood(RecipeCategory category, ItemLike input, ItemLike result, float experience, int cookingTime, Consumer<FinishedRecipe> output)
-    {
+    protected static void smeltFood(RecipeCategory category, ItemLike input, ItemLike result, float experience, int cookingTime, Consumer<FinishedRecipe> output) {
         SimpleCookingRecipeBuilder
                 .smelting(Ingredient.of(input), category, result, experience, cookingTime)
                 .unlockedBy(getHasName(input), has(input))
@@ -390,13 +349,11 @@ public abstract class AECSRecipeProvider extends RecipeProvider implements ICond
 
     // 切石样板辅助工具---------------------------------------------------------------
     protected static void stonecutterResultFromItem(
-            Consumer<FinishedRecipe> recipeOutput,
-            RecipeCategory category,
-            ItemLike result,
-            ItemLike input,
-            int resultCount
-    )
-    {
+                                                    Consumer<FinishedRecipe> recipeOutput,
+                                                    RecipeCategory category,
+                                                    ItemLike result,
+                                                    ItemLike input,
+                                                    int resultCount) {
         Ingredient ingredient = Ingredient.of(input);
         String recipeId = "stonecutting/" + getItemName(result) + "_from_" + getItemName(input) + "_stonecutting";
 
@@ -406,23 +363,19 @@ public abstract class AECSRecipeProvider extends RecipeProvider implements ICond
     }
 
     protected static void stonecutterResultFromItem(
-            Consumer<FinishedRecipe> recipeOutput,
-            RecipeCategory category,
-            ItemLike result,
-            ItemLike input
-    )
-    {
+                                                    Consumer<FinishedRecipe> recipeOutput,
+                                                    RecipeCategory category,
+                                                    ItemLike result,
+                                                    ItemLike input) {
         stonecutterResultFromItem(recipeOutput, category, result, input, 1);
     }
 
     protected static void stonecutterResultFromTag(
-            Consumer<FinishedRecipe> recipeOutput,
-            RecipeCategory category,
-            ItemLike result,
-            TagKey<Item> input,
-            int resultCount
-    )
-    {
+                                                   Consumer<FinishedRecipe> recipeOutput,
+                                                   RecipeCategory category,
+                                                   ItemLike result,
+                                                   TagKey<Item> input,
+                                                   int resultCount) {
         Ingredient ingredient = Ingredient.of(input);
 
         // minecraft:logs -> "minecraft_logs"
@@ -436,32 +389,27 @@ public abstract class AECSRecipeProvider extends RecipeProvider implements ICond
     }
 
     protected static void stonecutterResultFromTag(
-            Consumer<FinishedRecipe> recipeOutput,
-            RecipeCategory category,
-            ItemLike result,
-            TagKey<Item> input
-    )
-    {
+                                                   Consumer<FinishedRecipe> recipeOutput,
+                                                   RecipeCategory category,
+                                                   ItemLike result,
+                                                   TagKey<Item> input) {
         stonecutterResultFromTag(recipeOutput, category, result, input, 1);
     }
 
     // AE充能配方-------------------------------------------------------------------
-    protected static void chargedRecipe(Consumer<FinishedRecipe> consumer, ItemLike input, ItemLike output)
-    {
+    protected static void chargedRecipe(Consumer<FinishedRecipe> consumer, ItemLike input, ItemLike output) {
         ResourceLocation id = AE2CrystalScience.makeId("charged/" + getItemName(input) + "_from_" + getItemName(output));
         ChargerRecipeBuilder.charge(consumer, id, input, output);
     }
 
-    protected static void chargedRecipe(Consumer<FinishedRecipe> consumer, TagKey<Item> input, ItemLike output)
-    {
+    protected static void chargedRecipe(Consumer<FinishedRecipe> consumer, TagKey<Item> input, ItemLike output) {
         String tagId = sanitize(input.location());
 
         ResourceLocation id = AE2CrystalScience.makeId("charged/" + getItemName(output) + "_from_" + tagId);
         ChargerRecipeBuilder.charge(consumer, id, input, output);
     }
 
-    protected static void chargedRecipeWithAggregator(Consumer<FinishedRecipe> consumer, ItemLike input, ItemLike output)
-    {
+    protected static void chargedRecipeWithAggregator(Consumer<FinishedRecipe> consumer, ItemLike input, ItemLike output) {
         chargedRecipe(consumer, input, output);
         ResourceLocation id = AE2CrystalScience.makeId("aggregator/" + getItemName(input) + "_from_" + getItemName(output));
         CrystalAggregatorRecipeBuilder.aggregating(new ItemStack(output, 64), 102400)
@@ -469,8 +417,7 @@ public abstract class AECSRecipeProvider extends RecipeProvider implements ICond
                 .save(consumer, id);
     }
 
-    protected static void chargedRecipeWithAggregator(Consumer<FinishedRecipe> consumer, TagKey<Item> input, ItemLike output)
-    {
+    protected static void chargedRecipeWithAggregator(Consumer<FinishedRecipe> consumer, TagKey<Item> input, ItemLike output) {
         chargedRecipe(consumer, input, output);
         String tagId = sanitize(input.location());
         ResourceLocation id = AE2CrystalScience.makeId("aggregator/" + getItemName(output) + "_from_" + tagId);
@@ -479,17 +426,14 @@ public abstract class AECSRecipeProvider extends RecipeProvider implements ICond
                 .save(consumer, id);
     }
 
-    protected static Consumer<FinishedRecipe> withConditions(Consumer<FinishedRecipe> consumer, ICondition... conditions)
-    {
-        if (conditions == null || conditions.length == 0)
-        {
+    protected static Consumer<FinishedRecipe> withConditions(Consumer<FinishedRecipe> consumer, ICondition... conditions) {
+        if (conditions == null || conditions.length == 0) {
             return consumer;
         }
 
         return recipe -> {
             ConditionalRecipe.Builder builder = ConditionalRecipe.builder();
-            for (ICondition condition : conditions)
-            {
+            for (ICondition condition : conditions) {
                 builder.addCondition(condition);
             }
 
@@ -498,16 +442,13 @@ public abstract class AECSRecipeProvider extends RecipeProvider implements ICond
         };
     }
 
-
     // id工具------------------------------------------------
-    protected static ResourceLocation getCrafterPath(ItemLike output, boolean shaped)
-    {
+    protected static ResourceLocation getCrafterPath(ItemLike output, boolean shaped) {
         String prefix = shaped ? "craft/shaped" : "craft/shapeless";
         return AE2CrystalScience.makeId(getPrefixedItemName(prefix, output));
     }
 
-    protected static ResourceLocation getCrafterPath(ItemLike input, ItemLike output, boolean shaped)
-    {
+    protected static ResourceLocation getCrafterPath(ItemLike input, ItemLike output, boolean shaped) {
         String prefix = shaped ? "craft/shaped" : "craft/shapeless";
         String path = prefix + "/" + getItemName(output) + "_from_" + getItemName(input);
         return AE2CrystalScience.makeId(path);
@@ -516,56 +457,44 @@ public abstract class AECSRecipeProvider extends RecipeProvider implements ICond
     /**
      * 给“互换”配方一个稳定的ID
      */
-    private static ResourceLocation craftingConversionId(ItemLike result, ItemLike material)
-    {
+    private static ResourceLocation craftingConversionId(ItemLike result, ItemLike material) {
         return AE2CrystalScience.makeId("craft/shapeless/" + getConversionRecipeName(result, material) + "_swap");
     }
 
-    protected static ResourceLocation getInscriberPath(ItemLike output)
-    {
+    protected static ResourceLocation getInscriberPath(ItemLike output) {
         return AE2CrystalScience.makeId(getPrefixedItemName("inscriber", output));
     }
 
-    protected static ResourceLocation getTransformPath(ItemLike output)
-    {
+    protected static ResourceLocation getTransformPath(ItemLike output) {
         return AE2CrystalScience.makeId(getPrefixedItemName("transform", output));
     }
 
-    protected static String getPrefixedItemName(String prefix, ItemLike item)
-    {
+    protected static String getPrefixedItemName(String prefix, ItemLike item) {
         return prefix + "/" + getItemName(item);
     }
 
-    protected static String sanitize(ResourceLocation id)
-    {
+    protected static String sanitize(ResourceLocation id) {
         // namespace:path/xxx -> namespace_path_xxx
         return id.getNamespace() + "_" + id.getPath().replace('/', '_');
     }
 
     // 其他工具
-    public static ItemStack enchantedItem(ItemLike item, int count, Enchantment enchantKey, int level)
-    {
+    public static ItemStack enchantedItem(ItemLike item, int count, Enchantment enchantKey, int level) {
         return enchantedItem(item, count, Map.of(enchantKey, level));
     }
 
-    public static ItemStack enchantedItem(ItemLike item, int count, Map<Enchantment, Integer> enchants)
-    {
+    public static ItemStack enchantedItem(ItemLike item, int count, Map<Enchantment, Integer> enchants) {
         ItemStack stack = new ItemStack(item, count);
 
-        for (var e : enchants.entrySet())
-        {
+        for (var e : enchants.entrySet()) {
             int level = e.getValue() == null ? 1 : e.getValue();
-            if (level <= 0)
-            {
+            if (level <= 0) {
                 continue;
             }
 
-            if (stack.is(Items.ENCHANTED_BOOK))
-            {
+            if (stack.is(Items.ENCHANTED_BOOK)) {
                 EnchantedBookItem.addEnchantment(stack, new EnchantmentInstance(e.getKey(), level));
-            }
-            else
-            {
+            } else {
                 stack.enchant(e.getKey(), level);
             }
         }
