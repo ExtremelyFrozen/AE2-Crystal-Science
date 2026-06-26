@@ -62,7 +62,6 @@ dependencies {
     modLocalRuntime(forge.glodium)
     modLocalRuntime(forge.geckolib)
     modLocalRuntime(forge.cloth.config)
-    modLocalRuntime(forge.kotlinforforge)
 
     modExtraLocalRuntime(forge.ponder)
     modExtraLocalRuntime(variantOf(forge.create) { classifier("slim") })
@@ -86,9 +85,9 @@ dependencies {
     modLocalRuntime(forge.emi)
     modLocalRuntime(forge.jei.forge.impl)
     // AG
-    implementation "curse.maven:applied-generators-1320369:7161908"
+//    implementation "curse.maven:applied-generators-1320369:7161908"
     // OMNI CELL
-    implementation "curse.maven:omni-cells-1359517:7169531"
+    modImplementation "curse.maven:omni-cells-1359517:8050975"
 
     // Client-only runtime mods
     modExtraLocalRuntime(forge.jech)
