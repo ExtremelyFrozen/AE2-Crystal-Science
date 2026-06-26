@@ -31,7 +31,10 @@ dependencies {
     modCompileOnly(forge.amek)
     modCompileOnly(forge.mek)
 
-    modCompileOnly(forge.create)
+    // Create
+    modCompileOnly(forge.ponder)
+    modCompileOnly(variantOf(forge.create) { classifier("slim") })
+    modCompileOnly(forge.flywheel.forge.api)
 
     // FTB
     modCompileOnly(forge.ftbultimine)
@@ -60,7 +63,10 @@ dependencies {
     modLocalRuntime(forge.geckolib)
     modLocalRuntime(forge.cloth.config)
     modLocalRuntime(forge.kotlinforforge)
-    modLocalRuntime(variantOf(forge.create) { classifier("slim") })
+
+    modExtraLocalRuntime(forge.ponder)
+    modExtraLocalRuntime(variantOf(forge.create) { classifier("slim") })
+    modExtraLocalRuntime(forge.flywheel.forge)
 
     // Runtime AE2 addons
     modLocalRuntime(forge.guideme)

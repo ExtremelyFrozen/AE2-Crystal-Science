@@ -1,21 +1,21 @@
 [versions]
 mixinExtras = "0.5.0-rc.3"
-ae2 = "15.0.18"
-ae2wt = "15.3.2-forge"
+ae2 = "15.4.10"
 
 jei = "15.20.0.129"
 emi = "1.1.23+1.20.1"
 
-ldlib = "2.2.8"
 mekanism = "1.20.1-10.4.16.80"
 kotlinforforge = "4.11.0"
 create = "6.0.6-150"
+ponder = "1.0.80"
+flywheel = "1.0.4"
 curios = "5.9.1+1.20.1"
 architectury = "9.2.14"
 
 ## ftb mod ##
-ftblibrary = "2004.2.5"
-ftbultimine  = "2004.1.0"
+ftblibrary = "2001.2.13"
+ftbultimine  = "2001.1.8"
 
 ## modrinth maven ##
 jade = "11.13.2+forge"
@@ -32,11 +32,10 @@ eae = "7472662"
 aae = "7159779"
 aelt = "8135920"
 extendedae-plus = "7960385"
-applied-flux = "7429565"
+applied-flux = "7072853"
 applied-pneumatics = "7723695"
 applied-create = "7945860"
-mega-cells = "7952621"
-sut = "8214767"
+mega-cells = "6175008"
 cloth-config = "5729105"
 amek = "7096962"
 jech = "8117474"
@@ -48,18 +47,18 @@ mixinExtras-common  = { module = "io.github.llamalad7:mixinextras-common", versi
 mixinExtras-forge   = { module = "io.github.llamalad7:mixinextras-forge", version.ref = "mixinExtras" }
 guideme             = { module = "curse.maven:guideme-1173950", version.ref = "guideme" }
 ae2                 = { module = "appeng:appliedenergistics2-forge", version.ref = "ae2" }
-ae2wt               = { module = "de.mari_023:ae2wtlib", version.ref = "ae2wt"}
-ae2wt_api           = { module = "de.mari_023:ae2wtlib_api", version.ref = "ae2wt"}
 
 jei-common-api      = { module = "mezz.jei:jei-1.20.1-common-api", version.ref = "jei" }
 jei-forge-api       = { module = "mezz.jei:jei-1.20.1-forge-api", version.ref = "jei" }
 jei-forge-impl      = { module = "mezz.jei:jei-1.20.1-forge", version.ref = "jei" }
 emi                 = { module = "dev.emi:emi-forge", version.ref = "emi" }
 
-ldlib               = { module = "com.lowdragmc.ldlib2:ldlib2-neoforge-1.21.1", version.ref = "ldlib" }
 mek                 = { module = "mekanism:Mekanism", version.ref = "mekanism" }
 kotlinforforge      = { module = "thedarkcolour:kotlinforforge-neoforge", version.ref = "kotlinforforge" }
 create              = { module = "com.simibubi.create:create-1.20.1", version.ref = "create" }
+ponder              = { module = "net.createmod.ponder:Ponder-Forge-1.20.1", version.ref = "ponder"}
+flywheel-forge-api  = { module = "dev.engine-room.flywheel:flywheel-forge-api-1.20.1", version.ref = "flywheel"}
+flywheel-forge      = { module = "dev.engine-room.flywheel:flywheel-forge-1.20.1", version.ref = "flywheel"}
 curios              = { module = "top.theillusivec4.curios:curios-forge", version.ref = "curios" }
 architectury        = { module = "dev.architectury:architectury-forge", version.ref = "architectury" }
 
