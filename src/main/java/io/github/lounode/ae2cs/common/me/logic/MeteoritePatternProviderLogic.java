@@ -109,7 +109,8 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
     }
 
     private void onUpgradesChange() {
-        this.maxWorksInRound = 8 << getInstalledUpgrades(AEItems.SPEED_CARD) + 256 * getInstalledUpgrades(AECSItems.OVERLOAD_CARD);
+        this.maxWorksInRound = 8 << getInstalledUpgrades(AEItems.SPEED_CARD);
+        this.maxWorksInRound += 256 * getInstalledUpgrades(AECSItems.OVERLOAD_CARD);
         this.saveChanges();
     }
 
