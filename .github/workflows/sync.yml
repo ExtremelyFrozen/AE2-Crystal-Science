@@ -1,0 +1,28 @@
+name: Sync Github Folder
+
+on:
+  push:
+    branches: ['1.21.1']
+    paths: ['.github/**']
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target-branch: ['26.1', '1.20.1']
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.target-branch }}
+      - run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git switch -C gh/workflow-sync-${{ matrix.target-branch }}
+          git fetch origin
+          git checkout origin/1.21.1 -- .github
+          git commit -am "Sync Workflows"
+          git push --force --set-upstream origin gh/workflow-sync-${{ matrix.target-branch }}
+          gh pr create -B ${{ matrix.target-branch }} -H gh/workflow-sync-${{ matrix.target-branch }} --title "Sync Workflows with 1.21.1 [no-snapshot]" --body "Created by GH Workflow" --label "ignore changelog"
