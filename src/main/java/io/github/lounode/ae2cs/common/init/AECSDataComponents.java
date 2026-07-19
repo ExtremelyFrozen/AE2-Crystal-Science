@@ -116,6 +116,14 @@ public class AECSDataComponents {
             .networkSynchronized(ResonatingPatternProviderReference.STREAM_CODEC)
             .cacheEncoding());
 
+    /**
+     * 谐振绑定器的客户端渲染快照；服务端在编辑供应器后刷新该组件。
+     */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResonatingProviderDefaults.Defaults>> RESONATING_LINKER_RENDER_DATA = register("resonating_linker_render_data", b -> b
+            .persistent(ResonatingProviderDefaults.Defaults.CODEC)
+            .networkSynchronized(ResonatingProviderDefaults.Defaults.STREAM_CODEC)
+            .cacheEncoding());
+
     public static void register(IEventBus eventBus) {
         DATA_COMPONENTS.register(eventBus);
     }

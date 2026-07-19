@@ -8,7 +8,6 @@ import io.github.lounode.ae2cs.common.item.ResonatingLinkerItem;
 import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern;
 import io.github.lounode.ae2cs.common.me.crafting.ResonatingPatternDetails;
 import io.github.lounode.ae2cs.common.me.crafting.ResonatingProviderDefaults;
-import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderHost;
 import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderReference;
 
 import net.minecraft.client.Minecraft;
@@ -111,27 +110,21 @@ public final class ResonatingPatternTargetHighlighter {
     private static void renderBoundProvider(RenderLevelStageEvent event, LocalPlayer player) {
         ItemStack linker = player.getMainHandItem().getItem() instanceof ResonatingLinkerItem ? player.getMainHandItem() : player.getOffhandItem();
         ResonatingPatternProviderReference reference = linker.get(AECSDataComponents.RESONATING_LINKER_PROVIDER.get());
-        if (reference == null) {
+        ResonatingProviderDefaults.Defaults renderSnapshot = linker.get(AECSDataComponents.RESONATING_LINKER_RENDER_DATA.get());
+        if (reference == null || renderSnapshot == null || !player.level().dimension().equals(reference.pos().dimension())) {
             return;
         }
 
-        ResonatingPatternProviderHost provider = reference.resolve(player.level());
-        if (provider == null) {
-            return;
-        }
-
-        TargetRenderData renderData = new TargetRenderData(provider.getDefaultInputTargets(), provider.getDefaultSelectedInput());
+        TargetRenderData renderData = new TargetRenderData(renderSnapshot.targets(), renderSnapshot.selectedInput());
         renderTargets(event, player, renderData, UNSELECTED_RED, UNSELECTED_GREEN, UNSELECTED_BLUE);
-        renderProviderSourceAndLines(event, player, provider, renderData);
+        renderProviderSourceAndLines(event, player, reference.pos().pos(), renderData);
     }
 
     private static void renderProviderSourceAndLines(RenderLevelStageEvent event, LocalPlayer player,
-                                                     ResonatingPatternProviderHost provider, TargetRenderData renderData) {
+                                                     BlockPos sourcePos, TargetRenderData renderData) {
         var cameraPosition = event.getCamera().getPosition();
         PoseStack poseStack = event.getPoseStack();
         MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
-        BlockPos sourcePos = provider.getBlockEntity().getBlockPos();
-
         VertexConsumer sourceConsumer = bufferSource.getBuffer(AECSRenderTypes.RESONATING_MARK_FACE);
         poseStack.pushPose();
         poseStack.translate(sourcePos.getX() - cameraPosition.x, sourcePos.getY() - cameraPosition.y, sourcePos.getZ() - cameraPosition.z);

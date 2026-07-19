@@ -33,12 +33,14 @@ public class ResonatingLinkerItem extends Item implements IResonatingTargetModeI
         if (player == null) return InteractionResult.PASS;
 
         ResonatingPatternProviderReference reference = PatternProviderBindingHelper.referenceClickedResonatingProvider(context);
-        if (reference != null) {
+        ResonatingPatternProviderHost clickedProvider = PatternProviderBindingHelper.resolveClickedResonatingProvider(context);
+        if (reference != null && clickedProvider != null) {
             if (context.getLevel().isClientSide()) {
                 return InteractionResult.SUCCESS;
             }
 
             stack.set(AECSDataComponents.RESONATING_LINKER_PROVIDER.get(), reference);
+            updateRenderData(stack, clickedProvider);
             player.displayClientMessage(Component.translatable("ae2cs.msg.resonating_linker.bound_provider")
                     .withStyle(ChatFormatting.GRAY), true);
             return InteractionResult.CONSUME;
@@ -78,6 +80,7 @@ public class ResonatingLinkerItem extends Item implements IResonatingTargetModeI
                     context.getClickedFace().getName()).withStyle(ChatFormatting.GREEN), true);
         }
         host.markForLogicClientUpdate();
+        updateRenderData(stack, host);
         return InteractionResult.CONSUME;
     }
 
@@ -100,6 +103,7 @@ public class ResonatingLinkerItem extends Item implements IResonatingTargetModeI
         int selected = Math.floorMod(host.getDefaultSelectedInput() + (next ? 1 : -1), ResonatingProviderDefaults.DEFAULT_INPUT_SLOTS);
         host.setDefaultSelectedInput(selected);
         host.markForLogicClientUpdate();
+        updateRenderData(stack, host);
         Optional<EncodedResonatingPattern.Target> target = host.getDefaultInputTargets().get(selected);
         if (target.isPresent()) {
             var pos = target.get().pos().pos();
@@ -114,6 +118,14 @@ public class ResonatingLinkerItem extends Item implements IResonatingTargetModeI
 
     public static boolean hasBoundProvider(ItemStack stack) {
         return stack.has(AECSDataComponents.RESONATING_LINKER_PROVIDER.get());
+    }
+
+    /**
+     * 将已绑定供应器的当前目标和选中槽位同步为绑定器的客户端渲染快照。
+     */
+    private static void updateRenderData(ItemStack stack, ResonatingPatternProviderHost host) {
+        stack.set(AECSDataComponents.RESONATING_LINKER_RENDER_DATA.get(),
+                new ResonatingProviderDefaults.Defaults(host.getDefaultSelectedInput(), host.getDefaultInputTargets()));
     }
 
     @Override
