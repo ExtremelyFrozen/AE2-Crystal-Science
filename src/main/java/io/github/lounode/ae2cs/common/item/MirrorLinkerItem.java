@@ -2,11 +2,13 @@ package io.github.lounode.ae2cs.common.item;
 
 import io.github.lounode.ae2cs.common.me.logic.MirrorPatternProviderHost;
 import io.github.lounode.ae2cs.common.me.logic.MirroredPatternProviderTarget;
+import io.github.lounode.ae2cs.util.ChunkHelper;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -40,7 +42,7 @@ public class MirrorLinkerItem extends Item {
     @Override
     public @NotNull InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         Player player = context.getPlayer();
-        if (player == null || player.isShiftKeyDown()) {
+        if (player == null) {
             return InteractionResult.PASS;
         }
 
@@ -50,7 +52,16 @@ public class MirrorLinkerItem extends Item {
                 return InteractionResult.SUCCESS;
             }
 
+            if (player.isShiftKeyDown()) {
+                clearLoadedMirrorGroup(player, mirrorHost);
+                return InteractionResult.CONSUME;
+            }
+
             return applyStoredTarget(stack, player, mirrorHost) ? InteractionResult.CONSUME : InteractionResult.PASS;
+        }
+
+        if (player.isShiftKeyDown()) {
+            return InteractionResult.PASS;
         }
 
         return SimplePatternProviderMirrorHelper.tryBind(stack, context);
@@ -90,6 +101,33 @@ public class MirrorLinkerItem extends Item {
                     .withStyle(ChatFormatting.GRAY), true);
         }
         return true;
+    }
+
+    private static void clearLoadedMirrorGroup(Player player, MirrorPatternProviderHost selected) {
+        if (!(player.level() instanceof ServerLevel level)) {
+            return;
+        }
+
+        MirroredPatternProviderTarget target = selected.getMirroringLogic().getMirrorTarget();
+        if (target == null) {
+            player.displayClientMessage(Component.translatable("ae2cs.msg.mirror_linker.cleared_loaded_group", 0)
+                    .withStyle(ChatFormatting.GRAY), true);
+            return;
+        }
+
+        int cleared = 0;
+        for (var blockEntity : ChunkHelper.getLoadedBlockEntities(level)) {
+            for (MirrorPatternProviderHost host : PatternProviderBindingHelper.getMirrorProvidersAt(level, blockEntity.getBlockPos())) {
+                if (!target.equals(host.getMirroringLogic().getMirrorTarget())) {
+                    continue;
+                }
+                host.getMirroringLogic().setMirrorTarget(null);
+                cleared++;
+            }
+        }
+
+        player.displayClientMessage(Component.translatable("ae2cs.msg.mirror_linker.cleared_loaded_group", cleared)
+                .withStyle(ChatFormatting.GRAY), true);
     }
 
     public static int applyStoredTargetToCluster(ItemStack stack, Player player, Level level, BlockPos centerPos, Vec3 clickLocation) {

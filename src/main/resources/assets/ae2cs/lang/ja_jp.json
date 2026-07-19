@@ -169,6 +169,7 @@
   "ae2cs.msg.mirror_linker.applied": "保存されたミラー対象をミラーパターンプロバイダーに適用しました",
   "ae2cs.msg.mirror_linker.applied_batch": "保存されたミラー対象を周囲の %s 個のミラーパターンプロバイダーに適用しました",
   "ae2cs.msg.mirror_linker.cleared_batch": "周囲の %s 個のミラーパターンプロバイダーのミラー対象を解除しました",
+  "ae2cs.msg.mirror_linker.cleared_loaded_group": "現在のディメンションで読み込み済みの同じグループのミラーパターンプロバイダー %s 個の紐付けを解除しました",
   "ae2cs.msg.mirror_linker.cleared_provider": "このミラーパターンプロバイダーのミラー対象を解除しました",
   "ae2cs.msg.mirror_pattern_provider.bound": "ミラー対象を (%s, %s, %s) にバインドしました",
   "ae2cs.msg.mirror_pattern_provider.cleared": "ミラー対象を解除しました",

@@ -171,6 +171,7 @@
   "ae2cs.msg.mirror_linker.applied": "Applied the stored mirror target to the Mirror Pattern Provider",
   "ae2cs.msg.mirror_linker.applied_batch": "Applied the stored mirror target to %s nearby Mirror Pattern Providers",
   "ae2cs.msg.mirror_linker.cleared_batch": "Cleared the mirror target on %s nearby Mirror Pattern Providers",
+  "ae2cs.msg.mirror_linker.cleared_loaded_group": "Unbound %s loaded Mirror Pattern Providers in this binding group",
   "ae2cs.msg.mirror_linker.cleared_provider": "Cleared the mirror target on this Mirror Pattern Provider",
   "ae2cs.msg.mirror_pattern_provider.bound": "Bound mirror target to (%s, %s, %s)",
   "ae2cs.msg.mirror_pattern_provider.cleared": "Cleared mirror target",

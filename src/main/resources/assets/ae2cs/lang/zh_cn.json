@@ -171,6 +171,7 @@
   "ae2cs.msg.mirror_linker.applied": "已将当前镜像目标写入镜像样板供应器",
   "ae2cs.msg.mirror_linker.applied_batch": "已将当前镜像目标写入附近的 %s 个镜像样板供应器",
   "ae2cs.msg.mirror_linker.cleared_batch": "已清空附近的 %s 个镜像样板供应器的镜像目标",
+  "ae2cs.msg.mirror_linker.cleared_loaded_group": "已解绑当前维度中已加载的 %s 个同组镜像样板供应器",
   "ae2cs.msg.mirror_linker.cleared_provider": "已清空该镜像样板供应器的镜像目标",
   "ae2cs.msg.mirror_pattern_provider.bound": "已绑定镜像目标到 (%s, %s, %s)",
   "ae2cs.msg.mirror_pattern_provider.cleared": "已清空镜像目标",
