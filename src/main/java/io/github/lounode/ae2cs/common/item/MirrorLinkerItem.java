@@ -127,7 +127,9 @@ public class MirrorLinkerItem extends Item {
                 continue;
             }
 
-            List<MirrorPatternProviderHost> atCurrent = PatternProviderBindingHelper.getMirrorProvidersAt(level, current);
+            List<MirrorPatternProviderHost> atCurrent = PatternProviderBindingHelper.getMirrorProvidersAt(level, current).stream()
+                    .filter(host -> host.getClass() == selected.getClass())
+                    .toList();
             if (atCurrent.isEmpty()) {
                 continue;
             }

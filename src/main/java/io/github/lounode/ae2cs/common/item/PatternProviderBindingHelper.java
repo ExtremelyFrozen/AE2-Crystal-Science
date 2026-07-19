@@ -43,6 +43,11 @@ public final class PatternProviderBindingHelper {
         return host instanceof ResonatingPatternProviderHost resonating ? resonating : null;
     }
 
+    public static @Nullable ResonatingPatternProviderHost resolveResonatingProvider(Level level, BlockPos pos, Vec3 clickLocation) {
+        PatternProviderLogicHost host = resolvePatternProvider(level, pos, clickLocation);
+        return host instanceof ResonatingPatternProviderHost resonating ? resonating : null;
+    }
+
     public static @Nullable MirrorPatternProviderHost resolveClickedMirrorProvider(UseOnContext context) {
         PatternProviderLogicHost host = resolveClickedPatternProvider(context);
         return host instanceof MirrorPatternProviderHost mirror ? mirror : null;
@@ -65,6 +70,25 @@ public final class PatternProviderBindingHelper {
                 var part = partHost.getPart(side);
                 if (part instanceof MirrorPatternProviderHost mirror) {
                     hosts.add(mirror);
+                }
+            }
+        }
+
+        return hosts;
+    }
+
+    public static List<ResonatingPatternProviderHost> getResonatingProvidersAt(Level level, BlockPos pos) {
+        List<ResonatingPatternProviderHost> hosts = new ArrayList<>();
+        BlockEntity be = level.getBlockEntity(pos);
+        if (be instanceof ResonatingPatternProviderHost resonating) {
+            hosts.add(resonating);
+        }
+
+        if (be instanceof IPartHost partHost) {
+            for (Direction side : Direction.values()) {
+                var part = partHost.getPart(side);
+                if (part instanceof ResonatingPatternProviderHost resonating) {
+                    hosts.add(resonating);
                 }
             }
         }
