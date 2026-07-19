@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs.common.me.logic;
 
 import io.github.lounode.ae2cs.api.util.AEKeyHelper;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.util.KeyCounterHelper;
 
 import appeng.api.config.Actionable;
@@ -105,6 +106,7 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
 
     private void onUpgradesChange() {
         this.maxWorksInRound = 8 << getInstalledUpgrades(AEItems.SPEED_CARD);
+        this.maxWorksInRound += 256 * getInstalledUpgrades(AECSItems.OVERLOAD_CARD);
         this.saveChanges();
     }
 

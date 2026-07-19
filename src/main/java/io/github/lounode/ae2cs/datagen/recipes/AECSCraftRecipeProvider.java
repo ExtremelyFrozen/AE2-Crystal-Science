@@ -51,6 +51,8 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider {
                 AECSItems.PURE_METEOR_CRYSTAL, AECSBlocks.PURE_METEOR_CRYSTAL_BLOCK);
         packAndUnpack3x3(recipeOutput, RecipeCategory.MISC, RecipeCategory.MISC,
                 AECSItems.PURE_ENDER_QUARTZ, AECSBlocks.PURE_ENDER_QUARTZ_BLOCK);
+        packAndUnpack3x3(recipeOutput, RecipeCategory.MISC, RecipeCategory.MISC,
+                AECSItems.PURE_LINK_CRYSTAL, AECSBlocks.PURE_LINK_CRYSTAL_BLOCK);
         packAndUnpack2x2(recipeOutput, RecipeCategory.MISC, RecipeCategory.MISC,
                 AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, AECSBlocks.CHARGED_CERTUS_QUARTZ_BLOCK);
         packAndUnpack3x3(recipeOutput, RecipeCategory.MISC, RecipeCategory.MISC,
@@ -72,6 +74,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider {
         swap1x1(recipeOutput, RecipeCategory.MISC, AECSBlocks.INTEGRATED_INTERFACE_BLOCK, AECSParts.INTEGRATE_INTERFACE_PART);
         swap1x1(recipeOutput, RecipeCategory.MISC, AECSBlocks.EX_INTEGRATED_INTERFACE_BLOCK, AECSParts.EX_INTEGRATE_INTERFACE_PART);
         swap1x1(recipeOutput, RecipeCategory.MISC, AECSBlocks.SIMPLE_PATTERN_PROVIDER_BLOCK, AECSParts.SIMPLE_PATTERN_PROVIDER_PART);
+        swap1x1(recipeOutput, RecipeCategory.MISC, AECSBlocks.MIRROR_PATTERN_PROVIDER_BLOCK, AECSParts.MIRROR_PATTERN_PROVIDER_PART);
         swap1x1(recipeOutput, RecipeCategory.MISC, AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK, AECSParts.METEORITE_PATTERN_PROVIDER_PART);
         swap1x1(recipeOutput, RecipeCategory.MISC, AECSBlocks.ENDER_INTERFACE_BLOCK, AECSParts.ENDER_INTERFACE_PART);
         swap1x1(recipeOutput, RecipeCategory.MISC, AECSBlocks.EX_ENDER_INTERFACE_BLOCK, AECSParts.EX_ENDER_INTERFACE_PART);

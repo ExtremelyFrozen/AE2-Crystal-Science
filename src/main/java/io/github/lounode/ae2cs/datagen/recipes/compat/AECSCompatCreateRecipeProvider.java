@@ -15,7 +15,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 
 import com.simibubi.create.AllItems;
+import com.simibubi.create.AllRecipeTypes;
 import com.simibubi.create.api.data.recipe.MechanicalCraftingRecipeBuilder;
+import com.simibubi.create.content.kinetics.saw.CuttingRecipe;
+import com.simibubi.create.content.processing.recipe.StandardProcessingRecipe;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -41,6 +44,14 @@ public class AECSCompatCreateRecipeProvider extends AECSRecipeProvider {
 
         // 高纯玫瑰水晶的唯一用处
         stonecutterResultFromTag(compatOut, RecipeCategory.MISC, AllItems.POLISHED_ROSE_QUARTZ, AECSTags.Items.PURE_ROSE_QUARTZ, 2);
+
+        StandardProcessingRecipe.Serializer<CuttingRecipe> cuttingSerializer = AllRecipeTypes.CUTTING.getSerializer();
+        new StandardProcessingRecipe.Builder<>(cuttingSerializer.factory(),
+                AE2CrystalScience.makeId("mechanical_cutting/polished_rose_quartz_from_pure_rose_quartz"))
+                .require(AECSItems.PURE_ROSE_QUARTZ)
+                .duration(20)
+                .output(AllItems.POLISHED_ROSE_QUARTZ)
+                .build(compatOut);
 
         MechanicalCraftingRecipeBuilder.shapedRecipe(AECSItems.ROSE_QUARTZ_SEED)
                 .patternLine("a")
