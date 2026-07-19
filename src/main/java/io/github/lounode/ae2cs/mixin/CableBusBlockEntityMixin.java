@@ -1,6 +1,8 @@
 package io.github.lounode.ae2cs.mixin;
 
 import io.github.lounode.ae2cs.common.block.entity.EnderEmitterBlockEntity;
+import io.github.lounode.ae2cs.common.item.ResonatingMemoryCardHelper;
+import io.github.lounode.ae2cs.common.me.part.ResonatingPatternProviderPart;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
@@ -32,6 +34,9 @@ public class CableBusBlockEntityMixin extends AEBaseBlockEntity {
                               CallbackInfoReturnable<? extends IPart> cir) {
         if (cir.getReturnValue() != null && level != null) {
             EnderEmitterBlockEntity.addPosToRecentEmitter(level, worldPosition);
+            if (!level.isClientSide() && player != null && cir.getReturnValue() instanceof ResonatingPatternProviderPart provider) {
+                ResonatingMemoryCardHelper.tryApplyToPart(player, provider);
+            }
         }
     }
 
@@ -40,6 +45,9 @@ public class CableBusBlockEntityMixin extends AEBaseBlockEntity {
                                   CallbackInfoReturnable<? extends IPart> cir) {
         if (cir.getReturnValue() != null && level != null) {
             EnderEmitterBlockEntity.addPosToRecentEmitter(level, worldPosition);
+            if (!level.isClientSide() && cir.getReturnValue() instanceof ResonatingPatternProviderPart provider) {
+                ResonatingMemoryCardHelper.tryApplyToPart(owner, provider);
+            }
         }
     }
 

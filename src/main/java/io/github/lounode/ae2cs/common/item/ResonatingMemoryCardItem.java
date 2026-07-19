@@ -41,6 +41,10 @@ public class ResonatingMemoryCardItem extends MemoryCardItem implements IScrollC
         return !storage(stack).selected().isEmpty();
     }
 
+    public static int getStoredSlotCount(ItemStack stack) {
+        return (int) storage(stack).slots().stream().filter(slot -> !slot.isEmpty()).count();
+    }
+
     public static ResonatingMemoryCardStorage storage(ItemStack stack) {
         return stack.getOrDefault(AECSDataComponents.RESONATING_MEMORY_CARD_STORAGE.get(), ResonatingMemoryCardStorage.EMPTY);
     }
@@ -100,8 +104,13 @@ public class ResonatingMemoryCardItem extends MemoryCardItem implements IScrollC
         super.appendHoverText(stack, context, lines, advancedTooltips);
         lines.add(Component.translatable("ae2cs.item.resonating_memory_card.slot", getSelectedSlot(stack) + 1, SLOT_COUNT)
                 .withStyle(ChatFormatting.GRAY));
-        lines.add(Component.translatable("ae2cs.item.resonating_memory_card.target", getSelectedSlotName(stack))
+        Component selectedConfig = hasSelectedData(stack) ? getSelectedSlotName(stack) : Component.translatable("ae2cs.item.resonating_memory_card.empty");
+        lines.add(Component.translatable("ae2cs.item.resonating_memory_card.target", selectedConfig)
                 .withStyle(ChatFormatting.GRAY));
+        lines.add(Component.translatable("ae2cs.item.resonating_memory_card.stored", getStoredSlotCount(stack), SLOT_COUNT)
+                .withStyle(ChatFormatting.GRAY));
+        lines.add(Component.translatable("ae2cs.item.resonating_memory_card.usage")
+                .withStyle(ChatFormatting.DARK_GRAY));
     }
 
     @Override
