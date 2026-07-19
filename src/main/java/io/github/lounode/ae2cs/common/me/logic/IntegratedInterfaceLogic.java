@@ -1032,9 +1032,7 @@ public class IntegratedInterfaceLogic implements IConfigurableObject, IUpgradeab
         // 样板推送状态
         this.roundRobinIndex = tag.getInt("roundRobinIndex");
         byte redstoneStateOrdinal = tag.getByte("redstoneState");
-        this.redstoneState = redstoneStateOrdinal >= 0 && redstoneStateOrdinal < YesNo.values().length
-                ? YesNo.values()[redstoneStateOrdinal]
-                : YesNo.UNDECIDED;
+        this.redstoneState = redstoneStateOrdinal >= 0 && redstoneStateOrdinal < YesNo.values().length ? YesNo.values()[redstoneStateOrdinal] : YesNo.UNDECIDED;
 
         this.unlockEvent = null;
         if (tag.contains("unlockEvent")) {
