@@ -227,6 +227,28 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
         return defaultSelectedInput;
     }
 
+    /**
+     * 更新一个普通处理样板默认输入槽的发配目标。
+     */
+    public void setDefaultInputTarget(int input, Optional<EncodedResonatingPattern.Target> target) {
+        if (input < 0 || input >= ResonatingProviderDefaults.DEFAULT_INPUT_SLOTS) {
+            throw new IllegalArgumentException("Invalid resonating provider input: " + input);
+        }
+
+        var targets = new ArrayList<>(defaultInputTargets);
+        targets.set(input, target);
+        defaultInputTargets = List.copyOf(targets);
+        saveChanges();
+    }
+
+    /**
+     * 更新绑定器正在编辑的默认输入槽。
+     */
+    public void setDefaultSelectedInput(int input) {
+        defaultSelectedInput = ResonatingProviderDefaults.clampSelected(input);
+        saveChanges();
+    }
+
     private void writeDefaultsToNBT(CompoundTag tag) {
         var defaults = new CompoundTag();
         defaults.putInt(TAG_SELECTED_INPUT, defaultSelectedInput);

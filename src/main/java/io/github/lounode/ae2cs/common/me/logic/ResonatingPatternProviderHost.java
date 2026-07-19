@@ -42,5 +42,13 @@ public interface ResonatingPatternProviderHost extends PatternProviderLogicHost,
         return getResonatingLogic().getDefaultSelectedInput();
     }
 
+    default void setDefaultInputTarget(int input, Optional<EncodedResonatingPattern.Target> target) {
+        getResonatingLogic().setDefaultInputTarget(input, target);
+    }
+
+    default void setDefaultSelectedInput(int input) {
+        getResonatingLogic().setDefaultSelectedInput(input);
+    }
+
     void markForLogicClientUpdate();
 }

@@ -2,12 +2,14 @@ package io.github.lounode.ae2cs.common.item;
 
 import io.github.lounode.ae2cs.common.me.logic.MirrorPatternProviderHost;
 import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderHost;
+import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderReference;
 
 import appeng.api.parts.IPartHost;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -41,6 +43,25 @@ public final class PatternProviderBindingHelper {
     public static @Nullable ResonatingPatternProviderHost resolveClickedResonatingProvider(UseOnContext context) {
         PatternProviderLogicHost host = resolveClickedPatternProvider(context);
         return host instanceof ResonatingPatternProviderHost resonating ? resonating : null;
+    }
+
+    /**
+     * 生成可在后续交互中重新定位当前点击供应器的引用。
+     */
+    public static @Nullable ResonatingPatternProviderReference referenceClickedResonatingProvider(UseOnContext context) {
+        BlockEntity blockEntity = context.getLevel().getBlockEntity(context.getClickedPos());
+        if (blockEntity instanceof ResonatingPatternProviderHost) {
+            return new ResonatingPatternProviderReference(
+                    GlobalPos.of(context.getLevel().dimension(), context.getClickedPos()), null);
+        }
+        if (blockEntity instanceof IPartHost partHost) {
+            var selected = partHost.selectPartWorld(context.getClickLocation());
+            if (selected.part instanceof ResonatingPatternProviderHost) {
+                return new ResonatingPatternProviderReference(
+                        GlobalPos.of(context.getLevel().dimension(), context.getClickedPos()), context.getClickedFace());
+            }
+        }
+        return null;
     }
 
     public static @Nullable MirrorPatternProviderHost resolveClickedMirrorProvider(UseOnContext context) {

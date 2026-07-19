@@ -36,7 +36,7 @@ public class ResonatingLinkerClearRecipe extends CustomRecipe {
             linker = stack;
         }
 
-        return !linker.isEmpty() && ResonatingLinkerItem.hasStoredTargets(linker);
+        return !linker.isEmpty() && ResonatingLinkerItem.hasBoundProvider(linker);
     }
 
     @Override

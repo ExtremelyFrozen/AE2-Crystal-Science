@@ -7,6 +7,8 @@ import net.minecraft.client.renderer.RenderType;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 
+import java.util.OptionalDouble;
+
 public class AECSRenderTypes {
 
     private AECSRenderTypes() {}
@@ -25,4 +27,21 @@ public class AECSRenderTypes {
                     .setCullState(RenderStateShard.NO_CULL)
                     .setWriteMaskState(RenderStateShard.COLOR_WRITE)
                     .createCompositeState(true));
+
+    public static final RenderType RESONATING_MARK_LINE = RenderType.create(
+            "ae2cs_resonating_mark_line",
+            DefaultVertexFormat.POSITION_COLOR_NORMAL,
+            VertexFormat.Mode.LINES,
+            256,
+            false,
+            false,
+            RenderType.CompositeState.builder()
+                    .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getRendertypeLinesShader))
+                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+                    .setDepthTestState(RenderStateShard.NO_DEPTH_TEST)
+                    .setCullState(RenderStateShard.NO_CULL)
+                    .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
+                    .setLineState(new RenderStateShard.LineStateShard(OptionalDouble.empty()))
+                    .setWriteMaskState(RenderStateShard.COLOR_WRITE)
+                    .createCompositeState(false));
 }

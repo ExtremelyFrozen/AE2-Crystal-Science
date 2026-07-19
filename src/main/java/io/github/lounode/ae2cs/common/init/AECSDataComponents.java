@@ -7,6 +7,7 @@ import io.github.lounode.ae2cs.common.item.ResonatingMemoryCardStorage;
 import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern;
 import io.github.lounode.ae2cs.common.me.crafting.ResonatingProviderDefaults;
 import io.github.lounode.ae2cs.common.me.logic.MirroredPatternProviderTarget;
+import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderReference;
 
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponentType;
@@ -105,6 +106,14 @@ public class AECSDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResonatingMemoryCardStorage>> RESONATING_MEMORY_CARD_STORAGE = register("resonating_memory_card_storage", b -> b
             .persistent(ResonatingMemoryCardStorage.CODEC)
             .networkSynchronized(ResonatingMemoryCardStorage.STREAM_CODEC)
+            .cacheEncoding());
+
+    /**
+     * 谐振绑定器当前编辑的供应器位置与部件面。
+     */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResonatingPatternProviderReference>> RESONATING_LINKER_PROVIDER = register("resonating_linker_provider", b -> b
+            .persistent(ResonatingPatternProviderReference.CODEC)
+            .networkSynchronized(ResonatingPatternProviderReference.STREAM_CODEC)
             .cacheEncoding());
 
     public static void register(IEventBus eventBus) {

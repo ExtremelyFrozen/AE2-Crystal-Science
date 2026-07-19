@@ -9,8 +9,7 @@ import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern;
 import io.github.lounode.ae2cs.common.me.crafting.ResonatingPatternDetails;
 import io.github.lounode.ae2cs.common.me.crafting.ResonatingProviderDefaults;
 import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderHost;
-
-import appeng.api.parts.IPartHost;
+import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderReference;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -20,7 +19,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -30,6 +29,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,11 +46,8 @@ public final class ResonatingPatternTargetHighlighter {
     private static final int UNSELECTED_RED = 0;
     private static final int UNSELECTED_GREEN = 80;
     private static final int UNSELECTED_BLUE = 255;
-    private static final int APPLIED_RED = 255;
-    private static final int APPLIED_GREEN = 170;
-    private static final int APPLIED_BLUE = 40;
     private static final int ALPHA = 90;
-    private static final int PROVIDER_SEARCH_RADIUS = 24;
+    private static final int LINE_ALPHA = 180;
     private static final float EPSILON = 0.002F;
 
     private ResonatingPatternTargetHighlighter() {}
@@ -72,7 +69,7 @@ public final class ResonatingPatternTargetHighlighter {
         }
 
         if (isHoldingResonatingLinker(player)) {
-            renderAppliedProviderTargets(event, player);
+            renderBoundProvider(event, player);
         }
     }
 
@@ -98,7 +95,7 @@ public final class ResonatingPatternTargetHighlighter {
             return new TargetRenderData(targets, selected);
         }
 
-        if (stack.getItem() instanceof IResonatingTargetModeItem) {
+        if (stack.getItem() instanceof IResonatingTargetModeItem && !(stack.getItem() instanceof ResonatingLinkerItem)) {
             return new TargetRenderData(
                     ResonatingProviderDefaults.readTargets(stack),
                     ResonatingProviderDefaults.getSelectedInput(stack));
@@ -111,46 +108,57 @@ public final class ResonatingPatternTargetHighlighter {
         return player.getMainHandItem().getItem() instanceof ResonatingLinkerItem || player.getOffhandItem().getItem() instanceof ResonatingLinkerItem;
     }
 
-    private static void renderAppliedProviderTargets(RenderLevelStageEvent event, LocalPlayer player) {
-        for (ResonatingPatternProviderHost provider : collectNearbyProviders(player.level(), player.blockPosition())) {
-            renderTargets(event, player, new TargetRenderData(provider.getDefaultInputTargets(), -1), APPLIED_RED, APPLIED_GREEN, APPLIED_BLUE);
+    private static void renderBoundProvider(RenderLevelStageEvent event, LocalPlayer player) {
+        ItemStack linker = player.getMainHandItem().getItem() instanceof ResonatingLinkerItem ? player.getMainHandItem() : player.getOffhandItem();
+        ResonatingPatternProviderReference reference = linker.get(AECSDataComponents.RESONATING_LINKER_PROVIDER.get());
+        if (reference == null) {
+            return;
         }
+
+        ResonatingPatternProviderHost provider = reference.resolve(player.level());
+        if (provider == null) {
+            return;
+        }
+
+        TargetRenderData renderData = new TargetRenderData(provider.getDefaultInputTargets(), provider.getDefaultSelectedInput());
+        renderTargets(event, player, renderData, UNSELECTED_RED, UNSELECTED_GREEN, UNSELECTED_BLUE);
+        renderProviderSourceAndLines(event, player, provider, renderData);
     }
 
-    private static List<ResonatingPatternProviderHost> collectNearbyProviders(Level level, BlockPos center) {
-        List<ResonatingPatternProviderHost> providers = new ArrayList<>();
-        int minChunkX = (center.getX() - PROVIDER_SEARCH_RADIUS) >> 4;
-        int maxChunkX = (center.getX() + PROVIDER_SEARCH_RADIUS) >> 4;
-        int minChunkZ = (center.getZ() - PROVIDER_SEARCH_RADIUS) >> 4;
-        int maxChunkZ = (center.getZ() + PROVIDER_SEARCH_RADIUS) >> 4;
+    private static void renderProviderSourceAndLines(RenderLevelStageEvent event, LocalPlayer player,
+                                                     ResonatingPatternProviderHost provider, TargetRenderData renderData) {
+        var cameraPosition = event.getCamera().getPosition();
+        PoseStack poseStack = event.getPoseStack();
+        MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
+        BlockPos sourcePos = provider.getBlockEntity().getBlockPos();
 
-        for (int chunkX = minChunkX; chunkX <= maxChunkX; chunkX++) {
-            for (int chunkZ = minChunkZ; chunkZ <= maxChunkZ; chunkZ++) {
-                var chunk = level.getChunkSource().getChunk(chunkX, chunkZ, false);
-                if (chunk == null) {
-                    continue;
-                }
-
-                for (BlockEntity blockEntity : chunk.getBlockEntities().values()) {
-                    if (!blockEntity.getBlockPos().closerThan(center, PROVIDER_SEARCH_RADIUS)) {
-                        continue;
-                    }
-
-                    if (blockEntity instanceof ResonatingPatternProviderHost provider) {
-                        providers.add(provider);
-                    }
-                    if (blockEntity instanceof IPartHost partHost) {
-                        for (Direction side : Direction.values()) {
-                            if (partHost.getPart(side) instanceof ResonatingPatternProviderHost provider) {
-                                providers.add(provider);
-                            }
-                        }
-                    }
-                }
-            }
+        VertexConsumer sourceConsumer = bufferSource.getBuffer(AECSRenderTypes.RESONATING_MARK_FACE);
+        poseStack.pushPose();
+        poseStack.translate(sourcePos.getX() - cameraPosition.x, sourcePos.getY() - cameraPosition.y, sourcePos.getZ() - cameraPosition.z);
+        for (Direction direction : Direction.values()) {
+            drawFaceQuad(poseStack, sourceConsumer, direction, UNSELECTED_RED, UNSELECTED_GREEN, UNSELECTED_BLUE);
         }
+        poseStack.popPose();
+        bufferSource.endBatch(AECSRenderTypes.RESONATING_MARK_FACE);
 
-        return providers;
+        VertexConsumer lineConsumer = bufferSource.getBuffer(AECSRenderTypes.RESONATING_MARK_LINE);
+        Vector3f source = anchorOf(sourcePos, null);
+        for (int index = 0; index < renderData.targets().size(); index++) {
+            Optional<EncodedResonatingPattern.Target> optionalTarget = renderData.targets().get(index);
+            if (optionalTarget.isEmpty()) {
+                continue;
+            }
+            EncodedResonatingPattern.Target target = optionalTarget.get();
+            if (!player.level().dimension().equals(target.pos().dimension()) || !player.level().hasChunkAt(target.pos().pos())) {
+                continue;
+            }
+            boolean selected = index == renderData.selected();
+            drawLine(poseStack, lineConsumer, cameraPosition, source, anchorOf(target.pos().pos(), target.face()),
+                    selected ? SELECTED_RED : UNSELECTED_RED,
+                    selected ? SELECTED_GREEN : UNSELECTED_GREEN,
+                    selected ? SELECTED_BLUE : UNSELECTED_BLUE);
+        }
+        bufferSource.endBatch(AECSRenderTypes.RESONATING_MARK_LINE);
     }
 
     private static void renderTargets(RenderLevelStageEvent event, LocalPlayer player, TargetRenderData renderData,
@@ -217,6 +225,34 @@ public final class ResonatingPatternTargetHighlighter {
         consumer.addVertex(matrix, x1, y1, z1).setColor(color);
         consumer.addVertex(matrix, x2, y2, z2).setColor(color);
         consumer.addVertex(matrix, x3, y3, z3).setColor(color);
+    }
+
+    private static Vector3f anchorOf(BlockPos pos, Direction face) {
+        float x = pos.getX() + 0.5F;
+        float y = pos.getY() + 0.5F;
+        float z = pos.getZ() + 0.5F;
+        if (face != null) {
+            x += face.getStepX() * 0.501F;
+            y += face.getStepY() * 0.501F;
+            z += face.getStepZ() * 0.501F;
+        }
+        return new Vector3f(x, y, z);
+    }
+
+    private static void drawLine(PoseStack poseStack, VertexConsumer consumer, Vec3 cameraPosition,
+                                 Vector3f start, Vector3f end, int red, int green, int blue) {
+        var pose = poseStack.last();
+        Matrix4f matrix = pose.pose();
+        Vector3f normal = new Vector3f(end).sub(start);
+        if (normal.lengthSquared() == 0F) {
+            normal.set(0F, 1F, 0F);
+        } else {
+            normal.normalize();
+        }
+        consumer.addVertex(matrix, start.x - (float) cameraPosition.x, start.y - (float) cameraPosition.y, start.z - (float) cameraPosition.z)
+                .setColor(red, green, blue, LINE_ALPHA).setNormal(pose, normal.x, normal.y, normal.z);
+        consumer.addVertex(matrix, end.x - (float) cameraPosition.x, end.y - (float) cameraPosition.y, end.z - (float) cameraPosition.z)
+                .setColor(red, green, blue, LINE_ALPHA).setNormal(pose, normal.x, normal.y, normal.z);
     }
 
     private record TargetRenderData(List<Optional<EncodedResonatingPattern.Target>> targets, int selected) {}
