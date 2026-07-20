@@ -14,7 +14,7 @@ item_ids:
   <ItemImage id="ae2cs:mirror_linker" scale="4" />
 </Row>
 
-**镜像绑定器** 用于在物品中保存一个镜像目标，并将其写入 **<ItemLink id="ae2cs:mirror_pattern_provider" />**。
+**镜像绑定器** 可以在物品中保存一个镜像目标，并将其写入 **<ItemLink id="ae2cs:mirror_pattern_provider" />**。
 
 ---
 
@@ -29,7 +29,7 @@ item_ids:
 
 ## 写入镜像样板供应器
 
-- 对镜像样板供应器 **右键**，将当前保存的目标写入该设备
+- 对镜像样板供应器 **右键**，将当前保存的目标写入这台设备
 
 写入时会立即刷新它的镜像缓存。
 
