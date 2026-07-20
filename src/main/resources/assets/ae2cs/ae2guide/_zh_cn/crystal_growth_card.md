@@ -14,8 +14,8 @@ item_ids:
   <ItemImage id="ae2cs:crystal_growth_card" scale="2" />
 </Row>
 
-**晶体催生卡** 是 AECS 提供的一种功能性升级卡，
-用于为邻近的 **<ItemLink id="ae2cs:crystal_growth_chamber" />**
+**晶体催生卡** 是 AECS 中的一种功能性升级卡，
+为邻近的 **<ItemLink id="ae2cs:crystal_growth_chamber" />**
 提供额外的生长加速效果。
 
 ---
@@ -28,4 +28,4 @@ item_ids:
 - 各类 ME 总线
 
 只要该部件位于晶体催生仓临近位置，
-催生卡的加速效果就会对其生效。
+催生卡的加速效果就会对它生效。
