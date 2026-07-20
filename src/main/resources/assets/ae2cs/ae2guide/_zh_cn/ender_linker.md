@@ -15,7 +15,7 @@ item_ids:
   <ItemImage id="ae2cs:ender_linker" scale="4" />
 </Row>
 
-**末影绑定工具** 用于手动管理 **<ItemLink id="ae2cs:ender_emitter" />** 的无线连接。
+**末影绑定工具** 手动管理 **<ItemLink id="ae2cs:ender_emitter" />** 的无线连接。
 它适合在关闭自动链接、需要精确布线或排查现有连接时使用。
 
 ---

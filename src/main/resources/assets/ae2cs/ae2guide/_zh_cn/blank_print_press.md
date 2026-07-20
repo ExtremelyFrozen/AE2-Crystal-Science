@@ -16,7 +16,7 @@ item_ids:
   <ItemImage id="ae2cs:ender_blank_print_press" scale="2" />
 </Row>
 
-**空白压印模板** 是 AECS 提供的一种用于模板本身存储的工具。
+**空白压印模板** 是 AECS 中的一种用于模板本身存储的工具。
 它可以通过模板合成，也可以在切石机中重新转换为各类模板。
 
 ---
