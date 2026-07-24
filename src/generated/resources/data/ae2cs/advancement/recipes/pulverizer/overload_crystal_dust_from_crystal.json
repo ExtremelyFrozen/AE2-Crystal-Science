@@ -2,7 +2,7 @@
   "neoforge:conditions": [
     {
       "type": "neoforge:mod_loaded",
-      "modid": "data_energistics"
+      "modid": "ae2lt"
     }
   ],
   "parent": "minecraft:recipes/root",
@@ -14,7 +14,7 @@
             "count": {
               "min": 1
             },
-            "items": "minecraft:barrier"
+            "items": "ae2lt:overload_crystal"
           }
         ]
       },
@@ -22,7 +22,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2cs:pulverizer/data_dust_from_data_crystal"
+        "recipe": "ae2cs:pulverizer/overload_crystal_dust_from_crystal"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -35,7 +35,7 @@
   ],
   "rewards": {
     "recipes": [
-      "ae2cs:pulverizer/data_dust_from_data_crystal"
+      "ae2cs:pulverizer/overload_crystal_dust_from_crystal"
     ]
   }
 }

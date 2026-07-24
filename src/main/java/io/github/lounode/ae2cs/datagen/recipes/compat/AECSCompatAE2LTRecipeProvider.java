@@ -3,7 +3,9 @@ package io.github.lounode.ae2cs.datagen.recipes.compat;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
+import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
+import io.github.lounode.ae2cs.datagen.builder.recipe.CircuitEtcherRecipeBuilder;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBuilder;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalPulverizerRecipeBuilder;
 
@@ -21,6 +23,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.common.Tags;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -42,11 +45,22 @@ public class AECSCompatAE2LTRecipeProvider extends AECSRecipeProvider {
         var compatOut = originalOut.withConditions(modLoaded(AECSConstants.AE2LT_ID));
         super.buildRecipes(compatOut, registries);
 
-        packAndUnpack3x3(compatOut, RecipeCategory.MISC, RecipeCategory.MISC,
-                externalItem(AECSConstants.AE2LT_ID, "overload_crystal"), AECSBlocks.CHARGED_OVERLOAD_CRYSTAL_BLOCK);
-
         stonecutterResultFromItem(compatOut, RecipeCategory.MISC,
                 externalItem(AECSConstants.AE2LT_ID, "overload_inscriber_press"), AECSItems.BLANK_PRINT_PRESS);
+
+        CircuitEtcherRecipeBuilder.etching(
+                externalItem(AECSConstants.AE2LT_ID, "overload_processor"), 36, 57600)
+                .require(externalItem(AECSConstants.AE2LT_ID, "overload_crystal_block"), 4)
+                .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 4)
+                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 4)
+                .save(compatOut);
+
+        CrystalAggregatorRecipeBuilder.aggregating(
+                externalItem(AECSConstants.AE2LT_ID, "overload_processor"), 32, 51200)
+                .require(externalItem(AECSConstants.AE2LT_ID, "overload_circuit_board"), 32)
+                .require(Tags.Items.DUSTS_REDSTONE, 32)
+                .require(AEItems.SILICON_PRINT, 32)
+                .save(compatOut);
 
         EntropyRecipeBuilder.heat()
                 .setInputBlock(externalBlock(AECSConstants.AE2LT_ID, "overload_crystal_block"))
@@ -58,6 +72,11 @@ public class AECSCompatAE2LTRecipeProvider extends AECSRecipeProvider {
                 .require(ConventionTags.FLUIX_DUST, 8)
                 .require(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, 8)
                 .save(compatOut, "aggregator/overload_crystal_seed");
+
+        CrystalPulverizerRecipeBuilder.pulverizing(
+                externalItem(AECSConstants.AE2LT_ID, "overload_crystal_dust"), 1, 8000)
+                .require(externalItem(AECSConstants.AE2LT_ID, "overload_crystal"), 1)
+                .save(compatOut, "pulverizer/overload_crystal_dust_from_crystal");
 
         CrystalPulverizerRecipeBuilder.pulverizing(
                 externalItem(AECSConstants.AE2LT_ID, "overload_crystal_dust"), 1, 8000)

@@ -3,7 +3,9 @@ package io.github.lounode.ae2cs.datagen.recipes.compat;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSItems;
+import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
+import io.github.lounode.ae2cs.datagen.builder.recipe.CircuitEtcherRecipeBuilder;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBuilder;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalPulverizerRecipeBuilder;
 
@@ -22,6 +24,8 @@ import net.neoforged.neoforge.common.Tags;
 
 import com.fish_dan_.data_energistics.recipe.DataRipperReassemblerIngredient;
 import com.fish_dan_.data_energistics.recipe.DataRipperReassemblerRecipe;
+import com.glodblock.github.extendedae.util.EAETags;
+import com.wintercogs.ae2omnicells.common.init.OCBlocks;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -45,7 +49,29 @@ public class AECSCompatDataEnergisticsRecipeProvider extends AECSRecipeProvider 
     protected void buildRecipes(@NotNull RecipeOutput originalOut, HolderLookup.@NotNull Provider registries) {
         RecipeOutput compatOut = originalOut.withConditions(modLoaded(AECSConstants.DATA_ENERGISTICS_ID));
         Item dataDust = externalItem("data_dust");
-        Item dataCrystal = externalItem("data_crystal");
+        Item dataCircuitBoard = externalItem("data_circuit_board");
+        Item dataProcessor = externalItem("data_processor");
+
+        var extendedAeOut = compatOut.withConditions(modLoaded(AECSConstants.EAE_ID));
+        var omniOut = extendedAeOut.withConditions(modLoaded(AECSConstants.OMNI_CELL_ID));
+
+        CircuitEtcherRecipeBuilder.etching(dataProcessor, 36, 57600)
+                .require(EAETags.ENTRO_BLOCK, 9)
+                .require(OCBlocks.SINGULARITY_BLOCK, 8)
+                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 4)
+                .save(omniOut, "circuit_etcher/data_processor_from_omni_singularity_block");
+
+        CircuitEtcherRecipeBuilder.etching(dataProcessor, 36, 57600)
+                .require(EAETags.ENTRO_BLOCK, 9)
+                .require(AEItems.QUANTUM_ENTANGLED_SINGULARITY, 36)
+                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 4)
+                .save(extendedAeOut, "circuit_etcher/data_processor_from_quantum_entangled_singularity");
+
+        CrystalAggregatorRecipeBuilder.aggregating(dataProcessor, 32, 51200)
+                .require(dataCircuitBoard, 32)
+                .require(AEItems.QUANTUM_ENTANGLED_SINGULARITY, 32)
+                .require(AEItems.SILICON_PRINT, 32)
+                .save(compatOut, "aggregator/data_processor");
 
         var dataSeedRecipe = new DataRipperReassemblerRecipe(
                 List.of(
@@ -74,7 +100,7 @@ public class AECSCompatDataEnergisticsRecipeProvider extends AECSRecipeProvider 
                 .save(compatOut, "pulverizer/data_energistics_obsidian_dust");
 
         CrystalPulverizerRecipeBuilder.pulverizing(dataDust, 1, 8000)
-                .require(dataCrystal, 1)
+                .require(AECSTags.Items.GEM_DATA_CRYSTAL, 1)
                 .save(compatOut, "pulverizer/data_dust_from_data_crystal");
 
         CrystalPulverizerRecipeBuilder.pulverizing(dataDust, 1, 8000)

@@ -106,6 +106,11 @@ public class AECSCompatMEKRecipeProvider extends AECSRecipeProvider {
                 .build(compatOut, getCrushingPath("redstone_crystal_dust"));
 
         ItemStackToItemStackRecipeBuilder.crushing(
+                ItemStackIngredient.of(SizedIngredient.of(AECSTags.Items.GEMS_FLUIX, 1)),
+                AEItems.FLUIX_DUST.stack())
+                .build(compatOut, getCrushingPath("fluix_dust"));
+
+        ItemStackToItemStackRecipeBuilder.crushing(
                 ItemStackIngredient.of(SizedIngredient.of(AECSTags.Items.PURE_RESONATING_CRYSTAL, 1)),
                 AECSItems.RESONATING_DUST.toStack())
                 .build(compatOut, getCrushingPath("resonating_crystal_dust"));

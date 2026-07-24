@@ -2,16 +2,19 @@
   "neoforge:conditions": [
     {
       "type": "neoforge:mod_loaded",
-      "modid": "ae2lt"
+      "modid": "neoecoae"
     }
   ],
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_charged_overload_crystal_block": {
+    "has_input_0": {
       "conditions": {
         "items": [
           {
-            "items": "ae2cs:charged_overload_crystal_block"
+            "count": {
+              "min": 1
+            },
+            "items": "neoecoae:energized_fluix_crystal"
           }
         ]
       },
@@ -19,7 +22,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2cs:craft/shapeless/overload_crystal_from_charged_overload_crystal_block"
+        "recipe": "ae2cs:pulverizer/energized_fluix_crystal_dust_from_crystal"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -27,12 +30,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_charged_overload_crystal_block"
+      "has_input_0"
     ]
   ],
   "rewards": {
     "recipes": [
-      "ae2cs:craft/shapeless/overload_crystal_from_charged_overload_crystal_block"
+      "ae2cs:pulverizer/energized_fluix_crystal_dust_from_crystal"
     ]
   }
 }
