@@ -130,7 +130,7 @@ public class AECSMenus {
     // AE2WTLib registers terminal definitions during registry dispatch, before this DeferredHolder is bound.
     // Build the menu type eagerly and register that same instance so integrations can safely reference it.
     public static final MenuType<ResonantTemplateCodingTermMenu> RESONANT_TEMPLATE_CODING_TERM_MENU_TYPE = MenuTypeBuilder.create(ResonantTemplateCodingTermMenu::new, IPatternTerminalMenuHost.class)
-            .build(AE2CrystalScience.makeId("resonant_template_coding_term_menu"));
+            .buildUnregistered(AE2CrystalScience.makeId("resonant_template_coding_term_menu"));
     public static final Supplier<MenuType<ResonantTemplateCodingTermMenu>> RESONANT_TEMPLATE_CODING_TERM_MENU = MENU_TYPES.register("resonant_template_coding_term_menu", () -> RESONANT_TEMPLATE_CODING_TERM_MENU_TYPE);
 
     public static void registerMenus(IEventBus eventBus) {

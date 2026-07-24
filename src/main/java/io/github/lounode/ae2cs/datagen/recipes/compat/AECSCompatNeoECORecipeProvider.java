@@ -43,6 +43,11 @@ public class AECSCompatNeoECORecipeProvider extends AECSRecipeProvider {
         var compatOut = originalOut.withConditions(modLoaded(AECSConstants.NEOECOAE_ID));
         super.buildRecipes(compatOut, registries);
 
+        pack2x2(compatOut, RecipeCategory.MISC, AECSItems.PURE_ENERGIZED_CERTUS_QUARTZ_CRYSTAL,
+                externalItem("energized_crystal_block"));
+        pack2x2(compatOut, RecipeCategory.MISC, AECSItems.PURE_ENERGIZED_FLUIX_CRYSTAL,
+                externalItem("energized_fluix_crystal_block"));
+
         Item energizedCrystalDust = externalItem("energized_crystal_dust");
         Item energizedFluixDust = externalItem("energized_fluix_crystal_dust");
         Item superconductingProcessor = externalItem("superconducting_processor");

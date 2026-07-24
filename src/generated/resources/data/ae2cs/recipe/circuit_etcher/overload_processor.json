@@ -9,7 +9,7 @@
   "energy_cost": 57600,
   "input_a": {
     "count": 4,
-    "item": "ae2lt:overload_crystal_block"
+    "item": "ae2cs:charged_overload_crystal_block"
   },
   "input_b": {
     "count": 4,

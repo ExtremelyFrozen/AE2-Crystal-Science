@@ -22,7 +22,7 @@
             "count": {
               "min": 1
             },
-            "items": "minecraft:barrier"
+            "items": "data_energistics:data_crystal_block"
           }
         ]
       },

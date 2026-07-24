@@ -24,7 +24,6 @@ import net.neoforged.neoforge.common.Tags;
 
 import com.fish_dan_.data_energistics.recipe.DataRipperReassemblerIngredient;
 import com.fish_dan_.data_energistics.recipe.DataRipperReassemblerRecipe;
-import com.glodblock.github.extendedae.util.EAETags;
 import com.wintercogs.ae2omnicells.common.init.OCBlocks;
 import org.jetbrains.annotations.NotNull;
 
@@ -51,18 +50,19 @@ public class AECSCompatDataEnergisticsRecipeProvider extends AECSRecipeProvider 
         Item dataDust = externalItem("data_dust");
         Item dataCircuitBoard = externalItem("data_circuit_board");
         Item dataProcessor = externalItem("data_processor");
+        Item dataCrystalBlock = externalItem("data_crystal_block");
 
         var extendedAeOut = compatOut.withConditions(modLoaded(AECSConstants.EAE_ID));
         var omniOut = extendedAeOut.withConditions(modLoaded(AECSConstants.OMNI_CELL_ID));
 
         CircuitEtcherRecipeBuilder.etching(dataProcessor, 36, 57600)
-                .require(EAETags.ENTRO_BLOCK, 9)
+                .require(dataCrystalBlock, 9)
                 .require(OCBlocks.SINGULARITY_BLOCK, 8)
                 .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 4)
                 .save(omniOut, "circuit_etcher/data_processor_from_omni_singularity_block");
 
         CircuitEtcherRecipeBuilder.etching(dataProcessor, 36, 57600)
-                .require(EAETags.ENTRO_BLOCK, 9)
+                .require(dataCrystalBlock, 9)
                 .require(AEItems.QUANTUM_ENTANGLED_SINGULARITY, 36)
                 .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 4)
                 .save(extendedAeOut, "circuit_etcher/data_processor_from_quantum_entangled_singularity");
@@ -102,10 +102,6 @@ public class AECSCompatDataEnergisticsRecipeProvider extends AECSRecipeProvider 
         CrystalPulverizerRecipeBuilder.pulverizing(dataDust, 1, 8000)
                 .require(AECSTags.Items.GEM_DATA_CRYSTAL, 1)
                 .save(compatOut, "pulverizer/data_dust_from_data_crystal");
-
-        CrystalPulverizerRecipeBuilder.pulverizing(dataDust, 1, 8000)
-                .require(AECSItems.PURE_DATA_CRYSTAL, 1)
-                .save(compatOut, "pulverizer/data_dust_from_pure_data_crystal");
     }
 
     private static Item externalItem(String path) {

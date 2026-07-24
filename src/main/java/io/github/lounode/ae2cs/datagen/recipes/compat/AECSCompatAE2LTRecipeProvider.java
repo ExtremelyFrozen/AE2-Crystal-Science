@@ -45,12 +45,15 @@ public class AECSCompatAE2LTRecipeProvider extends AECSRecipeProvider {
         var compatOut = originalOut.withConditions(modLoaded(AECSConstants.AE2LT_ID));
         super.buildRecipes(compatOut, registries);
 
+        pack2x2(compatOut, RecipeCategory.MISC, AECSItems.PURE_OVERLOAD_CRYSTAL,
+                externalItem(AECSConstants.AE2LT_ID, "overload_crystal_block"));
+
         stonecutterResultFromItem(compatOut, RecipeCategory.MISC,
                 externalItem(AECSConstants.AE2LT_ID, "overload_inscriber_press"), AECSItems.BLANK_PRINT_PRESS);
 
         CircuitEtcherRecipeBuilder.etching(
                 externalItem(AECSConstants.AE2LT_ID, "overload_processor"), 36, 57600)
-                .require(externalItem(AECSConstants.AE2LT_ID, "overload_crystal_block"), 4)
+                .require(AECSBlocks.CHARGED_OVERLOAD_CRYSTAL_BLOCK, 4)
                 .require(Tags.Items.STORAGE_BLOCKS_REDSTONE, 4)
                 .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 4)
                 .save(compatOut);

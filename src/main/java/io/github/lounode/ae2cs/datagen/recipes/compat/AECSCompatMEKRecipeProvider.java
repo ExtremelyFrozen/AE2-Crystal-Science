@@ -136,12 +136,6 @@ public class AECSCompatMEKRecipeProvider extends AECSRecipeProvider {
                 externalItem(AECSConstants.AE2LT_ID, "overload_crystal_dust").getDefaultInstance())
                 .build(ae2ltOut, getCrushingPath("overload_crystal_dust"));
 
-        var dataOut = compatOut.withConditions(modLoaded(AECSConstants.DATA_ENERGISTICS_ID));
-        ItemStackToItemStackRecipeBuilder.crushing(
-                ItemStackIngredient.of(SizedIngredient.of(AECSTags.Items.PURE_DATA_CRYSTAL, 1)),
-                externalItem(AECSConstants.DATA_ENERGISTICS_ID, "data_dust").getDefaultInstance())
-                .build(dataOut, getCrushingPath("data_crystal_dust"));
-
         var ecoOut = compatOut.withConditions(modLoaded(AECSConstants.NEOECOAE_ID));
         ItemStackToItemStackRecipeBuilder.crushing(
                 ItemStackIngredient.of(SizedIngredient.of(AECSTags.Items.PURE_ENERGIZED_FLUIX_CRYSTAL, 1)),
