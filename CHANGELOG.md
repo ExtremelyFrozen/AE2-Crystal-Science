@@ -23,8 +23,6 @@
 - Added conventional Data Crystal compatibility for Purified Data Crystals.
 - Expanded Resonating Pattern Provider target assignments from 81 to 144 inputs.
 - Standardized the Simplified Chinese name of the Entropy Variation Reaction Chamber.
-- Added high-volume processor and crystal pulverization recipes across Data Energistics, AE2 Lightning Tech, NeoECO, OMNI Cells, ExtendedAE, and Mekanism integrations.
-
 
 ### 中文
 
@@ -47,5 +45,3 @@
 - 新增高纯数据水晶的通用数据水晶兼容。
 - 将谐振样板供应器的可标记输入数量从 81 扩展至 144。
 - 将熵变反应室的简体中文名称统一为熵变反应室。
-- 新增 Data Energistics、闪电科技、NeoECO、OMNI Cells、ExtendedAE 与 Mekanism 联动的批量处理器及水晶粉碎配方。
-
