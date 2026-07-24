@@ -3,6 +3,7 @@ package io.github.lounode.ae2cs.datagen;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSTags;
+import io.github.lounode.ae2cs.common.init.CrystalFamilyBlocks;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -139,7 +140,7 @@ public class AECSBlockTagProvider extends BlockTagsProvider {
                 .add(AECSBlocks.PURE_QUANTUM_CRYSTAL_BLOCK.get());
 
         // 镐挖掘
-        tag(BlockTags.MINEABLE_WITH_PICKAXE)
+        var mineableWithPickaxe = tag(BlockTags.MINEABLE_WITH_PICKAXE)
                 .add(AECSBlocks.CERTUS_QUARTZ_ORE.get())
                 .add(AECSBlocks.DEEPSLATE_CERTUS_QUARTZ_ORE.get())
                 .add(AECSBlocks.CHARGED_CERTUS_QUARTZ_ORE.get())
@@ -148,6 +149,14 @@ public class AECSBlockTagProvider extends BlockTagsProvider {
                 .addTag(AECSTags.Blocks.AECS_PART)
                 .addTag(AECSTags.Blocks.STORAGE_BLOCK_PURE_CRYSTAL)
                 .addTag(AECSTags.Blocks.STORAGE_BLOCK_SILICON);
+        for (var motherRock : AECSBlocks.getCrystalMotherRocks()) {
+            mineableWithPickaxe.add(motherRock.get());
+        }
+        for (CrystalFamilyBlocks family : AECSBlocks.getCrystalFamilies()) {
+            for (var stage : family.stages()) {
+                mineableWithPickaxe.add(stage.get());
+            }
+        }
 
         // 允许主世界洞穴生成覆盖这些方块
         tag(BlockTags.OVERWORLD_CARVER_REPLACEABLES)
