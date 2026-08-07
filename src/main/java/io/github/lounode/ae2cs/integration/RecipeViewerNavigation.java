@@ -22,7 +22,6 @@ public final class RecipeViewerNavigation {
                 case CRYSTAL_AGGREGATOR -> EmiApi.displayRecipeCategory(CrystalAggregatorRecipeCategory.RECIPE_TYPE);
                 case CRYSTAL_PULVERIZER -> EmiApi.displayRecipeCategory(CrystalPulverizerRecipeCategory.RECIPE_TYPE);
                 case CRYSTAL_INFUSER -> EmiApi.displayRecipeCategory(CrystalInfuserRecipeCategory.RECIPE_TYPE);
-                case ENTROPY_REACTION -> EmiApi.displayRecipeCategory(EmiEntropyRecipe.CATEGORY);
                 case ENTROPY_REACTION -> EmiApi.displayRecipeCategory(EntropyVariationReactionChamberRecipeCategory.RECIPE_TYPE);
             }
             return;
