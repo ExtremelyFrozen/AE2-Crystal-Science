@@ -3,7 +3,6 @@ package io.github.lounode.ae2cs.common.init;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.block.entity.*;
 import io.github.lounode.ae2cs.common.machine.IMachineHost;
-import io.github.lounode.ae2cs.common.machine.MachineFluidHost;
 import io.github.lounode.ae2cs.common.machine.component.AppEngInvComponent;
 import io.github.lounode.ae2cs.common.machine.component.EnergyComponent;
 import io.github.lounode.ae2cs.common.machine.component.GenericStackInvComponent;
