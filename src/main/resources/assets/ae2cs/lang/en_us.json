@@ -1,4 +1,5 @@
 {
+  "gui.ae2cs.fluid.empty": "Empty",
   "creativetab.ae2cs.items": "AE2: Crystal Science",
 
   "block.ae2cs.ender_quartz_block": "Ender Quartz Block",
@@ -324,6 +325,8 @@
 
   "ae2cs.menu.entropy_variation_reaction_chamber.entropy_mode_title": "Entropy Mode",
   "ae2cs.menu.entropy_variation_reaction_chamber.entropy_mode_desc": "Toggle increasing or decreasing entropy",
+  "ae2cs.recipe.entropy_variation_reaction_chamber.mode.increase": "Entropy Increase (Requires %s AE)",
+  "ae2cs.recipe.entropy_variation_reaction_chamber.mode.decrease": "Entropy Decrease (Requires %s AE)",
 
   "ae2cs.menu.title.side_config_menu": "Side Config",
   "ae2cs.menu.side_config.button.open": "Side Config\nConfigure sides and auto import/export",

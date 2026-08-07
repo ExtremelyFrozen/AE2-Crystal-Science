@@ -4,6 +4,7 @@ import io.github.lounode.ae2cs.api.settings.AECSSettings;
 import io.github.lounode.ae2cs.client.gui.subGUI.SideConfigGUI;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSServerSettingToggleButton;
 import io.github.lounode.ae2cs.client.gui.widgets.AdvancedProgressBar;
+import io.github.lounode.ae2cs.client.gui.widgets.FluidTankWidget;
 import io.github.lounode.ae2cs.common.location.SimpleComponents;
 import io.github.lounode.ae2cs.common.menu.EntropyVariationReactionChamberMenu;
 import io.github.lounode.ae2cs.integration.RecipeViewerNavigation;
@@ -58,6 +59,11 @@ public class EntropyVariationReactionChamberGUI extends UpgradeableScreen<Entrop
         }, style.getImage("workingProgressBar"), AdvancedProgressBar.FillMode.LEFT_TO_RIGHT, SimpleComponents.WORKING_PROGRESS_BAR);
         this.workingProgressBar.onClick(() -> RecipeViewerNavigation.show(RecipeViewerNavigation.MachineCategory.ENTROPY_REACTION));
         widgets.add("workingProgressBar", this.workingProgressBar);
+
+        widgets.add("fluidInput", new FluidTankWidget(8, 20, () -> getMenu().inputFluid,
+                () -> getMenu().sendFillFluidInputAction()));
+        widgets.add("fluidOutput", new FluidTankWidget(150, 20, () -> getMenu().outputFluid,
+                () -> getMenu().sendDrainFluidOutputAction()));
 
         entropyModeButton = new AECSServerSettingToggleButton<>(AECSSettings.ENTROPY_CHANGE_MODE, EntropyMode.HEAT);
         addToLeftToolbar(entropyModeButton);

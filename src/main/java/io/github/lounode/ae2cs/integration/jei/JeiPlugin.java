@@ -1,7 +1,6 @@
 package io.github.lounode.ae2cs.integration.jei;
 
 import io.github.lounode.ae2cs.AE2CrystalScience;
-import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
@@ -15,11 +14,12 @@ import io.github.lounode.ae2cs.common.recipe.crystal_aggregator.CrystalAggregato
 import io.github.lounode.ae2cs.common.recipe.crystal_pulverizer.CrystalPulverizerRecipe;
 import io.github.lounode.ae2cs.integration.RecipeViewerNavigation;
 
+import appeng.recipes.entropy.EntropyRecipe;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -31,10 +31,8 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 import org.jetbrains.annotations.NotNull;
-import tamaized.ae2jeiintegration.integration.modules.jei.categories.EntropyManipulatorCategory;
 
 import java.util.List;
-import java.util.Objects;
 
 @mezz.jei.api.JeiPlugin
 public class JeiPlugin implements IModPlugin {
@@ -52,6 +50,7 @@ public class JeiPlugin implements IModPlugin {
         registration.addRecipeCategories(new CircuitEtcherRecipeCategory(registration.getJeiHelpers()));
         registration.addRecipeCategories(new CrystalAggregatorRecipeCategory(registration.getJeiHelpers()));
         registration.addRecipeCategories(new CrystalPulverizerRecipeCategory(registration.getJeiHelpers()));
+        registration.addRecipeCategories(new EntropyVariationReactionChamberRecipeCategory(registration.getJeiHelpers()));
         registration.addRecipeCategories(new CrystalGrowthCategory(registration.getJeiHelpers()));
     }
 
@@ -87,6 +86,9 @@ public class JeiPlugin implements IModPlugin {
             registration.addRecipes(CrystalPulverizerRecipeCategory.RECIPE_TYPE, recipes);
         }
 
+        registration.addRecipes(EntropyVariationReactionChamberRecipeCategory.RECIPE_TYPE,
+                level.getRecipeManager().getAllRecipesFor(EntropyRecipe.TYPE).stream().toList());
+
         {
             registration.addRecipes(CrystalGrowthCategory.RECIPE_TYPE, AECSItems.getCrystalSeeds().stream().map(DeferredHolder::get).toList());
         }
@@ -107,21 +109,19 @@ public class JeiPlugin implements IModPlugin {
                 AECSMenus.CRYSTAL_PULVERIZER_MENU.get(),
                 CrystalPulverizerRecipeCategory.RECIPE_TYPE));
 
-        if (ModList.get().isLoaded(AECSConstants.JEI_AE_INTEGRATION_ID)) {
-            registration.addRecipeTransferHandler(new MachineRecipeTransferInfo<>(
-                    EntropyVariationReactionChamberMenu.class,
-                    AECSMenus.ENTROPY_VARIATION_REACTION_CHAMBER_MENU.get(),
-                    EntropyManipulatorCategory.RECIPE_TYPE));
+        registration.addRecipeTransferHandler(new MachineRecipeTransferInfo<>(
+                EntropyVariationReactionChamberMenu.class,
+                AECSMenus.ENTROPY_VARIATION_REACTION_CHAMBER_MENU.get(),
+                EntropyVariationReactionChamberRecipeCategory.RECIPE_TYPE));
 
-            var jeiHelpers = registration.getJeiHelpers();
-            var menuType = Objects.requireNonNull(AECSMenus.RESONANT_TEMPLATE_CODING_TERM_MENU.get());
-            var transferHelper = Objects.requireNonNull(registration.getTransferHelper());
-            var ingredientVisibility = Objects.requireNonNull(jeiHelpers.getIngredientVisibility());
-            registration.addUniversalRecipeTransferHandler(new ResonantEncodePatternTransferHandler(
-                    menuType,
-                    transferHelper,
-                    ingredientVisibility));
-        }
+        var jeiHelpers = registration.getJeiHelpers();
+        var menuType = java.util.Objects.requireNonNull(AECSMenus.RESONANT_TEMPLATE_CODING_TERM_MENU.get());
+        var transferHelper = java.util.Objects.requireNonNull(registration.getTransferHelper());
+        var ingredientVisibility = java.util.Objects.requireNonNull(jeiHelpers.getIngredientVisibility());
+        registration.addUniversalRecipeTransferHandler(new ResonantEncodePatternTransferHandler(
+                menuType,
+                transferHelper,
+                ingredientVisibility));
     }
 
     @Override
@@ -138,7 +138,7 @@ public class JeiPlugin implements IModPlugin {
             case CIRCUIT_ETCHER -> CircuitEtcherRecipeCategory.RECIPE_TYPE;
             case CRYSTAL_AGGREGATOR -> CrystalAggregatorRecipeCategory.RECIPE_TYPE;
             case CRYSTAL_PULVERIZER -> CrystalPulverizerRecipeCategory.RECIPE_TYPE;
-            case ENTROPY_REACTION -> ModList.get().isLoaded(AECSConstants.JEI_AE_INTEGRATION_ID) ? EntropyManipulatorCategory.RECIPE_TYPE : null;
+            case ENTROPY_REACTION -> EntropyVariationReactionChamberRecipeCategory.RECIPE_TYPE;
         };
         if (recipeType != null) {
             runtime.getRecipesGui().showTypes(List.of(recipeType));
@@ -170,10 +170,8 @@ public class JeiPlugin implements IModPlugin {
                 new FluidStack(Fluids.WATER, 1000),
                 CrystalGrowthCategory.RECIPE_TYPE);
 
-        if (ModList.get().isLoaded(AECSConstants.JEI_AE_INTEGRATION_ID)) {
-            registration.addRecipeCatalyst(
-                    AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK,
-                    EntropyManipulatorCategory.RECIPE_TYPE);
-        }
+        registration.addRecipeCatalyst(
+                AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK,
+                EntropyVariationReactionChamberRecipeCategory.RECIPE_TYPE);
     }
 }

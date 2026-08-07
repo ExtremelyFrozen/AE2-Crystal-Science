@@ -1,4 +1,5 @@
 {
+  "gui.ae2cs.fluid.empty": "空",
   "creativetab.ae2cs.items": "AE2：水晶科技",
 
   "block.ae2cs.ender_quartz_block": "末影水晶块",
@@ -324,6 +325,8 @@
 
   "ae2cs.menu.entropy_variation_reaction_chamber.entropy_mode_title": "熵变模式",
   "ae2cs.menu.entropy_variation_reaction_chamber.entropy_mode_desc": "切换熵增或熵减模式",
+  "ae2cs.recipe.entropy_variation_reaction_chamber.mode.increase": "熵增（需要 %s AE）",
+  "ae2cs.recipe.entropy_variation_reaction_chamber.mode.decrease": "熵减（需要 %s AE）",
 
   "ae2cs.menu.title.side_config_menu": "面配置",
   "ae2cs.menu.side_config.button.open": "面配置\n修改机器的面配置以及自动弹出与自动输入功能",
