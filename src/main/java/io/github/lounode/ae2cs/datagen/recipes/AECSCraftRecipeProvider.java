@@ -213,6 +213,20 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider {
                 .unlockedBy(getHasName(AECSItems.RESONATING_PROCESSOR), has(AECSItems.RESONATING_PROCESSOR))
                 .save(recipeOutput, getCrafterPath(AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK, true));
 
+        // 晶体注能器
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSBlocks.CRYSTAL_INFUSER_BLOCK)
+                .pattern("aba")
+                .pattern("cdc")
+                .pattern("efe")
+                .define('a', AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED)
+                .define('b', AEBlocks.ENERGY_ACCEPTOR)
+                .define('c', Tags.Items.INGOTS_IRON)
+                .define('d', AECSItems.RESONATING_PROCESSOR)
+                .define('e', AEBlocks.QUARTZ_GLASS)
+                .define('f', AEBlocks.MOLECULAR_ASSEMBLER)
+                .unlockedBy(getHasName(AECSItems.RESONATING_PROCESSOR), has(AECSItems.RESONATING_PROCESSOR))
+                .save(recipeOutput, getCrafterPath(AECSBlocks.CRYSTAL_INFUSER_BLOCK, true));
+
         // 电路切片机
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSBlocks.CIRCUIT_ETCHER_BLOCK)
                 .pattern("aba")

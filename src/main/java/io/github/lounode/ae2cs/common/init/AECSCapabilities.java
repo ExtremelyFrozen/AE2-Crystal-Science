@@ -81,7 +81,7 @@ public class AECSCapabilities {
             event.registerBlockEntity(
                     Capabilities.FluidHandler.BLOCK,
                     beType,
-                    (be, direction) -> be instanceof MachineFluidHost host ? host.getFluidHandler() : null);
+                    (be, direction) -> be instanceof IFluidHandler handler ? handler : null);
         }
         for (BlockEntityType<?> beType : AECSBlockEntities.getAnnotatedWith(GenericInternalInventory.class)) {
             event.registerBlockEntity(

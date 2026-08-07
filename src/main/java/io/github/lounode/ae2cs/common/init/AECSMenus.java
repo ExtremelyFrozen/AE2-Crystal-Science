@@ -67,6 +67,10 @@ public class AECSMenus {
             () -> MenuTypeBuilder.create(CrystalAggregatorMenu::new, CrystalAggregatorBlockEntity.class)
                     .build(AE2CrystalScience.makeId("crystal_aggregator_menu")));
 
+    public static final Supplier<MenuType<CrystalInfuserMenu>> CRYSTAL_INFUSER_MENU = MENU_TYPES.register("crystal_infuser_menu",
+            () -> MenuTypeBuilder.create(CrystalInfuserMenu::new, CrystalInfuserBlockEntity.class)
+                    .build(AE2CrystalScience.makeId("crystal_infuser_menu")));
+
     public static final Supplier<MenuType<EnderBroadcasterMenu>> ENDER_BROADCASTER_MENU = MENU_TYPES.register("ender_broadcaster_menu",
             () -> MenuTypeBuilder.create(EnderBroadcasterMenu::new, EnderBroadcasterBlockEntity.class)
                     .build(AE2CrystalScience.makeId("ender_broadcaster_menu")));

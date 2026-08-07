@@ -134,6 +134,11 @@ public class AECSBlocks {
     public static final DeferredBlock<CrystalAggregatorBlock> CRYSTAL_AGGREGATOR_BLOCK = registerOtherBlock(AECSBlockIds.CRYSTAL_AGGREGATOR, () -> new CrystalAggregatorBlock(AEBaseBlock.metalProps()));
 
     /**
+     * 晶体注能器
+     */
+    public static final DeferredBlock<CrystalInfuserBlock> CRYSTAL_INFUSER_BLOCK = registerOtherBlock(AECSBlockIds.CRYSTAL_INFUSER, () -> new CrystalInfuserBlock(AEBaseBlock.metalProps()));
+
+    /**
      * 熵变反应仓
      */
     public static final DeferredBlock<EntropyVariationReactionChamberBlock> ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK = registerOtherBlock(AECSBlockIds.ENTROPY_VARIATION_REACTION_CHAMBER, () -> new EntropyVariationReactionChamberBlock(AEBaseBlock.metalProps()));
