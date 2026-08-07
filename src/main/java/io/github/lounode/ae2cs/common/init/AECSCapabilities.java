@@ -22,6 +22,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 
 @EventBusSubscriber(modid = AECSConstants.MODID)
@@ -74,6 +75,12 @@ public class AECSCapabilities {
                         }
                         return null;
                     });
+        }
+        for (BlockEntityType<?> beType : AECSBlockEntities.getAnnotatedWith(IFluidHandler.class)) {
+            event.registerBlockEntity(
+                    Capabilities.FluidHandler.BLOCK,
+                    beType,
+                    (be, direction) -> be instanceof IFluidHandler handler ? handler : null);
         }
         for (BlockEntityType<?> beType : AECSBlockEntities.getAnnotatedWith(GenericInternalInventory.class)) {
             event.registerBlockEntity(

@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs.integration;
 
 import io.github.lounode.ae2cs.integration.emi.CircuitEtcherRecipeCategory;
 import io.github.lounode.ae2cs.integration.emi.CrystalAggregatorRecipeCategory;
+import io.github.lounode.ae2cs.integration.emi.CrystalInfuserRecipeCategory;
 import io.github.lounode.ae2cs.integration.emi.CrystalPulverizerRecipeCategory;
 import io.github.lounode.ae2cs.integration.jei.JeiPlugin;
 
@@ -21,6 +22,7 @@ public final class RecipeViewerNavigation {
                 case CIRCUIT_ETCHER -> EmiApi.displayRecipeCategory(CircuitEtcherRecipeCategory.RECIPE_TYPE);
                 case CRYSTAL_AGGREGATOR -> EmiApi.displayRecipeCategory(CrystalAggregatorRecipeCategory.RECIPE_TYPE);
                 case CRYSTAL_PULVERIZER -> EmiApi.displayRecipeCategory(CrystalPulverizerRecipeCategory.RECIPE_TYPE);
+                case CRYSTAL_INFUSER -> EmiApi.displayRecipeCategory(CrystalInfuserRecipeCategory.RECIPE_TYPE);
                 case ENTROPY_REACTION -> EmiApi.displayRecipeCategory(EmiEntropyRecipe.CATEGORY);
             }
             return;
@@ -35,6 +37,7 @@ public final class RecipeViewerNavigation {
         CIRCUIT_ETCHER,
         CRYSTAL_AGGREGATOR,
         CRYSTAL_PULVERIZER,
+        CRYSTAL_INFUSER,
         ENTROPY_REACTION
     }
 }

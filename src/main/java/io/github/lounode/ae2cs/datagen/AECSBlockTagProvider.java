@@ -48,6 +48,7 @@ public class AECSBlockTagProvider extends BlockTagsProvider {
                 .add(AECSBlocks.CRYSTAL_PULVERIZER_BLOCK.get())
                 .add(AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK.get())
                 .add(AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK.get())
+                .add(AECSBlocks.CRYSTAL_INFUSER_BLOCK.get())
                 .add(AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK.get())
                 .add(AECSBlocks.ENDER_BROADCASTER_BLOCK.get())
                 .add(AECSBlocks.ENDER_EMITTER_BLOCK.get());

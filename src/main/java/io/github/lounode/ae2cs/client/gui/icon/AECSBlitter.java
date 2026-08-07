@@ -19,4 +19,10 @@ public final class AECSBlitter {
 
     public static final Blitter crystalPulverizerProgress = Blitter.texture(AE2CrystalScience.makeId("textures/gui/crystal_pulverizer_menu.png"))
             .src(176, 16, 22, 16);
+
+    public static final Blitter crystalInfuserProgress = Blitter.texture(AE2CrystalScience.makeId("textures/gui/crystal_infuser_menu.png"))
+            .src(198, 0, 22, 33);
+
+    public static final Blitter crystalInfuserEnergy = Blitter.texture(AE2CrystalScience.makeId("textures/gui/crystal_infuser_menu.png"))
+            .src(176, 34, 6, 18);
 }

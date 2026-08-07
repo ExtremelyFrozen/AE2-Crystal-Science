@@ -27,6 +27,8 @@ public class AECSEmiPlugin implements EmiPlugin {
                 new MachineEmiRecipeHandler<>(CrystalAggregatorRecipeCategory.RECIPE_TYPE));
         registry.addRecipeHandler(AECSMenus.CRYSTAL_PULVERIZER_MENU.get(),
                 new MachineEmiRecipeHandler<>(CrystalPulverizerRecipeCategory.RECIPE_TYPE));
+        registry.addRecipeHandler(AECSMenus.CRYSTAL_INFUSER_MENU.get(),
+                new MachineEmiRecipeHandler<>(CrystalInfuserRecipeCategory.RECIPE_TYPE));
         registry.addRecipeHandler(AECSMenus.ENTROPY_VARIATION_REACTION_CHAMBER_MENU.get(),
                 new MachineEmiRecipeHandler<>(EmiEntropyRecipe.CATEGORY));
 
@@ -52,6 +54,13 @@ public class AECSEmiPlugin implements EmiPlugin {
         registry.getRecipeManager().getAllRecipesFor(AECSRecipeTypes.CRYSTAL_PULVERIZER.get())
                 .stream()
                 .map(CrystalPulverizerRecipeCategory::new)
+                .forEach(registry::addRecipe);
+
+        registry.addCategory(CrystalInfuserRecipeCategory.RECIPE_TYPE);
+        registry.addWorkstation(CrystalInfuserRecipeCategory.RECIPE_TYPE, EmiStack.of(AECSBlocks.CRYSTAL_INFUSER_BLOCK));
+        registry.getRecipeManager().getAllRecipesFor(AECSRecipeTypes.CRYSTAL_INFUSER.get())
+                .stream()
+                .map(CrystalInfuserRecipeCategory::new)
                 .forEach(registry::addRecipe);
 
         registry.addCategory(CrystalGrowthCategory.RECIPE_TYPE);

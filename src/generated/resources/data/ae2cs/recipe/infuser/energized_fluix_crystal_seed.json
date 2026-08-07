@@ -1,0 +1,24 @@
+{
+  "type": "ae2cs:crystal_infuser_recipe_serializer",
+  "energy_cost": 64000,
+  "input_a": {
+    "count": 1,
+    "item": "ae2cs:fluix_crystal_seed"
+  },
+  "input_b": {
+    "count": 1,
+    "item": "ae2:charged_certus_quartz_crystal"
+  },
+  "input_c": {
+    "count": 1,
+    "tag": "c:dusts/redstone"
+  },
+  "input_d": {
+    "count": 1,
+    "item": "ae2cs:resonating_processor"
+  },
+  "result": {
+    "count": 1,
+    "id": "ae2cs:energized_fluix_crystal_seed"
+  }
+}

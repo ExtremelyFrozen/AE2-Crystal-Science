@@ -77,6 +77,7 @@ public class AEPlugin {
         Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.CRYSTAL_PULVERIZER_BLOCK, 4);
         Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK, 4);
         Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK, 4);
+        Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.CRYSTAL_INFUSER_BLOCK, 4);
         Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK, 4);
 
         addMeteoriteOverclockCardSupport();
@@ -112,6 +113,7 @@ public class AEPlugin {
         Upgrades.add(AECSItems.OVERLOAD_CARD, AECSBlocks.CIRCUIT_ETCHER_BLOCK, 2);
         Upgrades.add(AECSItems.OVERLOAD_CARD, AECSBlocks.CRYSTAL_PULVERIZER_BLOCK, 2);
         Upgrades.add(AECSItems.OVERLOAD_CARD, AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK, 2);
+        Upgrades.add(AECSItems.OVERLOAD_CARD, AECSBlocks.CRYSTAL_INFUSER_BLOCK, 2);
         Upgrades.add(AECSItems.OVERLOAD_CARD, AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK, 2);
         Upgrades.add(AECSItems.OVERLOAD_CARD, AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK, 4,
                 METEORITE_PATTERN_PROVIDER_GROUP_NAME);

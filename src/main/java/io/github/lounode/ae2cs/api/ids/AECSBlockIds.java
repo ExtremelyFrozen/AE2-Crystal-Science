@@ -29,6 +29,7 @@ public class AECSBlockIds {
     public static final String CRYSTAL_PULVERIZER = "crystal_pulverizer";
     public static final String CRYSTAL_VIBRATION_CHAMBER = "crystal_vibration_chamber";
     public static final String CRYSTAL_AGGREGATOR = "crystal_aggregator";
+    public static final String CRYSTAL_INFUSER = "crystal_infuser";
     public static final String ENTROPY_VARIATION_REACTION_CHAMBER = "entropy_variation_reaction_chamber";
     public static final String ENDER_BROADCASTER = "ender_broadcaster";
     public static final String ENDER_EMITTER = "ender_emitter";

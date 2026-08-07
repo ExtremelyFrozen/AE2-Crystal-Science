@@ -8,10 +8,12 @@ import io.github.lounode.ae2cs.common.init.AECSMenus;
 import io.github.lounode.ae2cs.common.init.AECSRecipeTypes;
 import io.github.lounode.ae2cs.common.menu.CircuitEtcherMenu;
 import io.github.lounode.ae2cs.common.menu.CrystalAggregatorMenu;
+import io.github.lounode.ae2cs.common.menu.CrystalInfuserMenu;
 import io.github.lounode.ae2cs.common.menu.CrystalPulverizerMenu;
 import io.github.lounode.ae2cs.common.menu.EntropyVariationReactionChamberMenu;
 import io.github.lounode.ae2cs.common.recipe.circuit_etcher.CircuitEtcherRecipe;
 import io.github.lounode.ae2cs.common.recipe.crystal_aggregator.CrystalAggregatorRecipe;
+import io.github.lounode.ae2cs.common.recipe.crystal_infuser.CrystalInfuserRecipe;
 import io.github.lounode.ae2cs.common.recipe.crystal_pulverizer.CrystalPulverizerRecipe;
 import io.github.lounode.ae2cs.integration.RecipeViewerNavigation;
 
@@ -52,6 +54,7 @@ public class JeiPlugin implements IModPlugin {
         registration.addRecipeCategories(new CircuitEtcherRecipeCategory(registration.getJeiHelpers()));
         registration.addRecipeCategories(new CrystalAggregatorRecipeCategory(registration.getJeiHelpers()));
         registration.addRecipeCategories(new CrystalPulverizerRecipeCategory(registration.getJeiHelpers()));
+        registration.addRecipeCategories(new CrystalInfuserRecipeCategory(registration.getJeiHelpers()));
         registration.addRecipeCategories(new CrystalGrowthCategory(registration.getJeiHelpers()));
     }
 
@@ -88,6 +91,15 @@ public class JeiPlugin implements IModPlugin {
         }
 
         {
+            List<RecipeHolder<CrystalInfuserRecipe>> recipes = level.getRecipeManager()
+                    .getAllRecipesFor(AECSRecipeTypes.CRYSTAL_INFUSER.get())
+                    .stream()
+                    .toList();
+
+            registration.addRecipes(CrystalInfuserRecipeCategory.RECIPE_TYPE, recipes);
+        }
+
+        {
             registration.addRecipes(CrystalGrowthCategory.RECIPE_TYPE, AECSItems.getCrystalSeeds().stream().map(DeferredHolder::get).toList());
         }
     }
@@ -106,6 +118,10 @@ public class JeiPlugin implements IModPlugin {
                 CrystalPulverizerMenu.class,
                 AECSMenus.CRYSTAL_PULVERIZER_MENU.get(),
                 CrystalPulverizerRecipeCategory.RECIPE_TYPE));
+        registration.addRecipeTransferHandler(new MachineRecipeTransferInfo<>(
+                CrystalInfuserMenu.class,
+                AECSMenus.CRYSTAL_INFUSER_MENU.get(),
+                CrystalInfuserRecipeCategory.RECIPE_TYPE));
 
         if (ModList.get().isLoaded(AECSConstants.JEI_AE_INTEGRATION_ID)) {
             registration.addRecipeTransferHandler(new MachineRecipeTransferInfo<>(
@@ -138,6 +154,7 @@ public class JeiPlugin implements IModPlugin {
             case CIRCUIT_ETCHER -> CircuitEtcherRecipeCategory.RECIPE_TYPE;
             case CRYSTAL_AGGREGATOR -> CrystalAggregatorRecipeCategory.RECIPE_TYPE;
             case CRYSTAL_PULVERIZER -> CrystalPulverizerRecipeCategory.RECIPE_TYPE;
+            case CRYSTAL_INFUSER -> CrystalInfuserRecipeCategory.RECIPE_TYPE;
             case ENTROPY_REACTION -> ModList.get().isLoaded(AECSConstants.JEI_AE_INTEGRATION_ID) ? EntropyManipulatorCategory.RECIPE_TYPE : null;
         };
         if (recipeType != null) {
@@ -158,6 +175,9 @@ public class JeiPlugin implements IModPlugin {
         registration.addRecipeCatalyst(
                 AECSBlocks.CRYSTAL_PULVERIZER_BLOCK,
                 CrystalPulverizerRecipeCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(
+                AECSBlocks.CRYSTAL_INFUSER_BLOCK,
+                CrystalInfuserRecipeCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(
                 AECSBlocks.QUARTZ_GRINDSTONE_BLOCK,
                 CrystalPulverizerRecipeCategory.RECIPE_TYPE);

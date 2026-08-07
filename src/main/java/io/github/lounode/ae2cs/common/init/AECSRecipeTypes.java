@@ -4,6 +4,7 @@ import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.recipe.circuit_etcher.CircuitEtcherRecipe;
 import io.github.lounode.ae2cs.common.recipe.crystal_aggregator.CrystalAggregatorRecipe;
+import io.github.lounode.ae2cs.common.recipe.crystal_infuser.CrystalInfuserRecipe;
 import io.github.lounode.ae2cs.common.recipe.crystal_pulverizer.CrystalPulverizerRecipe;
 
 import net.minecraft.core.registries.Registries;
@@ -25,6 +26,9 @@ public class AECSRecipeTypes {
 
     public static final Supplier<RecipeType<CrystalPulverizerRecipe>> CRYSTAL_PULVERIZER = RECIPE_TYPES.register("crystal_pulverizer_recipe",
             () -> RecipeType.simple(AE2CrystalScience.makeId("crystal_pulverizer_recipe")));
+
+    public static final Supplier<RecipeType<CrystalInfuserRecipe>> CRYSTAL_INFUSER = RECIPE_TYPES.register("crystal_infuser_recipe",
+            () -> RecipeType.simple(AE2CrystalScience.makeId("crystal_infuser_recipe")));
 
     public static void register(IEventBus modEventBus) {
         RECIPE_TYPES.register(modEventBus);
