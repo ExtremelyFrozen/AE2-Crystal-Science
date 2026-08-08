@@ -321,5 +321,4 @@ public class PulseCentrifugeBlockEntity extends AENetworkedSelfPoweredBlockEntit
     public ItemStack getMainMenuIcon() {
         return new ItemStack(getItemFromBlockEntity());
     }
-
 }
