@@ -139,6 +139,11 @@ public class AECSBlocks {
     public static final DeferredBlock<CrystalInfuserBlock> CRYSTAL_INFUSER_BLOCK = registerOtherBlock(AECSBlockIds.CRYSTAL_INFUSER, () -> new CrystalInfuserBlock(AEBaseBlock.metalProps()));
 
     /**
+     * 脉冲离心机
+     */
+    public static final DeferredBlock<PulseCentrifugeBlock> PULSE_CENTRIFUGE_BLOCK = registerOtherBlock(AECSBlockIds.PULSE_CENTRIFUGE, () -> new PulseCentrifugeBlock(AEBaseBlock.metalProps()));
+
+    /**
      * 熵变反应仓
      */
     public static final DeferredBlock<EntropyVariationReactionChamberBlock> ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK = registerOtherBlock(AECSBlockIds.ENTROPY_VARIATION_REACTION_CHAMBER, () -> new EntropyVariationReactionChamberBlock(AEBaseBlock.metalProps()));

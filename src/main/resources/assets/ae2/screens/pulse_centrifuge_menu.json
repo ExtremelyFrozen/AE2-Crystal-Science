@@ -1,0 +1,61 @@
+{
+  "$schema": "schema.json",
+  "includes": [
+    "common/common.json",
+    "common/player_inventory.json",
+    "common/toolbox.json"
+  ],
+  "background": {
+    "texture": "ae2cs:textures/gui/pulse_centrifuge_menu.png",
+    "textureWidth": 256,
+    "textureHeight": 256,
+    "srcRect": [0, 0, 176, 178]
+  },
+  "slots": {
+    "MACHINE_INPUT": { "left": 46, "top": 41, "grid": "VERTICAL" },
+    "MACHINE_OUTPUT": { "left": 98, "top": 32, "grid": "BREAK_AFTER_2COLS" },
+    "UPGRADE": {
+      "right": 0,
+      "top": 0,
+      "grid": "VERTICAL"
+    }
+  },
+  "text": {
+    "title": {
+      "text": { "translate": "block.ae2cs.pulse_centrifuge" },
+      "position": { "left": 8, "top": 6 }
+    }
+  },
+  "images": {
+    "energyRateBar": {
+      "texture": "ae2cs:textures/gui/pulse_centrifuge_menu.png",
+      "textureWidth": 256,
+      "textureHeight": 256,
+      "srcRect": [176, 34, 6, 18]
+    },
+    "workingProgressBar": {
+      "texture": "ae2cs:textures/gui/pulse_centrifuge_menu.png",
+      "textureWidth": 256,
+      "textureHeight": 256,
+      "srcRect": [198, 0, 22, 33]
+    }
+  },
+  "widgets": {
+    "energyRateBar": {
+      "left": 135,
+      "top": 40
+    },
+    "workingProgressBar": {
+      "left": 73,
+      "top": 38
+    },
+    "leftFluidTank": {
+      "left": 9,
+      "top": 26
+    },
+    "rightFluidTank": {
+      "left": 151,
+      "top": 26
+    }
+  }
+}

@@ -11,6 +11,8 @@ import io.github.lounode.ae2cs.common.recipe.crystal_infuser.CrystalInfuserRecip
 import io.github.lounode.ae2cs.common.recipe.crystal_infuser.CrystalInfuserRecipeSerializer;
 import io.github.lounode.ae2cs.common.recipe.crystal_pulverizer.CrystalPulverizerRecipe;
 import io.github.lounode.ae2cs.common.recipe.crystal_pulverizer.CrystalPulverizerRecipeSerializer;
+import io.github.lounode.ae2cs.common.recipe.pulse_centrifuge.PulseCentrifugeRecipe;
+import io.github.lounode.ae2cs.common.recipe.pulse_centrifuge.PulseCentrifugeRecipeSerializer;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -31,6 +33,8 @@ public class AECSRecipeSerializers {
     public static final Supplier<RecipeSerializer<CrystalPulverizerRecipe>> CRYSTAL_PULVERIZER = RECIPE_SERIALIZERS.register("crystal_pulverizer_recipe_serializer", CrystalPulverizerRecipeSerializer::new);
 
     public static final Supplier<RecipeSerializer<CrystalInfuserRecipe>> CRYSTAL_INFUSER = RECIPE_SERIALIZERS.register("crystal_infuser_recipe_serializer", CrystalInfuserRecipeSerializer::new);
+
+    public static final Supplier<RecipeSerializer<PulseCentrifugeRecipe>> PULSE_CENTRIFUGE = RECIPE_SERIALIZERS.register("pulse_centrifuge_recipe_serializer", PulseCentrifugeRecipeSerializer::new);
 
     public static final Supplier<RecipeSerializer<ResonatingPatternUpgradeRecipe>> RESONATING_PATTERN_UPGRADE = RECIPE_SERIALIZERS.register("resonating_pattern_upgrade", () -> new SimpleCraftingRecipeSerializer<>(ResonatingPatternUpgradeRecipe::new));
 

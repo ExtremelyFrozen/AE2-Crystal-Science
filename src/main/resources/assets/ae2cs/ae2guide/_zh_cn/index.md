@@ -68,6 +68,7 @@ AECS 的多数系统围绕 **高纯水晶（Purified Crystal）** 构建。
   <BlockImage id="ae2cs:quartz_grindstone" scale="2" />
   <BlockImage id="ae2cs:crystal_pulverizer" scale="2" />
   <BlockImage id="ae2cs:crystal_aggregator" scale="2" />
+  <BlockImage id="ae2cs:pulse_centrifuge" scale="2" />
 </Row>
 
 - **<ItemLink id="ae2cs:quartz_grindstone" />**  
@@ -78,6 +79,9 @@ AECS 的多数系统围绕 **高纯水晶（Purified Crystal）** 构建。
 
 - **<ItemLink id="ae2cs:crystal_aggregator" />**  
   AECS 的核心合成机器，用于水晶种子增产以及多种高级配方。
+
+- **<ItemLink id="ae2cs:pulse_centrifuge" />**
+  消耗 AE 能量，将一种输入分离成最多四种由数据包定义的产物。
 
 ---
 
