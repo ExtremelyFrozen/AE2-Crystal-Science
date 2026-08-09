@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "ae2cs:block/crystal_infuser/on/bottom",
+    "east": "ae2cs:block/crystal_infuser/on/left",
+    "north": "ae2cs:block/crystal_infuser/on/front",
+    "particle": "ae2cs:block/crystal_infuser/on/front",
+    "south": "ae2cs:block/crystal_infuser/on/back",
+    "up": "ae2cs:block/crystal_infuser/on/top",
+    "west": "ae2cs:block/crystal_infuser/on/right"
+  }
+}

@@ -1,4 +1,5 @@
 {
+  "gui.ae2cs.fluid.empty": "Empty",
   "creativetab.ae2cs.items": "AE2: Crystal Science",
 
   "block.ae2cs.ender_quartz_block": "Ender Quartz Block",
@@ -23,6 +24,8 @@
   "block.ae2cs.crystal_pulverizer": "Crystal Pulverizer",
   "block.ae2cs.crystal_vibration_chamber": "Crystal Vibration Chamber",
   "block.ae2cs.crystal_aggregator": "Crystal Aggregator",
+  "block.ae2cs.crystal_infuser": "Crystal Infuser",
+  "block.ae2cs.pulse_centrifuge": "Pulse Centrifuge",
   "block.ae2cs.entropy_variation_reaction_chamber": "Entropy Variation Chamber",
   "block.ae2cs.ender_broadcaster": "ME Ender Broadcaster",
   "block.ae2cs.ender_emitter": "ME Ender Emitter",
@@ -153,7 +156,7 @@
   "item.ae2cs.blank_print_press": "Inscriber Blank Press",
   "item.ae2cs.ender_blank_print_press": "Inscriber Ender Blank Press",
   "item.ae2cs.crystal_growth_card": "Crystal Growth Card",
-  "item.ae2cs.overload_card": "Meteorite Overload Card",
+  "item.ae2cs.overload_card": "Meteorite Overclock Card",
   "item.ae2cs.ender_linker": "Ender Linker",
   "item.ae2cs.resonating_linker": "Resonating Binder",
   "item.ae2cs.mirror_linker": "Mirror Binder",
@@ -381,6 +384,8 @@
 
   "ae2cs.menu.entropy_variation_reaction_chamber.entropy_mode_title": "Entropy Mode",
   "ae2cs.menu.entropy_variation_reaction_chamber.entropy_mode_desc": "Toggle increasing or decreasing entropy",
+  "ae2cs.recipe.entropy_variation_reaction_chamber.mode.increase": "Entropy Increase (Requires %s AE)",
+  "ae2cs.recipe.entropy_variation_reaction_chamber.mode.decrease": "Entropy Decrease (Requires %s AE)",
 
   "ae2cs.menu.title.side_config_menu": "Side Config",
   "ae2cs.menu.side_config.button.open": "Side Config\nConfigure sides and auto import/export",
@@ -470,7 +475,10 @@
   "ae2cs.integration.jei.recipe_category.circuit_etcher": "Circuit Etching",
   "ae2cs.integration.jei.recipe_category.energy_cost.tooltip": "Energy Cost: %s AE",
   "ae2cs.integration.jei.recipe_category.crystal_aggregator": "Crystal Aggregation",
+  "ae2cs.integration.jei.recipe_category.crystal_infuser": "Crystal Infusion",
+  "ae2cs.tooltip.fluid_amount": "Water: %s / %s mB",
   "ae2cs.integration.jei.recipe_category.crystal_pulverizer": "Pulverizing",
+  "ae2cs.integration.jei.recipe_category.pulse_centrifuge": "Pulse Centrifuging",
   "ae2cs.integration.jei.recipe_category.crystal_growth": "Crystal Growth",
   "item.ae2cs.resonant_template_coding_terminal_part": "Resonant Crafting Encoding Terminal",
   "gui.ae2cs.resonant_crafting_encoding_terminal": "Resonant Crafting Encoding Terminal",
@@ -499,6 +507,7 @@
   "ae2cs.menu.resonant_template_coding_terminal.processing_ingredient_transfer_mode.full_split": "Current: Full Split Ingredients",
   "ae2cs.menu.resonant_template_coding_terminal.processing_ingredient_transfer_mode.full_split_desc": "Keep JEI/EMI ingredient order without merging repeated ingredients",
   "ae2cs.menu.resonant_template_coding_terminal.hotkey_unbound": "Unbound",
+  "ae2cs.tooltip.click_to_view_recipes": "Click to view recipes",
   "key.categories.ae2cs": "AE2 Crystal Science",
   "key.ae2cs.toggle_resonant_template_coding_slot_mode": "Toggle Resonant Template Coding Terminal Slot Mode"
 }

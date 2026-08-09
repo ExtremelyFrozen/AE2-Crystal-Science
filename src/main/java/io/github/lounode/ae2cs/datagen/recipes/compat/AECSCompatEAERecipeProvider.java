@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 
 import com.glodblock.github.extendedae.common.EAESingletons;
+import com.glodblock.github.extendedae.recipe.CircuitCutterRecipeBuilder;
 import com.glodblock.github.extendedae.recipe.CrystalAssemblerRecipeBuilder;
 import com.glodblock.github.extendedae.util.EAETags;
 import org.jetbrains.annotations.NotNull;
@@ -47,6 +48,26 @@ public class AECSCompatEAERecipeProvider extends AECSRecipeProvider {
         super.buildRecipes(compatOut, registries);
 
         stonecutterResultFromItem(compatOut, RecipeCategory.MISC, EAESingletons.CONCURRENT_PROCESSOR_PRESS, AECSItems.BLANK_PRINT_PRESS);
+
+        CircuitCutterRecipeBuilder.cut(AECSItems.RESONATING_CIRCUIT_PRINT, 9)
+                .input(AECSBlocks.PURE_RESONATING_CRYSTAL_BLOCK)
+                .save(compatOut, getCircuitCutterPath(AECSItems.RESONATING_CIRCUIT_PRINT));
+
+        CircuitCutterRecipeBuilder.cut(AECSItems.SIMPLE_CIRCUIT_PRINT, 4)
+                .input(Blocks.QUARTZ_BLOCK)
+                .save(compatOut, getCircuitCutterPath(AECSItems.SIMPLE_CIRCUIT_PRINT));
+
+        CrystalAssemblerRecipeBuilder.assemble(AECSItems.RESONATING_PROCESSOR, 4)
+                .input(AECSItems.RESONATING_CIRCUIT_PRINT, 4)
+                .input(AEItems.SKY_DUST, 4)
+                .input(AEItems.SILICON_PRINT, 4)
+                .save(compatOut, getCrystalAssemblerPath(AECSItems.RESONATING_PROCESSOR));
+
+        CrystalAssemblerRecipeBuilder.assemble(AECSItems.SIMPLE_PROCESSOR, 4)
+                .input(AECSItems.SIMPLE_CIRCUIT_PRINT, 4)
+                .input(Tags.Items.DUSTS_REDSTONE, 4)
+                .input(AEItems.SILICON_PRINT, 4)
+                .save(compatOut, getCrystalAssemblerPath(AECSItems.SIMPLE_PROCESSOR));
 
         CircuitEtcherRecipeBuilder.etching(EAESingletons.CONCURRENT_PROCESSOR, 36, 57600)
                 .require(EAETags.ENTRO_BLOCK, 9)
@@ -140,5 +161,9 @@ public class AECSCompatEAERecipeProvider extends AECSRecipeProvider {
 
     protected static ResourceLocation getCrystalAssemblerPath(ItemLike output) {
         return AE2CrystalScience.makeId(getPrefixedItemName("crystal_assembler", output));
+    }
+
+    protected static ResourceLocation getCircuitCutterPath(ItemLike output) {
+        return AE2CrystalScience.makeId(getPrefixedItemName("circuit_cutter", output));
     }
 }

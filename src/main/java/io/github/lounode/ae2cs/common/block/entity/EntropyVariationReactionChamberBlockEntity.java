@@ -5,6 +5,9 @@ import io.github.lounode.ae2cs.api.settings.AECSSettings;
 import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.init.AECSItems;
+import io.github.lounode.ae2cs.common.machine.MachineFluidHost;
+import io.github.lounode.ae2cs.common.machine.MachineFluidTanks;
 import io.github.lounode.ae2cs.common.machine.component.GenericStackInvComponent;
 import io.github.lounode.ae2cs.common.machine.component.InvPort;
 import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
@@ -45,6 +48,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -53,8 +58,10 @@ import java.util.List;
 import java.util.Optional;
 
 @ProvideCaps(GenericInternalInventory.class)
+@ProvideCaps(IFluidHandler.class)
 public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfPoweredBlockEntity implements
-                                                        IUpgradeableObject, IConfigurableObject, CustomReturnableSubMenuHost {
+                                                        IUpgradeableObject, IConfigurableObject, CustomReturnableSubMenuHost,
+                                                        MachineFluidHost {
 
     /**
      * 基础能量消耗，每tick 200AE，每多一个加速卡，则此数值翻倍，同时机器运行速率也翻倍。
@@ -69,13 +76,16 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
      * 升级仓
      */
     private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK,
-            4, this::saveChanges);
+            4, this::onUpgradesChanged);
 
     private final IConfigManager configManager;
 
     /**
      * 当前执行的配方
      */
+    private int speedMultiplier = 1;
+    private int overclockCards = 0;
+
     @Nullable
     private RecipeHolder<EntropyRecipe> activeRecipe;
 
@@ -99,6 +109,12 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
      * 是否需要更新配方状态
      */
     private boolean needRefreshRecipeState = true;
+
+    private final MachineFluidTanks fluidTanks = new MachineFluidTanks(16_000,
+            () -> {
+                needRefreshRecipeState = true;
+                setChanged();
+            }, this::setChanged);
 
     private final IActionSource actionSource;
 
@@ -139,6 +155,15 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
         return getMachineComponents().getService(GenericStackInvComponent.class).port(InvPort.OUTPUT);
     }
 
+    public MachineFluidTanks getFluidTanks() {
+        return fluidTanks;
+    }
+
+    @Override
+    public IFluidHandler getFluidHandler() {
+        return fluidTanks;
+    }
+
     public int getRecipeProgress() {
         return recipeProgress;
     }
@@ -172,6 +197,12 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
     @Override
     public IUpgradeInventory getUpgrades() {
         return upgrades;
+    }
+
+    private void onUpgradesChanged() {
+        this.overclockCards = Math.min(2, upgrades.getInstalledUpgrades(AECSItems.OVERLOAD_CARD));
+        this.speedMultiplier = overclockCards > 0 ? 1 : 1 << Math.min(4, upgrades.getInstalledUpgrades(AEItems.SPEED_CARD));
+        saveChanges();
     }
 
     @Override
@@ -221,7 +252,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
             for (GenericStack stack : result) {
                 // TODO 就现在而言，理论上result可以有多个输出，逐步单输出的模拟对于具有多输出的配方失效
                 // TODO 但是，所有AE原版的熵变配方都是单输出，因此，目前只用这种模拟方式
-                if (getOutputInv().insert(stack.what(), stack.amount(), Actionable.SIMULATE, actionSource) < stack.amount()) {
+                if (!canOutput(stack)) {
                     recipeProgress = activeRecipeEnergyCost;
                     return;
                 }
@@ -235,22 +266,21 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
                 return;
             }
 
-            for (GenericStack stack : result) {
-                getOutputInv().insert(stack.what(), stack.amount(), Actionable.MODULATE, actionSource);
-            }
+            for (GenericStack stack : result) output(stack);
             recipeProgress = 0;
             setChanged();
         }
     }
 
     // 计算能量消耗
-    private int getSpeedMultiplier() {
-        int c = Math.min(4, upgrades.getInstalledUpgrades(AEItems.SPEED_CARD));
-        return 1 << c;
-    }
-
     private double getEnergyPerTick() {
-        return BASIC_ENERGY_COST_PER_TICK * getSpeedMultiplier();
+        double normalEnergy = BASIC_ENERGY_COST_PER_TICK * speedMultiplier;
+        if (overclockCards == 0 || activeRecipeEnergyCost <= 0) {
+            return normalEnergy;
+        }
+
+        int targetTicks = overclockCards == 1 ? 4 : 1;
+        return Math.max(normalEnergy, Math.ceil((double) activeRecipeEnergyCost / targetTicks));
     }
 
     /**
@@ -262,14 +292,10 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
         var level = getLevel();
         AEKey inputKey = getInputInv().getKey(0);
         BlockState inputBlockState = Blocks.VOID_AIR.defaultBlockState();
-        FluidState inputFluidState = Fluids.EMPTY.defaultFluidState();
+        FluidState inputFluidState = fluidTanks.input().getFluid().isEmpty() ? Fluids.EMPTY.defaultFluidState() : fluidTanks.input().getFluid().getFluid().defaultFluidState();
         if (inputKey instanceof AEItemKey itemKey && itemKey.getItem() instanceof BlockItem blockItem) {
             inputBlockState = blockItem.getBlock().defaultBlockState();
         }
-        if (inputKey instanceof AEFluidKey fluidKey) {
-            inputFluidState = fluidKey.getFluid().defaultFluidState();
-        }
-
         var holder = findRecipe(level, getEntropyMode(), inputBlockState, inputFluidState);
         if (holder == null) {
             // 没有配方，清空进度
@@ -308,7 +334,8 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
         canConsume = canConsume && required.fluid().map(fluidInput -> {
             Fluid fluid = fluidInput.fluid();
             if (fluid != Fluids.EMPTY) {
-                return getInputInv().extract(0, AEFluidKey.of(fluid), 1000, Actionable.SIMULATE) >= 1000;
+                FluidStack stored = fluidTanks.input().getFluid();
+                return stored.getFluid() == fluid && stored.getAmount() >= 1000;
             } else
                 return true;
         }).orElse(true);
@@ -324,10 +351,27 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
         required.fluid().ifPresent(fluidInput -> {
             Fluid fluid = fluidInput.fluid();
             if (fluid != Fluids.EMPTY) {
-                getInputInv().extract(0, AEFluidKey.of(fluid), 1000, Actionable.MODULATE);
+                fluidTanks.input().drain(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
             }
         });
         return true;
+    }
+
+    private boolean canOutput(GenericStack stack) {
+        if (stack.what() instanceof AEFluidKey fluidKey) {
+            return fluidTanks.output().fill(new FluidStack(fluidKey.getFluid(), (int) stack.amount()),
+                    IFluidHandler.FluidAction.SIMULATE) >= stack.amount();
+        }
+        return getOutputInv().insert(stack.what(), stack.amount(), Actionable.SIMULATE, actionSource) >= stack.amount();
+    }
+
+    private void output(GenericStack stack) {
+        if (stack.what() instanceof AEFluidKey fluidKey) {
+            fluidTanks.output().fill(new FluidStack(fluidKey.getFluid(), (int) stack.amount()),
+                    IFluidHandler.FluidAction.EXECUTE);
+        } else {
+            getOutputInv().insert(stack.what(), stack.amount(), Actionable.MODULATE, actionSource);
+        }
     }
 
     @Override
@@ -336,6 +380,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
         this.configManager.writeToNBT(data, registries);
         upgrades.writeToNBT(data, "upgrades", registries);
         data.putInt("recipe_progress", recipeProgress);
+        fluidTanks.writeToNbt(data, registries);
         if (activeRecipe != null) {
             data.putString("active_recipe_id", activeRecipe.id().toString());
         }
@@ -347,6 +392,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
         this.configManager.readFromNBT(data, registries);
         upgrades.readFromNBT(data, "upgrades", registries);
         recipeProgress = data.getInt("recipe_progress");
+        fluidTanks.readFromNbt(data, registries);
         if (data.contains("active_recipe_id")) {
             activeRecipeId = ResourceLocation.parse(data.getString("active_recipe_id"));
         }
@@ -355,6 +401,11 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
     @Override
     public void onLoad() {
         super.onLoad();
+        onUpgradesChanged();
+        if (level != null && !level.isClientSide()) {
+            migrateLegacyFluids(getInputInv(), fluidTanks.input());
+            migrateLegacyFluids(getOutputInv(), fluidTanks.output());
+        }
         if (activeRecipeId != null && level != null) {
             Optional<RecipeHolder<?>> opt = level.getRecipeManager().byKey(activeRecipeId);
             opt.ifPresent(recipeHolder -> activeRecipe = (RecipeHolder<EntropyRecipe>) recipeHolder);
@@ -376,6 +427,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
     public void clearContent() {
         super.clearContent();
         upgrades.clear();
+        fluidTanks.clear();
     }
 
     @Override
@@ -423,5 +475,16 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
             }
         });
         return outputList;
+    }
+
+    private static void migrateLegacyFluids(GenericStackInv inventory,
+                                            net.neoforged.neoforge.fluids.capability.templates.FluidTank tank) {
+        for (int slot = 0; slot < inventory.size(); slot++) {
+            if (!(inventory.getKey(slot) instanceof AEFluidKey fluidKey)) continue;
+            long amount = inventory.getAmount(slot);
+            int moved = tank.fill(new FluidStack(fluidKey.getFluid(), (int) Math.min(amount, Integer.MAX_VALUE)),
+                    IFluidHandler.FluidAction.EXECUTE);
+            if (moved > 0) inventory.extract(slot, fluidKey, moved, Actionable.MODULATE);
+        }
     }
 }

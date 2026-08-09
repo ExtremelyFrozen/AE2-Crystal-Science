@@ -63,6 +63,8 @@ public class AECSBlockStateProvider extends BlockStateProvider {
         genSixFaceLike(AECSBlocks.CIRCUIT_ETCHER_BLOCK.get());
         genSixFaceLike(AECSBlocks.CRYSTAL_PULVERIZER_BLOCK.get());
         genSixFaceLike(AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK.get());
+        genSixFaceLike(AECSBlocks.CRYSTAL_INFUSER_BLOCK.get());
+        genSixFaceLike(AECSBlocks.PULSE_CENTRIFUGE_BLOCK.get());
         genSixFaceLike(AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK.get());
         genSixFaceLike(AECSBlocks.QUARTZ_OSCILLATOR_CLOCK_BLOCK.get());
         genEnderBroadcaster();

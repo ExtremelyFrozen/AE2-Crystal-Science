@@ -2,11 +2,11 @@ package io.github.lounode.ae2cs.common.me.part;
 
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
+import io.github.lounode.ae2cs.common.me.ResonantPatternEncodingCapacity;
 import io.github.lounode.ae2cs.common.menu.ResonantTemplateCodingTermMenu;
 
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
-import appeng.crafting.pattern.AEProcessingPattern;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 import appeng.parts.encoding.PatternEncodingTerminalPart;
@@ -54,13 +54,14 @@ public class ResonantTemplateCodingTerminalPart extends PatternEncodingTerminalP
     private boolean encodeResonatingPattern;
     private ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode processingIngredientTransferMode = ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode.MERGE;
     private final AppEngInternalInventory pulledCraftingInputInv = new AppEngInternalInventory(this, 9);
-    private final AppEngInternalInventory pulledProcessingInputInv = new AppEngInternalInventory(this, AEProcessingPattern.MAX_INPUT_SLOTS);
+    private final AppEngInternalInventory pulledProcessingInputInv = new AppEngInternalInventory(this, ResonantPatternEncodingCapacity.PROCESSING_INPUT_SLOTS);
     private final AppEngInternalInventory pulledSmithingInputInv = new AppEngInternalInventory(this, 3);
     private final AppEngInternalInventory pulledStonecuttingInputInv = new AppEngInternalInventory(this, 1);
     private final AppEngInternalInventory pulledAnvilInputInv = new AppEngInternalInventory(this, 2);
 
     public ResonantTemplateCodingTerminalPart(IPartItem<?> partItem) {
         super(partItem);
+        ResonantPatternEncodingCapacity.expand(getLogic());
     }
 
     @Override

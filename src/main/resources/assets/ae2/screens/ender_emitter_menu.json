@@ -5,7 +5,7 @@
     "texture": "ae2cs:textures/gui/ender_emitter_menu.png",
     "textureWidth": 256,
     "textureHeight": 256,
-    "srcRect": [0, 0, 176, 168]
+    "srcRect": [0, 0, 176, 204]
   },
   "slots": {
     "UPGRADE": {

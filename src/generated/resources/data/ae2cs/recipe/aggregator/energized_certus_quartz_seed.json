@@ -9,11 +9,15 @@
   "energy_cost": 51200,
   "input_a": {
     "count": 8,
-    "item": "neoecoae:energized_crystal"
+    "item": "neoecoae:energized_crystal_dust"
   },
   "input_b": {
-    "count": 32,
-    "item": "minecraft:sand"
+    "count": 8,
+    "item": "ae2:certus_quartz_dust"
+  },
+  "input_c": {
+    "count": 16,
+    "tag": "c:dusts/glowstone"
   },
   "result": {
     "count": 32,

@@ -69,6 +69,7 @@ navigation:
   <BlockImage id="ae2cs:quartz_grindstone" scale="2" />
   <BlockImage id="ae2cs:crystal_pulverizer" scale="2" />
   <BlockImage id="ae2cs:crystal_aggregator" scale="2" />
+  <BlockImage id="ae2cs:pulse_centrifuge" scale="2" />
 </Row>
 
 - **<ItemLink id="ae2cs:quartz_grindstone" />**  
@@ -79,6 +80,9 @@ navigation:
 
 - **<ItemLink id="ae2cs:crystal_aggregator" />**  
   水晶の種の収量拡大と多様な高度レシピに使用される、AECSの中核クラフト機械。
+
+- **<ItemLink id="ae2cs:pulse_centrifuge" />**
+  AEエネルギーを使用し、1種類の入力を最大4種類のデータパック定義出力に分離します。
 
 ---
 

@@ -1,6 +1,7 @@
 package io.github.lounode.ae2cs.common.menu;
 
 import io.github.lounode.ae2cs.common.init.AECSMenus;
+import io.github.lounode.ae2cs.common.me.ResonantPatternEncodingCapacity;
 import io.github.lounode.ae2cs.common.me.crafting.ResonatingPatternDetails;
 import io.github.lounode.ae2cs.common.me.part.IResonantTemplateCodingTerminalHost;
 
@@ -8,9 +9,12 @@ import appeng.api.config.Actionable;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.inventories.InternalInventory;
+import appeng.api.networking.IGridNode;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.StorageHelper;
+import appeng.client.gui.Icon;
+import appeng.core.definitions.AEItems;
 import appeng.helpers.ICraftingGridMenu;
 import appeng.helpers.IPatternTerminalMenuHost;
 import appeng.helpers.InventoryAction;
@@ -22,6 +26,8 @@ import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.crafting.CraftConfirmMenu;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.menu.slot.AppEngSlot;
+import appeng.menu.slot.FakeSlot;
+import appeng.menu.slot.RestrictedInputSlot;
 import appeng.parts.encoding.EncodingMode;
 import appeng.parts.encoding.PatternEncodingLogic;
 import appeng.util.ConfigInventory;
@@ -52,6 +58,11 @@ import net.minecraft.world.item.crafting.SmithingRecipe;
 import net.minecraft.world.item.crafting.SmithingRecipeInput;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.Level;
+import net.neoforged.fml.ModList;
+
+import de.mari_023.ae2wtlib.api.gui.AE2wtlibSlotSemantics;
+import de.mari_023.ae2wtlib.api.terminal.ItemWUT;
+import de.mari_023.ae2wtlib.api.terminal.WTMenuHost;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -85,7 +96,12 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
     private static final String ACTION_CLEAR_PULLED_ANVIL_INPUTS_TO_NETWORK = "clearPulledAnvilInputsToNetwork";
     private static final String ACTION_CLEAR_PULLED_ANVIL_INPUTS_TO_PLAYER = "clearPulledAnvilInputsToPlayer";
     private static final String ACTION_REQUEST_MISSING_PULLED_PROCESSING_INPUTS_AUTO_CRAFT = "requestMissingPulledProcessingInputsAutoCraft";
+    private static final String ACTION_DEPOSIT_NETWORK_BLANK_PATTERNS = "ae2csDepositNetworkBlankPatterns";
+    private static final String ACTION_PICKUP_NETWORK_BLANK_PATTERNS = "ae2csPickupNetworkBlankPatterns";
+    private static final String DATA_ENERGISTICS_MOD_ID = "data_energistics";
     private static final Field ENCODING_LOGIC_FIELD = getEncodingLogicField();
+    private static final Field PROCESSING_INPUT_SLOTS_FIELD = getSlotField("processingInputSlots");
+    private static final Field PROCESSING_OUTPUT_SLOTS_FIELD = getSlotField("processingOutputSlots");
     private static final Field STONECUTTING_INPUT_SLOT_FIELD = getSlotField("stonecuttingInputSlot");
     public static final SlotSemantic PULLED_CRAFTING_INPUTS = SlotSemantics.register("AE2CS_PULLED_CRAFTING_INPUTS", false);
     public static final SlotSemantic PULLED_CRAFTING_RESULT = SlotSemantics.register("AE2CS_PULLED_CRAFTING_RESULT", false);
@@ -116,6 +132,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
     private final SimpleContainer pulledAnvilResultInv = new SimpleContainer(1);
     private final Slot pulledAnvilResultSlot;
     private final IResonantTemplateCodingTerminalHost resonantHost;
+    private final WTMenuHost wirelessHost;
     private long lastPulledSmithingSoundTime = -1;
     private long lastPulledStonecuttingSoundTime = -1;
     private long lastPulledAnvilSoundTime = -1;
@@ -145,6 +162,15 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
     public ResonantTemplateCodingTermMenu(MenuType<?> menuType, int id, Inventory ip,
                                           IPatternTerminalMenuHost host, boolean bindInventory) {
         super(menuType, id, ip, host, bindInventory);
+        restoreBlankPatternSlotIcon();
+        this.wirelessHost = host instanceof WTMenuHost typedHost ? typedHost : null;
+        if (this.wirelessHost != null) {
+            this.addSlot(new RestrictedInputSlot(
+                    RestrictedInputSlot.PlacableItemType.QE_SINGULARITY,
+                    this.wirelessHost.getSubInventory(WTMenuHost.INV_SINGULARITY),
+                    0), AE2wtlibSlotSemantics.SINGULARITY);
+        }
+        expandProcessingSlots();
         this.resonantHost = host instanceof IResonantTemplateCodingTerminalHost typedHost ? typedHost : null;
         this.pullProcessingRecipeInputs = this.resonantHost != null && this.resonantHost.isPullRecipeInputsToRealGrid();
         this.pulledAnvilMode = this.pullProcessingRecipeInputs && this.resonantHost != null && this.resonantHost.isPulledAnvilMode();
@@ -226,6 +252,10 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
         this.registerClientAction(ACTION_CLEAR_PULLED_ANVIL_INPUTS_TO_PLAYER, this::clearPulledAnvilInputsToPlayer);
         this.registerClientAction(ACTION_REQUEST_MISSING_PULLED_PROCESSING_INPUTS_AUTO_CRAFT,
                 this::requestMissingPulledProcessingInputsAutoCraft);
+        this.registerClientAction(ACTION_DEPOSIT_NETWORK_BLANK_PATTERNS, Boolean.class,
+                this::depositNetworkBlankPatterns);
+        this.registerClientAction(ACTION_PICKUP_NETWORK_BLANK_PATTERNS, Boolean.class,
+                this::pickupNetworkBlankPatterns);
         if (this.isServerSide()) {
             syncCurrentPulledInputsToEncodedSlots();
             this.pulledAnvilItemName = this.pulledAnvilMode ? getPulledAnvilInputName() : "";
@@ -241,6 +271,19 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
         if (this.isServerSide() && this.encodeResonatingPattern && this.getMode() == EncodingMode.PROCESSING) {
             convertEncodedOutputToResonatingPattern();
         }
+    }
+
+    @Override
+    public IGridNode getGridNode() {
+        return this.wirelessHost != null ? this.wirelessHost.getActionableNode() : super.getGridNode();
+    }
+
+    public boolean isWirelessTerminal() {
+        return this.wirelessHost != null;
+    }
+
+    public boolean isWUT() {
+        return this.wirelessHost != null && this.wirelessHost.getItemStack().getItem() instanceof ItemWUT;
     }
 
     public void setEncodeResonatingPattern(boolean encodeResonatingPattern) {
@@ -311,6 +354,46 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
 
     public Slot getPulledCraftingResultSlot() {
         return this.pulledCraftingResultSlot;
+    }
+
+    private void restoreBlankPatternSlotIcon() {
+        for (Slot slot : this.getSlots(SlotSemantics.BLANK_PATTERN)) {
+            if (slot instanceof AppEngSlot appEngSlot) {
+                appEngSlot.setIcon(Icon.BACKGROUND_BLANK_PATTERN);
+            }
+        }
+    }
+
+    private void expandProcessingSlots() {
+        PatternEncodingLogic logic = getEncodingLogic();
+        if (logic.getEncodedInputInv().size() != ResonantPatternEncodingCapacity.PROCESSING_INPUT_SLOTS || logic.getEncodedOutputInv().size() != ResonantPatternEncodingCapacity.PROCESSING_OUTPUT_SLOTS) {
+            throw new IllegalStateException("Resonant pattern encoding logic was not expanded before menu creation");
+        }
+
+        FakeSlot[] oldInputs = getProcessingInputSlots();
+        FakeSlot[] expandedInputs = Arrays.copyOf(oldInputs, ResonantPatternEncodingCapacity.PROCESSING_INPUT_SLOTS);
+        var inputInventory = logic.getEncodedInputInv().createMenuWrapper();
+        for (int i = oldInputs.length; i < expandedInputs.length; i++) {
+            FakeSlot slot = new FakeSlot(inputInventory, i);
+            this.addSlot(slot, SlotSemantics.PROCESSING_INPUTS);
+            expandedInputs[i] = slot;
+        }
+
+        FakeSlot[] oldOutputs = getProcessingOutputSlots();
+        FakeSlot[] expandedOutputs = Arrays.copyOf(oldOutputs, ResonantPatternEncodingCapacity.PROCESSING_OUTPUT_SLOTS);
+        var outputInventory = logic.getEncodedOutputInv().createMenuWrapper();
+        for (int i = oldOutputs.length; i < expandedOutputs.length; i++) {
+            FakeSlot slot = new FakeSlot(outputInventory, i);
+            this.addSlot(slot, SlotSemantics.PROCESSING_OUTPUTS);
+            expandedOutputs[i] = slot;
+        }
+
+        try {
+            PROCESSING_INPUT_SLOTS_FIELD.set(this, expandedInputs);
+            PROCESSING_OUTPUT_SLOTS_FIELD.set(this, expandedOutputs);
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException("Failed to expand resonant processing menu slots", e);
+        }
     }
 
     public AppEngSlot[] getPulledProcessingInputSlots() {
@@ -780,6 +863,74 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
 
         var slots = this.getSlots(SlotSemantics.BLANK_PATTERN);
         this.blankPatternSlotCount = slots.isEmpty() ? 0 : slots.getFirst().getItem().getCount();
+    }
+
+    public boolean usesNetworkBlankPatternProxy() {
+        return ModList.get().isLoaded(DATA_ENERGISTICS_MOD_ID);
+    }
+
+    public void depositNetworkBlankPatterns(boolean single) {
+        if (this.isClientSide()) {
+            this.sendClientAction(ACTION_DEPOSIT_NETWORK_BLANK_PATTERNS, single);
+            return;
+        }
+
+        ItemStack carried = this.getCarried();
+        if (carried.isEmpty() || !AEItems.BLANK_PATTERN.is(carried) || !this.canInteractWithGrid()) {
+            return;
+        }
+
+        AEItemKey blankPatternKey = AEItemKey.of(AEItems.BLANK_PATTERN);
+        if (blankPatternKey == null) {
+            return;
+        }
+
+        long inserted = StorageHelper.poweredInsert(this.energySource, this.storage, blankPatternKey,
+                single ? 1 : carried.getCount(), this.getActionSource(), Actionable.MODULATE);
+        if (inserted <= 0) {
+            return;
+        }
+
+        ItemStack remainder = carried.copy();
+        remainder.shrink((int) inserted);
+        this.setCarried(remainder.isEmpty() ? ItemStack.EMPTY : remainder);
+        updateSyncedBlankPatternSlotCount();
+    }
+
+    public void pickupNetworkBlankPatterns(boolean single) {
+        if (this.isClientSide()) {
+            this.sendClientAction(ACTION_PICKUP_NETWORK_BLANK_PATTERNS, single);
+            return;
+        }
+
+        ItemStack carried = this.getCarried();
+        if ((!carried.isEmpty() && !AEItems.BLANK_PATTERN.is(carried)) || !this.canInteractWithGrid()) {
+            return;
+        }
+
+        int maxStackSize = AEItems.BLANK_PATTERN.stack().getMaxStackSize();
+        int requested = single ? 1 : maxStackSize - (carried.isEmpty() ? 0 : carried.getCount());
+        if (requested <= 0) {
+            return;
+        }
+
+        AEItemKey blankPatternKey = AEItemKey.of(AEItems.BLANK_PATTERN);
+        if (blankPatternKey == null) {
+            return;
+        }
+
+        long extracted = StorageHelper.poweredExtraction(this.energySource, this.storage, blankPatternKey, requested,
+                this.getActionSource(), Actionable.MODULATE);
+        if (extracted <= 0) {
+            return;
+        }
+
+        ItemStack result = carried.isEmpty() ? AEItems.BLANK_PATTERN.stack((int) extracted) : carried.copy();
+        if (!carried.isEmpty()) {
+            result.grow((int) extracted);
+        }
+        this.setCarried(result);
+        updateSyncedBlankPatternSlotCount();
     }
 
     @Override

@@ -19,6 +19,7 @@ dependencies {
     compileOnly(forge.de)
     compileOnly(forge.eae)
     compileOnly(forge.aelt)
+    compileOnly(forge.eco)
     compileOnly(forge.applied.flux)
     compileOnly(forge.applied.create)
     compileOnly(forge.mega.cells)

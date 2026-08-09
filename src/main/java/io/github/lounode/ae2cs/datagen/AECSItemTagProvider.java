@@ -163,6 +163,8 @@ public class AECSItemTagProvider extends ItemTagsProvider {
                 .addTag(AECSTags.Items.PURE_METEOR_CRYSTAL);
         tag(AECSTags.Items.GEM_RESONATING)
                 .addTag(AECSTags.Items.PURE_RESONATING_CRYSTAL);
+        tag(AECSTags.Items.GEM_DATA_CRYSTAL)
+                .addTag(AECSTags.Items.PURE_DATA_CRYSTAL);
         tag(EAETags.ENTRO_CRYSTAL)
                 .addTag(AECSTags.Items.PURE_ENTRO_CRYSTAL);
 
@@ -195,6 +197,8 @@ public class AECSItemTagProvider extends ItemTagsProvider {
                 .add(AECSBlocks.CRYSTAL_PULVERIZER_BLOCK.asItem())
                 .add(AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK.asItem())
                 .add(AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK.asItem())
+                .add(AECSBlocks.CRYSTAL_INFUSER_BLOCK.asItem())
+                .add(AECSBlocks.PULSE_CENTRIFUGE_BLOCK.asItem())
                 .add(AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK.asItem())
                 .add(AECSBlocks.ENDER_BROADCASTER_BLOCK.asItem())
                 .add(AECSBlocks.ENDER_EMITTER_BLOCK.asItem());

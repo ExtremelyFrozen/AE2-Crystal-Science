@@ -70,6 +70,8 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
     private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK, 4, this::onUpgradesChanged);
 
     private int workTickCountDown = 10;
+    private int speedCards = 0;
+    private int overclockCards = 0;
 
     public CrystalGrowthChamberBlockEntity(BlockPos pos, BlockState state) {
         super(AECSBlockEntities.CRYSTAL_GROWTH_CHAMBER.get(), pos, state,
@@ -167,7 +169,18 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
     }
 
     private void onUpgradesChanged() {
+        this.overclockCards = Math.min(2, upgrades.getInstalledUpgrades(AECSItems.OVERLOAD_CARD));
+        this.speedCards = overclockCards > 0 ? 0 : upgrades.getInstalledUpgrades(AEItems.SPEED_CARD);
+        this.workTickCountDown = Math.min(workTickCountDown, getWorkInterval());
         setChanged();
+    }
+
+    private int getWorkInterval() {
+        return switch (overclockCards) {
+            case 1 -> 4;
+            case 2 -> 1;
+            default -> 10;
+        };
     }
 
     @Override
@@ -184,11 +197,10 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
 
         checkActive(getAECurrentPower() > 0);
 
-        int speedCard = upgrades.getInstalledUpgrades(AEItems.SPEED_CARD);
-        double energyCost = (1 + speedCard) * energyPerGrowth;
+        double energyCost = (1 + speedCards) * energyPerGrowth;
         if (getAECurrentPower() < energyCost) return;
 
-        int growthTick = growthProgressBase + speedCard * growthProgressPerSpeedCard + growthNum * growthProgressPerGrowth;
+        int growthTick = growthProgressBase + speedCards * growthProgressPerSpeedCard + growthNum * growthProgressPerGrowth;
 
         boolean worked = false;
         for (int i = 0; i < getInternalInventory().size(); ++i) {
@@ -196,7 +208,7 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
             if (stack.isEmpty() || !stack.is(AECSTags.Items.CRYSTAL_SEEDS)) continue;
 
             worked = true;
-            ItemStack result = CrystalSeedItem.grow(stack, growthTick * 10); // 每10tick运行一次，乘10以补足
+            ItemStack result = CrystalSeedItem.grow(stack, growthTick * 10);
             getInternalInventory().setItemDirect(i, result);
         }
         if (worked)
@@ -204,7 +216,7 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
 
         setChanged();
 
-        workTickCountDown = 10; // 重置倒计时
+        workTickCountDown = getWorkInterval();
     }
 
     /**

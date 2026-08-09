@@ -138,6 +138,24 @@ public class AECSBlockEntities {
             AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK);
 
     /**
+     * 晶体注能器
+     */
+    public static final DeferredBlockEntityType<CrystalInfuserBlockEntity> CRYSTAL_INFUSER_BLOCK_ENTITY = create(
+            AECSBlockIds.CRYSTAL_INFUSER,
+            CrystalInfuserBlockEntity.class,
+            CrystalInfuserBlockEntity::new,
+            AECSBlocks.CRYSTAL_INFUSER_BLOCK);
+
+    /**
+     * 脉冲离心机
+     */
+    public static final DeferredBlockEntityType<PulseCentrifugeBlockEntity> PULSE_CENTRIFUGE_BLOCK_ENTITY = create(
+            AECSBlockIds.PULSE_CENTRIFUGE,
+            PulseCentrifugeBlockEntity.class,
+            PulseCentrifugeBlockEntity::new,
+            AECSBlocks.PULSE_CENTRIFUGE_BLOCK);
+
+    /**
      * 末影广播装置
      */
     public static final DeferredBlockEntityType<EnderBroadcasterBlockEntity> ENDER_BROADCASTER_BLOCK_ENTITY = create(

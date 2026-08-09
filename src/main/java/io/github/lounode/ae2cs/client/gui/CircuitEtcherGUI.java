@@ -4,6 +4,7 @@ import io.github.lounode.ae2cs.client.gui.subGUI.SideConfigGUI;
 import io.github.lounode.ae2cs.client.gui.widgets.AdvancedProgressBar;
 import io.github.lounode.ae2cs.common.location.SimpleComponents;
 import io.github.lounode.ae2cs.common.menu.CircuitEtcherMenu;
+import io.github.lounode.ae2cs.integration.RecipeViewerNavigation;
 
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.style.StyleManager;
@@ -49,6 +50,7 @@ public class CircuitEtcherGUI extends UpgradeableScreen<CircuitEtcherMenu> {
                 return getMenu().recipeNeedTicks;
             }
         }, style.getImage("workingProgressBar"), AdvancedProgressBar.FillMode.TOP_BOTTOM_TO_CENTER, SimpleComponents.WORKING_PROGRESS_BAR);
+        this.workingProgressBar.onClick(() -> RecipeViewerNavigation.show(RecipeViewerNavigation.MachineCategory.CIRCUIT_ETCHER));
         widgets.add("workingProgressBar", this.workingProgressBar);
 
         addToLeftToolbar(SideConfigGUI.iconButton());

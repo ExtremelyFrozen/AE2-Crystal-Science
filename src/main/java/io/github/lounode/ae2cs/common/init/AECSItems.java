@@ -1,5 +1,6 @@
 package io.github.lounode.ae2cs.common.init;
 
+import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.ids.AECSItemIds;
 import io.github.lounode.ae2cs.common.item.*;
@@ -9,12 +10,17 @@ import io.github.lounode.ae2cs.common.item.tools.resonating.*;
 import io.github.lounode.ae2cs.common.item.upgrades.*;
 
 import appeng.api.upgrades.Upgrades;
-import appeng.core.AEConfig;
+import appeng.items.tools.powered.powersink.PoweredItemCapabilities;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.RegisterEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -137,10 +143,9 @@ public class AECSItems {
     public static final DeferredItem<ResonatingMemoryCardItem> RESONATING_MEMORY_CARD = registerOtherItem(AECSItemIds.RESONATING_MEMORY_CARD, () -> new ResonatingMemoryCardItem(defaultBuilder()));
     public static final DeferredItem<ResonatingPatternItem> RESONATING_PATTERN = registerOtherItem(AECSItemIds.RESONATING_PATTERN, () -> new ResonatingPatternItem(defaultBuilder()));
     public static final DeferredItem<ResonatingPatternConverterItem> RESONATING_PATTERN_CONVERTER = registerOtherItem(AECSItemIds.RESONATING_PATTERN_CONVERTER, () -> new ResonatingPatternConverterItem(defaultBuilder().stacksTo(1)));
-    public static final DeferredItem<WirelessResonantTerminalItem> WIRELESS_RESONANT_TERMINAL = registerOtherItem(
-            AECSItemIds.WIRELESS_RESONANT_TERMINAL,
-            () -> new WirelessResonantTerminalItem(AEConfig.instance().getWirelessTerminalBattery(),
-                    defaultBuilder().stacksTo(1)));
+    // AE2WTLib consumes terminal definitions from its ITEM RegisterEvent listener. This item must
+    // therefore be registered at a higher priority than AE2WTLib's listener instead of through DeferredRegister.
+    public static final DeferredItem<WirelessResonantTerminalItem> WIRELESS_RESONANT_TERMINAL = trackEarlyOtherItem(AECSItemIds.WIRELESS_RESONANT_TERMINAL);
 
     public static final DeferredItem<EnderSwordItem> ENDER_CRYSTAL_SWORD = registerToolsItem(AECSItemIds.ENDER_CRYSTAL_SWORD, () -> new EnderSwordItem(defaultBuilder().stacksTo(1)));
     public static final DeferredItem<EnderAxeItem> ENDER_CRYSTAL_AXE = registerToolsItem(AECSItemIds.ENDER_CRYSTAL_AXE, () -> new EnderAxeItem(defaultBuilder().stacksTo(1)));
@@ -223,8 +228,29 @@ public class AECSItems {
         return obj;
     }
 
+    private static <T extends Item> DeferredItem<T> trackEarlyOtherItem(String name) {
+        DeferredItem<T> obj = DeferredItem.createItem(AE2CrystalScience.makeId(name));
+        ALL.add(obj);
+        OTHERS.add(obj);
+        return obj;
+    }
+
+    private static void registerEarlyItems(RegisterEvent event) {
+        event.register(Registries.ITEM, AE2CrystalScience.makeId(AECSItemIds.WIRELESS_RESONANT_TERMINAL),
+                WirelessResonantTerminalItem::new);
+    }
+
+    private static void registerItemCapabilities(RegisterCapabilitiesEvent event) {
+        WirelessResonantTerminalItem item = WIRELESS_RESONANT_TERMINAL.get();
+        event.registerItem(Capabilities.EnergyStorage.ITEM,
+                (stack, context) -> new PoweredItemCapabilities(stack, item),
+                item);
+    }
+
     // 注册监听
     public static void register(IEventBus eventBus) {
+        eventBus.addListener(EventPriority.HIGHEST, AECSItems::registerEarlyItems);
+        eventBus.addListener(AECSItems::registerItemCapabilities);
         ITEMS.register(eventBus);
     }
 }

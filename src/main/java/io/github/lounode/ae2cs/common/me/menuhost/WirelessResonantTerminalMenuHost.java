@@ -1,14 +1,12 @@
 package io.github.lounode.ae2cs.common.me.menuhost;
 
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
-import io.github.lounode.ae2cs.common.item.WirelessResonantTerminalItem;
+import io.github.lounode.ae2cs.common.me.ResonantPatternEncodingCapacity;
 import io.github.lounode.ae2cs.common.me.part.IResonantTemplateCodingTerminalHost;
 import io.github.lounode.ae2cs.common.menu.ResonantTemplateCodingTermMenu;
 
-import appeng.crafting.pattern.AEProcessingPattern;
 import appeng.helpers.IPatternTerminalLogicHost;
 import appeng.helpers.IPatternTerminalMenuHost;
-import appeng.helpers.WirelessTerminalMenuHost;
 import appeng.menu.ISubMenu;
 import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.parts.encoding.PatternEncodingLogic;
@@ -21,10 +19,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import de.mari_023.ae2wtlib.api.terminal.ItemWT;
+import de.mari_023.ae2wtlib.api.terminal.WTMenuHost;
+
 import java.util.function.BiConsumer;
 
 public class WirelessResonantTerminalMenuHost
-                                              extends WirelessTerminalMenuHost<WirelessResonantTerminalItem>
+                                              extends WTMenuHost
                                               implements IPatternTerminalLogicHost, IPatternTerminalMenuHost, IResonantTemplateCodingTerminalHost,
                                               InternalInventoryHost {
 
@@ -40,7 +41,7 @@ public class WirelessResonantTerminalMenuHost
 
     private final PatternEncodingLogic logic = new PatternEncodingLogic(this);
     private final AppEngInternalInventory pulledCraftingInputInv = new AppEngInternalInventory(this, 9);
-    private final AppEngInternalInventory pulledProcessingInputInv = new AppEngInternalInventory(this, AEProcessingPattern.MAX_INPUT_SLOTS);
+    private final AppEngInternalInventory pulledProcessingInputInv = new AppEngInternalInventory(this, ResonantPatternEncodingCapacity.PROCESSING_INPUT_SLOTS);
     private final AppEngInternalInventory pulledSmithingInputInv = new AppEngInternalInventory(this, 3);
     private final AppEngInternalInventory pulledStonecuttingInputInv = new AppEngInternalInventory(this, 1);
     private final AppEngInternalInventory pulledAnvilInputInv = new AppEngInternalInventory(this, 2);
@@ -50,9 +51,11 @@ public class WirelessResonantTerminalMenuHost
     private ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode processingIngredientTransferMode = ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode.MERGE;
     private boolean loading = true;
 
-    public WirelessResonantTerminalMenuHost(WirelessResonantTerminalItem item, Player player,
+    public WirelessResonantTerminalMenuHost(ItemWT item, Player player,
                                             ItemMenuHostLocator locator, BiConsumer<Player, ISubMenu> returnToMainMenu) {
         super(item, player, locator, returnToMainMenu);
+
+        ResonantPatternEncodingCapacity.expand(this.logic);
         readFromItem();
         this.loading = false;
     }
@@ -74,7 +77,7 @@ public class WirelessResonantTerminalMenuHost
         }
 
         ItemStack stack = getItemStack();
-        if (!stack.is(getItem())) {
+        if (stack.isEmpty()) {
             return;
         }
 

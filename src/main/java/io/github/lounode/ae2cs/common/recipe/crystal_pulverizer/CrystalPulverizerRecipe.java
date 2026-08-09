@@ -11,6 +11,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -18,9 +20,16 @@ public class CrystalPulverizerRecipe implements Recipe<SingleRecipeInput> {
 
     private final SizedIngredient input;
     private final ItemStack result;
+    private final SizedFluidIngredient fluidInput;
+    private final FluidStack fluidOutput;
     private final int energyCost;
 
     public CrystalPulverizerRecipe(SizedIngredient input, ItemStack result, int energyCost) {
+        this(input, result, null, FluidStack.EMPTY, energyCost);
+    }
+
+    public CrystalPulverizerRecipe(SizedIngredient input, ItemStack result, SizedFluidIngredient fluidInput,
+                                   FluidStack fluidOutput, int energyCost) {
         if (input.ingredient().isEmpty() || input.count() <= 0) {
             throw new IllegalArgumentException("Input cannot be empty");
         }
@@ -30,6 +39,8 @@ public class CrystalPulverizerRecipe implements Recipe<SingleRecipeInput> {
 
         this.input = input;
         this.result = result;
+        this.fluidInput = fluidInput;
+        this.fluidOutput = fluidOutput == null ? FluidStack.EMPTY : fluidOutput.copy();
         this.energyCost = energyCost;
     }
 
@@ -39,6 +50,18 @@ public class CrystalPulverizerRecipe implements Recipe<SingleRecipeInput> {
 
     public ItemStack result() {
         return result;
+    }
+
+    public SizedFluidIngredient fluidInput() {
+        return fluidInput;
+    }
+
+    public FluidStack fluidOutput() {
+        return fluidOutput.copy();
+    }
+
+    public boolean matchesFluid(FluidStack fluid) {
+        return fluidInput == null || fluidInput.test(fluid);
     }
 
     public int energyCost() {

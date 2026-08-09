@@ -68,6 +68,7 @@ The Crystal Growth Chamber supports Speed Cards and bonuses from adjacent Growth
   <BlockImage id="ae2cs:quartz_grindstone" scale="2" />
   <BlockImage id="ae2cs:crystal_pulverizer" scale="2" />
   <BlockImage id="ae2cs:crystal_aggregator" scale="2" />
+  <BlockImage id="ae2cs:pulse_centrifuge" scale="2" />
 </Row>
 
 - **<ItemLink id="ae2cs:quartz_grindstone" />**  
@@ -78,6 +79,9 @@ The Crystal Growth Chamber supports Speed Cards and bonuses from adjacent Growth
 
 - **<ItemLink id="ae2cs:crystal_aggregator" />**  
   AECS's core crafting machine, used for increasing Crystal Seed yields and for a variety of advanced recipes.
+
+- **<ItemLink id="ae2cs:pulse_centrifuge" />**
+  Separates one input into up to four datapack-defined outputs using AE energy.
 
 ---
 

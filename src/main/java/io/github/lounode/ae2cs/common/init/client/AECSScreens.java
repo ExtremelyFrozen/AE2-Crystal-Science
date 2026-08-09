@@ -35,6 +35,8 @@ public class AECSScreens {
         event.register(AECSMenus.CRYSTAL_PULVERIZER_MENU.get(), CrystalPulverizerGUI::new);
         event.register(AECSMenus.QUARTZ_GRINDSTONE_MENU.get(), QuartzGrindstoneGUI::new);
         event.register(AECSMenus.CRYSTAL_AGGREGATOR_MENU.get(), CrystalAggregatorGUI::new);
+        event.register(AECSMenus.CRYSTAL_INFUSER_MENU.get(), CrystalInfuserGUI::new);
+        event.register(AECSMenus.PULSE_CENTRIFUGE_MENU.get(), PulseCentrifugeGUI::new);
         event.<MeteoritePatternProviderMenu, MeteoritePatternProviderGUI>register(AECSMenus.METEORITE_PATTERN_PROVIDER_MENU.get(),
                 (menu, id, inv) -> new MeteoritePatternProviderGUI(menu, id, inv, StyleManager.loadStyleDoc("/screens/meteorite_pattern_provider_menu.json")));
         event.<PatternProviderMenu, PatternProviderScreen<PatternProviderMenu>>register(AECSMenus.SIMPLE_PATTERN_PROVIDER_MENU.get(),
@@ -82,6 +84,6 @@ public class AECSScreens {
 
         event.<ResonantTemplateCodingTermMenu, ResonantTemplateCodingTermScreen>register(AECSMenus.RESONANT_TEMPLATE_CODING_TERM_MENU.get(),
                 (menu, inv, title) -> new ResonantTemplateCodingTermScreen(menu, inv, title,
-                        StyleManager.loadStyleDoc("/screens/resonant_template_coding_terminal.json")));
+                        StyleManager.loadStyleDoc(menu.isWirelessTerminal() ? "/screens/resonant_template_coding_terminal_wireless.json" : "/screens/resonant_template_coding_terminal.json")));
     }
 }

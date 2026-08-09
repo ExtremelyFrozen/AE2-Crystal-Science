@@ -20,6 +20,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,6 +35,8 @@ public class CrystalAggregatorRecipeBuilder implements RecipeBuilder {
     private final ItemStack result;
     private final int energyCost;
     private final List<SizedIngredient> inputs = new ArrayList<>(3);
+    private @Nullable SizedFluidIngredient fluidInput;
+    private FluidStack fluidOutput = FluidStack.EMPTY;
 
     private final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
 
@@ -78,6 +82,22 @@ public class CrystalAggregatorRecipeBuilder implements RecipeBuilder {
 
     public CrystalAggregatorRecipeBuilder require(TagKey<Item> tag, int count) {
         require(Ingredient.of(tag), count);
+        return this;
+    }
+
+    public CrystalAggregatorRecipeBuilder require(SizedFluidIngredient ingredient) {
+        if (ingredient == null || ingredient.amount() <= 0) {
+            throw new IllegalArgumentException("Fluid input must be non-empty");
+        }
+        this.fluidInput = ingredient;
+        return this;
+    }
+
+    public CrystalAggregatorRecipeBuilder output(FluidStack stack) {
+        if (stack == null || stack.isEmpty()) {
+            throw new IllegalArgumentException("Fluid output must be non-empty");
+        }
+        this.fluidOutput = stack.copy();
         return this;
     }
 
@@ -130,7 +150,7 @@ public class CrystalAggregatorRecipeBuilder implements RecipeBuilder {
         SizedIngredient b = inputs.size() > 1 ? inputs.get(1) : EMPTY;
         SizedIngredient c = inputs.size() > 2 ? inputs.get(2) : EMPTY;
 
-        var recipe = new CrystalAggregatorRecipe(a, b, c, result, energyCost);
+        var recipe = new CrystalAggregatorRecipe(a, b, c, result, fluidInput, fluidOutput, energyCost);
         output.accept(id, recipe, adv.build(id.withPrefix("recipes/")));
     }
 

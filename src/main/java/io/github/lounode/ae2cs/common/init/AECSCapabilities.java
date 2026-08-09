@@ -3,6 +3,7 @@ package io.github.lounode.ae2cs.common.init;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.block.entity.*;
 import io.github.lounode.ae2cs.common.machine.IMachineHost;
+import io.github.lounode.ae2cs.common.machine.MachineFluidHost;
 import io.github.lounode.ae2cs.common.machine.component.AppEngInvComponent;
 import io.github.lounode.ae2cs.common.machine.component.EnergyComponent;
 import io.github.lounode.ae2cs.common.machine.component.GenericStackInvComponent;
@@ -22,6 +23,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 
 @EventBusSubscriber(modid = AECSConstants.MODID)
@@ -73,6 +75,15 @@ public class AECSCapabilities {
                             }
                         }
                         return null;
+                    });
+        }
+        for (BlockEntityType<?> beType : AECSBlockEntities.getAnnotatedWith(IFluidHandler.class)) {
+            event.registerBlockEntity(
+                    Capabilities.FluidHandler.BLOCK,
+                    beType,
+                    (be, direction) -> {
+                        if (be instanceof MachineFluidHost host) return host.getFluidHandler();
+                        return be instanceof IFluidHandler handler ? handler : null;
                     });
         }
         for (BlockEntityType<?> beType : AECSBlockEntities.getAnnotatedWith(GenericInternalInventory.class)) {

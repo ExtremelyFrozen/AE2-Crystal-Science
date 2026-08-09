@@ -25,6 +25,7 @@ item_ids:
   - ae2cs:quantum_crystal_seed
   - ae2cs:rose_quartz_seed
   - ae2cs:irradiated_seed
+  - ae2cs:overload_crystal_seed
   - ae2cs:nether_quartz_dust
   - ae2cs:resonating_crystal_dust
   - ae2cs:redstone_crystal_dust
@@ -94,6 +95,13 @@ The following recipes demonstrate how some advanced Crystal Seeds are crafted:
 </Row>
 
 After unlocking the **<ItemLink id="ae2cs:crystal_aggregator" />**, you can aggregate the same amount of dust into a larger number of Crystal Seeds, significantly increasing overall yield.
+
+When AE2 Lightning Tech is installed, 16 Overload Crystal Dust, 8 Fluix Dust, and 8 Charged Certus Quartz can be processed in the Crystal Aggregator to produce 32 **<ItemLink id="ae2cs:overload_crystal_seed" />**. The Lightning Simulation Chamber produces the same 32 seeds using half of each ingredient.
+
+<Row gap="16">
+<Recipe id="ae2cs:aggregator/overload_crystal_seed" />
+<Recipe id="ae2cs:lightning_simulation/overload_crystal_seed" />
+</Row>
 
 ---
 

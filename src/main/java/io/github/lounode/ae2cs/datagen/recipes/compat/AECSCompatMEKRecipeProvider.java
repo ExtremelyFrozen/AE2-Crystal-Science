@@ -13,10 +13,12 @@ import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalPulverizerRecipeBui
 import appeng.core.definitions.AEItems;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.CompoundIngredient;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
@@ -104,6 +106,11 @@ public class AECSCompatMEKRecipeProvider extends AECSRecipeProvider {
                 .build(compatOut, getCrushingPath("redstone_crystal_dust"));
 
         ItemStackToItemStackRecipeBuilder.crushing(
+                ItemStackIngredient.of(SizedIngredient.of(AECSTags.Items.GEMS_FLUIX, 1)),
+                AEItems.FLUIX_DUST.stack())
+                .build(compatOut, getCrushingPath("fluix_dust"));
+
+        ItemStackToItemStackRecipeBuilder.crushing(
                 ItemStackIngredient.of(SizedIngredient.of(AECSTags.Items.PURE_RESONATING_CRYSTAL, 1)),
                 AECSItems.RESONATING_DUST.toStack())
                 .build(compatOut, getCrushingPath("resonating_crystal_dust"));
@@ -117,6 +124,31 @@ public class AECSCompatMEKRecipeProvider extends AECSRecipeProvider {
                 ItemStackIngredient.of(SizedIngredient.of(AECSTags.Items.PURE_IRRADIATED_CRYSTAL, 1)),
                 AECSItems.IRRADIATED_CRYSTAL_DUST.toStack())
                 .build(compatOut, getCrushingPath("irradiated_crystal_dust"));
+
+        ItemStackToItemStackRecipeBuilder.crushing(
+                ItemStackIngredient.of(SizedIngredient.of(AECSTags.Items.PURE_LINK_CRYSTAL, 1)),
+                AECSItems.LINK_CRYSTAL_DUST.toStack())
+                .build(compatOut, getCrushingPath("link_crystal_dust"));
+
+        var ae2ltOut = compatOut.withConditions(modLoaded(AECSConstants.AE2LT_ID));
+        ItemStackToItemStackRecipeBuilder.crushing(
+                ItemStackIngredient.of(SizedIngredient.of(AECSTags.Items.PURE_OVERLOAD_CRYSTAL, 1)),
+                externalItem(AECSConstants.AE2LT_ID, "overload_crystal_dust").getDefaultInstance())
+                .build(ae2ltOut, getCrushingPath("overload_crystal_dust"));
+
+        var ecoOut = compatOut.withConditions(modLoaded(AECSConstants.NEOECOAE_ID));
+        ItemStackToItemStackRecipeBuilder.crushing(
+                ItemStackIngredient.of(SizedIngredient.of(AECSTags.Items.PURE_ENERGIZED_FLUIX_CRYSTAL, 1)),
+                externalItem(AECSConstants.NEOECOAE_ID, "energized_fluix_crystal_dust").getDefaultInstance())
+                .build(ecoOut, getCrushingPath("energized_fluix_crystal_dust"));
+        ItemStackToItemStackRecipeBuilder.crushing(
+                ItemStackIngredient.of(SizedIngredient.of(AECSTags.Items.PURE_ENERGIZED_CERTUS_QUARTZ_CRYSTAL, 1)),
+                externalItem(AECSConstants.NEOECOAE_ID, "energized_crystal_dust").getDefaultInstance())
+                .build(ecoOut, getCrushingPath("energized_crystal_dust"));
+    }
+
+    private static Item externalItem(String namespace, String path) {
+        return BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(namespace, path));
     }
 
     protected ResourceLocation getPressurizedReactionPath(String outName) {

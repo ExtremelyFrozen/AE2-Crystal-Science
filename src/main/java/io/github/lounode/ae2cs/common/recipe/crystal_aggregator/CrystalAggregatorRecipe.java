@@ -13,6 +13,8 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -25,6 +27,8 @@ public class CrystalAggregatorRecipe implements Recipe<ThreeItemStackRecipeInput
     private final SizedIngredient inputB;
     private final SizedIngredient inputC;
     private final ItemStack result;
+    private final SizedFluidIngredient fluidInput;
+    private final FluidStack fluidOutput;
     private final int energyCost;
 
     // 真正所需的输入的缓存
@@ -32,10 +36,18 @@ public class CrystalAggregatorRecipe implements Recipe<ThreeItemStackRecipeInput
 
     public CrystalAggregatorRecipe(SizedIngredient inputA, SizedIngredient inputB, SizedIngredient inputC,
                                    ItemStack result, int energyCost) {
+        this(inputA, inputB, inputC, result, null, FluidStack.EMPTY, energyCost);
+    }
+
+    public CrystalAggregatorRecipe(SizedIngredient inputA, SizedIngredient inputB, SizedIngredient inputC,
+                                   ItemStack result, SizedFluidIngredient fluidInput, FluidStack fluidOutput,
+                                   int energyCost) {
         this.inputA = inputA;
         this.inputB = inputB;
         this.inputC = inputC;
         this.result = result;
+        this.fluidInput = fluidInput;
+        this.fluidOutput = fluidOutput == null ? FluidStack.EMPTY : fluidOutput.copy();
         this.energyCost = energyCost;
 
         this.effective = new ArrayList<>(3);
@@ -64,6 +76,18 @@ public class CrystalAggregatorRecipe implements Recipe<ThreeItemStackRecipeInput
 
     public ItemStack result() {
         return result;
+    }
+
+    public SizedFluidIngredient fluidInput() {
+        return fluidInput;
+    }
+
+    public FluidStack fluidOutput() {
+        return fluidOutput.copy();
+    }
+
+    public boolean matchesFluid(FluidStack fluid) {
+        return fluidInput == null || fluidInput.test(fluid);
     }
 
     public int energyCost() {

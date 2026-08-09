@@ -5,7 +5,10 @@ import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSRecipeTypes;
+import io.github.lounode.ae2cs.common.machine.MachineFluidHost;
+import io.github.lounode.ae2cs.common.machine.MachineFluidTanks;
 import io.github.lounode.ae2cs.common.machine.component.AppEngInvComponent;
 import io.github.lounode.ae2cs.common.machine.component.InvPort;
 import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
@@ -29,6 +32,8 @@ import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import org.jetbrains.annotations.Nullable;
@@ -37,8 +42,9 @@ import java.util.List;
 import java.util.Optional;
 
 @ProvideCaps(IItemHandler.class)
+@ProvideCaps(IFluidHandler.class)
 public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEntity implements IUpgradeableObject,
-                                          CustomReturnableSubMenuHost {
+                                          CustomReturnableSubMenuHost, MachineFluidHost {
 
     /**
      * 基础能量消耗，每tick 200AE，每多一个加速卡，则此数值翻倍，同时机器运行速率也翻倍。
@@ -51,11 +57,14 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
      * 升级仓
      */
     private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(AECSBlocks.CRYSTAL_PULVERIZER_BLOCK,
-            4, this::saveChanges);
+            4, this::onUpgradesChanged);
 
     /**
      * 当前执行的配方
      */
+    private int speedMultiplier = 1;
+    private int overclockCards = 0;
+
     @Nullable
     private RecipeHolder<CrystalPulverizerRecipe> activeRecipe;
 
@@ -79,6 +88,12 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
      * 是否需要更新配方状态
      */
     private boolean needRefreshRecipeState = true;
+
+    private final MachineFluidTanks fluidTanks = new MachineFluidTanks(16_000,
+            () -> {
+                needRefreshRecipeState = true;
+                setChanged();
+            }, this::setChanged);
 
     public CrystalPulverizerBlockEntity(BlockPos pos, BlockState blockState) {
         super(AECSBlockEntities.CRYSTAL_PULVERIZER_BLOCK_ENTITY.get(), pos, blockState,
@@ -120,6 +135,15 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
         return getMachineComponents().getService(AppEngInvComponent.class).port(InvPort.OUTPUT);
     }
 
+    public MachineFluidTanks getFluidTanks() {
+        return fluidTanks;
+    }
+
+    @Override
+    public IFluidHandler getFluidHandler() {
+        return fluidTanks;
+    }
+
     public int getRecipeProgress() {
         return recipeProgress;
     }
@@ -139,6 +163,12 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
     @Override
     public IUpgradeInventory getUpgrades() {
         return upgrades;
+    }
+
+    private void onUpgradesChanged() {
+        this.overclockCards = Math.min(2, upgrades.getInstalledUpgrades(AECSItems.OVERLOAD_CARD));
+        this.speedMultiplier = overclockCards > 0 ? 1 : 1 << Math.min(4, upgrades.getInstalledUpgrades(AEItems.SPEED_CARD));
+        saveChanges();
     }
 
     @Override
@@ -186,7 +216,8 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
             }
 
             // 如果输出放不下，则将recipeProgress钳制在最大配方时间
-            if (!getOutputInv().addItems(result, true).isEmpty()) {
+            FluidStack fluidResult = recipe.fluidOutput();
+            if (!getOutputInv().addItems(result, true).isEmpty() || (!fluidResult.isEmpty() && fluidTanks.output().fill(fluidResult, IFluidHandler.FluidAction.SIMULATE) < fluidResult.getAmount())) {
                 recipeProgress = activeRecipeEnergyCost;
                 return;
             }
@@ -200,19 +231,21 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
             }
 
             getOutputInv().addItems(result, false);
+            if (!fluidResult.isEmpty()) fluidTanks.output().fill(fluidResult, IFluidHandler.FluidAction.EXECUTE);
             recipeProgress = 0;
             setChanged();
         }
     }
 
     // 计算能量消耗
-    private int getSpeedMultiplier() {
-        int c = Math.min(4, upgrades.getInstalledUpgrades(AEItems.SPEED_CARD));
-        return 1 << c;
-    }
-
     private double getEnergyPerTick() {
-        return BASIC_ENERGY_COST_PER_TICK * getSpeedMultiplier();
+        double normalEnergy = BASIC_ENERGY_COST_PER_TICK * speedMultiplier;
+        if (overclockCards == 0 || activeRecipeEnergyCost <= 0) {
+            return normalEnergy;
+        }
+
+        int targetTicks = overclockCards == 1 ? 4 : 1;
+        return Math.max(normalEnergy, Math.ceil((double) activeRecipeEnergyCost / targetTicks));
     }
 
     /**
@@ -224,10 +257,10 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
         var level = getLevel();
         var input = new SingleRecipeInput(getInputInv().getStackInSlot(0));
 
-        var opt = level.getRecipeManager().getRecipeFor(
-                AECSRecipeTypes.CRYSTAL_PULVERIZER.get(),
-                input,
-                level);
+        Optional<RecipeHolder<CrystalPulverizerRecipe>> opt = level.getRecipeManager()
+                .byType(AECSRecipeTypes.CRYSTAL_PULVERIZER.get()).stream()
+                .filter(holder -> holder.value().matches(input, level) && holder.value().matchesFluid(fluidTanks.input().getFluid()))
+                .findFirst();
 
         // 没有任何匹配配方：清空状态
         if (opt.isEmpty()) {
@@ -266,14 +299,17 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
      */
     private boolean consumeInputs(CrystalPulverizerRecipe recipe) {
         SizedIngredient required = recipe.input();
+        if (recipe.fluidInput() != null && !recipe.fluidInput().test(fluidTanks.input().getFluid())) return false;
 
         int amount = required.count();
         // 先进行模拟抽取
         ItemStack extracted = getInputInv().extractItem(0, amount, true);
         if (extracted.isEmpty() || !required.test(extracted)) return false;
+        if (recipe.fluidInput() != null && fluidTanks.input().drain(recipe.fluidInput().amount(), IFluidHandler.FluidAction.SIMULATE).getAmount() < recipe.fluidInput().amount()) return false;
 
         // 执行扣除
         getInputInv().extractItem(0, amount, false);
+        if (recipe.fluidInput() != null) fluidTanks.input().drain(recipe.fluidInput().amount(), IFluidHandler.FluidAction.EXECUTE);
         return true;
     }
 
@@ -281,6 +317,7 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
     public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
         super.saveAdditional(data, registries);
         upgrades.writeToNBT(data, "upgrades", registries);
+        fluidTanks.writeToNbt(data, registries);
         data.putInt("recipe_progress", recipeProgress);
         if (activeRecipe != null) {
             data.putString("active_recipe_id", activeRecipe.id().toString());
@@ -291,6 +328,7 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
     public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
         super.loadTag(data, registries);
         upgrades.readFromNBT(data, "upgrades", registries);
+        fluidTanks.readFromNbt(data, registries);
         recipeProgress = data.getInt("recipe_progress");
         if (data.contains("active_recipe_id")) {
             activeRecipeId = ResourceLocation.parse(data.getString("active_recipe_id"));
@@ -300,6 +338,7 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
     @Override
     public void onLoad() {
         super.onLoad();
+        onUpgradesChanged();
         if (activeRecipeId != null && level != null) {
             Optional<RecipeHolder<?>> opt = level.getRecipeManager().byKey(activeRecipeId);
             opt.ifPresent(recipeHolder -> activeRecipe = (RecipeHolder<CrystalPulverizerRecipe>) recipeHolder);
@@ -319,6 +358,7 @@ public class CrystalPulverizerBlockEntity extends AENetworkedSelfPoweredBlockEnt
     public void clearContent() {
         super.clearContent();
         upgrades.clear();
+        fluidTanks.clear();
     }
 
     @Override

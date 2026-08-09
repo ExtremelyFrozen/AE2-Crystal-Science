@@ -1,0 +1,61 @@
+package io.github.lounode.ae2cs.client.gui;
+
+import io.github.lounode.ae2cs.client.gui.subGUI.SideConfigGUI;
+import io.github.lounode.ae2cs.client.gui.widgets.AdvancedProgressBar;
+import io.github.lounode.ae2cs.client.gui.widgets.FluidTankWidget;
+import io.github.lounode.ae2cs.common.location.SimpleComponents;
+import io.github.lounode.ae2cs.common.menu.PulseCentrifugeMenu;
+import io.github.lounode.ae2cs.integration.RecipeViewerNavigation;
+
+import appeng.client.gui.implementations.UpgradeableScreen;
+import appeng.client.gui.style.StyleManager;
+import appeng.menu.interfaces.IProgressProvider;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+
+public class PulseCentrifugeGUI extends UpgradeableScreen<PulseCentrifugeMenu> {
+
+    public PulseCentrifugeGUI(PulseCentrifugeMenu menu, Inventory playerInventory, Component title) {
+        super(menu, playerInventory, title, StyleManager.loadStyleDoc("/screens/pulse_centrifuge_menu.json"));
+
+        AdvancedProgressBar energyBar = new AdvancedProgressBar(new IProgressProvider() {
+
+            @Override
+            public int getCurrentProgress() {
+                return (int) Math.ceil(getMenu().currentEnergy);
+            }
+
+            @Override
+            public int getMaxProgress() {
+                return (int) Math.ceil(getMenu().maxEnergy);
+            }
+        }, style.getImage("energyRateBar"), AdvancedProgressBar.FillMode.BOTTOM_TO_TOP,
+                SimpleComponents.ENERGY_PROGRESS_BAR);
+        widgets.add("energyRateBar", energyBar);
+
+        AdvancedProgressBar workingProgressBar = new AdvancedProgressBar(new IProgressProvider() {
+
+            @Override
+            public int getCurrentProgress() {
+                return getMenu().recipeProgress;
+            }
+
+            @Override
+            public int getMaxProgress() {
+                return getMenu().recipeEnergyCost;
+            }
+        }, style.getImage("workingProgressBar"), AdvancedProgressBar.FillMode.LEFT_TO_RIGHT,
+                SimpleComponents.WORKING_PROGRESS_BAR);
+        workingProgressBar.onClick(() -> RecipeViewerNavigation.show(
+                RecipeViewerNavigation.MachineCategory.PULSE_CENTRIFUGE));
+        widgets.add("workingProgressBar", workingProgressBar);
+
+        widgets.add("leftFluidTank", new FluidTankWidget(9, 26, 14, 54, () -> getMenu().inputFluid,
+                () -> getMenu().sendFillFluidInputAction()));
+        widgets.add("rightFluidTank", new FluidTankWidget(151, 26, 14, 54, () -> getMenu().outputFluid,
+                () -> getMenu().sendDrainFluidOutputAction()));
+
+        addToLeftToolbar(SideConfigGUI.iconButton());
+    }
+}

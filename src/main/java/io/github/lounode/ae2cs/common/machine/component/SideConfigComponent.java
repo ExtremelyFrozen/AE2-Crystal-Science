@@ -270,6 +270,7 @@ public class SideConfigComponent extends BaseMachineComponent {
             IItemHandler otherItemHandler = level.getCapability(Capabilities.ItemHandler.BLOCK, otherPos, otherSide);
             if (otherItemHandler == null) continue;
             PlatformInventoryWrapper otherInv = new PlatformInventoryWrapper(otherItemHandler);
+            boolean exportedToNeighbor = false;
 
             // 输出
             if (doExport) {
@@ -299,18 +300,23 @@ public class SideConfigComponent extends BaseMachineComponent {
                         continue;
                     }
 
+                    int extractedCount = extracted.getCount();
                     ItemStack overflow = otherInv.addItems(extracted, false);
+                    int inserted = extractedCount - overflow.getCount();
 
                     // 保底回插
                     if (!overflow.isEmpty()) {
                         self.addItems(overflow, false);
                     }
-                    remaining -= accepted;
+                    if (inserted > 0) {
+                        exportedToNeighbor = true;
+                        remaining -= inserted;
+                    }
                 }
             }
 
-            // 输入
-            if (doImport) {
+            // 同一 tick 内不要从刚刚输出过的相邻库存回拉物品，避免外部管道产生回流。
+            if (doImport && !exportedToNeighbor) {
                 int remaining = TRANSFER_PER_SIDE;
 
                 for (int slot = 0; slot < otherInv.size() && remaining > 0; slot++) {
@@ -337,14 +343,16 @@ public class SideConfigComponent extends BaseMachineComponent {
                         continue;
                     }
 
+                    int extractedCount = extracted.getCount();
                     ItemStack overflow = self.addItems(extracted, false);
+                    int inserted = extractedCount - overflow.getCount();
 
                     // 保底回插
                     if (!overflow.isEmpty()) {
                         otherInv.addItems(overflow, false);
                     }
 
-                    remaining -= accepted;
+                    remaining -= inserted;
                 }
             }
         }
@@ -382,6 +390,7 @@ public class SideConfigComponent extends BaseMachineComponent {
             if (otherInv == null && otherStorage == null) {
                 continue;
             }
+            boolean exportedToNeighbor = false;
 
             // 输出
             if (doExport) {
@@ -413,7 +422,10 @@ public class SideConfigComponent extends BaseMachineComponent {
                             GenericStackInvHelper.reinsertToInvPreferSlot(self, slot, what, overflow);
                         }
 
-                        remaining -= inserted;
+                        if (inserted > 0) {
+                            exportedToNeighbor = true;
+                            remaining -= inserted;
+                        }
                     }
                 } else // 其次尝试Storage
                 {
@@ -437,13 +449,16 @@ public class SideConfigComponent extends BaseMachineComponent {
                             GenericStackInvHelper.reinsertToInvPreferSlot(self, slot, what, overflow);
                         }
 
-                        remaining -= inserted;
+                        if (inserted > 0) {
+                            exportedToNeighbor = true;
+                            remaining -= inserted;
+                        }
                     }
                 }
             }
 
-            // 输入
-            if (doImport) {
+            // 同一 tick 内不要从刚刚输出过的相邻库存回拉物品，避免外部管道产生回流。
+            if (doImport && !exportedToNeighbor) {
                 long remaining = TRANSFER_PER_SIDE;
 
                 // 优先Inv

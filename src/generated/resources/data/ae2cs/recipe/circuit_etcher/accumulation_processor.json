@@ -6,21 +6,21 @@
     }
   ],
   "type": "ae2cs:circuit_etcher_recipe_serializer",
-  "energy_cost": 14400,
+  "energy_cost": 57600,
   "input_a": {
-    "count": 1,
+    "count": 4,
     "tag": "c:storage_blocks/sky_steel"
   },
   "input_b": {
-    "count": 1,
+    "count": 4,
     "item": "ae2:fluix_block"
   },
   "input_c": {
-    "count": 1,
+    "count": 4,
     "tag": "c:storage_blocks/silicon"
   },
   "result": {
-    "count": 9,
+    "count": 36,
     "id": "megacells:accumulation_processor"
   }
 }

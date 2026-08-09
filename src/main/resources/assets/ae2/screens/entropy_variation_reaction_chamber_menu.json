@@ -44,6 +44,14 @@
     "workingProgressBar": {
       "left": 75,
       "top": 43
+    },
+    "fluidInput": {
+      "left": 8,
+      "top": 20
+    },
+    "fluidOutput": {
+      "left": 150,
+      "top": 20
     }
   }
 }

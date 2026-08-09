@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
@@ -35,7 +36,7 @@ public class CrystalAggregatorRecipeCategory implements IRecipeCategory<RecipeHo
 
     public static RecipeType<RecipeHolder<CrystalAggregatorRecipe>> RECIPE_TYPE = RecipeType.createRecipeHolderType(AE2CrystalScience.makeId("crystal_aggregator"));
 
-    private static final Rect2i energyTooltipArea = new Rect2i(109, 21, 6, 18);
+    private static final Rect2i energyTooltipArea = new Rect2i(125, 23, 6, 18);
 
     private final IDrawableStatic background;
     private final IDrawable icon;
@@ -48,7 +49,10 @@ public class CrystalAggregatorRecipeCategory implements IRecipeCategory<RecipeHo
 
     public CrystalAggregatorRecipeCategory(IJeiHelpers jeiHelper) {
         var guiHelper = jeiHelper.getGuiHelper();
-        this.background = guiHelper.createDrawable(AE2CrystalScience.makeId("textures/gui/recipe/crystal_aggregator.png"), 0, 0, 135, 58);
+        this.background = guiHelper.drawableBuilder(AE2CrystalScience.makeId("textures/gui/recipe/crystal_aggregator.png"),
+                0, 0, 162, 62)
+                .setTextureSize(162, 62)
+                .build();
         this.icon = guiHelper.createDrawableItemLike(AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK);
 
         energyRateBar = new AdvancedProgressBar(new IProgressProvider() {
@@ -63,8 +67,8 @@ public class CrystalAggregatorRecipeCategory implements IRecipeCategory<RecipeHo
                 return ANIM_DURATION_MS;
             }
         }, AECSBlitter.energyProgress, AdvancedProgressBar.FillMode.BOTTOM_TO_TOP);
-        energyRateBar.setX(109);
-        energyRateBar.setY(21);
+        energyRateBar.setX(125);
+        energyRateBar.setY(23);
 
         workingProgressBar = new AdvancedProgressBar(new IProgressProvider() {
 
@@ -78,8 +82,8 @@ public class CrystalAggregatorRecipeCategory implements IRecipeCategory<RecipeHo
                 return ANIM_DURATION_MS;
             }
         }, AECSBlitter.crystalAggregatorProgress, AdvancedProgressBar.FillMode.LEFT_TO_RIGHT);
-        workingProgressBar.setX(54);
-        workingProgressBar.setY(15);
+        workingProgressBar.setX(71);
+        workingProgressBar.setY(17);
     }
 
     @Override
@@ -127,8 +131,8 @@ public class CrystalAggregatorRecipeCategory implements IRecipeCategory<RecipeHo
 
     @Override
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, @NotNull RecipeHolder<CrystalAggregatorRecipe> recipe, @NotNull IFocusGroup focuses) {
-        int xIn = 30;
-        int y0 = 3;
+        int xIn = 46;
+        int y0 = 5;
         int dy = 18;
 
         List<SizedIngredient> ingredients = recipe.value().required();
@@ -139,9 +143,22 @@ public class CrystalAggregatorRecipeCategory implements IRecipeCategory<RecipeHo
             }
         }
 
-        int xOut = 86;
-        int yOut = y0 + dy + 1;
+        if (recipe.value().fluidInput() != null) {
+            FluidStack[] fluids = recipe.value().fluidInput().getFluids();
+            if (fluids.length > 0) {
+                builder.addInputSlot(1, 1).setFluidRenderer(16_000, true, 18, 60)
+                        .addFluidStack(fluids[0].getFluid(), fluids[0].getAmount());
+            }
+        }
+
+        int xOut = 102;
+        int yOut = 24;
         builder.addOutputSlot(xOut, yOut).addItemStack(recipe.value().result().copy());
+        FluidStack fluidOutput = recipe.value().fluidOutput();
+        if (!fluidOutput.isEmpty()) {
+            builder.addOutputSlot(143, 1).setFluidRenderer(16_000, true, 18, 60)
+                    .addFluidStack(fluidOutput.getFluid(), fluidOutput.getAmount());
+        }
     }
 
     private int getAnimMsInCycle() {

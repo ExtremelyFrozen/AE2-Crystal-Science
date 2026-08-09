@@ -13,6 +13,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.ITooltipBuilder;
@@ -32,7 +33,7 @@ public class CrystalPulverizerRecipeCategory implements IRecipeCategory<RecipeHo
 
     public static RecipeType<RecipeHolder<CrystalPulverizerRecipe>> RECIPE_TYPE = RecipeType.createRecipeHolderType(AE2CrystalScience.makeId("crystal_pulverizer"));
 
-    private static final Rect2i energyTooltipArea = new Rect2i(109, 21, 6, 18);
+    private static final Rect2i energyTooltipArea = new Rect2i(128, 21, 6, 18);
 
     private final IDrawableStatic background;
     private final IDrawable icon;
@@ -45,7 +46,10 @@ public class CrystalPulverizerRecipeCategory implements IRecipeCategory<RecipeHo
 
     public CrystalPulverizerRecipeCategory(IJeiHelpers jeiHelper) {
         var guiHelper = jeiHelper.getGuiHelper();
-        this.background = guiHelper.createDrawable(AE2CrystalScience.makeId("textures/gui/recipe/crystal_pulverizer.png"), 0, 0, 135, 58);
+        this.background = guiHelper.drawableBuilder(AE2CrystalScience.makeId("textures/gui/recipe/crystal_pulverizer.png"),
+                0, 0, 162, 62)
+                .setTextureSize(162, 62)
+                .build();
         this.icon = guiHelper.createDrawableItemLike(AECSBlocks.CRYSTAL_PULVERIZER_BLOCK);
 
         energyRateBar = new AdvancedProgressBar(new IProgressProvider() {
@@ -60,7 +64,7 @@ public class CrystalPulverizerRecipeCategory implements IRecipeCategory<RecipeHo
                 return ANIM_DURATION_MS;
             }
         }, AECSBlitter.energyProgress, AdvancedProgressBar.FillMode.BOTTOM_TO_TOP);
-        energyRateBar.setX(109);
+        energyRateBar.setX(128);
         energyRateBar.setY(21);
 
         workingProgressBar = new AdvancedProgressBar(new IProgressProvider() {
@@ -75,8 +79,8 @@ public class CrystalPulverizerRecipeCategory implements IRecipeCategory<RecipeHo
                 return ANIM_DURATION_MS;
             }
         }, AECSBlitter.crystalPulverizerProgress, AdvancedProgressBar.FillMode.LEFT_TO_RIGHT);
-        workingProgressBar.setX(53);
-        workingProgressBar.setY(22);
+        workingProgressBar.setX(64);
+        workingProgressBar.setY(23);
     }
 
     @Override
@@ -124,13 +128,30 @@ public class CrystalPulverizerRecipeCategory implements IRecipeCategory<RecipeHo
 
     @Override
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, @NotNull RecipeHolder<CrystalPulverizerRecipe> recipe, @NotNull IFocusGroup focuses) {
-        int xIn = 23;
+        int xIn = 39;
         int yIn = 22;
         builder.addInputSlot(xIn, yIn).addItemStacks(Arrays.asList(recipe.value().input().getItems()));
+        if (recipe.value().fluidInput() != null) {
+            FluidStack[] fluids = recipe.value().fluidInput().getFluids();
+            if (fluids.length > 0) {
+                builder.addInputSlot(1, 1).setFluidRenderer(16_000, true, 18, 60)
+                        .addFluidStack(fluids[0].getFluid(), fluids[0].getAmount());
+            }
+        }
 
-        int xOut = 86;
-        int yOut = yIn;
-        builder.addOutputSlot(xOut, yOut).addItemStack(recipe.value().result().copy());
+        int xOut = 91;
+        int yOut = 13;
+        for (int i = 0; i < 4; i++) {
+            var outputSlot = builder.addOutputSlot(xOut + (i % 2) * 18, yOut + (i / 2) * 18);
+            if (i == 0) {
+                outputSlot.addItemStack(recipe.value().result().copy());
+            }
+        }
+        FluidStack fluidOutput = recipe.value().fluidOutput();
+        if (!fluidOutput.isEmpty()) {
+            builder.addOutputSlot(143, 1).setFluidRenderer(16_000, true, 18, 60)
+                    .addFluidStack(fluidOutput.getFluid(), fluidOutput.getAmount());
+        }
     }
 
     private int getAnimMsInCycle() {

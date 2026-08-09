@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "ae2:charged_certus_quartz_crystal"
+    },
+    "b": {
+      "item": "ae2:energy_acceptor"
+    },
+    "c": {
+      "tag": "c:ingots/iron"
+    },
+    "d": {
+      "item": "ae2cs:resonating_processor"
+    },
+    "e": {
+      "item": "ae2:quartz_glass"
+    },
+    "f": {
+      "item": "ae2:molecular_assembler"
+    }
+  },
+  "pattern": [
+    "aba",
+    "cdc",
+    "efe"
+  ],
+  "result": {
+    "count": 1,
+    "id": "ae2cs:crystal_infuser"
+  }
+}

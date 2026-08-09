@@ -14,7 +14,7 @@
             "count": {
               "min": 1
             },
-            "items": "neoecoae:energized_crystal"
+            "items": "neoecoae:energized_crystal_dust"
           }
         ]
       },
@@ -27,7 +27,20 @@
             "count": {
               "min": 1
             },
-            "items": "minecraft:sand"
+            "items": "ae2:certus_quartz_dust"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_input_2": {
+      "conditions": {
+        "items": [
+          {
+            "count": {
+              "min": 1
+            },
+            "items": "minecraft:barrier"
           }
         ]
       },
@@ -44,7 +57,8 @@
     [
       "has_the_recipe",
       "has_input_0",
-      "has_input_1"
+      "has_input_1",
+      "has_input_2"
     ]
   ],
   "rewards": {

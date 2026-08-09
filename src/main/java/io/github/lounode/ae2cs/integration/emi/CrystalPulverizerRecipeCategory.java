@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import dev.emi.emi.api.recipe.BasicEmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
@@ -34,10 +35,16 @@ public class CrystalPulverizerRecipeCategory extends BasicEmiRecipe {
     };
 
     public static final ResourceLocation BG = AE2CrystalScience.makeId("textures/gui/recipe/crystal_pulverizer.png");
-    private static final int W = 135;
-    private static final int H = 58;
+    private static final int W = 162;
+    private static final int H = 62;
+    private static final int INPUT_X = 38;
+    private static final int INPUT_Y = 21;
+    private static final int OUTPUT_X = 90;
+    private static final int OUTPUT_Y = 12;
+    private static final int OUTPUT_COLUMNS = 2;
+    private static final int OUTPUT_SLOT_SPACING = 18;
 
-    private static final Rect2i energyTooltipArea = new Rect2i(109, 21, 6, 18);
+    private static final Rect2i energyTooltipArea = new Rect2i(128, 21, 6, 18);
 
     private final AdvancedProgressBar energyRateBar;
     private final AdvancedProgressBar workingProgressBar;
@@ -46,15 +53,23 @@ public class CrystalPulverizerRecipeCategory extends BasicEmiRecipe {
     private long animStartMs = -1L;
 
     private final CrystalPulverizerRecipe recipe;
+    private final EmiStack fluidInput;
+    private final EmiStack fluidOutput;
 
     public CrystalPulverizerRecipeCategory(RecipeHolder<CrystalPulverizerRecipe> holder) {
-        super(RECIPE_TYPE, holder.id(), 135, 58);
+        super(RECIPE_TYPE, holder.id(), W, H);
         var recipe = holder.value();
         this.recipe = recipe;
 
         this.inputs.add(EmiIngredient.of(recipe.input().ingredient(), recipe.input().count()));
 
         this.outputs.add(EmiStack.of(recipe.result().copy()));
+        for (int i = 1; i < 4; i++) {
+            this.outputs.add(EmiStack.EMPTY);
+        }
+        this.fluidInput = recipe.fluidInput() != null && recipe.fluidInput().getFluids().length > 0 ? EmiStack.of(recipe.fluidInput().getFluids()[0].getFluid(), recipe.fluidInput().getFluids()[0].getAmount()) : EmiStack.EMPTY;
+        FluidStack recipeFluidOutput = recipe.fluidOutput();
+        this.fluidOutput = recipeFluidOutput.isEmpty() ? EmiStack.EMPTY : EmiStack.of(recipeFluidOutput.getFluid(), recipeFluidOutput.getAmount());
 
         energyRateBar = new AdvancedProgressBar(new IProgressProvider() {
 
@@ -68,7 +83,7 @@ public class CrystalPulverizerRecipeCategory extends BasicEmiRecipe {
                 return ANIM_DURATION_MS;
             }
         }, AECSBlitter.energyProgress, AdvancedProgressBar.FillMode.BOTTOM_TO_TOP);
-        energyRateBar.setX(109);
+        energyRateBar.setX(128);
         energyRateBar.setY(21);
 
         workingProgressBar = new AdvancedProgressBar(new IProgressProvider() {
@@ -83,21 +98,27 @@ public class CrystalPulverizerRecipeCategory extends BasicEmiRecipe {
                 return ANIM_DURATION_MS;
             }
         }, AECSBlitter.crystalPulverizerProgress, AdvancedProgressBar.FillMode.LEFT_TO_RIGHT);
-        workingProgressBar.setX(53);
+        workingProgressBar.setX(64);
         workingProgressBar.setY(22);
     }
 
     @Override
     public void addWidgets(WidgetHolder widgets) {
-        widgets.addTexture(BG, 0, 0, W, H, 0, 0, W, H, 256, 256);
+        widgets.addTexture(BG, 0, 0, W, H, 0, 0, W, H, W, H);
 
-        int xIn = 22;
-        int yIn = 21;
-        widgets.addSlot(this.inputs.getFirst(), xIn, yIn).drawBack(false);
+        widgets.addSlot(this.inputs.getFirst(), INPUT_X, INPUT_Y).drawBack(false);
+        if (!fluidInput.isEmpty()) {
+            widgets.addTank(fluidInput, 1, 1, 18, 60, 16_000).drawBack(false);
+        }
 
-        int xOut = 85;
-        int yOut = yIn;
-        widgets.addSlot(this.outputs.getFirst(), xOut, yOut).recipeContext(this).drawBack(false);
+        for (int i = 0; i < 4; i++) {
+            int outputX = OUTPUT_X + (i % OUTPUT_COLUMNS) * OUTPUT_SLOT_SPACING;
+            int outputY = OUTPUT_Y + (i / OUTPUT_COLUMNS) * OUTPUT_SLOT_SPACING;
+            widgets.addSlot(this.outputs.get(i), outputX, outputY).recipeContext(this).drawBack(false);
+        }
+        if (!fluidOutput.isEmpty()) {
+            widgets.addTank(fluidOutput, 143, 1, 18, 60, 16_000).recipeContext(this).drawBack(false);
+        }
 
         widgets.addDrawable(0, 0, 0, 0, energyRateBar::renderWidget);
         widgets.addDrawable(0, 0, 0, 0, workingProgressBar::renderWidget);

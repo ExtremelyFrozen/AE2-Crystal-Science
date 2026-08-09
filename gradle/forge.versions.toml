@@ -3,7 +3,7 @@ ae2 = "19.2.8"
 ae2wt = "19.5.0"
 
 jei = "19.25.1.328"
-emi = "1.1.22+1.21.1"
+emi = "1.1.22+1.21.1+neoforge"
 
 ldlib = "2.2.8"
 mekanism = "1.21.1-10.7.19.85"
@@ -59,7 +59,7 @@ ae2wt_api           = { module = "de.mari_023:ae2wtlib_api", version.ref = "ae2w
 jei-common-api      = { module = "mezz.jei:jei-1.21.1-common-api", version.ref = "jei" }
 jei-neoforge-api    = { module = "mezz.jei:jei-1.21.1-neoforge-api", version.ref = "jei" }
 jei-neoforge-impl   = { module = "mezz.jei:jei-1.21.1-neoforge", version.ref = "jei" }
-emi                 = { module = "dev.emi:emi-neoforge", version.ref = "emi" }
+emi                 = { module = "maven.modrinth:emi", version.ref = "emi" }
 
 ldlib               = { module = "com.lowdragmc.ldlib2:ldlib2-neoforge-1.21.1", version.ref = "ldlib" }
 mek                 = { module = "mekanism:Mekanism", version.ref = "mekanism" }

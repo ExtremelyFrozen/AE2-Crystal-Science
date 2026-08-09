@@ -7,7 +7,7 @@ navigation:
 # 应用能源：水晶科技 (AECS)
 
 **AECS（应用能源：水晶科技）** 是一个基于 *Applied Energistics 2* 的附属模组。
-该模组带回了旧版AE2的概念“高纯水晶”，并围绕其构建了一套扩展系统，用于添加更多实用的机器、自动化能力以及ME无线网络功能。
+这个模组带回了旧版AE2的概念“高纯水晶”，并围绕它构建了一套扩展系统，添加更多实用的机器、自动化能力以及ME无线网络功能。
 
 ---
 
@@ -20,7 +20,7 @@ navigation:
 </Row>
 
 AECS 的多数系统围绕 **高纯水晶（Purified Crystal）** 构建。
-高纯水晶是一类需要通过生产流程获取的材料，在 AECS 中，它们被广泛用于合成、能源供应以及网络相关设备。
+高纯水晶是一类需要通过生产流程获取的材料，在 AECS 中，它们被广泛用在合成、能源供应以及网络相关设备上。
 
 ---
 
@@ -56,7 +56,7 @@ AECS 的多数系统围绕 **高纯水晶（Purified Crystal）** 构建。
 水晶种子可以通过原版的水中生长机制自然成长。
 在需要规模化生产时，可以使用 **<ItemLink id="ae2cs:crystal_growth_chamber" />** 进行集中处理。
 
-晶体催生仓支持加速卡以及邻近催生器的加成，用于在有限空间内稳定生产大量高纯水晶。
+晶体催生仓支持加速卡以及邻近催生器的加成，可以在有限空间内稳定生产大量高纯水晶。
 
 ---
 
@@ -68,6 +68,7 @@ AECS 的多数系统围绕 **高纯水晶（Purified Crystal）** 构建。
   <BlockImage id="ae2cs:quartz_grindstone" scale="2" />
   <BlockImage id="ae2cs:crystal_pulverizer" scale="2" />
   <BlockImage id="ae2cs:crystal_aggregator" scale="2" />
+  <BlockImage id="ae2cs:pulse_centrifuge" scale="2" />
 </Row>
 
 - **<ItemLink id="ae2cs:quartz_grindstone" />**  
@@ -79,6 +80,9 @@ AECS 的多数系统围绕 **高纯水晶（Purified Crystal）** 构建。
 - **<ItemLink id="ae2cs:crystal_aggregator" />**  
   AECS 的核心合成机器，用于水晶种子增产以及多种高级配方。
 
+- **<ItemLink id="ae2cs:pulse_centrifuge" />**
+  消耗 AE 能量，将一种输入分离成最多四种由数据包定义的产物。
+
 ---
 
 ### 功能性机器
@@ -89,7 +93,7 @@ AECS 的多数系统围绕 **高纯水晶（Purified Crystal）** 构建。
 </Row>
 
 - **<ItemLink id="ae2cs:circuit_etcher" />**  
-  用于直接生产处理器类物品，减少中间压印步骤。
+  直接生产处理器类物品，减少中间压印步骤。
 
 - **<ItemLink id="ae2cs:entropy_variation_reaction_chamber" />**  
   在机器内完成熵变相关操作，用于特定资源的自动化获取。

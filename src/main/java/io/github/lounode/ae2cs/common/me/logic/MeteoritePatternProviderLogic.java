@@ -73,6 +73,17 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
      */
     private int maxWorksInRound = 8;
 
+    /** Cached effective Speed Card count. It is zero while Meteorite Overclock Cards are installed. */
+    private int speedCards = 0;
+
+    /**
+     * Cached Meteorite Overclock Card count. Upgrade changes are rare, so the hot tick path never scans slots.
+     */
+    private int overclockCards = 0;
+
+    /** Forces the AE tick tracker to leave an old slow rate immediately after an upgrade change. */
+    private boolean workIntervalChanged = false;
+
     /**
      * 缓存表上限
      */
@@ -105,13 +116,44 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
     }
 
     private void onUpgradesChange() {
-        this.maxWorksInRound = 8 << getInstalledUpgrades(AEItems.SPEED_CARD);
-        this.maxWorksInRound += 256 * getInstalledUpgrades(AECSItems.OVERLOAD_CARD);
+        this.overclockCards = Math.min(4, getInstalledUpgrades(AECSItems.OVERLOAD_CARD));
+        this.speedCards = overclockCards > 0 ? 0 : getInstalledUpgrades(AEItems.SPEED_CARD);
+        this.maxWorksInRound = (8 << speedCards) + 128 * overclockCards;
+        this.workIntervalChanged = true;
         this.saveChanges();
+
+        // Apply a changed interval immediately, including when the provider is currently sleeping.
+        this.mainNode.ifPresent((grid, node) -> grid.getTickManager().alertDevice(node));
+    }
+
+    private int getWorkInterval() {
+        if (overclockCards >= 2) {
+            return 1;
+        }
+        if (overclockCards == 1) {
+            return 4;
+        }
+        return TickRates.Interface.getMin();
+    }
+
+    private TickRateModulation regulateWorkInterval(int ticksSinceLastCall) {
+        int target = getWorkInterval();
+        if (target == 1) {
+            return TickRateModulation.URGENT;
+        }
+        if (ticksSinceLastCall == target) {
+            return TickRateModulation.SAME;
+        }
+        if (ticksSinceLastCall < target) {
+            return TickRateModulation.SLOWER;
+        }
+
+        // FASTER reduces the delay by two ticks per call without creating a same-tick work loop.
+        return TickRateModulation.FASTER;
     }
 
     private double getEnergyPerWorkAfterSpeed() {
-        return energyPerWork << getInstalledUpgrades(AEItems.SPEED_CARD);
+        return energyPerWork << speedCards;
     }
 
     private boolean workCraftedContents() {
@@ -374,7 +416,9 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
 
         @Override
         public TickingRequest getTickingRequest(IGridNode node) {
-            return new TickingRequest(TickRates.Interface, !hasWorkToDo() && craftedContents.isEmpty());
+            boolean idle = !hasWorkToDo() && craftedContents.isEmpty();
+            workIntervalChanged = false;
+            return new TickingRequest(1, TickRates.Interface.getMax(), idle, getWorkInterval());
         }
 
         @Override
@@ -386,7 +430,14 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
             boolean workedForCrafter = workCraftedContents();
             couldDoWork = couldDoWork || workedForCrafter;
             boolean hasWorkToDo = hasWorkToDo() || !craftedContents.isEmpty();
-            return hasWorkToDo ? couldDoWork ? TickRateModulation.URGENT : TickRateModulation.SLOWER : TickRateModulation.SLEEP;
+            if (!hasWorkToDo) {
+                return TickRateModulation.SLEEP;
+            }
+            if (workIntervalChanged) {
+                workIntervalChanged = false;
+                return TickRateModulation.URGENT;
+            }
+            return couldDoWork ? regulateWorkInterval(ticksSinceLastCall) : TickRateModulation.SLOWER;
         }
     }
 }

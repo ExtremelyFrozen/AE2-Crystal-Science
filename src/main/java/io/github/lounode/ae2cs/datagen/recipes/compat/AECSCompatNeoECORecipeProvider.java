@@ -1,23 +1,28 @@
 package io.github.lounode.ae2cs.datagen.recipes.compat;
 
+import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
+import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
+import io.github.lounode.ae2cs.datagen.builder.recipe.CircuitEtcherRecipeBuilder;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalAggregatorRecipeBuilder;
 import io.github.lounode.ae2cs.datagen.builder.recipe.CrystalPulverizerRecipeBuilder;
+
+import appeng.core.definitions.AEItems;
+import appeng.datagen.providers.tags.ConventionTags;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.common.Tags;
 
+import cn.dancingsnow.neoecoae.recipe.IntegratedWorkingStationRecipe;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -38,33 +43,79 @@ public class AECSCompatNeoECORecipeProvider extends AECSRecipeProvider {
         var compatOut = originalOut.withConditions(modLoaded(AECSConstants.NEOECOAE_ID));
         super.buildRecipes(compatOut, registries);
 
-        packAndUnpack2x2(compatOut, RecipeCategory.MISC, RecipeCategory.MISC,
-                externalItem(AECSConstants.NEOECOAE_ID, "crystal_matrix"), AECSBlocks.PURE_CRYSTAL_GRID_BLOCK);
+        pack2x2(compatOut, RecipeCategory.MISC, AECSItems.PURE_ENERGIZED_CERTUS_QUARTZ_CRYSTAL,
+                externalItem("energized_crystal_block"));
+        pack2x2(compatOut, RecipeCategory.MISC, AECSItems.PURE_ENERGIZED_FLUIX_CRYSTAL,
+                externalItem("energized_fluix_crystal_block"));
 
-        addCrystalGrowthRecipes(compatOut, AECSItems.ENERGIZED_FLUIX_CRYSTAL_SEED,
-                AECSItems.PURE_ENERGIZED_FLUIX_CRYSTAL, externalItem(AECSConstants.NEOECOAE_ID, "energized_fluix_crystal"));
-        addCrystalGrowthRecipes(compatOut, AECSItems.ENERGIZED_CERTUS_QUARTZ_SEED,
-                AECSItems.PURE_ENERGIZED_CERTUS_QUARTZ_CRYSTAL, externalItem(AECSConstants.NEOECOAE_ID, "energized_crystal"));
+        Item energizedCrystalDust = externalItem("energized_crystal_dust");
+        Item energizedFluixDust = externalItem("energized_fluix_crystal_dust");
+        Item superconductingProcessor = externalItem("superconducting_processor");
+
+        CircuitEtcherRecipeBuilder.etching(superconductingProcessor, 36, 57600)
+                .require(externalItem("energized_superconductive_block"), 4)
+                .require(AECSBlocks.PURE_CRYSTAL_GRID_BLOCK, 4)
+                .require(AECSTags.Items.STORAGE_BLOCK_SILICON, 4)
+                .save(compatOut);
+
+        CrystalAggregatorRecipeBuilder.aggregating(superconductingProcessor, 32, 51200)
+                .require(externalItem("superconducting_processor_print"), 32)
+                .require(externalItem("crystal_matrix"), 32)
+                .require(AEItems.SILICON_PRINT, 32)
+                .save(compatOut);
+
+        packAndUnpack3x3(compatOut, RecipeCategory.MISC, RecipeCategory.MISC,
+                externalItem("crystal_matrix"), AECSBlocks.PURE_CRYSTAL_GRID_BLOCK);
+
+        stonecutterResultFromItem(compatOut, RecipeCategory.MISC,
+                externalItem("superconducting_processor_press"), AECSItems.BLANK_PRINT_PRESS);
+
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.ENERGIZED_CERTUS_QUARTZ_SEED, 32, 51200)
+                .require(energizedCrystalDust, 8)
+                .require(AEItems.CERTUS_QUARTZ_DUST, 8)
+                .require(Tags.Items.DUSTS_GLOWSTONE, 16)
+                .save(compatOut, "aggregator/energized_certus_quartz_seed");
+
+        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.ENERGIZED_FLUIX_CRYSTAL_SEED, 32, 51200)
+                .require(energizedFluixDust, 8)
+                .require(ConventionTags.FLUIX_DUST, 4)
+                .require(Tags.Items.DUSTS_REDSTONE, 16)
+                .save(compatOut, "aggregator/energized_fluix_crystal_seed");
+
+        IntegratedWorkingStationRecipe.builder()
+                .require(energizedCrystalDust, 8)
+                .require(AEItems.CERTUS_QUARTZ_DUST, 8)
+                .require(Tags.Items.DUSTS_GLOWSTONE, 8)
+                .itemOutput(AECSItems.ENERGIZED_CERTUS_QUARTZ_SEED, 32)
+                .energy(62000)
+                .save(compatOut, AE2CrystalScience.makeId("integrated_working_station/energized_certus_quartz_seed"));
+
+        IntegratedWorkingStationRecipe.builder()
+                .require(energizedFluixDust, 8)
+                .require(AEItems.FLUIX_DUST, 4)
+                .require(Tags.Items.DUSTS_REDSTONE, 8)
+                .itemOutput(AECSItems.ENERGIZED_FLUIX_CRYSTAL_SEED, 32)
+                .energy(62000)
+                .save(compatOut, AE2CrystalScience.makeId("integrated_working_station/energized_fluix_crystal_seed"));
+
+        CrystalPulverizerRecipeBuilder.pulverizing(energizedCrystalDust, 1, 8000)
+                .require(externalItem("energized_crystal"), 1)
+                .save(compatOut, "pulverizer/energized_crystal_dust_from_crystal");
+
+        CrystalPulverizerRecipeBuilder.pulverizing(energizedFluixDust, 1, 8000)
+                .require(externalItem("energized_fluix_crystal"), 1)
+                .save(compatOut, "pulverizer/energized_fluix_crystal_dust_from_crystal");
+
+        CrystalPulverizerRecipeBuilder.pulverizing(energizedCrystalDust, 1, 8000)
+                .require(AECSItems.PURE_ENERGIZED_CERTUS_QUARTZ_CRYSTAL, 1)
+                .save(compatOut, "pulverizer/energized_crystal_dust_from_pure_crystal");
+
+        CrystalPulverizerRecipeBuilder.pulverizing(energizedFluixDust, 1, 8000)
+                .require(AECSItems.PURE_ENERGIZED_FLUIX_CRYSTAL, 1)
+                .save(compatOut, "pulverizer/energized_fluix_crystal_dust_from_pure_crystal");
     }
 
-    private static void addCrystalGrowthRecipes(RecipeOutput output, ItemLike seed, ItemLike pureCrystal, Item crystal) {
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, seed)
-                .requires(crystal)
-                .requires(Blocks.SAND, 2)
-                .unlockedBy(getHasName(crystal), has(crystal))
-                .save(output, getCrafterPath(seed, false));
-
-        CrystalAggregatorRecipeBuilder.aggregating(seed, 32, 51200)
-                .require(crystal, 8)
-                .require(Blocks.SAND, 32)
-                .save(output, "aggregator/" + getItemName(seed));
-
-        CrystalPulverizerRecipeBuilder.pulverizing(crystal, 1, 8000)
-                .require(pureCrystal, 1)
-                .save(output, "pulverizer/" + getItemName(crystal) + "_from_" + getItemName(pureCrystal));
-    }
-
-    private static Item externalItem(String namespace, String path) {
-        return BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(namespace, path));
+    private static Item externalItem(String path) {
+        return BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(AECSConstants.NEOECOAE_ID, path));
     }
 }

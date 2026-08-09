@@ -59,11 +59,16 @@ When the ME network sends materials to a Meteorite Pattern Provider:
 
 ## Crafting Speed and Acceleration
 
-The crafting throughput of the Meteorite Pattern Provider can be expanded using Acceleration Cards:
+Acceleration Cards increase the number of crafting operations the provider can accept in each work round.
 
-- The number of crafting operations per game tick increases with each Acceleration Card installed
-- Even without Acceleration Cards, the device provides stable crafting performance
-- With Acceleration Cards installed, it can handle a large number of crafting requests in a short time
+The **<ItemLink id="ae2cs:overload_card" />** provides an additional upgrade:
+
+- **1 card:** one work cycle every **4 game ticks**, plus **128** crafting requests per round.
+- **2 cards:** one work cycle every **1 game tick**, plus **256** crafting requests per round.
+- **3 cards:** one work cycle every **1 game tick**, plus **384** crafting requests per round.
+- **4 cards:** one work cycle every **1 game tick**, plus **512** crafting requests per round.
+
+Up to four Meteorite Overclock Cards can be installed in either the block or part form. While any Meteorite Overclock Card is installed, Speed Cards do not provide additional acceleration.
 
 ---
 

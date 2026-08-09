@@ -71,6 +71,7 @@ These behaviors allow it to interface directly with complex or non-standard auto
 
 **Resonating Patterns** are used to define the dispatch rules for materials handled by the Resonating Pattern Provider.
 Each material can be individually marked with its own target position and output face.
+Up to **144 inputs** can be marked independently.
 
 ---
 

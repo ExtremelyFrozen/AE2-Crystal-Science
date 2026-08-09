@@ -21,7 +21,7 @@ import java.util.Optional;
 
 public final class ResonatingProviderDefaults {
 
-    public static final int DEFAULT_INPUT_SLOTS = 81;
+    public static final int DEFAULT_INPUT_SLOTS = 144;
 
     private ResonatingProviderDefaults() {}
 

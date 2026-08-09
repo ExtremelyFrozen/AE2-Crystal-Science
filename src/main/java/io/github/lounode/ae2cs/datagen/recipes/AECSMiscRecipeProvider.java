@@ -1,13 +1,16 @@
 package io.github.lounode.ae2cs.datagen.recipes;
 
 import io.github.lounode.ae2cs.AE2CrystalScience;
+import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.common.recipe.ResonatingPatternUpgradeRecipe;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 
+import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.datagen.providers.tags.ConventionTags;
+import appeng.recipes.entropy.EntropyRecipeBuilder;
 import appeng.recipes.handlers.InscriberProcessType;
 import appeng.recipes.handlers.InscriberRecipeBuilder;
 import appeng.recipes.transform.TransformCircumstance;
@@ -49,6 +52,12 @@ public class AECSMiscRecipeProvider extends AECSRecipeProvider {
                 AECSItems.PURE_METEOR_CRYSTAL,
                 Blocks.REDSTONE_BLOCK,
                 AECSItems.PURE_ENDER_QUARTZ);
+
+        // 熵变反应器充能配方
+        EntropyRecipeBuilder.heat()
+                .setInputBlock(AEBlocks.QUARTZ_BLOCK.block())
+                .setOutputBlock(AECSBlocks.CHARGED_CERTUS_QUARTZ_BLOCK.get())
+                .save(recipeOutput, AE2CrystalScience.makeId("entropy/charged_certus_quartz_block"));
 
         // 添加谐振样板配方
         SpecialRecipeBuilder.special(ResonatingPatternUpgradeRecipe::new)

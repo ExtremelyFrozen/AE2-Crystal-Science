@@ -20,6 +20,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,6 +34,8 @@ public class CrystalPulverizerRecipeBuilder implements RecipeBuilder {
     private final int energyCost;
 
     private @Nullable SizedIngredient input = null;
+    private @Nullable SizedFluidIngredient fluidInput;
+    private FluidStack fluidOutput = FluidStack.EMPTY;
 
     private final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
 
@@ -72,6 +76,22 @@ public class CrystalPulverizerRecipeBuilder implements RecipeBuilder {
 
     public CrystalPulverizerRecipeBuilder require(TagKey<Item> tag, int count) {
         return require(Ingredient.of(tag), count);
+    }
+
+    public CrystalPulverizerRecipeBuilder require(SizedFluidIngredient ingredient) {
+        if (ingredient == null || ingredient.amount() <= 0) {
+            throw new IllegalArgumentException("Fluid input must be non-empty");
+        }
+        this.fluidInput = ingredient;
+        return this;
+    }
+
+    public CrystalPulverizerRecipeBuilder output(FluidStack stack) {
+        if (stack == null || stack.isEmpty()) {
+            throw new IllegalArgumentException("Fluid output must be non-empty");
+        }
+        this.fluidOutput = stack.copy();
+        return this;
     }
 
     @Override
@@ -126,7 +146,7 @@ public class CrystalPulverizerRecipeBuilder implements RecipeBuilder {
             }
         }
 
-        var recipe = new CrystalPulverizerRecipe(this.input, this.result, this.energyCost);
+        var recipe = new CrystalPulverizerRecipe(this.input, this.result, this.fluidInput, this.fluidOutput, this.energyCost);
         output.accept(id, recipe, adv.build(id.withPrefix("recipes/")));
     }
 

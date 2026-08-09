@@ -1,4 +1,5 @@
 {
+  "gui.ae2cs.fluid.empty": "空",
   "creativetab.ae2cs.items": "AE2：水晶科技",
 
   "block.ae2cs.ender_quartz_block": "末影水晶块",
@@ -23,7 +24,9 @@
   "block.ae2cs.crystal_pulverizer": "晶能粉碎机",
   "block.ae2cs.crystal_vibration_chamber": "晶能谐振仓",
   "block.ae2cs.crystal_aggregator": "晶能聚合器",
-  "block.ae2cs.entropy_variation_reaction_chamber": "熵变反应器",
+  "block.ae2cs.crystal_infuser": "晶体注能器",
+  "block.ae2cs.pulse_centrifuge": "脉冲离心机",
+  "block.ae2cs.entropy_variation_reaction_chamber": "熵变反应室",
   "block.ae2cs.ender_broadcaster": "ME末影广播装置",
   "block.ae2cs.ender_emitter": "ME末影发信器",
   "block.ae2cs.ender_interface": "ME末影接口",
@@ -161,7 +164,7 @@
   "item.ae2cs.pattern_provider_upgrade": "样板供应器升级",
   "item.ae2cs.meteor_pattern_provider_upgrade": "自装配式样板供应器升级",
   "item.ae2cs.crystal_growth_card": "晶体催生卡",
-  "item.ae2cs.overload_card": "陨石过载卡",
+  "item.ae2cs.overload_card": "陨石超频卡",
   "item.ae2cs.ender_linker": "末影连接工具",
   "item.ae2cs.resonating_linker": "谐振绑定工具",
   "item.ae2cs.mirror_linker": "镜像绑定工具",
@@ -381,6 +384,8 @@
 
   "ae2cs.menu.entropy_variation_reaction_chamber.entropy_mode_title": "熵变模式",
   "ae2cs.menu.entropy_variation_reaction_chamber.entropy_mode_desc": "切换熵增或熵减模式",
+  "ae2cs.recipe.entropy_variation_reaction_chamber.mode.increase": "熵增（需要 %s AE）",
+  "ae2cs.recipe.entropy_variation_reaction_chamber.mode.decrease": "熵减（需要 %s AE）",
 
   "ae2cs.menu.title.side_config_menu": "面配置",
   "ae2cs.menu.side_config.button.open": "面配置\n修改机器的面配置以及自动弹出与自动输入功能",
@@ -470,7 +475,10 @@
   "ae2cs.integration.jei.recipe_category.circuit_etcher": "电路蚀刻",
   "ae2cs.integration.jei.recipe_category.energy_cost.tooltip": "需要能量：%sAE",
   "ae2cs.integration.jei.recipe_category.crystal_aggregator": "晶能聚合",
+  "ae2cs.integration.jei.recipe_category.crystal_infuser": "晶体注能",
+  "ae2cs.tooltip.fluid_amount": "水：%s / %s mB",
   "ae2cs.integration.jei.recipe_category.crystal_pulverizer": "粉碎",
+  "ae2cs.integration.jei.recipe_category.pulse_centrifuge": "脉冲离心",
   "ae2cs.integration.jei.recipe_category.crystal_growth": "水晶生长",
   "item.ae2cs.resonant_template_coding_terminal_part": "谐振合成编码终端",
   "gui.ae2cs.resonant_crafting_encoding_terminal": "谐振合成编码终端",
@@ -499,6 +507,7 @@
   "ae2cs.menu.resonant_template_coding_terminal.processing_ingredient_transfer_mode.full_split": "当前：材料全分裂",
   "ae2cs.menu.resonant_template_coding_terminal.processing_ingredient_transfer_mode.full_split_desc": "按 JEI/EMI 显示顺序排列材料，不合并重复材料",
   "ae2cs.menu.resonant_template_coding_terminal.hotkey_unbound": "未设置",
+  "ae2cs.tooltip.click_to_view_recipes": "点击查看配方",
   "key.categories.ae2cs": "AE2 水晶科技",
   "key.ae2cs.toggle_resonant_template_coding_slot_mode": "切换谐振样板编码终端槽模式"
 }

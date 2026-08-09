@@ -5,6 +5,7 @@ import io.github.lounode.ae2cs.common.menu.ResonantTemplateCodingTermMenu;
 import io.github.lounode.ae2cs.common.menu.ResonantTemplateCodingTermMenu.ProcessingIngredientTransferMode;
 
 import appeng.api.config.ActionItems;
+import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import appeng.client.Point;
 import appeng.client.gui.AEBaseScreen;
@@ -29,9 +30,11 @@ import appeng.client.gui.widgets.ToggleButton;
 import appeng.core.definitions.AEItems;
 import appeng.menu.SlotSemantic;
 import appeng.menu.SlotSemantics;
+import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.FakeSlot;
 import appeng.parts.encoding.EncodingMode;
+import appeng.util.ReadableNumberConverter;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -59,6 +62,9 @@ import net.minecraft.world.level.Level;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
+import de.mari_023.ae2wtlib.api.gui.ScrollingUpgradesPanel;
+import de.mari_023.ae2wtlib.api.terminal.IUniversalTerminalCapable;
+import de.mari_023.ae2wtlib.api.terminal.WTMenuHost;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -74,7 +80,8 @@ import java.util.function.Consumer;
  * 谐振样板编码终端界面 - 固定尺寸 195x268，处理样板模式使用 4x4 输入网格带滑块。
  * 布局坐标来自 assets/ae2/screens/resonant_template_coding_terminal.json。
  */
-public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<ResonantTemplateCodingTermMenu> {
+public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<ResonantTemplateCodingTermMenu>
+                                              implements IUniversalTerminalCapable {
 
     private static final int PROCESSING_INPUT_COLUMNS = 4;
     private static final int VISIBLE_PROCESSING_INPUT_ROWS = 4;
@@ -86,7 +93,8 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
     private static final String STONECUTTING_RECIPE_LIST_ID = "stonecuttingRecipeList";
     private static final String ANVIL_NAME_FIELD_ID = "pulledAnvilName";
     private static final String ANVIL_COST_TEXT_ID = "pulledAnvilCost";
-    private static final String STYLE_PATH = "/screens/resonant_template_coding_terminal.json";
+    private static final String WIRED_STYLE_PATH = "/screens/resonant_template_coding_terminal.json";
+    private static final String WIRELESS_STYLE_PATH = "/screens/resonant_template_coding_terminal_wireless.json";
     private static final Component PATTERN_ENCODING_MODE_TEXT = Component.translatable("ae2cs.menu.resonant_template_coding_terminal.mode.pattern_encoding");
     private static final Component CRAFTING_TERMINAL_MODE_TEXT = Component.translatable("ae2cs.menu.resonant_template_coding_terminal.mode.crafting_terminal");
     private static final String CRAFTING_MODE_PANEL_BACKGROUND_ID = "resonantCraftingModePanel";
@@ -134,10 +142,15 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
     private boolean focusPulledAnvilNameField;
     private Boolean pendingPulledAnvilMode;
     private String lastPulledAnvilMenuName = "";
+    private final ScrollingUpgradesPanel upgradesPanel;
 
     public ResonantTemplateCodingTermScreen(ResonantTemplateCodingTermMenu menu, Inventory playerInventory,
                                             Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
+        if (menu.isWUT()) {
+            this.addToLeftToolbar(this.cycleTerminalButton());
+        }
+        this.upgradesPanel = menu.isWirelessTerminal() ? this.addUpgradePanel(this.widgets, menu) : null;
         if (menu.pullProcessingRecipeInputs && menu.pulledAnvilMode) {
             this.pulledDisplayMode = PulledDisplayMode.ANVIL;
         }
@@ -241,6 +254,19 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
     }
 
     @Override
+    public void init() {
+        super.init();
+        if (this.upgradesPanel != null) {
+            this.upgradesPanel.setMaxRows(Math.max(2, this.getVisibleRows()));
+        }
+    }
+
+    @Override
+    public WTMenuHost getHost() {
+        return (WTMenuHost) this.menu.getHost();
+    }
+
+    @Override
     public void drawFG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX, int mouseY) {
         super.drawFG(guiGraphics, offsetX, offsetY, mouseX, mouseY);
         if (!isPulledAnvilModeSelected() || this.menu.getPulledAnvilResultSlot().getItem().isEmpty()) {
@@ -251,6 +277,26 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
         Rect2i bounds = getStyledWidgetBounds(ANVIL_COST_TEXT_ID);
         int color = shouldRenderPulledAnvilCostAsError() ? 0xFF6060 : 0x80FF20;
         guiGraphics.drawString(this.font, costText, bounds.getX(), bounds.getY(), color, true);
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (this.menu.usesNetworkBlankPatternProxy() && (button == 0 || button == 1)) {
+            Slot slot = this.getSlotUnderMouse();
+            if (slot != null && this.menu.getSlotSemantic(slot) == SlotSemantics.BLANK_PATTERN) {
+                ItemStack carried = this.menu.getCarried();
+                if (carried.isEmpty()) {
+                    this.menu.pickupNetworkBlankPatterns(button == 1);
+                    return true;
+                }
+                if (AEItems.BLANK_PATTERN.is(carried)) {
+                    this.menu.depositNetworkBlankPatterns(button == 1);
+                    return true;
+                }
+            }
+        }
+
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
@@ -268,7 +314,8 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
             }
             return true;
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        boolean handled = super.keyPressed(keyCode, scanCode, modifiers);
+        return handled || this.menu.isWirelessTerminal() && this.checkForTerminalKeys(keyCode, scanCode);
     }
 
     private boolean shouldRenderPulledAnvilCostAsError() {
@@ -291,13 +338,52 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
     }
 
     private void renderSyncedBlankPatternSlot(GuiGraphics guiGraphics, Slot slot) {
-        if (this.menu.blankPatternSlotCount <= 0 || this.menu.getSlotSemantic(slot) != SlotSemantics.BLANK_PATTERN || !slot.getItem().isEmpty()) {
+        if (this.menu.getSlotSemantic(slot) != SlotSemantics.BLANK_PATTERN || !slot.getItem().isEmpty()) {
             return;
         }
 
-        ItemStack stack = AEItems.BLANK_PATTERN.stack(this.menu.blankPatternSlotCount);
-        guiGraphics.renderItem(stack, slot.x, slot.y);
-        guiGraphics.renderItemDecorations(this.font, stack, slot.x, slot.y);
+        int displayedCount = this.menu.usesNetworkBlankPatternProxy() ? getNetworkBlankPatternCount() : this.menu.blankPatternSlotCount;
+        if (displayedCount <= 0) {
+            return;
+        }
+
+        guiGraphics.renderItem(AEItems.BLANK_PATTERN.stack(), slot.x, slot.y);
+        renderHalfScaleStackCount(guiGraphics, slot, displayedCount);
+    }
+
+    private void renderHalfScaleStackCount(GuiGraphics guiGraphics, Slot slot, int count) {
+        String text = ReadableNumberConverter.format(count, 4);
+        float scale = 0.5f;
+        float right = slot.x + 17.0f;
+        float bottom = slot.y + 17.0f;
+
+        PoseStack poseStack = guiGraphics.pose();
+        poseStack.pushPose();
+        poseStack.translate(0.0f, 0.0f, 200.0f);
+        poseStack.scale(scale, scale, scale);
+        int textX = Math.round(right / scale - this.font.width(text));
+        int textY = Math.round(bottom / scale - this.font.lineHeight);
+        guiGraphics.drawString(this.font, text, textX, textY, 0xFFFFFF, true);
+        poseStack.popPose();
+    }
+
+    private int getNetworkBlankPatternCount() {
+        AEItemKey blankPatternKey = AEItemKey.of(AEItems.BLANK_PATTERN);
+        if (blankPatternKey == null) {
+            return 0;
+        }
+
+        GridInventoryEntry fallback = null;
+        for (GridInventoryEntry entry : this.repo.getAllEntries()) {
+            if (!blankPatternKey.equals(entry.getWhat())) {
+                continue;
+            }
+            if (entry.isMeaningful()) {
+                return (int) Math.min(Integer.MAX_VALUE, entry.getStoredAmount());
+            }
+            fallback = entry;
+        }
+        return fallback == null ? 0 : (int) Math.min(Integer.MAX_VALUE, fallback.getStoredAmount());
     }
 
     private boolean shouldShowCraftableIndicatorForPulledSlot(Slot slot) {
@@ -396,7 +482,8 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
 
     private void reloadLiveStyle() {
         try {
-            ScreenStyle reloadedStyle = StyleManager.loadStyleDoc(STYLE_PATH);
+            String stylePath = this.menu.isWirelessTerminal() ? WIRELESS_STYLE_PATH : WIRED_STYLE_PATH;
+            ScreenStyle reloadedStyle = StyleManager.loadStyleDoc(stylePath);
             if (reloadedStyle != this.liveStyle) {
                 this.liveStyle = reloadedStyle;
                 applyLiveStyle();
@@ -1066,7 +1153,7 @@ public class ResonantTemplateCodingTermScreen extends PatternEncodingTermScreen<
             int iconWidth = icon.getSrcWidth();
             int iconHeight = icon.getSrcHeight();
             int iconX = bgX + (bgWidth - iconWidth) / 2;
-            int iconY = bgY + (bgHeight - iconHeight) / 2;
+            int iconY = bgY + (bgHeight - iconHeight) / 2 - 1;
             icon.dest(iconX, iconY).zOffset(3).blit(guiGraphics);
         }
 

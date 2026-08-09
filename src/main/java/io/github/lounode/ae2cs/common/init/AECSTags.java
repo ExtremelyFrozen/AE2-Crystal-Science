@@ -64,6 +64,8 @@ public class AECSTags {
         public static final TagKey<Item> PURE_ENERGIZED_FLUIX_CRYSTAL = aecsTag("pure_crystal/energized_fluix_crystal");
         public static final TagKey<Item> PURE_ENERGIZED_CERTUS_QUARTZ_CRYSTAL = aecsTag("pure_crystal/energized_certus_quartz_crystal");
 
+        public static final TagKey<Item> GEMS_FLUIX = tag("gems/fluix");
+
         public static final TagKey<Item> DUST_RESONATING = tag("dusts/resonating");
         public static final TagKey<Item> DUST_QUARTZ = tag("dusts/quartz");
         public static final TagKey<Item> DUST_QUANTUM_ALLOY = tag("dusts/quantum_alloy");
@@ -72,6 +74,7 @@ public class AECSTags {
         public static final TagKey<Item> GEM_RESONATING = tag("gems/resonating");
         public static final TagKey<Item> GEM_SKY_STONE_CRYSTAL = tag("gems/sky_stone_crystal");
         public static final TagKey<Item> GEM_ENDER_QUARTZ = tag("gems/ender_quartz");
+        public static final TagKey<Item> GEM_DATA_CRYSTAL = tag("gems/data_crystal");
 
         public static final TagKey<Item> GEARS = tag("gears");
         public static final TagKey<Item> GEARS_WOOD = tag("gears/wood");

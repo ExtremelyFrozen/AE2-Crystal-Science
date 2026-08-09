@@ -5,6 +5,7 @@ import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.item.PureCrystalItem;
 import io.github.lounode.ae2cs.common.machine.component.GenericStackInvComponent;
 import io.github.lounode.ae2cs.common.machine.component.InvPort;
@@ -13,6 +14,7 @@ import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
 import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
+import appeng.api.networking.IGrid;
 import appeng.api.stacks.GenericStack;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
@@ -42,6 +44,7 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
     private int remainingBurnTime = 0;
     private double energyPerTick = 0;
     private int speedCards = 0;
+    private int overclockCards = 0;
 
     public CrystalVibrationChamberBlockEntity(BlockPos pos, BlockState blockState) {
         super(AECSBlockEntities.CRYSTAL_VIBRATION_CHAMBER_BLOCK_ENTITY.get(), pos, blockState,
@@ -136,7 +139,8 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
     }
 
     protected void onUpgradesChange() {
-        this.speedCards = upgrades.getInstalledUpgrades(AEItems.SPEED_CARD);
+        this.overclockCards = Math.min(2, upgrades.getInstalledUpgrades(AECSItems.OVERLOAD_CARD));
+        this.speedCards = overclockCards > 0 ? 0 : upgrades.getInstalledUpgrades(AEItems.SPEED_CARD);
         saveChanges();
     }
 
@@ -166,9 +170,11 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
 
         // 执行燃烧逻辑
         if (remainingBurnTime > 0) {
-            remainingBurnTime -= getSpeedupBurnTimeCost();
+            int burnTimeCost = Math.min(remainingBurnTime, getBurnTimeCost());
+            remainingBurnTime -= burnTimeCost;
 
-            injectAEPower(this.getSpeedupEnergyPerTick(), Actionable.MODULATE);
+            double generatedPower = getSpeedupEnergyPerTick() * burnTimeCost / getSpeedupBurnTimeCost();
+            outputGeneratedPower(generatedPower);
 
             if (remainingBurnTime <= 0)
                 clearBurnState();
@@ -183,7 +189,28 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
     }
 
     private int getSpeedupBurnTimeCost() {
-        return (1 + speedCards);
+        return 1 + speedCards;
+    }
+
+    private int getBurnTimeCost() {
+        int normalBurnTimeCost = getSpeedupBurnTimeCost();
+        if (overclockCards == 0 || maxBurnTime <= 0) {
+            return normalBurnTimeCost;
+        }
+
+        int targetTicks = overclockCards == 1 ? 4 : 1;
+        return Math.max(normalBurnTimeCost, (maxBurnTime + targetTicks - 1) / targetTicks);
+    }
+
+    private void outputGeneratedPower(double amount) {
+        double remaining = amount;
+        IGrid grid = getMainNode().getGrid();
+        if (grid != null) {
+            remaining = grid.getEnergyService().injectPower(remaining, Actionable.MODULATE);
+        }
+        if (remaining > 0) {
+            injectAEPower(remaining, Actionable.MODULATE);
+        }
     }
 
     private void clearBurnState() {

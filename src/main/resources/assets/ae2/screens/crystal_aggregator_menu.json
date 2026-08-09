@@ -12,8 +12,8 @@
     "srcRect": [0, 0, 176, 178]
   },
   "slots": {
-    "MACHINE_INPUT": { "left": 53, "top": 22, "grid": "VERTICAL" },
-    "MACHINE_OUTPUT": { "left": 109, "top": 41, "grid": "VERTICAL" },
+    "MACHINE_INPUT": { "left": 53, "top": 24, "grid": "VERTICAL" },
+    "MACHINE_OUTPUT": { "left": 109, "top": 43, "grid": "VERTICAL" },
     "UPGRADE": {
       "right": 0,
       "top": 0,
@@ -39,11 +39,19 @@
   "widgets": {
     "energyRateBar": {
       "left": 132,
-      "top": 40
+      "top": 42
     },
     "workingProgressBar": {
       "left": 77,
-      "top": 34
+      "top": 38
+    },
+    "fluidInput": {
+      "left": 8,
+      "top": 20
+    },
+    "fluidOutput": {
+      "left": 150,
+      "top": 20
     }
   }
 }

@@ -213,6 +213,20 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider {
                 .unlockedBy(getHasName(AECSItems.RESONATING_PROCESSOR), has(AECSItems.RESONATING_PROCESSOR))
                 .save(recipeOutput, getCrafterPath(AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK, true));
 
+        // 晶体注能器
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSBlocks.CRYSTAL_INFUSER_BLOCK)
+                .pattern("aba")
+                .pattern("cdc")
+                .pattern("efe")
+                .define('a', AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED)
+                .define('b', AEBlocks.ENERGY_ACCEPTOR)
+                .define('c', Tags.Items.INGOTS_IRON)
+                .define('d', AECSItems.RESONATING_PROCESSOR)
+                .define('e', AEBlocks.QUARTZ_GLASS)
+                .define('f', AEBlocks.MOLECULAR_ASSEMBLER)
+                .unlockedBy(getHasName(AECSItems.RESONATING_PROCESSOR), has(AECSItems.RESONATING_PROCESSOR))
+                .save(recipeOutput, getCrafterPath(AECSBlocks.CRYSTAL_INFUSER_BLOCK, true));
+
         // 电路切片机
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSBlocks.CIRCUIT_ETCHER_BLOCK)
                 .pattern("aba")
@@ -266,6 +280,20 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider {
                 .define('f', AECSItems.RESONATING_PROCESSOR)
                 .unlockedBy(getHasName(AECSItems.RESONATING_PROCESSOR), has(AECSItems.RESONATING_PROCESSOR))
                 .save(recipeOutput, getCrafterPath(AECSBlocks.CRYSTAL_PULVERIZER_BLOCK, true));
+
+        // 脉冲离心机（暂沿用粉碎机合成成本）
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSBlocks.PULSE_CENTRIFUGE_BLOCK)
+                .pattern("aba")
+                .pattern("cdc")
+                .pattern("efe")
+                .define('a', AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED)
+                .define('b', AEBlocks.INSCRIBER)
+                .define('c', Tags.Items.INGOTS_IRON)
+                .define('d', AECSBlocks.QUARTZ_GRINDSTONE_BLOCK)
+                .define('e', AEItems.LOGIC_PROCESSOR)
+                .define('f', AECSItems.RESONATING_PROCESSOR)
+                .unlockedBy(getHasName(AECSItems.RESONATING_PROCESSOR), has(AECSItems.RESONATING_PROCESSOR))
+                .save(recipeOutput, getCrafterPath(AECSBlocks.PULSE_CENTRIFUGE_BLOCK, true));
 
         // 石英磨具
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSBlocks.QUARTZ_GRINDSTONE_BLOCK)
@@ -339,7 +367,7 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider {
                 .define('b', AEBlocks.WIRELESS_ACCESS_POINT)
                 .define('c', AECSItems.RESONATING_PROCESSOR)
                 .define('d', ConventionTags.SMART_CABLE)
-                .define('e', AECSTags.Items.STORAGE_BLOCK_PURE_CRYSTAL_ENDER_QUARTZ)
+                .define('e', AECSBlocks.ENDER_BROADCASTER_BLOCK)
                 .unlockedBy(getHasName(AECSItems.RESONATING_PROCESSOR), has(AECSItems.RESONATING_PROCESSOR))
                 .save(recipeOutput, getCrafterPath(AECSBlocks.ENDER_EMITTER_BLOCK, true));
 

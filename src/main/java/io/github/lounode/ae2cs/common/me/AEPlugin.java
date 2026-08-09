@@ -3,8 +3,10 @@ package io.github.lounode.ae2cs.common.me;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
+import io.github.lounode.ae2cs.common.init.AECSMenus;
 import io.github.lounode.ae2cs.common.init.AECSParts;
 import io.github.lounode.ae2cs.common.item.tools.ToolLinkableHandler;
+import io.github.lounode.ae2cs.common.me.menuhost.WirelessResonantTerminalMenuHost;
 
 import appeng.api.features.GridLinkables;
 import appeng.api.upgrades.Upgrades;
@@ -23,8 +25,18 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 
+import de.mari_023.ae2wtlib.api.gui.Icon;
+import de.mari_023.ae2wtlib.api.registration.AddTerminalEvent;
+
 @EventBusSubscriber(modid = AECSConstants.MODID)
 public class AEPlugin {
+
+    private static final Icon RESONANT_TERMINAL_ICON = new Icon(
+            0, 0, 16, 16,
+            new Icon.Texture(
+                    ResourceLocation.fromNamespaceAndPath(
+                            AECSConstants.MODID, "textures/item/resonant_terminal.png"),
+                    16, 16));
 
     private static String INTEGRATED_INTERFACE_GROUP_NAME = "block.ae2cs.integrated_interface";
     private static String INTERFACE_GROUP_NAME = "block.ae2.interface";
@@ -38,7 +50,17 @@ public class AEPlugin {
     /**
      * 在mod入口点调用
      */
-    public static void onInit() {}
+    public static void onInit() {
+        AddTerminalEvent.register(event -> event.builder(
+                "ae2cs_resonant_pattern_encoding",
+                WirelessResonantTerminalMenuHost::new,
+                AECSMenus.RESONANT_TEMPLATE_CODING_TERM_MENU_TYPE,
+                AECSItems.WIRELESS_RESONANT_TERMINAL.get(),
+                RESONANT_TERMINAL_ICON)
+                .translationKey("item.ae2cs.wireless_resonant_terminal")
+                .upgradeCount(2)
+                .addTerminal());
+    }
 
     /**
      * init后立刻运行此段代码，在这里进行注册相关内容
@@ -55,7 +77,11 @@ public class AEPlugin {
         Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.CRYSTAL_PULVERIZER_BLOCK, 4);
         Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK, 4);
         Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK, 4);
+        Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.CRYSTAL_INFUSER_BLOCK, 4);
+        Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.PULSE_CENTRIFUGE_BLOCK, 4);
         Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK, 4);
+
+        addMeteoriteOverclockCardSupport();
 
         Upgrades.add(AEItems.CRAFTING_CARD, AECSBlocks.INTEGRATED_INTERFACE_BLOCK, 1, INTEGRATED_INTERFACE_GROUP_NAME);
         Upgrades.add(AEItems.CRAFTING_CARD, AECSParts.INTEGRATE_INTERFACE_PART, 1, INTEGRATED_INTERFACE_GROUP_NAME);
@@ -80,6 +106,21 @@ public class AEPlugin {
                         WIRELESS_TERMINAL_GROUP_NAME));
 
         addGrowthCardSupport();
+    }
+
+    private static void addMeteoriteOverclockCardSupport() {
+        Upgrades.add(AECSItems.OVERLOAD_CARD, AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK, 2);
+        Upgrades.add(AECSItems.OVERLOAD_CARD, AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK, 2);
+        Upgrades.add(AECSItems.OVERLOAD_CARD, AECSBlocks.CIRCUIT_ETCHER_BLOCK, 2);
+        Upgrades.add(AECSItems.OVERLOAD_CARD, AECSBlocks.CRYSTAL_PULVERIZER_BLOCK, 2);
+        Upgrades.add(AECSItems.OVERLOAD_CARD, AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK, 2);
+        Upgrades.add(AECSItems.OVERLOAD_CARD, AECSBlocks.CRYSTAL_INFUSER_BLOCK, 2);
+        Upgrades.add(AECSItems.OVERLOAD_CARD, AECSBlocks.PULSE_CENTRIFUGE_BLOCK, 2);
+        Upgrades.add(AECSItems.OVERLOAD_CARD, AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK, 2);
+        Upgrades.add(AECSItems.OVERLOAD_CARD, AECSBlocks.METEORITE_PATTERN_PROVIDER_BLOCK, 4,
+                METEORITE_PATTERN_PROVIDER_GROUP_NAME);
+        Upgrades.add(AECSItems.OVERLOAD_CARD, AECSParts.METEORITE_PATTERN_PROVIDER_PART, 4,
+                METEORITE_PATTERN_PROVIDER_GROUP_NAME);
     }
 
     private static void addGrowthCardSupport() {

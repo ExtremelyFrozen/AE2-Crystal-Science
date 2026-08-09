@@ -42,7 +42,7 @@ public class EnderEmitterFrequencyBandGUI extends AEBaseScreen<EnderEmitterFrequ
         super(menu, inv, title, StyleManager.loadStyleDoc("/screens/frequency_band_menu.json"));
         AESubScreen.addBackButton(menu, "back_button", widgets);
 
-        this.scrollbar = widgets.addScrollBar("scrollbar", Scrollbar.DEFAULT);
+        this.scrollbar = widgets.addScrollBar("scrollbar", Scrollbar.BIG);
         this.searchField = widgets.addTextField("search");
         this.scrollbar.setHeight(SCROLL_HEIGHT);
         this.scrollbar.setRange(0, 0, 1);

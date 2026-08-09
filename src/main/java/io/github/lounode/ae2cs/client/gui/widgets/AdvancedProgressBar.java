@@ -28,6 +28,7 @@ public class AdvancedProgressBar extends AbstractWidget implements ITooltip {
     private final Rect2i sourceRect;
     private final Component titleName;
     private Component fullMsg;
+    private Runnable clickHandler;
 
     public AdvancedProgressBar(IProgressProvider source, Blitter blitter, FillMode dir) {
         this(source, blitter, dir, null);
@@ -212,6 +213,20 @@ public class AdvancedProgressBar extends AbstractWidget implements ITooltip {
 
     public void setFullMsg(Component msg) {
         this.fullMsg = msg;
+    }
+
+    public AdvancedProgressBar onClick(Runnable clickHandler) {
+        this.clickHandler = clickHandler;
+        return this;
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == 0 && this.active && this.visible && this.isMouseOver(mouseX, mouseY) && this.clickHandler != null) {
+            this.clickHandler.run();
+            return true;
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
