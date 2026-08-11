@@ -69,6 +69,11 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
                                      CustomChannelProviderHost, BroadcastReceiverHost, CustomReturnableSubMenuHost {
 
     /**
+     * 末影发信器连接频段时默认申请的频道数量。
+     */
+    private static final int DEFAULT_BAND_REQUESTED_CHANNELS = 32;
+
+    /**
      * 以全局区块坐标为索引的发信器位置表，用来快速寻找发信器，每个区块key下的set集合都对应周围3x3区块范围内所有发信器
      */
     public static Map<GlobalChunkPos, Set<BlockPos>> EMITTER_CHUNK_POSITIONS = new HashMap<>();
@@ -242,13 +247,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
 
     @Override
     public int getExpectedChannels() {
-        if (bandId != null && !bandId.isEmpty()) {
-            BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
-            if (band != null) {
-                return clampChannelCount(band.getUsableChannels());
-            }
-        }
-        return Integer.MAX_VALUE;
+        return DEFAULT_BAND_REQUESTED_CHANNELS;
     }
 
     private static int clampChannelCount(long channels) {
@@ -516,8 +515,9 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
 
     @Override
     public void setRemoved() {
+        cleanConnectionPermanent();
         super.setRemoved();
-        // 方块被移除或区块卸载时从全局索引移除
+        // 方块被移除时从全局索引移除
         if (level != null && !level.isClientSide()) {
             ChunkPos center = new ChunkPos(worldPosition);
             BlockPos posKey = worldPosition.immutable();
