@@ -125,7 +125,8 @@ public class EnderEmitterGUI extends UpgradeableScreen<EnderEmitterMenu> {
         setTextContent("band_name", Component.translatable("ae2cs.menu.ender_emitter.current_band",
                 menu.bandName.isEmpty() ? Component.translatable("ae2cs.menu.ender_broadcaster.none") : Component.literal(menu.bandName)));
         setTextContent("band_channels", Component.translatable("ae2cs.menu.ender_emitter.band_channels", menu.bandUsedChannels, menu.bandTotalChannels));
-        setTextContent("emitter_channels", Component.translatable("ae2cs.menu.ender_emitter.linked_channels", menu.emitterUsedChannels));
+        setTextContent("emitter_channels", Component.translatable("ae2cs.menu.ender_emitter.linked_channels",
+                menu.emitterUsedChannels, menu.emitterTotalChannels));
         setTextContent("distance", Component.translatable("ae2cs.menu.ender_emitter.distance", menu.linkDistance, menu.maxLinkDistance));
         setTextHidden("band_channels", menu.bandName.isEmpty());
         this.cleanBandConnectionButton.setVisibility(!menu.bandName.isEmpty());

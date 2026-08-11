@@ -78,7 +78,7 @@ public class EnderEmitterMenu extends UpgradeableMenu<EnderEmitterBlockEntity> {
         this.maxLinkDistance = EnderEmitterBlockEntity.maxLinkDistance.get();
         this.bandName = getHost().getBandName();
         this.emitterUsedChannels = getHost().getUsedLinkChannels();
-        this.emitterTotalChannels = getHost().getMaxLinkChannels();
+        this.emitterTotalChannels = getHost().getDisplayedMaxLinkChannels();
 
         BroadcastFrequencyBand band = bandName.isEmpty() ? null : FrequencyBandManager.getBand(bandName);
         this.bandUsedChannels = band == null ? 0 : band.getUsedChannels();

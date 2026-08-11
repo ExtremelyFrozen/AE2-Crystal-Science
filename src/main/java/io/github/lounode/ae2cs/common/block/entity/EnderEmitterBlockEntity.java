@@ -69,11 +69,6 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
                                      CustomChannelProviderHost, BroadcastReceiverHost, CustomReturnableSubMenuHost {
 
     /**
-     * 末影发信器连接频段时默认申请的频道数量。
-     */
-    private static final int DEFAULT_BAND_REQUESTED_CHANNELS = 32;
-
-    /**
      * 以全局区块坐标为索引的发信器位置表，用来快速寻找发信器，每个区块key下的set集合都对应周围3x3区块范围内所有发信器
      */
     public static Map<GlobalChunkPos, Set<BlockPos>> EMITTER_CHUNK_POSITIONS = new HashMap<>();
@@ -181,6 +176,8 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         }
 
         newBand.declareReceiver(globalPos);
+        this.bandId = newBand.getName();
+        onGridConnectableSidesChanged();
         setEnabledCustomChannel(true);
         setMaxChannels(0);
 
@@ -189,7 +186,6 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
             newBand.onReceiverOnline(server, globalPos, node, this);
         }
 
-        this.bandId = newBand.getName();
         setChanged();
         markForClientUpdate();
     }
@@ -211,6 +207,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         }
 
         bandId = "";
+        onGridConnectableSidesChanged();
         setEnabledCustomChannel(false);
         setMaxChannels(0);
         setChanged();
@@ -245,9 +242,16 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         this.enabledCustomChannel = enabled;
     }
 
+    /**
+     * 返回频段应分配给本发信器的实时需求。空闲时严格等于已用频道；存在待连接目标时仅临时追加一个建连频道。
+     */
     @Override
     public int getExpectedChannels() {
-        return DEFAULT_BAND_REQUESTED_CHANNELS;
+        int usedChannels = Math.max(0, getUsedLinkChannels());
+        if (usedChannels == Integer.MAX_VALUE) {
+            return Integer.MAX_VALUE;
+        }
+        return pendingLinkPositions.isEmpty() ? usedChannels : usedChannels + 1;
     }
 
     private static int clampChannelCount(long channels) {
@@ -320,6 +324,11 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         }
         if (!active) return;
         if (selfNode.getUsedChannels() >= getMaxLinkChannels()) {
+            if (isConnectedToBand()) {
+                // 频段模式会在下一次重算中按已用频道扩容，保留待连接项以便继续处理。
+                return;
+            }
+
             // 当无可用频道时清除pending
             if (!pendingLinkPositions.isEmpty()) {
                 pendingLinkPositions.clear();
@@ -388,6 +397,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         }
 
         if (pendingSize != pendingLinkPositions.size()) {
+            markBandRuntimeDirty();
             setChanged();
             markForClientUpdate();
         }
@@ -416,16 +426,31 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
     private void addPosToPending(BlockPos pos) {
         this.pendingLinkPositions.add(pos);
         this.recentAddedPosCountdown = 2;
+        markBandRuntimeDirty();
     }
 
     private void addListPosToPending(Collection<BlockPos> posList) {
         this.pendingLinkPositions.addAll(posList);
         this.recentAddedPosCountdown = 2;
+        markBandRuntimeDirty();
     }
 
     public int getMaxLinkChannels() {
         IGridNode node = getMainNode().getNode();
         return node == null ? 0 : node.getMaxChannels();
+    }
+
+    /**
+     * 获取界面展示用的频道上限；频段模式下展示整个频段的总可用频道。
+     */
+    public int getDisplayedMaxLinkChannels() {
+        if (!bandId.isEmpty()) {
+            BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
+            if (band != null) {
+                return clampChannelCount(band.getUsableChannels());
+            }
+        }
+        return getMaxLinkChannels();
     }
 
     public int getUsedLinkChannels() {
@@ -474,6 +499,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
 
     @Override
     public void onReady() {
+        onGridConnectableSidesChanged();
         super.onReady();
         // 节点准备好之后加入到缓存表
         if (level != null && !level.isClientSide()) {
@@ -734,9 +760,11 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         if (!valid) {
             if (emitter.level == null) return false;
             IGridNode emitterNode = emitter.getMainNode().getNode();
-            if (emitterNode == null || !emitterNode.isActive()) return false;
+            if (emitterNode == null) return false;
+            if (!emitterNode.isActive() && !emitter.isConnectedToBand()) return false;
             IInWorldGridNodeHost targetNodeHost = emitter.level.getCapability(AECapabilities.IN_WORLD_GRID_NODE_HOST, pos);
-            valid = (forceAuto || emitter.isAutoMode()) && emitterNode.getUsedChannels() < emitter.getMaxLinkChannels() && (!(targetNodeHost instanceof CableBusBlockEntity) || emitter.allowAutoLinkCableLike()) && VecHelper.closerThanChebyshev(emitter.worldPosition, pos, emitter.linkDistance);
+            boolean hasAvailableChannels = emitterNode.getUsedChannels() < emitter.getMaxLinkChannels();
+            valid = (forceAuto || emitter.isAutoMode()) && (hasAvailableChannels || emitter.isConnectedToBand()) && (!(targetNodeHost instanceof CableBusBlockEntity) || emitter.allowAutoLinkCableLike()) && VecHelper.closerThanChebyshev(emitter.worldPosition, pos, emitter.linkDistance);
         }
 
         if (valid) {
@@ -757,10 +785,12 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         var connections = emitter.linkedConnections.remove(targetPos);
         if (connections != null && !connections.isEmpty()) {
             for (IGridConnection connection : connections) {
-                if (connection != null)
+                if (connection != null) {
                     connection.destroy();
+                }
             }
         }
+        emitter.markBandRuntimeDirty();
         emitter.setChanged();
         emitter.markForClientUpdate();
     }
@@ -844,6 +874,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         emitter.linkedConnections.clear();
         emitter.linkedPositions.clear();
         emitter.pendingLinkPositions.clear();
+        emitter.markBandRuntimeDirty();
         emitter.setChanged();
         emitter.markForClientUpdate();
     }
