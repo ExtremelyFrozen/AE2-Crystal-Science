@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "ae2cs:block/energized_certus_quartz_crystal_cluster"
+  }
+}

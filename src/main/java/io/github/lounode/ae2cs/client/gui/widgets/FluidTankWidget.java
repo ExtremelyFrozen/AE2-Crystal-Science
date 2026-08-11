@@ -28,7 +28,12 @@ public class FluidTankWidget extends AbstractWidget implements ITooltip {
     private final Runnable clickAction;
 
     public FluidTankWidget(int x, int y, Supplier<FluidTankState> state, Runnable clickAction) {
-        super(x, y, 18, 60, Component.empty());
+        this(x, y, 18, 60, state, clickAction);
+    }
+
+    public FluidTankWidget(int x, int y, int width, int height, Supplier<FluidTankState> state,
+                           Runnable clickAction) {
+        super(x, y, width, height, Component.empty());
         this.state = state;
         this.clickAction = clickAction;
     }

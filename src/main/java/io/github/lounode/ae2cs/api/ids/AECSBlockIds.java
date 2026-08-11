@@ -2,6 +2,13 @@ package io.github.lounode.ae2cs.api.ids;
 
 public class AECSBlockIds {
 
+    public static final String CRYSTAL_MOTHER_ROCK_SUFFIX = "mother_rock";
+    public static final String SMALL_CRYSTAL_BUD_SUFFIX = "small_crystal_bud";
+    public static final String MEDIUM_CRYSTAL_BUD_SUFFIX = "medium_crystal_bud";
+    public static final String LARGE_CRYSTAL_BUD_SUFFIX = "large_crystal_bud";
+    public static final String CRYSTAL_CLUSTER_SUFFIX = "crystal_cluster";
+    public static final String MATURE_CRYSTAL_CLUSTER_SUFFIX = "mature_crystal_cluster";
+
     // 普通方块
     public static final String ENDER_QUARTZ_BLOCK = "ender_quartz_block";
     public static final String RESONATING_CRYSTAL_BLOCK = "resonating_crystal_block";
@@ -30,6 +37,7 @@ public class AECSBlockIds {
     public static final String CRYSTAL_VIBRATION_CHAMBER = "crystal_vibration_chamber";
     public static final String CRYSTAL_AGGREGATOR = "crystal_aggregator";
     public static final String CRYSTAL_INFUSER = "crystal_infuser";
+    public static final String PULSE_CENTRIFUGE = "pulse_centrifuge";
     public static final String ENTROPY_VARIATION_REACTION_CHAMBER = "entropy_variation_reaction_chamber";
     public static final String ENDER_BROADCASTER = "ender_broadcaster";
     public static final String ENDER_EMITTER = "ender_emitter";
@@ -45,4 +53,12 @@ public class AECSBlockIds {
     public static final String MIRROR_PATTERN_PROVIDER = "mirror_pattern_provider";
     public static final String METEORITE_PATTERN_PROVIDER = "meteorite_pattern_provider";
     public static final String QUARTZ_OSCILLATOR_CLOCK = "quartz_oscillator_clock";
+
+    public static String crystalMotherRock(String materialId) {
+        return materialId + "_" + CRYSTAL_MOTHER_ROCK_SUFFIX;
+    }
+
+    public static String crystalGrowthStage(String materialId, String stageSuffix) {
+        return materialId + "_" + stageSuffix;
+    }
 }

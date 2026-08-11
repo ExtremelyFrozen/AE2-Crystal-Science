@@ -2,6 +2,7 @@ dependencies {
     compileOnly(libs.jetbrains.annotations)
 
     testImplementation(libs.testframework)
+    localRuntime(libs.testframework)
 
     // Misc libraries
     compileOnly(forge.jech)

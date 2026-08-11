@@ -1,6 +1,7 @@
 package io.github.lounode.ae2cs.datagen;
 
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.init.CrystalFamilyBlocks;
 
 import appeng.core.definitions.AEItems;
 
@@ -16,6 +17,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
@@ -45,6 +47,16 @@ public class AECSBlockLootTableProvider extends BlockLootSubProvider {
                 createOreLikeDrops(AECSBlocks.CHARGED_CERTUS_QUARTZ_ORE.get(), AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, 1.0f, 2.0f));
         add(AECSBlocks.DEEPSLATE_CHARGED_CERTUS_QUARTZ_ORE.get(),
                 createOreLikeDrops(AECSBlocks.DEEPSLATE_CHARGED_CERTUS_QUARTZ_ORE.get(), AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, 1.0f, 2.0f));
+
+        for (CrystalFamilyBlocks family : AECSBlocks.getCrystalFamilies()) {
+            for (DeferredBlock<? extends Block> stage : family.stages()) {
+                if (stage == family.finalStage()) {
+                    add(stage.get(), createCrystalClusterDrops(stage.get(), family.crystalDrop().get()));
+                } else {
+                    dropWhenSilkTouch(stage.get());
+                }
+            }
+        }
     }
 
     @Override
@@ -72,5 +84,17 @@ public class AECSBlockLootTableProvider extends BlockLootSubProvider {
                         LootItem.lootTableItem(dropItem)
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(min, max)))
                                 .apply(ApplyBonusCount.addOreBonusCount(enchantment.getOrThrow(Enchantments.FORTUNE)))));
+    }
+
+    protected LootTable.Builder createCrystalClusterDrops(Block selfBlock, ItemLike dropItem) {
+        var enchantments = this.registries.lookupOrThrow(Registries.ENCHANTMENT);
+        return createSilkTouchDispatchTable(
+                selfBlock,
+                applyExplosionDecay(
+                        selfBlock,
+                        LootItem.lootTableItem(dropItem)
+                                .apply(SetItemCountFunction.setCount(ConstantValue.exactly(4)))
+                                .apply(ApplyBonusCount.addUniformBonusCount(
+                                        enchantments.getOrThrow(Enchantments.FORTUNE)))));
     }
 }

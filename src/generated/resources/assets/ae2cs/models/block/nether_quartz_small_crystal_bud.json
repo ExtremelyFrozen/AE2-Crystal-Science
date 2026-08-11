@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cross",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "cross": "ae2cs:block/nether_quartz_small_crystal_bud"
+  }
+}

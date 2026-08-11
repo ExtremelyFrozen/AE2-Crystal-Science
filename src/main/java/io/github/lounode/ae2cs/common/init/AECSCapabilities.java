@@ -3,6 +3,7 @@ package io.github.lounode.ae2cs.common.init;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.block.entity.*;
 import io.github.lounode.ae2cs.common.machine.IMachineHost;
+import io.github.lounode.ae2cs.common.machine.MachineFluidHost;
 import io.github.lounode.ae2cs.common.machine.component.AppEngInvComponent;
 import io.github.lounode.ae2cs.common.machine.component.EnergyComponent;
 import io.github.lounode.ae2cs.common.machine.component.GenericStackInvComponent;
@@ -80,7 +81,10 @@ public class AECSCapabilities {
             event.registerBlockEntity(
                     Capabilities.FluidHandler.BLOCK,
                     beType,
-                    (be, direction) -> be instanceof IFluidHandler handler ? handler : null);
+                    (be, direction) -> {
+                        if (be instanceof MachineFluidHost host) return host.getFluidHandler();
+                        return be instanceof IFluidHandler handler ? handler : null;
+                    });
         }
         for (BlockEntityType<?> beType : AECSBlockEntities.getAnnotatedWith(GenericInternalInventory.class)) {
             event.registerBlockEntity(

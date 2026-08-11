@@ -10,8 +10,10 @@ import appeng.block.AEBaseBlock;
 import appeng.block.crafting.PatternProviderBlock;
 import appeng.block.misc.InterfaceBlock;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -22,6 +24,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class AECSBlocks {
@@ -47,6 +50,58 @@ public class AECSBlocks {
      * 非自身掉落式方块 用于datagen避让
      */
     private static final List<DeferredBlock<? extends Block>> NOT_SELF_DROP = new ArrayList<>();
+
+    private static final List<CrystalFamilyBlocks> CRYSTAL_FAMILIES = new ArrayList<>();
+
+    private static final List<String> FOUR_CRYSTAL_STAGES = List.of(
+            AECSBlockIds.SMALL_CRYSTAL_BUD_SUFFIX,
+            AECSBlockIds.MEDIUM_CRYSTAL_BUD_SUFFIX,
+            AECSBlockIds.LARGE_CRYSTAL_BUD_SUFFIX,
+            AECSBlockIds.CRYSTAL_CLUSTER_SUFFIX);
+
+    private static final List<String> FIVE_CRYSTAL_STAGES = List.of(
+            AECSBlockIds.SMALL_CRYSTAL_BUD_SUFFIX,
+            AECSBlockIds.MEDIUM_CRYSTAL_BUD_SUFFIX,
+            AECSBlockIds.LARGE_CRYSTAL_BUD_SUFFIX,
+            AECSBlockIds.CRYSTAL_CLUSTER_SUFFIX,
+            AECSBlockIds.MATURE_CRYSTAL_CLUSTER_SUFFIX);
+
+    private static final int[] CRYSTAL_HEIGHTS = { 3, 4, 5, 7, 7 };
+    private static final int[] CRYSTAL_OFFSETS = { 4, 3, 3, 3, 3 };
+    private static final int[] CRYSTAL_LIGHT_LEVELS = { 1, 2, 4, 5, 5 };
+
+    // -------------------母岩与晶簇-----------------
+    public static final CrystalFamilyBlocks NETHER_QUARTZ_CRYSTALS = registerCrystalFamily(
+            "nether_quartz", FOUR_CRYSTAL_STAGES, AECSItems.PURE_NETHER_QUARTZ_CRYSTAL);
+    public static final CrystalFamilyBlocks ENERGIZED_CERTUS_QUARTZ_CRYSTALS = registerCrystalFamily(
+            "energized_certus_quartz", FOUR_CRYSTAL_STAGES, AECSItems.PURE_ENERGIZED_CERTUS_QUARTZ_CRYSTAL);
+    public static final CrystalFamilyBlocks ENDER_QUARTZ_CRYSTALS = registerCrystalFamily(
+            "ender_quartz", FIVE_CRYSTAL_STAGES, AECSItems.PURE_ENDER_QUARTZ);
+    public static final CrystalFamilyBlocks ENERGIZED_FLUIX_CRYSTALS = registerCrystalFamily(
+            "energized_fluix", FOUR_CRYSTAL_STAGES, AECSItems.PURE_ENERGIZED_FLUIX_CRYSTAL);
+    public static final CrystalFamilyBlocks FLUIX_CRYSTALS = registerCrystalFamily(
+            "fluix", FOUR_CRYSTAL_STAGES, AECSItems.PURE_FLUIX_CRYSTAL);
+    public static final CrystalFamilyBlocks REDSTONE_CRYSTALS = registerCrystalFamily(
+            "redstone", FOUR_CRYSTAL_STAGES, AECSItems.PURE_REDSTONE_CRYSTAL);
+    public static final CrystalFamilyBlocks RESONATING_CRYSTALS = registerCrystalFamily(
+            "resonating", FIVE_CRYSTAL_STAGES, AECSItems.PURE_RESONATING_CRYSTAL);
+    public static final CrystalFamilyBlocks QUANTUM_CRYSTALS = registerCrystalFamily(
+            "quantum", FIVE_CRYSTAL_STAGES, AECSItems.PURE_QUANTUM_CRYSTAL);
+    public static final CrystalFamilyBlocks LINK_CRYSTALS = registerCrystalFamily(
+            "link", FIVE_CRYSTAL_STAGES, AECSItems.PURE_LINK_CRYSTAL);
+    public static final CrystalFamilyBlocks METEOR_CRYSTALS = registerCrystalFamily(
+            "meteor", FIVE_CRYSTAL_STAGES, AECSItems.PURE_METEOR_CRYSTAL);
+
+    public static final DeferredBlock<CrystalMotherRockBlock> ENTRO_MOTHER_ROCK = registerOtherBlock(
+            AECSBlockIds.crystalMotherRock("entro"),
+            () -> new CrystalMotherRockBlock(
+                    copy(Blocks.BUDDING_AMETHYST),
+                    new CrystalGrowthSequence(List.of(
+                            ResourceLocation.fromNamespaceAndPath("extendedae", "entro_cluster_small"),
+                            ResourceLocation.fromNamespaceAndPath("extendedae", "entro_cluster_medium"),
+                            ResourceLocation.fromNamespaceAndPath("extendedae", "entro_cluster_large"),
+                            ResourceLocation.fromNamespaceAndPath("extendedae", "entro_cluster"))),
+                    true));
 
     // -------------------高纯水晶块-----------------
     public static final DeferredBlock<Block> PURE_ENDER_QUARTZ_BLOCK = registerCrystalBlock(AECSBlockIds.ENDER_QUARTZ_BLOCK, () -> new Block(copy(Blocks.IRON_BLOCK)));
@@ -137,6 +192,11 @@ public class AECSBlocks {
      * 晶体注能器
      */
     public static final DeferredBlock<CrystalInfuserBlock> CRYSTAL_INFUSER_BLOCK = registerOtherBlock(AECSBlockIds.CRYSTAL_INFUSER, () -> new CrystalInfuserBlock(AEBaseBlock.metalProps()));
+
+    /**
+     * 脉冲离心机
+     */
+    public static final DeferredBlock<PulseCentrifugeBlock> PULSE_CENTRIFUGE_BLOCK = registerOtherBlock(AECSBlockIds.PULSE_CENTRIFUGE, () -> new PulseCentrifugeBlock(AEBaseBlock.metalProps()));
 
     /**
      * 熵变反应仓
@@ -233,6 +293,19 @@ public class AECSBlocks {
         return NOT_SELF_DROP;
     }
 
+    public static List<CrystalFamilyBlocks> getCrystalFamilies() {
+        return Collections.unmodifiableList(CRYSTAL_FAMILIES);
+    }
+
+    public static List<DeferredBlock<CrystalMotherRockBlock>> getCrystalMotherRocks() {
+        List<DeferredBlock<CrystalMotherRockBlock>> motherRocks = new ArrayList<>();
+        for (CrystalFamilyBlocks family : CRYSTAL_FAMILIES) {
+            motherRocks.add(family.motherRock());
+        }
+        motherRocks.add(ENTRO_MOTHER_ROCK);
+        return Collections.unmodifiableList(motherRocks);
+    }
+
     // 工具方法
     private static <T extends Block> DeferredBlock<T> registerNotSelfDropBlock(String name, Supplier<T> block) {
         DeferredBlock<T> toReturn = registerBlock(name, block);
@@ -247,7 +320,7 @@ public class AECSBlocks {
     }
 
     private static <T extends Block> DeferredBlock<T> registerOtherBlock(String name, Supplier<T> block,
-                                                                         java.util.function.Function<DeferredBlock<T>, Item> itemFactory) {
+                                                                         Function<DeferredBlock<T>, Item> itemFactory) {
         DeferredBlock<T> toReturn = registerOnlyBlock(name, block);
         OTHERS.add(toReturn);
         AECSItems.ITEMS.register(name, () -> itemFactory.apply(toReturn));
@@ -274,6 +347,43 @@ public class AECSBlocks {
 
     private static <T extends Block> void registerBlockItem(String name, DeferredBlock<T> block) {
         AECSItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
+    }
+
+    private static CrystalFamilyBlocks registerCrystalFamily(
+                                                             String materialId,
+                                                             List<String> stageSuffixes,
+                                                             Supplier<? extends ItemLike> crystalDrop) {
+        List<ResourceLocation> stageIds = stageSuffixes.stream()
+                .map(suffix -> ResourceLocation.fromNamespaceAndPath(
+                        AECSConstants.MODID,
+                        AECSBlockIds.crystalGrowthStage(materialId, suffix)))
+                .toList();
+        CrystalGrowthSequence growthSequence = new CrystalGrowthSequence(stageIds);
+        DeferredBlock<CrystalMotherRockBlock> motherRock = registerOtherBlock(
+                AECSBlockIds.crystalMotherRock(materialId),
+                () -> new CrystalMotherRockBlock(copy(Blocks.BUDDING_AMETHYST), growthSequence, false));
+
+        List<DeferredBlock<? extends Block>> stages = new ArrayList<>();
+        for (int index = 0; index < stageSuffixes.size(); index++) {
+            int stageIndex = index;
+            String stageId = AECSBlockIds.crystalGrowthStage(materialId, stageSuffixes.get(index));
+            Block template = switch (stageIndex) {
+                case 0 -> Blocks.SMALL_AMETHYST_BUD;
+                case 1 -> Blocks.MEDIUM_AMETHYST_BUD;
+                case 2 -> Blocks.LARGE_AMETHYST_BUD;
+                default -> Blocks.AMETHYST_CLUSTER;
+            };
+            stages.add(registerNotSelfDropBlock(
+                    stageId,
+                    () -> new CrystalClusterBlock(
+                            CRYSTAL_HEIGHTS[stageIndex],
+                            CRYSTAL_OFFSETS[stageIndex],
+                            copy(template).lightLevel(ignored -> CRYSTAL_LIGHT_LEVELS[stageIndex]))));
+        }
+
+        CrystalFamilyBlocks family = new CrystalFamilyBlocks(materialId, motherRock, stages, crystalDrop);
+        CRYSTAL_FAMILIES.add(family);
+        return family;
     }
 
     // 注册监听

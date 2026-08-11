@@ -23,6 +23,7 @@ It can be installed in:
 - <ItemLink id="ae2cs:crystal_vibration_chamber" />
 - <ItemLink id="ae2cs:circuit_etcher" />
 - <ItemLink id="ae2cs:crystal_pulverizer" />
+- <ItemLink id="ae2cs:pulse_centrifuge" />
 - <ItemLink id="ae2cs:crystal_aggregator" />
 - <ItemLink id="ae2cs:entropy_variation_reaction_chamber" />
 - <ItemLink id="ae2cs:meteorite_pattern_provider" /> and its part form

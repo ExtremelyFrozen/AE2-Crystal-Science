@@ -29,6 +29,8 @@ public class AECSEmiPlugin implements EmiPlugin {
                 new MachineEmiRecipeHandler<>(CrystalPulverizerRecipeCategory.RECIPE_TYPE));
         registry.addRecipeHandler(AECSMenus.CRYSTAL_INFUSER_MENU.get(),
                 new MachineEmiRecipeHandler<>(CrystalInfuserRecipeCategory.RECIPE_TYPE));
+        registry.addRecipeHandler(AECSMenus.PULSE_CENTRIFUGE_MENU.get(),
+                new MachineEmiRecipeHandler<>(PulseCentrifugeRecipeCategory.RECIPE_TYPE));
         registry.addRecipeHandler(AECSMenus.ENTROPY_VARIATION_REACTION_CHAMBER_MENU.get(),
                 new MachineEmiRecipeHandler<>(EntropyVariationReactionChamberRecipeCategory.RECIPE_TYPE));
 
@@ -67,6 +69,14 @@ public class AECSEmiPlugin implements EmiPlugin {
         registry.getRecipeManager().getAllRecipesFor(AECSRecipeTypes.CRYSTAL_INFUSER.get())
                 .stream()
                 .map(CrystalInfuserRecipeCategory::new)
+                .forEach(registry::addRecipe);
+
+        registry.addCategory(PulseCentrifugeRecipeCategory.RECIPE_TYPE);
+        registry.addWorkstation(PulseCentrifugeRecipeCategory.RECIPE_TYPE,
+                EmiStack.of(AECSBlocks.PULSE_CENTRIFUGE_BLOCK));
+        registry.getRecipeManager().getAllRecipesFor(AECSRecipeTypes.PULSE_CENTRIFUGE.get())
+                .stream()
+                .map(PulseCentrifugeRecipeCategory::new)
                 .forEach(registry::addRecipe);
 
         registry.addCategory(CrystalGrowthCategory.RECIPE_TYPE);

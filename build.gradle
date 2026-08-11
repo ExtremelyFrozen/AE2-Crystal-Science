@@ -80,6 +80,11 @@ tasks.withType(JavaCompile).configureEach {
     options.compilerArgs << "-Xlint:-removal"
 }
 
+// The test source set contains NeoForge GameTests, which run through runGameTestServer rather than JUnit.
+tasks.named('test', Test).configure {
+    failOnNoDiscoveredTests = false
+}
+
 lombok {
     version = "1.18.38"
 }

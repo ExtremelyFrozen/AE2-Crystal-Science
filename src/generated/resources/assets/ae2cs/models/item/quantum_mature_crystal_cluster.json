@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "ae2cs:block/quantum_mature_crystal_cluster"
+  }
+}

@@ -4,6 +4,7 @@ import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.init.CrystalFamilyBlocks;
 
 import appeng.api.orientation.BlockOrientation;
 import appeng.api.orientation.IOrientationStrategy;
@@ -40,6 +41,10 @@ public class AECSBlockStateProvider extends BlockStateProvider {
         for (DeferredBlock<? extends Block> block : AECSBlocks.getCrystalBlocks()) {
             blockWithItem(block);
         }
+        for (CrystalFamilyBlocks family : AECSBlocks.getCrystalFamilies()) {
+            genCrystalFamily(family);
+        }
+        blockWithItem(AECSBlocks.ENTRO_MOTHER_ROCK);
         blockWithItem(AECSBlocks.SILICON_BLOCK);
         blockWithItem(AECSBlocks.CERTUS_QUARTZ_ORE);
         blockWithItem(AECSBlocks.DEEPSLATE_CERTUS_QUARTZ_ORE);
@@ -59,6 +64,7 @@ public class AECSBlockStateProvider extends BlockStateProvider {
         genSixFaceLike(AECSBlocks.CRYSTAL_PULVERIZER_BLOCK.get());
         genSixFaceLike(AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK.get());
         genSixFaceLike(AECSBlocks.CRYSTAL_INFUSER_BLOCK.get());
+        genSixFaceLike(AECSBlocks.PULSE_CENTRIFUGE_BLOCK.get());
         genSixFaceLike(AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK.get());
         genSixFaceLike(AECSBlocks.QUARTZ_OSCILLATOR_CLOCK_BLOCK.get());
         genEnderBroadcaster();
@@ -69,6 +75,23 @@ public class AECSBlockStateProvider extends BlockStateProvider {
 
     private void blockWithItem(DeferredBlock<? extends Block> deferredBlock) {
         simpleBlockWithItem(deferredBlock.get(), cubeAll(deferredBlock.get()));
+    }
+
+    private void genCrystalFamily(CrystalFamilyBlocks family) {
+        blockWithItem(family.motherRock());
+        for (DeferredBlock<? extends Block> stage : family.stages()) {
+            genCrystalCluster(stage.get());
+        }
+    }
+
+    private void genCrystalCluster(Block block) {
+        String name = path(block).getPath();
+        ResourceLocation texture = modLoc("block/" + name);
+        BlockModelBuilder model = models().cross(name, texture).renderType("cutout");
+        directionalBlock(block, model);
+        itemModels()
+                .withExistingParent(name, mcLoc("item/generated"))
+                .texture("layer0", texture);
     }
 
     /**

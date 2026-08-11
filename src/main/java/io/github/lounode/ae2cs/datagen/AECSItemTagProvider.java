@@ -198,6 +198,7 @@ public class AECSItemTagProvider extends ItemTagsProvider {
                 .add(AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK.asItem())
                 .add(AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK.asItem())
                 .add(AECSBlocks.CRYSTAL_INFUSER_BLOCK.asItem())
+                .add(AECSBlocks.PULSE_CENTRIFUGE_BLOCK.asItem())
                 .add(AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK.asItem())
                 .add(AECSBlocks.ENDER_BROADCASTER_BLOCK.asItem())
                 .add(AECSBlocks.ENDER_EMITTER_BLOCK.asItem());
