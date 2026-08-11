@@ -79,9 +79,6 @@ public class AppEngInvComponent extends BaseMachineComponent {
 
                         @Override
                         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-                            if (simulate) {
-                                return rawInv.extractItem(slot, amount, true);
-                            }
                             return ItemStack.EMPTY;
                         }
                     };

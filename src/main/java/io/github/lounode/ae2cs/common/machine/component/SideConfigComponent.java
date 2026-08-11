@@ -170,9 +170,6 @@ public class SideConfigComponent extends BaseMachineComponent {
 
                 @Override
                 public long extract(int slot, AEKey what, long amount, Actionable mode) {
-                    if (mode == Actionable.SIMULATE) {
-                        return super.extract(slot, what, amount, mode);
-                    }
                     return policy.allowExtract() ? super.extract(slot, what, amount, mode) : 0;
                 }
             };
@@ -215,13 +212,10 @@ public class SideConfigComponent extends BaseMachineComponent {
 
                 @Override
                 public ItemStack extractItem(int slot, int amount, boolean simulate) {
-                    if (simulate) {
-                        return combined.extractItem(slot, amount, true);
-                    }
                     if (!policy.allowExtract()) {
                         return ItemStack.EMPTY;
                     }
-                    return combined.extractItem(slot, amount, false);
+                    return combined.extractItem(slot, amount, simulate);
                 }
             };
         }
