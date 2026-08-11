@@ -128,22 +128,6 @@ public class SideConfigComponent extends BaseMachineComponent {
         this.container.host().markChanged();
     }
 
-    /**
-     * 判断一个面是否可执行自动输入。
-     *
-     * <p>
-     * 当自动输入和自动输出同时开启，且该面同时允许输入和输出时，只允许自动输出。
-     * 否则物品可能经相邻管道缓冲后在下一 tick 被重新拉回机器，形成回流并被重复处理。
-     *
-     * @param policy     该面的输入输出策略
-     * @param autoImport 是否开启自动输入
-     * @param autoExport 是否开启自动输出
-     * @return 该面是否应执行自动输入
-     */
-    static boolean shouldAutoImport(SidePolicy policy, boolean autoImport, boolean autoExport) {
-        return autoImport && policy.allowInsert() && !(autoExport && policy.allowExtract());
-    }
-
     public SidePolicy get(Direction dir) {
         return policies.get(dir);
     }
@@ -186,9 +170,6 @@ public class SideConfigComponent extends BaseMachineComponent {
 
                 @Override
                 public long extract(int slot, AEKey what, long amount, Actionable mode) {
-                    if (mode == Actionable.SIMULATE) {
-                        return super.extract(slot, what, amount, mode);
-                    }
                     return policy.allowExtract() ? super.extract(slot, what, amount, mode) : 0;
                 }
             };
@@ -215,8 +196,7 @@ public class SideConfigComponent extends BaseMachineComponent {
         if (!policy.allowInsert() && !policy.allowExtract()) {
             result = null;
         } else {
-            var combined = appEngInvComponent.combined();
-            result = new FilteredInternalInventory(combined, new IAEItemFilter() {
+            result = new FilteredInternalInventory(appEngInvComponent.combined(), new IAEItemFilter() {
 
                 @Override
                 public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
@@ -225,21 +205,9 @@ public class SideConfigComponent extends BaseMachineComponent {
 
                 @Override
                 public boolean allowExtract(InternalInventory inv, int slot, int amount) {
-                    return true;
+                    return policy.allowExtract();
                 }
-            }) {
-
-                @Override
-                public ItemStack extractItem(int slot, int amount, boolean simulate) {
-                    if (simulate) {
-                        return combined.extractItem(slot, amount, true);
-                    }
-                    if (!policy.allowExtract()) {
-                        return ItemStack.EMPTY;
-                    }
-                    return combined.extractItem(slot, amount, false);
-                }
-            };
+            });
         }
 
         appEngSideCache.put(dir, result);
@@ -275,7 +243,7 @@ public class SideConfigComponent extends BaseMachineComponent {
             SidePolicy policy = kv.getValue();
 
             boolean doExport = autoExport && policy.allowExtract();
-            boolean doImport = shouldAutoImport(policy, autoImport, autoExport);
+            boolean doImport = autoImport && policy.allowInsert();
             if (!doExport && !doImport) continue;
 
             // 获取目标位置
@@ -286,6 +254,7 @@ public class SideConfigComponent extends BaseMachineComponent {
             IItemHandler otherItemHandler = level.getCapability(Capabilities.ItemHandler.BLOCK, otherPos, otherSide);
             if (otherItemHandler == null) continue;
             PlatformInventoryWrapper otherInv = new PlatformInventoryWrapper(otherItemHandler);
+            boolean exportedToNeighbor = false;
 
             // 输出
             if (doExport) {
@@ -324,13 +293,14 @@ public class SideConfigComponent extends BaseMachineComponent {
                         self.addItems(overflow, false);
                     }
                     if (inserted > 0) {
+                        exportedToNeighbor = true;
                         remaining -= inserted;
                     }
                 }
             }
 
-            // 双向面在双自动模式下不会进入此分支，避免管道跨 tick 回流。
-            if (doImport) {
+            // 同一 tick 内不要从刚刚输出过的相邻库存回拉物品，避免外部管道产生回流。
+            if (doImport && !exportedToNeighbor) {
                 int remaining = TRANSFER_PER_SIDE;
 
                 for (int slot = 0; slot < otherInv.size() && remaining > 0; slot++) {
@@ -388,7 +358,7 @@ public class SideConfigComponent extends BaseMachineComponent {
             SidePolicy policy = kv.getValue();
 
             boolean doExport = autoExport && policy.allowExtract();
-            boolean doImport = shouldAutoImport(policy, autoImport, autoExport);
+            boolean doImport = autoImport && policy.allowInsert();
             if (!doExport && !doImport) continue;
 
             BlockPos otherPos = pos.relative(dir);
@@ -404,6 +374,7 @@ public class SideConfigComponent extends BaseMachineComponent {
             if (otherInv == null && otherStorage == null) {
                 continue;
             }
+            boolean exportedToNeighbor = false;
 
             // 输出
             if (doExport) {
@@ -436,6 +407,7 @@ public class SideConfigComponent extends BaseMachineComponent {
                         }
 
                         if (inserted > 0) {
+                            exportedToNeighbor = true;
                             remaining -= inserted;
                         }
                     }
@@ -462,14 +434,15 @@ public class SideConfigComponent extends BaseMachineComponent {
                         }
 
                         if (inserted > 0) {
+                            exportedToNeighbor = true;
                             remaining -= inserted;
                         }
                     }
                 }
             }
 
-            // 双向面在双自动模式下不会进入此分支，避免管道跨 tick 回流。
-            if (doImport) {
+            // 同一 tick 内不要从刚刚输出过的相邻库存回拉物品，避免外部管道产生回流。
+            if (doImport && !exportedToNeighbor) {
                 long remaining = TRANSFER_PER_SIDE;
 
                 // 优先Inv
