@@ -17,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,6 +33,7 @@ public class PulseCentrifugeRecipeBuilder implements RecipeBuilder {
     private final int energyCost;
     private final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
     private @Nullable SizedIngredient input;
+    private FluidStack fluidOutput = FluidStack.EMPTY;
 
     private PulseCentrifugeRecipeBuilder(ItemStack result, int energyCost) {
         this.results.add(result);
@@ -73,6 +75,11 @@ public class PulseCentrifugeRecipeBuilder implements RecipeBuilder {
         return this;
     }
 
+    public PulseCentrifugeRecipeBuilder fluidOutput(FluidStack result) {
+        fluidOutput = result == null ? FluidStack.EMPTY : result.copy();
+        return this;
+    }
+
     @Override
     public @NotNull PulseCentrifugeRecipeBuilder unlockedBy(@NotNull String name,
                                                             @NotNull Criterion<?> criterion) {
@@ -108,7 +115,7 @@ public class PulseCentrifugeRecipeBuilder implements RecipeBuilder {
             criteria.forEach(advancement::addCriterion);
         }
 
-        output.accept(id, new PulseCentrifugeRecipe(input, results, energyCost),
+        output.accept(id, new PulseCentrifugeRecipe(input, results, fluidOutput, energyCost),
                 advancement.build(id.withPrefix("recipes/")));
     }
 

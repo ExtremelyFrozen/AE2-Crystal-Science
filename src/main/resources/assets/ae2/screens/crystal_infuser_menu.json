@@ -12,8 +12,8 @@
     "srcRect": [0, 0, 176, 178]
   },
   "slots": {
-    "MACHINE_INPUT": { "left": 98, "top": 32, "grid": "BREAK_AFTER_2COLS" },
-    "MACHINE_OUTPUT": { "left": 46, "top": 41, "grid": "VERTICAL" },
+    "MACHINE_INPUT": { "left": 46, "top": 41, "grid": "VERTICAL" },
+    "MACHINE_OUTPUT": { "left": 98, "top": 32, "grid": "BREAK_AFTER_2COLS" },
     "UPGRADE": {
       "right": 0,
       "top": 0,
@@ -26,32 +26,6 @@
       "position": { "left": 8, "top": 6 }
     }
   },
-  "images": {
-    "energyRateBar": {
-      "texture": "ae2cs:textures/gui/crystal_infuser_menu.png",
-      "srcRect": [135, 40, 5, 18]
-    },
-    "workingProgressBar": {
-      "texture": "ae2cs:textures/gui/crystal_infuser_menu.png",
-      "srcRect": [71, 34, 24, 28]
-    },
-    "fluidTank": {
-      "texture": "ae2cs:textures/gui/crystal_infuser_vertical_meter.png",
-      "srcRect": [0, 0, 16, 32]
-    }
-  },
-  "widgets": {
-    "energyRateBar": {
-      "left": 135,
-      "top": 40
-    },
-    "workingProgressBar": {
-      "left": 71,
-      "top": 34
-    },
-    "fluidTank": {
-      "left": 7,
-      "top": 24
-    }
-  }
+  "images": {},
+  "widgets": {}
 }

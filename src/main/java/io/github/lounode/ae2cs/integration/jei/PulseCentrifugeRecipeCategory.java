@@ -15,6 +15,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.ITooltipBuilder;
@@ -38,20 +40,24 @@ public class PulseCentrifugeRecipeCategory implements IRecipeCategory<RecipeHold
     private static final ResourceLocation MENU_TEXTURE = AE2CrystalScience.makeId("textures/gui/pulse_centrifuge_menu.png");
     private static final Rect2i ENERGY_TOOLTIP_AREA = new Rect2i(128, 21, 6, 18);
     private static final int ANIMATION_DURATION_MS = 3_000;
+    private static final int FLUID_PER_OPERATION = 1_000;
+    private static final int FLUID_DISPLAY_CAPACITY = 1_000;
     private static final int[][] OUTPUT_POSITIONS = { { 91, 13 }, { 109, 13 }, { 91, 31 }, { 109, 31 } };
 
     private final IDrawableStatic background;
     private final IDrawable icon;
-    private final AdvancedProgressBar energyBar;
+    private final IDrawableStatic energyIndicator;
     private final AdvancedProgressBar workingProgressBar;
     private long animationStart = -1;
 
     public PulseCentrifugeRecipeCategory(IJeiHelpers helpers) {
         var guiHelper = helpers.getGuiHelper();
-        background = guiHelper.createDrawable(
-                AE2CrystalScience.makeId("textures/gui/recipe/pulse_centrifuge.png"), 0, 0, 162, 62);
+        background = guiHelper.drawableBuilder(
+                AE2CrystalScience.makeId("textures/gui/recipe/pulse_centrifuge_emi.png"), 0, 0, 162, 62)
+                .setTextureSize(162, 62)
+                .build();
         icon = guiHelper.createDrawableItemLike(AECSBlocks.PULSE_CENTRIFUGE_BLOCK);
-
+        energyIndicator = guiHelper.createDrawable(MENU_TEXTURE, 176, 34, 6, 18);
         IProgressProvider animation = new IProgressProvider() {
 
             @Override
@@ -64,17 +70,11 @@ public class PulseCentrifugeRecipeCategory implements IRecipeCategory<RecipeHold
                 return ANIMATION_DURATION_MS;
             }
         };
-        energyBar = new AdvancedProgressBar(animation,
-                Blitter.texture(MENU_TEXTURE, 256, 256).src(176, 34, 6, 18),
-                AdvancedProgressBar.FillMode.BOTTOM_TO_TOP);
-        energyBar.setX(128);
-        energyBar.setY(21);
-
         workingProgressBar = new AdvancedProgressBar(animation,
                 Blitter.texture(MENU_TEXTURE, 256, 256).src(198, 0, 22, 33),
                 AdvancedProgressBar.FillMode.LEFT_TO_RIGHT);
-        workingProgressBar.setX(64);
-        workingProgressBar.setY(15);
+        workingProgressBar.setX(66);
+        workingProgressBar.setY(19);
     }
 
     @Override
@@ -97,8 +97,8 @@ public class PulseCentrifugeRecipeCategory implements IRecipeCategory<RecipeHold
                      @NotNull GuiGraphics graphics, double mouseX, double mouseY) {
         IRecipeCategory.super.draw(recipe, slots, graphics, mouseX, mouseY);
         background.draw(graphics);
+        energyIndicator.draw(graphics, 128, 21);
         workingProgressBar.renderWidget(graphics, (int) mouseX, (int) mouseY, 0);
-        energyBar.renderWidget(graphics, (int) mouseX, (int) mouseY, 0);
     }
 
     @Override
@@ -126,11 +126,18 @@ public class PulseCentrifugeRecipeCategory implements IRecipeCategory<RecipeHold
                           @NotNull RecipeHolder<PulseCentrifugeRecipe> holder,
                           @NotNull IFocusGroup focuses) {
         PulseCentrifugeRecipe recipe = holder.value();
-        builder.addInputSlot(40, 22).addItemStacks(Arrays.asList(recipe.input().getItems()));
+        builder.addInputSlot(1, 1).setFluidRenderer(FLUID_DISPLAY_CAPACITY, true, 18, 60)
+                .addFluidStack(Fluids.WATER, FLUID_PER_OPERATION);
+        builder.addInputSlot(39, 22).addItemStacks(Arrays.asList(recipe.input().getItems()));
         List<ItemStack> results = recipe.results();
         for (int i = 0; i < results.size(); i++) {
             builder.addOutputSlot(OUTPUT_POSITIONS[i][0], OUTPUT_POSITIONS[i][1])
                     .addItemStack(results.get(i));
+        }
+        FluidStack fluidOutput = recipe.fluidOutput();
+        if (!fluidOutput.isEmpty()) {
+            builder.addOutputSlot(143, 1).setFluidRenderer(FLUID_DISPLAY_CAPACITY, true, 18, 60)
+                    .addFluidStack(fluidOutput.getFluid(), fluidOutput.getAmount());
         }
     }
 

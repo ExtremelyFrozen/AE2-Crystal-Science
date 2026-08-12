@@ -6,6 +6,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -29,12 +30,14 @@ public class PulseCentrifugeRecipeSerializer implements RecipeSerializer<PulseCe
     public static final MapCodec<PulseCentrifugeRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             SizedIngredient.FLAT_CODEC.fieldOf("input").forGetter(PulseCentrifugeRecipe::input),
             RESULTS_CODEC.fieldOf("results").forGetter(PulseCentrifugeRecipe::results),
+            FluidStack.OPTIONAL_CODEC.optionalFieldOf("fluid_output").forGetter(recipe -> recipe.fluidOutput().isEmpty() ? java.util.Optional.empty() : java.util.Optional.of(recipe.fluidOutput())),
             Codec.INT.optionalFieldOf("energy_cost", 200).forGetter(PulseCentrifugeRecipe::energyCost))
-            .apply(instance, PulseCentrifugeRecipe::new));
+            .apply(instance, (input, results, fluidOutput, energyCost) -> new PulseCentrifugeRecipe(input, results, fluidOutput.orElse(FluidStack.EMPTY), energyCost)));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PulseCentrifugeRecipe> STREAM_CODEC = StreamCodec.composite(
             SizedIngredient.STREAM_CODEC, PulseCentrifugeRecipe::input,
             RESULTS_STREAM_CODEC, PulseCentrifugeRecipe::results,
+            FluidStack.OPTIONAL_STREAM_CODEC, PulseCentrifugeRecipe::fluidOutput,
             ByteBufCodecs.VAR_INT, PulseCentrifugeRecipe::energyCost,
             PulseCentrifugeRecipe::new);
 

@@ -14,6 +14,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import dev.emi.emi.api.recipe.BasicEmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
@@ -38,10 +40,13 @@ public class PulseCentrifugeRecipeCategory extends BasicEmiRecipe {
     private static final ResourceLocation MENU_TEXTURE = AE2CrystalScience.makeId("textures/gui/pulse_centrifuge_menu.png");
     private static final Rect2i ENERGY_TOOLTIP_AREA = new Rect2i(128, 21, 6, 18);
     private static final int ANIMATION_DURATION_MS = 3_000;
+    private static final int FLUID_PER_OPERATION = 1_000;
+    private static final int FLUID_DISPLAY_CAPACITY = 1_000;
     private static final int[][] OUTPUT_POSITIONS = { { 91, 13 }, { 109, 13 }, { 91, 31 }, { 109, 31 } };
 
     private final PulseCentrifugeRecipe recipe;
-    private final AdvancedProgressBar energyBar;
+    private final EmiStack waterInput = EmiStack.of(Fluids.WATER, FLUID_PER_OPERATION);
+    private final EmiStack fluidOutput;
     private final AdvancedProgressBar workingProgressBar;
     private long animationStart = -1;
 
@@ -52,7 +57,8 @@ public class PulseCentrifugeRecipeCategory extends BasicEmiRecipe {
         for (ItemStack result : recipe.results()) {
             outputs.add(EmiStack.of(result));
         }
-
+        FluidStack recipeFluidOutput = recipe.fluidOutput();
+        fluidOutput = recipeFluidOutput.isEmpty() ? EmiStack.EMPTY : EmiStack.of(recipeFluidOutput.getFluid(), recipeFluidOutput.getAmount());
         IProgressProvider animation = new IProgressProvider() {
 
             @Override
@@ -65,30 +71,28 @@ public class PulseCentrifugeRecipeCategory extends BasicEmiRecipe {
                 return ANIMATION_DURATION_MS;
             }
         };
-        energyBar = new AdvancedProgressBar(animation,
-                Blitter.texture(MENU_TEXTURE, 256, 256).src(176, 34, 6, 18),
-                AdvancedProgressBar.FillMode.BOTTOM_TO_TOP);
-        energyBar.setX(128);
-        energyBar.setY(21);
-
         workingProgressBar = new AdvancedProgressBar(animation,
-                Blitter.texture(MENU_TEXTURE, 256, 256).src(198, 1, 20, 21),
+                Blitter.texture(MENU_TEXTURE, 256, 256).src(198, 0, 22, 33),
                 AdvancedProgressBar.FillMode.LEFT_TO_RIGHT);
         workingProgressBar.setX(66);
-        workingProgressBar.setY(20);
+        workingProgressBar.setY(19);
     }
 
     @Override
     public void addWidgets(WidgetHolder widgets) {
         widgets.addTexture(BACKGROUND, 0, 0, 162, 62, 0, 0, 162, 62, 162, 62);
-        widgets.addSlot(inputs.getFirst(), 38, 21).drawBack(false);
+        widgets.addTank(waterInput, 1, 1, 18, 60, FLUID_DISPLAY_CAPACITY).drawBack(false);
+        widgets.addSlot(inputs.getFirst(), 39, 22).drawBack(false);
         for (int i = 0; i < outputs.size(); i++) {
             widgets.addSlot(outputs.get(i), OUTPUT_POSITIONS[i][0] - 1, OUTPUT_POSITIONS[i][1] - 1)
                     .recipeContext(this)
                     .drawBack(false);
         }
+        if (!fluidOutput.isEmpty()) {
+            widgets.addTank(fluidOutput, 143, 1, 18, 60, FLUID_DISPLAY_CAPACITY).recipeContext(this).drawBack(false);
+        }
+        widgets.addTexture(MENU_TEXTURE, 128, 21, 6, 18, 176, 34, 6, 18, 256, 256);
         widgets.addDrawable(0, 0, 0, 0, workingProgressBar::renderWidget);
-        widgets.addDrawable(0, 0, 0, 0, energyBar::renderWidget);
         widgets.addTooltipText(List.of(Component.translatable(
                 "ae2cs.integration.jei.recipe_category.energy_cost.tooltip", recipe.energyCost())),
                 ENERGY_TOOLTIP_AREA.getX(), ENERGY_TOOLTIP_AREA.getY(),

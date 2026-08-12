@@ -16,10 +16,15 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class PulseCentrifugeGUI extends UpgradeableScreen<PulseCentrifugeMenu> {
 
+    private final AdvancedProgressBar energyBar;
+    private final AdvancedProgressBar workingProgressBar;
+    private final FluidTankWidget inputFluidTank;
+    private final FluidTankWidget outputFluidTank;
+
     public PulseCentrifugeGUI(PulseCentrifugeMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, StyleManager.loadStyleDoc("/screens/pulse_centrifuge_menu.json"));
 
-        AdvancedProgressBar energyBar = new AdvancedProgressBar(new IProgressProvider() {
+        energyBar = new AdvancedProgressBar(new IProgressProvider() {
 
             @Override
             public int getCurrentProgress() {
@@ -32,9 +37,7 @@ public class PulseCentrifugeGUI extends UpgradeableScreen<PulseCentrifugeMenu> {
             }
         }, style.getImage("energyRateBar"), AdvancedProgressBar.FillMode.BOTTOM_TO_TOP,
                 SimpleComponents.ENERGY_PROGRESS_BAR);
-        widgets.add("energyRateBar", energyBar);
-
-        AdvancedProgressBar workingProgressBar = new AdvancedProgressBar(new IProgressProvider() {
+        workingProgressBar = new AdvancedProgressBar(new IProgressProvider() {
 
             @Override
             public int getCurrentProgress() {
@@ -49,13 +52,32 @@ public class PulseCentrifugeGUI extends UpgradeableScreen<PulseCentrifugeMenu> {
                 SimpleComponents.WORKING_PROGRESS_BAR);
         workingProgressBar.onClick(() -> RecipeViewerNavigation.show(
                 RecipeViewerNavigation.MachineCategory.PULSE_CENTRIFUGE));
-        widgets.add("workingProgressBar", workingProgressBar);
 
-        widgets.add("leftFluidTank", new FluidTankWidget(9, 26, 14, 54, () -> getMenu().inputFluid,
-                () -> getMenu().sendFillFluidInputAction()));
-        widgets.add("rightFluidTank", new FluidTankWidget(151, 26, 14, 54, () -> getMenu().outputFluid,
-                () -> getMenu().sendDrainFluidOutputAction()));
+        inputFluidTank = new FluidTankWidget(8, 20, 18, 60, () -> getMenu().inputFluid,
+                () -> getMenu().sendFillFluidInputAction());
+        outputFluidTank = new FluidTankWidget(150, 20, 18, 60, () -> getMenu().outputFluid,
+                () -> getMenu().sendDrainFluidOutputAction());
 
         addToLeftToolbar(SideConfigGUI.iconButton());
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        energyBar.setX(leftPos + 135);
+        energyBar.setY(topPos + 40);
+        addRenderableWidget(energyBar);
+
+        workingProgressBar.setX(leftPos + 73);
+        workingProgressBar.setY(topPos + 36);
+        addRenderableWidget(workingProgressBar);
+
+        inputFluidTank.setX(leftPos + 8);
+        inputFluidTank.setY(topPos + 20);
+        addRenderableWidget(inputFluidTank);
+
+        outputFluidTank.setX(leftPos + 150);
+        outputFluidTank.setY(topPos + 20);
+        addRenderableWidget(outputFluidTank);
     }
 }

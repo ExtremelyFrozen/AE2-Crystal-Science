@@ -4,34 +4,39 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class CrystalInfuserRecipeSerializer implements RecipeSerializer<CrystalInfuserRecipe> {
 
-    private static final SizedIngredient EMPTY = new SizedIngredient(Ingredient.EMPTY, 1);
+    private static final Codec<List<ItemStack>> RESULTS_CODEC = ItemStack.CODEC.listOf().validate(results -> {
+        if (results.isEmpty() || results.size() > 4) {
+            return DataResult.error(() -> "Crystal infuser recipes require 1-4 results");
+        }
+        return DataResult.success(results);
+    });
+    private static final StreamCodec<RegistryFriendlyByteBuf, List<ItemStack>> RESULTS_STREAM_CODEC = ItemStack.STREAM_CODEC.apply(ByteBufCodecs.list(4));
 
-    public static final MapCodec<CrystalInfuserRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-            SizedIngredient.FLAT_CODEC.optionalFieldOf("input_a", EMPTY).forGetter(CrystalInfuserRecipe::inputA),
-            SizedIngredient.FLAT_CODEC.optionalFieldOf("input_b", EMPTY).forGetter(CrystalInfuserRecipe::inputB),
-            SizedIngredient.FLAT_CODEC.optionalFieldOf("input_c", EMPTY).forGetter(CrystalInfuserRecipe::inputC),
-            SizedIngredient.FLAT_CODEC.optionalFieldOf("input_d", EMPTY).forGetter(CrystalInfuserRecipe::inputD),
-            ItemStack.CODEC.fieldOf("result").forGetter(CrystalInfuserRecipe::result),
+    public static final MapCodec<CrystalInfuserRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            SizedIngredient.FLAT_CODEC.fieldOf("input").forGetter(CrystalInfuserRecipe::input),
+            RESULTS_CODEC.fieldOf("results").forGetter(CrystalInfuserRecipe::results),
+            FluidStack.OPTIONAL_CODEC.optionalFieldOf("fluid_output").forGetter(recipe -> recipe.fluidOutput().isEmpty() ? java.util.Optional.empty() : java.util.Optional.of(recipe.fluidOutput())),
             Codec.INT.optionalFieldOf("energy_cost", 200).forGetter(CrystalInfuserRecipe::energyCost))
-            .apply(inst, CrystalInfuserRecipe::new));
+            .apply(instance, (input, results, fluidOutput, energyCost) -> new CrystalInfuserRecipe(input, results, fluidOutput.orElse(FluidStack.EMPTY), energyCost)));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, CrystalInfuserRecipe> STREAM_CODEC = StreamCodec.composite(
-            SizedIngredient.STREAM_CODEC, CrystalInfuserRecipe::inputA,
-            SizedIngredient.STREAM_CODEC, CrystalInfuserRecipe::inputB,
-            SizedIngredient.STREAM_CODEC, CrystalInfuserRecipe::inputC,
-            SizedIngredient.STREAM_CODEC, CrystalInfuserRecipe::inputD,
-            ItemStack.STREAM_CODEC, CrystalInfuserRecipe::result,
+            SizedIngredient.STREAM_CODEC, CrystalInfuserRecipe::input,
+            RESULTS_STREAM_CODEC, CrystalInfuserRecipe::results,
+            FluidStack.OPTIONAL_STREAM_CODEC, CrystalInfuserRecipe::fluidOutput,
             ByteBufCodecs.VAR_INT, CrystalInfuserRecipe::energyCost,
             CrystalInfuserRecipe::new);
 

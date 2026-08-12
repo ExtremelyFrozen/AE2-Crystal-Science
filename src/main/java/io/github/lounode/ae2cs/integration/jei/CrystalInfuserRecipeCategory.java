@@ -12,8 +12,10 @@ import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.ITooltipBuilder;
@@ -33,8 +35,10 @@ public class CrystalInfuserRecipeCategory implements IRecipeCategory<RecipeHolde
 
     public static final RecipeType<RecipeHolder<CrystalInfuserRecipe>> RECIPE_TYPE = RecipeType.createRecipeHolderType(AE2CrystalScience.makeId("crystal_infuser"));
 
-    private static final Rect2i ENERGY_TOOLTIP_AREA = new Rect2i(109, 21, 6, 18);
+    private static final Rect2i ENERGY_TOOLTIP_AREA = new Rect2i(128, 21, 6, 18);
     private static final int ANIM_DURATION_MS = 3_000;
+    private static final int WATER_PER_OPERATION = 1_000;
+    private static final int WATER_TANK_CAPACITY = 4_000;
 
     private final IDrawableStatic background;
     private final IDrawable icon;
@@ -44,8 +48,8 @@ public class CrystalInfuserRecipeCategory implements IRecipeCategory<RecipeHolde
 
     public CrystalInfuserRecipeCategory(IJeiHelpers helpers) {
         var guiHelper = helpers.getGuiHelper();
-        background = guiHelper.createDrawable(AE2CrystalScience.makeId("textures/gui/recipe/crystal_infuser.png"),
-                0, 0, 162, 62);
+        background = guiHelper.drawableBuilder(AE2CrystalScience.makeId("textures/gui/recipe/crystal_infuser.png"),
+                0, 0, 162, 62).setTextureSize(162, 62).build();
         energyIndicator = guiHelper.createDrawable(
                 AE2CrystalScience.makeId("textures/gui/crystal_infuser_menu.png"),
                 176, 34, 6, 18);
@@ -65,8 +69,8 @@ public class CrystalInfuserRecipeCategory implements IRecipeCategory<RecipeHolde
         };
         workingProgressBar = new AdvancedProgressBar(animation, AECSBlitter.crystalInfuserProgress,
                 AdvancedProgressBar.FillMode.LEFT_TO_RIGHT);
-        workingProgressBar.setX(64);
-        workingProgressBar.setY(15);
+        workingProgressBar.setX(66);
+        workingProgressBar.setY(17);
     }
 
     @Override
@@ -89,7 +93,7 @@ public class CrystalInfuserRecipeCategory implements IRecipeCategory<RecipeHolde
                      @NotNull GuiGraphics graphics, double mouseX, double mouseY) {
         IRecipeCategory.super.draw(recipe, slots, graphics, mouseX, mouseY);
         background.draw(graphics);
-        energyIndicator.draw(graphics, 129, 21);
+        energyIndicator.draw(graphics, 128, 21);
         workingProgressBar.renderWidget(graphics, (int) mouseX, (int) mouseY, 0);
     }
 
@@ -116,17 +120,20 @@ public class CrystalInfuserRecipeCategory implements IRecipeCategory<RecipeHolde
     @Override
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, @NotNull RecipeHolder<CrystalInfuserRecipe> recipe,
                           @NotNull IFocusGroup focuses) {
+        builder.addInputSlot(1, 1).setFluidRenderer(WATER_TANK_CAPACITY, true, 18, 60)
+                .addFluidStack(Fluids.WATER, WATER_PER_OPERATION);
+        builder.addInputSlot(39, 22)
+                .addItemStacks(List.of(recipe.value().input().getItems()));
         int[][] positions = { { 91, 13 }, { 109, 13 }, { 91, 31 }, { 109, 31 } };
-        List<SizedIngredient> ingredients = recipe.value().required();
-        for (int i = 0; i < positions.length; i++) {
-            var slot = builder.addInputSlot(positions[i][0], positions[i][1]);
-            if (i < ingredients.size()) {
-                slot.addItemStacks(List.of(ingredients.get(i).getItems()));
-            }
+        List<ItemStack> results = recipe.value().results();
+        for (int i = 0; i < results.size(); i++) {
+            builder.addOutputSlot(positions[i][0], positions[i][1]).addItemStack(results.get(i));
         }
-        builder.addOutputSlot(34, 16)
-                .setOutputSlotBackground()
-                .addItemStack(recipe.value().result().copy());
+        FluidStack fluidOutput = recipe.value().fluidOutput();
+        if (!fluidOutput.isEmpty()) {
+            builder.addOutputSlot(143, 1).setFluidRenderer(WATER_TANK_CAPACITY, true, 18, 60)
+                    .addFluidStack(fluidOutput.getFluid(), fluidOutput.getAmount());
+        }
     }
 
     private int getAnimMsInCycle() {

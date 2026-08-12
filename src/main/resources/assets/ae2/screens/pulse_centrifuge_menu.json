@@ -40,22 +40,5 @@
       "srcRect": [198, 0, 22, 33]
     }
   },
-  "widgets": {
-    "energyRateBar": {
-      "left": 135,
-      "top": 40
-    },
-    "workingProgressBar": {
-      "left": 73,
-      "top": 38
-    },
-    "leftFluidTank": {
-      "left": 9,
-      "top": 26
-    },
-    "rightFluidTank": {
-      "left": 151,
-      "top": 26
-    }
-  }
+  "widgets": {}
 }

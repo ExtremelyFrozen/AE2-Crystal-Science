@@ -7,11 +7,12 @@ import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSRecipeTypes;
+import io.github.lounode.ae2cs.common.machine.MachineFluidHost;
+import io.github.lounode.ae2cs.common.machine.MachineFluidTanks;
 import io.github.lounode.ae2cs.common.machine.component.AppEngInvComponent;
 import io.github.lounode.ae2cs.common.machine.component.InvPort;
 import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
 import io.github.lounode.ae2cs.common.recipe.crystal_infuser.CrystalInfuserRecipe;
-import io.github.lounode.ae2cs.common.recipe.input.FourItemStackRecipeInput;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -29,22 +30,20 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @ProvideCaps(IItemHandler.class)
 @ProvideCaps(IFluidHandler.class)
 public class CrystalInfuserBlockEntity extends AENetworkedSelfPoweredBlockEntity implements IUpgradeableObject,
                                        CustomReturnableSubMenuHost,
-                                       IFluidHandler {
+                                       MachineFluidHost {
 
     private static final double BASIC_ENERGY_COST_PER_TICK = 200;
     private static final int FLUID_PER_OPERATION = 1000;
@@ -52,14 +51,11 @@ public class CrystalInfuserBlockEntity extends AENetworkedSelfPoweredBlockEntity
     private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(AECSBlocks.CRYSTAL_INFUSER_BLOCK,
             4, this::onUpgradesChanged);
 
-    private final FluidTank fluidTank = new FluidTank(4000,
-            fluid -> fluid.is(net.minecraft.world.level.material.Fluids.WATER)) {
-
-        @Override
-        protected void onContentsChanged() {
-            setChanged();
-        }
-    };
+    private final MachineFluidTanks fluidTanks = new MachineFluidTanks(4000,
+            () -> {
+                needRefreshRecipeState = true;
+                setChanged();
+            }, this::setChanged);
 
     private int speedMultiplier = 1;
     private int overclockCards;
@@ -70,7 +66,6 @@ public class CrystalInfuserBlockEntity extends AENetworkedSelfPoweredBlockEntity
     @Nullable
     private ResourceLocation activeRecipeId;
 
-    private int[] activeMatch;
     private int activeRecipeEnergyCost;
     private int recipeProgress;
     private boolean needRefreshRecipeState = true;
@@ -80,7 +75,7 @@ public class CrystalInfuserBlockEntity extends AENetworkedSelfPoweredBlockEntity
                 128000, false, AccessRestriction.WRITE);
         getMainNode().setIdlePowerUsage(0);
 
-        AppEngInternalInventory input = new AppEngInternalInventory(4) {
+        AppEngInternalInventory input = new AppEngInternalInventory(1) {
 
             @Override
             protected void onContentsChanged(int slot) {
@@ -89,7 +84,7 @@ public class CrystalInfuserBlockEntity extends AENetworkedSelfPoweredBlockEntity
                 setChanged();
             }
         };
-        AppEngInternalInventory output = new AppEngInternalInventory(1) {
+        AppEngInternalInventory output = new AppEngInternalInventory(4) {
 
             @Override
             protected void onContentsChanged(int slot) {
@@ -114,8 +109,13 @@ public class CrystalInfuserBlockEntity extends AENetworkedSelfPoweredBlockEntity
         return getMachineComponents().getService(AppEngInvComponent.class).port(InvPort.OUTPUT);
     }
 
-    public FluidTank getFluidTank() {
-        return fluidTank;
+    public MachineFluidTanks getFluidTanks() {
+        return fluidTanks;
+    }
+
+    @Override
+    public IFluidHandler getFluidHandler() {
+        return fluidTanks;
     }
 
     public int getRecipeProgress() {
@@ -154,16 +154,18 @@ public class CrystalInfuserBlockEntity extends AENetworkedSelfPoweredBlockEntity
             updateActiveRecipe();
             needRefreshRecipeState = false;
         }
-        checkActive(activeRecipe != null && getAECurrentPower() > 0 && fluidTank.getFluidAmount() >= FLUID_PER_OPERATION);
+        checkActive(activeRecipe != null && getAECurrentPower() > 0 && fluidTanks.input().getFluid().is(net.minecraft.world.level.material.Fluids.WATER) && fluidTanks.input().getFluidAmount() >= FLUID_PER_OPERATION);
 
-        if (activeRecipe == null || activeMatch == null) {
+        if (activeRecipe == null) {
             recipeProgress = 0;
             return;
         }
 
         CrystalInfuserRecipe recipe = activeRecipe.value();
+        List<ItemStack> outputPlan = planOutputInsertion(recipe.results());
+        if (outputPlan == null) return;
         if (recipeProgress < activeRecipeEnergyCost) {
-            if (getAECurrentPower() <= 0 || fluidTank.getFluidAmount() < FLUID_PER_OPERATION) return;
+            if (getAECurrentPower() <= 0 || !fluidTanks.input().getFluid().is(net.minecraft.world.level.material.Fluids.WATER) || fluidTanks.input().getFluidAmount() < FLUID_PER_OPERATION) return;
 
             double neededEnergy = Math.min(getEnergyPerTick(), activeRecipeEnergyCost - recipeProgress);
             double actualCost = extractAEPower(neededEnergy, Actionable.MODULATE);
@@ -172,24 +174,16 @@ public class CrystalInfuserBlockEntity extends AENetworkedSelfPoweredBlockEntity
         }
 
         if (recipeProgress >= activeRecipeEnergyCost) {
-            FourItemStackRecipeInput input = getRecipeInput();
-            ItemStack result = recipe.assemble(input, level.registryAccess());
-            if (result.isEmpty()) {
+            FluidStack fluidResult = recipe.fluidOutput();
+            if (!fluidResult.isEmpty() && fluidTanks.output().fill(fluidResult, IFluidHandler.FluidAction.SIMULATE) < fluidResult.getAmount()) return;
+            if (!consumeInput(recipe)) {
                 clearRecipeState();
                 return;
             }
 
-            if (!getOutputInv().insertItem(0, result, true).isEmpty()) {
-                return;
-            }
-
-            if (!consumeInputs(recipe, activeMatch)) {
-                clearRecipeState();
-                return;
-            }
-
-            fluidTank.drain(FLUID_PER_OPERATION, IFluidHandler.FluidAction.EXECUTE);
-            getOutputInv().insertItem(0, result, false);
+            fluidTanks.input().drain(FLUID_PER_OPERATION, IFluidHandler.FluidAction.EXECUTE);
+            if (!fluidResult.isEmpty()) fluidTanks.output().fill(fluidResult, IFluidHandler.FluidAction.EXECUTE);
+            commitOutputPlan(outputPlan);
             recipeProgress = 0;
             setChanged();
         }
@@ -203,19 +197,11 @@ public class CrystalInfuserBlockEntity extends AENetworkedSelfPoweredBlockEntity
         return Math.max(normalEnergy, Math.ceil((double) activeRecipeEnergyCost / targetTicks));
     }
 
-    private FourItemStackRecipeInput getRecipeInput() {
-        return FourItemStackRecipeInput.of(
-                getInputInv().getStackInSlot(0),
-                getInputInv().getStackInSlot(1),
-                getInputInv().getStackInSlot(2),
-                getInputInv().getStackInSlot(3));
-    }
-
     private void updateActiveRecipe() {
         if (level == null || level.isClientSide()) return;
 
-        FourItemStackRecipeInput input = getRecipeInput();
-        Optional<RecipeHolder<CrystalInfuserRecipe>> match = level.getRecipeManager().getRecipeFor(
+        var input = new net.minecraft.world.item.crafting.SingleRecipeInput(getInputInv().getStackInSlot(0));
+        var match = level.getRecipeManager().getRecipeFor(
                 AECSRecipeTypes.CRYSTAL_INFUSER.get(), input, level);
         if (match.isEmpty()) {
             clearRecipeState();
@@ -223,46 +209,54 @@ public class CrystalInfuserBlockEntity extends AENetworkedSelfPoweredBlockEntity
         }
 
         RecipeHolder<CrystalInfuserRecipe> holder = match.get();
-        int[] slotMatch = holder.value().findMatch(input);
-        if (slotMatch == null) {
-            clearRecipeState();
-            return;
-        }
-
         if (activeRecipe == null || !activeRecipe.id().equals(holder.id())) {
             recipeProgress = 0;
         }
         activeRecipe = holder;
-        activeMatch = slotMatch;
         activeRecipeEnergyCost = holder.value().energyCost();
     }
 
     private void clearRecipeState() {
         activeRecipe = null;
-        activeMatch = null;
         activeRecipeEnergyCost = 0;
         recipeProgress = 0;
     }
 
-    private boolean consumeInputs(CrystalInfuserRecipe recipe, int[] match) {
-        List<SizedIngredient> required = recipe.required();
-        for (int i = 0; i < required.size(); i++) {
-            SizedIngredient ingredient = required.get(i);
-            int slot = match[i];
-            ItemStack stack = getInputInv().getStackInSlot(slot);
-            if (stack.getCount() < ingredient.count() || !ingredient.ingredient().test(stack)) return false;
-        }
-        for (int i = 0; i < required.size(); i++) {
-            getInputInv().extractItem(match[i], required.get(i).count(), false);
-        }
+    private boolean consumeInput(CrystalInfuserRecipe recipe) {
+        var required = recipe.input();
+        ItemStack extracted = getInputInv().extractItem(0, required.count(), true);
+        if (extracted.getCount() < required.count() || !required.test(extracted)) return false;
+        getInputInv().extractItem(0, required.count(), false);
         return true;
+    }
+
+    @Nullable
+    private List<ItemStack> planOutputInsertion(List<ItemStack> results) {
+        AppEngInternalInventory simulated = new AppEngInternalInventory(4);
+        for (int slot = 0; slot < simulated.size(); slot++) {
+            simulated.setItemDirect(slot, getOutputInv().getStackInSlot(slot).copy());
+        }
+        for (ItemStack result : results) {
+            if (!simulated.addItems(result.copy(), false).isEmpty()) return null;
+        }
+        List<ItemStack> plan = new ArrayList<>(simulated.size());
+        for (int slot = 0; slot < simulated.size(); slot++) {
+            plan.add(simulated.getStackInSlot(slot).copy());
+        }
+        return List.copyOf(plan);
+    }
+
+    private void commitOutputPlan(List<ItemStack> plan) {
+        for (int slot = 0; slot < plan.size(); slot++) {
+            getOutputInv().setItemDirect(slot, plan.get(slot).copy());
+        }
     }
 
     @Override
     public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
         super.saveAdditional(data, registries);
         upgrades.writeToNBT(data, "upgrades", registries);
-        data.put("fluid_tank", fluidTank.writeToNBT(registries, new CompoundTag()));
+        fluidTanks.writeToNbt(data, registries);
         data.putInt("recipe_progress", recipeProgress);
         if (activeRecipe != null) {
             data.putString("active_recipe_id", activeRecipe.id().toString());
@@ -273,9 +267,7 @@ public class CrystalInfuserBlockEntity extends AENetworkedSelfPoweredBlockEntity
     public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
         super.loadTag(data, registries);
         upgrades.readFromNBT(data, "upgrades", registries);
-        if (data.contains("fluid_tank")) {
-            fluidTank.readFromNBT(registries, data.getCompound("fluid_tank"));
-        }
+        fluidTanks.readFromNbt(data, registries);
         recipeProgress = data.getInt("recipe_progress");
         if (data.contains("active_recipe_id")) {
             activeRecipeId = ResourceLocation.parse(data.getString("active_recipe_id"));
@@ -309,45 +301,11 @@ public class CrystalInfuserBlockEntity extends AENetworkedSelfPoweredBlockEntity
     public void clearContent() {
         super.clearContent();
         upgrades.clear();
+        fluidTanks.clear();
     }
 
     @Override
     public ItemStack getMainMenuIcon() {
         return new ItemStack(getItemFromBlockEntity());
-    }
-
-    @Override
-    public int getTanks() {
-        return fluidTank.getTanks();
-    }
-
-    @Override
-    public FluidStack getFluidInTank(int tank) {
-        return fluidTank.getFluidInTank(tank);
-    }
-
-    @Override
-    public int getTankCapacity(int tank) {
-        return fluidTank.getTankCapacity(tank);
-    }
-
-    @Override
-    public boolean isFluidValid(int tank, FluidStack stack) {
-        return fluidTank.isFluidValid(tank, stack);
-    }
-
-    @Override
-    public int fill(FluidStack resource, IFluidHandler.FluidAction action) {
-        return fluidTank.fill(resource, action);
-    }
-
-    @Override
-    public FluidStack drain(FluidStack resource, IFluidHandler.FluidAction action) {
-        return fluidTank.drain(resource, action);
-    }
-
-    @Override
-    public FluidStack drain(int maxDrain, IFluidHandler.FluidAction action) {
-        return fluidTank.drain(maxDrain, action);
     }
 }

@@ -32,6 +32,7 @@ import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 
@@ -48,6 +49,7 @@ public class PulseCentrifugeBlockEntity extends AENetworkedSelfPoweredBlockEntit
 
     private static final double BASIC_ENERGY_COST_PER_TICK = 200;
     private static final int FLUID_TANK_CAPACITY = 16000;
+    private static final int FLUID_PER_OPERATION = 1000;
 
     private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(AECSBlocks.PULSE_CENTRIFUGE_BLOCK,
             4, this::onUpgradesChanged);
@@ -158,6 +160,8 @@ public class PulseCentrifugeBlockEntity extends AENetworkedSelfPoweredBlockEntit
         PulseCentrifugeRecipe recipe = activeRecipe.value();
         List<ItemStack> outputPlan = planOutputInsertion(getOutputInv(), recipe.results());
         if (outputPlan == null) return false;
+        FluidStack fluidResult = recipe.fluidOutput();
+        if (!fluidTanks.input().getFluid().is(net.minecraft.world.level.material.Fluids.WATER) || fluidTanks.input().getFluidAmount() < FLUID_PER_OPERATION || !fluidResult.isEmpty() && fluidTanks.output().fill(fluidResult, IFluidHandler.FluidAction.SIMULATE) < fluidResult.getAmount()) return false;
 
         boolean consumedEnergy = false;
         if (recipeProgress < activeRecipeEnergyCost) {
@@ -181,6 +185,8 @@ public class PulseCentrifugeBlockEntity extends AENetworkedSelfPoweredBlockEntit
         }
 
         commitOutputPlan(outputPlan);
+        fluidTanks.input().drain(FLUID_PER_OPERATION, IFluidHandler.FluidAction.EXECUTE);
+        if (!fluidResult.isEmpty()) fluidTanks.output().fill(fluidResult, IFluidHandler.FluidAction.EXECUTE);
         recipeProgress = 0;
         setChanged();
         return consumedEnergy;

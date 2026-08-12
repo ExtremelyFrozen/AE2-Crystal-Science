@@ -1,4 +1,6 @@
 dependencies {
+    def enableEmi = providers.gradleProperty("enableEmi").map(String::toBoolean).orElse(false).get()
+
     compileOnly(libs.jetbrains.annotations)
 
     testImplementation(libs.testframework)
@@ -82,7 +84,9 @@ dependencies {
     localRuntime(forge.mek)
 
     // Runtime recipe viewers
-    localRuntime(forge.emi)
+    if (enableEmi) {
+        localRuntime(forge.emi)
+    }
     localRuntime(forge.jei.neoforge.impl)
     // AG
     implementation "curse.maven:applied-generators-1320369:7161908"

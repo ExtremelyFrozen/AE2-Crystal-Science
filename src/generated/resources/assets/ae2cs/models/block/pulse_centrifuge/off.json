@@ -1,12 +1,12 @@
 {
   "parent": "minecraft:block/cube",
   "textures": {
-    "down": "ae2cs:block/pulse_centrifuge/off/bottom",
-    "east": "ae2cs:block/pulse_centrifuge/off/left",
+    "down": "ae2cs:block/crystal_infuser/off/bottom",
+    "east": "ae2cs:block/crystal_infuser/off/left",
     "north": "ae2cs:block/pulse_centrifuge/off/front",
     "particle": "ae2cs:block/pulse_centrifuge/off/front",
-    "south": "ae2cs:block/pulse_centrifuge/off/back",
+    "south": "ae2cs:block/crystal_infuser/off/back",
     "up": "ae2cs:block/pulse_centrifuge/off/top",
-    "west": "ae2cs:block/pulse_centrifuge/off/right"
+    "west": "ae2cs:block/crystal_infuser/off/right"
   }
 }

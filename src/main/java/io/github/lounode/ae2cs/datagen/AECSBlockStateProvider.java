@@ -64,7 +64,7 @@ public class AECSBlockStateProvider extends BlockStateProvider {
         genSixFaceLike(AECSBlocks.CRYSTAL_PULVERIZER_BLOCK.get());
         genSixFaceLike(AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK.get());
         genSixFaceLike(AECSBlocks.CRYSTAL_INFUSER_BLOCK.get());
-        genSixFaceLike(AECSBlocks.PULSE_CENTRIFUGE_BLOCK.get());
+        genPulseCentrifuge();
         genSixFaceLike(AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK.get());
         genSixFaceLike(AECSBlocks.QUARTZ_OSCILLATOR_CLOCK_BLOCK.get());
         genEnderBroadcaster();
@@ -141,6 +141,38 @@ public class AECSBlockStateProvider extends BlockStateProvider {
         }
 
         itemModels().withExistingParent(blockPath, offOrBaseModel.getLocation());
+    }
+
+    private void genPulseCentrifuge() {
+        Block block = AECSBlocks.PULSE_CENTRIFUGE_BLOCK.get();
+        String blockPath = path(block).getPath();
+        PropertyDispatch directionDispatch = createHorizontalFacingDispatch(0);
+
+        var offModel = genPulseCentrifugeModel(block, "/off");
+        var onModel = genPulseCentrifugeModel(block, "/on");
+
+        var gen = multiVariantGenerator(block, Variant.variant().with(VariantProperties.MODEL, offModel.getLocation()))
+                .with(directionDispatch)
+                .with(PropertyDispatch.property(AECSBlockProperties.ACTIVE)
+                        .select(false, Variant.variant().with(VariantProperties.MODEL, offModel.getLocation()))
+                        .select(true, Variant.variant().with(VariantProperties.MODEL, onModel.getLocation())));
+
+        itemModels().withExistingParent(blockPath, offModel.getLocation());
+    }
+
+    private ModelBuilder<BlockModelBuilder> genPulseCentrifugeModel(Block block, String state) {
+        String texturePath = "block/pulse_centrifuge" + state;
+        String sharedPath = "block/crystal_infuser" + state;
+        ResourceLocation front = AE2CrystalScience.makeId(texturePath + "/front");
+        return models().cube(
+                "block/" + path(block).getPath() + state,
+                AE2CrystalScience.makeId(sharedPath + "/bottom"),
+                AE2CrystalScience.makeId(texturePath + "/top"),
+                front,
+                AE2CrystalScience.makeId(sharedPath + "/back"),
+                AE2CrystalScience.makeId(sharedPath + "/left"),
+                AE2CrystalScience.makeId(sharedPath + "/right"))
+                .texture("particle", front);
     }
 
     /**
