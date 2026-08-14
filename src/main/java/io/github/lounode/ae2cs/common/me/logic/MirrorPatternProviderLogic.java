@@ -106,6 +106,27 @@ public class MirrorPatternProviderLogic extends PatternProviderLogic {
 
     @Override
     public void updatePatterns() {
+        updateMirroredPatterns(false);
+    }
+
+    /**
+     * Re-registers the mirrored patterns after this provider returns to an active grid.
+     *
+     * <p>
+     * AE2 removes a node's crafting-provider cache while rebuilding a grid. A mirror can keep the
+     * same pattern list across that transition, in which case {@link #updatePatterns()} correctly sees
+     * no content change but would otherwise skip the cache refresh.
+     * </p>
+     */
+    public void refreshMirroredPatternsAfterGridReconnect() {
+        if (!isMirroring() || !mainNode.isActive()) {
+            return;
+        }
+
+        updateMirroredPatterns(true);
+    }
+
+    private void updateMirroredPatterns(boolean forceCraftingProviderRefresh) {
         if (!isMirroring()) {
             super.updatePatterns();
             return;
@@ -118,6 +139,8 @@ public class MirrorPatternProviderLogic extends PatternProviderLogic {
                 patterns.clear();
                 patternInputs.clear();
                 ICraftingProvider.requestUpdate(mainNode);
+            } else if (forceCraftingProviderRefresh) {
+                ICraftingProvider.requestUpdate(mainNode);
             }
             return;
         }
@@ -125,6 +148,9 @@ public class MirrorPatternProviderLogic extends PatternProviderLogic {
         var targetPatterns = target.getLogic().getAvailablePatterns();
 
         if (patterns.equals(targetPatterns)) {
+            if (forceCraftingProviderRefresh) {
+                ICraftingProvider.requestUpdate(mainNode);
+            }
             return;
         }
 
