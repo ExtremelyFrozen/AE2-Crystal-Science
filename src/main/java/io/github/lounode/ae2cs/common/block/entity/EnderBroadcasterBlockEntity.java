@@ -493,15 +493,6 @@ public class EnderBroadcasterBlockEntity extends AENetworkedComponentBlockEntity
     }
 
     /**
-     * 方块被移除时，永久注销其在频段中的发送端或接收端身份。
-     */
-    @Override
-    public void setRemoved() {
-        cleanConnectionPermanent();
-        super.setRemoved();
-    }
-
-    /**
      * 网络初始化完成，恢复declared并上线
      */
     @Override

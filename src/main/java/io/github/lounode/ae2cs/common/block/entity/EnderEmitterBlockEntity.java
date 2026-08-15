@@ -541,9 +541,8 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
 
     @Override
     public void setRemoved() {
-        cleanConnectionPermanent();
         super.setRemoved();
-        // 方块被移除时从全局索引移除
+        // BE被移除时从运行时索引移除
         if (level != null && !level.isClientSide()) {
             ChunkPos center = new ChunkPos(worldPosition);
             BlockPos posKey = worldPosition.immutable();
