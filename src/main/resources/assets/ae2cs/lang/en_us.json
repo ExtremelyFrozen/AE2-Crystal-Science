@@ -436,6 +436,11 @@
   "ae2cs.machine_settings.entropy_change_mode.increase.desc": "Increase",
   "ae2cs.machine_settings.entropy_change_mode.decrease.desc": "Decrease",
 
+  "ae2cs.machine_settings.entropy_fluid_mode.title": "Fluid State",
+  "ae2cs.machine_settings.entropy_fluid_mode.still.desc": "Treat input fluid as still",
+  "ae2cs.machine_settings.entropy_fluid_mode.flowing.desc": "Treat input fluid as flowing",
+  "ae2cs.tooltip.fluid_flowing": "Flowing",
+
   "ae2cs.machine_settings.auto_link_mode.title": "Auto-Link Mode",
   "ae2cs.machine_settings.auto_link_mode.enable.desc": "Automatically link newly placed devices in range",
   "ae2cs.machine_settings.auto_link_mode.disable.desc": "Stop auto-linking newly placed devices in range",

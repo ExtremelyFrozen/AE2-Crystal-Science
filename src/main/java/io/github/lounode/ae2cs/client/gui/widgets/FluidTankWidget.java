@@ -18,6 +18,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -26,16 +27,28 @@ public class FluidTankWidget extends AbstractWidget implements ITooltip {
 
     private final Supplier<FluidTankState> state;
     private final Runnable clickAction;
+    private final Supplier<List<Component>> additionalTooltip;
 
     public FluidTankWidget(int x, int y, Supplier<FluidTankState> state, Runnable clickAction) {
-        this(x, y, 18, 60, state, clickAction);
+        this(x, y, 18, 60, state, clickAction, List::of);
+    }
+
+    public FluidTankWidget(int x, int y, Supplier<FluidTankState> state, Runnable clickAction,
+                           Supplier<List<Component>> additionalTooltip) {
+        this(x, y, 18, 60, state, clickAction, additionalTooltip);
     }
 
     public FluidTankWidget(int x, int y, int width, int height, Supplier<FluidTankState> state,
                            Runnable clickAction) {
+        this(x, y, width, height, state, clickAction, List::of);
+    }
+
+    public FluidTankWidget(int x, int y, int width, int height, Supplier<FluidTankState> state,
+                           Runnable clickAction, Supplier<List<Component>> additionalTooltip) {
         super(x, y, width, height, Component.empty());
         this.state = state;
         this.clickAction = clickAction;
+        this.additionalTooltip = additionalTooltip;
     }
 
     @Override
@@ -77,7 +90,11 @@ public class FluidTankWidget extends AbstractWidget implements ITooltip {
         FluidTankState tank = state.get();
         FluidStack fluid = tank.fluid();
         Component name = fluid.isEmpty() ? Component.translatable("gui.ae2cs.fluid.empty") : fluid.getHoverName();
-        return List.of(name, Component.literal(formatBuckets(fluid.getAmount()) + " / " + formatBuckets(tank.capacity())));
+        List<Component> tooltip = new ArrayList<>();
+        tooltip.add(name);
+        tooltip.add(Component.literal(formatBuckets(fluid.getAmount()) + " / " + formatBuckets(tank.capacity())));
+        tooltip.addAll(additionalTooltip.get());
+        return tooltip;
     }
 
     private static String formatBuckets(int amount) {

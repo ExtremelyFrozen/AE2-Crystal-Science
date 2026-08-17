@@ -12,6 +12,7 @@ import appeng.recipes.entropy.EntropyRecipe;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluids;
@@ -80,7 +81,7 @@ public class EntropyVariationReactionChamberRecipeCategory extends BasicEmiRecip
         inputFluid = recipe.getInput().fluid()
                 .map(EntropyRecipe.FluidInput::fluid)
                 .filter(fluid -> fluid != Fluids.EMPTY)
-                .map(fluid -> EmiStack.of(fluid, 1000))
+                .map(fluid -> EmiStack.of(fluid, getFluidInputAmount(recipe)))
                 .orElse(EmiStack.EMPTY);
         if (!inputBlock.isEmpty()) {
             inputs.add(inputBlock);
@@ -150,6 +151,13 @@ public class EntropyVariationReactionChamberRecipeCategory extends BasicEmiRecip
             animStartMs = now;
         }
         return (int) ((now - animStartMs) % ANIM_DURATION_MS);
+    }
+
+    private static long getFluidInputAmount(EntropyRecipe recipe) {
+        boolean isSnowballRecipe = recipe.getInput().fluid()
+                .map(input -> input.fluid() == Fluids.FLOWING_WATER)
+                .orElse(false) && recipe.getDrops().stream().anyMatch(drop -> drop.is(Items.SNOWBALL));
+        return isSnowballRecipe ? 250 : 1000;
     }
 
     private static Component getModeText(EntropyMode mode) {

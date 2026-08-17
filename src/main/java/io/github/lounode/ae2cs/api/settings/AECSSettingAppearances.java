@@ -75,6 +75,15 @@ public final class AECSSettingAppearances {
                 Component.translatable("ae2cs.machine_settings.entropy_change_mode.title"),
                 Component.translatable("ae2cs.machine_settings.entropy_change_mode.decrease.desc"));
 
+        register(AdaptedAE2Icon.ARROW_UP,
+                AECSSettings.ENTROPY_FLUID_MODE, EntropyFluidMode.STILL,
+                Component.translatable("ae2cs.machine_settings.entropy_fluid_mode.title"),
+                Component.translatable("ae2cs.machine_settings.entropy_fluid_mode.still.desc"));
+        register(AdaptedAE2Icon.ARROW_DOWN,
+                AECSSettings.ENTROPY_FLUID_MODE, EntropyFluidMode.FLOWING,
+                Component.translatable("ae2cs.machine_settings.entropy_fluid_mode.title"),
+                Component.translatable("ae2cs.machine_settings.entropy_fluid_mode.flowing.desc"));
+
         register(AECSIcon.AUTO_LINK_ENABLE,
                 AECSSettings.AUTO_LINK_MODE, AutoLinkMode.ENABLE,
                 Component.translatable("ae2cs.machine_settings.auto_link_mode.title"),

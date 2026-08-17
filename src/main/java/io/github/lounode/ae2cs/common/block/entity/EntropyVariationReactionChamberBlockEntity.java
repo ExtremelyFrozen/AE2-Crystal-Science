@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs.common.block.entity;
 
 import io.github.lounode.ae2cs.api.cap.ProvideCaps;
 import io.github.lounode.ae2cs.api.settings.AECSSettings;
+import io.github.lounode.ae2cs.api.settings.EntropyFluidMode;
 import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
@@ -45,6 +46,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -71,6 +73,10 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
     private static final double BASIC_ENERGY_COST_PER_TICK = 200;
 
     private static final int RECIPE_DEFAULT_COST_ENERGY = 1600;
+
+    private static final int FLUID_BLOCK_AMOUNT = 1000;
+
+    private static final int SNOWBALL_WATER_AMOUNT = 250;
 
     /**
      * 升级仓
@@ -124,6 +130,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
 
         configManager = IConfigManager.builder(this::onConfigChange)
                 .registerSetting(AECSSettings.ENTROPY_CHANGE_MODE, EntropyMode.HEAT)
+                .registerSetting(AECSSettings.ENTROPY_FLUID_MODE, EntropyFluidMode.STILL)
                 .build();
 
         getMainNode().setIdlePowerUsage(0);
@@ -174,6 +181,10 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
 
     public EntropyMode getEntropyMode() {
         return configManager.getSetting(AECSSettings.ENTROPY_CHANGE_MODE);
+    }
+
+    public EntropyFluidMode getEntropyFluidMode() {
+        return configManager.getSetting(AECSSettings.ENTROPY_FLUID_MODE);
     }
 
     public void checkActive(boolean active) {
@@ -296,7 +307,9 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
         if (inputKey instanceof AEItemKey itemKey && itemKey.getItem() instanceof BlockItem blockItem) {
             inputBlockState = blockItem.getBlock().defaultBlockState();
         }
-        var holder = findRecipe(level, getEntropyMode(), inputBlockState, inputFluidState);
+        EntropyMode entropyMode = getEntropyMode();
+        inputFluidState = selectFluidState(getEntropyFluidMode(), inputFluidState);
+        var holder = findRecipe(level, entropyMode, inputBlockState, inputFluidState);
         if (holder == null) {
             // 没有配方，清空进度
             activeRecipe = null;
@@ -322,6 +335,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
      */
     private boolean consumeInputs(EntropyRecipe recipe) {
         EntropyRecipe.Input required = recipe.getInput();
+        int requiredFluidAmount = getRequiredFluidAmount(recipe);
 
         // 模拟抽取
         boolean canConsume = required.block().map(blockInput -> {
@@ -335,7 +349,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
             Fluid fluid = fluidInput.fluid();
             if (fluid != Fluids.EMPTY) {
                 FluidStack stored = fluidTanks.input().getFluid();
-                return stored.getFluid() == fluid && stored.getAmount() >= 1000;
+                return matchesStoredFluid(stored.getFluid(), fluid) && stored.getAmount() >= requiredFluidAmount;
             } else
                 return true;
         }).orElse(true);
@@ -351,7 +365,7 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
         required.fluid().ifPresent(fluidInput -> {
             Fluid fluid = fluidInput.fluid();
             if (fluid != Fluids.EMPTY) {
-                fluidTanks.input().drain(new FluidStack(fluid, 1000), IFluidHandler.FluidAction.EXECUTE);
+                fluidTanks.input().drain(requiredFluidAmount, IFluidHandler.FluidAction.EXECUTE);
             }
         });
         return true;
@@ -449,6 +463,29 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
             }
         }
         return null;
+    }
+
+    private static FluidState selectFluidState(EntropyFluidMode mode, FluidState storedState) {
+        Fluid storedFluid = storedState.getType();
+        if (!(storedFluid instanceof FlowingFluid flowingFluid)) {
+            return storedState;
+        }
+        return mode == EntropyFluidMode.FLOWING ? flowingFluid.getFlowing().defaultFluidState() : flowingFluid.getSource().defaultFluidState();
+    }
+
+    private static boolean matchesStoredFluid(Fluid stored, Fluid required) {
+        return getSourceFluid(stored) == getSourceFluid(required);
+    }
+
+    private static Fluid getSourceFluid(Fluid fluid) {
+        return fluid instanceof FlowingFluid flowingFluid ? flowingFluid.getSource() : fluid;
+    }
+
+    private static int getRequiredFluidAmount(EntropyRecipe recipe) {
+        boolean isSnowballRecipe = recipe.getInput().fluid()
+                .map(input -> input.fluid() == Fluids.FLOWING_WATER)
+                .orElse(false) && recipe.getDrops().stream().anyMatch(drop -> drop.is(Items.SNOWBALL));
+        return isSnowballRecipe ? SNOWBALL_WATER_AMOUNT : FLUID_BLOCK_AMOUNT;
     }
 
     /**

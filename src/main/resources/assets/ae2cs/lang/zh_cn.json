@@ -436,6 +436,11 @@
   "ae2cs.machine_settings.entropy_change_mode.increase.desc": "熵增",
   "ae2cs.machine_settings.entropy_change_mode.decrease.desc": "熵减",
 
+  "ae2cs.machine_settings.entropy_fluid_mode.title": "液体状态",
+  "ae2cs.machine_settings.entropy_fluid_mode.still.desc": "将输入液体视为非流动状态",
+  "ae2cs.machine_settings.entropy_fluid_mode.flowing.desc": "将输入液体视为流动状态",
+  "ae2cs.tooltip.fluid_flowing": "流动中",
+
   "ae2cs.machine_settings.auto_link_mode.title": "自动连接模式",
   "ae2cs.machine_settings.auto_link_mode.enable.desc": "自动连接到范围内新放置的设备",
   "ae2cs.machine_settings.auto_link_mode.disable.desc": "停止自动连接到范围内新放置的设备",

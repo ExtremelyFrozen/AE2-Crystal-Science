@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs.common.menu;
 
 import io.github.lounode.ae2cs.api.networking.FluidTankState;
 import io.github.lounode.ae2cs.api.settings.AECSSettings;
+import io.github.lounode.ae2cs.api.settings.EntropyFluidMode;
 import io.github.lounode.ae2cs.common.block.entity.EntropyVariationReactionChamberBlockEntity;
 
 import appeng.api.inventories.InternalInventory;
@@ -44,6 +45,9 @@ public class EntropyVariationReactionChamberMenu extends UpgradeableMenu<Entropy
     @GuiSync(16)
     public FluidTankState outputFluid = new FluidTankState(FluidStack.EMPTY, 16_000);
 
+    @GuiSync(17)
+    public EntropyFluidMode entropyFluidMode;
+
     public EntropyVariationReactionChamberMenu(MenuType<?> menuType, int id, Inventory ip, EntropyVariationReactionChamberBlockEntity host) {
         super(menuType, id, ip, host);
         registerClientAction(FILL_FLUID_INPUT_ACTION, this::fillFluidInput);
@@ -70,6 +74,7 @@ public class EntropyVariationReactionChamberMenu extends UpgradeableMenu<Entropy
     @Override
     protected void loadSettingsFromHost(IConfigManager cm) {
         this.entropyMode = cm.getSetting(AECSSettings.ENTROPY_CHANGE_MODE);
+        this.entropyFluidMode = cm.getSetting(AECSSettings.ENTROPY_FLUID_MODE);
     }
 
     public void sendFillFluidInputAction() {
@@ -99,6 +104,7 @@ public class EntropyVariationReactionChamberMenu extends UpgradeableMenu<Entropy
         maxEnergy = getHost().getAEMaxPower();
         currentEnergy = getHost().getAECurrentPower();
         entropyMode = getHost().getEntropyMode();
+        entropyFluidMode = getHost().getEntropyFluidMode();
         inputFluid = new FluidTankState(getHost().getFluidTanks().input().getFluid(),
                 getHost().getFluidTanks().input().getCapacity());
         outputFluid = new FluidTankState(getHost().getFluidTanks().output().getFluid(),

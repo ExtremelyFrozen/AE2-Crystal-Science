@@ -18,6 +18,8 @@ public class AECSSettings {
 
     public static final Setting<EntropyMode> ENTROPY_CHANGE_MODE = Settings.register("aecs_entropy_change_mode", EntropyMode.class);
 
+    public static final Setting<EntropyFluidMode> ENTROPY_FLUID_MODE = Settings.register("aecs_entropy_fluid_mode", EntropyFluidMode.class);
+
     public static final Setting<AutoLinkMode> AUTO_LINK_MODE = Settings.register("aecs_auto_link_mode", AutoLinkMode.class);
 
     public static final Setting<AutoLinkCableMode> AUTO_LINK_CABLE_MODE = Settings.register("aecs_auto_link_cable_mode", AutoLinkCableMode.class);

@@ -428,6 +428,11 @@
 "ae2cs.machine_settings.entropy_change_mode.increase.desc": "増加",
 "ae2cs.machine_settings.entropy_change_mode.decrease.desc": "減少",
 
+"ae2cs.machine_settings.entropy_fluid_mode.title": "液体の状態",
+"ae2cs.machine_settings.entropy_fluid_mode.still.desc": "入力液体を静止状態として扱います",
+"ae2cs.machine_settings.entropy_fluid_mode.flowing.desc": "入力液体を流動状態として扱います",
+"ae2cs.tooltip.fluid_flowing": "流動中",
+
 "ae2cs.machine_settings.auto_link_mode.title": "自動リンクモード",
 "ae2cs.machine_settings.auto_link_mode.enable.desc": "範囲内に新しく設置されたデバイスを自動的にリンクする",
 "ae2cs.machine_settings.auto_link_mode.disable.desc": "範囲内に新しく設置されたデバイスの自動リンクを停止する",
