@@ -7,6 +7,7 @@ import io.github.lounode.ae2cs.common.me.logic.MirrorPatternProviderLogic;
 import io.github.lounode.ae2cs.common.me.logic.MirroredPatternProviderTarget;
 
 import appeng.api.AECapabilities;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.parts.RegisterPartCapabilitiesEvent;
@@ -70,6 +71,12 @@ public class MirrorPatternProviderPart extends PatternProviderPart implements Mi
     @Override
     protected PatternProviderLogic createLogic() {
         return new MirrorPatternProviderLogic(getMainNode(), this);
+    }
+
+    @Override
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
+        super.onMainNodeStateChanged(reason);
+        getMirroringLogic().refreshMirroredPatternsAfterGridReconnect();
     }
 
     @Override

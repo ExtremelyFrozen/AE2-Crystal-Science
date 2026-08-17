@@ -81,6 +81,11 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
      */
     private final List<PendingSend> resonatingSendList = new ArrayList<>();
 
+    /**
+     * 是否已经记录过父类待发送队列缺失发送方向的异常状态。
+     */
+    private boolean invalidPendingSendStateLogged;
+
     private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK, 1, this::onUpgradesChange);
 
     /**
@@ -703,6 +708,60 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
         return sendResonatingStacksOut();
     }
 
+    /**
+     * 回收父类待发送队列中丢失发送方向的原料。
+     *
+     * <p>
+     * AE2 在此状态下会在 {@link #doWork()} 内抛出异常。这里将原料放回当前 ME 网络；若网络没有
+     * 空间，则保留队列并跳过父类工作，等待后续 tick 重试。
+     * </p>
+     *
+     * @return 是否成功回收了至少一部分原料
+     */
+    private boolean recoverInvalidPendingSendState() {
+        if (sendDirection != null || sendList.isEmpty()) {
+            invalidPendingSendStateLogged = false;
+            return false;
+        }
+
+        if (!invalidPendingSendStateLogged) {
+            AE2CrystalScience.LOGGER.error(
+                    "Detected invalid pending-send state in resonating pattern provider at {}; attempting to return {} pending stack(s) to the ME network.",
+                    host.getBlockEntity().getBlockPos(),
+                    sendList.size());
+            invalidPendingSendStateLogged = true;
+        }
+
+        var networkStorage = mainNode.getGrid().getStorageService().getInventory();
+        boolean recovered = false;
+
+        for (var iterator = sendList.listIterator(); iterator.hasNext();) {
+            var pending = iterator.next();
+            var inserted = networkStorage.insert(pending.what(), pending.amount(), Actionable.MODULATE, actionSource);
+
+            if (inserted >= pending.amount()) {
+                iterator.remove();
+                recovered = true;
+            } else if (inserted > 0) {
+                iterator.set(new GenericStack(pending.what(), pending.amount() - inserted));
+                recovered = true;
+            }
+        }
+
+        if (recovered) {
+            saveChanges();
+        }
+
+        if (sendList.isEmpty()) {
+            invalidPendingSendStateLogged = false;
+            AE2CrystalScience.LOGGER.info(
+                    "Recovered invalid pending-send state in resonating pattern provider at {}.",
+                    host.getBlockEntity().getBlockPos());
+        }
+
+        return recovered;
+    }
+
     @Override
     public void addDrops(List<ItemStack> drops) {
         super.addDrops(drops);
@@ -731,7 +790,9 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
                 return TickRateModulation.SLEEP;
             }
 
-            boolean could = doWork() | doResonatingWork() | doPullWork();
+            boolean recoveredPendingSends = recoverInvalidPendingSendState();
+            boolean hasInvalidPendingSendState = sendDirection == null && !sendList.isEmpty();
+            boolean could = recoveredPendingSends | (!hasInvalidPendingSendState && doWork()) | doResonatingWork() | doPullWork();
             boolean has = hasWorkToDo() || hasResonatingWorkToDo() || isEnablePull();
 
             return has ? (could ? TickRateModulation.URGENT : TickRateModulation.SLOWER) : TickRateModulation.SLEEP;
