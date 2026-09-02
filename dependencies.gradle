@@ -95,6 +95,8 @@ dependencies {
     localRuntime "curse.maven:cognition-mod-579484:8406272"
     localRuntime "maven.modrinth:xv94TkTM:FaNppCJJ"
     localRuntime "maven.modrinth:fuuu3xnx:iEE85X0w"
+    localRuntime "curse.maven:forbidden-arcanus-309858:6875895"
+    localRuntime "curse.maven:valhelsia-core-416935:6296775"
 
     // Client-only runtime mods
     clientLocalRuntime(forge.jech)

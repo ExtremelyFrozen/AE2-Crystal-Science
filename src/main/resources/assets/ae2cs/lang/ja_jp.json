@@ -505,8 +505,8 @@
 "ae2cs.menu.resonant_template_coding_terminal.processing_ingredient_transfer_mode.full_split_desc": "JEI/EMI の表示順を保ち、重複する材料を統合しません",
 "ae2cs.menu.resonant_template_coding_terminal.hotkey_unbound": "未設定",
 "key.categories.ae2cs": "AE2 水晶科学",
-"key.ae2cs.toggle_resonant_template_coding_slot_mode": "共振パターンエンコード端末のスロットモード切替"
-,
+"key.ae2cs.toggle_resonant_template_coding_slot_mode": "共振パターンエンコード端末のスロットモード切替",
+  "key.ae2.wireless_ae2cs_resonant_pattern_encoding_terminal": "ワイヤレス共振クラフトエンコード端末を開く",
   "ae2cs.tooltip.click_to_view_recipes": "クリックしてレシピを表示",
   "ae2cs.item.resonating_linker.provider": "紐付け先サプライヤー: (%s, %s, %s)",
   "ae2cs.item.resonating_linker.provider.unbound": "紐付け先サプライヤー: なし",
