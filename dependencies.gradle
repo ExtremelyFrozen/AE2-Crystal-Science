@@ -1,5 +1,5 @@
 dependencies {
-    def enableEmi = providers.gradleProperty("enableEmi").map(String::toBoolean).orElse(false).get()
+    def enableEmi = providers.gradleProperty("enableEmi").map { it.toBoolean() }.orElse(false).get()
 
     compileOnly(libs.jetbrains.annotations)
 
@@ -36,6 +36,7 @@ dependencies {
 
     // Recipe viewers
     compileOnly(forge.bundles.jei)
+    compileOnly "curse.maven:jei-238222:8759217"
     compileOnly(forge.emi)
 
     // WAILA-likes
@@ -83,10 +84,7 @@ dependencies {
     localRuntime(forge.amek)
     localRuntime(forge.mek)
 
-    // Runtime recipe viewers
-    if (enableEmi) {
-        localRuntime(forge.emi)
-    }
+    // Runtime recipe viewers. EMI is attached only to All Client runs.
     localRuntime(forge.jei.neoforge.impl)
     // AG
     implementation "curse.maven:applied-generators-1320369:7161908"
@@ -97,6 +95,8 @@ dependencies {
     localRuntime "maven.modrinth:fuuu3xnx:iEE85X0w"
     localRuntime "curse.maven:forbidden-arcanus-309858:6875895"
     localRuntime "curse.maven:valhelsia-core-416935:6296775"
+    localRuntime "curse.maven:imblocker-483760:8167852"
+    jeiClientRuntime "curse.maven:jei-238222:8759217"
 
     // Client-only runtime mods
     clientLocalRuntime(forge.jech)

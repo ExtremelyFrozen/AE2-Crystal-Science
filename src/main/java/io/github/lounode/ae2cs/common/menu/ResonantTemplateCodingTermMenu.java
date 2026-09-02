@@ -1445,7 +1445,7 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
                 this.getSmithingTableTemplateSlot(),
                 this.getSmithingTableBaseSlot(),
                 this.getSmithingTableAdditionSlot()
-        }, recipe.value().getRemainingItems(input), player);
+        }, NonNullList.withSize(3, ItemStack.EMPTY), player);
         return result;
     }
 
