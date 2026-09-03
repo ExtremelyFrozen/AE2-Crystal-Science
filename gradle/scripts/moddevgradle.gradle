@@ -16,6 +16,7 @@ neoForge {
 
     addModdingDependenciesTo(sourceSets.test)
     addModdingDependenciesTo(sourceSets.extra)
+    addModdingDependenciesTo(sourceSets.jeiClient)
 
     mods {
         // define mod <-> source bindings
@@ -24,7 +25,6 @@ neoForge {
             sourceSet(sourceSets.client)
             sourceSet(sourceSets.test)
             sourceSet(sourceSets.extra)
-            sourceSet(sourceSets.clientExtra)
         }
     }
 
@@ -37,6 +37,9 @@ neoForge {
 
             gameDirectory.set(file('run/all/client'))
             systemProperty('neoforge.enabledGameTestNamespaces', project.mod_id)
+            if (providers.gradleProperty("enableEmi").map { it.toBoolean() }.orElse(false).get()) {
+                project.dependencies.add(additionalRuntimeClasspathConfiguration.name, forge.emi)
+            }
         }
 
         server {
@@ -57,6 +60,9 @@ neoForge {
 
             gameDirectory.set(file('run/login/client'))
             systemProperty('neoforge.enabledGameTestNamespaces', project.mod_id)
+            if (providers.gradleProperty("enableEmi").map { it.toBoolean() }.orElse(false).get()) {
+                project.dependencies.add(additionalRuntimeClasspathConfiguration.name, forge.emi)
+            }
         }
 
         loginserver {
@@ -66,6 +72,15 @@ neoForge {
 
             gameDirectory.set(file('run/login/server'))
             programArguments.addAll('--nogui', '--world', 'world-extra')
+            systemProperty('neoforge.enabledGameTestNamespaces', project.mod_id)
+        }
+
+        clientJEI {
+            client()
+            sourceSet = sourceSets.jeiClient
+            ideName = "Client JEI"
+
+            gameDirectory.set(file('run/jei/client'))
             systemProperty('neoforge.enabledGameTestNamespaces', project.mod_id)
         }
 

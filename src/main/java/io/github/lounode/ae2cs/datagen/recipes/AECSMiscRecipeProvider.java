@@ -5,6 +5,7 @@ import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.common.recipe.ResonatingPatternUpgradeRecipe;
+import io.github.lounode.ae2cs.common.recipe.WirelessUniversalTerminalCombineRecipe;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 
 import appeng.core.definitions.AEBlocks;
@@ -62,6 +63,9 @@ public class AECSMiscRecipeProvider extends AECSRecipeProvider {
         // 添加谐振样板配方
         SpecialRecipeBuilder.special(ResonatingPatternUpgradeRecipe::new)
                 .save(recipeOutput, AE2CrystalScience.makeId("resonating_pattern_upgrade"));
+
+        SpecialRecipeBuilder.special(WirelessUniversalTerminalCombineRecipe::new)
+                .save(recipeOutput, AE2CrystalScience.makeId("wireless_universal_terminal_combine"));
 
         // 添加谐振样板拆解
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEItems.BLANK_PATTERN)

@@ -514,5 +514,6 @@
   "ae2cs.menu.resonant_template_coding_terminal.hotkey_unbound": "未設置",
   "ae2cs.tooltip.click_to_view_recipes": "點擊查看配方",
   "key.categories.ae2cs": "AE2 水晶科技",
-  "key.ae2cs.toggle_resonant_template_coding_slot_mode": "切換諧振樣板編碼終端槽模式"
+  "key.ae2cs.toggle_resonant_template_coding_slot_mode": "切換諧振樣板編碼終端槽模式",
+  "key.ae2.wireless_ae2cs_resonant_pattern_encoding_terminal": "開啟無線諧振合成編碼終端"
 }

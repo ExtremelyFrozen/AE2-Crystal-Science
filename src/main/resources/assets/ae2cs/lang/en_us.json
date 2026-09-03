@@ -514,5 +514,6 @@
   "ae2cs.menu.resonant_template_coding_terminal.hotkey_unbound": "Unbound",
   "ae2cs.tooltip.click_to_view_recipes": "Click to view recipes",
   "key.categories.ae2cs": "AE2 Crystal Science",
-  "key.ae2cs.toggle_resonant_template_coding_slot_mode": "Toggle Resonant Template Coding Terminal Slot Mode"
+  "key.ae2cs.toggle_resonant_template_coding_slot_mode": "Toggle Resonant Template Coding Terminal Slot Mode",
+  "key.ae2.wireless_ae2cs_resonant_pattern_encoding_terminal": "Open Wireless Resonant Crafting Encoding Terminal"
 }
