@@ -79,14 +79,18 @@ public class AECSBlockStateProvider extends BlockStateProvider {
 
     private void genCrystalFamily(CrystalFamilyBlocks family) {
         blockWithItem(family.motherRock());
-        for (DeferredBlock<? extends Block> stage : family.stages()) {
-            genCrystalCluster(stage.get());
+        for (int stageIndex = 0; stageIndex < family.stages().size(); stageIndex++) {
+            genCrystalCluster(family, family.stages().get(stageIndex).get(), stageIndex);
         }
     }
 
-    private void genCrystalCluster(Block block) {
+    private void genCrystalCluster(CrystalFamilyBlocks family, Block block, int stageIndex) {
         String name = path(block).getPath();
-        ResourceLocation texture = modLoc("block/" + name);
+        String textureName = name;
+        if (stageIndex == family.stages().size() - 1 && (family.materialId().equals("ender_quartz") || family.materialId().equals("meteor"))) {
+            textureName = family.materialId() + "_mature_crystal_cluster";
+        }
+        ResourceLocation texture = modLoc("block/" + textureName);
         BlockModelBuilder model = models().cross(name, texture).renderType("cutout");
         directionalBlock(block, model);
         itemModels()

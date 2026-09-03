@@ -9,12 +9,15 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.BlockLootSubProvider;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.entries.TagEntry;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
@@ -53,7 +56,7 @@ public class AECSBlockLootTableProvider extends BlockLootSubProvider {
                 if (stage == family.finalStage()) {
                     add(stage.get(), createCrystalClusterDrops(stage.get(), family.crystalDrop().get()));
                 } else {
-                    dropWhenSilkTouch(stage.get());
+                    add(stage.get(), createCrystalBudDrops(stage.get(), family.budDrop()));
                 }
             }
         }
@@ -96,5 +99,11 @@ public class AECSBlockLootTableProvider extends BlockLootSubProvider {
                                 .apply(SetItemCountFunction.setCount(ConstantValue.exactly(4)))
                                 .apply(ApplyBonusCount.addUniformBonusCount(
                                         enchantments.getOrThrow(Enchantments.FORTUNE)))));
+    }
+
+    protected LootTable.Builder createCrystalBudDrops(Block selfBlock, TagKey<Item> dropTag) {
+        return createSilkTouchDispatchTable(
+                selfBlock,
+                applyExplosionDecay(selfBlock, TagEntry.tagContents(dropTag)));
     }
 }
