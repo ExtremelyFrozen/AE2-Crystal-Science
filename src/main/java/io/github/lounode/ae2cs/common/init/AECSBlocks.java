@@ -11,6 +11,7 @@ import appeng.block.crafting.PatternProviderBlock;
 import appeng.block.misc.InterfaceBlock;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
@@ -59,38 +60,31 @@ public class AECSBlocks {
             AECSBlockIds.LARGE_CRYSTAL_BUD_SUFFIX,
             AECSBlockIds.CRYSTAL_CLUSTER_SUFFIX);
 
-    private static final List<String> FIVE_CRYSTAL_STAGES = List.of(
-            AECSBlockIds.SMALL_CRYSTAL_BUD_SUFFIX,
-            AECSBlockIds.MEDIUM_CRYSTAL_BUD_SUFFIX,
-            AECSBlockIds.LARGE_CRYSTAL_BUD_SUFFIX,
-            AECSBlockIds.CRYSTAL_CLUSTER_SUFFIX,
-            AECSBlockIds.MATURE_CRYSTAL_CLUSTER_SUFFIX);
-
     private static final int[] CRYSTAL_HEIGHTS = { 3, 4, 5, 7, 7 };
     private static final int[] CRYSTAL_OFFSETS = { 4, 3, 3, 3, 3 };
     private static final int[] CRYSTAL_LIGHT_LEVELS = { 1, 2, 4, 5, 5 };
 
     // -------------------母岩与晶簇-----------------
     public static final CrystalFamilyBlocks NETHER_QUARTZ_CRYSTALS = registerCrystalFamily(
-            "nether_quartz", FOUR_CRYSTAL_STAGES, AECSItems.PURE_NETHER_QUARTZ_CRYSTAL);
+            "nether_quartz", FOUR_CRYSTAL_STAGES, AECSTags.Items.CRYSTAL_DROP_NETHER_QUARTZ, AECSItems.PURE_NETHER_QUARTZ_CRYSTAL);
     public static final CrystalFamilyBlocks ENERGIZED_CERTUS_QUARTZ_CRYSTALS = registerCrystalFamily(
-            "energized_certus_quartz", FOUR_CRYSTAL_STAGES, AECSItems.PURE_ENERGIZED_CERTUS_QUARTZ_CRYSTAL);
+            "energized_certus_quartz", FOUR_CRYSTAL_STAGES, AECSTags.Items.CRYSTAL_DROP_ENERGIZED_CERTUS_QUARTZ, AECSItems.PURE_ENERGIZED_CERTUS_QUARTZ_CRYSTAL);
     public static final CrystalFamilyBlocks ENDER_QUARTZ_CRYSTALS = registerCrystalFamily(
-            "ender_quartz", FIVE_CRYSTAL_STAGES, AECSItems.PURE_ENDER_QUARTZ);
+            "ender_quartz", FOUR_CRYSTAL_STAGES, AECSTags.Items.CRYSTAL_DROP_ENDER_QUARTZ, AECSItems.PURE_ENDER_QUARTZ);
     public static final CrystalFamilyBlocks ENERGIZED_FLUIX_CRYSTALS = registerCrystalFamily(
-            "energized_fluix", FOUR_CRYSTAL_STAGES, AECSItems.PURE_ENERGIZED_FLUIX_CRYSTAL);
+            "energized_fluix", FOUR_CRYSTAL_STAGES, AECSTags.Items.CRYSTAL_DROP_ENERGIZED_FLUIX, AECSItems.PURE_ENERGIZED_FLUIX_CRYSTAL);
     public static final CrystalFamilyBlocks FLUIX_CRYSTALS = registerCrystalFamily(
-            "fluix", FOUR_CRYSTAL_STAGES, AECSItems.PURE_FLUIX_CRYSTAL);
+            "fluix", FOUR_CRYSTAL_STAGES, AECSTags.Items.CRYSTAL_DROP_FLUIX, AECSItems.PURE_FLUIX_CRYSTAL);
     public static final CrystalFamilyBlocks REDSTONE_CRYSTALS = registerCrystalFamily(
-            "redstone", FOUR_CRYSTAL_STAGES, AECSItems.PURE_REDSTONE_CRYSTAL);
+            "redstone", FOUR_CRYSTAL_STAGES, AECSTags.Items.CRYSTAL_DROP_REDSTONE, AECSItems.PURE_REDSTONE_CRYSTAL);
     public static final CrystalFamilyBlocks RESONATING_CRYSTALS = registerCrystalFamily(
-            "resonating", FIVE_CRYSTAL_STAGES, AECSItems.PURE_RESONATING_CRYSTAL);
+            "resonating", FOUR_CRYSTAL_STAGES, AECSTags.Items.CRYSTAL_DROP_RESONATING, AECSItems.PURE_RESONATING_CRYSTAL);
     public static final CrystalFamilyBlocks QUANTUM_CRYSTALS = registerCrystalFamily(
-            "quantum", FIVE_CRYSTAL_STAGES, AECSItems.PURE_QUANTUM_CRYSTAL);
+            "quantum", FOUR_CRYSTAL_STAGES, AECSTags.Items.CRYSTAL_DROP_QUANTUM, AECSItems.PURE_QUANTUM_CRYSTAL);
     public static final CrystalFamilyBlocks LINK_CRYSTALS = registerCrystalFamily(
-            "link", FIVE_CRYSTAL_STAGES, AECSItems.PURE_LINK_CRYSTAL);
+            "link", FOUR_CRYSTAL_STAGES, AECSTags.Items.CRYSTAL_DROP_LINK, AECSItems.PURE_LINK_CRYSTAL);
     public static final CrystalFamilyBlocks METEOR_CRYSTALS = registerCrystalFamily(
-            "meteor", FIVE_CRYSTAL_STAGES, AECSItems.PURE_METEOR_CRYSTAL);
+            "meteor", FOUR_CRYSTAL_STAGES, AECSTags.Items.CRYSTAL_DROP_METEOR, AECSItems.PURE_METEOR_CRYSTAL);
 
     public static final DeferredBlock<CrystalMotherRockBlock> ENTRO_MOTHER_ROCK = registerOtherBlock(
             AECSBlockIds.crystalMotherRock("entro"),
@@ -352,6 +346,7 @@ public class AECSBlocks {
     private static CrystalFamilyBlocks registerCrystalFamily(
                                                              String materialId,
                                                              List<String> stageSuffixes,
+                                                             TagKey<Item> budDrop,
                                                              Supplier<? extends ItemLike> crystalDrop) {
         List<ResourceLocation> stageIds = stageSuffixes.stream()
                 .map(suffix -> ResourceLocation.fromNamespaceAndPath(
@@ -381,7 +376,7 @@ public class AECSBlocks {
                             copy(template).lightLevel(ignored -> CRYSTAL_LIGHT_LEVELS[stageIndex]))));
         }
 
-        CrystalFamilyBlocks family = new CrystalFamilyBlocks(materialId, motherRock, stages, crystalDrop);
+        CrystalFamilyBlocks family = new CrystalFamilyBlocks(materialId, motherRock, stages, budDrop, crystalDrop);
         CRYSTAL_FAMILIES.add(family);
         return family;
     }

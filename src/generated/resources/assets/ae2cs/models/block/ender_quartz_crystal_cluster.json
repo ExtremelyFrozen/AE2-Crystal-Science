@@ -2,6 +2,6 @@
   "parent": "minecraft:block/cross",
   "render_type": "minecraft:cutout",
   "textures": {
-    "cross": "ae2cs:block/ender_quartz_crystal_cluster"
+    "cross": "ae2cs:block/ender_quartz_mature_crystal_cluster"
   }
 }
