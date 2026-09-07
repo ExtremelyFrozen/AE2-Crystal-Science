@@ -3,6 +3,7 @@ package io.github.lounode.ae2cs.common.block.entity;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
+import io.github.lounode.ae2cs.common.me.logic.DisksMeteoritePatternProviderLogic;
 import io.github.lounode.ae2cs.common.me.logic.MeteoritePatternProviderHost;
 import io.github.lounode.ae2cs.common.me.logic.MeteoritePatternProviderLogic;
 
@@ -29,7 +30,22 @@ public class MeteoritePatternProviderBlockEntity extends PatternProviderBlockEnt
 
     @Override
     protected PatternProviderLogic createLogic() {
-        return new MeteoritePatternProviderLogic(getMainNode(), this, 63);
+        return new DisksMeteoritePatternProviderLogic(getMainNode(), this, 63);
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        refreshFromDisks();
+    }
+
+    /**
+     * Re-syncs expanded disk recipes from the pattern inventory (AE2 Pattern Disk addon compatibility).
+     */
+    public void refreshFromDisks() {
+        if (getLogic() instanceof DisksMeteoritePatternProviderLogic diskLogic) {
+            diskLogic.refreshPatternsFromDisks();
+        }
     }
 
     /**
