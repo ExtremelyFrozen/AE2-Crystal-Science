@@ -44,6 +44,7 @@ public class AECSBlockTagProvider extends BlockTagsProvider {
         // 非接口机器
         tag(AECSTags.Blocks.AECS_MACHINE)
                 .add(AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK.get())
+                .add(AECSBlocks.CRYSTAL_GROWTH_ACCELERATOR_BLOCK.get())
                 .add(AECSBlocks.CIRCUIT_ETCHER_BLOCK.get())
                 .add(AECSBlocks.QUARTZ_GRINDSTONE_BLOCK.get())
                 .add(AECSBlocks.CRYSTAL_PULVERIZER_BLOCK.get())

@@ -20,6 +20,7 @@ import appeng.api.upgrades.UpgradeInventories;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
+import appeng.decorative.solid.BuddingCertusQuartzBlock;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
@@ -27,10 +28,14 @@ import appeng.util.inv.filter.IAEItemFilter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import org.jetbrains.annotations.Nullable;
@@ -73,26 +78,45 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
     private int speedCards = 0;
     private int overclockCards = 0;
 
+    /**
+     * The accelerator's slot inventory is server-side machine data and is not guaranteed to
+     * be present on the client. Keep this compact render-only copy synchronized explicitly.
+     */
+    @Nullable
+    private Block acceleratorDisplayBlock;
+
     public CrystalGrowthChamberBlockEntity(BlockPos pos, BlockState state) {
         super(AECSBlockEntities.CRYSTAL_GROWTH_CHAMBER.get(), pos, state,
                 40000, false, AccessRestriction.WRITE);
 
         getMainNode().setIdlePowerUsage(0.0);
 
-        AppEngInternalInventory inventory = new AppEngInternalInventory(54) {
+        boolean accelerator = state.is(AECSBlocks.CRYSTAL_GROWTH_ACCELERATOR_BLOCK.get());
+        AppEngInternalInventory inventory = new AppEngInternalInventory(accelerator ? 1 : 54) {
 
             @Override
             protected void onContentsChanged(int slot) {
                 super.onContentsChanged(slot);
                 setChanged();
+                if (accelerator && level != null && !level.isClientSide()) {
+                    updateAcceleratorDisplayBlock();
+                    checkActive(!getStackInSlot(0).isEmpty());
+                    markForUpdate();
+                }
             }
         };
+        if (accelerator) {
+            // A catalyst is consumed/degraded as one physical mother rock. Stacking here
+            // would make the rendered top and the per-cycle degradation ambiguous.
+            inventory.setMaxStackSize(0, 1);
+        }
         inventory.setFilter(new IAEItemFilter() {
 
             // 这里限定只允许水晶种子进入，但不限制输出，以便UI中能手动拿取任意物品
             @Override
             public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
-                return stack != null && !stack.isEmpty() && stack.is(AECSTags.Items.CRYSTAL_SEEDS);
+                return stack != null && !stack.isEmpty()
+                        && (accelerator ? isAcceleratorInput(stack) : stack.is(AECSTags.Items.CRYSTAL_SEEDS));
             }
         });
 
@@ -100,12 +124,13 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
 
             @Override
             public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
-                return stack != null && !stack.isEmpty() && stack.is(AECSTags.Items.CRYSTAL_SEEDS);
+                return stack != null && !stack.isEmpty()
+                        && (accelerator ? isAcceleratorInput(stack) : stack.is(AECSTags.Items.CRYSTAL_SEEDS));
             }
 
             @Override
             public boolean allowExtract(InternalInventory inv, int slot, int amount) {
-                return inv.getStackInSlot(slot).is(AECSTags.Items.PURE_CRYSTAL);
+                return accelerator || inv.getStackInSlot(slot).is(AECSTags.Items.PURE_CRYSTAL);
             }
         });
 
@@ -141,6 +166,22 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
         }
     }
 
+    private void updateAcceleratorDisplayBlock() {
+        if (!isAccelerator()) {
+            acceleratorDisplayBlock = null;
+            return;
+        }
+
+        ItemStack stack = getInternalInventory().getStackInSlot(0);
+        Block block = stack.isEmpty() ? null : Block.byItem(stack.getItem());
+        acceleratorDisplayBlock = block != null && isAcceleratorInput(stack) ? block : null;
+    }
+
+    @Nullable
+    public Block getAcceleratorDisplayBlock() {
+        return acceleratorDisplayBlock;
+    }
+
     /* 对外返回升级仓 */
     @Override
     public IUpgradeInventory getUpgrades() {
@@ -166,6 +207,29 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
         super.onLoad();
         onUpgradesChanged(); // 加载后刷新一次升级状态
         updateGrowthNum();
+        if (isAccelerator() && level != null && !level.isClientSide()) {
+            updateAcceleratorDisplayBlock();
+            markForUpdate();
+        }
+    }
+
+    @Override
+    protected void writeToStream(RegistryFriendlyByteBuf data) {
+        super.writeToStream(data);
+        data.writeBoolean(acceleratorDisplayBlock != null);
+        if (acceleratorDisplayBlock != null) {
+            data.writeResourceLocation(BuiltInRegistries.BLOCK.getKey(acceleratorDisplayBlock));
+        }
+    }
+
+    @Override
+    protected boolean readFromStream(RegistryFriendlyByteBuf data) {
+        boolean redraw = super.readFromStream(data);
+        Block previous = acceleratorDisplayBlock;
+        acceleratorDisplayBlock = data.readBoolean()
+                ? BuiltInRegistries.BLOCK.get(data.readResourceLocation())
+                : null;
+        return redraw || previous != acceleratorDisplayBlock;
     }
 
     private void onUpgradesChanged() {
@@ -188,6 +252,11 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
         super.serverTick();
 
         if (level == null || level.isClientSide) return;
+
+        if (isAccelerator()) {
+            serverTickAccelerator();
+            return;
+        }
 
         --workTickCountDown;
         if (workTickCountDown > 0) return;
@@ -217,6 +286,98 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
         setChanged();
 
         workTickCountDown = getWorkInterval();
+    }
+
+    private boolean isAccelerator() {
+        return getBlockState().is(AECSBlocks.CRYSTAL_GROWTH_ACCELERATOR_BLOCK.get());
+    }
+
+    private static boolean isAcceleratorInput(ItemStack stack) {
+        Block block = Block.byItem(stack.getItem());
+        return block instanceof BuddingCertusQuartzBlock
+                || block instanceof io.github.lounode.ae2cs.common.block.CrystalMotherRockBlock;
+    }
+
+    private void serverTickAccelerator() {
+        --workTickCountDown;
+        if (workTickCountDown > 0) return;
+        workTickCountDown = getWorkInterval();
+
+        ItemStack stack = getInternalInventory().getStackInSlot(0);
+        if (!isAcceleratorInput(stack)) {
+            checkActive(false);
+            return;
+        }
+
+        double energyCost = energyPerGrowth;
+        if (getAECurrentPower() < energyCost) {
+            checkActive(false);
+            return;
+        }
+
+        Block block = Block.byItem(stack.getItem());
+        if (!forceAcceleratorGrowth(block)) {
+            checkActive(false);
+            return;
+        }
+
+        extractAEPower(energyCost, Actionable.MODULATE);
+        ItemStack degraded = getAeDegradedStack(block, stack.getCount());
+        if (!degraded.isEmpty()) {
+            getInternalInventory().setItemDirect(0, degraded);
+        }
+        checkActive(true);
+        setChanged();
+    }
+
+    private boolean forceAcceleratorGrowth(Block block) {
+        if (block instanceof io.github.lounode.ae2cs.common.block.CrystalMotherRockBlock motherRock) {
+            return motherRock.forceTopGrowth((net.minecraft.server.level.ServerLevel) level, worldPosition);
+        }
+        if (!(block instanceof BuddingCertusQuartzBlock)) {
+            return false;
+        }
+
+        BlockPos targetPos = worldPosition.above();
+        BlockState targetState = level.getBlockState(targetPos);
+        Block nextStage = null;
+        if (io.github.lounode.ae2cs.common.block.CrystalMotherRockBlock.canClusterGrowAtState(targetState)) {
+            nextStage = AEBlocks.SMALL_QUARTZ_BUD.block();
+        } else if (targetState.is(AEBlocks.SMALL_QUARTZ_BUD.block())
+                && targetState.getValue(net.minecraft.world.level.block.AmethystClusterBlock.FACING) == Direction.UP) {
+            nextStage = AEBlocks.MEDIUM_QUARTZ_BUD.block();
+        } else if (targetState.is(AEBlocks.MEDIUM_QUARTZ_BUD.block())
+                && targetState.getValue(net.minecraft.world.level.block.AmethystClusterBlock.FACING) == Direction.UP) {
+            nextStage = AEBlocks.LARGE_QUARTZ_BUD.block();
+        } else if (targetState.is(AEBlocks.LARGE_QUARTZ_BUD.block())
+                && targetState.getValue(net.minecraft.world.level.block.AmethystClusterBlock.FACING) == Direction.UP) {
+            nextStage = AEBlocks.QUARTZ_CLUSTER.block();
+        }
+        if (nextStage == null) return false;
+
+        BlockState nextState = nextStage.defaultBlockState()
+                .setValue(net.minecraft.world.level.block.AmethystClusterBlock.FACING, Direction.UP)
+                .setValue(net.minecraft.world.level.block.AmethystClusterBlock.WATERLOGGED,
+                        targetState.getFluidState().getType() == net.minecraft.world.level.material.Fluids.WATER);
+        level.setBlockAndUpdate(targetPos, nextState);
+        return true;
+    }
+
+    private ItemStack getAeDegradedStack(Block block, int count) {
+        Block degraded = null;
+        if (block == AEBlocks.FLAWED_BUDDING_QUARTZ.block()
+                || block == AEBlocks.CHIPPED_BUDDING_QUARTZ.block()
+                || block == AEBlocks.DAMAGED_BUDDING_QUARTZ.block()) {
+            if (level.getRandom().nextInt(BuddingCertusQuartzBlock.DECAY_CHANCE) != 0) {
+                return ItemStack.EMPTY;
+            }
+            degraded = block == AEBlocks.FLAWED_BUDDING_QUARTZ.block()
+                    ? AEBlocks.CHIPPED_BUDDING_QUARTZ.block()
+                    : block == AEBlocks.CHIPPED_BUDDING_QUARTZ.block()
+                            ? AEBlocks.DAMAGED_BUDDING_QUARTZ.block()
+                            : AEBlocks.QUARTZ_BLOCK.block();
+        }
+        return degraded == null ? ItemStack.EMPTY : new ItemStack(degraded, count);
     }
 
     /**

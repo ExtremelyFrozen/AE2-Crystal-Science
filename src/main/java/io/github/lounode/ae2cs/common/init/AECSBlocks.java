@@ -158,6 +158,13 @@ public class AECSBlocks {
     public static final DeferredBlock<CrystalGrowthChamberBlock> CRYSTAL_GROWTH_CHAMBER_BLOCK = registerOtherBlock(AECSBlockIds.CRYSTAL_GROWTH_CHAMBER, () -> new CrystalGrowthChamberBlock(copy(Blocks.IRON_BLOCK)));
 
     /**
+     * 晶体催育器（暂只注册方块与资源，功能逻辑后续接入）
+     */
+    public static final DeferredBlock<CrystalGrowthChamberBlock> CRYSTAL_GROWTH_ACCELERATOR_BLOCK = registerOtherBlock(
+            AECSBlockIds.CRYSTAL_GROWTH_ACCELERATOR,
+            () -> new CrystalGrowthChamberBlock(copy(Blocks.IRON_BLOCK)));
+
+    /**
      * 电路蚀刻器
      */
     public static final DeferredBlock<CircuitEtcherBlock> CIRCUIT_ETCHER_BLOCK = registerOtherBlock(AECSBlockIds.CIRCUIT_ETCHER, () -> new CircuitEtcherBlock(copy(Blocks.IRON_BLOCK)));

@@ -58,6 +58,7 @@ public class AECSBlockStateProvider extends BlockStateProvider {
         genPatternProviderLike(AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK.get(), "block/resonating_pattern_provider");
         genPatternProviderLike(AECSBlocks.EX_RESONATING_PATTERN_PROVIDER_BLOCK.get(), "block/extended_resonating_pattern_provider");
         genSixFaceLike(AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK.get());
+        genSixFaceLike(AECSBlocks.CRYSTAL_GROWTH_ACCELERATOR_BLOCK.get());
         genSixFaceLike(AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK.get());
         genSixFaceLike(AECSBlocks.QUARTZ_GRINDSTONE_BLOCK.get());
         genSixFaceLike(AECSBlocks.CIRCUIT_ETCHER_BLOCK.get());
