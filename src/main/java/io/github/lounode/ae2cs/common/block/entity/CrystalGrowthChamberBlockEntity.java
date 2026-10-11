@@ -36,6 +36,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import org.jetbrains.annotations.Nullable;
@@ -294,8 +295,10 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
 
     private static boolean isAcceleratorInput(ItemStack stack) {
         Block block = Block.byItem(stack.getItem());
-        return block instanceof BuddingCertusQuartzBlock
-                || block instanceof io.github.lounode.ae2cs.common.block.CrystalMotherRockBlock;
+        return block instanceof io.github.lounode.ae2cs.common.block.CrystalMotherRockBlock
+                || block instanceof BuddingCertusQuartzBlock
+                || block == Blocks.BUDDING_AMETHYST
+                || knownForeignMotherRock(block) != null;
     }
 
     private void serverTickAccelerator() {
@@ -334,7 +337,27 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
         if (block instanceof io.github.lounode.ae2cs.common.block.CrystalMotherRockBlock motherRock) {
             return motherRock.forceTopGrowth((net.minecraft.server.level.ServerLevel) level, worldPosition);
         }
-        if (!(block instanceof BuddingCertusQuartzBlock)) {
+        if (block instanceof BuddingCertusQuartzBlock) {
+            return growUp(
+                    AEBlocks.SMALL_QUARTZ_BUD.block(),
+                    AEBlocks.MEDIUM_QUARTZ_BUD.block(),
+                    AEBlocks.LARGE_QUARTZ_BUD.block(),
+                    AEBlocks.QUARTZ_CLUSTER.block());
+        }
+        if (block == Blocks.BUDDING_AMETHYST) {
+            return growUp(
+                    Blocks.SMALL_AMETHYST_BUD,
+                    Blocks.MEDIUM_AMETHYST_BUD,
+                    Blocks.LARGE_AMETHYST_BUD,
+                    Blocks.AMETHYST_CLUSTER);
+        }
+
+        ForeignMotherRock foreign = knownForeignMotherRock(block);
+        return foreign != null && growUp(foreign.small(), foreign.medium(), foreign.large(), foreign.cluster());
+    }
+
+    private boolean growUp(Block small, Block medium, Block large, Block cluster) {
+        if (small == null || medium == null || large == null || cluster == null || level == null) {
             return false;
         }
 
@@ -342,20 +365,24 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
         BlockState targetState = level.getBlockState(targetPos);
         Block nextStage = null;
         if (io.github.lounode.ae2cs.common.block.CrystalMotherRockBlock.canClusterGrowAtState(targetState)) {
-            nextStage = AEBlocks.SMALL_QUARTZ_BUD.block();
-        } else if (targetState.is(AEBlocks.SMALL_QUARTZ_BUD.block())
-                && targetState.getValue(net.minecraft.world.level.block.AmethystClusterBlock.FACING) == Direction.UP) {
-            nextStage = AEBlocks.MEDIUM_QUARTZ_BUD.block();
-        } else if (targetState.is(AEBlocks.MEDIUM_QUARTZ_BUD.block())
-                && targetState.getValue(net.minecraft.world.level.block.AmethystClusterBlock.FACING) == Direction.UP) {
-            nextStage = AEBlocks.LARGE_QUARTZ_BUD.block();
-        } else if (targetState.is(AEBlocks.LARGE_QUARTZ_BUD.block())
-                && targetState.getValue(net.minecraft.world.level.block.AmethystClusterBlock.FACING) == Direction.UP) {
-            nextStage = AEBlocks.QUARTZ_CLUSTER.block();
+            nextStage = small;
+        } else if (facesUp(targetState, small)) {
+            nextStage = medium;
+        } else if (facesUp(targetState, medium)) {
+            nextStage = large;
+        } else if (facesUp(targetState, large)) {
+            nextStage = cluster;
         }
-        if (nextStage == null) return false;
+        if (nextStage == null) {
+            return false;
+        }
 
-        BlockState nextState = nextStage.defaultBlockState()
+        BlockState nextState = nextStage.defaultBlockState();
+        if (!nextState.hasProperty(net.minecraft.world.level.block.AmethystClusterBlock.FACING)
+                || !nextState.hasProperty(net.minecraft.world.level.block.AmethystClusterBlock.WATERLOGGED)) {
+            return false;
+        }
+        nextState = nextState
                 .setValue(net.minecraft.world.level.block.AmethystClusterBlock.FACING, Direction.UP)
                 .setValue(net.minecraft.world.level.block.AmethystClusterBlock.WATERLOGGED,
                         targetState.getFluidState().getType() == net.minecraft.world.level.material.Fluids.WATER);
@@ -363,21 +390,169 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
         return true;
     }
 
+    private static boolean facesUp(BlockState state, Block block) {
+        return state.is(block)
+                && state.hasProperty(net.minecraft.world.level.block.AmethystClusterBlock.FACING)
+                && state.getValue(net.minecraft.world.level.block.AmethystClusterBlock.FACING) == Direction.UP;
+    }
+
+    @Nullable
+    private static ForeignMotherRock knownForeignMotherRock(Block block) {
+        ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
+        return switch (id.toString()) {
+            case "extendedae:entro_budding_fully",
+                    "extendedae:entro_budding_mostly",
+                    "extendedae:entro_budding_half",
+                    "extendedae:entro_budding_hardly" ->
+                new ForeignMotherRock(
+                        "extendedae:entro_cluster_small",
+                        "extendedae:entro_cluster_medium",
+                        "extendedae:entro_cluster_large",
+                        "extendedae:entro_cluster",
+                        degradedEntro(id.getPath()),
+                        10);
+            case "ae2lt:flawless_budding_overload_crystal",
+                    "ae2lt:flawed_budding_overload_crystal",
+                    "ae2lt:cracked_budding_overload_crystal",
+                    "ae2lt:damaged_budding_overload_crystal" ->
+                new ForeignMotherRock(
+                        "ae2lt:small_overload_crystal_bud",
+                        "ae2lt:medium_overload_crystal_bud",
+                        "ae2lt:large_overload_crystal_bud",
+                        "ae2lt:overload_crystal_cluster",
+                        degradedOverload(id.getPath()),
+                        12);
+            case "appgen:budding_ember_flawless",
+                    "appgen:budding_ember_flawed",
+                    "appgen:budding_ember_chipped",
+                    "appgen:budding_ember_damaged" ->
+                new ForeignMotherRock(
+                        "appgen:ember_bud_small",
+                        "appgen:ember_bud_medium",
+                        "appgen:ember_bud_large",
+                        "appgen:ember_cluster",
+                        degradedEmber(id.getPath()),
+                        10);
+            case "data_energistics:budding_data_crystal_0",
+                    "data_energistics:budding_data_crystal_1",
+                    "data_energistics:budding_data_crystal_2",
+                    "data_energistics:budding_data_crystal_3",
+                    "data_energistics:budding_data_crystal_4" ->
+                new ForeignMotherRock(
+                        "data_energistics:small_data_crystal_bud",
+                        "data_energistics:medium_data_crystal_bud",
+                        "data_energistics:large_data_crystal_bud",
+                        "data_energistics:data_crystal_cluster",
+                        degradedDataCrystal(id.getPath()),
+                        12);
+            default -> null;
+        };
+    }
+
+    @Nullable
+    private static String degradedEntro(String path) {
+        return switch (path) {
+            case "entro_budding_fully" -> "extendedae:entro_budding_mostly";
+            case "entro_budding_mostly" -> "extendedae:entro_budding_half";
+            case "entro_budding_half" -> "extendedae:entro_budding_hardly";
+            case "entro_budding_hardly" -> "ae2:quartz_block";
+            default -> null;
+        };
+    }
+
+    @Nullable
+    private static String degradedOverload(String path) {
+        return switch (path) {
+            case "flawless_budding_overload_crystal" -> null;
+            case "flawed_budding_overload_crystal" -> "ae2lt:cracked_budding_overload_crystal";
+            case "cracked_budding_overload_crystal" -> "ae2lt:damaged_budding_overload_crystal";
+            case "damaged_budding_overload_crystal" -> "ae2lt:overload_crystal_block";
+            default -> null;
+        };
+    }
+
+    @Nullable
+    private static String degradedEmber(String path) {
+        return switch (path) {
+            case "budding_ember_flawless" -> null;
+            case "budding_ember_flawed" -> "appgen:budding_ember_chipped";
+            case "budding_ember_chipped" -> "appgen:budding_ember_damaged";
+            case "budding_ember_damaged" -> "appgen:ember_block";
+            default -> null;
+        };
+    }
+
+    @Nullable
+    private static String degradedDataCrystal(String path) {
+        return switch (path) {
+            case "budding_data_crystal_4", "budding_data_crystal_0" -> null;
+            case "budding_data_crystal_3" -> "data_energistics:budding_data_crystal_2";
+            case "budding_data_crystal_2" -> "data_energistics:budding_data_crystal_1";
+            case "budding_data_crystal_1" -> "data_energistics:budding_data_crystal_0";
+            default -> null;
+        };
+    }
+
+    private record ForeignMotherRock(String smallId, String mediumId, String largeId, String clusterId,
+                                      @Nullable String degradedId, int decayChance) {
+
+        @Nullable
+        Block small() {
+            return block(smallId);
+        }
+
+        @Nullable
+        Block medium() {
+            return block(mediumId);
+        }
+
+        @Nullable
+        Block large() {
+            return block(largeId);
+        }
+
+        @Nullable
+        Block cluster() {
+            return block(clusterId);
+        }
+
+        @Nullable
+        Block degraded() {
+            return degradedId == null ? null : block(degradedId);
+        }
+
+        @Nullable
+        private static Block block(String id) {
+            return BuiltInRegistries.BLOCK.getOptional(ResourceLocation.parse(id)).orElse(null);
+        }
+    }
+
+
     private ItemStack getAeDegradedStack(Block block, int count) {
         Block degraded = null;
-        if (block == AEBlocks.FLAWED_BUDDING_QUARTZ.block()
-                || block == AEBlocks.CHIPPED_BUDDING_QUARTZ.block()
-                || block == AEBlocks.DAMAGED_BUDDING_QUARTZ.block()) {
-            if (level.getRandom().nextInt(BuddingCertusQuartzBlock.DECAY_CHANCE) != 0) {
-                return ItemStack.EMPTY;
+        int chance = 0;
+
+        if (block == AEBlocks.FLAWED_BUDDING_QUARTZ.block()) {
+            degraded = AEBlocks.CHIPPED_BUDDING_QUARTZ.block();
+            chance = BuddingCertusQuartzBlock.DECAY_CHANCE;
+        } else if (block == AEBlocks.CHIPPED_BUDDING_QUARTZ.block()) {
+            degraded = AEBlocks.DAMAGED_BUDDING_QUARTZ.block();
+            chance = BuddingCertusQuartzBlock.DECAY_CHANCE;
+        } else if (block == AEBlocks.DAMAGED_BUDDING_QUARTZ.block()) {
+            degraded = AEBlocks.QUARTZ_BLOCK.block();
+            chance = BuddingCertusQuartzBlock.DECAY_CHANCE;
+        } else {
+            ForeignMotherRock foreign = knownForeignMotherRock(block);
+            if (foreign != null && foreign.degraded() != null) {
+                degraded = foreign.degraded();
+                chance = foreign.decayChance();
             }
-            degraded = block == AEBlocks.FLAWED_BUDDING_QUARTZ.block()
-                    ? AEBlocks.CHIPPED_BUDDING_QUARTZ.block()
-                    : block == AEBlocks.CHIPPED_BUDDING_QUARTZ.block()
-                            ? AEBlocks.DAMAGED_BUDDING_QUARTZ.block()
-                            : AEBlocks.QUARTZ_BLOCK.block();
         }
-        return degraded == null ? ItemStack.EMPTY : new ItemStack(degraded, count);
+
+        if (degraded == null || chance <= 0 || level.getRandom().nextInt(chance) != 0) {
+            return ItemStack.EMPTY;
+        }
+        return new ItemStack(degraded, count);
     }
 
     /**

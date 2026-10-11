@@ -307,6 +307,19 @@ public class AECSBlocks {
         return Collections.unmodifiableList(motherRocks);
     }
 
+    /**
+     * 水晶创造栏内容：每种水晶的母岩、晶芽和晶簇，以及使用外部晶簇的恩特罗母岩。
+     */
+    public static List<DeferredBlock<? extends Block>> getCrystalGrowthBlocks() {
+        List<DeferredBlock<? extends Block>> blocks = new ArrayList<>();
+        for (CrystalFamilyBlocks family : CRYSTAL_FAMILIES) {
+            blocks.add(family.motherRock());
+            blocks.addAll(family.stages());
+        }
+        blocks.add(ENTRO_MOTHER_ROCK);
+        return Collections.unmodifiableList(blocks);
+    }
+
     // 工具方法
     private static <T extends Block> DeferredBlock<T> registerNotSelfDropBlock(String name, Supplier<T> block) {
         DeferredBlock<T> toReturn = registerBlock(name, block);
