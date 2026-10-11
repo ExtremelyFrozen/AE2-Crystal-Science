@@ -1,6 +1,7 @@
 {
   "gui.ae2cs.fluid.empty": "空",
   "creativetab.ae2cs.items": "AE2：水晶科技",
+  "creativetab.ae2cs.crystals": "水晶科技:水晶",
 
   "block.ae2cs.ender_quartz_block": "末影水晶塊",
   "block.ae2cs.resonating_crystal_block": "諧振水晶塊",
@@ -19,6 +20,7 @@
   "block.ae2cs.charged_certus_quartz_ore": "充能賽特斯石英礦石",
   "block.ae2cs.deepslate_charged_certus_quartz_ore": "充能深層賽特斯石英礦石",
   "block.ae2cs.crystal_growth_chamber": "晶體催生倉",
+  "block.ae2cs.crystal_growth_accelerator": "諧振晶體催生器",
   "block.ae2cs.circuit_etcher": "電路蝕刻器",
   "block.ae2cs.quartz_grindstone": "石英磨具",
   "block.ae2cs.crystal_pulverizer": "晶能粉碎機",

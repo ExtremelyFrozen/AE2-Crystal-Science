@@ -23,6 +23,7 @@ public class AECSScreens {
     @SubscribeEvent
     public static void registerScreens(RegisterMenuScreensEvent event) {
         event.register(AECSMenus.CRYSTAL_GROWTH_CHAMBER_MENU.get(), CrystalGrowthChamberGUI::new);
+        event.register(AECSMenus.CRYSTAL_GROWTH_ACCELERATOR_MENU.get(), CrystalGrowthAcceleratorGUI::new);
 
         event.<IntegratedInterfaceMenu, IntegratedInterfaceGUI>register(AECSMenus.INTEGRATED_INTERFACE_MENU.get(), (menu, inv, title) -> new IntegratedInterfaceGUI(menu, inv, title,
                 menu.extended ?

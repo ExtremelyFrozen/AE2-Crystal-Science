@@ -158,6 +158,13 @@ public class AECSBlocks {
     public static final DeferredBlock<CrystalGrowthChamberBlock> CRYSTAL_GROWTH_CHAMBER_BLOCK = registerOtherBlock(AECSBlockIds.CRYSTAL_GROWTH_CHAMBER, () -> new CrystalGrowthChamberBlock(copy(Blocks.IRON_BLOCK)));
 
     /**
+     * 晶体催育器（暂只注册方块与资源，功能逻辑后续接入）
+     */
+    public static final DeferredBlock<CrystalGrowthChamberBlock> CRYSTAL_GROWTH_ACCELERATOR_BLOCK = registerOtherBlock(
+            AECSBlockIds.CRYSTAL_GROWTH_ACCELERATOR,
+            () -> new CrystalGrowthChamberBlock(copy(Blocks.IRON_BLOCK)));
+
+    /**
      * 电路蚀刻器
      */
     public static final DeferredBlock<CircuitEtcherBlock> CIRCUIT_ETCHER_BLOCK = registerOtherBlock(AECSBlockIds.CIRCUIT_ETCHER, () -> new CircuitEtcherBlock(copy(Blocks.IRON_BLOCK)));
@@ -298,6 +305,19 @@ public class AECSBlocks {
         }
         motherRocks.add(ENTRO_MOTHER_ROCK);
         return Collections.unmodifiableList(motherRocks);
+    }
+
+    /**
+     * 水晶创造栏内容：每种水晶的母岩、晶芽和晶簇，以及使用外部晶簇的恩特罗母岩。
+     */
+    public static List<DeferredBlock<? extends Block>> getCrystalGrowthBlocks() {
+        List<DeferredBlock<? extends Block>> blocks = new ArrayList<>();
+        for (CrystalFamilyBlocks family : CRYSTAL_FAMILIES) {
+            blocks.add(family.motherRock());
+            blocks.addAll(family.stages());
+        }
+        blocks.add(ENTRO_MOTHER_ROCK);
+        return Collections.unmodifiableList(blocks);
     }
 
     // 工具方法

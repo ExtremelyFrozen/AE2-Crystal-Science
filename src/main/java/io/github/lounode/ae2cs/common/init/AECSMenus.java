@@ -31,6 +31,10 @@ public class AECSMenus {
             () -> MenuTypeBuilder.create(CrystalGrowthChamberMenu::new, CrystalGrowthChamberBlockEntity.class)
                     .build(AE2CrystalScience.makeId("crystal_growth_chamber_menu")));
 
+    public static final Supplier<MenuType<CrystalGrowthAcceleratorMenu>> CRYSTAL_GROWTH_ACCELERATOR_MENU = MENU_TYPES.register("crystal_growth_accelerator_menu",
+            () -> MenuTypeBuilder.create(CrystalGrowthAcceleratorMenu::new, CrystalGrowthChamberBlockEntity.class)
+                    .build(AE2CrystalScience.makeId("crystal_growth_accelerator_menu")));
+
     public static final Supplier<MenuType<IntegratedInterfaceMenu>> INTEGRATED_INTERFACE_MENU = MENU_TYPES.register("integrated_interface_menu",
             () -> MenuTypeBuilder.create(IntegratedInterfaceMenu::new, IntegratedInterfaceHost.class)
                     .build(AE2CrystalScience.makeId("integrated_interface_menu")));

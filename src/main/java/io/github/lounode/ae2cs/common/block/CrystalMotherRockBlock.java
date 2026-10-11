@@ -89,6 +89,37 @@ public class CrystalMotherRockBlock extends Block {
         return growthSequence;
     }
 
+    /**
+     * Forces the first bud to grow on the top face. This is used by the
+     * crystal growth accelerator; normal world growth still uses randomTick.
+     */
+    public boolean forceTopGrowth(ServerLevel level, BlockPos pos) {
+        BlockPos targetPos = pos.above();
+        BlockState targetState = level.getBlockState(targetPos);
+        Optional<ResourceLocation> nextStageId = selectNextStageId(targetState, Direction.UP);
+        if (nextStageId.isEmpty()) {
+            return false;
+        }
+
+        Optional<Block> nextStage = resolveStage(nextStageId.get());
+        if (nextStage.isEmpty()) {
+            return false;
+        }
+
+        BlockState nextState = nextStage.get().defaultBlockState();
+        if (!nextState.hasProperty(AmethystClusterBlock.FACING) || !nextState.hasProperty(AmethystClusterBlock.WATERLOGGED)) {
+            logInvalidStage(nextStageId.get(), "does not expose FACING and WATERLOGGED");
+            return false;
+        }
+
+        nextState = nextState
+                .setValue(AmethystClusterBlock.FACING, Direction.UP)
+                .setValue(AmethystClusterBlock.WATERLOGGED,
+                        targetState.getFluidState().getType() == Fluids.WATER);
+        level.setBlockAndUpdate(targetPos, nextState);
+        return true;
+    }
+
     public static boolean canClusterGrowAtState(BlockState state) {
         return state.isAir() || state.is(Blocks.WATER) && state.getFluidState().getAmount() == 8;
     }

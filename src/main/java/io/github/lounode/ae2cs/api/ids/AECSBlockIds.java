@@ -31,6 +31,7 @@ public class AECSBlockIds {
 
     // 机器方块
     public static final String CRYSTAL_GROWTH_CHAMBER = "crystal_growth_chamber";
+    public static final String CRYSTAL_GROWTH_ACCELERATOR = "crystal_growth_accelerator";
     public static final String CIRCUIT_ETCHER = "circuit_etcher";
     public static final String QUARTZ_GRINDSTONE = "quartz_grindstone";
     public static final String CRYSTAL_PULVERIZER = "crystal_pulverizer";

@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs.common.block;
 
 import io.github.lounode.ae2cs.common.block.entity.CrystalGrowthChamberBlockEntity;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
+import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 
 import appeng.api.orientation.IOrientationStrategy;
@@ -49,8 +50,10 @@ public class CrystalGrowthChamberBlock extends AEBaseEntityBlock<CrystalGrowthCh
     protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         super.useWithoutItem(state, level, pos, player, hitResult);
         if (!level.isClientSide() && !player.isShiftKeyDown()) {
-            if (level.getBlockEntity(pos) instanceof CrystalGrowthChamberBlockEntity be)
-                MenuOpener.open(AECSMenus.CRYSTAL_GROWTH_CHAMBER_MENU.get(), player, MenuLocators.forBlockEntity(be));
+            if (level.getBlockEntity(pos) instanceof CrystalGrowthChamberBlockEntity be) {
+                var menu = state.is(AECSBlocks.CRYSTAL_GROWTH_ACCELERATOR_BLOCK.get()) ? AECSMenus.CRYSTAL_GROWTH_ACCELERATOR_MENU.get() : AECSMenus.CRYSTAL_GROWTH_CHAMBER_MENU.get();
+                MenuOpener.open(menu, player, MenuLocators.forBlockEntity(be));
+            }
         }
         return InteractionResult.SUCCESS_NO_ITEM_USED;
     }

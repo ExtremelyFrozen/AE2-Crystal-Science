@@ -1,0 +1,39 @@
+{
+  "$schema": "schema.json",
+  "includes": [
+    "common/common.json"
+  ],
+  "background": {
+    "texture": "ae2cs:textures/gui/crystal_growth_accelerator_gui.png",
+    "textureWidth": 256,
+    "textureHeight": 256,
+    "srcRect": [0, 0, 176, 178]
+  },
+  "slots": {
+    "MACHINE_INPUT": {
+      "left": 80,
+      "top": 37,
+      "grid": "VERTICAL"
+    },
+    "PLAYER_INVENTORY": {
+      "left": 8,
+      "bottom": 94,
+      "grid": "BREAK_AFTER_9COLS"
+    },
+    "PLAYER_HOTBAR": {
+      "left": 8,
+      "bottom": 36,
+      "grid": "HORIZONTAL"
+    }
+  },
+  "text": {
+    "title": {
+      "text": { "translate": "block.ae2cs.crystal_growth_accelerator" },
+      "position": { "left": 8, "top": 6 }
+    },
+    "player_inventory_title": {
+      "text": { "translate": "container.inventory" },
+      "position": { "left": 8, "bottom": 105 }
+    }
+  }
+}

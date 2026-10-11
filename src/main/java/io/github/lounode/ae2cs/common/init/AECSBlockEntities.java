@@ -45,7 +45,8 @@ public class AECSBlockEntities {
             AECSBlockIds.CRYSTAL_GROWTH_CHAMBER,
             CrystalGrowthChamberBlockEntity.class,
             CrystalGrowthChamberBlockEntity::new,
-            AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK);
+            AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK,
+            AECSBlocks.CRYSTAL_GROWTH_ACCELERATOR_BLOCK);
 
     /**
      * 集成接口
