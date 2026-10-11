@@ -51,9 +51,7 @@ public class CrystalGrowthChamberBlock extends AEBaseEntityBlock<CrystalGrowthCh
         super.useWithoutItem(state, level, pos, player, hitResult);
         if (!level.isClientSide() && !player.isShiftKeyDown()) {
             if (level.getBlockEntity(pos) instanceof CrystalGrowthChamberBlockEntity be) {
-                var menu = state.is(AECSBlocks.CRYSTAL_GROWTH_ACCELERATOR_BLOCK.get())
-                        ? AECSMenus.CRYSTAL_GROWTH_ACCELERATOR_MENU.get()
-                        : AECSMenus.CRYSTAL_GROWTH_CHAMBER_MENU.get();
+                var menu = state.is(AECSBlocks.CRYSTAL_GROWTH_ACCELERATOR_BLOCK.get()) ? AECSMenus.CRYSTAL_GROWTH_ACCELERATOR_MENU.get() : AECSMenus.CRYSTAL_GROWTH_CHAMBER_MENU.get();
                 MenuOpener.open(menu, player, MenuLocators.forBlockEntity(be));
             }
         }

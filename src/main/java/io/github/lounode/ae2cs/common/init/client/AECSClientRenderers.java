@@ -1,10 +1,10 @@
 package io.github.lounode.ae2cs.common.init.client;
 
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
+import io.github.lounode.ae2cs.common.block.render.CrystalGrowthAcceleratorRenderer;
 import io.github.lounode.ae2cs.common.block.render.EnderBroadcasterRender;
 import io.github.lounode.ae2cs.common.block.render.EnderEmitterRenderer;
 import io.github.lounode.ae2cs.common.block.render.EnderInterfaceRender;
-import io.github.lounode.ae2cs.common.block.render.CrystalGrowthAcceleratorRenderer;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 
 import net.neoforged.api.distmarker.Dist;

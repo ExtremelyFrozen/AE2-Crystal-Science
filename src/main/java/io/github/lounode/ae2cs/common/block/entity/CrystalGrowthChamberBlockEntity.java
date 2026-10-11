@@ -34,9 +34,9 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import org.jetbrains.annotations.Nullable;
@@ -116,8 +116,7 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
             // 这里限定只允许水晶种子进入，但不限制输出，以便UI中能手动拿取任意物品
             @Override
             public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
-                return stack != null && !stack.isEmpty()
-                        && (accelerator ? isAcceleratorInput(stack) : stack.is(AECSTags.Items.CRYSTAL_SEEDS));
+                return stack != null && !stack.isEmpty() && (accelerator ? isAcceleratorInput(stack) : stack.is(AECSTags.Items.CRYSTAL_SEEDS));
             }
         });
 
@@ -125,8 +124,7 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
 
             @Override
             public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
-                return stack != null && !stack.isEmpty()
-                        && (accelerator ? isAcceleratorInput(stack) : stack.is(AECSTags.Items.CRYSTAL_SEEDS));
+                return stack != null && !stack.isEmpty() && (accelerator ? isAcceleratorInput(stack) : stack.is(AECSTags.Items.CRYSTAL_SEEDS));
             }
 
             @Override
@@ -227,9 +225,7 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
     protected boolean readFromStream(RegistryFriendlyByteBuf data) {
         boolean redraw = super.readFromStream(data);
         Block previous = acceleratorDisplayBlock;
-        acceleratorDisplayBlock = data.readBoolean()
-                ? BuiltInRegistries.BLOCK.get(data.readResourceLocation())
-                : null;
+        acceleratorDisplayBlock = data.readBoolean() ? BuiltInRegistries.BLOCK.get(data.readResourceLocation()) : null;
         return redraw || previous != acceleratorDisplayBlock;
     }
 
@@ -295,10 +291,7 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
 
     private static boolean isAcceleratorInput(ItemStack stack) {
         Block block = Block.byItem(stack.getItem());
-        return block instanceof io.github.lounode.ae2cs.common.block.CrystalMotherRockBlock
-                || block instanceof BuddingCertusQuartzBlock
-                || block == Blocks.BUDDING_AMETHYST
-                || knownForeignMotherRock(block) != null;
+        return block instanceof io.github.lounode.ae2cs.common.block.CrystalMotherRockBlock || block instanceof BuddingCertusQuartzBlock || block == Blocks.BUDDING_AMETHYST || knownForeignMotherRock(block) != null;
     }
 
     private void serverTickAccelerator() {
@@ -378,8 +371,7 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
         }
 
         BlockState nextState = nextStage.defaultBlockState();
-        if (!nextState.hasProperty(net.minecraft.world.level.block.AmethystClusterBlock.FACING)
-                || !nextState.hasProperty(net.minecraft.world.level.block.AmethystClusterBlock.WATERLOGGED)) {
+        if (!nextState.hasProperty(net.minecraft.world.level.block.AmethystClusterBlock.FACING) || !nextState.hasProperty(net.minecraft.world.level.block.AmethystClusterBlock.WATERLOGGED)) {
             return false;
         }
         nextState = nextState
@@ -391,60 +383,41 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
     }
 
     private static boolean facesUp(BlockState state, Block block) {
-        return state.is(block)
-                && state.hasProperty(net.minecraft.world.level.block.AmethystClusterBlock.FACING)
-                && state.getValue(net.minecraft.world.level.block.AmethystClusterBlock.FACING) == Direction.UP;
+        return state.is(block) && state.hasProperty(net.minecraft.world.level.block.AmethystClusterBlock.FACING) && state.getValue(net.minecraft.world.level.block.AmethystClusterBlock.FACING) == Direction.UP;
     }
 
     @Nullable
     private static ForeignMotherRock knownForeignMotherRock(Block block) {
         ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
         return switch (id.toString()) {
-            case "extendedae:entro_budding_fully",
-                    "extendedae:entro_budding_mostly",
-                    "extendedae:entro_budding_half",
-                    "extendedae:entro_budding_hardly" ->
-                new ForeignMotherRock(
-                        "extendedae:entro_cluster_small",
-                        "extendedae:entro_cluster_medium",
-                        "extendedae:entro_cluster_large",
-                        "extendedae:entro_cluster",
-                        degradedEntro(id.getPath()),
-                        10);
-            case "ae2lt:flawless_budding_overload_crystal",
-                    "ae2lt:flawed_budding_overload_crystal",
-                    "ae2lt:cracked_budding_overload_crystal",
-                    "ae2lt:damaged_budding_overload_crystal" ->
-                new ForeignMotherRock(
-                        "ae2lt:small_overload_crystal_bud",
-                        "ae2lt:medium_overload_crystal_bud",
-                        "ae2lt:large_overload_crystal_bud",
-                        "ae2lt:overload_crystal_cluster",
-                        degradedOverload(id.getPath()),
-                        12);
-            case "appgen:budding_ember_flawless",
-                    "appgen:budding_ember_flawed",
-                    "appgen:budding_ember_chipped",
-                    "appgen:budding_ember_damaged" ->
-                new ForeignMotherRock(
-                        "appgen:ember_bud_small",
-                        "appgen:ember_bud_medium",
-                        "appgen:ember_bud_large",
-                        "appgen:ember_cluster",
-                        degradedEmber(id.getPath()),
-                        10);
-            case "data_energistics:budding_data_crystal_0",
-                    "data_energistics:budding_data_crystal_1",
-                    "data_energistics:budding_data_crystal_2",
-                    "data_energistics:budding_data_crystal_3",
-                    "data_energistics:budding_data_crystal_4" ->
-                new ForeignMotherRock(
-                        "data_energistics:small_data_crystal_bud",
-                        "data_energistics:medium_data_crystal_bud",
-                        "data_energistics:large_data_crystal_bud",
-                        "data_energistics:data_crystal_cluster",
-                        degradedDataCrystal(id.getPath()),
-                        12);
+            case "extendedae:entro_budding_fully", "extendedae:entro_budding_mostly", "extendedae:entro_budding_half", "extendedae:entro_budding_hardly" -> new ForeignMotherRock(
+                    "extendedae:entro_cluster_small",
+                    "extendedae:entro_cluster_medium",
+                    "extendedae:entro_cluster_large",
+                    "extendedae:entro_cluster",
+                    degradedEntro(id.getPath()),
+                    10);
+            case "ae2lt:flawless_budding_overload_crystal", "ae2lt:flawed_budding_overload_crystal", "ae2lt:cracked_budding_overload_crystal", "ae2lt:damaged_budding_overload_crystal" -> new ForeignMotherRock(
+                    "ae2lt:small_overload_crystal_bud",
+                    "ae2lt:medium_overload_crystal_bud",
+                    "ae2lt:large_overload_crystal_bud",
+                    "ae2lt:overload_crystal_cluster",
+                    degradedOverload(id.getPath()),
+                    12);
+            case "appgen:budding_ember_flawless", "appgen:budding_ember_flawed", "appgen:budding_ember_chipped", "appgen:budding_ember_damaged" -> new ForeignMotherRock(
+                    "appgen:ember_bud_small",
+                    "appgen:ember_bud_medium",
+                    "appgen:ember_bud_large",
+                    "appgen:ember_cluster",
+                    degradedEmber(id.getPath()),
+                    10);
+            case "data_energistics:budding_data_crystal_0", "data_energistics:budding_data_crystal_1", "data_energistics:budding_data_crystal_2", "data_energistics:budding_data_crystal_3", "data_energistics:budding_data_crystal_4" -> new ForeignMotherRock(
+                    "data_energistics:small_data_crystal_bud",
+                    "data_energistics:medium_data_crystal_bud",
+                    "data_energistics:large_data_crystal_bud",
+                    "data_energistics:data_crystal_cluster",
+                    degradedDataCrystal(id.getPath()),
+                    12);
             default -> null;
         };
     }
@@ -494,7 +467,7 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
     }
 
     private record ForeignMotherRock(String smallId, String mediumId, String largeId, String clusterId,
-                                      @Nullable String degradedId, int decayChance) {
+                                     @Nullable String degradedId, int decayChance) {
 
         @Nullable
         Block small() {
@@ -526,7 +499,6 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
             return BuiltInRegistries.BLOCK.getOptional(ResourceLocation.parse(id)).orElse(null);
         }
     }
-
 
     private ItemStack getAeDegradedStack(Block block, int count) {
         Block degraded = null;

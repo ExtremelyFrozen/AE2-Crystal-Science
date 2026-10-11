@@ -3,11 +3,11 @@ package io.github.lounode.ae2cs.common.block.render;
 import io.github.lounode.ae2cs.common.block.entity.CrystalGrowthChamberBlockEntity;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
@@ -16,8 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class CrystalGrowthAcceleratorRenderer implements BlockEntityRenderer<CrystalGrowthChamberBlockEntity> {
 
-    public CrystalGrowthAcceleratorRenderer(BlockEntityRendererProvider.Context context) {
-    }
+    public CrystalGrowthAcceleratorRenderer(BlockEntityRendererProvider.Context context) {}
 
     @Override
     public void render(@NotNull CrystalGrowthChamberBlockEntity be, float partialTick,

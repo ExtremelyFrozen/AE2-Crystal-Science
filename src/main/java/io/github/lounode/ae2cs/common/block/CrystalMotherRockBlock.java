@@ -107,8 +107,7 @@ public class CrystalMotherRockBlock extends Block {
         }
 
         BlockState nextState = nextStage.get().defaultBlockState();
-        if (!nextState.hasProperty(AmethystClusterBlock.FACING)
-                || !nextState.hasProperty(AmethystClusterBlock.WATERLOGGED)) {
+        if (!nextState.hasProperty(AmethystClusterBlock.FACING) || !nextState.hasProperty(AmethystClusterBlock.WATERLOGGED)) {
             logInvalidStage(nextStageId.get(), "does not expose FACING and WATERLOGGED");
             return false;
         }
