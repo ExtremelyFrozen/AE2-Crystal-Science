@@ -55,6 +55,10 @@ public class AECSMenus {
             () -> MenuTypeBuilder.create(CrystalPulverizerMenu::new, CrystalPulverizerBlockEntity.class)
                     .build(AE2CrystalScience.makeId("crystal_pulverizer_menu")));
 
+    public static final Supplier<MenuType<ResonatingPulverizerFactoryMenu>> RESONATING_PULVERIZER_FACTORY_MENU = MENU_TYPES.register("resonating_pulverizer_factory_menu",
+            () -> MenuTypeBuilder.create(ResonatingPulverizerFactoryMenu::new, ResonatingPulverizerFactoryBlockEntity.class)
+                    .build(AE2CrystalScience.makeId("resonating_pulverizer_factory_menu")));
+
     public static final Supplier<MenuType<QuartzGrindstoneMenu>> QUARTZ_GRINDSTONE_MENU = MENU_TYPES.register("quartz_grindstone_menu",
             () -> MenuTypeBuilder.create(QuartzGrindstoneMenu::new, QuartzGrindstoneBlockEntity.class)
                     .build(AE2CrystalScience.makeId("quartz_grindstone_menu")));

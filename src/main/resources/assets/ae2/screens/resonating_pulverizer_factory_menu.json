@@ -1,0 +1,65 @@
+{
+  "$schema": "schema.json",
+  "includes": [
+    "common/common.json",
+    "common/player_inventory.json",
+    "common/toolbox.json"
+  ],
+  "background": {
+    "texture": "ae2cs:textures/gui/resonating_pulverizer_factory_menu.png",
+    "textureWidth": 256,
+    "textureHeight": 256,
+    "srcRect": [0, 0, 176, 178]
+  },
+  "slots": {
+    "MACHINE_INPUT": { "left": 31, "top": 22, "grid": "BREAK_AFTER_3COLS" },
+    "MACHINE_OUTPUT": { "left": 93, "top": 22, "grid": "BREAK_AFTER_3COLS" },
+    "UPGRADE": {
+      "right": 0,
+      "top": 0,
+      "grid": "VERTICAL"
+    }
+  },
+  "text": {
+    "title": {
+      "text": { "translate": "block.ae2cs.resonating_pulverizer_factory" },
+      "position": { "left": 8, "top": 6 }
+    }
+  },
+  "images": {
+    "progressBarBase": {
+      "texture": "ae2cs:textures/gui/resonating_pulverizer_factory_menu.png",
+      "srcRect": [176, 0, 22, 16]
+    },
+    "workingProgressBar": {
+      "texture": "ae2cs:textures/gui/resonating_pulverizer_factory_menu.png",
+      "srcRect": [176, 16, 22, 16]
+    },
+    "energyRateBar": {
+      "texture": "ae2cs:textures/gui/resonating_pulverizer_factory_menu.png",
+      "srcRect": [176, 34, 6, 18]
+    }
+  },
+  "widgets": {
+    "progressBarBase": {
+      "left": 77,
+      "top": 77
+    },
+    "workingProgressBar": {
+      "left": 77,
+      "top": 77
+    },
+    "energyRateBar": {
+      "left": -10000,
+      "top": -10000
+    },
+    "fluidInput": {
+      "left": 8,
+      "top": 20
+    },
+    "fluidOutput": {
+      "left": 150,
+      "top": 20
+    }
+  }
+}

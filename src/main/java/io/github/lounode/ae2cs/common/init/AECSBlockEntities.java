@@ -76,6 +76,15 @@ public class AECSBlockEntities {
             AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK);
 
     /**
+     * 充能共振发电机
+     */
+    public static final DeferredBlockEntityType<ChargedResonatingGeneratorBlockEntity> CHARGED_RESONATING_GENERATOR_BLOCK_ENTITY = create(
+            AECSBlockIds.CHARGED_RESONATING_GENERATOR,
+            ChargedResonatingGeneratorBlockEntity.class,
+            ChargedResonatingGeneratorBlockEntity::new,
+            AECSBlocks.CHARGED_RESONATING_GENERATOR_BLOCK);
+
+    /**
      * 电路蚀刻器
      */
     public static final DeferredBlockEntityType<CircuitEtcherBlockEntity> CIRCUIT_ETCHER_BLOCK_ENTITY = create(
@@ -101,6 +110,15 @@ public class AECSBlockEntities {
             CrystalPulverizerBlockEntity.class,
             CrystalPulverizerBlockEntity::new,
             AECSBlocks.CRYSTAL_PULVERIZER_BLOCK);
+
+    /**
+     * 谐振粉碎工厂
+     */
+    public static final DeferredBlockEntityType<ResonatingPulverizerFactoryBlockEntity> RESONATING_PULVERIZER_FACTORY_BLOCK_ENTITY = create(
+            AECSBlockIds.RESONATING_PULVERIZER_FACTORY,
+            ResonatingPulverizerFactoryBlockEntity.class,
+            ResonatingPulverizerFactoryBlockEntity::new,
+            AECSBlocks.RESONATING_PULVERIZER_FACTORY_BLOCK);
 
     /**
      * 石英磨具

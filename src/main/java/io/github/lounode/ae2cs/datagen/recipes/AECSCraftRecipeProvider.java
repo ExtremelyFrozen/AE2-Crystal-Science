@@ -281,6 +281,20 @@ public class AECSCraftRecipeProvider extends AECSRecipeProvider {
                 .unlockedBy(getHasName(AECSItems.RESONATING_PROCESSOR), has(AECSItems.RESONATING_PROCESSOR))
                 .save(recipeOutput, getCrafterPath(AECSBlocks.CRYSTAL_PULVERIZER_BLOCK, true));
 
+        // 谐振粉碎工厂（晶能粉碎机的升级型，以粉碎机为核心）
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSBlocks.RESONATING_PULVERIZER_FACTORY_BLOCK)
+                .pattern("aba")
+                .pattern("cdc")
+                .pattern("efe")
+                .define('a', AECSTags.Items.GEM_RESONATING)
+                .define('b', AEBlocks.INSCRIBER)
+                .define('c', Tags.Items.INGOTS_IRON)
+                .define('d', AECSBlocks.CRYSTAL_PULVERIZER_BLOCK)
+                .define('e', AEItems.LOGIC_PROCESSOR)
+                .define('f', AECSItems.RESONATING_PROCESSOR)
+                .unlockedBy(getHasName(AECSItems.RESONATING_PROCESSOR), has(AECSItems.RESONATING_PROCESSOR))
+                .save(recipeOutput, getCrafterPath(AECSBlocks.RESONATING_PULVERIZER_FACTORY_BLOCK, true));
+
         // 脉冲离心机（暂沿用粉碎机合成成本）
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AECSBlocks.PULSE_CENTRIFUGE_BLOCK)
                 .pattern("aba")

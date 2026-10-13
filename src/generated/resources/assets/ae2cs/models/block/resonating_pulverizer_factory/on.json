@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "ae2cs:block/resonating_pulverizer_factory/on/bottom",
+    "east": "ae2cs:block/resonating_pulverizer_factory/on/left",
+    "north": "ae2cs:block/resonating_pulverizer_factory/on/front",
+    "particle": "ae2cs:block/resonating_pulverizer_factory/on/front",
+    "south": "ae2cs:block/resonating_pulverizer_factory/on/back",
+    "up": "ae2cs:block/resonating_pulverizer_factory/on/top",
+    "west": "ae2cs:block/resonating_pulverizer_factory/on/right"
+  }
+}

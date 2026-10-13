@@ -27,6 +27,10 @@ public class AECSEmiPlugin implements EmiPlugin {
                 new MachineEmiRecipeHandler<>(CrystalAggregatorRecipeCategory.RECIPE_TYPE));
         registry.addRecipeHandler(AECSMenus.CRYSTAL_PULVERIZER_MENU.get(),
                 new MachineEmiRecipeHandler<>(CrystalPulverizerRecipeCategory.RECIPE_TYPE));
+        registry.addRecipeHandler(AECSMenus.RESONATING_PULVERIZER_FACTORY_MENU.get(),
+                new MachineEmiRecipeHandler<>(CrystalPulverizerRecipeCategory.RECIPE_TYPE));
+        registry.addRecipeHandler(AECSMenus.QUARTZ_GRINDSTONE_MENU.get(),
+                new MachineEmiRecipeHandler<>(CrystalPulverizerRecipeCategory.RECIPE_TYPE));
         registry.addRecipeHandler(AECSMenus.CRYSTAL_INFUSER_MENU.get(),
                 new MachineEmiRecipeHandler<>(CrystalInfuserRecipeCategory.RECIPE_TYPE));
         registry.addRecipeHandler(AECSMenus.PULSE_CENTRIFUGE_MENU.get(),
@@ -59,6 +63,7 @@ public class AECSEmiPlugin implements EmiPlugin {
         registry.addCategory(CrystalPulverizerRecipeCategory.RECIPE_TYPE);
         registry.addWorkstation(CrystalPulverizerRecipeCategory.RECIPE_TYPE, EmiStack.of(AECSBlocks.CRYSTAL_PULVERIZER_BLOCK));
         registry.addWorkstation(CrystalPulverizerRecipeCategory.RECIPE_TYPE, EmiStack.of(AECSBlocks.QUARTZ_GRINDSTONE_BLOCK));
+        registry.addWorkstation(CrystalPulverizerRecipeCategory.RECIPE_TYPE, EmiStack.of(AECSBlocks.RESONATING_PULVERIZER_FACTORY_BLOCK));
         registry.getRecipeManager().getAllRecipesFor(AECSRecipeTypes.CRYSTAL_PULVERIZER.get())
                 .stream()
                 .map(CrystalPulverizerRecipeCategory::new)

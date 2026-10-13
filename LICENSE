@@ -156,18 +156,25 @@ Creative Commons Attribution-NonCommercial-ShareAlike 3.0
 (CC BY-NC-SA 3.0)
 
 Applies to:
-All 3D model assets, including but not limited to the following path:
+All 3D model assets, including but not limited to the following paths:
 
 - src/main/resources/assets/ae2cs/models/block/me_ender_broadcaster
 - src/main/resources/assets/ae2cs/models/block/me_ender_emitter
+- src/main/resources/assets/ae2cs/models/block/charged_resonating_generator
 
 Copyright:
 - Copyright (c) 2026 TedXenon
 
+The following model is derived from Applied Energistics 2:
+- src/main/resources/assets/ae2cs/models/block/charged_resonating_generator
+- Copyright (c) 2020, Ridanisaurus Rid
+- Copyright (c) 2013 - 2020 AlgorithmX2 et al
+- Original license: CC BY-NC-SA 3.0
+
 
 Notes:
-- All 3D models are original works created specifically for this project
-- The author retains full copyright over these models
+- 3D models are original works created specifically for this project, except those listed above as derived from Applied Energistics 2
+- The author retains full copyright over the original models
 
 
 License Text:

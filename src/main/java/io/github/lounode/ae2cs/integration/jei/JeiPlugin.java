@@ -12,6 +12,8 @@ import io.github.lounode.ae2cs.common.menu.CrystalInfuserMenu;
 import io.github.lounode.ae2cs.common.menu.CrystalPulverizerMenu;
 import io.github.lounode.ae2cs.common.menu.EntropyVariationReactionChamberMenu;
 import io.github.lounode.ae2cs.common.menu.PulseCentrifugeMenu;
+import io.github.lounode.ae2cs.common.menu.QuartzGrindstoneMenu;
+import io.github.lounode.ae2cs.common.menu.ResonatingPulverizerFactoryMenu;
 import io.github.lounode.ae2cs.common.recipe.circuit_etcher.CircuitEtcherRecipe;
 import io.github.lounode.ae2cs.common.recipe.crystal_aggregator.CrystalAggregatorRecipe;
 import io.github.lounode.ae2cs.common.recipe.crystal_infuser.CrystalInfuserRecipe;
@@ -136,6 +138,14 @@ public class JeiPlugin implements IModPlugin {
                 AECSMenus.CRYSTAL_PULVERIZER_MENU.get(),
                 CrystalPulverizerRecipeCategory.RECIPE_TYPE));
         registration.addRecipeTransferHandler(new MachineRecipeTransferInfo<>(
+                ResonatingPulverizerFactoryMenu.class,
+                AECSMenus.RESONATING_PULVERIZER_FACTORY_MENU.get(),
+                CrystalPulverizerRecipeCategory.RECIPE_TYPE));
+        registration.addRecipeTransferHandler(new MachineRecipeTransferInfo<>(
+                QuartzGrindstoneMenu.class,
+                AECSMenus.QUARTZ_GRINDSTONE_MENU.get(),
+                CrystalPulverizerRecipeCategory.RECIPE_TYPE));
+        registration.addRecipeTransferHandler(new MachineRecipeTransferInfo<>(
                 CrystalInfuserMenu.class,
                 AECSMenus.CRYSTAL_INFUSER_MENU.get(),
                 CrystalInfuserRecipeCategory.RECIPE_TYPE));
@@ -203,6 +213,9 @@ public class JeiPlugin implements IModPlugin {
                 PulseCentrifugeRecipeCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(
                 AECSBlocks.QUARTZ_GRINDSTONE_BLOCK,
+                CrystalPulverizerRecipeCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(
+                AECSBlocks.RESONATING_PULVERIZER_FACTORY_BLOCK,
                 CrystalPulverizerRecipeCategory.RECIPE_TYPE);
 
         registration.addRecipeCatalyst(

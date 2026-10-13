@@ -27,3 +27,6 @@ src/generated/resources/.cache/
 
 *.patch
 *.DS_Store
+
+# Local run scripts - convenience wrappers for this machine; call gradlew.bat directly.
+runClient.bat
