@@ -59,6 +59,13 @@ public class EnderBroadcasterBlockEntity extends AENetworkedComponentBlockEntity
         }
 
         @Override
+        public void onGridChanged(EnderBroadcasterBlockEntity owner, IGridNode node) {
+            if (owner.connectionType != ConnectionType.AS_SENDER) return;
+            owner.markNeedRecountVirtualSenderNodes();
+            owner.markBandRuntimeDirty();
+        }
+
+        @Override
         public void onStateChanged(EnderBroadcasterBlockEntity owner, IGridNode node, State reason) {
             // 当节点本身的频道分配完成/变化时，自动让频段再统计一次
             if (owner == null) return;
@@ -67,7 +74,6 @@ public class EnderBroadcasterBlockEntity extends AENetworkedComponentBlockEntity
 
             if (reason == State.CHANNEL || reason == State.GRID_BOOT || reason == State.POWER) {
                 // 标脏，下一tick重新统计
-                // 由于发射端channel仅仅取决于此处连接状态，所以也仅需要在此处进行标脏即可
                 owner.markNeedRecountVirtualSenderNodes();
             }
         }
@@ -325,6 +331,7 @@ public class EnderBroadcasterBlockEntity extends AENetworkedComponentBlockEntity
             virtualSenderNodes.clear();
         }
         virtualSenderNodeTarget = 0;
+        markNeedRecountVirtualSenderNodes();
     }
 
     /**
@@ -545,6 +552,11 @@ public class EnderBroadcasterBlockEntity extends AENetworkedComponentBlockEntity
         if (reason == IGridNodeListener.State.CHANNEL || reason == IGridNodeListener.State.GRID_BOOT) {
             // 内部在连接数相同时会阻止重连节点，不会重复造成网络变化
             ensureSenderVirtualNodes();
+        }
+        if (connectionType == ConnectionType.AS_SENDER) {
+            // 控制器身份或供电恢复时，即使虚拟节点数量没变，也必须重试频段绑定。
+            markNeedRecountVirtualSenderNodes();
+            markBandRuntimeDirty();
         }
     }
 

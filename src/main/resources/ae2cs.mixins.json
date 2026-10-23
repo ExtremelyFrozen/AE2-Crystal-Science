@@ -4,6 +4,7 @@
   "mixins": [
     "CableBusBlockEntityMixin",
     "GridNodeMixin",
+    "EnderEmitterConnectionMixin",
     "GrowthAcceleratorBlockEntityMixin",
     "IngredientMixin",
     "PatternAccessTermMenuMixin"

@@ -1,0 +1,14 @@
+{
+  "sources": [
+    {
+      "type": "minecraft:single",
+      "resource": "ae2cs:gui/ender_emitter/scrollbar",
+      "sprite": "ae2cs:ender_emitter/scrollbar"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "ae2cs:gui/ender_emitter/scrollbar_disabled",
+      "sprite": "ae2cs:ender_emitter/scrollbar_disabled"
+    }
+  ]
+}

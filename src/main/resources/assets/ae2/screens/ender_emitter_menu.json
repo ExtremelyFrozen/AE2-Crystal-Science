@@ -1,16 +1,34 @@
 {
   "$schema": "schema.json",
-  "includes": ["common/common.json", "common/player_inventory.json", "common/toolbox.json"],
+  "includes": [
+    "common/common.json",
+    "common/toolbox.json"
+  ],
   "background": {
-    "texture": "ae2cs:textures/gui/ender_emitter_menu.png",
+    "texture": "ae2cs:textures/gui/ender_emitter/background.png",
     "textureWidth": 256,
     "textureHeight": 256,
-    "srcRect": [0, 0, 176, 204]
+    "srcRect": [
+      0,
+      0,
+      253,
+      222
+    ]
   },
   "slots": {
+    "PLAYER_INVENTORY": {
+      "left": 8,
+      "top": 138,
+      "grid": "BREAK_AFTER_9COLS"
+    },
+    "PLAYER_HOTBAR": {
+      "left": 8,
+      "top": 196,
+      "grid": "HORIZONTAL"
+    },
     "UPGRADE": {
-      "right": 0,
-      "top": 0,
+      "left": 178,
+      "top": 193,
       "grid": "VERTICAL"
     }
   },
@@ -21,48 +39,96 @@
       },
       "position": {
         "left": 8,
-        "top": 6
+        "top": 5
       }
     },
-    "max_distance": {
+    "player_inventory_title": {
+      "text": {
+        "translate": "container.inventory"
+      },
       "position": {
-        "left": 10,
-        "top": 20
-      }
-    },
-    "band_name": {
-      "position": {
-        "left": 10,
-        "top": 20
-      }
-    },
-    "emitter_channels": {
-      "position": {
-        "left": 10,
-        "top": 48
-      }
-    },
-    "band_channels": {
-      "position": {
-        "left": 10,
-        "top": 34
-      }
-    },
-    "distance": {
-      "position": {
-        "left": 10,
-        "top": 62
+        "left": 8,
+        "top": 128
       }
     }
   },
   "widgets": {
+    "band_scrollbar": {
+      "left": 80,
+      "top": 19,
+      "height": 103
+    },
     "add_distance_button": {
-      "right": 26,
-      "top": 16
+      "left": 180,
+      "top": 142,
+      "width": 16,
+      "height": 16
     },
     "reduce_distance_button": {
-      "right": 26,
-      "top": 48
+      "left": 180,
+      "top": 165,
+      "width": 16,
+      "height": 16
+    },
+    "channels_-10": {
+      "left": 100,
+      "top": 101,
+      "width": 24,
+      "height": 17
+    },
+    "channels_-1": {
+      "left": 127,
+      "top": 101,
+      "width": 24,
+      "height": 17
+    },
+    "channels_1": {
+      "left": 190,
+      "top": 101,
+      "width": 24,
+      "height": 17
+    },
+    "channels_10": {
+      "left": 217,
+      "top": 101,
+      "width": 24,
+      "height": 17
+    },
+    "band_row_0": {
+      "left": 9,
+      "top": 21,
+      "width": 69,
+      "height": 16
+    },
+    "band_row_1": {
+      "left": 9,
+      "top": 38,
+      "width": 69,
+      "height": 16
+    },
+    "band_row_2": {
+      "left": 9,
+      "top": 55,
+      "width": 69,
+      "height": 16
+    },
+    "band_row_3": {
+      "left": 9,
+      "top": 72,
+      "width": 69,
+      "height": 16
+    },
+    "band_row_4": {
+      "left": 9,
+      "top": 89,
+      "width": 69,
+      "height": 16
+    },
+    "band_row_5": {
+      "left": 9,
+      "top": 106,
+      "width": 69,
+      "height": 16
     }
   }
 }
