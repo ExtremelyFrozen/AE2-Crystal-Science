@@ -6,8 +6,6 @@ import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenu;
 import io.github.lounode.ae2cs.common.block.entity.EnderEmitterBlockEntity;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 
-import appeng.api.networking.IGrid;
-import appeng.api.networking.pathing.ControllerState;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.guisync.GuiSync;
@@ -52,14 +50,8 @@ public class EnderEmitterFrequencyBandLinkMenu extends AEBaseMenu implements Cus
             return;
         }
 
-        IGrid bandGrid = band.getBindGrid();
-        IGrid hostGrid = host.getMainNode().getGrid();
-        if (hostGrid != null && hostGrid.getPathingService().getControllerState() == ControllerState.CONTROLLER_ONLINE && hostGrid != bandGrid) {
-            getPlayer().displayClientMessage(Component.translatable("ae2cs.msg.band_link.receiver.grid_conflict"), true);
-            return;
-        }
-
         host.connectToBand(this.selectedBand);
+        MenuOpener.open(AECSMenus.ENDER_EMITTER_MENU.get(), getPlayer(), getLocator());
     }
 
     @Override
@@ -83,7 +75,7 @@ public class EnderEmitterFrequencyBandLinkMenu extends AEBaseMenu implements Cus
 
     @Override
     public MenuType<?> getReturnToMenuType() {
-        return AECSMenus.ENDER_EMITTER_FREQUENCY_BAND_MENU.get();
+        return AECSMenus.ENDER_EMITTER_MENU.get();
     }
 
     @Override

@@ -431,6 +431,8 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag> {
      * 无 sender/冲突时：所有在线 receiver 恢复原版并断开连接
      */
     private void dropAllReceiversToVanillaAndDisconnect() {
+        usableChannels = 0;
+        usedChannels = 0;
         // 恢复原版逻辑
         for (var entry : onlineReceiverHosts.object2ObjectEntrySet()) {
             CustomChannelProviderHost host = entry.getValue();

@@ -47,8 +47,8 @@ public final class EnderEmitterDataProvider implements IBlockComponentProvider, 
         data.putBoolean(CONNECTED_TO_BAND, connectedToBand);
         data.putInt(LINKED_USED_CHANNELS, emitter.getUsedLinkChannels());
         data.putInt(LINKED_TOTAL_CHANNELS, emitter.getDisplayedMaxLinkChannels());
-        data.putInt(LINK_DISTANCE, emitter.getLinkDistance());
-        data.putInt(MAX_LINK_DISTANCE, EnderEmitterBlockEntity.maxLinkDistance.get());
+        data.putInt(LINK_DISTANCE, emitter.getLinkDistance() * 2 + 1);
+        data.putInt(MAX_LINK_DISTANCE, emitter.getMaxLinkDistance() * 2 + 1);
 
         if (!connectedToBand) {
             return;

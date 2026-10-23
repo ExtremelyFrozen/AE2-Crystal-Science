@@ -204,25 +204,14 @@ public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlo
     private static void renderChebyshevRangesLocal(PoseStack poseStack,
                                                    MultiBufferSource buffer,
                                                    EnderEmitterBlockEntity be) {
-        int autoR = Mth.clamp(be.getLinkDistance(), 0, 512);
-        int maxR = Mth.clamp(be.getMaxLinkDistanceForClient(), 0, 512);
-        if (maxR < autoR) maxR = autoR;
-
         VertexConsumer lineVc = buffer.getBuffer(RenderType.lines());
-
-        AABB base = new AABB(0, 0, 0, 1, 1, 1);
-
-        // 外层（最大范围）
-        if (maxR > 0) {
-            AABB maxBox = base.inflate(maxR).inflate(RANGE_BOX_EPS);
-            LevelRenderer.renderLineBox(poseStack, lineVc, maxBox, MAX_R, MAX_G, MAX_B, RANGE_LINE_ALPHA);
-        }
-
-        // 内层（自动范围）
-        if (autoR > 0) {
-            AABB autoBox = base.inflate(autoR).inflate(RANGE_BOX_EPS);
-            LevelRenderer.renderLineBox(poseStack, lineVc, autoBox, AUTO_R, AUTO_G, AUTO_B, RANGE_LINE_ALPHA);
-        }
+        BlockPos pos = be.getBlockPos();
+        AABB maxBox = be.getChunkRangeBounds(be.getMaxLinkDistanceForClient())
+                .move(-pos.getX(), -pos.getY(), -pos.getZ()).inflate(RANGE_BOX_EPS);
+        AABB autoBox = be.getChunkRangeBounds(be.getLinkDistance())
+                .move(-pos.getX(), -pos.getY(), -pos.getZ()).inflate(RANGE_BOX_EPS * 2);
+        LevelRenderer.renderLineBox(poseStack, lineVc, maxBox, MAX_R, MAX_G, MAX_B, RANGE_LINE_ALPHA);
+        LevelRenderer.renderLineBox(poseStack, lineVc, autoBox, AUTO_R, AUTO_G, AUTO_B, RANGE_LINE_ALPHA);
     }
 
     /**
