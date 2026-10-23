@@ -1,5 +1,6 @@
 package io.github.lounode.ae2cs.client.gui;
 
+import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastFrequencyBand;
 import io.github.lounode.ae2cs.api.linker.broadcast.networking.BroadcastBandsField;
 import io.github.lounode.ae2cs.api.settings.AECSSettings;
 import io.github.lounode.ae2cs.api.settings.AutoLinkCableMode;
@@ -259,6 +260,20 @@ public class EnderEmitterGUI extends AEBaseScreen<EnderEmitterMenu> {
         return panelLabel(menu.bandName.isEmpty() ? "base_input" : menu.expectedChannels == 0 ? "paused_input" : "band_input");
     }
 
+    private Component bandStatusLine() {
+        if (menu.bandError == BroadcastFrequencyBand.BandError.FINE && menu.bandTotalChannels == 0) {
+            return panelLabel("no_band_channels");
+        }
+        String status = switch (menu.bandError) {
+            case FINE -> "fine";
+            case MISSING_CONTROLLER -> "missing_controller";
+            case CONTROLLER_CONFLICT -> "controller_conflict";
+            case SENDER_ERROR -> "sender_error";
+            case NO_SENDER -> "no_sender";
+        };
+        return Component.translatable("ae2cs.menu.frequency_manager_menu.band_error." + status);
+    }
+
     private Component usageValue(long used, long total, int usedColor) {
         String exact = used + " / " + total;
         boolean fits = font.width(exact) <= METRIC_VALUE_WIDTH;
@@ -299,11 +314,11 @@ public class EnderEmitterGUI extends AEBaseScreen<EnderEmitterMenu> {
         if (inside(mouseX, mouseY, TEXT_X, 20, TEXT_WIDTH, 14)) {
             drawTooltip(graphics, mouseX, mouseY, List.of(summary[0], inputModeLabel()));
         } else if (inside(mouseX, mouseY, TEXT_X, 36, TEXT_WIDTH, 14)) {
-            drawTooltip(graphics, mouseX, mouseY, List.of(summary[1]));
+            drawTooltip(graphics, mouseX, mouseY, menu.bandName.isEmpty() ? List.of(summary[1]) : List.of(summary[1], bandStatusLine()));
         } else if (inside(mouseX, mouseY, TEXT_X, 53, TEXT_WIDTH, 14)) {
             drawTooltip(graphics, mouseX, mouseY, List.of(summary[2]));
         } else if (inside(mouseX, mouseY, TEXT_X, CHANNELS_Y, TEXT_WIDTH, CHANNEL_ROW_SPACING)) {
-            drawTooltip(graphics, mouseX, mouseY, List.of(actualChannelsLine()));
+            drawTooltip(graphics, mouseX, mouseY, menu.bandName.isEmpty() ? List.of(actualChannelsLine()) : List.of(actualChannelsLine(), bandStatusLine()));
         } else if (inside(mouseX, mouseY, TEXT_X, CHANNELS_Y + CHANNEL_ROW_SPACING, TEXT_WIDTH, 9) || inside(mouseX, mouseY, CHANNEL_VALUE_X - 1, CHANNEL_BUTTON_Y, CHANNEL_VALUE_WIDTH + 2, CHANNEL_BUTTON_HEIGHT)) {
             drawTooltip(graphics, mouseX, mouseY, List.of(
                     Component.translatable("ae2cs.menu.ender_emitter.panel.requested_value", menu.expectedChannels),

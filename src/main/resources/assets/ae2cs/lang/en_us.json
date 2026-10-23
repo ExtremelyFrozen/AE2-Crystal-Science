@@ -525,5 +525,6 @@
   "ae2cs.menu.ender_emitter.panel.band_input": "Band input",
   "ae2cs.menu.ender_emitter.panel.paused_input": "Paused",
   "ae2cs.menu.ender_emitter.panel.requested_value": "Requested Channels: %s",
-  "ae2cs.menu.ender_emitter.panel.requested_hint": "Select a band to adjust. Set to 0 to pause band reception."
+  "ae2cs.menu.ender_emitter.panel.requested_hint": "Select a band to adjust. Set to 0 to pause band reception.",
+  "ae2cs.menu.ender_emitter.panel.no_band_channels": "This band has no available channels. Check the sender's power and channel input."
 }

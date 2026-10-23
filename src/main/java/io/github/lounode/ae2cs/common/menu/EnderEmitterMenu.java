@@ -74,6 +74,9 @@ public class EnderEmitterMenu extends UpgradeableMenu<EnderEmitterBlockEntity> {
     @GuiSync(22)
     public int boosterCount;
 
+    @GuiSync(23)
+    public BroadcastFrequencyBand.BandError bandError = BroadcastFrequencyBand.BandError.NO_SENDER;
+
     public EnderEmitterMenu(MenuType<?> menuType, int id, Inventory ip, EnderEmitterBlockEntity host) {
         super(menuType, id, ip, host);
 
@@ -113,6 +116,7 @@ public class EnderEmitterMenu extends UpgradeableMenu<EnderEmitterBlockEntity> {
         BroadcastFrequencyBand band = bandName.isEmpty() ? null : FrequencyBandManager.getBand(bandName);
         this.bandUsedChannels = band == null ? 0 : band.getUsedChannels();
         this.bandTotalChannels = band == null ? 0 : band.getUsableChannels();
+        this.bandError = band == null ? BroadcastFrequencyBand.BandError.NO_SENDER : band.getErrorState();
         this.expectedChannels = getHost().getExpectedChannels();
         this.boosterCount = getHost().getUpgrades().getInstalledUpgrades(AEItems.WIRELESS_BOOSTER);
         BroadcastBandsField visibleBands = FrequencyBandManager.getBandsInfoByPlayer(getPlayer());

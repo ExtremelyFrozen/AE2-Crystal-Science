@@ -526,5 +526,6 @@
   "ae2cs.menu.ender_emitter.panel.band_input": "频段输入",
   "ae2cs.menu.ender_emitter.panel.paused_input": "接收暂停",
   "ae2cs.menu.ender_emitter.panel.requested_value": "期望频道：%s",
-  "ae2cs.menu.ender_emitter.panel.requested_hint": "选择频段后可调整；设为 0 时暂停接收频段频道。"
+  "ae2cs.menu.ender_emitter.panel.requested_hint": "选择频段后可调整；设为 0 时暂停接收频段频道。",
+  "ae2cs.menu.ender_emitter.panel.no_band_channels": "当前频段没有可用频道，请检查发送端的供电与频道输入。"
 }
