@@ -24,6 +24,12 @@ making it suitable for scenarios where reducing cable complexity is desirable.
 
 ## Functional Role
 
+Without a frequency band, the five base faces accept separate channel inputs and distribute their combined capacity.
+The top does not accept an input. Selecting a band in the main screen disconnects all physical inputs and uses that band exclusively.
+Encrypted bands require a password. The **-10, -1, +1, +10** buttons adjust the requested channel count, initially 32.
+The actual allocation is limited by the channels remaining in the band; requesting 0 pauses reception.
+Clearing the band link restores the five physical inputs.
+
 The Ender Emitter is primarily used to:
 
 - Automatically link newly placed network nodes within a limited range
@@ -78,6 +84,11 @@ This method is intended for precise and controlled network connections.
 
 The Ender Emitter allows configuration of its automatic linking range:
 
+- The area is centered on the emitter's chunk and covers the full build height without loading chunks.
+- Without boosters, select **1×1 or 3×3 chunks**.
+- The lower-right slot holds up to **64 wireless boosters**. **32** unlock **5×5** chunks; **64** unlock **7×7**.
+- The range buttons add or remove a ring of chunks. The white outline marks the selection; dim cells are locked.
+- Reducing the area or removing boosters disconnects automatic links outside the new area.
 - Automatic linking only applies within the configured range
 - Devices outside the automatic linking range but still within the maximum effective range:
   - Will not be linked automatically
@@ -90,10 +101,14 @@ to coexist within the same area.
 
 ## Multiple Emitter Connections
 
-Multiple Ender Emitters can be linked together
+Multiple Ender Emitters can be linked manually with an Ender Linker
 to enable channel transmission over longer distances.
 
 However, note that:
 for very long distances or large-scale network scenarios,
 the **<ItemLink id="ae2cs:ender_broadcaster" />**
 is generally more suitable for centralized channel transmission.
+
+Automatic linking and manual scans skip controllers, Ender Broadcasters, other Ender Emitters,
+wireless receivers/transceivers, wireless connectors/hubs, and overloaded controllers, including wireless and advanced variants.
+These exclusions do not prevent physical connections to the base inputs.
