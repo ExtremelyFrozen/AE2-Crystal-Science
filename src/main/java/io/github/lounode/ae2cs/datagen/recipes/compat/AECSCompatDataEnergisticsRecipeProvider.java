@@ -1,6 +1,5 @@
 package io.github.lounode.ae2cs.datagen.recipes.compat;
 
-import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSTags;
@@ -18,16 +17,12 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 
-import com.fish_dan_.data_energistics.recipe.DataRipperReassemblerIngredient;
-import com.fish_dan_.data_energistics.recipe.DataRipperReassemblerRecipe;
 import com.wintercogs.ae2omnicells.common.init.OCBlocks;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -72,19 +67,6 @@ public class AECSCompatDataEnergisticsRecipeProvider extends AECSRecipeProvider 
                 .require(AEItems.QUANTUM_ENTANGLED_SINGULARITY, 32)
                 .require(AEItems.SILICON_PRINT, 32)
                 .save(compatOut, "aggregator/data_processor");
-
-        var dataSeedRecipe = new DataRipperReassemblerRecipe(
-                List.of(
-                        new DataRipperReassemblerIngredient(Ingredient.of(dataDust), 8),
-                        new DataRipperReassemblerIngredient(Ingredient.of(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED), 4),
-                        new DataRipperReassemblerIngredient(Ingredient.of(Blocks.SAND), 16)),
-                List.of(),
-                List.of(AECSItems.DATA_CRYSTAL_SEED.toStack(32)),
-                List.of(),
-                200,
-                null,
-                null);
-        compatOut.accept(AE2CrystalScience.makeId("data_reassembler/data_crystal_seed"), dataSeedRecipe, null);
 
         CrystalAggregatorRecipeBuilder.aggregating(AECSItems.DATA_CRYSTAL_SEED, 32, 51200)
                 .require(dataDust, 8)

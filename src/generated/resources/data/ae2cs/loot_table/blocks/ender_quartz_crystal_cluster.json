@@ -29,7 +29,8 @@
               "name": "ae2cs:ender_quartz_crystal_cluster"
             },
             {
-              "type": "minecraft:item",
+              "type": "minecraft:tag",
+              "expand": false,
               "functions": [
                 {
                   "add": false,
@@ -48,7 +49,7 @@
                   "function": "minecraft:explosion_decay"
                 }
               ],
-              "name": "ae2cs:purified_ender_quartz"
+              "name": "ae2cs:crystal_drops/ender_quartz"
             }
           ]
         }

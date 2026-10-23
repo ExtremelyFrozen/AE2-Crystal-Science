@@ -29,7 +29,8 @@
               "name": "ae2cs:nether_quartz_crystal_cluster"
             },
             {
-              "type": "minecraft:item",
+              "type": "minecraft:tag",
+              "expand": false,
               "functions": [
                 {
                   "add": false,
@@ -48,7 +49,7 @@
                   "function": "minecraft:explosion_decay"
                 }
               ],
-              "name": "ae2cs:purified_nether_quartz_crystal"
+              "name": "ae2cs:crystal_drops/nether_quartz"
             }
           ]
         }

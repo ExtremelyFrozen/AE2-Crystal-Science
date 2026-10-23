@@ -1,18 +1,19 @@
 [versions]
-ae2 = "19.2.8"
+ae2 = "19.2.18"
 ae2wt = "19.5.0"
+thunderbolt = "9108142"
 
-jei = "19.25.1.328"
+jei = "19.57.0.451"
 emi = "1.1.22+1.21.1+neoforge"
 
-ldlib = "2.2.8"
+ldlib = "2.2.40"
 mekanism = "1.21.1-10.7.19.85"
 pneumaticcraft = "8.2.9+mc1.21.1"
 kotlinforforge = "5.7.0"
-create = "6.0.8-168"
+create = "7963363"
 ponder = "1.0.64"
 flywheel = "1.0.5"
-curios = "9.4.2+1.21.1"
+curios = "9.5.1+1.21.1"
 architectury = "13.0.8"
 
 ## ftb mod ##
@@ -31,12 +32,12 @@ guideme = "8129788"
 geckolib = "7707149"
 glodium = "5821676"
 ae2ji = "7727898"
-de = "8237622"
+de = "9095664"
 eae = "8025439"
 aae = "7849217"
 aecs = "8036407"
-aelt = "8135920"
-eco = "7884362"
+aelt = "9131948"
+eco = "9195391"
 extendedae-plus = "7960385"
 applied-flux = "7429565"
 applied-pneumatics = "7723695"
@@ -55,6 +56,7 @@ guideme             = { module = "curse.maven:guideme-1173950", version.ref = "g
 ae2                 = { module = "org.appliedenergistics:appliedenergistics2", version.ref = "ae2" }
 ae2wt               = { module = "de.mari_023:ae2wtlib", version.ref = "ae2wt"}
 ae2wt_api           = { module = "de.mari_023:ae2wtlib_api", version.ref = "ae2wt"}
+thunderbolt         = { module = "curse.maven:thunderbolt-core-1631756", version.ref = "thunderbolt" }
 
 jei-common-api      = { module = "mezz.jei:jei-1.21.1-common-api", version.ref = "jei" }
 jei-neoforge-api    = { module = "mezz.jei:jei-1.21.1-neoforge-api", version.ref = "jei" }
@@ -65,7 +67,7 @@ ldlib               = { module = "com.lowdragmc.ldlib2:ldlib2-neoforge-1.21.1", 
 mek                 = { module = "mekanism:Mekanism", version.ref = "mekanism" }
 pneumaticcraft      = { module = "me.desht.pneumaticcraft:pneumaticcraft-repressurized", version.ref = "pneumaticcraft" }
 kotlinforforge      = { module = "thedarkcolour:kotlinforforge-neoforge", version.ref = "kotlinforforge" }
-create              = { module = "com.simibubi.create:create-1.21.1", version.ref = "create" }
+create              = { module = "curse.maven:create-328085", version.ref = "create" }
 ponder              = { module = "net.createmod.ponder:Ponder-NeoForge-1.21.1", version.ref = "ponder"}
 flywheel-forge-api  = { module = "dev.engine-room.flywheel:flywheel-neoforge-api-1.21.1", version.ref = "flywheel"}
 flywheel-forge      = { module = "dev.engine-room.flywheel:flywheel-neoforge-1.21.1", version.ref = "flywheel"}

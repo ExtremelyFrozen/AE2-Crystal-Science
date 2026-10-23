@@ -72,6 +72,7 @@ public class AEPlugin {
      */
     public static void onCommonSetup() {
         Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK, 4);
+        Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.CRYSTAL_GROWTH_ACCELERATOR_BLOCK, 4);
         Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK, 3);
         Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.CIRCUIT_ETCHER_BLOCK, 4);
         Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.CRYSTAL_PULVERIZER_BLOCK, 4);
@@ -111,6 +112,7 @@ public class AEPlugin {
 
     private static void addMeteoriteOverclockCardSupport() {
         Upgrades.add(AECSItems.OVERLOAD_CARD, AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK, 2);
+        Upgrades.add(AECSItems.OVERLOAD_CARD, AECSBlocks.CRYSTAL_GROWTH_ACCELERATOR_BLOCK, 2);
         Upgrades.add(AECSItems.OVERLOAD_CARD, AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK, 2);
         Upgrades.add(AECSItems.OVERLOAD_CARD, AECSBlocks.CIRCUIT_ETCHER_BLOCK, 2);
         Upgrades.add(AECSItems.OVERLOAD_CARD, AECSBlocks.CRYSTAL_PULVERIZER_BLOCK, 2);

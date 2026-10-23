@@ -67,12 +67,16 @@ public final class ResonantPatternEncodingCapacity {
     }
 
     private static Field getField(String name) {
-        try {
-            Field field = PatternEncodingLogic.class.getDeclaredField(name);
-            field.setAccessible(true);
-            return field;
-        } catch (ReflectiveOperationException e) {
-            throw new ExceptionInInitializerError(e);
+        Class<?> type = PatternEncodingLogic.class;
+        while (type != null) {
+            try {
+                Field field = type.getDeclaredField(name);
+                field.setAccessible(true);
+                return field;
+            } catch (NoSuchFieldException ignored) {
+                type = type.getSuperclass();
+            }
         }
+        throw new ExceptionInInitializerError(new NoSuchFieldException(name));
     }
 }

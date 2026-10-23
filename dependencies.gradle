@@ -29,7 +29,9 @@ dependencies {
     compileOnly(forge.amek)
     compileOnly(forge.mek)
 
-    compileOnly(forge.create)
+    compileOnly(forge.create) {
+        transitive = false
+    }
 
     // FTB
     compileOnly(forge.ftbultimine)
@@ -44,7 +46,6 @@ dependencies {
 
     // Standard runtime mods
     localRuntime(forge.spark)
-    compileOnly "com.tterrag.registrate:Registrate:MC1.21-1.3.0+67"
     compileOnly "io.github.pedroksl:ae2addonlib:1.0.3-1.21.1"
     // FTB //
     localRuntime(forge.architectury)
@@ -55,7 +56,7 @@ dependencies {
     localRuntime(forge.curios)
     localRuntime(forge.modernfix)
     localRuntime(forge.ae2)
-    localRuntime(forge.ldlib)
+    localRuntime(forge.thunderbolt)
     localRuntime(forge.glodium)
     localRuntime(forge.geckolib)
     localRuntime(forge.cloth.config)
@@ -86,10 +87,20 @@ dependencies {
 
     // Runtime recipe viewers. EMI is attached only to All Client runs.
     localRuntime(forge.jei.neoforge.impl)
+
+    // Dependencies
+    // LDLib2 1.21 publishes the compile jar under the "all" classifier.
+    compileOnly(forge.ldlib) {
+        artifact {
+            classifier = "all"
+        }
+    }
+    localRuntime(forge.ldlib)
+
     // AG
     implementation "curse.maven:applied-generators-1320369:7161908"
     // OMNI CELL
-    implementation "curse.maven:omni-cells-1359517:7169530"
+    implementation "curse.maven:omni-cells-1359517:8050965"
     localRuntime "curse.maven:cognition-mod-579484:8406272"
     localRuntime "maven.modrinth:xv94TkTM:FaNppCJJ"
     localRuntime "maven.modrinth:fuuu3xnx:iEE85X0w"
@@ -101,8 +112,8 @@ dependencies {
     // Client-only runtime mods
     clientLocalRuntime(forge.jech)
     clientLocalRuntime(forge.ctm)
-    clientLocalRuntime(forge.sodium)
-    clientLocalRuntime(forge.iris)
+    localRuntime(forge.sodium)
+    localRuntime(forge.iris)
     renderNurseCfg(libs.renderNurse)
 
     //////////////////////////////////////////////////////

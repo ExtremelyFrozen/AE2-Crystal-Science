@@ -71,6 +71,7 @@ public class AECSTags {
         public static final TagKey<Item> DUST_QUANTUM_ALLOY = tag("dusts/quantum_alloy");
         public static final TagKey<Item> DUST_REDSTONE_CRYSTAL = tag("dusts/redstone_crystal");
 
+        public static final TagKey<Item> CRYSTAL_DROP_CERTUS_QUARTZ = aecsTag("crystal_drops/certus_quartz");
         public static final TagKey<Item> CRYSTAL_DROP_NETHER_QUARTZ = aecsTag("crystal_drops/nether_quartz");
         public static final TagKey<Item> CRYSTAL_DROP_ENERGIZED_CERTUS_QUARTZ = aecsTag("crystal_drops/energized_certus_quartz");
         public static final TagKey<Item> CRYSTAL_DROP_ENDER_QUARTZ = aecsTag("crystal_drops/ender_quartz");
