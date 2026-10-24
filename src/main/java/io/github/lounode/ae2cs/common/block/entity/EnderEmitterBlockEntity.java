@@ -124,6 +124,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         for (Direction side : Direction.Plane.HORIZONTAL) {
             sideInputs.put(side, GridHelper.createManagedNode(this, INPUT_LISTENER)
                     .setFlags(GridFlags.DENSE_CAPACITY)
+                    .setInWorldNode(true)
                     .setExposedOnSides(EnumSet.of(side))
                     .setIdlePowerUsage(0)
                     .setVisualRepresentation(AECSBlocks.ENDER_EMITTER_BLOCK)
