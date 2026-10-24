@@ -71,6 +71,7 @@ public class AEPlugin {
      * 在FMLCommonSetupEvent阶段调用
      */
     public static void onCommonSetup() {
+        Upgrades.add(AEItems.WIRELESS_BOOSTER, AECSBlocks.ENDER_EMITTER_BLOCK, 64);
         Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK, 4);
         Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.CRYSTAL_GROWTH_ACCELERATOR_BLOCK, 4);
         Upgrades.add(AEItems.SPEED_CARD, AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK, 3);

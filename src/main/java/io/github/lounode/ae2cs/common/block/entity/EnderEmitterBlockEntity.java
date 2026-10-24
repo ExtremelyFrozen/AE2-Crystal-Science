@@ -1,6 +1,5 @@
 package io.github.lounode.ae2cs.common.block.entity;
 
-import io.github.lounode.ae2cs.Config;
 import io.github.lounode.ae2cs.api.CustomChannelProviderHost;
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastFrequencyBand;
@@ -12,17 +11,20 @@ import io.github.lounode.ae2cs.api.settings.AutoLinkCableMode;
 import io.github.lounode.ae2cs.api.settings.AutoLinkMode;
 import io.github.lounode.ae2cs.api.settings.ShowRangeMode;
 import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
+import io.github.lounode.ae2cs.api.util.AECSGridHelper;
 import io.github.lounode.ae2cs.api.util.GlobalChunkPos;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.inventory.EnderEmitterUpgradeInventory;
 import io.github.lounode.ae2cs.util.ChunkHelper;
-import io.github.lounode.ae2cs.util.VecHelper;
 
 import appeng.api.AECapabilities;
 import appeng.api.networking.*;
+import appeng.api.networking.pathing.ChannelMode;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.api.orientation.BlockOrientation;
 import appeng.api.parts.IPart;
+import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
@@ -31,12 +33,14 @@ import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.blockentity.grid.AENetworkedBlockEntity;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.blockentity.networking.ControllerBlockEntity;
+import appeng.core.definitions.AEItems;
 import appeng.parts.CableBusContainer;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
@@ -44,10 +48,10 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -61,53 +65,70 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.Supplier;
 
 @EventBusSubscriber(modid = AECSConstants.MODID)
 public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements ServerTickingBlockEntity,
                                      IUpgradeableObject, ClientTickingBlockEntity, IConfigurableObject, ICustomRenderBounding,
                                      CustomChannelProviderHost, BroadcastReceiverHost, CustomReturnableSubMenuHost {
 
-    /**
-     * 以全局区块坐标为索引的发信器位置表，用来快速寻找发信器，每个区块key下的set集合都对应周围3x3区块范围内所有发信器
-     */
-    public static Map<GlobalChunkPos, Set<BlockPos>> EMITTER_CHUNK_POSITIONS = new HashMap<>();
+    /** Index every chunk in an emitter's maximum upgraded range, without loading chunks. */
+    public static final Map<GlobalChunkPos, Set<BlockPos>> EMITTER_CHUNK_POSITIONS = new HashMap<>();
+    public static MinecraftServer boundServer;
 
-    public static MinecraftServer boundServer = null;
+    private static final IGridNodeListener<EnderEmitterBlockEntity> INPUT_LISTENER = new IGridNodeListener<>() {
 
-    public static final int autoAreaFactor = Config.INSTANCE.startUpConfig.enderEmitterAutoAreaFactor.getAsInt();
+        @Override
+        public void onSaveChanges(EnderEmitterBlockEntity host, IGridNode node) {
+            host.saveChanges();
+        }
 
-    // 最大可连接距离，半径，计算时使用直线距离
-    public static final Supplier<Integer> maxLinkDistance = () -> 16 * autoAreaFactor;
+        @Override
+        public void onStateChanged(EnderEmitterBlockEntity host, IGridNode node, State state) {
+            host.markForClientUpdate();
+        }
+    };
 
-    // 客户端 + 服务端字段
     private final IConfigManager configManager;
-    private int linkDistance = 8;
-    private final Set<BlockPos> pendingLinkPositions = new HashSet<>();
-    private final Set<BlockPos> linkedPositions = new HashSet<>();
+    private final IUpgradeInventory upgrades = new EnderEmitterUpgradeInventory(this::onUpgradesChanged);
     /**
-     * 到目标位置的连接，用于显式清除连接
+     * Each base face has its own input route. Joining these inputs to a single node would
+     * make AE2 select only one controller route, limiting the whole emitter to one cable.
      */
+    private final Map<Direction, IManagedGridNode> sideInputs = new EnumMap<>(Direction.class);
+    private final Set<BlockPos> pendingLinkPositions = new LinkedHashSet<>();
+    private final Set<BlockPos> linkedPositions = new LinkedHashSet<>();
+    private final Set<BlockPos> manualLinkPositions = new HashSet<>();
     private final Map<BlockPos, List<IGridConnection>> linkedConnections = new HashMap<>();
-    private int recentAddedPosCountdown = 2;
 
-    // 服务端字段
-
-    // 客户端字段
-    private boolean active = false;
+    // Distances are chunk radii: 0/1/2/3 correspond to 1x1/3x3/5x5/7x7.
+    private int linkDistance = 1;
+    private int maxLinkDistanceForClient = 1;
+    private int indexedChunkRadius = -1;
+    private int recentAddedPosCountdown;
+    private int retryCountdown;
+    private boolean needsScan;
+    private boolean active;
     private boolean autoMode = true;
-    private boolean allowAutoLinkCableLike = false;
-    private int maxLinkDistanceForClient = 16;
-    private boolean showLinkStatus = false;
+    private boolean allowAutoLinkCableLike = true;
+    private boolean showLinkStatus;
     private String bandId = "";
-    private int bandUsedChannelsForClient = 0;
-    private int bandTotalChannelsForClient = 0;
-    private int customMaxChannels = 0;
-    private boolean enabledCustomChannel = false;
+    private int expectedChannels = 32;
+    private int customMaxChannels;
+    private boolean enabledCustomChannel;
+    private int bandUsedChannelsForClient;
+    private int bandTotalChannelsForClient;
 
-    public EnderEmitterBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
-        super(blockEntityType, pos, blockState);
+    public EnderEmitterBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
         getMainNode().setFlags(GridFlags.DENSE_CAPACITY);
+        for (Direction side : Direction.Plane.HORIZONTAL) {
+            sideInputs.put(side, GridHelper.createManagedNode(this, INPUT_LISTENER)
+                    .setFlags(GridFlags.DENSE_CAPACITY)
+                    .setExposedOnSides(EnumSet.of(side))
+                    .setIdlePowerUsage(0)
+                    .setVisualRepresentation(AECSBlocks.ENDER_EMITTER_BLOCK)
+                    .setTagName("input_" + side.getSerializedName()));
+        }
         configManager = IConfigManager.builder(this::onConfigChanged)
                 .registerSetting(AECSSettings.AUTO_LINK_MODE, AutoLinkMode.ENABLE)
                 .registerSetting(AECSSettings.AUTO_LINK_CABLE_MODE, AutoLinkCableMode.ENABLE)
@@ -125,6 +146,14 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
 
     public int getLinkDistance() {
         return linkDistance;
+    }
+
+    public int getMaxLinkDistance() {
+        return 1 + upgrades.getInstalledUpgrades(AEItems.WIRELESS_BOOSTER) / 32;
+    }
+
+    public int getMaxLinkDistanceForClient() {
+        return level != null && level.isClientSide() ? maxLinkDistanceForClient : getMaxLinkDistance();
     }
 
     public boolean allowAutoLinkCableLike() {
@@ -155,71 +184,93 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         return getUsedLinkChannels();
     }
 
-    public void connectToBand(String bandId) {
-        if (level == null || level.isClientSide()) return;
-
-        MinecraftServer server = level.getServer();
-        if (server == null) return;
-
-        BroadcastFrequencyBand newBand = FrequencyBandManager.getBand(bandId);
-        if (newBand == null) return;
-
-        GlobalPos globalPos = GlobalPos.of(level.dimension(), worldPosition);
-        if (!this.bandId.isEmpty()) {
-            BroadcastFrequencyBand oldBand = FrequencyBandManager.getBand(this.bandId);
-            if (oldBand != null) {
-                oldBand.onReceiverOffline(server, globalPos);
-                if (oldBand != newBand) {
-                    oldBand.undeclareReceiver(globalPos);
-                }
-            }
-        }
-
-        newBand.declareReceiver(globalPos);
-        this.bandId = newBand.getName();
-        onGridConnectableSidesChanged();
-        setEnabledCustomChannel(true);
-        setMaxChannels(0);
-
-        IGridNode node = getMainNode().getNode();
-        if (node != null) {
-            newBand.onReceiverOnline(server, globalPos, node, this);
-        }
-
-        setChanged();
-        markForClientUpdate();
+    @Override
+    public IUpgradeInventory getUpgrades() {
+        return upgrades;
     }
 
     @Override
-    public void cleanConnectionPermanent() {
-        if (level == null || level.isClientSide()) return;
+    public IConfigManager getConfigManager() {
+        return configManager;
+    }
 
-        MinecraftServer server = level.getServer();
-        if (server == null) return;
-
-        if (!bandId.isEmpty()) {
-            BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
-            if (band != null) {
-                GlobalPos globalPos = GlobalPos.of(level.dimension(), worldPosition);
-                band.onReceiverOffline(server, globalPos);
-                band.undeclareReceiver(globalPos);
-            }
-        }
-
-        bandId = "";
-        onGridConnectableSidesChanged();
-        setEnabledCustomChannel(false);
-        setMaxChannels(0);
-        setChanged();
-        markForClientUpdate();
+    @Override
+    public void setOwner(Player player) {
+        getMainNode().setOwningPlayer(player);
+        sideInputs.values().forEach(input -> input.setOwningPlayer(player));
     }
 
     @Override
     public Set<Direction> getGridConnectableSides(BlockOrientation orientation) {
-        if (isConnectedToBand()) {
-            return EnumSet.noneOf(Direction.class);
+        return isConnectedToBand() ? EnumSet.noneOf(Direction.class) : EnumSet.of(Direction.DOWN);
+    }
+
+    @Override
+    public @Nullable IGridNode getGridNode(Direction side) {
+        if (isConnectedToBand() || side == Direction.UP) return null;
+        IManagedGridNode input = side == Direction.DOWN ? getMainNode() : sideInputs.get(side);
+        return input == null ? null : input.getNode();
+    }
+
+    @Override
+    public @Nullable IGridNode getActionableNode() {
+        for (IGridNode node : getInputNodes()) {
+            if (node.isActive()) return node;
         }
-        return EnumSet.allOf(Direction.class);
+        return getMainNode().getNode();
+    }
+
+    private void updateInputSides() {
+        onGridConnectableSidesChanged();
+        sideInputs.forEach((side, input) -> input.setExposedOnSides(
+                isConnectedToBand() ? EnumSet.noneOf(Direction.class) : EnumSet.of(side)));
+    }
+
+    private List<IGridNode> getInputNodes() {
+        List<IGridNode> nodes = new ArrayList<>(5);
+        IGridNode main = getMainNode().getNode();
+        if (main != null && (isConnectedToBand() || hasInputConnection(main))) nodes.add(main);
+        if (!isConnectedToBand()) {
+            for (IManagedGridNode input : sideInputs.values()) {
+                IGridNode node = input.getNode();
+                if (node != null && hasInputConnection(node)) nodes.add(node);
+            }
+        }
+        return nodes;
+    }
+
+    private boolean hasInputConnection(IGridNode node) {
+        for (IGridConnection connection : node.getConnections()) {
+            if (connection.isInWorld() || linkedConnections.values().stream().noneMatch(links -> links.contains(connection))) return true;
+        }
+        return false;
+    }
+
+    private int getInputCapacity(IGridNode node) {
+        if (isConnectedToBand()) return getMaxChannels();
+        if (!node.hasGridBooted()) return Math.max(0, node.getUsedChannels());
+        if (node.getGrid().getPathingService().getControllerState() == ControllerState.NO_CONTROLLER) {
+            ChannelMode mode = node.getGrid().getPathingService().getChannelMode();
+            return mode == ChannelMode.INFINITE ? Integer.MAX_VALUE : 8 * mode.getCableCapacityFactor();
+        }
+        return clampChannelCount((long) node.getUsedChannels() + AECSGridHelper.getDistributableChannelsOnControllerPath(node));
+    }
+
+    public int getMaxLinkChannels() {
+        if (isConnectedToBand()) return getMaxChannels();
+        long channels = 0;
+        for (IGridNode node : getInputNodes()) channels += getInputCapacity(node);
+        return clampChannelCount(channels);
+    }
+
+    public int getDisplayedMaxLinkChannels() {
+        return getMaxLinkChannels();
+    }
+
+    public int getUsedLinkChannels() {
+        long used = 0;
+        for (IGridNode node : getInputNodes()) used += node.getUsedChannels();
+        return clampChannelCount(used);
     }
 
     @Override
@@ -228,174 +279,234 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
     }
 
     @Override
-    public void setMaxChannels(int maxChannels) {
-        this.customMaxChannels = Math.max(0, maxChannels);
+    public void setMaxChannels(int channels) {
+        customMaxChannels = Math.max(0, channels);
     }
 
     @Override
     public boolean isEnabledCustomChannel() {
-        return enabledCustomChannel;
+        // A disconnected or exhausted band must stay at zero instead of falling back to 32.
+        return isConnectedToBand() || enabledCustomChannel;
     }
 
     @Override
     public void setEnabledCustomChannel(boolean enabled) {
-        this.enabledCustomChannel = enabled;
+        enabledCustomChannel = enabled;
+        if (!enabled) customMaxChannels = 0;
     }
 
-    /**
-     * 返回频段应分配给本发信器的实时需求。空闲时严格等于已用频道；存在待连接目标时仅临时追加一个建连频道。
-     */
     @Override
     public int getExpectedChannels() {
-        int usedChannels = Math.max(0, getUsedLinkChannels());
-        if (usedChannels == Integer.MAX_VALUE) {
-            return Integer.MAX_VALUE;
-        }
-        return pendingLinkPositions.isEmpty() ? usedChannels : usedChannels + 1;
+        return expectedChannels;
+    }
+
+    public void changeExpectedChannels(int delta) {
+        expectedChannels = clampChannelCount((long) expectedChannels + delta);
+        markBandRuntimeDirty();
+        setChanged();
     }
 
     private static int clampChannelCount(long channels) {
-        if (channels <= 0) return 0;
-        return channels >= Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) channels;
+        return (int) Math.max(0, Math.min(Integer.MAX_VALUE, channels));
     }
 
-    public void setLinkDistance(int newLinkDistance) {
-        newLinkDistance = Math.max(0, Math.min(newLinkDistance, maxLinkDistance.get()));
-        if (newLinkDistance != this.linkDistance) {
-            this.linkDistance = newLinkDistance;
-            markForClientUpdate();
-            setChanged();
+    public void connectToBand(String name) {
+        if (level == null || level.isClientSide() || level.getServer() == null) return;
+        BroadcastFrequencyBand band = FrequencyBandManager.getBand(name);
+        if (band == null || name.equals(bandId)) return;
+        disconnectBand(false);
+        queueExistingConnections();
+        bandId = band.getName();
+        updateInputSides();
+        setEnabledCustomChannel(true);
+        setMaxChannels(0);
+        GlobalPos pos = GlobalPos.of(level.dimension(), worldPosition);
+        band.declareReceiver(pos);
+        IGridNode node = getMainNode().getNode();
+        if (node != null) band.onReceiverOnline(level.getServer(), pos, node, this);
+        setChanged();
+        markForClientUpdate();
+    }
+
+    private void disconnectBand(boolean keepDeclaration) {
+        if (level == null || level.isClientSide() || bandId.isEmpty() || level.getServer() == null) return;
+        BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
+        if (band != null) {
+            GlobalPos pos = GlobalPos.of(level.dimension(), worldPosition);
+            band.onReceiverOffline(level.getServer(), pos);
+            if (!keepDeclaration) band.undeclareReceiver(pos);
         }
     }
 
-    public int getMaxLinkDistanceForClient() {
-        return maxLinkDistanceForClient;
-    }
-
-    public List<BlockPos> getPendingRenderPositionsSnapshot() {
-        return this.pendingLinkPositions.isEmpty() ? List.of() : List.copyOf(this.pendingLinkPositions);
-    }
-
-    public List<BlockPos> getLinkedRenderPositionsSnapshot() {
-        return this.linkedPositions.isEmpty() ? List.of() : List.copyOf(this.linkedPositions);
-    }
-
     @Override
-    public boolean enableCustomRenderBounding() {
-        return isShowLinkStatus();
+    public void cleanConnectionPermanent() {
+        if (level == null || level.isClientSide()) return;
+        disconnectBand(false);
+        queueExistingConnections();
+        bandId = "";
+        setEnabledCustomChannel(false);
+        updateInputSides();
+        setChanged();
+        markForClientUpdate();
     }
 
-    @Override
-    public int getRange() {
-        return this.maxLinkDistanceForClient * 2;
+    private void queueExistingConnections() {
+        pendingLinkPositions.addAll(linkedPositions);
+        for (List<IGridConnection> connections : linkedConnections.values()) {
+            connections.forEach(IGridConnection::destroy);
+        }
+        linkedConnections.clear();
+        linkedPositions.clear();
     }
 
-    @Override
-    public AABB getCustomBoundingBox(BlockPos centerPos) {
-        if (enableCustomRenderBounding())
-            return ICustomRenderBounding.super.getCustomBoundingBox(centerPos);
-        else
-            return new AABB(centerPos).inflate(0, 1, 0);
+    public void setLinkDistance(int radius) {
+        int next = Math.max(0, Math.min(radius, getMaxLinkDistance()));
+        if (next == linkDistance) return;
+        linkDistance = next;
+        pruneOutOfRangeConnections();
+        needsScan = true;
+        setChanged();
+        markForClientUpdate();
     }
 
-    @Override
-    public IConfigManager getConfigManager() {
-        return configManager;
+    private void onUpgradesChanged() {
+        if (level == null || level.isClientSide()) return;
+        linkDistance = Math.min(linkDistance, getMaxLinkDistance());
+        refreshChunkIndex();
+        pruneOutOfRangeConnections();
+        needsScan = true;
+        setChanged();
+        markForClientUpdate();
+    }
+
+    private boolean isInRange(BlockPos pos, int radius) {
+        ChunkPos center = new ChunkPos(worldPosition);
+        ChunkPos target = new ChunkPos(pos);
+        return Math.abs((long) target.x - center.x) <= radius && Math.abs((long) target.z - center.z) <= radius;
+    }
+
+    public AABB getChunkRangeBounds(int radius) {
+        ChunkPos center = new ChunkPos(worldPosition);
+        int minY = level == null ? worldPosition.getY() - 64 : level.getMinBuildHeight();
+        int maxY = level == null ? worldPosition.getY() + 64 : level.getMaxBuildHeight();
+        return new AABB((center.x - radius) * 16, minY, (center.z - radius) * 16,
+                (center.x + radius + 1) * 16, maxY, (center.z + radius + 1) * 16);
+    }
+
+    private void pruneOutOfRangeConnections() {
+        Set<BlockPos> positions = new HashSet<>(linkedPositions);
+        positions.addAll(pendingLinkPositions);
+        for (BlockPos pos : positions) {
+            int radius = manualLinkPositions.contains(pos) ? getMaxLinkDistance() : linkDistance;
+            if (!isInRange(pos, radius) || (!manualLinkPositions.contains(pos) && level != null && level.isLoaded(pos) && isAutoLinkExcluded(level, pos))) removePosFromEmitter(this, pos);
+        }
     }
 
     protected void onConfigChanged() {
-        this.autoMode = configManager.getSetting(AECSSettings.AUTO_LINK_MODE) == AutoLinkMode.ENABLE;
-        this.allowAutoLinkCableLike = configManager.getSetting(AECSSettings.AUTO_LINK_CABLE_MODE) == AutoLinkCableMode.ENABLE;
-        this.showLinkStatus = configManager.getSetting(AECSSettings.SHOW_RANGE_MODE) == ShowRangeMode.SHOW_RANGE;
-        this.saveChanges();
-        this.markForClientUpdate();
+        boolean wasAutoMode = autoMode;
+        autoMode = configManager.getSetting(AECSSettings.AUTO_LINK_MODE) == AutoLinkMode.ENABLE;
+        allowAutoLinkCableLike = configManager.getSetting(AECSSettings.AUTO_LINK_CABLE_MODE) == AutoLinkCableMode.ENABLE;
+        showLinkStatus = configManager.getSetting(AECSSettings.SHOW_RANGE_MODE) == ShowRangeMode.SHOW_RANGE;
+        if (autoMode && !wasAutoMode) needsScan = true;
+        saveChanges();
+        markForClientUpdate();
     }
 
     @Override
     public void serverTick() {
-        if (isRecentAddedPos()) return;
         if (level == null) return;
-        IGridNode selfNode = getMainNode().getNode();
-        if (selfNode == null) return;
+        if (needsScan && autoMode) {
+            needsScan = false;
+            addAllRecentBEtoEmitter(this);
+        }
         refreshClientDisplayState();
-        if (active != selfNode.isActive()) {
-            active = selfNode.isActive();
+        List<IGridNode> sources = getInputNodes();
+        boolean lostInput = false;
+        for (BlockPos pos : List.copyOf(linkedPositions)) {
+            List<IGridConnection> links = linkedConnections.get(pos);
+            if (links == null) continue;
+            boolean missingSource = links.stream().anyMatch(connection -> {
+                IGridNode source = connection.a().getOwner() == this ? connection.a() : connection.b();
+                return !sources.contains(source);
+            });
+            if (missingSource) {
+                linkedConnections.remove(pos);
+                links.forEach(IGridConnection::destroy);
+                linkedPositions.remove(pos);
+                pendingLinkPositions.add(pos);
+                lostInput = true;
+            }
+        }
+        if (lostInput) {
+            setChanged();
             markForClientUpdate();
         }
-        if (!active) return;
-        if (selfNode.getUsedChannels() >= getMaxLinkChannels()) {
-            if (isConnectedToBand()) {
-                // 频段模式会在下一次重算中按已用频道扩容，保留待连接项以便继续处理。
-                return;
-            }
-
-            // 当无可用频道时清除pending
-            if (!pendingLinkPositions.isEmpty()) {
-                pendingLinkPositions.clear();
-                setChanged();
-                markForClientUpdate();
-            }
+        boolean nextActive = sources.stream().anyMatch(IGridNode::isActive) && (!isConnectedToBand() || getMaxChannels() > 0);
+        if (active != nextActive) {
+            active = nextActive;
+            markForClientUpdate();
+        }
+        if (recentAddedPosCountdown > 0) {
+            recentAddedPosCountdown--;
             return;
+        }
+        if (!active) return;
+        sources.removeIf(node -> !node.isActive() || getInputCapacity(node) <= node.getUsedChannels());
+        sources.sort(Comparator.comparingInt((IGridNode node) -> getInputCapacity(node) - node.getUsedChannels()).reversed());
+        if (sources.isEmpty()) return;
+
+        // A removed input can leave an existing output unserved. Retry it through the remaining faces.
+        if (--retryCountdown <= 0) {
+            retryCountdown = 20;
+            for (BlockPos pos : List.copyOf(linkedPositions)) {
+                if (!level.isLoaded(pos)) continue;
+                boolean unserved = getConnectableNodes(level, pos).stream()
+                        .anyMatch(node -> node.hasFlag(GridFlags.REQUIRE_CHANNEL) && node.hasGridBooted() && !node.meetsChannelRequirements());
+                if (unserved) {
+                    List<IGridConnection> old = linkedConnections.remove(pos);
+                    if (old != null) old.forEach(IGridConnection::destroy);
+                    linkedPositions.remove(pos);
+                    pendingLinkPositions.add(pos);
+                    break;
+                }
+            }
         }
 
         int pendingSize = pendingLinkPositions.size();
-        for (Iterator<BlockPos> it = pendingLinkPositions.iterator(); it.hasNext();) {
-            BlockPos targetPos = it.next();
-
-            // 不处理未加载区块的情况
+        for (Iterator<BlockPos> iterator = pendingLinkPositions.iterator(); iterator.hasNext();) {
+            BlockPos targetPos = iterator.next();
             if (!level.isLoaded(targetPos)) continue;
-
-            // 如果目标位置已有旧链接，先摧毁
-            List<IGridConnection> oldConnections = linkedConnections.remove(targetPos);
-            if (oldConnections != null) {
-                for (IGridConnection connection : oldConnections) {
-                    if (connection != null) {
-                        connection.destroy();
-                    }
-                }
-            }
-
-            // 尝试建立连接，这里targets会自动筛掉不符合条件的
-            List<IGridNode> targetNodes = getConnectableNodes(level, targetPos);
-            if (targetNodes.isEmpty()) {
-                // 无任何可连接节点
-                it.remove();
+            List<IGridNode> targets = getConnectableNodes(level, targetPos);
+            if (targets.isEmpty()) {
+                iterator.remove();
+                manualLinkPositions.remove(targetPos);
                 continue;
             }
-
-            ArrayList<IGridConnection> newConnections = new ArrayList<>();
-            for (IGridNode targetNode : targetNodes) {
-                IGrid targetGrid = targetNode.getGrid();
-                IGrid selfGrid = selfNode.getGrid();
-                if (targetGrid != null && selfGrid != null) {
+            List<IGridConnection> connections = new ArrayList<>();
+            for (IGridNode target : targets) {
+                int previousSize = connections.size();
+                for (IGridNode source : sources) {
+                    IGrid targetGrid = target.getGrid();
+                    IGrid sourceGrid = source.getGrid();
                     if (targetGrid.getPathingService().getControllerState() != ControllerState.NO_CONTROLLER) {
-                        if (targetGrid != selfGrid)
-                            continue; // 不连接导致冲突的网络
-                        else if (targetNode.meetsChannelRequirements())
-                            continue; // 同一个网络内，若对方已经分配有频道，不连接
+                        if (targetGrid != sourceGrid || target.meetsChannelRequirements()) continue;
                     }
-                }
-
-                try {
-                    newConnections.add(GridHelper.createConnection(selfNode, targetNode));
-                } catch (IllegalStateException e) {
-                    // 此错误说明两者之间已有连接，无需log记录
+                    if (source == target) continue;
+                    try {
+                        connections.add(GridHelper.createConnection(source, target));
+                    } catch (IllegalStateException ignored) {
+                        // An adjacent physical connection or another part already provides this route.
+                    }
+                    if (connections.size() > previousSize) break;
                 }
             }
-
-            if (newConnections.isEmpty()) {
-                // 本轮没有完成任何连接
-                it.remove();
-                continue;
+            iterator.remove();
+            if (!connections.isEmpty()) {
+                linkedConnections.put(targetPos, connections);
+                linkedPositions.add(targetPos);
+                break; // Let AE2 finish routing this target before adding another one.
             }
-
-            // 本轮有任何成功链接就结束，剩下的等待下一轮
-            linkedConnections.put(targetPos, newConnections);
-            it.remove();
-            linkedPositions.add(targetPos);
-            break;
         }
-
         if (pendingSize != pendingLinkPositions.size()) {
             markBandRuntimeDirty();
             setChanged();
@@ -408,280 +519,221 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         if (level == null) return;
         BlockState state = getBlockState();
         if (state.hasProperty(AECSBlockProperties.ACTIVE) && state.getValue(AECSBlockProperties.ACTIVE) != active) {
-            level.setBlock(worldPosition, getBlockState().setValue(AECSBlockProperties.ACTIVE, active), 2);
+            level.setBlock(worldPosition, state.setValue(AECSBlockProperties.ACTIVE, active), 2);
         }
-    }
-
-    /**
-     * 如果返回真，则说明最近添加了新pos，需要延后工作
-     */
-    private boolean isRecentAddedPos() {
-        if (recentAddedPosCountdown > 0) {
-            recentAddedPosCountdown--;
-            return true;
-        }
-        return false;
-    }
-
-    private void addPosToPending(BlockPos pos) {
-        this.pendingLinkPositions.add(pos);
-        this.recentAddedPosCountdown = 2;
-        markBandRuntimeDirty();
-    }
-
-    private void addListPosToPending(Collection<BlockPos> posList) {
-        this.pendingLinkPositions.addAll(posList);
-        this.recentAddedPosCountdown = 2;
-        markBandRuntimeDirty();
-    }
-
-    public int getMaxLinkChannels() {
-        IGridNode node = getMainNode().getNode();
-        return node == null ? 0 : node.getMaxChannels();
-    }
-
-    /**
-     * 获取界面展示用的频道上限；频段模式下展示整个频段的总可用频道。
-     */
-    public int getDisplayedMaxLinkChannels() {
-        if (!bandId.isEmpty()) {
-            BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
-            if (band != null) {
-                return clampChannelCount(band.getUsableChannels());
-            }
-        }
-        return getMaxLinkChannels();
-    }
-
-    public int getUsedLinkChannels() {
-        IGridNode node = getMainNode().getNode();
-        return node == null ? 0 : node.getUsedChannels();
     }
 
     private void refreshClientDisplayState() {
-        long newBandUsedChannels = 0;
-        long newBandTotalChannels = 0;
-
-        if (!bandId.isEmpty()) {
-            BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
-            if (band != null) {
-                newBandUsedChannels = band.getUsedChannels();
-                newBandTotalChannels = band.getUsableChannels();
-            }
-        }
-
-        int newBandUsedChannelsForClient = clampChannelCount(newBandUsedChannels);
-        int newBandTotalChannelsForClient = clampChannelCount(newBandTotalChannels);
-        if (this.bandUsedChannelsForClient != newBandUsedChannelsForClient || this.bandTotalChannelsForClient != newBandTotalChannelsForClient) {
-            this.bandUsedChannelsForClient = newBandUsedChannelsForClient;
-            this.bandTotalChannelsForClient = newBandTotalChannelsForClient;
+        BroadcastFrequencyBand band = bandId.isEmpty() ? null : FrequencyBandManager.getBand(bandId);
+        int used = band == null ? 0 : clampChannelCount(band.getUsedChannels());
+        int total = band == null ? 0 : clampChannelCount(band.getUsableChannels());
+        if (used != bandUsedChannelsForClient || total != bandTotalChannelsForClient) {
+            bandUsedChannelsForClient = used;
+            bandTotalChannelsForClient = total;
             markForClientUpdate();
         }
     }
 
     private void markBandRuntimeDirty() {
-        if (level == null || level.isClientSide()) return;
-        if (bandId.isEmpty()) return;
-
-        MinecraftServer server = level.getServer();
-        if (server == null) return;
-
-        FrequencyBandManager.markRuntimeDirty(server, bandId);
+        if (level != null && !level.isClientSide() && !bandId.isEmpty() && level.getServer() != null) {
+            FrequencyBandManager.markRuntimeDirty(level.getServer(), bandId);
+        }
     }
 
     @Override
     public void onMainNodeStateChanged(IGridNodeListener.State reason) {
         super.onMainNodeStateChanged(reason);
-        if (reason == IGridNodeListener.State.CHANNEL || reason == IGridNodeListener.State.GRID_BOOT) {
-            markBandRuntimeDirty();
-        }
+        markForClientUpdate();
     }
 
     @Override
     public void onReady() {
-        onGridConnectableSidesChanged();
+        updateInputSides();
         super.onReady();
-        // 节点准备好之后加入到缓存表
-        if (level != null && !level.isClientSide()) {
-            ChunkPos center = new ChunkPos(worldPosition);
-            for (int offsetX = -autoAreaFactor; offsetX <= autoAreaFactor; offsetX++) {
-                for (int offsetZ = -autoAreaFactor; offsetZ <= autoAreaFactor; offsetZ++) {
-                    GlobalChunkPos chunkKey = new GlobalChunkPos(level.dimension(), center.x + offsetX, center.z + offsetZ);
-                    EMITTER_CHUNK_POSITIONS
-                            .computeIfAbsent(chunkKey, key -> new HashSet<>())
-                            .add(worldPosition.immutable());
-                }
-            }
+        if (level == null || level.isClientSide()) return;
+        for (IManagedGridNode input : sideInputs.values()) {
+            input.setOwningPlayerId(getMainNode().getNode().getOwningPlayerId());
+            input.create(level, worldPosition);
         }
-        // 将linked转入pending，等待自动重连
-        pendingLinkPositions.clear();
-        addListPosToPending(linkedPositions);
+        refreshChunkIndex();
+        pendingLinkPositions.addAll(linkedPositions);
         linkedPositions.clear();
-
-        if (level == null || level.isClientSide() || bandId.isEmpty()) return;
-
-        MinecraftServer server = level.getServer();
-        if (server == null) return;
-
+        linkedConnections.clear();
+        pruneOutOfRangeConnections();
+        needsScan = false;
+        if (bandId.isEmpty() || level.getServer() == null) return;
+        setMaxChannels(0); // Always request a fresh allocation after loading.
         BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
-        if (band == null) {
-            setEnabledCustomChannel(false);
-            return;
-        }
-
-        GlobalPos globalPos = GlobalPos.of(level.dimension(), worldPosition);
-        band.declareReceiver(globalPos);
-        setEnabledCustomChannel(true);
-
-        IGridNode node = getMainNode().getNode();
-        if (node != null) {
-            band.onReceiverOnline(server, globalPos, node, this);
+        if (band != null) {
+            GlobalPos pos = GlobalPos.of(level.dimension(), worldPosition);
+            band.declareReceiver(pos);
+            band.onReceiverOnline(level.getServer(), pos, getMainNode().getNode(), this);
         }
     }
 
-    @Override
-    public void setRemoved() {
-        super.setRemoved();
-        // BE被移除时从运行时索引移除
-        if (level != null && !level.isClientSide()) {
-            ChunkPos center = new ChunkPos(worldPosition);
-            BlockPos posKey = worldPosition.immutable();
+    private void refreshChunkIndex() {
+        if (level == null || level.isClientSide() || !getMainNode().isReady()) return;
+        int radius = getMaxLinkDistance();
+        if (radius == indexedChunkRadius) return;
+        removeChunkIndex();
+        ChunkPos center = new ChunkPos(worldPosition);
+        for (int x = -radius; x <= radius; x++) {
+            for (int z = -radius; z <= radius; z++) {
+                GlobalChunkPos key = new GlobalChunkPos(level.dimension(), center.x + x, center.z + z);
+                EMITTER_CHUNK_POSITIONS.computeIfAbsent(key, ignored -> new HashSet<>()).add(worldPosition.immutable());
+            }
+        }
+        indexedChunkRadius = radius;
+    }
 
-            for (int offsetX = -autoAreaFactor; offsetX <= autoAreaFactor; offsetX++) {
-                for (int offsetZ = -autoAreaFactor; offsetZ <= autoAreaFactor; offsetZ++) {
-                    GlobalChunkPos chunkKey = new GlobalChunkPos(level.dimension(), center.x + offsetX, center.z + offsetZ);
-
-                    Set<BlockPos> set = EMITTER_CHUNK_POSITIONS.get(chunkKey);
-                    if (set != null) {
-                        set.remove(posKey);
-                        if (set.isEmpty()) {
-                            EMITTER_CHUNK_POSITIONS.remove(chunkKey);
-                        }
-                    }
+    private void removeChunkIndex() {
+        if (level == null || indexedChunkRadius < 0) return;
+        ChunkPos center = new ChunkPos(worldPosition);
+        for (int x = -indexedChunkRadius; x <= indexedChunkRadius; x++) {
+            for (int z = -indexedChunkRadius; z <= indexedChunkRadius; z++) {
+                GlobalChunkPos key = new GlobalChunkPos(level.dimension(), center.x + x, center.z + z);
+                Set<BlockPos> positions = EMITTER_CHUNK_POSITIONS.get(key);
+                if (positions != null) {
+                    positions.remove(worldPosition);
+                    if (positions.isEmpty()) EMITTER_CHUNK_POSITIONS.remove(key);
                 }
             }
         }
+        indexedChunkRadius = -1;
+    }
+
+    private void unloadInputs() {
+        disconnectBand(true);
+        removeChunkIndex();
+        sideInputs.values().forEach(IManagedGridNode::destroy);
     }
 
     @Override
     public void onChunkUnloaded() {
-        if (level != null && !level.isClientSide() && !bandId.isEmpty()) {
-            MinecraftServer server = level.getServer();
-            BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
-            if (server != null && band != null) {
-                band.onReceiverOffline(server, GlobalPos.of(level.dimension(), worldPosition));
-            }
-        }
+        unloadInputs();
         super.onChunkUnloaded();
+    }
+
+    @Override
+    public void setRemoved() {
+        unloadInputs();
+        super.setRemoved();
     }
 
     @Override
     public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
         super.saveAdditional(data, registries);
+        sideInputs.values().forEach(input -> input.saveToNBT(data));
         configManager.writeToNBT(data, registries);
-        data.putInt("link_distance", this.linkDistance);
-        data.putString("band_id", this.bandId);
-        data.putBoolean("enabled_custom_channel", this.enabledCustomChannel);
-        data.putInt("custom_max_channels", this.customMaxChannels);
+        upgrades.writeToNBT(data, "emitter_upgrades", registries);
+        data.putInt("chunk_radius", linkDistance);
+        data.putString("band_id", bandId);
+        data.putInt("expected_channels", expectedChannels);
+        Set<BlockPos> positions = new LinkedHashSet<>(linkedPositions);
+        positions.addAll(pendingLinkPositions);
+        data.put("linked_positions", writePositions(positions));
+        data.put("manual_link_positions", writePositions(manualLinkPositions));
+    }
 
-        ListTag linkPositions = new ListTag();
-        for (BlockPos pos : linkedPositions) {
-            try {
-                Tag t = BlockPos.CODEC
-                        .encodeStart(NbtOps.INSTANCE, pos)
-                        .getOrThrow();
-                linkPositions.add(t);
-            } catch (Throwable e) {
-                // 静默
-            }
+    private static ListTag writePositions(Collection<BlockPos> positions) {
+        ListTag list = new ListTag();
+        for (BlockPos pos : positions) BlockPos.CODEC.encodeStart(NbtOps.INSTANCE, pos).result().ifPresent(list::add);
+        return list;
+    }
+
+    private static void readPositions(CompoundTag data, String key, Set<BlockPos> positions) {
+        positions.clear();
+        for (Tag tag : data.getList(key, Tag.TAG_INT_ARRAY)) {
+            BlockPos.CODEC.parse(NbtOps.INSTANCE, tag).result().ifPresent(pos -> positions.add(pos.immutable()));
         }
-
-        data.put("linked_positions", linkPositions);
     }
 
     @Override
     public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
         super.loadTag(data, registries);
-        this.configManager.readFromNBT(data, registries);
-        this.linkDistance = data.getInt("link_distance");
-        this.bandId = data.getString("band_id");
-        this.enabledCustomChannel = data.getBoolean("enabled_custom_channel");
-        this.customMaxChannels = data.getInt("custom_max_channels");
-
-        linkedPositions.clear();
-
-        Tag root = data.get("linked_positions");
-        if (!(root instanceof ListTag list)) return;
-
-        for (Tag t : list) {
-            try {
-                BlockPos.CODEC
-                        .parse(NbtOps.INSTANCE, t)
-                        .resultOrPartial(msg -> {})
-                        .ifPresent(pos -> linkedPositions.add(pos.immutable()));
-            } catch (Throwable e) {
-                // 忽略
-            }
-        }
-
-        this.autoMode = configManager.getSetting(AECSSettings.AUTO_LINK_MODE) == AutoLinkMode.ENABLE;
-        this.allowAutoLinkCableLike = configManager.getSetting(AECSSettings.AUTO_LINK_CABLE_MODE) == AutoLinkCableMode.ENABLE;
-        this.showLinkStatus = configManager.getSetting(AECSSettings.SHOW_RANGE_MODE) == ShowRangeMode.SHOW_RANGE;
-        this.markForClientUpdate();
+        sideInputs.values().forEach(input -> input.loadFromNBT(data));
+        configManager.readFromNBT(data, registries);
+        upgrades.readFromNBT(data, "emitter_upgrades", registries);
+        linkDistance = data.contains("chunk_radius") ? Math.max(0, Math.min(getMaxLinkDistance(), data.getInt("chunk_radius"))) : 1;
+        bandId = data.getString("band_id");
+        expectedChannels = data.contains("expected_channels") ? Math.max(0, data.getInt("expected_channels")) : 32;
+        customMaxChannels = 0;
+        enabledCustomChannel = false;
+        readPositions(data, "linked_positions", linkedPositions);
+        readPositions(data, "manual_link_positions", manualLinkPositions);
+        autoMode = configManager.getSetting(AECSSettings.AUTO_LINK_MODE) == AutoLinkMode.ENABLE;
+        allowAutoLinkCableLike = configManager.getSetting(AECSSettings.AUTO_LINK_CABLE_MODE) == AutoLinkCableMode.ENABLE;
+        showLinkStatus = configManager.getSetting(AECSSettings.SHOW_RANGE_MODE) == ShowRangeMode.SHOW_RANGE;
     }
 
     @Override
-    public void onLoad() {
-        super.onLoad();
-        onConfigChanged(); // 确保字段与配置始终同步
+    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
+        super.addAdditionalDrops(level, pos, drops);
+        for (ItemStack stack : upgrades) if (!stack.isEmpty()) drops.add(stack.copy());
     }
 
-    // 把重要信息和pengding和linked写表，用于客户端显示
+    @Override
+    public void clearContent() {
+        super.clearContent();
+        upgrades.clear();
+    }
+
     @Override
     protected void writeToStream(RegistryFriendlyByteBuf data) {
         super.writeToStream(data);
-        data.writeBoolean(this.autoMode);
-        data.writeBoolean(this.active);
-        data.writeBoolean(this.showLinkStatus);
-        data.writeUtf(this.getBandName());
-        data.writeInt(this.bandUsedChannelsForClient);
-        data.writeInt(this.bandTotalChannelsForClient);
-        data.writeInt(this.maxLinkDistanceForClient);
-        data.writeInt(this.linkDistance);
-        data.writeInt(this.pendingLinkPositions.size());
-        for (BlockPos pos : this.pendingLinkPositions) {
-            BlockPos.STREAM_CODEC.encode(data, pos);
-        }
-        data.writeInt(this.linkedPositions.size());
-        for (BlockPos pos : this.linkedPositions) {
-            BlockPos.STREAM_CODEC.encode(data, pos);
-        }
+        data.writeBoolean(autoMode);
+        data.writeBoolean(active);
+        data.writeBoolean(showLinkStatus);
+        data.writeUtf(bandId);
+        data.writeInt(bandUsedChannelsForClient);
+        data.writeInt(bandTotalChannelsForClient);
+        data.writeInt(getMaxLinkDistance());
+        data.writeInt(linkDistance);
+        data.writeInt(pendingLinkPositions.size());
+        for (BlockPos pos : pendingLinkPositions) BlockPos.STREAM_CODEC.encode(data, pos);
+        data.writeInt(linkedPositions.size());
+        for (BlockPos pos : linkedPositions) BlockPos.STREAM_CODEC.encode(data, pos);
     }
 
     @Override
     protected boolean readFromStream(RegistryFriendlyByteBuf data) {
         super.readFromStream(data);
-        this.autoMode = data.readBoolean();
-        this.active = data.readBoolean();
-        this.showLinkStatus = data.readBoolean();
-        this.bandId = data.readUtf();
-        this.bandUsedChannelsForClient = data.readInt();
-        this.bandTotalChannelsForClient = data.readInt();
-        this.maxLinkDistanceForClient = data.readInt();
-        this.linkDistance = data.readInt();
-        this.pendingLinkPositions.clear();
-        int pendingSize = data.readInt();
-        for (int i = 0; i < pendingSize; i++) {
-            BlockPos pos = BlockPos.STREAM_CODEC.decode(data);
-            this.pendingLinkPositions.add(pos);
-        }
-        this.linkedPositions.clear();
-        int linkSize = data.readInt();
-        for (int i = 0; i < linkSize; i++) {
-            BlockPos pos = BlockPos.STREAM_CODEC.decode(data);
-            this.linkedPositions.add(pos);
-        }
+        autoMode = data.readBoolean();
+        active = data.readBoolean();
+        showLinkStatus = data.readBoolean();
+        bandId = data.readUtf();
+        bandUsedChannelsForClient = data.readInt();
+        bandTotalChannelsForClient = data.readInt();
+        maxLinkDistanceForClient = data.readInt();
+        linkDistance = data.readInt();
+        pendingLinkPositions.clear();
+        for (int count = data.readInt(); count > 0; count--) pendingLinkPositions.add(BlockPos.STREAM_CODEC.decode(data));
+        linkedPositions.clear();
+        for (int count = data.readInt(); count > 0; count--) linkedPositions.add(BlockPos.STREAM_CODEC.decode(data));
         return true;
+    }
+
+    public List<BlockPos> getPendingRenderPositionsSnapshot() {
+        return List.copyOf(pendingLinkPositions);
+    }
+
+    public List<BlockPos> getLinkedRenderPositionsSnapshot() {
+        return List.copyOf(linkedPositions);
+    }
+
+    @Override
+    public boolean enableCustomRenderBounding() {
+        return showLinkStatus;
+    }
+
+    @Override
+    public int getRange() {
+        return (getMaxLinkDistanceForClient() + 1) * 16;
+    }
+
+    @Override
+    public AABB getCustomBoundingBox(BlockPos centerPos) {
+        return showLinkStatus ? getChunkRangeBounds(getMaxLinkDistanceForClient()) : new AABB(centerPos).inflate(0, 1, 0);
     }
 
     @Override
@@ -689,216 +741,139 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         return AECSBlocks.ENDER_EMITTER_BLOCK.toStack();
     }
 
-    /**
-     * 获取目标位置中最适合被无线连接的一个或一群节点，其内部元素亦不为null
-     */
     public static List<IGridNode> getConnectableNodes(Level level, BlockPos pos) {
-        ArrayList<IGridNode> nodes = new ArrayList<>();
-
-        IInWorldGridNodeHost nodeHost = level.getCapability(AECapabilities.IN_WORLD_GRID_NODE_HOST, pos);
-        if (nodeHost == null) return nodes;
-
-        // 无线连接拒绝控制器
-        if (nodeHost instanceof ControllerBlockEntity) return nodes;
-        else if (nodeHost instanceof CableBusBlockEntity cable) {
-            // 线缆节点，优先获取中间节点，如不存在则将六个面的节点都加入
-            CableBusContainer cableBus = cable.getCableBus();
-            IPart center = cableBus.getPart(null);
+        List<IGridNode> nodes = new ArrayList<>();
+        IInWorldGridNodeHost host = level.getCapability(AECapabilities.IN_WORLD_GRID_NODE_HOST, pos);
+        if (host == null || host instanceof ControllerBlockEntity) return nodes;
+        if (host instanceof CableBusBlockEntity cable) {
+            CableBusContainer bus = cable.getCableBus();
+            IPart center = bus.getPart(null);
             if (center != null) {
                 nodes.add(center.getGridNode());
             } else {
-                for (Direction direction : Direction.values()) {
-                    IPart part = cableBus.getPart(direction);
-                    if (part != null) {
-                        nodes.add(part.getGridNode());
-                    }
+                for (Direction side : Direction.values()) {
+                    IPart part = bus.getPart(side);
+                    if (part != null) nodes.add(part.getGridNode());
                 }
             }
         } else {
-            // 普通节点，任意一面取得即可
-            for (Direction direction : Direction.values()) {
-                IGridNode node = nodeHost.getGridNode(direction);
+            for (Direction side : Direction.values()) {
+                IGridNode node = host.getGridNode(side);
                 if (node != null) {
                     nodes.add(node);
                     break;
                 }
             }
         }
-
         nodes.removeIf(Objects::isNull);
         return nodes;
     }
 
-    // 用于自动链接方块-------------------------------------------------------
-    @SubscribeEvent
-    public static void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
-        LevelAccessor levelAccessor = event.getLevel();
-        if (levelAccessor instanceof ServerLevelAccessor sla) {
-            addPosToRecentEmitter(sla.getLevel(), event.getPos());
-        }
+    private static boolean isAutoLinkExcluded(Level level, BlockPos pos) {
+        BlockEntity target = level.getBlockEntity(pos);
+        if (target instanceof ControllerBlockEntity || target instanceof EnderEmitterBlockEntity || target instanceof EnderBroadcasterBlockEntity) return true;
+        String path = BuiltInRegistries.BLOCK.getKey(level.getBlockState(pos).getBlock()).getPath();
+        return path.equals("controller") || path.endsWith("_controller") || path.endsWith("wireless_receiver") || path.endsWith("wireless_transceiver") || path.endsWith("wireless_connect") || path.endsWith("wireless_connector") || path.endsWith("wireless_hub");
     }
 
-    @SubscribeEvent
-    public static void onBlockBreak(BlockEvent.BreakEvent event) {
-        LevelAccessor targetLevelAccessor = event.getLevel();
-        if (targetLevelAccessor instanceof ServerLevelAccessor sla) {
-            removePosFromRecentEmitter(sla.getLevel(), event.getPos());
-        }
-    }
-
-    /**
-     * 将需要连接的位置添加到指定发信器
-     */
-    public static boolean addPosToEmitter(@NotNull EnderEmitterBlockEntity emitter, @NotNull BlockPos pos, boolean byManual, boolean forceAuto) {
-        if (emitter.getBlockPos().equals(pos)) return false;
-
-        // 如果是手动连接，仅检查手动方法
-        boolean valid = byManual && VecHelper.closerThanChebyshev(emitter.worldPosition, pos, maxLinkDistance.get());
-
-        // 自动连接额外检查
-        if (!valid) {
-            if (emitter.level == null) return false;
-            IGridNode emitterNode = emitter.getMainNode().getNode();
-            if (emitterNode == null) return false;
-            if (!emitterNode.isActive() && !emitter.isConnectedToBand()) return false;
-            IInWorldGridNodeHost targetNodeHost = emitter.level.getCapability(AECapabilities.IN_WORLD_GRID_NODE_HOST, pos);
-            boolean hasAvailableChannels = emitterNode.getUsedChannels() < emitter.getMaxLinkChannels();
-            valid = (forceAuto || emitter.isAutoMode()) && (hasAvailableChannels || emitter.isConnectedToBand()) && (!(targetNodeHost instanceof CableBusBlockEntity) || emitter.allowAutoLinkCableLike()) && VecHelper.closerThanChebyshev(emitter.worldPosition, pos, emitter.linkDistance);
-        }
-
-        if (valid) {
-            emitter.addPosToPending(pos);
-            emitter.markForClientUpdate();
-            emitter.setChanged();
+    public static boolean addPosToEmitter(@NotNull EnderEmitterBlockEntity emitter, @NotNull BlockPos pos,
+                                          boolean byManual, boolean forceAuto) {
+        if (emitter.level == null || emitter.level.isClientSide() || emitter.worldPosition.equals(pos)) return false;
+        if (emitter.linkedPositions.contains(pos)) {
+            if (byManual && emitter.manualLinkPositions.add(pos.immutable())) emitter.setChanged();
             return true;
         }
-        return false;
+        if (byManual) {
+            if (!emitter.isInRange(pos, emitter.getMaxLinkDistance())) return false;
+        } else {
+            if ((!forceAuto && !emitter.autoMode) || !emitter.isInRange(pos, emitter.linkDistance) || isAutoLinkExcluded(emitter.level, pos)) return false;
+            IInWorldGridNodeHost host = emitter.level.getCapability(AECapabilities.IN_WORLD_GRID_NODE_HOST, pos);
+            if (host == null || (host instanceof CableBusBlockEntity && !emitter.allowAutoLinkCableLike)) return false;
+        }
+        if (getConnectableNodes(emitter.level, pos).isEmpty()) return false;
+        if (byManual) emitter.manualLinkPositions.add(pos.immutable());
+        if (emitter.pendingLinkPositions.add(pos.immutable())) {
+            emitter.recentAddedPosCountdown = 2;
+            emitter.setChanged();
+            emitter.markForClientUpdate();
+        }
+        return true;
     }
 
-    /**
-     * 从发信器中移除某个特定的位置
-     */
-    public static void removePosFromEmitter(@NotNull EnderEmitterBlockEntity emitter, @NotNull BlockPos targetPos) {
-        emitter.pendingLinkPositions.remove(targetPos);
-        emitter.linkedPositions.remove(targetPos);
-        var connections = emitter.linkedConnections.remove(targetPos);
-        if (connections != null && !connections.isEmpty()) {
-            for (IGridConnection connection : connections) {
-                if (connection != null) {
-                    connection.destroy();
-                }
-            }
-        }
-        emitter.markBandRuntimeDirty();
+    public static void removePosFromEmitter(@NotNull EnderEmitterBlockEntity emitter, @NotNull BlockPos pos) {
+        emitter.pendingLinkPositions.remove(pos);
+        emitter.linkedPositions.remove(pos);
+        emitter.manualLinkPositions.remove(pos);
+        List<IGridConnection> connections = emitter.linkedConnections.remove(pos);
+        if (connections != null) connections.forEach(IGridConnection::destroy);
         emitter.setChanged();
         emitter.markForClientUpdate();
     }
 
-    /**
-     * 自动将当前位置添加到最近一个可用发信器
-     */
-    public static void addPosToRecentEmitter(@NotNull Level targetLevel, @NotNull BlockPos targetPos) {
-        // 确认目标方块状态
-        IInWorldGridNodeHost targetNodeHost = GridHelper.getNodeHost(targetLevel, targetPos);
-        if (targetNodeHost == null) return;
-
-        // 确认最佳发信器状态
-        GlobalChunkPos targetChunkPos = new GlobalChunkPos(targetLevel.dimension(), targetPos);
-        Set<BlockPos> linkPositions = EMITTER_CHUNK_POSITIONS.get(targetChunkPos);
-        if (linkPositions == null || linkPositions.isEmpty()) return;
-
-        List<BlockPos> availablePositions = new ArrayList<>(linkPositions.size());
-        for (BlockPos linkPos : linkPositions) {
-            if (VecHelper.closerThanChebyshev(linkPos, targetPos, maxLinkDistance.get())) {
-                availablePositions.add(linkPos);
-            }
+    public static void addPosToRecentEmitter(@NotNull Level level, @NotNull BlockPos pos) {
+        Set<BlockPos> positions = EMITTER_CHUNK_POSITIONS.get(new GlobalChunkPos(level.dimension(), pos));
+        if (positions == null) return;
+        List<BlockPos> sorted = new ArrayList<>(positions);
+        sorted.sort(Comparator.comparingInt((BlockPos candidate) -> level.isLoaded(candidate) && level.getBlockEntity(candidate) instanceof EnderEmitterBlockEntity emitter && emitter.isActive() ? 0 : 1)
+                .thenComparingDouble(candidate -> candidate.distSqr(pos)));
+        for (BlockPos candidate : sorted) {
+            if (!level.isLoaded(candidate)) continue;
+            if (level.getBlockEntity(candidate) instanceof EnderEmitterBlockEntity emitter && addPosToEmitter(emitter, pos, false, false)) return;
         }
-        if (availablePositions.isEmpty()) return;
+    }
 
-        // 按欧式距离排序优先级
-        availablePositions.sort(Comparator.comparingDouble(pos -> pos.distSqr(targetPos)));
-
-        // 迭代寻找可用发信器并与之连接
-        for (BlockPos linkPos : availablePositions) {
-            if (targetLevel.getBlockEntity(linkPos) instanceof EnderEmitterBlockEntity emitter) {
-                // 打开自动模式、检查emitter的独特距离，最后再尝试加入到emitter
-                if (addPosToEmitter(emitter, targetPos, false, false)) {
-                    return;
-                }
+    public static void removePosFromRecentEmitter(@NotNull Level level, @NotNull BlockPos pos) {
+        Set<BlockPos> positions = EMITTER_CHUNK_POSITIONS.get(new GlobalChunkPos(level.dimension(), pos));
+        if (positions == null) return;
+        for (BlockPos candidate : Set.copyOf(positions)) {
+            if (level.isLoaded(candidate) && level.getBlockEntity(candidate) instanceof EnderEmitterBlockEntity emitter) {
+                removePosFromEmitter(emitter, pos);
             }
         }
     }
 
-    /**
-     * 将指定位置信息从附近的发信器索引中移除
-     */
-    public static void removePosFromRecentEmitter(@NotNull Level targetLevel, @NotNull BlockPos targetPos) {
-        IInWorldGridNodeHost targetNodeHost = GridHelper.getNodeHost(targetLevel, targetPos);
-        if (targetNodeHost == null) return;
-
-        // 移除相关发信器中的连接状态
-        GlobalChunkPos targetChunkPos = new GlobalChunkPos(targetLevel.dimension(), targetPos);
-        Set<BlockPos> linkPositions = EMITTER_CHUNK_POSITIONS.get(targetChunkPos);
-        if (linkPositions == null || linkPositions.isEmpty()) return;
-        for (BlockPos linkPos : linkPositions) {
-            if (targetLevel.getBlockEntity(linkPos) instanceof EnderEmitterBlockEntity emitter) {
-                removePosFromEmitter(emitter, targetPos);
-            }
-        }
-    }
-
-    /**
-     * 用来主动将附近区块的be全部添加进表
-     */
     public static void addAllRecentBEtoEmitter(@NotNull EnderEmitterBlockEntity emitter) {
-        Level targetLevel = emitter.level;
-        if (targetLevel instanceof ServerLevel serverLevel) {
-            ChunkPos centerChunk = new ChunkPos(emitter.worldPosition);
-            List<BlockEntity> blockEntities = ChunkHelper.getBlockEntitiesInChunks(serverLevel, centerChunk, autoAreaFactor);
-            for (BlockEntity be : blockEntities) {
-                addPosToEmitter(emitter, be.getBlockPos(), false, true);
-            }
-        }
+        if (!(emitter.level instanceof ServerLevel serverLevel)) return;
+        List<BlockEntity> targets = ChunkHelper.getBlockEntitiesInChunks(serverLevel, new ChunkPos(emitter.worldPosition), emitter.linkDistance);
+        targets.sort(Comparator.comparingDouble(target -> target.getBlockPos().distSqr(emitter.worldPosition)));
+        for (BlockEntity target : targets) addPosToEmitter(emitter, target.getBlockPos(), false, true);
     }
 
-    /**
-     * 手动显式清除所有连接
-     */
     public static void removeAllLinkedFromEmitter(@NotNull EnderEmitterBlockEntity emitter) {
-        for (Collection<IGridConnection> connections : emitter.linkedConnections.values()) {
-            for (IGridConnection connection : connections) {
-                connection.destroy();
-            }
+        for (List<IGridConnection> connections : emitter.linkedConnections.values()) {
+            connections.forEach(IGridConnection::destroy);
         }
         emitter.linkedConnections.clear();
         emitter.linkedPositions.clear();
         emitter.pendingLinkPositions.clear();
-        emitter.markBandRuntimeDirty();
+        emitter.manualLinkPositions.clear();
+        emitter.needsScan = false;
         emitter.setChanged();
         emitter.markForClientUpdate();
     }
 
-    // 用来确定缓存表可用性-----------------------------------------------------
+    @SubscribeEvent
+    public static void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
+        if (event.getLevel() instanceof ServerLevelAccessor accessor) addPosToRecentEmitter(accessor.getLevel(), event.getPos());
+    }
+
+    @SubscribeEvent
+    public static void onBlockBreak(BlockEvent.BreakEvent event) {
+        if (event.getLevel() instanceof ServerLevelAccessor accessor) removePosFromRecentEmitter(accessor.getLevel(), event.getPos());
+    }
+
     public static void ensureBound(@Nullable MinecraftServer server) {
-        if (server == null) {
-            EMITTER_CHUNK_POSITIONS.clear();
-            boundServer = null;
-            return;
-        }
-        if (boundServer != server) {
-            EMITTER_CHUNK_POSITIONS.clear();
-            boundServer = server;
-        }
+        if (server == null || boundServer != server) EMITTER_CHUNK_POSITIONS.clear();
+        boundServer = server;
     }
 
     @SubscribeEvent
-    public static void onServerStarting(net.neoforged.neoforge.event.server.ServerStartingEvent e) {
-        ensureBound(e.getServer());
+    public static void onServerStarting(net.neoforged.neoforge.event.server.ServerStartingEvent event) {
+        ensureBound(event.getServer());
     }
 
     @SubscribeEvent
-    public static void onServerStopped(net.neoforged.neoforge.event.server.ServerStoppedEvent e) {
-        EMITTER_CHUNK_POSITIONS.clear();
-        boundServer = null;
+    public static void onServerStopped(net.neoforged.neoforge.event.server.ServerStoppedEvent event) {
+        ensureBound(null);
     }
 }

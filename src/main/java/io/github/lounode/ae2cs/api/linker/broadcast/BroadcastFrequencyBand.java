@@ -3,7 +3,6 @@ package io.github.lounode.ae2cs.api.linker.broadcast;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.api.CustomChannelProviderHost;
 import io.github.lounode.ae2cs.api.util.AECSGridHelper;
-import io.github.lounode.ae2cs.util.BlockPosHelper;
 
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGrid;
@@ -354,7 +353,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag> {
         }
 
         if (this.errorState != BandError.FINE || newBindGrid == null) {
-            if (newBindGrid == null)
+            if (this.errorState == BandError.FINE)
                 this.errorState = BandError.NO_SENDER;
 
             bindGrid = null;
@@ -431,6 +430,8 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag> {
      * 无 sender/冲突时：所有在线 receiver 恢复原版并断开连接
      */
     private void dropAllReceiversToVanillaAndDisconnect() {
+        usableChannels = 0;
+        usedChannels = 0;
         // 恢复原版逻辑
         for (var entry : onlineReceiverHosts.object2ObjectEntrySet()) {
             CustomChannelProviderHost host = entry.getValue();
@@ -533,18 +534,25 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag> {
         }
 
         IGridConnection conn = receiverConnections.get(receiverPos);
+        if (conn != null && !receiverNode.getConnections().contains(conn)) {
+            receiverConnections.remove(receiverPos);
+            conn = null;
+        }
 
-        // 这里的目的是尽量减少重连次数，但是如果后续发现频道传递不及时/不稳定，最好把这里改成true
         boolean needRebuild = conn == null || allocChanged;
 
         if (needRebuild) {
-            if (conn != null) conn.destroy();
-            // 这里我们知道它肯定是BE，但是我们不做强制转换
-            if (!(controllerNode.getOwner() instanceof BlockEntity controllerBE)) return;
-            if (!(controllerBE.getLevel() instanceof ServerLevel level)) return; // 主要用于错开null
-            // 防止直接相邻导致的重复连接
-            if (level.dimension() == receiverPos.dimension() && BlockPosHelper.isAdjacent(receiverPos.pos(), controllerBE.getBlockPos()))
-                return;
+            if (conn != null) {
+                receiverConnections.remove(receiverPos);
+                conn.destroy();
+            }
+            // 发信器选择频段后不暴露物理接口；坐标相邻不代表节点已经连接。
+            for (IGridConnection existing : receiverNode.getConnections()) {
+                if (existing.getOtherSide(receiverNode) == controllerNode) {
+                    if (allocChanged) receiverNode.getGrid().getPathingService().repath();
+                    return;
+                }
+            }
 
             receiverConnections.put(receiverPos, GridHelper.createConnection(controllerNode, receiverNode));
         }

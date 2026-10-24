@@ -203,6 +203,7 @@ public class FrequencyBandManager extends SavedData {
 
         long now = server.overworld().getGameTime();
 
+        List<String> readyBands = new ArrayList<>();
         var it = manager.dirtyRuntimeAt.object2LongEntrySet().iterator();
         while (it.hasNext()) {
             var entry = it.next();
@@ -211,13 +212,15 @@ public class FrequencyBandManager extends SavedData {
 
             // 下一tick再计算，避免本tick计算与ae网络的寻路撞车
             if (now > markedAt) {
-                BroadcastFrequencyBand band = manager.frequencyBands.get(bandName);
-                if (band != null) {
-                    band.recomputeRuntime();
-                }
-                // 最后移除掉已经tick过的元素
+                readyBands.add(bandName);
                 it.remove();
             }
+        }
+
+        // 先移除本轮请求，再重算。连接变化触发的新请求必须保留到下一 tick。
+        for (String bandName : readyBands) {
+            BroadcastFrequencyBand band = manager.frequencyBands.get(bandName);
+            if (band != null) band.recomputeRuntime();
         }
     }
 
