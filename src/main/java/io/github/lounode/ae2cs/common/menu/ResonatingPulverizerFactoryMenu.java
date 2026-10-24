@@ -20,6 +20,7 @@ public class ResonatingPulverizerFactoryMenu extends UpgradeableMenu<ResonatingP
 
     private static final String FILL_FLUID_INPUT_ACTION = "fill_fluid_input";
     private static final String DRAIN_FLUID_OUTPUT_ACTION = "drain_fluid_output";
+    private static final String AVERAGE_INPUT_ACTION = "average_input";
 
     @GuiSync(10)
     public int recipeProgress;
@@ -43,6 +44,7 @@ public class ResonatingPulverizerFactoryMenu extends UpgradeableMenu<ResonatingP
         super(AECSMenus.RESONATING_PULVERIZER_FACTORY_MENU.get(), id, ip, host);
         registerClientAction(FILL_FLUID_INPUT_ACTION, this::fillFluidInput);
         registerClientAction(DRAIN_FLUID_OUTPUT_ACTION, this::drainFluidOutput);
+        registerClientAction(AVERAGE_INPUT_ACTION, this::averageInput);
 
         AppEngInternalInventory inputInv = getHost().getInputInv();
         AppEngInternalInventory outputInv = getHost().getOutputInv();
@@ -71,6 +73,14 @@ public class ResonatingPulverizerFactoryMenu extends UpgradeableMenu<ResonatingP
 
     public void sendDrainFluidOutputAction() {
         sendClientAction(DRAIN_FLUID_OUTPUT_ACTION);
+    }
+
+    public void sendAverageInputAction() {
+        sendClientAction(AVERAGE_INPUT_ACTION);
+    }
+
+    private void averageInput() {
+        getHost().averageInput();
     }
 
     private void fillFluidInput() {

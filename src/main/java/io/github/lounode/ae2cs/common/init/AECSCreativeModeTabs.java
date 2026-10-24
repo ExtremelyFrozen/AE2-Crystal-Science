@@ -2,14 +2,17 @@ package io.github.lounode.ae2cs.common.init;
 
 import io.github.lounode.ae2cs.api.ids.AECSConstants;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -56,6 +59,15 @@ public class AECSCreativeModeTabs {
                     .displayItems((params, output) -> {
                         for (DeferredBlock<? extends Block> block : AECSBlocks.getCrystalGrowthBlocks()) {
                             output.accept(block.get());
+                        }
+                        // The Entro mother rock is last; show its optional external stages immediately after it.
+                        for (ResourceLocation stageId : AECSBlocks.ENTRO_MOTHER_ROCK.get().growthSequence().stageIds()) {
+                            if (ModList.get().isLoaded(stageId.getNamespace())) {
+                                BuiltInRegistries.BLOCK.getOptional(stageId)
+                                        .map(Block::asItem)
+                                        .filter(item -> item != Items.AIR)
+                                        .ifPresent(output::accept);
+                            }
                         }
                     })
                     .build());

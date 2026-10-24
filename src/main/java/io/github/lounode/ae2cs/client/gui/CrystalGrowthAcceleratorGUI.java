@@ -21,7 +21,12 @@ public class CrystalGrowthAcceleratorGUI extends UpgradeableScreen<CrystalGrowth
 
             @Override
             protected IButtonIcon getIcon() {
-                return AECSIcon.ADDITION_SIGN;
+                return switch (menu.growthStage) {
+                    case 0 -> AECSIcon.GROW_SMALL;
+                    case 1 -> AECSIcon.GROW_MIDDLE;
+                    case 2 -> AECSIcon.GROW_BIG;
+                    default -> AECSIcon.GROW_FULL;
+                };
             }
         };
         addToLeftToolbar(growthStageButton);

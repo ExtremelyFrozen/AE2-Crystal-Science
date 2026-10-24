@@ -9,7 +9,51 @@ import net.minecraft.resources.ResourceLocation;
 public enum AECSIcon implements IButtonIcon {
 
     PULL_MODE_ON(0, 0),
+    AVERAGE(0, 0) {
+        @Override
+        public Blitter getBlitter() {
+            return Blitter.texture(AE2CrystalScience.makeId("textures/gui/average.png"), 16, 16).src(0, 0, 16, 16);
+        }
+    },
+
+    GROW_SMALL(0, 0) {
+        @Override
+        public Blitter getBlitter() {
+            return Blitter.texture(AE2CrystalScience.makeId("textures/gui/grow_small.png"), 16, 16).src(0, 0, 16, 16);
+        }
+    },
+    GROW_MIDDLE(0, 0) {
+        @Override
+        public Blitter getBlitter() {
+            return Blitter.texture(AE2CrystalScience.makeId("textures/gui/grow_middle.png"), 16, 16).src(0, 0, 16, 16);
+        }
+    },
+    GROW_BIG(0, 0) {
+        @Override
+        public Blitter getBlitter() {
+            return Blitter.texture(AE2CrystalScience.makeId("textures/gui/grow_big.png"), 16, 16).src(0, 0, 16, 16);
+        }
+    },
+    GROW_FULL(0, 0) {
+        @Override
+        public Blitter getBlitter() {
+            return Blitter.texture(AE2CrystalScience.makeId("textures/gui/grow_full.png"), 16, 16).src(0, 0, 16, 16);
+        }
+    },
     PULL_MODE_OFF(16, 0),
+
+    FLOW(0, 0) {
+        @Override
+        public Blitter getBlitter() {
+            return Blitter.texture(AE2CrystalScience.makeId("textures/gui/flow.png"), 16, 16).src(0, 0, 16, 16);
+        }
+    },
+    REST(0, 0) {
+        @Override
+        public Blitter getBlitter() {
+            return Blitter.texture(AE2CrystalScience.makeId("textures/gui/rest.png"), 16, 16).src(0, 0, 16, 16);
+        }
+    },
 
     ENTROPY_INCREASE(0, 16),
     ENTROPY_DECREASE(16, 16),

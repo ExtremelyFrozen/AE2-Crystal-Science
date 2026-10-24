@@ -2,7 +2,14 @@ package io.github.lounode.ae2cs.api.ids;
 
 public class AECSItemIds {
 
-    // 水晶
+    // 普通水晶
+    public static final String ENDER_QUARTZ = "ender_quartz";
+    public static final String METEOR_CRYSTAL = "meteor_crystal";
+    public static final String RESONATING_CRYSTAL = "resonating_crystal";
+    public static final String QUANTUM_CRYSTAL = "quantum_crystal";
+    public static final String LINK_CRYSTAL = "link_crystal";
+
+    // 高纯水晶
     public static final String PURE_CERTUS_QUARTZ_CRYSTAL = "purified_certus_quartz_crystal";
     public static final String PURE_FLUIX_CRYSTAL = "purified_fluix_crystal";
     public static final String PURE_NETHER_QUARTZ_CRYSTAL = "purified_nether_quartz_crystal";

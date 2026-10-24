@@ -8,11 +8,15 @@ import io.github.lounode.ae2cs.common.init.AECSMenus;
 import appeng.api.orientation.IOrientationStrategy;
 import appeng.api.orientation.OrientationStrategies;
 import appeng.block.AEBaseEntityBlock;
+import appeng.client.render.effects.ParticleTypes;
+import appeng.core.AEConfig;
+import appeng.core.AppEngClient;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -44,6 +48,25 @@ public class CrystalGrowthChamberBlock extends AEBaseEntityBlock<CrystalGrowthCh
     @Override
     public IOrientationStrategy getOrientationStrategy() {
         return OrientationStrategies.horizontalFacing();
+    }
+
+    @Override
+    public void animateTick(BlockState state, Level level, BlockPos pos, net.minecraft.util.RandomSource random) {
+        if (!state.is(AECSBlocks.CRYSTAL_GROWTH_ACCELERATOR_BLOCK.get())
+                || !state.getValue(ACTIVE)
+                || !AEConfig.instance().isEnableEffects()
+                || !AppEngClient.instance().shouldAddParticles(random)) {
+            return;
+        }
+
+        double x = pos.getX() + 0.5 + (random.nextFloat() - 0.5F) * 0.7;
+        double y = pos.getY() + 1.01;
+        double z = pos.getZ() + 0.5 + (random.nextFloat() - 0.5F) * 0.7;
+        BlockPos above = pos.above();
+        if (level.getBlockState(above).isAir()) {
+            Minecraft.getInstance().particleEngine.createParticle(
+                    ParticleTypes.LIGHTNING, x, y, z, 0.0D, 0.0D, 0.0D);
+        }
     }
 
     @Override

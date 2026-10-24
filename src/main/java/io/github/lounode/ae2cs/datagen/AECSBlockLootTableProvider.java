@@ -20,7 +20,6 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.TagEntry;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
@@ -53,9 +52,9 @@ public class AECSBlockLootTableProvider extends BlockLootSubProvider {
 
         for (CrystalFamilyBlocks family : AECSBlocks.getCrystalFamilies()) {
             for (DeferredBlock<? extends Block> stage : family.stages()) {
-                if (stage == family.finalStage()) {
-                    add(stage.get(), createCrystalClusterDrops(stage.get(), family.crystalDrop().get()));
-                } else {
+                // Mature-cluster loot is maintained in src/main/resources so optional-mod
+                // items never have to be resolved during data generation.
+                if (stage != family.finalStage()) {
                     add(stage.get(), createCrystalBudDrops(stage.get(), family.budDrop()));
                 }
             }
@@ -64,7 +63,10 @@ public class AECSBlockLootTableProvider extends BlockLootSubProvider {
 
     @Override
     protected @NotNull Iterable<Block> getKnownBlocks() {
-        return AECSBlocks.BLOCKS.getEntries().stream().map(Holder::value)::iterator;
+        return AECSBlocks.BLOCKS.getEntries().stream()
+                .map(Holder::value)
+                .filter(block -> AECSBlocks.getCrystalFamilies().stream()
+                        .noneMatch(family -> family.finalStage().get() == block))::iterator;
     }
 
     /**
@@ -87,18 +89,6 @@ public class AECSBlockLootTableProvider extends BlockLootSubProvider {
                         LootItem.lootTableItem(dropItem)
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(min, max)))
                                 .apply(ApplyBonusCount.addOreBonusCount(enchantment.getOrThrow(Enchantments.FORTUNE)))));
-    }
-
-    protected LootTable.Builder createCrystalClusterDrops(Block selfBlock, ItemLike dropItem) {
-        var enchantments = this.registries.lookupOrThrow(Registries.ENCHANTMENT);
-        return createSilkTouchDispatchTable(
-                selfBlock,
-                applyExplosionDecay(
-                        selfBlock,
-                        LootItem.lootTableItem(dropItem)
-                                .apply(SetItemCountFunction.setCount(ConstantValue.exactly(4)))
-                                .apply(ApplyBonusCount.addUniformBonusCount(
-                                        enchantments.getOrThrow(Enchantments.FORTUNE)))));
     }
 
     protected LootTable.Builder createCrystalBudDrops(Block selfBlock, TagKey<Item> dropTag) {

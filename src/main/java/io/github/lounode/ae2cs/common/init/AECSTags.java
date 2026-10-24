@@ -73,7 +73,7 @@ public class AECSTags {
 
         public static final TagKey<Item> CRYSTAL_DROP_CERTUS_QUARTZ = aecsTag("crystal_drops/certus_quartz");
         public static final TagKey<Item> CRYSTAL_DROP_NETHER_QUARTZ = aecsTag("crystal_drops/nether_quartz");
-        public static final TagKey<Item> CRYSTAL_DROP_ENERGIZED_CERTUS_QUARTZ = aecsTag("crystal_drops/energized_certus_quartz");
+        public static final TagKey<Item> CRYSTAL_DROP_CHARGED_CERTUS_QUARTZ = aecsTag("crystal_drops/charged_certus_quartz");
         public static final TagKey<Item> CRYSTAL_DROP_ENDER_QUARTZ = aecsTag("crystal_drops/ender_quartz");
         public static final TagKey<Item> CRYSTAL_DROP_ENERGIZED_FLUIX = aecsTag("crystal_drops/energized_fluix");
         public static final TagKey<Item> CRYSTAL_DROP_FLUIX = aecsTag("crystal_drops/fluix");

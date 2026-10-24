@@ -1,5 +1,7 @@
 {
   "values": [
+    "ae2cs:quantum_crystal",
+    "ae2cs:link_crystal",
     "#c:gems/resonating",
     "#c:gems/sky_stone_crystal",
     "#c:gems/ender_quartz"

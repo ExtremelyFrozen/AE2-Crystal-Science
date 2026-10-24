@@ -145,6 +145,8 @@ public class AECSItemTagProvider extends ItemTagsProvider {
 
         // 石英水晶对标区
         tag(Tags.Items.GEMS)
+                .add(AECSItems.QUANTUM_CRYSTAL.get())
+                .add(AECSItems.LINK_CRYSTAL.get())
                 .addTag(AECSTags.Items.GEM_RESONATING)
                 .addTag(AECSTags.Items.GEM_SKY_STONE_CRYSTAL)
                 .addTag(AECSTags.Items.GEM_ENDER_QUARTZ);
@@ -158,10 +160,13 @@ public class AECSItemTagProvider extends ItemTagsProvider {
         tag(Tags.Items.GEMS_QUARTZ)
                 .addTag(AECSTags.Items.PURE_NETHER_QUARTZ_CRYSTAL);
         tag(AECSTags.Items.GEM_ENDER_QUARTZ)
+                .add(AECSItems.ENDER_QUARTZ.get())
                 .addTag(AECSTags.Items.PURE_ENDER_QUARTZ);
         tag(AECSTags.Items.GEM_SKY_STONE_CRYSTAL)
+                .add(AECSItems.METEOR_CRYSTAL.get())
                 .addTag(AECSTags.Items.PURE_METEOR_CRYSTAL);
         tag(AECSTags.Items.GEM_RESONATING)
+                .add(AECSItems.RESONATING_CRYSTAL.get())
                 .addTag(AECSTags.Items.PURE_RESONATING_CRYSTAL);
         tag(AECSTags.Items.GEM_DATA_CRYSTAL)
                 .addTag(AECSTags.Items.PURE_DATA_CRYSTAL);

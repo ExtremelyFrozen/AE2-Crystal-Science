@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "ae2cs:block/charged_certus_quartz_medium_crystal_bud"
+  }
+}

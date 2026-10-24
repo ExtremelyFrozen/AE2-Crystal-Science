@@ -38,6 +38,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -157,6 +158,43 @@ public class ResonatingPulverizerFactoryBlockEntity extends AENetworkedSelfPower
         invComponent.addPort(InvPort.OUTPUT, outputInv);
         getMachineComponents().add(invComponent);
         getMachineComponents().add(new SideConfigComponent());
+    }
+
+    /**
+     * 将当前输入物品均匀分布到九个输入槽；不同物品不会互相混合。
+     */
+    public void averageInput() {
+        AppEngInternalInventory input = getInputInv();
+        List<ItemStack> groups = new ArrayList<>();
+        for (int i = 0; i < input.size(); i++) {
+            ItemStack stack = input.getStackInSlot(i);
+            if (stack.isEmpty()) continue;
+
+            boolean merged = false;
+            for (ItemStack group : groups) {
+                if (ItemStack.isSameItemSameComponents(group, stack)) {
+                    group.grow(stack.getCount());
+                    merged = true;
+                    break;
+                }
+            }
+            if (!merged) groups.add(stack.copy());
+            input.setItemDirect(i, ItemStack.EMPTY);
+        }
+
+        if (groups.isEmpty()) return;
+
+        int slot = 0;
+        for (ItemStack group : groups) {
+            int remaining = group.getCount();
+            while (remaining > 0 && slot < input.size()) {
+                int slotsRemaining = input.size() - slot;
+                int count = Math.min(group.getMaxStackSize(), (remaining + slotsRemaining - 1) / slotsRemaining);
+                input.setItemDirect(slot++, group.copyWithCount(count));
+                remaining -= count;
+            }
+        }
+        setChanged();
     }
 
     public AppEngInternalInventory getInputInv() {

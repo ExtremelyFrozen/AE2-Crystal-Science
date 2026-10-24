@@ -56,6 +56,17 @@ public class AECSItems {
      */
     private static final List<DeferredItem<? extends Item>> OTHERS = new ArrayList<>();
 
+    public static final DeferredItem<Item> ENDER_QUARTZ = registerOtherItem(AECSItemIds.ENDER_QUARTZ,
+            () -> new Item(defaultBuilder()));
+    public static final DeferredItem<Item> METEOR_CRYSTAL = registerOtherItem(AECSItemIds.METEOR_CRYSTAL,
+            () -> new Item(defaultBuilder()));
+    public static final DeferredItem<Item> RESONATING_CRYSTAL = registerOtherItem(AECSItemIds.RESONATING_CRYSTAL,
+            () -> new Item(defaultBuilder()));
+    public static final DeferredItem<Item> QUANTUM_CRYSTAL = registerOtherItem(AECSItemIds.QUANTUM_CRYSTAL,
+            () -> new Item(defaultBuilder()));
+    public static final DeferredItem<Item> LINK_CRYSTAL = registerOtherItem(AECSItemIds.LINK_CRYSTAL,
+            () -> new Item(defaultBuilder()));
+
     public static final DeferredItem<PureCrystalItem> PURE_CERTUS_QUARTZ_CRYSTAL = registerPureCrystalItem(AECSItemIds.PURE_CERTUS_QUARTZ_CRYSTAL,
             () -> new PureCrystalItem(defaultBuilder(), 500d, 600));
     public static final DeferredItem<PureCrystalItem> PURE_FLUIX_CRYSTAL = registerPureCrystalItem(AECSItemIds.PURE_FLUIX_CRYSTAL,
