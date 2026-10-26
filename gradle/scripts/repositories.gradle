@@ -18,7 +18,19 @@ repositories {
     maven {
         url = "https://maven.quiltmc.org/repository/release/"
     }
-    maven { // JEI
+    exclusiveContent { // JEI, Controlling and Searchables official Maven
+        forRepository { maven { url = "https://maven.blamejared.com/" } }
+        filter {
+            includeGroup("mezz.jei")
+            includeGroup("com.blamejared.controlling")
+            includeGroup("com.blamejared.searchables")
+        }
+    }
+    exclusiveContent { // GeckoLib official Maven
+        forRepository { maven { url = "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/" } }
+        filter { includeGroup("software.bernie.geckolib") }
+    }
+    maven { // Other libraries published by Jared
         name = "Jared's Maven"
         url = "https://maven.blamejared.com/"
     }

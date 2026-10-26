@@ -2,8 +2,8 @@
 ae2 = "19.2.8"
 ae2wt = "19.5.0"
 
-jei = "19.25.1.328"
-emi = "1.1.22+1.21.1+neoforge"
+jei = "19.50.0.414"
+emi = "1.1.22+1.21.1"
 
 ldlib = "2.2.8"
 mekanism = "1.21.1-10.7.19.85"
@@ -14,6 +14,13 @@ ponder = "1.0.64"
 flywheel = "1.0.5"
 curios = "9.4.2+1.21.1"
 architectury = "13.0.8"
+guideme = "21.1.16"
+geckolib = "4.8.4"
+cloth-config = "15.0.140"
+registrate = "MC1.21-1.3.0+67"
+ae2addonlib = "1.0.3-1.21.1"
+controlling = "19.0.5"
+searchables = "1.0.2"
 
 ## ftb mod ##
 ftblibrary = "2101.1.31"
@@ -27,8 +34,6 @@ modernfix = "4SPHwiDB" # 5.24.3+mc1.21.1
 
 ## cursemaven ##
 spark = "6225208"
-guideme = "8129788"
-geckolib = "7707149"
 glodium = "5821676"
 ae2ji = "7727898"
 de = "8237622"
@@ -43,15 +48,20 @@ applied-pneumatics = "7723695"
 applied-create = "7945860"
 mega-cells = "7952621"
 sut = "8214767"
-cloth-config = "5729127"
 amek = "7096962"
 jech = "8117474"
 ctm = "5587515"
+applied-generators = "7161908"
+omni-cells = "7169530"
+cognition = "8406272"
+forbidden-arcanus = "6875895"
+valhelsia-core = "6296775"
+imblocker = "8167852"
 
 ## libs ##
 
 [libraries]
-guideme             = { module = "curse.maven:guideme-1173950", version.ref = "guideme" }
+guideme             = { module = "org.appliedenergistics:guideme", version.ref = "guideme" }
 ae2                 = { module = "org.appliedenergistics:appliedenergistics2", version.ref = "ae2" }
 ae2wt               = { module = "de.mari_023:ae2wtlib", version.ref = "ae2wt"}
 ae2wt_api           = { module = "de.mari_023:ae2wtlib_api", version.ref = "ae2wt"}
@@ -59,7 +69,7 @@ ae2wt_api           = { module = "de.mari_023:ae2wtlib_api", version.ref = "ae2w
 jei-common-api      = { module = "mezz.jei:jei-1.21.1-common-api", version.ref = "jei" }
 jei-neoforge-api    = { module = "mezz.jei:jei-1.21.1-neoforge-api", version.ref = "jei" }
 jei-neoforge-impl   = { module = "mezz.jei:jei-1.21.1-neoforge", version.ref = "jei" }
-emi                 = { module = "maven.modrinth:emi", version.ref = "emi" }
+emi                 = { module = "dev.emi:emi-neoforge", version.ref = "emi" }
 
 ldlib               = { module = "com.lowdragmc.ldlib2:ldlib2-neoforge-1.21.1", version.ref = "ldlib" }
 mek                 = { module = "mekanism:Mekanism", version.ref = "mekanism" }
@@ -71,6 +81,10 @@ flywheel-forge-api  = { module = "dev.engine-room.flywheel:flywheel-neoforge-api
 flywheel-forge      = { module = "dev.engine-room.flywheel:flywheel-neoforge-1.21.1", version.ref = "flywheel"}
 curios              = { module = "top.theillusivec4.curios:curios-neoforge", version.ref = "curios" }
 architectury        = { module = "dev.architectury:architectury-neoforge", version.ref = "architectury" }
+registrate          = { module = "com.tterrag.registrate:Registrate", version.ref = "registrate" }
+ae2addonlib          = { module = "io.github.pedroksl:ae2addonlib", version.ref = "ae2addonlib" }
+controlling         = { module = "com.blamejared.controlling:Controlling-neoforge-1.21.1", version.ref = "controlling" }
+searchables         = { module = "com.blamejared.searchables:Searchables-neoforge-1.21.1", version.ref = "searchables" }
 
 ftblibrary          = { module = "dev.ftb.mods:ftb-library-neoforge", version.ref = "ftblibrary" }
 ftbultimine         = { module = "dev.ftb.mods:ftb-ultimine-neoforge", version.ref = "ftbultimine" }
@@ -80,7 +94,7 @@ sodium              = { module = "maven.modrinth:sodium", version.ref = "sodium"
 iris                = { module = "maven.modrinth:iris", version.ref = "iris" }
 modernfix           = { module = "maven.modrinth:modernfix", version.ref = "modernfix" }
 
-geckolib            = { module = "curse.maven:geckolib-388172", version.ref = "geckolib" }
+geckolib            = { module = "software.bernie.geckolib:geckolib-neoforge-1.21.1", version.ref = "geckolib" }
 glodium             = { module = "curse.maven:glodium-957920", version.ref = "glodium" }
 ae2ji               = { module = "curse.maven:ae2-jei-integration-1074338", version.ref = "ae2ji" }
 de                  = { module = "curse.maven:data-energistics-1565514", version.ref = "de" }
@@ -93,12 +107,18 @@ applied-flux        = { module = "curse.maven:applied-flux-965012", version.ref 
 applied-pneumatics  = { module = "curse.maven:applied-pneumatics-1355087", version.ref = "applied-pneumatics" }
 applied-create      = { module = "curse.maven:applied-create-1474758", version.ref = "applied-create" }
 mega-cells          = { module = "curse.maven:mega-cells-622112", version.ref = "mega-cells" }
-cloth-config        = { module = "curse.maven:cloth-config-348521", version.ref = "cloth-config" }
+cloth-config        = { module = "me.shedaniel.cloth:cloth-config-neoforge", version.ref = "cloth-config" }
 amek                = { module = "curse.maven:applied-mekanistics-574300", version.ref = "amek" }
 
 spark               = { module = "curse.maven:spark-361579", version.ref = "spark" }
 jech                = { module = "curse.maven:just-enough-characters-250702", version.ref = "jech" }
 ctm                 = { module = "curse.maven:ctm-267602", version.ref = "ctm" }
+applied-generators  = { module = "curse.maven:applied-generators-1320369", version.ref = "applied-generators" }
+omni-cells          = { module = "curse.maven:omni-cells-1359517", version.ref = "omni-cells" }
+cognition           = { module = "curse.maven:cognition-mod-579484", version.ref = "cognition" }
+forbidden-arcanus   = { module = "curse.maven:forbidden-arcanus-309858", version.ref = "forbidden-arcanus" }
+valhelsia-core      = { module = "curse.maven:valhelsia-core-416935", version.ref = "valhelsia-core" }
+imblocker           = { module = "curse.maven:imblocker-483760", version.ref = "imblocker" }
 
 [bundles]
-jei = ["jei-common-api", "jei-neoforge-api", "jei-neoforge-impl"]
+jei = ["jei-common-api", "jei-neoforge-api"]
