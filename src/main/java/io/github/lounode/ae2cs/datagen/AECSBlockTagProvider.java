@@ -49,6 +49,7 @@ public class AECSBlockTagProvider extends BlockTagsProvider {
                 .add(AECSBlocks.QUARTZ_GRINDSTONE_BLOCK.get())
                 .add(AECSBlocks.CRYSTAL_PULVERIZER_BLOCK.get())
                 .add(AECSBlocks.RESONATING_PULVERIZER_FACTORY_BLOCK.get())
+                .add(AECSBlocks.RESONATING_AGGREGATOR_FACTORY_BLOCK.get())
                 .add(AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK.get())
                 .add(AECSBlocks.CHARGED_RESONATING_GENERATOR_BLOCK.get())
                 .add(AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK.get())

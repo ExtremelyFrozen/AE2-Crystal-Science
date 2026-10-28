@@ -35,6 +35,7 @@ public class AECSScreens {
         event.register(AECSMenus.CIRCUIT_ETCHER_MENU.get(), CircuitEtcherGUI::new);
         event.register(AECSMenus.CRYSTAL_PULVERIZER_MENU.get(), CrystalPulverizerGUI::new);
         event.register(AECSMenus.RESONATING_PULVERIZER_FACTORY_MENU.get(), ResonatingPulverizerFactoryGUI::new);
+        event.register(AECSMenus.RESONATING_AGGREGATOR_FACTORY_MENU.get(), ResonatingAggregatorFactoryGUI::new);
         event.register(AECSMenus.QUARTZ_GRINDSTONE_MENU.get(), QuartzGrindstoneGUI::new);
         event.register(AECSMenus.CRYSTAL_AGGREGATOR_MENU.get(), CrystalAggregatorGUI::new);
         event.register(AECSMenus.CRYSTAL_INFUSER_MENU.get(), CrystalInfuserGUI::new);

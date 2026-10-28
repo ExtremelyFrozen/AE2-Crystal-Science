@@ -39,6 +39,7 @@ public class AECSBlockIds {
     public static final String CRYSTAL_VIBRATION_CHAMBER = "crystal_vibration_chamber";
     public static final String CHARGED_RESONATING_GENERATOR = "charged_resonating_generator";
     public static final String CRYSTAL_AGGREGATOR = "crystal_aggregator";
+    public static final String RESONATING_AGGREGATOR_FACTORY = "resonating_aggregator_factory";
     public static final String CRYSTAL_INFUSER = "crystal_infuser";
     public static final String PULSE_CENTRIFUGE = "pulse_centrifuge";
     public static final String ENTROPY_VARIATION_REACTION_CHAMBER = "entropy_variation_reaction_chamber";

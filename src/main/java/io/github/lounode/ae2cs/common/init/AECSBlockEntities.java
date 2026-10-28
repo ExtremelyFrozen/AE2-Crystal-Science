@@ -120,6 +120,12 @@ public class AECSBlockEntities {
             ResonatingPulverizerFactoryBlockEntity::new,
             AECSBlocks.RESONATING_PULVERIZER_FACTORY_BLOCK);
 
+    public static final DeferredBlockEntityType<ResonatingAggregatorFactoryBlockEntity> RESONATING_AGGREGATOR_FACTORY_BLOCK_ENTITY = create(
+            AECSBlockIds.RESONATING_AGGREGATOR_FACTORY,
+            ResonatingAggregatorFactoryBlockEntity.class,
+            ResonatingAggregatorFactoryBlockEntity::new,
+            AECSBlocks.RESONATING_AGGREGATOR_FACTORY_BLOCK);
+
     /**
      * 石英磨具
      */

@@ -205,6 +205,13 @@ public class AECSBlocks {
     public static final DeferredBlock<CrystalAggregatorBlock> CRYSTAL_AGGREGATOR_BLOCK = registerOtherBlock(AECSBlockIds.CRYSTAL_AGGREGATOR, () -> new CrystalAggregatorBlock(AEBaseBlock.metalProps()));
 
     /**
+     * 谐振晶能聚合工厂（暂只注册方块、外观与界面，聚合加工逻辑后续接入）
+     */
+    public static final DeferredBlock<ResonatingAggregatorFactoryBlock> RESONATING_AGGREGATOR_FACTORY_BLOCK = registerOtherBlock(
+            AECSBlockIds.RESONATING_AGGREGATOR_FACTORY,
+            () -> new ResonatingAggregatorFactoryBlock(AEBaseBlock.metalProps()));
+
+    /**
      * 晶体注能器
      */
     public static final DeferredBlock<CrystalInfuserBlock> CRYSTAL_INFUSER_BLOCK = registerOtherBlock(AECSBlockIds.CRYSTAL_INFUSER, () -> new CrystalInfuserBlock(AEBaseBlock.metalProps()));

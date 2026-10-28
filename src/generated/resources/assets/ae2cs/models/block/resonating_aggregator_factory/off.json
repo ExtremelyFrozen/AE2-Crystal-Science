@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "ae2cs:block/resonating_aggregator_factory/off/bottom",
+    "east": "ae2cs:block/resonating_aggregator_factory/off/left",
+    "north": "ae2cs:block/resonating_aggregator_factory/off/front",
+    "particle": "ae2cs:block/resonating_aggregator_factory/off/front",
+    "south": "ae2cs:block/resonating_aggregator_factory/off/back",
+    "up": "ae2cs:block/resonating_aggregator_factory/off/top",
+    "west": "ae2cs:block/resonating_aggregator_factory/off/right"
+  }
+}
