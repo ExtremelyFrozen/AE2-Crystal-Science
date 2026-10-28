@@ -192,7 +192,9 @@ public class AECSItemTagProvider extends ItemTagsProvider {
         // 非接口机器
         tag(AECSTags.Items.AECS_MACHINE)
                 .add(AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK.asItem())
+                .add(AECSBlocks.RESONATING_GROWTH_FACTORY_BLOCK.asItem())
                 .add(AECSBlocks.CIRCUIT_ETCHER_BLOCK.asItem())
+                .add(AECSBlocks.RESONATING_CIRCUIT_ETCHER_FACTORY_BLOCK.asItem())
                 .add(AECSBlocks.QUARTZ_GRINDSTONE_BLOCK.asItem())
                 .add(AECSBlocks.CRYSTAL_PULVERIZER_BLOCK.asItem())
                 .add(AECSBlocks.RESONATING_PULVERIZER_FACTORY_BLOCK.asItem())
@@ -207,6 +209,7 @@ public class AECSItemTagProvider extends ItemTagsProvider {
 
         // 接口机器
         tag(AECSTags.Items.AECS_PART)
+                .add(AECSBlocks.QUANTUM_INTERFACE_BLOCK.asItem())
                 .add(AECSBlocks.ENDER_INTERFACE_BLOCK.asItem())
                 .add(AECSBlocks.EX_ENDER_INTERFACE_BLOCK.asItem())
                 .add(AECSBlocks.INTEGRATED_INTERFACE_BLOCK.asItem())

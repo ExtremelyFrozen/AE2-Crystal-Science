@@ -1,5 +1,6 @@
 {
   "values": [
+    "ae2cs:quantum_interface",
     "ae2cs:ender_interface",
     "ae2cs:extended_ender_interface",
     "ae2cs:integrated_interface",

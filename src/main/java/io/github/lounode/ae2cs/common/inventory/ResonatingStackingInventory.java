@@ -8,6 +8,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.List;
 import java.util.function.IntSupplier;
 
 /** Keeps oversized machine stacks out of the vanilla ItemStack persistence codec. */
@@ -29,6 +30,27 @@ public class ResonatingStackingInventory extends AppEngInternalInventory {
 
     public int getItemLimit(ItemStack stack) {
         return stack.isStackable() ? stack.getMaxStackSize() * capacity.getAsInt() / 64 : 1;
+    }
+
+    public static boolean canReduceCapacity(int cards, AppEngInternalInventory... inventories) {
+        int capacity = 64 << (2 * cards);
+        for (var inventory : inventories) {
+            for (ItemStack stack : inventory) {
+                int limit = stack.isStackable() ? stack.getMaxStackSize() * capacity / 64 : 1;
+                if (stack.getCount() > limit) return false;
+            }
+        }
+        return true;
+    }
+
+    public static void splitDrops(List<ItemStack> stacks, List<ItemStack> drops) {
+        for (ItemStack stack : stacks) {
+            for (int remaining = stack.getCount(); remaining > 0;) {
+                int amount = Math.min(remaining, stack.getMaxStackSize());
+                drops.add(stack.copyWithCount(amount));
+                remaining -= amount;
+            }
+        }
     }
 
     @Override

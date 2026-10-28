@@ -46,6 +46,7 @@ public class AECSBlockStateProvider extends BlockStateProvider {
         }
         blockWithItem(AECSBlocks.ENTRO_MOTHER_ROCK);
         blockWithItem(AECSBlocks.SILICON_BLOCK);
+        blockWithItem(AECSBlocks.QUANTUM_INTERFACE_BLOCK);
         blockWithItem(AECSBlocks.CERTUS_QUARTZ_ORE);
         blockWithItem(AECSBlocks.DEEPSLATE_CERTUS_QUARTZ_ORE);
         blockWithItem(AECSBlocks.CHARGED_CERTUS_QUARTZ_ORE);
@@ -58,11 +59,13 @@ public class AECSBlockStateProvider extends BlockStateProvider {
         genPatternProviderLike(AECSBlocks.RESONATING_PATTERN_PROVIDER_BLOCK.get(), "block/resonating_pattern_provider");
         genPatternProviderLike(AECSBlocks.EX_RESONATING_PATTERN_PROVIDER_BLOCK.get(), "block/extended_resonating_pattern_provider");
         genSixFaceLike(AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK.get());
+        genSixFaceLike(AECSBlocks.RESONATING_GROWTH_FACTORY_BLOCK.get());
         genSixFaceLike(AECSBlocks.CRYSTAL_GROWTH_ACCELERATOR_BLOCK.get());
         genSixFaceLike(AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK.get());
         genChargedResonatingGenerator();
         genSixFaceLike(AECSBlocks.QUARTZ_GRINDSTONE_BLOCK.get());
         genSixFaceLike(AECSBlocks.CIRCUIT_ETCHER_BLOCK.get());
+        genSixFaceLike(AECSBlocks.RESONATING_CIRCUIT_ETCHER_FACTORY_BLOCK.get());
         genSixFaceLike(AECSBlocks.CRYSTAL_PULVERIZER_BLOCK.get());
         genSixFaceLike(AECSBlocks.RESONATING_PULVERIZER_FACTORY_BLOCK.get());
         genSixFaceLike(AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK.get());

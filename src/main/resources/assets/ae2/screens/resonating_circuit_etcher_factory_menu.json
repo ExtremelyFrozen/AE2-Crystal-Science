@@ -1,0 +1,54 @@
+{
+  "$schema": "schema.json",
+  "includes": [
+    "circuit_etcher_menu.json"
+  ],
+  "background": {
+    "texture": "ae2cs:textures/gui/resonating_circuit_etcher_factory_menu.png",
+    "textureWidth": 256,
+    "textureHeight": 256,
+    "srcRect": [0, 0, 176, 178]
+  },
+  "slots": {
+    "MACHINE_INPUT": { "left": 32, "top": 22, "grid": "BREAK_AFTER_3COLS" },
+    "MACHINE_OUTPUT": { "left": 120, "top": 22, "grid": "VERTICAL" },
+    "PLAYER_INVENTORY": { "left": 8, "top": 94, "grid": "BREAK_AFTER_9COLS" },
+    "PLAYER_HOTBAR": { "left": 8, "top": 152, "grid": "HORIZONTAL" },
+    "TOOLBOX": { "right": 1, "top": 130, "grid": "BREAK_AFTER_3COLS" }
+  },
+  "text": {
+    "title": {
+      "text": {
+        "translate": "block.ae2cs.resonating_circuit_etcher_factory"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    "player_inventory_title": {
+      "text": {
+        "translate": "container.inventory"
+      },
+      "position": {
+        "left": 8,
+        "top": 83
+      }
+    }
+  },
+  "images": {
+    "energyRateBar": {
+      "texture": "ae2cs:textures/gui/resonating_circuit_etcher_factory_menu.png",
+      "srcRect": [176, 34, 6, 18]
+    },
+    "workingProgressBar": {
+      "texture": "ae2cs:textures/gui/resonating_circuit_etcher_factory_menu.png",
+      "srcRect": [199, 0, 22, 33]
+    }
+  },
+  "widgets": {
+    "energyRateBar": { "left": 139, "top": 39 },
+    "workingProgressBar": { "left": 93, "top": 33 },
+    "toolbox": { "right": 2, "top": 124, "width": 59, "height": 66 }
+  }
+}

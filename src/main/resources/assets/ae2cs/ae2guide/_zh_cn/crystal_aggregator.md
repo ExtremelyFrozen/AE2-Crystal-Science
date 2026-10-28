@@ -10,6 +10,8 @@ item_ids:
 
 # 晶能聚合器
 
+谐振版本的槽位、升级卡与使用方式见[谐振晶能聚合工厂](resonating_aggregator_factory.md)。
+
 <Row gap="16">
   <BlockImage id="ae2cs:crystal_aggregator" scale="8" />
 </Row>

@@ -130,6 +130,10 @@ public class JeiPlugin implements IModPlugin {
                 AECSMenus.CIRCUIT_ETCHER_MENU.get(),
                 CircuitEtcherRecipeCategory.RECIPE_TYPE));
         registration.addRecipeTransferHandler(new MachineRecipeTransferInfo<>(
+                CircuitEtcherMenu.class,
+                AECSMenus.RESONATING_CIRCUIT_ETCHER_FACTORY_MENU.get(),
+                CircuitEtcherRecipeCategory.RECIPE_TYPE));
+        registration.addRecipeTransferHandler(new MachineRecipeTransferInfo<>(
                 CrystalAggregatorMenu.class,
                 AECSMenus.CRYSTAL_AGGREGATOR_MENU.get(),
                 CrystalAggregatorRecipeCategory.RECIPE_TYPE));
@@ -196,6 +200,9 @@ public class JeiPlugin implements IModPlugin {
     public void registerRecipeCatalysts(@NotNull IRecipeCatalystRegistration registration) {
         registration.addRecipeCatalyst(
                 AECSBlocks.CIRCUIT_ETCHER_BLOCK,
+                CircuitEtcherRecipeCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(
+                AECSBlocks.RESONATING_CIRCUIT_ETCHER_FACTORY_BLOCK,
                 CircuitEtcherRecipeCategory.RECIPE_TYPE);
 
         registration.addRecipeCatalyst(

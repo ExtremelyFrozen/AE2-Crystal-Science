@@ -4,6 +4,7 @@ import io.github.lounode.ae2cs.api.cap.ProvideCaps;
 import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
+import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSRecipeTypes;
 import io.github.lounode.ae2cs.common.inventory.ResonatingFactoryUpgradeInventory;
@@ -44,11 +45,12 @@ import java.util.List;
 @ProvideCaps(IItemHandler.class)
 @ProvideCaps(IFluidHandler.class)
 public class ResonatingAggregatorFactoryBlockEntity extends AENetworkedSelfPoweredBlockEntity
-        implements IUpgradeableObject, CustomReturnableSubMenuHost, MachineFluidHost {
+                                                    implements IUpgradeableObject, CustomReturnableSubMenuHost, MachineFluidHost {
 
     private static final int[] PARALLELISM = { 8, 32, 64, 256, 1024 };
     private static final int[] CYCLE_TICKS = { 0, 64, 16, 4, 1 };
-    private final IUpgradeInventory upgrades = new ResonatingFactoryUpgradeInventory(this::saveChanges, this::canReduceStacking);
+    private final IUpgradeInventory upgrades = new ResonatingFactoryUpgradeInventory(
+            AECSBlocks.RESONATING_AGGREGATOR_FACTORY_BLOCK, this::saveChanges, this::canReduceStacking);
     private final MachineFluidTanks fluidTanks = new MachineFluidTanks(16_000, this::setChanged, this::setChanged);
     @Nullable
     private RecipeHolder<CrystalAggregatorRecipe> activeRecipe;
@@ -77,13 +79,21 @@ public class ResonatingAggregatorFactoryBlockEntity extends AENetworkedSelfPower
     }
 
     @Override
-    public IUpgradeInventory getUpgrades() { return upgrades; }
+    public IUpgradeInventory getUpgrades() {
+        return upgrades;
+    }
 
-    public int getParallelism() { return PARALLELISM[upgrades.getInstalledUpgrades(AECSItems.OVERLOAD_CARD)]; }
+    public int getParallelism() {
+        return PARALLELISM[upgrades.getInstalledUpgrades(AECSItems.OVERLOAD_CARD)];
+    }
 
-    public int getCycleTicks() { return CYCLE_TICKS[upgrades.getInstalledUpgrades(AECSItems.OVERLOAD_CARD)]; }
+    public int getCycleTicks() {
+        return CYCLE_TICKS[upgrades.getInstalledUpgrades(AECSItems.OVERLOAD_CARD)];
+    }
 
-    public int getStackCapacity() { return 64 << (2 * upgrades.getInstalledUpgrades(AECSItems.RESONATING_STACKING_CARD)); }
+    public int getStackCapacity() {
+        return 64 << (2 * upgrades.getInstalledUpgrades(AECSItems.RESONATING_STACKING_CARD));
+    }
 
     private boolean canReduceStacking(int cards) {
         int capacity = 64 << (2 * cards);
@@ -96,23 +106,31 @@ public class ResonatingAggregatorFactoryBlockEntity extends AENetworkedSelfPower
         return true;
     }
 
-    public MachineFluidTanks getFluidTanks() { return fluidTanks; }
+    public MachineFluidTanks getFluidTanks() {
+        return fluidTanks;
+    }
 
     @Override
-    public IFluidHandler getFluidHandler() { return fluidTanks; }
+    public IFluidHandler getFluidHandler() {
+        return fluidTanks;
+    }
 
     public int getRecipeProgress() {
         long target = getBatchEnergy();
         return target == 0 ? 0 : (int) Math.min(10_000, paidEnergy * 10_000 / target);
     }
 
-    public int getActiveRecipeEnergyCost() { return activeRecipe == null ? 0 : 10_000; }
+    public int getActiveRecipeEnergyCost() {
+        return activeRecipe == null ? 0 : 10_000;
+    }
 
     public long getBatchEnergy() {
         return activeRecipe == null ? 0 : (long) Math.max(1, activeRecipe.value().energyCost()) * batchSize;
     }
 
-    public int getBatchSize() { return batchSize; }
+    public int getBatchSize() {
+        return batchSize;
+    }
 
     @Override
     public void serverTick() {
@@ -179,7 +197,8 @@ public class ResonatingAggregatorFactoryBlockEntity extends AENetworkedSelfPower
             if (!fluidResult.isEmpty()) {
                 long amount = (long) fluidResult.getAmount() * (count + 1);
                 if (amount > Integer.MAX_VALUE || fluidTanks.output().fill(fluidResult.copyWithAmount((int) amount),
-                        IFluidHandler.FluidAction.SIMULATE) < amount) break;
+                        IFluidHandler.FluidAction.SIMULATE) < amount)
+                    break;
             }
             ItemStack[] nextOutput = copyStacks(output);
             if (!insertResult(nextOutput, recipe.result())) break;
@@ -289,5 +308,7 @@ public class ResonatingAggregatorFactoryBlockEntity extends AENetworkedSelfPower
     }
 
     @Override
-    public ItemStack getMainMenuIcon() { return new ItemStack(getItemFromBlockEntity()); }
+    public ItemStack getMainMenuIcon() {
+        return new ItemStack(getItemFromBlockEntity());
+    }
 }

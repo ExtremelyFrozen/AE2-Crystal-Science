@@ -1,7 +1,8 @@
 {
   "$schema": "schema.json",
   "includes": [
-    "common/common.json"
+    "common/common.json",
+    "common/toolbox.json"
   ],
   "background": {
     "texture": "ae2cs:textures/gui/resonating_aggregator_factory_menu.png",
@@ -12,6 +13,8 @@
   "slots": {
     "MACHINE_INPUT": { "left": 34, "top": 24, "grid": "BREAK_AFTER_3COLS" },
     "MACHINE_OUTPUT": { "left": 120, "top": 24, "grid": "VERTICAL" },
+    "UPGRADE": { "right": 0, "top": 0, "grid": "VERTICAL" },
+    "TOOLBOX": { "right": 1, "top": 130, "grid": "BREAK_AFTER_3COLS" },
     "PLAYER_INVENTORY": { "left": 8, "top": 94, "grid": "BREAK_AFTER_9COLS" },
     "PLAYER_HOTBAR": { "left": 8, "top": 152, "grid": "HORIZONTAL" }
   },
@@ -36,6 +39,7 @@
     }
   },
   "widgets": {
+    "toolbox": { "right": 2, "top": 124, "width": 59, "height": 66 },
     "energyRateBar": { "left": 139, "top": 41 },
     "workingProgressBar": { "left": 93, "top": 35 },
     "fluidInput": { "left": 8, "top": 20 },

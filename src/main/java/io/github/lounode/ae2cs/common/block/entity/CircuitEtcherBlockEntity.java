@@ -7,6 +7,8 @@ import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSRecipeTypes;
+import io.github.lounode.ae2cs.common.inventory.ResonatingFactoryUpgradeInventory;
+import io.github.lounode.ae2cs.common.inventory.ResonatingStackingInventory;
 import io.github.lounode.ae2cs.common.machine.component.AppEngInvComponent;
 import io.github.lounode.ae2cs.common.machine.component.InvPort;
 import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
@@ -27,7 +29,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -51,8 +55,7 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
     /**
      * 升级仓
      */
-    private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(AECSBlocks.CIRCUIT_ETCHER_BLOCK,
-            4, this::onUpgradesChanged);
+    private final IUpgradeInventory upgrades;
 
     /**
      * 当前执行的配方
@@ -90,28 +93,27 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
     private boolean needRefreshRecipeState = true;
 
     public CircuitEtcherBlockEntity(BlockPos pos, BlockState blockState) {
-        super(AECSBlockEntities.CIRCUIT_ETCHER_BLOCK_ENTITY.get(), pos, blockState,
+        this(AECSBlockEntities.CIRCUIT_ETCHER_BLOCK_ENTITY.get(), pos, blockState, AECSBlocks.CIRCUIT_ETCHER_BLOCK);
+    }
+
+    protected CircuitEtcherBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState, ItemLike upgradableItem) {
+        this(type, pos, blockState, upgradableItem, 3, 1);
+    }
+
+    protected CircuitEtcherBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState, ItemLike upgradableItem,
+                                       int inputSlots, int outputSlots) {
+        super(type, pos, blockState,
                 80000, false, AccessRestriction.WRITE);
+        upgrades = upgradableItem == AECSBlocks.RESONATING_CIRCUIT_ETCHER_FACTORY_BLOCK ? new ResonatingFactoryUpgradeInventory(upgradableItem, this::onUpgradesChanged,
+                cards -> ResonatingStackingInventory.canReduceCapacity(cards, getInputInv(), getOutputInv())) : UpgradeInventories.forMachine(upgradableItem, 4, this::onUpgradesChanged);
 
         getMainNode().setIdlePowerUsage(0);
 
-        AppEngInternalInventory inputInv = new AppEngInternalInventory(3) {
-
-            @Override
-            protected void onContentsChanged(int slot) {
-                super.onContentsChanged(slot);
-                needRefreshRecipeState = true;
-                setChanged();
-            }
-        };
-        AppEngInternalInventory outputInv = new AppEngInternalInventory(1) {
-
-            @Override
-            protected void onContentsChanged(int slot) {
-                super.onContentsChanged(slot);
-                setChanged();
-            }
-        };
+        AppEngInternalInventory inputInv = createInventory(inputSlots, () -> {
+            needRefreshRecipeState = true;
+            setChanged();
+        });
+        AppEngInternalInventory outputInv = createInventory(outputSlots, this::setChanged);
 
         AppEngInvComponent invComponent = new AppEngInvComponent();
         invComponent.addPort(InvPort.INPUT, inputInv);
@@ -119,6 +121,24 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
         invComponent.addPort(InvPort.OUTPUT, outputInv);
         getMachineComponents().add(invComponent);
         getMachineComponents().add(new SideConfigComponent());
+    }
+
+    private AppEngInternalInventory createInventory(int slots, Runnable onChanged) {
+        if (upgrades instanceof ResonatingFactoryUpgradeInventory) {
+            return new ResonatingStackingInventory(slots, this::getStackCapacity, onChanged);
+        }
+        return new AppEngInternalInventory(slots) {
+
+            @Override
+            protected void onContentsChanged(int slot) {
+                super.onContentsChanged(slot);
+                onChanged.run();
+            }
+        };
+    }
+
+    public int getStackCapacity() {
+        return 64 << (2 * upgrades.getInstalledUpgrades(AECSItems.RESONATING_STACKING_CARD));
     }
 
     public AppEngInternalInventory getInputInv() {
@@ -151,7 +171,7 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
     }
 
     private void onUpgradesChanged() {
-        this.overclockCards = Math.min(2, upgrades.getInstalledUpgrades(AECSItems.OVERLOAD_CARD));
+        this.overclockCards = Math.min(upgrades.getMaxInstalled(AECSItems.OVERLOAD_CARD), upgrades.getInstalledUpgrades(AECSItems.OVERLOAD_CARD));
         this.speedMultiplier = overclockCards > 0 ? 1 : 1 << Math.min(4, upgrades.getInstalledUpgrades(AEItems.SPEED_CARD));
         saveChanges();
     }
@@ -191,9 +211,9 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
         // 3) 已经完成：消耗资源并产出
         if (recipeProgress >= activeRecipeEnergyCost) {
             ThreeItemStackRecipeInput input = ThreeItemStackRecipeInput.of(
-                    getInputInv().getStackInSlot(0),
-                    getInputInv().getStackInSlot(1),
-                    getInputInv().getStackInSlot(2));
+                    activeMatch.length > 0 ? getInputInv().getStackInSlot(activeMatch[0]) : ItemStack.EMPTY,
+                    activeMatch.length > 1 ? getInputInv().getStackInSlot(activeMatch[1]) : ItemStack.EMPTY,
+                    activeMatch.length > 2 ? getInputInv().getStackInSlot(activeMatch[2]) : ItemStack.EMPTY);
             ItemStack result = recipe.assemble(input, level.registryAccess());
             if (result.isEmpty()) // 如果我们拿不到输出，说明配方可能有问题，此时清空状态
             {
@@ -205,7 +225,7 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
             }
 
             // 如果输出放不下，则将recipeProgress钳制在最大配方时间
-            if (!getOutputInv().insertItem(0, result, true).isEmpty()) {
+            if (!getOutputInv().simulateAdd(result).isEmpty()) {
                 recipeProgress = activeRecipeEnergyCost;
                 return;
             }
@@ -219,7 +239,7 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
                 return;
             }
 
-            getOutputInv().insertItem(0, result, false);
+            getOutputInv().addItems(result);
             recipeProgress = 0;
             setChanged();
         }
@@ -236,22 +256,32 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
         return Math.max(normalEnergy, Math.ceil((double) activeRecipeEnergyCost / targetTicks));
     }
 
+    protected Optional<RecipeHolder<CircuitEtcherRecipe>> findRecipe(Level level) {
+        var input = ThreeItemStackRecipeInput.of(
+                getInputInv().getStackInSlot(0),
+                getInputInv().getStackInSlot(1),
+                getInputInv().getStackInSlot(2));
+
+        return level.getRecipeManager().getRecipeFor(
+                AECSRecipeTypes.CIRCUIT_ETCHER.get(),
+                input,
+                level);
+    }
+
+    protected int @Nullable [] findRecipeMatch(CircuitEtcherRecipe recipe) {
+        return recipe.findMatch(ThreeItemStackRecipeInput.of(
+                getInputInv().getStackInSlot(0),
+                getInputInv().getStackInSlot(1),
+                getInputInv().getStackInSlot(2)));
+    }
+
     /**
      * 更新配方状态
      */
     private void updateActiveRecipe() {
         if (getLevel() == null || getLevel().isClientSide()) return;
 
-        var level = getLevel();
-        var input = ThreeItemStackRecipeInput.of(
-                getInputInv().getStackInSlot(0),
-                getInputInv().getStackInSlot(1),
-                getInputInv().getStackInSlot(2));
-
-        var opt = level.getRecipeManager().getRecipeFor(
-                AECSRecipeTypes.CIRCUIT_ETCHER.get(),
-                input,
-                level);
+        var opt = findRecipe(getLevel());
 
         // 没有任何匹配配方：清空状态
         if (opt.isEmpty()) {
@@ -265,7 +295,7 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
         var holder = opt.get();
         var recipe = holder.value();
 
-        int[] match = recipe.findMatch(input);
+        int[] match = findRecipeMatch(recipe);
         if (match == null) {
             // 理论上不该发生（因为 getRecipeFor 已经匹配过），但保底
             activeRecipe = null;
@@ -346,7 +376,13 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
 
     @Override
     public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
-        super.addAdditionalDrops(level, pos, drops);
+        if (upgrades instanceof ResonatingFactoryUpgradeInventory) {
+            List<ItemStack> raw = new java.util.ArrayList<>();
+            super.addAdditionalDrops(level, pos, raw);
+            ResonatingStackingInventory.splitDrops(raw, drops);
+        } else {
+            super.addAdditionalDrops(level, pos, drops);
+        }
         for (ItemStack stack : upgrades) {
             drops.add(stack);
         }

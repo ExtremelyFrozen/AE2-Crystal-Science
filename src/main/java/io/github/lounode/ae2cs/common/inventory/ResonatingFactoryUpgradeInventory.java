@@ -1,6 +1,5 @@
 package io.github.lounode.ae2cs.common.inventory;
 
-import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 
 import appeng.api.upgrades.IUpgradeInventory;
@@ -16,9 +15,11 @@ public class ResonatingFactoryUpgradeInventory extends AppEngInternalInventory i
 
     private final Runnable onChanged;
     private final IntPredicate canRemoveStackingCard;
+    private final ItemLike machine;
 
-    public ResonatingFactoryUpgradeInventory(Runnable onChanged, IntPredicate canRemoveStackingCard) {
+    public ResonatingFactoryUpgradeInventory(ItemLike machine, Runnable onChanged, IntPredicate canRemoveStackingCard) {
         super(null, 6, 1);
+        this.machine = machine;
         this.onChanged = onChanged;
         this.canRemoveStackingCard = canRemoveStackingCard;
     }
@@ -30,8 +31,7 @@ public class ResonatingFactoryUpgradeInventory extends AppEngInternalInventory i
 
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if (slot >= 4 && !getStackInSlot(slot).isEmpty()
-                && !canRemoveStackingCard.test(getInstalledUpgrades(AECSItems.RESONATING_STACKING_CARD) - 1)) {
+        if (slot >= 4 && !getStackInSlot(slot).isEmpty() && !canRemoveStackingCard.test(getInstalledUpgrades(AECSItems.RESONATING_STACKING_CARD) - 1)) {
             return ItemStack.EMPTY;
         }
         return super.extractItem(slot, amount, simulate);
@@ -45,7 +45,7 @@ public class ResonatingFactoryUpgradeInventory extends AppEngInternalInventory i
 
     @Override
     public ItemLike getUpgradableItem() {
-        return AECSBlocks.RESONATING_AGGREGATOR_FACTORY_BLOCK;
+        return machine;
     }
 
     @Override

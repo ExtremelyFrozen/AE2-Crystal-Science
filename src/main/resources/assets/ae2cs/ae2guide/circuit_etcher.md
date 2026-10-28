@@ -10,6 +10,8 @@ item_ids:
 
 # Circuit Etcher
 
+For the resonating variant's inventory, upgrade cards and controls, see [Resonating Circuit Etcher Factory](resonating_circuit_etcher_factory.md).
+
 <Row gap="16">
   <BlockImage id="ae2cs:circuit_etcher" scale="8" />
 </Row>

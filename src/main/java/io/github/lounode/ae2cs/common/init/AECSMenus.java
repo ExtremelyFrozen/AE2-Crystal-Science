@@ -35,6 +35,10 @@ public class AECSMenus {
             () -> MenuTypeBuilder.create(CrystalGrowthAcceleratorMenu::new, CrystalGrowthChamberBlockEntity.class)
                     .build(AE2CrystalScience.makeId("crystal_growth_accelerator_menu")));
 
+    public static final Supplier<MenuType<ResonatingGrowthFactoryMenu>> RESONATING_GROWTH_FACTORY_MENU = MENU_TYPES.register("resonating_growth_factory_menu",
+            () -> MenuTypeBuilder.create(ResonatingGrowthFactoryMenu::new, ResonatingGrowthFactoryBlockEntity.class)
+                    .build(AE2CrystalScience.makeId("resonating_growth_factory_menu")));
+
     public static final Supplier<MenuType<IntegratedInterfaceMenu>> INTEGRATED_INTERFACE_MENU = MENU_TYPES.register("integrated_interface_menu",
             () -> MenuTypeBuilder.create(IntegratedInterfaceMenu::new, IntegratedInterfaceHost.class)
                     .build(AE2CrystalScience.makeId("integrated_interface_menu")));
@@ -48,8 +52,13 @@ public class AECSMenus {
                     .build(AE2CrystalScience.makeId("crystal_vibration_chamber_menu")));
 
     public static final Supplier<MenuType<CircuitEtcherMenu>> CIRCUIT_ETCHER_MENU = MENU_TYPES.register("circuit_etcher_menu",
-            () -> MenuTypeBuilder.create(CircuitEtcherMenu::new, CircuitEtcherBlockEntity.class)
+            () -> MenuTypeBuilder.create((id, inventory, host) -> new CircuitEtcherMenu(id, inventory, host), CircuitEtcherBlockEntity.class)
                     .build(AE2CrystalScience.makeId("circuit_etcher_menu")));
+
+    public static final Supplier<MenuType<CircuitEtcherMenu>> RESONATING_CIRCUIT_ETCHER_FACTORY_MENU = MENU_TYPES.register("resonating_circuit_etcher_factory_menu",
+            () -> MenuTypeBuilder.create((id, inventory, host) -> new CircuitEtcherMenu(
+                    AECSMenus.RESONATING_CIRCUIT_ETCHER_FACTORY_MENU.get(), id, inventory, host), ResonatingCircuitEtcherFactoryBlockEntity.class)
+                    .build(AE2CrystalScience.makeId("resonating_circuit_etcher_factory_menu")));
 
     public static final Supplier<MenuType<CrystalPulverizerMenu>> CRYSTAL_PULVERIZER_MENU = MENU_TYPES.register("crystal_pulverizer_menu",
             () -> MenuTypeBuilder.create(CrystalPulverizerMenu::new, CrystalPulverizerBlockEntity.class)

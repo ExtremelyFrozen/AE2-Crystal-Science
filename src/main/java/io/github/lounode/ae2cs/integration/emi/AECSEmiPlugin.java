@@ -23,6 +23,8 @@ public class AECSEmiPlugin implements EmiPlugin {
                 new ResonantEmiEncodePatternHandler());
         registry.addRecipeHandler(AECSMenus.CIRCUIT_ETCHER_MENU.get(),
                 new MachineEmiRecipeHandler<>(CircuitEtcherRecipeCategory.RECIPE_TYPE));
+        registry.addRecipeHandler(AECSMenus.RESONATING_CIRCUIT_ETCHER_FACTORY_MENU.get(),
+                new MachineEmiRecipeHandler<>(CircuitEtcherRecipeCategory.RECIPE_TYPE));
         registry.addRecipeHandler(AECSMenus.CRYSTAL_AGGREGATOR_MENU.get(),
                 new MachineEmiRecipeHandler<>(CrystalAggregatorRecipeCategory.RECIPE_TYPE));
         registry.addRecipeHandler(AECSMenus.CRYSTAL_PULVERIZER_MENU.get(),
@@ -48,6 +50,7 @@ public class AECSEmiPlugin implements EmiPlugin {
 
         registry.addCategory(CircuitEtcherRecipeCategory.RECIPE_TYPE);
         registry.addWorkstation(CircuitEtcherRecipeCategory.RECIPE_TYPE, EmiStack.of(AECSBlocks.CIRCUIT_ETCHER_BLOCK));
+        registry.addWorkstation(CircuitEtcherRecipeCategory.RECIPE_TYPE, EmiStack.of(AECSBlocks.RESONATING_CIRCUIT_ETCHER_FACTORY_BLOCK));
         registry.getRecipeManager().getAllRecipesFor(AECSRecipeTypes.CIRCUIT_ETCHER.get())
                 .stream()
                 .map(CircuitEtcherRecipeCategory::new)

@@ -10,6 +10,8 @@ item_ids:
 
 # 水晶成長室
 
+共振版のスロット・アップグレード・操作については、[共振水晶成長工場](resonating_growth_factory.md)を参照してください。
+
 <Row gap="16">
   <BlockImage id="ae2cs:crystal_growth_chamber" scale="8" />
 </Row>

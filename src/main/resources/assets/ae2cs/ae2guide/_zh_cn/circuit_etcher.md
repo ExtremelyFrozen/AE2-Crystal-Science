@@ -10,6 +10,8 @@ item_ids:
 
 # 电路蚀刻器
 
+谐振版本的槽位、升级卡与使用方式见[谐振电路蚀刻工厂](resonating_circuit_etcher_factory.md)。
+
 <Row gap="16">
   <BlockImage id="ae2cs:circuit_etcher" scale="8" />
 </Row>
