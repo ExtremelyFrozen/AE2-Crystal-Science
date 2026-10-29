@@ -1,7 +1,7 @@
 package io.github.lounode.ae2cs.client.gui;
 
-import io.github.lounode.ae2cs.client.gui.subGUI.SideConfigGUI;
 import io.github.lounode.ae2cs.client.gui.icon.AECSIcon;
+import io.github.lounode.ae2cs.client.gui.subGUI.SideConfigGUI;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSIconButton;
 import io.github.lounode.ae2cs.client.gui.widgets.AdvancedProgressBar;
 import io.github.lounode.ae2cs.client.gui.widgets.FluidTankWidget;
@@ -65,6 +65,7 @@ public class ResonatingPulverizerFactoryGUI extends UpgradeableScreen<Resonating
                 () -> getMenu().sendDrainFluidOutputAction()));
 
         AECSIconButton averageButton = new AECSIconButton(button -> getMenu().sendAverageInputAction()) {
+
             @Override
             protected AECSIcon getIcon() {
                 return AECSIcon.AVERAGE;

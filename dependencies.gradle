@@ -38,7 +38,7 @@ dependencies {
 
     // Recipe viewers
     compileOnly(forge.bundles.jei)
-    compileOnly "curse.maven:jei-238222:8759217"
+    compileOnly "curse.maven:jei-238222:9351272" // 19.70.0.462, NeoForge 1.21.1
     compileOnly(forge.emi)
 
     // WAILA-likes
@@ -67,11 +67,16 @@ dependencies {
         exclude group: "maven.modrinth", module: "journeymap"
         exclude group: "info.journeymap", module: "journeymap-api-neoforge"
     }
+    // Create: Crystal Industry 1.0.8 (CurseForge file 9224053). CurseMaven only publishes its POM,
+    // so the development client resolves the jar directly. Create is already on the runtime classpath.
+    localRuntime "create.crystal.industry:create_crystal_industry:1.0.8"
 
     // Runtime AE2 addons
     localRuntime(forge.ae2ji)
     localRuntime(forge.guideme)
-    localRuntime(forge.de)
+    // Data Energistics 3.3.5 still calls the ExtendedAE Plus 1.5 upload API.
+    // compileOnly above keeps the code dependency; this stays off the dev client until DE updates.
+    // localRuntime(forge.de)
     localRuntime(forge.ae2wt)
     localRuntime(forge.eae)
     localRuntime(forge.aelt)
@@ -107,7 +112,7 @@ dependencies {
     localRuntime "curse.maven:forbidden-arcanus-309858:6875895"
     localRuntime "curse.maven:valhelsia-core-416935:6296775"
     localRuntime "curse.maven:imblocker-483760:8167852"
-    jeiClientRuntime "curse.maven:jei-238222:8759217"
+    jeiClientRuntime "curse.maven:jei-238222:9351272" // 19.70.0.462, NeoForge 1.21.1
 
     // Client-only runtime mods
     clientLocalRuntime(forge.jech)

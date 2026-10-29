@@ -101,6 +101,8 @@ public class AECSItems {
             () -> new PureCrystalItem(defaultBuilder(), 1000d, 600));
     public static final DeferredItem<PureCrystalItem> PURE_ENERGIZED_CERTUS_QUARTZ_CRYSTAL = registerPureCrystalItem(AECSItemIds.PURE_ENERGIZED_CERTUS_QUARTZ_CRYSTAL,
             () -> new PureCrystalItem(defaultBuilder(), 1000d, 600));
+    public static final DeferredItem<PureCrystalItem> PURE_LATTRA_CRYSTAL = registerPureCrystalItem(AECSItemIds.PURE_LATTRA_CRYSTAL,
+            () -> new PureCrystalItem(defaultBuilder(), 2200d, 2400));
 
     public static final DeferredItem<CrystalSeedItem> CERTUS_QUARTZ_SEED = registerCrystalSeedItem(AECSItemIds.CERTUS_QUARTZ_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_CERTUS_QUARTZ_CRYSTAL));
     public static final DeferredItem<CrystalSeedItem> FLUIX_CRYSTAL_SEED = registerCrystalSeedItem(AECSItemIds.FLUIX_CRYSTAL_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_FLUIX_CRYSTAL));
@@ -119,6 +121,7 @@ public class AECSItems {
     public static final DeferredItem<CrystalSeedItem> DATA_CRYSTAL_SEED = registerCrystalSeedItem(AECSItemIds.DATA_CRYSTAL_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_DATA_CRYSTAL));
     public static final DeferredItem<CrystalSeedItem> ENERGIZED_FLUIX_CRYSTAL_SEED = registerCrystalSeedItem(AECSItemIds.ENERGIZED_FLUIX_CRYSTAL_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_ENERGIZED_FLUIX_CRYSTAL));
     public static final DeferredItem<CrystalSeedItem> ENERGIZED_CERTUS_QUARTZ_SEED = registerCrystalSeedItem(AECSItemIds.ENERGIZED_CERTUS_QUARTZ_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_ENERGIZED_CERTUS_QUARTZ_CRYSTAL));
+    public static final DeferredItem<CrystalSeedItem> LATTRA_CRYSTAL_SEED = registerCrystalSeedItem(AECSItemIds.LATTRA_CRYSTAL_SEED, () -> new CrystalSeedItem(defaultBuilder(), PURE_LATTRA_CRYSTAL));
 
     public static final DeferredItem<Item> NETHER_QUARTZ_DUST = registerOtherItem(AECSItemIds.NETHER_QUARTZ_DUST, () -> new Item(defaultBuilder()));
     public static final DeferredItem<Item> RESONATING_DUST = registerOtherItem(AECSItemIds.RESONATING_DUST, () -> new Item(defaultBuilder()));

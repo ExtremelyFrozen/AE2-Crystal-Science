@@ -5,11 +5,11 @@ import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.common.init.CrystalFamilyBlocks;
 
+import appeng.api.ids.AETags;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
-
-import appeng.api.ids.AETags;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;

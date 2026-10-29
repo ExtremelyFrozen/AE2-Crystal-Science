@@ -191,7 +191,10 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
             return true;
         }
         ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
-        return id.toString().equals("ae2lt:overload_crystal_block") || id.toString().equals("appgen:ember_block") || id.toString().equals("neoecoae:energized_crystal_block");
+        return id.toString().equals("ae2lt:overload_crystal_block")
+                || id.toString().equals("appgen:ember_block")
+                || id.toString().equals("neoecoae:energized_crystal_block")
+                || id.toString().equals("extendedae_plus:lattra_crystal_block");
     }
 
     @Nullable
@@ -442,6 +445,18 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
     @Nullable
     private static ForeignMotherRock knownForeignMotherRock(Block block) {
         ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
+        if (id.getNamespace().equals("create_crystal_industry")
+                && id.getPath().endsWith("_budding")
+                && !id.getPath().equals("fluix_budding")) {
+            String family = id.getPath().substring(0, id.getPath().length() - "_budding".length());
+            return new ForeignMotherRock(
+                    "create_crystal_industry:" + family + "_small_bud",
+                    "create_crystal_industry:" + family + "_medium_bud",
+                    "create_crystal_industry:" + family + "_large_bud",
+                    "create_crystal_industry:" + family + "_cluster",
+                    null,
+                    0);
+        }
         return switch (id.toString()) {
             case "extendedae:entro_budding_fully", "extendedae:entro_budding_mostly", "extendedae:entro_budding_half", "extendedae:entro_budding_hardly" -> new ForeignMotherRock(
                     "extendedae:entro_cluster_small",
@@ -463,6 +478,13 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
                     "appgen:ember_bud_large",
                     "appgen:ember_cluster",
                     degradedEmber(id.getPath()),
+                    10);
+            case "extendedae_plus:lattra_budding_fully", "extendedae_plus:lattra_budding_mostly", "extendedae_plus:lattra_budding_half", "extendedae_plus:lattra_budding_hardly" -> new ForeignMotherRock(
+                    "extendedae_plus:lattra_crystal_bud_small",
+                    "extendedae_plus:lattra_crystal_bud_medium",
+                    "extendedae_plus:lattra_crystal_bud_large",
+                    "extendedae_plus:lattra_crystal_cluster",
+                    degradedLattra(id.getPath()),
                     10);
             case "data_energistics:budding_data_crystal_0", "data_energistics:budding_data_crystal_1", "data_energistics:budding_data_crystal_2", "data_energistics:budding_data_crystal_3", "data_energistics:budding_data_crystal_4" -> new ForeignMotherRock(
                     "data_energistics:small_data_crystal_bud",
@@ -511,6 +533,17 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
             case "budding_ember_flawed" -> "appgen:budding_ember_chipped";
             case "budding_ember_chipped" -> "appgen:budding_ember_damaged";
             case "budding_ember_damaged" -> "appgen:ember_block";
+            default -> null;
+        };
+    }
+
+    @Nullable
+    private static String degradedLattra(String path) {
+        return switch (path) {
+            case "lattra_budding_fully" -> null;
+            case "lattra_budding_mostly" -> "extendedae_plus:lattra_budding_half";
+            case "lattra_budding_half" -> "extendedae_plus:lattra_budding_hardly";
+            case "lattra_budding_hardly" -> "extendedae_plus:lattra_crystal_block";
             default -> null;
         };
     }

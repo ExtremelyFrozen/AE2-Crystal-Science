@@ -3,7 +3,7 @@ ae2 = "19.2.18"
 ae2wt = "19.5.0"
 thunderbolt = "9108142"
 
-jei = "19.57.0.451"
+jei = "19.70.0.464"
 emi = "1.1.22+1.21.1+neoforge"
 
 ldlib = "2.2.40"
@@ -33,12 +33,12 @@ geckolib = "7707149"
 glodium = "5821676"
 ae2ji = "7727898"
 de = "9095664"
-eae = "8025439"
+eae = "9305327" # ExtendedAE 1.21-2.2.42-neoforge
 aae = "7849217"
 aecs = "8036407"
 aelt = "9131948"
 eco = "9195391"
-extendedae-plus = "7960385"
+extendedae-plus = "9343779" # 1.6.4.1, NeoForge 1.21.1
 applied-flux = "7429565"
 applied-pneumatics = "7723695"
 applied-create = "7945860"
