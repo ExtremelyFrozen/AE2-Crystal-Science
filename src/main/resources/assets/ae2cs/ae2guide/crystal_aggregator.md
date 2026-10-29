@@ -10,6 +10,8 @@ item_ids:
 
 # Crystal Aggregator
 
+For the resonating variant's inventory, upgrade cards and controls, see [Resonating Aggregator Factory](resonating_aggregator_factory.md).
+
 <Row gap="16">
   <BlockImage id="ae2cs:crystal_aggregator" scale="8" />
 </Row>

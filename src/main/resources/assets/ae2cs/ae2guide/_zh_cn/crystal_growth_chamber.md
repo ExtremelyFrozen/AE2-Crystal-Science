@@ -10,6 +10,8 @@ item_ids:
 
 # 晶体催生仓
 
+谐振版本的槽位、升级卡与使用方式见[谐振晶体催生工厂](resonating_growth_factory.md)。
+
 <Row gap="16">
   <BlockImage id="ae2cs:crystal_growth_chamber" scale="8" />
 </Row>

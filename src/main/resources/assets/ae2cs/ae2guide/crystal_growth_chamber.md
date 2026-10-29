@@ -10,6 +10,8 @@ item_ids:
 
 # Crystal Growth Chamber
 
+For the resonating variant's inventory, upgrade cards and controls, see [Resonating Crystal Growth Factory](resonating_growth_factory.md).
+
 <Row gap="16">
   <BlockImage id="ae2cs:crystal_growth_chamber" scale="8" />
 </Row>

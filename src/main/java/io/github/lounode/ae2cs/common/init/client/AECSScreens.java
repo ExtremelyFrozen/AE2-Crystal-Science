@@ -24,6 +24,7 @@ public class AECSScreens {
     public static void registerScreens(RegisterMenuScreensEvent event) {
         event.register(AECSMenus.CRYSTAL_GROWTH_CHAMBER_MENU.get(), CrystalGrowthChamberGUI::new);
         event.register(AECSMenus.CRYSTAL_GROWTH_ACCELERATOR_MENU.get(), CrystalGrowthAcceleratorGUI::new);
+        event.register(AECSMenus.RESONATING_GROWTH_FACTORY_MENU.get(), ResonatingGrowthFactoryGUI::new);
 
         event.<IntegratedInterfaceMenu, IntegratedInterfaceGUI>register(AECSMenus.INTEGRATED_INTERFACE_MENU.get(), (menu, inv, title) -> new IntegratedInterfaceGUI(menu, inv, title,
                 menu.extended ?
@@ -32,9 +33,11 @@ public class AECSScreens {
 
         event.register(AECSMenus.INTEGRATED_INTERFACE_SET_STOCK_AMOUNT_MENU.get(), IntegratedInterfaceSetStockAmountGUI::new);
         event.register(AECSMenus.CRYSTAL_VIBRATION_CHAMBER_MENU.get(), CrystalVibrationChamberGUI::new);
-        event.register(AECSMenus.CIRCUIT_ETCHER_MENU.get(), CircuitEtcherGUI::new);
+        event.<CircuitEtcherMenu, CircuitEtcherGUI>register(AECSMenus.CIRCUIT_ETCHER_MENU.get(), CircuitEtcherGUI::new);
+        event.register(AECSMenus.RESONATING_CIRCUIT_ETCHER_FACTORY_MENU.get(), ResonatingCircuitEtcherFactoryGUI::new);
         event.register(AECSMenus.CRYSTAL_PULVERIZER_MENU.get(), CrystalPulverizerGUI::new);
         event.register(AECSMenus.RESONATING_PULVERIZER_FACTORY_MENU.get(), ResonatingPulverizerFactoryGUI::new);
+        event.register(AECSMenus.RESONATING_AGGREGATOR_FACTORY_MENU.get(), ResonatingAggregatorFactoryGUI::new);
         event.register(AECSMenus.QUARTZ_GRINDSTONE_MENU.get(), QuartzGrindstoneGUI::new);
         event.register(AECSMenus.CRYSTAL_AGGREGATOR_MENU.get(), CrystalAggregatorGUI::new);
         event.register(AECSMenus.CRYSTAL_INFUSER_MENU.get(), CrystalInfuserGUI::new);

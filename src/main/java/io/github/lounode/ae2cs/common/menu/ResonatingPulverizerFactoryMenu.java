@@ -3,12 +3,11 @@ package io.github.lounode.ae2cs.common.menu;
 import io.github.lounode.ae2cs.api.networking.FluidTankState;
 import io.github.lounode.ae2cs.common.block.entity.ResonatingPulverizerFactoryBlockEntity;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
+import io.github.lounode.ae2cs.common.menu.slot.ResonatingStackingSlot;
 
 import appeng.api.util.IConfigManager;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
-import appeng.menu.implementations.UpgradeableMenu;
-import appeng.menu.slot.AppEngSlot;
 import appeng.util.inv.AppEngInternalInventory;
 
 import net.minecraft.world.entity.player.Inventory;
@@ -16,7 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 
-public class ResonatingPulverizerFactoryMenu extends UpgradeableMenu<ResonatingPulverizerFactoryBlockEntity> {
+public class ResonatingPulverizerFactoryMenu extends ResonatingFactoryMenu<ResonatingPulverizerFactoryBlockEntity> {
 
     private static final String FILL_FLUID_INPUT_ACTION = "fill_fluid_input";
     private static final String DRAIN_FLUID_OUTPUT_ACTION = "drain_fluid_output";
@@ -43,15 +42,18 @@ public class ResonatingPulverizerFactoryMenu extends UpgradeableMenu<ResonatingP
         super(AECSMenus.RESONATING_PULVERIZER_FACTORY_MENU.get(), id, ip, host);
         registerClientAction(FILL_FLUID_INPUT_ACTION, this::fillFluidInput);
         registerClientAction(DRAIN_FLUID_OUTPUT_ACTION, this::drainFluidOutput);
+    }
 
+    @Override
+    protected void setupInventorySlots() {
         AppEngInternalInventory inputInv = getHost().getInputInv();
         AppEngInternalInventory outputInv = getHost().getOutputInv();
         for (int i = 0; i < inputInv.size(); i++) {
-            AppEngSlot inputSlot = new AppEngSlot(inputInv, i);
+            ResonatingStackingSlot inputSlot = new ResonatingStackingSlot(inputInv, i);
             this.addSlot(inputSlot, SlotSemantics.MACHINE_INPUT);
         }
         for (int i = 0; i < outputInv.size(); i++) {
-            AppEngSlot outputSlot = new AppEngSlot(outputInv, i) {
+            ResonatingStackingSlot outputSlot = new ResonatingStackingSlot(outputInv, i) {
 
                 @Override
                 public boolean mayPlace(ItemStack stack) {

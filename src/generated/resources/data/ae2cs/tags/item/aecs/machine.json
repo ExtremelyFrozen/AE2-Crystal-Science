@@ -1,7 +1,9 @@
 {
   "values": [
     "ae2cs:crystal_growth_chamber",
+    "ae2cs:resonating_growth_factory",
     "ae2cs:circuit_etcher",
+    "ae2cs:resonating_circuit_etcher_factory",
     "ae2cs:quartz_grindstone",
     "ae2cs:crystal_pulverizer",
     "ae2cs:resonating_pulverizer_factory",

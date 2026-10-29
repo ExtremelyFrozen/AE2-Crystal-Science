@@ -31,14 +31,17 @@ public class AECSBlockIds {
 
     // 机器方块
     public static final String CRYSTAL_GROWTH_CHAMBER = "crystal_growth_chamber";
+    public static final String RESONATING_GROWTH_FACTORY = "resonating_growth_factory";
     public static final String CRYSTAL_GROWTH_ACCELERATOR = "crystal_growth_accelerator";
     public static final String CIRCUIT_ETCHER = "circuit_etcher";
+    public static final String RESONATING_CIRCUIT_ETCHER_FACTORY = "resonating_circuit_etcher_factory";
     public static final String QUARTZ_GRINDSTONE = "quartz_grindstone";
     public static final String CRYSTAL_PULVERIZER = "crystal_pulverizer";
     public static final String RESONATING_PULVERIZER_FACTORY = "resonating_pulverizer_factory";
     public static final String CRYSTAL_VIBRATION_CHAMBER = "crystal_vibration_chamber";
     public static final String CHARGED_RESONATING_GENERATOR = "charged_resonating_generator";
     public static final String CRYSTAL_AGGREGATOR = "crystal_aggregator";
+    public static final String RESONATING_AGGREGATOR_FACTORY = "resonating_aggregator_factory";
     public static final String CRYSTAL_INFUSER = "crystal_infuser";
     public static final String PULSE_CENTRIFUGE = "pulse_centrifuge";
     public static final String ENTROPY_VARIATION_REACTION_CHAMBER = "entropy_variation_reaction_chamber";
@@ -46,6 +49,7 @@ public class AECSBlockIds {
     public static final String ENDER_EMITTER = "ender_emitter";
 
     // 部件类方块
+    public static final String QUANTUM_INTERFACE = "quantum_interface";
     public static final String ENDER_INTERFACE = "ender_interface";
     public static final String EX_ENDER_INTERFACE = "extended_ender_interface";
     public static final String INTEGRATED_INTERFACE = "integrated_interface";

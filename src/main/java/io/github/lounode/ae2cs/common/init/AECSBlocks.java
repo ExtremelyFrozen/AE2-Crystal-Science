@@ -158,6 +158,13 @@ public class AECSBlocks {
     public static final DeferredBlock<CrystalGrowthChamberBlock> CRYSTAL_GROWTH_CHAMBER_BLOCK = registerOtherBlock(AECSBlockIds.CRYSTAL_GROWTH_CHAMBER, () -> new CrystalGrowthChamberBlock(copy(Blocks.IRON_BLOCK)));
 
     /**
+     * 谐振晶体催生工厂（方块、通电外观与自由存取槽位）
+     */
+    public static final DeferredBlock<ResonatingGrowthFactoryBlock> RESONATING_GROWTH_FACTORY_BLOCK = registerOtherBlock(
+            AECSBlockIds.RESONATING_GROWTH_FACTORY,
+            () -> new ResonatingGrowthFactoryBlock(AEBaseBlock.metalProps()));
+
+    /**
      * 晶体催育器（暂只注册方块与资源，功能逻辑后续接入）
      */
     public static final DeferredBlock<CrystalGrowthChamberBlock> CRYSTAL_GROWTH_ACCELERATOR_BLOCK = registerOtherBlock(
@@ -168,6 +175,13 @@ public class AECSBlocks {
      * 电路蚀刻器
      */
     public static final DeferredBlock<CircuitEtcherBlock> CIRCUIT_ETCHER_BLOCK = registerOtherBlock(AECSBlockIds.CIRCUIT_ETCHER, () -> new CircuitEtcherBlock(copy(Blocks.IRON_BLOCK)));
+
+    /**
+     * 谐振电路蚀刻工厂
+     */
+    public static final DeferredBlock<CircuitEtcherBlock> RESONATING_CIRCUIT_ETCHER_FACTORY_BLOCK = registerOtherBlock(
+            AECSBlockIds.RESONATING_CIRCUIT_ETCHER_FACTORY,
+            () -> new CircuitEtcherBlock(copy(Blocks.IRON_BLOCK), AECSMenus.RESONATING_CIRCUIT_ETCHER_FACTORY_MENU));
 
     /**
      * 石英磨具
@@ -203,6 +217,13 @@ public class AECSBlocks {
      * 水晶聚合器
      */
     public static final DeferredBlock<CrystalAggregatorBlock> CRYSTAL_AGGREGATOR_BLOCK = registerOtherBlock(AECSBlockIds.CRYSTAL_AGGREGATOR, () -> new CrystalAggregatorBlock(AEBaseBlock.metalProps()));
+
+    /**
+     * 谐振晶能聚合工厂（暂只注册方块、外观与界面，聚合加工逻辑后续接入）
+     */
+    public static final DeferredBlock<ResonatingAggregatorFactoryBlock> RESONATING_AGGREGATOR_FACTORY_BLOCK = registerOtherBlock(
+            AECSBlockIds.RESONATING_AGGREGATOR_FACTORY,
+            () -> new ResonatingAggregatorFactoryBlock(AEBaseBlock.metalProps()));
 
     /**
      * 晶体注能器
@@ -287,6 +308,13 @@ public class AECSBlocks {
      * 石英震荡钟
      */
     public static final DeferredBlock<QuartzOscillatorClockBlock> QUARTZ_OSCILLATOR_CLOCK_BLOCK = registerOtherBlock(AECSBlockIds.QUARTZ_OSCILLATOR_CLOCK, () -> new QuartzOscillatorClockBlock(AEBaseBlock.metalProps()));
+
+    /**
+     * ME量子接口（暂只注册独立方块与动画外观，功能逻辑后续接入）
+     */
+    public static final DeferredBlock<Block> QUANTUM_INTERFACE_BLOCK = registerOtherBlock(
+            AECSBlockIds.QUANTUM_INTERFACE,
+            () -> new Block(AEBaseBlock.metalProps()));
 
     public static BlockBehaviour.Properties copy(BlockBehaviour behaviour) {
         return BlockBehaviour.Properties.ofFullCopy(behaviour);

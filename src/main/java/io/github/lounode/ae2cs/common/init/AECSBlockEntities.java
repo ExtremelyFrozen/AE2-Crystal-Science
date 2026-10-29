@@ -48,6 +48,12 @@ public class AECSBlockEntities {
             AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK,
             AECSBlocks.CRYSTAL_GROWTH_ACCELERATOR_BLOCK);
 
+    public static final DeferredBlockEntityType<ResonatingGrowthFactoryBlockEntity> RESONATING_GROWTH_FACTORY_BLOCK_ENTITY = create(
+            AECSBlockIds.RESONATING_GROWTH_FACTORY,
+            ResonatingGrowthFactoryBlockEntity.class,
+            ResonatingGrowthFactoryBlockEntity::new,
+            AECSBlocks.RESONATING_GROWTH_FACTORY_BLOCK);
+
     /**
      * 集成接口
      */
@@ -93,6 +99,12 @@ public class AECSBlockEntities {
             CircuitEtcherBlockEntity::new,
             AECSBlocks.CIRCUIT_ETCHER_BLOCK);
 
+    public static final DeferredBlockEntityType<ResonatingCircuitEtcherFactoryBlockEntity> RESONATING_CIRCUIT_ETCHER_FACTORY_BLOCK_ENTITY = create(
+            AECSBlockIds.RESONATING_CIRCUIT_ETCHER_FACTORY,
+            ResonatingCircuitEtcherFactoryBlockEntity.class,
+            ResonatingCircuitEtcherFactoryBlockEntity::new,
+            AECSBlocks.RESONATING_CIRCUIT_ETCHER_FACTORY_BLOCK);
+
     /**
      * 陨石样板供应器
      */
@@ -119,6 +131,12 @@ public class AECSBlockEntities {
             ResonatingPulverizerFactoryBlockEntity.class,
             ResonatingPulverizerFactoryBlockEntity::new,
             AECSBlocks.RESONATING_PULVERIZER_FACTORY_BLOCK);
+
+    public static final DeferredBlockEntityType<ResonatingAggregatorFactoryBlockEntity> RESONATING_AGGREGATOR_FACTORY_BLOCK_ENTITY = create(
+            AECSBlockIds.RESONATING_AGGREGATOR_FACTORY,
+            ResonatingAggregatorFactoryBlockEntity.class,
+            ResonatingAggregatorFactoryBlockEntity::new,
+            AECSBlocks.RESONATING_AGGREGATOR_FACTORY_BLOCK);
 
     /**
      * 石英磨具

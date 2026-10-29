@@ -6,14 +6,14 @@ import io.github.lounode.ae2cs.common.location.SimpleComponents;
 import io.github.lounode.ae2cs.common.menu.CircuitEtcherMenu;
 import io.github.lounode.ae2cs.integration.RecipeViewerNavigation;
 
-import appeng.client.gui.implementations.UpgradeableScreen;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.StyleManager;
 import appeng.menu.interfaces.IProgressProvider;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-public class CircuitEtcherGUI extends UpgradeableScreen<CircuitEtcherMenu> {
+public class CircuitEtcherGUI extends ResonatingFactoryScreen<CircuitEtcherMenu> {
 
     // 能量进度条
     private final AdvancedProgressBar energyRateBar;
@@ -22,7 +22,11 @@ public class CircuitEtcherGUI extends UpgradeableScreen<CircuitEtcherMenu> {
     private final AdvancedProgressBar workingProgressBar;
 
     public CircuitEtcherGUI(CircuitEtcherMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title, StyleManager.loadStyleDoc("/screens/circuit_etcher_menu.json"));
+        this(menu, playerInventory, title, StyleManager.loadStyleDoc("/screens/circuit_etcher_menu.json"));
+    }
+
+    public CircuitEtcherGUI(CircuitEtcherMenu menu, Inventory playerInventory, Component title, ScreenStyle style) {
+        super(menu, playerInventory, title, style);
 
         this.energyRateBar = new AdvancedProgressBar(new IProgressProvider() {
 
