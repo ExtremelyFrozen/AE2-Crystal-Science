@@ -20,7 +20,7 @@ public final class SimplePatternProviderMirrorHelper {
 
     public static @NotNull InteractionResult tryBind(ItemStack stack, UseOnContext context) {
         Player player = context.getPlayer();
-        if (player == null || player.isShiftKeyDown()) return InteractionResult.PASS;
+        if (player == null || !player.isShiftKeyDown()) return InteractionResult.PASS;
 
         if (PatternProviderBindingHelper.resolveClickedMirrorProvider(context) != null) {
             if (!context.getLevel().isClientSide()) {
