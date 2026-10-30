@@ -12,6 +12,7 @@ import appeng.api.parts.IPartHost;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -19,6 +20,7 @@ import net.minecraft.util.FastColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -46,7 +48,9 @@ public final class MirrorPatternProviderHighlighter {
     private static final int UNSELECTED_MIRROR_COLOR = FastColor.ARGB32.color(90, 0, 65, 180);
     private static final int SELECTED_LINE_COLOR = FastColor.ARGB32.color(255, 100, 220, 255);
     private static final int UNSELECTED_LINE_COLOR = FastColor.ARGB32.color(200, 0, 65, 180);
-    private static final float EPSILON = 0.002F;
+    private static final AABB BLOCK_MARKER_BOUNDS = new AABB(-0.2D, -0.2D, -0.2D, 0.2D, 0.2D, 0.2D);
+    private static final AABB PART_MARKER_BOUNDS = new AABB(-0.1D, -0.1D, -0.1D, 0.1D, 0.1D, 0.1D);
+    private static final double PART_MARKER_OFFSET = 0.375D;
 
     private static @Nullable HighlightCache cache;
 
@@ -80,35 +84,48 @@ public final class MirrorPatternProviderHighlighter {
         var cameraPosition = event.getCamera().getPosition();
         PoseStack poseStack = event.getPoseStack();
         MultiBufferSource.BufferSource bufferSource = minecraft.renderBuffers().bufferSource();
-        VertexConsumer consumer = bufferSource.getBuffer(AECSRenderTypes.RESONATING_MARK_FACE);
+        VertexConsumer consumer = bufferSource.getBuffer(AECSRenderTypes.MIRROR_MARKER_FACE);
 
         for (HighlightTarget highlight : highlights.highlights()) {
-            int color = highlight.source() == null ? SOURCE_COLOR : highlight.source().equals(target) ? SELECTED_MIRROR_COLOR : UNSELECTED_MIRROR_COLOR;
+            int color = markerColor(highlight, target);
+            Vec3 center = anchorOf(highlight.pos(), highlight.side());
             poseStack.pushPose();
-            BlockPos pos = highlight.pos();
-            poseStack.translate(pos.getX() - cameraPosition.x, pos.getY() - cameraPosition.y, pos.getZ() - cameraPosition.z);
-            if (highlight.side() == null) {
-                for (Direction direction : Direction.values()) {
-                    drawFaceQuad(poseStack, consumer, direction, color);
-                }
-            } else {
-                drawFaceQuad(poseStack, consumer, highlight.side(), color);
+            poseStack.translate(center.x - cameraPosition.x, center.y - cameraPosition.y, center.z - cameraPosition.z);
+            AABB bounds = markerBounds(highlight.side());
+            for (Direction direction : Direction.values()) {
+                drawFaceQuad(poseStack, consumer, direction, color, bounds);
             }
             poseStack.popPose();
         }
 
-        bufferSource.endBatch(AECSRenderTypes.RESONATING_MARK_FACE);
+        bufferSource.endBatch(AECSRenderTypes.MIRROR_MARKER_FACE);
 
         VertexConsumer lineConsumer = bufferSource.getBuffer(AECSRenderTypes.RESONATING_MARK_LINE);
         for (HighlightTarget highlight : highlights.highlights()) {
+            int color = markerColor(highlight, target);
+            Vec3 center = anchorOf(highlight.pos(), highlight.side());
+            poseStack.pushPose();
+            poseStack.translate(center.x - cameraPosition.x, center.y - cameraPosition.y, center.z - cameraPosition.z);
+            LevelRenderer.renderLineBox(poseStack, lineConsumer, markerBounds(highlight.side()),
+                    FastColor.ARGB32.red(color) / 255F, FastColor.ARGB32.green(color) / 255F, FastColor.ARGB32.blue(color) / 255F, 0.9F);
+            poseStack.popPose();
+
             MirroredPatternProviderTarget source = highlight.source();
             if (source == null || !highlights.visibleSources().contains(source)) {
                 continue;
             }
             drawLine(poseStack, lineConsumer, cameraPosition, anchorOf(source.pos().pos(), source.side()),
-                    anchorOf(highlight.pos(), highlight.side()), source.equals(target) ? SELECTED_LINE_COLOR : UNSELECTED_LINE_COLOR);
+                    center, source.equals(target) ? SELECTED_LINE_COLOR : UNSELECTED_LINE_COLOR);
         }
         bufferSource.endBatch(AECSRenderTypes.RESONATING_MARK_LINE);
+    }
+
+    private static int markerColor(HighlightTarget highlight, @Nullable MirroredPatternProviderTarget target) {
+        return highlight.source() == null ? SOURCE_COLOR : highlight.source().equals(target) ? SELECTED_MIRROR_COLOR : UNSELECTED_MIRROR_COLOR;
+    }
+
+    private static AABB markerBounds(@Nullable Direction side) {
+        return side == null ? BLOCK_MARKER_BOUNDS : PART_MARKER_BOUNDS;
     }
 
     private static ItemStack getHeldLinker(LocalPlayer player) {
@@ -181,7 +198,7 @@ public final class MirrorPatternProviderHighlighter {
 
     private static Vec3 anchorOf(BlockPos pos, @Nullable Direction side) {
         Vec3 center = Vec3.atCenterOf(pos);
-        return side == null ? center : center.add(side.getStepX() * 0.501D, side.getStepY() * 0.501D, side.getStepZ() * 0.501D);
+        return side == null ? center : center.add(side.getStepX() * PART_MARKER_OFFSET, side.getStepY() * PART_MARKER_OFFSET, side.getStepZ() * PART_MARKER_OFFSET);
     }
 
     private static void drawLine(PoseStack poseStack, VertexConsumer consumer, Vec3 camera, Vec3 start, Vec3 end, int color) {
@@ -197,22 +214,22 @@ public final class MirrorPatternProviderHighlighter {
                 .setColor(color).setNormal(pose, (float) normal.x, (float) normal.y, (float) normal.z);
     }
 
-    private static void drawFaceQuad(PoseStack poseStack, VertexConsumer consumer, Direction face, int color) {
-        float x0 = 0F;
-        float x1 = 1F;
-        float y0 = 0F;
-        float y1 = 1F;
-        float z0 = 0F;
-        float z1 = 1F;
+    private static void drawFaceQuad(PoseStack poseStack, VertexConsumer consumer, Direction face, int color, AABB bounds) {
+        float x0 = (float) bounds.minX;
+        float x1 = (float) bounds.maxX;
+        float y0 = (float) bounds.minY;
+        float y1 = (float) bounds.maxY;
+        float z0 = (float) bounds.minZ;
+        float z1 = (float) bounds.maxZ;
         Matrix4f matrix = poseStack.last().pose();
 
         switch (face) {
-            case NORTH -> addQuad(consumer, matrix, x0, y0, z0 - EPSILON, x1, y0, z0 - EPSILON, x1, y1, z0 - EPSILON, x0, y1, z0 - EPSILON, color);
-            case SOUTH -> addQuad(consumer, matrix, x1, y0, z1 + EPSILON, x0, y0, z1 + EPSILON, x0, y1, z1 + EPSILON, x1, y1, z1 + EPSILON, color);
-            case WEST -> addQuad(consumer, matrix, x0 - EPSILON, y0, z1, x0 - EPSILON, y0, z0, x0 - EPSILON, y1, z0, x0 - EPSILON, y1, z1, color);
-            case EAST -> addQuad(consumer, matrix, x1 + EPSILON, y0, z0, x1 + EPSILON, y0, z1, x1 + EPSILON, y1, z1, x1 + EPSILON, y1, z0, color);
-            case DOWN -> addQuad(consumer, matrix, x0, y0 - EPSILON, z0, x1, y0 - EPSILON, z0, x1, y0 - EPSILON, z1, x0, y0 - EPSILON, z1, color);
-            case UP -> addQuad(consumer, matrix, x0, y1 + EPSILON, z1, x1, y1 + EPSILON, z1, x1, y1 + EPSILON, z0, x0, y1 + EPSILON, z0, color);
+            case NORTH -> addQuad(consumer, matrix, x0, y0, z0, x1, y0, z0, x1, y1, z0, x0, y1, z0, color);
+            case SOUTH -> addQuad(consumer, matrix, x1, y0, z1, x0, y0, z1, x0, y1, z1, x1, y1, z1, color);
+            case WEST -> addQuad(consumer, matrix, x0, y0, z1, x0, y0, z0, x0, y1, z0, x0, y1, z1, color);
+            case EAST -> addQuad(consumer, matrix, x1, y0, z0, x1, y0, z1, x1, y1, z1, x1, y1, z0, color);
+            case DOWN -> addQuad(consumer, matrix, x0, y0, z0, x1, y0, z0, x1, y0, z1, x0, y0, z1, color);
+            case UP -> addQuad(consumer, matrix, x0, y1, z1, x1, y1, z1, x1, y1, z0, x0, y1, z0, color);
         }
     }
 
