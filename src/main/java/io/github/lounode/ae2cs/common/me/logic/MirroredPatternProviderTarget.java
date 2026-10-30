@@ -1,10 +1,15 @@
 package io.github.lounode.ae2cs.common.me.logic;
 
+import io.github.lounode.ae2cs.common.me.logic.mirroring.MirroredPatternSource;
+import io.github.lounode.ae2cs.common.me.logic.mirroring.PatternProviderSources;
+
 import appeng.api.parts.IPartHost;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.menu.locator.MenuHostLocator;
 import appeng.menu.locator.MenuLocators;
+import appeng.parts.AEBasePart;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.registries.Registries;
@@ -25,6 +30,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+
 public record MirroredPatternProviderTarget(GlobalPos pos, @Nullable Direction side) {
 
     private static final String TAG_MIRROR = "mirror_target";
@@ -35,13 +42,13 @@ public record MirroredPatternProviderTarget(GlobalPos pos, @Nullable Direction s
 
     public static final Codec<MirroredPatternProviderTarget> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             GlobalPos.CODEC.fieldOf("pos").forGetter(MirroredPatternProviderTarget::pos),
-            Direction.CODEC.optionalFieldOf("side").forGetter(target -> java.util.Optional.ofNullable(target.side()))).apply(instance, (pos, side) -> new MirroredPatternProviderTarget(pos, side.orElse(null))));
+            Direction.CODEC.optionalFieldOf("side").forGetter(target -> Optional.ofNullable(target.side()))).apply(instance, (pos, side) -> new MirroredPatternProviderTarget(pos, side.orElse(null))));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, MirroredPatternProviderTarget> STREAM_CODEC = StreamCodec.composite(
             GlobalPos.STREAM_CODEC,
             MirroredPatternProviderTarget::pos,
             ByteBufCodecs.optional(ByteBufCodecs.idMapper(Direction.BY_ID, Direction::get3DDataValue)),
-            target -> java.util.Optional.ofNullable(target.side()),
+            target -> Optional.ofNullable(target.side()),
             (pos, side) -> new MirroredPatternProviderTarget(pos, side.orElse(null)));
 
     public static @Nullable MirroredPatternProviderTarget read(CompoundTag root) {
@@ -50,7 +57,7 @@ public record MirroredPatternProviderTarget(GlobalPos pos, @Nullable Direction s
         }
 
         CompoundTag tag = root.getCompound(TAG_MIRROR);
-        if (!tag.contains(TAG_DIMENSION, Tag.TAG_STRING) || !tag.contains(TAG_POS, Tag.TAG_COMPOUND)) {
+        if (!tag.contains(TAG_DIMENSION, Tag.TAG_STRING)) {
             return null;
         }
 
@@ -59,13 +66,34 @@ public record MirroredPatternProviderTarget(GlobalPos pos, @Nullable Direction s
             return null;
         }
 
-        Direction readSide = tag.getBoolean(TAG_HAS_SIDE) && tag.contains(TAG_SIDE, Tag.TAG_INT) ? Direction.from3DDataValue(tag.getInt(TAG_SIDE)) : null;
+        Direction readSide = null;
+        if (tag.getBoolean(TAG_HAS_SIDE)) {
+            if (!tag.contains(TAG_SIDE, Tag.TAG_INT)) {
+                return null;
+            }
+            int sideId = tag.getInt(TAG_SIDE);
+            if (sideId < 0 || sideId >= Direction.values().length) {
+                return null;
+            }
+            readSide = Direction.from3DDataValue(sideId);
+        }
 
-        var pos = NbtUtils.readBlockPos(tag, TAG_POS);
-        return pos.map(blockPos -> new MirroredPatternProviderTarget(
-                GlobalPos.of(ResourceKey.create(Registries.DIMENSION, dimId), blockPos),
-                readSide))
-                .orElse(null);
+        var pos = readTargetPosition(tag);
+        return pos.isEmpty() ? null : new MirroredPatternProviderTarget(
+                GlobalPos.of(ResourceKey.create(Registries.DIMENSION, dimId), pos.get()), readSide);
+    }
+
+    private static Optional<BlockPos> readTargetPosition(CompoundTag tag) {
+        if (!tag.contains(TAG_POS, Tag.TAG_COMPOUND)) {
+            return NbtUtils.readBlockPos(tag, TAG_POS);
+        }
+
+        // Older saves may use a compound instead of the current three-element integer array.
+        CompoundTag pos = tag.getCompound(TAG_POS);
+        if (!pos.contains("X", Tag.TAG_INT) || !pos.contains("Y", Tag.TAG_INT) || !pos.contains("Z", Tag.TAG_INT)) {
+            return Optional.empty();
+        }
+        return Optional.of(new BlockPos(pos.getInt("X"), pos.getInt("Y"), pos.getInt("Z")));
     }
 
     public static void write(@Nullable MirroredPatternProviderTarget target, CompoundTag root) {
@@ -100,7 +128,20 @@ public record MirroredPatternProviderTarget(GlobalPos pos, @Nullable Direction s
         return new MirroredPatternProviderTarget(GlobalPos.of(dim, pos), side);
     }
 
-    public @Nullable PatternProviderLogicHost resolve(Level currentLevel) {
+    public @Nullable PatternProviderLogicHost resolve(@Nullable Level currentLevel) {
+        Object host = resolveHost(currentLevel, true);
+        return host instanceof PatternProviderLogicHost provider && !(host instanceof MirrorPatternProviderHost) ? provider : null;
+    }
+
+    public @Nullable MirroredPatternSource resolveSource(@Nullable Level currentLevel) {
+        return PatternProviderSources.fromHost(resolveHost(currentLevel, true));
+    }
+
+    public boolean isPresent(Level currentLevel) {
+        return PatternProviderSources.fromHost(resolveHost(currentLevel, false)) != null;
+    }
+
+    private @Nullable Object resolveHost(@Nullable Level currentLevel, boolean serverOnly) {
         Level level = currentLevel;
         if (level == null || !level.dimension().equals(pos.dimension())) {
             MinecraftServer server = currentLevel == null ? null : currentLevel.getServer();
@@ -110,37 +151,32 @@ public record MirroredPatternProviderTarget(GlobalPos pos, @Nullable Direction s
             level = server.getLevel(pos.dimension());
         }
 
-        if (!(level instanceof ServerLevel) || !level.hasChunkAt(pos.pos())) {
+        if (level == null || (serverOnly && !(level instanceof ServerLevel)) || !level.hasChunkAt(pos.pos())) {
             return null;
         }
 
         BlockEntity be = level.getBlockEntity(pos.pos());
         if (side == null) {
-            return be instanceof PatternProviderLogicHost host ? host : null;
+            return be;
         }
 
         if (be instanceof IPartHost partHost) {
-            var part = partHost.getPart(side);
-            if (part instanceof PatternProviderLogicHost host) {
-                return host;
-            }
+            return partHost.getPart(side);
         }
 
         return null;
     }
 
-    public @Nullable MenuHostLocator toMenuLocator(Level currentLevel) {
-        PatternProviderLogicHost host = resolve(currentLevel);
-        if (host == null) {
+    public @Nullable MenuHostLocator toMenuLocator(@Nullable Level currentLevel) {
+        Object host = resolveHost(currentLevel, true);
+        if (PatternProviderSources.fromHost(host) == null) {
             return null;
         }
-
-        if (host instanceof appeng.parts.AEBasePart part) {
-            return MenuLocators.forPart(part);
-        }
-        if (host instanceof BlockEntity be) {
-            return MenuLocators.forBlockEntity(be);
-        }
-        return null;
+        return switch (host) {
+            case null -> null;
+            case AEBasePart part -> MenuLocators.forPart(part);
+            case BlockEntity be -> MenuLocators.forBlockEntity(be);
+            default -> null;
+        };
     }
 }
