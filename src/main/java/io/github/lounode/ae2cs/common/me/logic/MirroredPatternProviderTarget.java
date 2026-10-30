@@ -1,5 +1,8 @@
 package io.github.lounode.ae2cs.common.me.logic;
 
+import io.github.lounode.ae2cs.common.me.logic.mirroring.MirroredPatternSource;
+import io.github.lounode.ae2cs.common.me.logic.mirroring.PatternProviderSources;
+
 import appeng.api.parts.IPartHost;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.menu.locator.MenuHostLocator;
@@ -125,7 +128,20 @@ public record MirroredPatternProviderTarget(GlobalPos pos, @Nullable Direction s
         return new MirroredPatternProviderTarget(GlobalPos.of(dim, pos), side);
     }
 
-    public @Nullable PatternProviderLogicHost resolve(Level currentLevel) {
+    public @Nullable PatternProviderLogicHost resolve(@Nullable Level currentLevel) {
+        Object host = resolveHost(currentLevel, true);
+        return host instanceof PatternProviderLogicHost provider && !(host instanceof MirrorPatternProviderHost) ? provider : null;
+    }
+
+    public @Nullable MirroredPatternSource resolveSource(@Nullable Level currentLevel) {
+        return PatternProviderSources.fromHost(resolveHost(currentLevel, true));
+    }
+
+    public boolean isPresent(Level currentLevel) {
+        return PatternProviderSources.fromHost(resolveHost(currentLevel, false)) != null;
+    }
+
+    private @Nullable Object resolveHost(@Nullable Level currentLevel, boolean serverOnly) {
         Level level = currentLevel;
         if (level == null || !level.dimension().equals(pos.dimension())) {
             MinecraftServer server = currentLevel == null ? null : currentLevel.getServer();
@@ -135,37 +151,32 @@ public record MirroredPatternProviderTarget(GlobalPos pos, @Nullable Direction s
             level = server.getLevel(pos.dimension());
         }
 
-        if (!(level instanceof ServerLevel) || !level.hasChunkAt(pos.pos())) {
+        if (level == null || (serverOnly && !(level instanceof ServerLevel)) || !level.hasChunkAt(pos.pos())) {
             return null;
         }
 
         BlockEntity be = level.getBlockEntity(pos.pos());
         if (side == null) {
-            return be instanceof PatternProviderLogicHost host ? host : null;
+            return be;
         }
 
         if (be instanceof IPartHost partHost) {
-            var part = partHost.getPart(side);
-            if (part instanceof PatternProviderLogicHost host) {
-                return host;
-            }
+            return partHost.getPart(side);
         }
 
         return null;
     }
 
-    public @Nullable MenuHostLocator toMenuLocator(Level currentLevel) {
-        PatternProviderLogicHost host = resolve(currentLevel);
-        if (host == null) {
+    public @Nullable MenuHostLocator toMenuLocator(@Nullable Level currentLevel) {
+        Object host = resolveHost(currentLevel, true);
+        if (PatternProviderSources.fromHost(host) == null) {
             return null;
         }
-
-        if (host instanceof AEBasePart part) {
-            return MenuLocators.forPart(part);
-        }
-        if (host instanceof BlockEntity be) {
-            return MenuLocators.forBlockEntity(be);
-        }
-        return null;
+        return switch (host) {
+            case null -> null;
+            case AEBasePart part -> MenuLocators.forPart(part);
+            case BlockEntity be -> MenuLocators.forBlockEntity(be);
+            default -> null;
+        };
     }
 }

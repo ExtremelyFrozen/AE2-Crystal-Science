@@ -1,14 +1,9 @@
 package io.github.lounode.ae2cs.common.item;
 
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
-import io.github.lounode.ae2cs.common.me.logic.MirrorPatternProviderHost;
 import io.github.lounode.ae2cs.common.me.logic.MirroredPatternProviderTarget;
 
-import appeng.api.parts.IPartHost;
-import appeng.helpers.patternprovider.PatternProviderLogicHost;
-
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -27,28 +22,16 @@ public final class SimplePatternProviderMirrorHelper {
         Player player = context.getPlayer();
         if (player == null || player.isShiftKeyDown()) return InteractionResult.PASS;
 
-        PatternProviderLogicHost targetHost = PatternProviderBindingHelper.resolveClickedPatternProvider(context);
-        if (targetHost == null) {
-            return InteractionResult.PASS;
-        }
-
-        if (targetHost instanceof MirrorPatternProviderHost) {
+        if (PatternProviderBindingHelper.resolveClickedMirrorProvider(context) != null) {
             if (!context.getLevel().isClientSide()) {
                 player.displayClientMessage(Component.translatable("ae2cs.msg.mirror_pattern_provider.invalid_target").withStyle(ChatFormatting.RED), true);
             }
             return InteractionResult.CONSUME;
         }
 
-        MirroredPatternProviderTarget target;
-        if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof IPartHost partHost) {
-            var selected = partHost.selectPartWorld(context.getClickLocation());
-            if (selected.part instanceof PatternProviderLogicHost) {
-                target = new MirroredPatternProviderTarget(GlobalPos.of(context.getLevel().dimension(), context.getClickedPos()), selected.side);
-            } else {
-                target = new MirroredPatternProviderTarget(GlobalPos.of(context.getLevel().dimension(), context.getClickedPos()), null);
-            }
-        } else {
-            target = new MirroredPatternProviderTarget(GlobalPos.of(context.getLevel().dimension(), context.getClickedPos()), null);
+        MirroredPatternProviderTarget target = PatternProviderBindingHelper.referenceClickedMirrorSource(context);
+        if (target == null) {
+            return InteractionResult.PASS;
         }
 
         if (!context.getLevel().isClientSide()) {
@@ -56,7 +39,7 @@ public final class SimplePatternProviderMirrorHelper {
             player.displayClientMessage(Component.translatable("ae2cs.msg.mirror_pattern_provider.bound",
                     context.getClickedPos().getX(), context.getClickedPos().getY(), context.getClickedPos().getZ()).withStyle(ChatFormatting.GRAY), true);
         }
-        return InteractionResult.CONSUME;
+        return InteractionResult.sidedSuccess(context.getLevel().isClientSide());
     }
 
     public static @NotNull InteractionResult tryClear(ItemStack stack, Player player) {

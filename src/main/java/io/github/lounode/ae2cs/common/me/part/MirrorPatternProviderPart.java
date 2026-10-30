@@ -84,7 +84,7 @@ public class MirrorPatternProviderPart extends PatternProviderPart implements Mi
         var targetRef = getMirroringLogic().getMirrorTarget();
         if (targetRef != null) {
             MenuHostLocator targetLocator = targetRef.toMenuLocator(getBlockEntity().getLevel());
-            var mirrorTarget = getMirroringLogic().resolveMirrorTargetHost();
+            var mirrorTarget = getMirroringLogic().resolveMirrorTargetSource();
             if (mirrorTarget != null && targetLocator != null) {
                 mirrorTarget.openMenu(player, targetLocator);
                 return;

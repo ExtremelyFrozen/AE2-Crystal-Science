@@ -1,8 +1,10 @@
 package io.github.lounode.ae2cs.common.item;
 
 import io.github.lounode.ae2cs.common.me.logic.MirrorPatternProviderHost;
+import io.github.lounode.ae2cs.common.me.logic.MirroredPatternProviderTarget;
 import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderHost;
 import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderReference;
+import io.github.lounode.ae2cs.common.me.logic.mirroring.PatternProviderSources;
 
 import appeng.api.parts.IPartHost;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
@@ -26,6 +28,19 @@ public final class PatternProviderBindingHelper {
 
     public static @Nullable PatternProviderLogicHost resolveClickedPatternProvider(UseOnContext context) {
         return resolvePatternProvider(context.getLevel(), context.getClickedPos(), context.getClickLocation());
+    }
+
+    /** 返回普通或高级主供应器的精确方块/面板引用；不接受镜像作为主源。 */
+    public static @Nullable MirroredPatternProviderTarget referenceClickedMirrorSource(UseOnContext context) {
+        BlockEntity blockEntity = context.getLevel().getBlockEntity(context.getClickedPos());
+        GlobalPos pos = GlobalPos.of(context.getLevel().dimension(), context.getClickedPos());
+        if (blockEntity instanceof IPartHost partHost) {
+            var selected = partHost.selectPartWorld(context.getClickLocation());
+            if (PatternProviderSources.fromHost(selected.part) != null) {
+                return new MirroredPatternProviderTarget(pos, selected.side);
+            }
+        }
+        return PatternProviderSources.fromHost(blockEntity) == null ? null : new MirroredPatternProviderTarget(pos, null);
     }
 
     public static @Nullable PatternProviderLogicHost resolvePatternProvider(Level level, BlockPos pos, Vec3 clickLocation) {
