@@ -38,7 +38,7 @@ public class CrystalInfuserRecipeCategory implements IRecipeCategory<RecipeHolde
     private static final Rect2i ENERGY_TOOLTIP_AREA = new Rect2i(128, 21, 6, 18);
     private static final int ANIM_DURATION_MS = 3_000;
     private static final int WATER_PER_OPERATION = 1_000;
-    private static final int WATER_TANK_CAPACITY = 4_000;
+    private static final int WATER_TANK_CAPACITY = 16_000;
 
     private final IDrawableStatic background;
     private final IDrawable icon;

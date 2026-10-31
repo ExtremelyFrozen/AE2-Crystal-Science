@@ -8,9 +8,13 @@ import io.github.lounode.ae2cs.common.init.AECSMenus;
 import appeng.api.orientation.IOrientationStrategy;
 import appeng.api.orientation.OrientationStrategies;
 import appeng.block.AEBaseEntityBlock;
+import appeng.client.render.effects.ParticleTypes;
+import appeng.core.AEConfig;
+import appeng.core.AppEngClient;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
@@ -44,6 +48,31 @@ public class CrystalGrowthChamberBlock extends AEBaseEntityBlock<CrystalGrowthCh
     @Override
     public IOrientationStrategy getOrientationStrategy() {
         return OrientationStrategies.horizontalFacing();
+    }
+
+    @Override
+    public void animateTick(BlockState state, Level level, BlockPos pos, net.minecraft.util.RandomSource random) {
+        if (!state.is(AECSBlocks.CRYSTAL_GROWTH_ACCELERATOR_BLOCK.get()) || !state.getValue(ACTIVE) || !AEConfig.instance().isEnableEffects() || !AppEngClient.instance().shouldAddParticles(random)) {
+            return;
+        }
+
+        double x = pos.getX() + 0.5 + (random.nextFloat() - 0.5F) * 0.7;
+        double y = pos.getY() + 1.01;
+        double z = pos.getZ() + 0.5 + (random.nextFloat() - 0.5F) * 0.7;
+        BlockPos above = pos.above();
+        if (level.getBlockState(above).isAir()) {
+            Minecraft.getInstance().particleEngine.createParticle(
+                    ParticleTypes.LIGHTNING, x, y, z, 0.0D, 0.0D, 0.0D);
+        }
+        if (level.getBlockEntity(pos) instanceof CrystalGrowthChamberBlockEntity be && be.hasAcceleratorCatalyst()) {
+            // Keep the arc outside the crystal growing above the inset mother rock.
+            Direction edge = Direction.Plane.HORIZONTAL.getRandomDirection(random);
+            double motherRockX = pos.getX() + 0.5 + edge.getStepX() * 0.42 + (random.nextFloat() - 0.5F) * 0.08;
+            double motherRockY = pos.getY() + 1.08;
+            double motherRockZ = pos.getZ() + 0.5 + edge.getStepZ() * 0.42 + (random.nextFloat() - 0.5F) * 0.08;
+            Minecraft.getInstance().particleEngine.createParticle(
+                    ParticleTypes.LIGHTNING, motherRockX, motherRockY, motherRockZ, 0.0D, 0.0D, 0.0D);
+        }
     }
 
     @Override

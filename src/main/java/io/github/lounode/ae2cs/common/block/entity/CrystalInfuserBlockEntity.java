@@ -51,7 +51,7 @@ public class CrystalInfuserBlockEntity extends AENetworkedSelfPoweredBlockEntity
     private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(AECSBlocks.CRYSTAL_INFUSER_BLOCK,
             4, this::onUpgradesChanged);
 
-    private final MachineFluidTanks fluidTanks = new MachineFluidTanks(4000,
+    private final MachineFluidTanks fluidTanks = new MachineFluidTanks(16_000,
             () -> {
                 needRefreshRecipeState = true;
                 setChanged();

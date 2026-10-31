@@ -39,6 +39,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -98,6 +99,8 @@ public class ResonatingPulverizerFactoryBlockEntity extends AENetworkedSelfPower
      */
     private int parallelism = 1;
 
+    private boolean averageInputEnabled;
+
     @Nullable
     private RecipeHolder<CrystalPulverizerRecipe> activeRecipe;
 
@@ -146,6 +149,80 @@ public class ResonatingPulverizerFactoryBlockEntity extends AENetworkedSelfPower
         invComponent.addPort(InvPort.OUTPUT, outputInv);
         getMachineComponents().add(invComponent);
         getMachineComponents().add(new SideConfigComponent());
+    }
+
+    /**
+     * 将当前输入物品均匀分布到九个输入槽；不同物品不会互相混合。
+     */
+    public void setAverageInputEnabled(boolean enabled) {
+        if (averageInputEnabled == enabled) return;
+        averageInputEnabled = enabled;
+        if (enabled) averageInput();
+        setChanged();
+    }
+
+    public boolean isAverageInputEnabled() {
+        return averageInputEnabled;
+    }
+
+    private void averageInput() {
+        var input = (ResonatingStackingInventory) getInputInv();
+        List<ItemStack> groups = new ArrayList<>();
+        for (int i = 0; i < input.size(); i++) {
+            ItemStack stack = input.getStackInSlot(i);
+            if (stack.isEmpty()) continue;
+
+            boolean merged = false;
+            for (ItemStack group : groups) {
+                if (ItemStack.isSameItemSameComponents(group, stack)) {
+                    group.grow(stack.getCount());
+                    merged = true;
+                    break;
+                }
+            }
+            if (!merged) groups.add(stack.copy());
+        }
+        if (groups.isEmpty()) return;
+
+        // Reserve enough slots for every item type before spreading into free slots.
+        int[] slotsPerGroup = new int[groups.size()];
+        int freeSlots = input.size();
+        for (int i = 0; i < groups.size(); i++) {
+            ItemStack group = groups.get(i);
+            int limit = input.getItemLimit(group);
+            slotsPerGroup[i] = (group.getCount() + limit - 1) / limit;
+            freeSlots -= slotsPerGroup[i];
+        }
+        // Leave the original inventory intact if its contents cannot fit.
+        if (freeSlots < 0) return;
+
+        while (freeSlots > 0) {
+            int selected = -1;
+            for (int i = 0; i < groups.size(); i++) {
+                if (slotsPerGroup[i] >= groups.get(i).getCount()) continue;
+                if (selected < 0 || (long) groups.get(i).getCount() * slotsPerGroup[selected] > (long) groups.get(selected).getCount() * slotsPerGroup[i]) {
+                    selected = i;
+                }
+            }
+            if (selected < 0) break;
+            slotsPerGroup[selected]++;
+            freeSlots--;
+        }
+
+        List<ItemStack> balanced = new ArrayList<>(input.size());
+        for (int i = 0; i < groups.size(); i++) {
+            ItemStack group = groups.get(i);
+            int remaining = group.getCount();
+            for (int slots = slotsPerGroup[i]; slots > 0; slots--) {
+                int count = (remaining + slots - 1) / slots;
+                balanced.add(group.copyWithCount(count));
+                remaining -= count;
+            }
+        }
+        for (int i = 0; i < input.size(); i++) {
+            ItemStack next = i < balanced.size() ? balanced.get(i) : ItemStack.EMPTY;
+            if (!ItemStack.matches(input.getStackInSlot(i), next)) input.setItemDirect(i, next);
+        }
     }
 
     public int getStackCapacity() {
@@ -212,6 +289,8 @@ public class ResonatingPulverizerFactoryBlockEntity extends AENetworkedSelfPower
         super.serverTick();
 
         if (getLevel() == null || getLevel().isClientSide()) return;
+
+        if (averageInputEnabled) averageInput();
 
         checkActive(getAECurrentPower() > 0);
 
@@ -405,6 +484,7 @@ public class ResonatingPulverizerFactoryBlockEntity extends AENetworkedSelfPower
         upgrades.writeToNBT(data, "upgrades", registries);
         fluidTanks.writeToNbt(data, registries);
         data.putInt("recipe_progress", recipeProgress);
+        data.putBoolean("average_input_enabled", averageInputEnabled);
         if (activeRecipe != null) {
             data.putString("active_recipe_id", activeRecipe.id().toString());
         }
@@ -416,6 +496,7 @@ public class ResonatingPulverizerFactoryBlockEntity extends AENetworkedSelfPower
         upgrades.readFromNBT(data, "upgrades", registries);
         fluidTanks.readFromNbt(data, registries);
         recipeProgress = data.getInt("recipe_progress");
+        averageInputEnabled = data.getBoolean("average_input_enabled");
         if (data.contains("active_recipe_id")) {
             activeRecipeId = ResourceLocation.parse(data.getString("active_recipe_id"));
         }

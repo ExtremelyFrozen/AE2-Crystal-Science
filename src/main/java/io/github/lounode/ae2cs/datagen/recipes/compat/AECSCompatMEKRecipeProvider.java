@@ -136,6 +136,12 @@ public class AECSCompatMEKRecipeProvider extends AECSRecipeProvider {
                 externalItem(AECSConstants.AE2LT_ID, "overload_crystal_dust").getDefaultInstance())
                 .build(ae2ltOut, getCrushingPath("overload_crystal_dust"));
 
+        var eaepOut = compatOut.withConditions(modLoaded(AECSConstants.EAEP_ID));
+        ItemStackToItemStackRecipeBuilder.crushing(
+                ItemStackIngredient.of(SizedIngredient.of(AECSTags.Items.GEM_LATTRA_CRYSTAL, 1)),
+                externalItem(AECSConstants.EAEP_ID, "lattra_dust").getDefaultInstance())
+                .build(eaepOut, getCrushingPath("lattra_dust"));
+
         var ecoOut = compatOut.withConditions(modLoaded(AECSConstants.NEOECOAE_ID));
         ItemStackToItemStackRecipeBuilder.crushing(
                 ItemStackIngredient.of(SizedIngredient.of(AECSTags.Items.PURE_ENERGIZED_FLUIX_CRYSTAL, 1)),

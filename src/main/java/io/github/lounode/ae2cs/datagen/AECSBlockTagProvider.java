@@ -5,6 +5,8 @@ import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.common.init.CrystalFamilyBlocks;
 
+import appeng.api.ids.AETags;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
@@ -161,6 +163,12 @@ public class AECSBlockTagProvider extends BlockTagsProvider {
         for (var motherRock : AECSBlocks.getCrystalMotherRocks()) {
             mineableWithPickaxe.add(motherRock.get());
         }
+
+        var growthAcceleratable = tag(AETags.GROWTH_ACCELERATABLE);
+        for (var motherRock : AECSBlocks.getCrystalMotherRocks()) {
+            growthAcceleratable.add(motherRock.get());
+        }
+
         for (CrystalFamilyBlocks family : AECSBlocks.getCrystalFamilies()) {
             for (var stage : family.stages()) {
                 mineableWithPickaxe.add(stage.get());

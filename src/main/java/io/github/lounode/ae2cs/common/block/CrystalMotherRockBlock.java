@@ -94,21 +94,36 @@ public class CrystalMotherRockBlock extends Block {
      * crystal growth accelerator; normal world growth still uses randomTick.
      */
     public boolean forceTopGrowth(ServerLevel level, BlockPos pos) {
+        return forceTopGrowth(level, pos, growthSequence.stageIds().size() - 1);
+    }
+
+    public boolean forceTopGrowth(ServerLevel level, BlockPos pos, int maximumStage) {
         BlockPos targetPos = pos.above();
         BlockState targetState = level.getBlockState(targetPos);
-        Optional<ResourceLocation> nextStageId = selectNextStageId(targetState, Direction.UP);
-        if (nextStageId.isEmpty()) {
+        int nextStageIndex;
+        if (canClusterGrowAtState(targetState)) {
+            nextStageIndex = 0;
+        } else {
+            ResourceLocation currentStageId = BuiltInRegistries.BLOCK.getKey(targetState.getBlock());
+            int currentStageIndex = growthSequence.stageIds().indexOf(currentStageId);
+            if (currentStageIndex < 0 || currentStageIndex >= maximumStage || !targetState.hasProperty(AmethystClusterBlock.FACING) || targetState.getValue(AmethystClusterBlock.FACING) != Direction.UP) {
+                return false;
+            }
+            nextStageIndex = currentStageIndex + 1;
+        }
+        if (nextStageIndex > maximumStage || nextStageIndex >= growthSequence.stageIds().size()) {
             return false;
         }
 
-        Optional<Block> nextStage = resolveStage(nextStageId.get());
+        ResourceLocation nextStageId = growthSequence.stageIds().get(nextStageIndex);
+        Optional<Block> nextStage = resolveStage(nextStageId);
         if (nextStage.isEmpty()) {
             return false;
         }
 
         BlockState nextState = nextStage.get().defaultBlockState();
         if (!nextState.hasProperty(AmethystClusterBlock.FACING) || !nextState.hasProperty(AmethystClusterBlock.WATERLOGGED)) {
-            logInvalidStage(nextStageId.get(), "does not expose FACING and WATERLOGGED");
+            logInvalidStage(nextStageId, "does not expose FACING and WATERLOGGED");
             return false;
         }
 

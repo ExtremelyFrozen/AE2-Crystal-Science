@@ -1,7 +1,6 @@
 package io.github.lounode.ae2cs.integration.jei;
 
 import io.github.lounode.ae2cs.AE2CrystalScience;
-import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
@@ -27,7 +26,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -39,7 +37,6 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 import org.jetbrains.annotations.NotNull;
-import tamaized.ae2jeiintegration.integration.modules.jei.categories.EntropyManipulatorCategory;
 
 import java.util.List;
 
@@ -189,7 +186,7 @@ public class JeiPlugin implements IModPlugin {
             case CRYSTAL_PULVERIZER -> CrystalPulverizerRecipeCategory.RECIPE_TYPE;
             case CRYSTAL_INFUSER -> CrystalInfuserRecipeCategory.RECIPE_TYPE;
             case PULSE_CENTRIFUGE -> PulseCentrifugeRecipeCategory.RECIPE_TYPE;
-            case ENTROPY_REACTION -> ModList.get().isLoaded(AECSConstants.JEI_AE_INTEGRATION_ID) ? EntropyManipulatorCategory.RECIPE_TYPE : null;
+            case ENTROPY_REACTION -> EntropyVariationReactionChamberRecipeCategory.RECIPE_TYPE;
         };
         if (recipeType != null) {
             runtime.getRecipesGui().showTypes(List.of(recipeType));

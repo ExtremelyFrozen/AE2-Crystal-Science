@@ -7,6 +7,7 @@
     "EnderEmitterConnectionMixin",
     "GrowthAcceleratorBlockEntityMixin",
     "IngredientMixin",
+    "crystalindustry.CreateCrystalIndustryFluixMixin",
     "PatternAccessTermMenuMixin"
   ],
   "client": [

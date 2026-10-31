@@ -33,10 +33,10 @@ public class CrystalInfuserMenu extends UpgradeableMenu<CrystalInfuserBlockEntit
     public double maxEnergy;
 
     @GuiSync(14)
-    public FluidTankState inputFluid = new FluidTankState(net.neoforged.neoforge.fluids.FluidStack.EMPTY, 4000);
+    public FluidTankState inputFluid = new FluidTankState(net.neoforged.neoforge.fluids.FluidStack.EMPTY, 16_000);
 
     @GuiSync(15)
-    public FluidTankState outputFluid = new FluidTankState(net.neoforged.neoforge.fluids.FluidStack.EMPTY, 4000);
+    public FluidTankState outputFluid = new FluidTankState(net.neoforged.neoforge.fluids.FluidStack.EMPTY, 16_000);
 
     public CrystalInfuserMenu(int id, Inventory playerInventory, CrystalInfuserBlockEntity host) {
         super(AECSMenus.CRYSTAL_INFUSER_MENU.get(), id, playerInventory, host);

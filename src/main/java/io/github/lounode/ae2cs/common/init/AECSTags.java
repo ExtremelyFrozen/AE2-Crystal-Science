@@ -63,6 +63,7 @@ public class AECSTags {
         public static final TagKey<Item> PURE_DATA_CRYSTAL = aecsTag("pure_crystal/data_crystal");
         public static final TagKey<Item> PURE_ENERGIZED_FLUIX_CRYSTAL = aecsTag("pure_crystal/energized_fluix_crystal");
         public static final TagKey<Item> PURE_ENERGIZED_CERTUS_QUARTZ_CRYSTAL = aecsTag("pure_crystal/energized_certus_quartz_crystal");
+        public static final TagKey<Item> PURE_LATTRA_CRYSTAL = aecsTag("pure_crystal/lattra_crystal");
 
         public static final TagKey<Item> GEMS_FLUIX = tag("gems/fluix");
 
@@ -71,8 +72,9 @@ public class AECSTags {
         public static final TagKey<Item> DUST_QUANTUM_ALLOY = tag("dusts/quantum_alloy");
         public static final TagKey<Item> DUST_REDSTONE_CRYSTAL = tag("dusts/redstone_crystal");
 
+        public static final TagKey<Item> CRYSTAL_DROP_CERTUS_QUARTZ = aecsTag("crystal_drops/certus_quartz");
         public static final TagKey<Item> CRYSTAL_DROP_NETHER_QUARTZ = aecsTag("crystal_drops/nether_quartz");
-        public static final TagKey<Item> CRYSTAL_DROP_ENERGIZED_CERTUS_QUARTZ = aecsTag("crystal_drops/energized_certus_quartz");
+        public static final TagKey<Item> CRYSTAL_DROP_CHARGED_CERTUS_QUARTZ = aecsTag("crystal_drops/charged_certus_quartz");
         public static final TagKey<Item> CRYSTAL_DROP_ENDER_QUARTZ = aecsTag("crystal_drops/ender_quartz");
         public static final TagKey<Item> CRYSTAL_DROP_ENERGIZED_FLUIX = aecsTag("crystal_drops/energized_fluix");
         public static final TagKey<Item> CRYSTAL_DROP_FLUIX = aecsTag("crystal_drops/fluix");
@@ -82,11 +84,13 @@ public class AECSTags {
         public static final TagKey<Item> CRYSTAL_DROP_LINK = aecsTag("crystal_drops/link");
         public static final TagKey<Item> CRYSTAL_DROP_METEOR = aecsTag("crystal_drops/meteor");
         public static final TagKey<Item> CRYSTAL_DROP_ENTRO = aecsTag("crystal_drops/entro");
+        public static final TagKey<Item> CRYSTAL_DROP_LATTRA = aecsTag("crystal_drops/lattra");
 
         public static final TagKey<Item> GEM_RESONATING = tag("gems/resonating");
         public static final TagKey<Item> GEM_SKY_STONE_CRYSTAL = tag("gems/sky_stone_crystal");
         public static final TagKey<Item> GEM_ENDER_QUARTZ = tag("gems/ender_quartz");
         public static final TagKey<Item> GEM_DATA_CRYSTAL = tag("gems/data_crystal");
+        public static final TagKey<Item> GEM_LATTRA_CRYSTAL = tag("gems/lattra_crystal");
 
         public static final TagKey<Item> GEARS = tag("gears");
         public static final TagKey<Item> GEARS_WOOD = tag("gears/wood");

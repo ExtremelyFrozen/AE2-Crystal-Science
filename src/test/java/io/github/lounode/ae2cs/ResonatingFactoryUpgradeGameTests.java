@@ -105,6 +105,62 @@ public class ResonatingFactoryUpgradeGameTests {
         helper.succeed();
     }
 
+    @GameTest(template = "empty")
+    public static void pulverizerAverageMixedInput(GameTestHelper helper) {
+        verifyAverageInput(helper, 0, new ItemStack(Items.COBBLESTONE, 64), new ItemStack(Items.DIRT, 64));
+        verifyAverageInput(helper, 0, new ItemStack(Items.ENDER_PEARL, 16), new ItemStack(Items.IRON_SWORD));
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void pulverizerAverageStackingInput(GameTestHelper helper) {
+        ItemStack[] stacks = new ItemStack[9];
+        for (int i = 0; i < stacks.length; i++) {
+            stacks[i] = new ItemStack(i % 2 == 0 ? Items.COBBLESTONE : Items.DIRT, 1024);
+        }
+        verifyAverageInput(helper, 2, stacks);
+        verifyAverageInput(helper, 2, new ItemStack(Items.COBBLESTONE, 1024));
+        helper.succeed();
+    }
+
+    private static void verifyAverageInput(GameTestHelper helper, int stackingCards, ItemStack... stacks) {
+        var host = new ResonatingPulverizerFactoryBlockEntity(BlockPos.ZERO,
+                AECSBlocks.RESONATING_PULVERIZER_FACTORY_BLOCK.get().defaultBlockState());
+        host.setLevel(helper.getLevel());
+        for (int i = 0; i < stackingCards; i++) {
+            host.getUpgrades().insertItem(4 + i, AECSItems.RESONATING_STACKING_CARD.toStack(), false);
+        }
+        var input = host.getInputInv();
+        for (int i = 0; i < stacks.length; i++) input.setItemDirect(i, stacks[i].copy());
+        host.setAverageInputEnabled(true);
+        for (ItemStack original : stacks) {
+            int expected = 0;
+            for (ItemStack stack : stacks) {
+                if (ItemStack.isSameItemSameComponents(original, stack)) expected += stack.getCount();
+            }
+            int actual = 0;
+            int min = Integer.MAX_VALUE;
+            int max = 0;
+            for (ItemStack stack : input) {
+                if (!ItemStack.isSameItemSameComponents(original, stack)) continue;
+                actual += stack.getCount();
+                min = Math.min(min, stack.getCount());
+                max = Math.max(max, stack.getCount());
+                int limit = stack.isStackable() ? stack.getMaxStackSize() * host.getStackCapacity() / 64 : 1;
+                helper.assertTrue(stack.getCount() <= limit, "Balanced stacks respect upgraded capacity");
+            }
+            helper.assertTrue(actual == expected, "Averaging preserves every item and its components");
+            helper.assertTrue(max - min <= 1, "Each item type is evenly distributed");
+        }
+        List<ItemStack> snapshot = new ArrayList<>();
+        for (ItemStack stack : input) snapshot.add(stack.copy());
+        host.setAverageInputEnabled(false);
+        host.setAverageInputEnabled(true);
+        for (int i = 0; i < input.size(); i++) {
+            helper.assertTrue(ItemStack.matches(snapshot.get(i), input.getStackInSlot(i)), "Repeated averaging is stable");
+        }
+    }
+
     private static void verifyFactory(GameTestHelper helper, AENetworkedComponentBlockEntity host) {
         host.setLevel(helper.getLevel());
         var upgrades = ((IUpgradeableObject) host).getUpgrades();

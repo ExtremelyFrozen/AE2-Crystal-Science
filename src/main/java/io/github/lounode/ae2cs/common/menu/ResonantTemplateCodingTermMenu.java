@@ -2046,13 +2046,17 @@ public class ResonantTemplateCodingTermMenu extends PatternEncodingTermMenu impl
     }
 
     private static Field getSlotField(String name) {
-        try {
-            Field field = PatternEncodingTermMenu.class.getDeclaredField(name);
-            field.setAccessible(true);
-            return field;
-        } catch (NoSuchFieldException e) {
-            throw new IllegalStateException("Failed to find PatternEncodingTermMenu#" + name, e);
+        Class<?> type = PatternEncodingTermMenu.class;
+        while (type != null) {
+            try {
+                Field field = type.getDeclaredField(name);
+                field.setAccessible(true);
+                return field;
+            } catch (NoSuchFieldException ignored) {
+                type = type.getSuperclass();
+            }
         }
+        throw new IllegalStateException("Failed to find PatternEncodingTermMenu#" + name);
     }
 
     private static Boolean isUndamaged(GridInventoryEntry entry) {

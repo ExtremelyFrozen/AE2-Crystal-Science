@@ -2,7 +2,14 @@ package io.github.lounode.ae2cs.api.ids;
 
 public class AECSItemIds {
 
-    // 水晶
+    // 普通水晶
+    public static final String ENDER_QUARTZ = "ender_quartz";
+    public static final String METEOR_CRYSTAL = "meteor_crystal";
+    public static final String RESONATING_CRYSTAL = "resonating_crystal";
+    public static final String QUANTUM_CRYSTAL = "quantum_crystal";
+    public static final String LINK_CRYSTAL = "link_crystal";
+
+    // 高纯水晶
     public static final String PURE_CERTUS_QUARTZ_CRYSTAL = "purified_certus_quartz_crystal";
     public static final String PURE_FLUIX_CRYSTAL = "purified_fluix_crystal";
     public static final String PURE_NETHER_QUARTZ_CRYSTAL = "purified_nether_quartz_crystal";
@@ -20,6 +27,7 @@ public class AECSItemIds {
     public static final String PURE_DATA_CRYSTAL = "purified_data_crystal";
     public static final String PURE_ENERGIZED_FLUIX_CRYSTAL = "purified_energized_fluix_crystal";
     public static final String PURE_ENERGIZED_CERTUS_QUARTZ_CRYSTAL = "purified_energized_certus_quartz_crystal";
+    public static final String PURE_LATTRA_CRYSTAL = "purified_lattra_crystal";
 
     // 种子
     public static final String CERTUS_QUARTZ_SEED = "certus_quartz_seed";
@@ -39,6 +47,7 @@ public class AECSItemIds {
     public static final String DATA_CRYSTAL_SEED = "data_crystal_seed";
     public static final String ENERGIZED_FLUIX_CRYSTAL_SEED = "energized_fluix_crystal_seed";
     public static final String ENERGIZED_CERTUS_QUARTZ_SEED = "energized_certus_quartz_seed";
+    public static final String LATTRA_CRYSTAL_SEED = "lattra_crystal_seed";
 
     // 粉尘
     public static final String NETHER_QUARTZ_DUST = "nether_quartz_dust";

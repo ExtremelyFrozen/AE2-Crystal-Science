@@ -1,0 +1,9 @@
+{
+  "values": [
+    {
+      "id": "extendedae_plus:lattra_crystal",
+      "required": false
+    },
+    "#ae2cs:pure_crystal/lattra_crystal"
+  ]
+}

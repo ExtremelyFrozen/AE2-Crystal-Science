@@ -11,6 +11,7 @@ import appeng.datagen.providers.tags.ConventionTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -54,7 +55,8 @@ public class AECSItemTagProvider extends ItemTagsProvider {
                 .addTag(AECSTags.Items.PURE_OVERLOAD_CRYSTAL)
                 .addTag(AECSTags.Items.PURE_DATA_CRYSTAL)
                 .addTag(AECSTags.Items.PURE_ENERGIZED_FLUIX_CRYSTAL)
-                .addTag(AECSTags.Items.PURE_ENERGIZED_CERTUS_QUARTZ_CRYSTAL);
+                .addTag(AECSTags.Items.PURE_ENERGIZED_CERTUS_QUARTZ_CRYSTAL)
+                .addTag(AECSTags.Items.PURE_LATTRA_CRYSTAL);
         tag(AECSTags.Items.PURE_CERTUS_QUARTZ_CRYSTAL)
                 .add(AECSItems.PURE_CERTUS_QUARTZ_CRYSTAL.get());
         tag(AECSTags.Items.PURE_FLUIX_CRYSTAL)
@@ -89,6 +91,8 @@ public class AECSItemTagProvider extends ItemTagsProvider {
                 .add(AECSItems.PURE_ENERGIZED_FLUIX_CRYSTAL.get());
         tag(AECSTags.Items.PURE_ENERGIZED_CERTUS_QUARTZ_CRYSTAL)
                 .add(AECSItems.PURE_ENERGIZED_CERTUS_QUARTZ_CRYSTAL.get());
+        tag(AECSTags.Items.PURE_LATTRA_CRYSTAL)
+                .add(AECSItems.PURE_LATTRA_CRYSTAL.get());
 
         // 粉尘
         tag(Tags.Items.DUSTS)
@@ -145,6 +149,8 @@ public class AECSItemTagProvider extends ItemTagsProvider {
 
         // 石英水晶对标区
         tag(Tags.Items.GEMS)
+                .add(AECSItems.QUANTUM_CRYSTAL.get())
+                .add(AECSItems.LINK_CRYSTAL.get())
                 .addTag(AECSTags.Items.GEM_RESONATING)
                 .addTag(AECSTags.Items.GEM_SKY_STONE_CRYSTAL)
                 .addTag(AECSTags.Items.GEM_ENDER_QUARTZ);
@@ -158,13 +164,19 @@ public class AECSItemTagProvider extends ItemTagsProvider {
         tag(Tags.Items.GEMS_QUARTZ)
                 .addTag(AECSTags.Items.PURE_NETHER_QUARTZ_CRYSTAL);
         tag(AECSTags.Items.GEM_ENDER_QUARTZ)
+                .add(AECSItems.ENDER_QUARTZ.get())
                 .addTag(AECSTags.Items.PURE_ENDER_QUARTZ);
         tag(AECSTags.Items.GEM_SKY_STONE_CRYSTAL)
+                .add(AECSItems.METEOR_CRYSTAL.get())
                 .addTag(AECSTags.Items.PURE_METEOR_CRYSTAL);
         tag(AECSTags.Items.GEM_RESONATING)
+                .add(AECSItems.RESONATING_CRYSTAL.get())
                 .addTag(AECSTags.Items.PURE_RESONATING_CRYSTAL);
         tag(AECSTags.Items.GEM_DATA_CRYSTAL)
                 .addTag(AECSTags.Items.PURE_DATA_CRYSTAL);
+        tag(AECSTags.Items.GEM_LATTRA_CRYSTAL)
+                .addOptional(ResourceLocation.fromNamespaceAndPath(AECSConstants.EAEP_ID, "lattra_crystal"))
+                .addTag(AECSTags.Items.PURE_LATTRA_CRYSTAL);
         tag(EAETags.ENTRO_CRYSTAL)
                 .addTag(AECSTags.Items.PURE_ENTRO_CRYSTAL);
 

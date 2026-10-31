@@ -73,11 +73,12 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
     private int growthNum = 0;
 
     // 升级卡仓 4卡槽 包含四个加速卡
-    private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK, 4, this::onUpgradesChanged);
+    private final IUpgradeInventory upgrades;
 
     private int workTickCountDown = 10;
     private int speedCards = 0;
     private int overclockCards = 0;
+    private int acceleratorTargetStage = 3;
 
     /**
      * The accelerator's slot inventory is server-side machine data and is not guaranteed to
@@ -93,6 +94,10 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
         getMainNode().setIdlePowerUsage(0.0);
 
         boolean accelerator = state.is(AECSBlocks.CRYSTAL_GROWTH_ACCELERATOR_BLOCK.get());
+        this.upgrades = UpgradeInventories.forMachine(
+                accelerator ? AECSBlocks.CRYSTAL_GROWTH_ACCELERATOR_BLOCK : AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK,
+                4,
+                this::onUpgradesChanged);
         AppEngInternalInventory inventory = new AppEngInternalInventory(accelerator ? 1 : 54) {
 
             @Override
@@ -173,12 +178,29 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
 
         ItemStack stack = getInternalInventory().getStackInSlot(0);
         Block block = stack.isEmpty() ? null : Block.byItem(stack.getItem());
-        acceleratorDisplayBlock = block != null && isAcceleratorInput(stack) ? block : null;
+        acceleratorDisplayBlock = block != null && isAcceleratorDisplayBlock(block, stack) ? block : null;
+    }
+
+    private static boolean isAcceleratorDisplayBlock(Block block, ItemStack stack) {
+        if (isAcceleratorInput(stack) || knownForeignMotherRock(block) != null) {
+            return true;
+        }
+        // The final decay products are inert, but remain in the machine until collected.
+        // Keep their actual baked block model visible in the top opening.
+        if (block == AEBlocks.QUARTZ_BLOCK.block()) {
+            return true;
+        }
+        ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
+        return id.toString().equals("ae2lt:overload_crystal_block") || id.toString().equals("appgen:ember_block") || id.toString().equals("neoecoae:energized_crystal_block") || id.toString().equals("extendedae_plus:lattra_crystal_block");
     }
 
     @Nullable
     public Block getAcceleratorDisplayBlock() {
         return acceleratorDisplayBlock;
+    }
+
+    public boolean hasAcceleratorCatalyst() {
+        return acceleratorDisplayBlock != null && isAcceleratorInput(acceleratorDisplayBlock.asItem().getDefaultInstance());
     }
 
     /* 对外返回升级仓 */
@@ -187,17 +209,33 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
         return upgrades;
     }
 
-    // inv的save与load均已由AEBaseInvBlockEntity处理
+    public int getAcceleratorTargetStage() {
+        return acceleratorTargetStage;
+    }
+
+    public void setAcceleratorTargetStage(int stage) {
+        if (level == null || level.isClientSide || !isAccelerator()) {
+            return;
+        }
+        acceleratorTargetStage = Math.clamp(stage, 0, 3);
+        setChanged();
+        markForUpdate();
+    }
+
+    // The machine inventory is handled by the AE2 base class; upgrades are not.
     @Override
     public void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
-        this.upgrades.writeToNBT(tag, "interface_upgrades", registries);
+        this.upgrades.writeToNBT(tag, "upgrades", registries);
+        tag.putInt("accelerator_target_stage", acceleratorTargetStage);
     }
 
     @Override
     public void loadTag(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadTag(tag, registries);
-        this.upgrades.readFromNBT(tag, "interface_upgrades", registries);
+        String upgradeKey = tag.contains("upgrades") ? "upgrades" : "interface_upgrades";
+        this.upgrades.readFromNBT(tag, upgradeKey, registries);
+        acceleratorTargetStage = tag.contains("accelerator_target_stage") ? Math.clamp(tag.getInt("accelerator_target_stage"), 0, 3) : 3;
     }
 
     // load完成之后，且level被注入后
@@ -237,11 +275,13 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
     }
 
     private int getWorkInterval() {
-        return switch (overclockCards) {
-            case 1 -> 4;
-            case 2 -> 1;
-            default -> 10;
-        };
+        if (overclockCards > 0) {
+            return overclockCards == 1 ? 4 : 1;
+        }
+        if (isAccelerator() && speedCards > 0) {
+            return Math.max(1, 10 >> Math.min(speedCards, 3));
+        }
+        return 10;
     }
 
     @Override
@@ -291,29 +331,34 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
 
     private static boolean isAcceleratorInput(ItemStack stack) {
         Block block = Block.byItem(stack.getItem());
-        return block instanceof io.github.lounode.ae2cs.common.block.CrystalMotherRockBlock || block instanceof BuddingCertusQuartzBlock || block == Blocks.BUDDING_AMETHYST || knownForeignMotherRock(block) != null;
+        return block instanceof io.github.lounode.ae2cs.common.block.CrystalMotherRockBlock || block instanceof BuddingCertusQuartzBlock || block == Blocks.BUDDING_AMETHYST || (knownForeignMotherRock(block) != null && !isInactiveDataCrystal(block));
+    }
+
+    private static boolean isInactiveDataCrystal(Block block) {
+        return BuiltInRegistries.BLOCK.getKey(block).toString()
+                .equals("data_energistics:budding_data_crystal_0");
     }
 
     private void serverTickAccelerator() {
+        ItemStack stack = getInternalInventory().getStackInSlot(0);
+        boolean powered = getAECurrentPower() > 0;
+        checkActive(powered);
+
         --workTickCountDown;
         if (workTickCountDown > 0) return;
         workTickCountDown = getWorkInterval();
 
-        ItemStack stack = getInternalInventory().getStackInSlot(0);
         if (!isAcceleratorInput(stack)) {
-            checkActive(false);
             return;
         }
 
         double energyCost = energyPerGrowth;
         if (getAECurrentPower() < energyCost) {
-            checkActive(false);
             return;
         }
 
         Block block = Block.byItem(stack.getItem());
         if (!forceAcceleratorGrowth(block)) {
-            checkActive(false);
             return;
         }
 
@@ -321,6 +366,8 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
         ItemStack degraded = getAeDegradedStack(block, stack.getCount());
         if (!degraded.isEmpty()) {
             getInternalInventory().setItemDirect(0, degraded);
+            updateAcceleratorDisplayBlock();
+            markForUpdate();
         }
         checkActive(true);
         setChanged();
@@ -328,45 +375,55 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
 
     private boolean forceAcceleratorGrowth(Block block) {
         if (block instanceof io.github.lounode.ae2cs.common.block.CrystalMotherRockBlock motherRock) {
-            return motherRock.forceTopGrowth((net.minecraft.server.level.ServerLevel) level, worldPosition);
+            return motherRock.forceTopGrowth((net.minecraft.server.level.ServerLevel) level, worldPosition,
+                    acceleratorTargetStage);
         }
         if (block instanceof BuddingCertusQuartzBlock) {
             return growUp(
                     AEBlocks.SMALL_QUARTZ_BUD.block(),
                     AEBlocks.MEDIUM_QUARTZ_BUD.block(),
                     AEBlocks.LARGE_QUARTZ_BUD.block(),
-                    AEBlocks.QUARTZ_CLUSTER.block());
+                    AEBlocks.QUARTZ_CLUSTER.block(),
+                    acceleratorTargetStage);
         }
         if (block == Blocks.BUDDING_AMETHYST) {
             return growUp(
                     Blocks.SMALL_AMETHYST_BUD,
                     Blocks.MEDIUM_AMETHYST_BUD,
                     Blocks.LARGE_AMETHYST_BUD,
-                    Blocks.AMETHYST_CLUSTER);
+                    Blocks.AMETHYST_CLUSTER,
+                    acceleratorTargetStage);
         }
 
         ForeignMotherRock foreign = knownForeignMotherRock(block);
-        return foreign != null && growUp(foreign.small(), foreign.medium(), foreign.large(), foreign.cluster());
+        return foreign != null && growUp(foreign.small(), foreign.medium(), foreign.large(), foreign.cluster(),
+                acceleratorTargetStage);
     }
 
-    private boolean growUp(Block small, Block medium, Block large, Block cluster) {
+    private boolean growUp(Block small, Block medium, Block large, Block cluster, int targetStage) {
         if (small == null || medium == null || large == null || cluster == null || level == null) {
             return false;
         }
 
         BlockPos targetPos = worldPosition.above();
         BlockState targetState = level.getBlockState(targetPos);
-        Block nextStage = null;
+
+        // 顺序检查生长阶段：母岩 → 小 → 中 → 大 → 完整
+        // targetStage: 0=Small, 1=Medium, 2=Large, 3=Cluster (最大允许的阶段)
+        Block nextStage;
         if (io.github.lounode.ae2cs.common.block.CrystalMotherRockBlock.canClusterGrowAtState(targetState)) {
+            // 空气上可以生长小阶段（总是允许）
             nextStage = small;
         } else if (facesUp(targetState, small)) {
+            if (targetStage < 1) return false;  // targetStage < 1 时停止在小阶段
             nextStage = medium;
         } else if (facesUp(targetState, medium)) {
+            if (targetStage < 2) return false;  // targetStage < 2 时停止在中阶段
             nextStage = large;
         } else if (facesUp(targetState, large)) {
+            if (targetStage < 3) return false;  // targetStage < 3 时停止在大阶段
             nextStage = cluster;
-        }
-        if (nextStage == null) {
+        } else {
             return false;
         }
 
@@ -389,6 +446,16 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
     @Nullable
     private static ForeignMotherRock knownForeignMotherRock(Block block) {
         ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
+        if (id.getNamespace().equals("create_crystal_industry") && id.getPath().endsWith("_budding") && !id.getPath().equals("fluix_budding")) {
+            String family = id.getPath().substring(0, id.getPath().length() - "_budding".length());
+            return new ForeignMotherRock(
+                    "create_crystal_industry:" + family + "_small_bud",
+                    "create_crystal_industry:" + family + "_medium_bud",
+                    "create_crystal_industry:" + family + "_large_bud",
+                    "create_crystal_industry:" + family + "_cluster",
+                    null,
+                    0);
+        }
         return switch (id.toString()) {
             case "extendedae:entro_budding_fully", "extendedae:entro_budding_mostly", "extendedae:entro_budding_half", "extendedae:entro_budding_hardly" -> new ForeignMotherRock(
                     "extendedae:entro_cluster_small",
@@ -411,12 +478,26 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
                     "appgen:ember_cluster",
                     degradedEmber(id.getPath()),
                     10);
+            case "extendedae_plus:lattra_budding_fully", "extendedae_plus:lattra_budding_mostly", "extendedae_plus:lattra_budding_half", "extendedae_plus:lattra_budding_hardly" -> new ForeignMotherRock(
+                    "extendedae_plus:lattra_crystal_bud_small",
+                    "extendedae_plus:lattra_crystal_bud_medium",
+                    "extendedae_plus:lattra_crystal_bud_large",
+                    "extendedae_plus:lattra_crystal_cluster",
+                    degradedLattra(id.getPath()),
+                    10);
             case "data_energistics:budding_data_crystal_0", "data_energistics:budding_data_crystal_1", "data_energistics:budding_data_crystal_2", "data_energistics:budding_data_crystal_3", "data_energistics:budding_data_crystal_4" -> new ForeignMotherRock(
                     "data_energistics:small_data_crystal_bud",
                     "data_energistics:medium_data_crystal_bud",
                     "data_energistics:large_data_crystal_bud",
                     "data_energistics:data_crystal_cluster",
                     degradedDataCrystal(id.getPath()),
+                    12);
+            case "neoecoae:flawless_budding_energized_crystal", "neoecoae:flawed_budding_energized_crystal", "neoecoae:chipped_budding_energized_crystal", "neoecoae:damaged_budding_energized_crystal" -> new ForeignMotherRock(
+                    "neoecoae:small_energized_crystal_bud",
+                    "neoecoae:medium_energized_crystal_bud",
+                    "neoecoae:large_energized_crystal_bud",
+                    "neoecoae:energized_crystal_cluster",
+                    degradedEnergizedCrystal(id.getPath()),
                     12);
             default -> null;
         };
@@ -456,12 +537,34 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
     }
 
     @Nullable
+    private static String degradedLattra(String path) {
+        return switch (path) {
+            case "lattra_budding_fully" -> null;
+            case "lattra_budding_mostly" -> "extendedae_plus:lattra_budding_half";
+            case "lattra_budding_half" -> "extendedae_plus:lattra_budding_hardly";
+            case "lattra_budding_hardly" -> "extendedae_plus:lattra_crystal_block";
+            default -> null;
+        };
+    }
+
+    @Nullable
     private static String degradedDataCrystal(String path) {
         return switch (path) {
             case "budding_data_crystal_4", "budding_data_crystal_0" -> null;
             case "budding_data_crystal_3" -> "data_energistics:budding_data_crystal_2";
             case "budding_data_crystal_2" -> "data_energistics:budding_data_crystal_1";
             case "budding_data_crystal_1" -> "data_energistics:budding_data_crystal_0";
+            default -> null;
+        };
+    }
+
+    @Nullable
+    private static String degradedEnergizedCrystal(String path) {
+        return switch (path) {
+            case "flawless_budding_energized_crystal" -> null;
+            case "flawed_budding_energized_crystal" -> "neoecoae:chipped_budding_energized_crystal";
+            case "chipped_budding_energized_crystal" -> "neoecoae:damaged_budding_energized_crystal";
+            case "damaged_budding_energized_crystal" -> "neoecoae:energized_crystal_block";
             default -> null;
         };
     }

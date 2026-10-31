@@ -8,13 +8,13 @@ import io.github.lounode.ae2cs.common.init.AECSTags;
 import io.github.lounode.ae2cs.datagen.AECSRecipeProvider;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 
-import com.simibubi.create.AllItems;
 import com.simibubi.create.AllRecipeTypes;
 import com.simibubi.create.api.data.recipe.MechanicalCraftingRecipeBuilder;
 import com.simibubi.create.content.kinetics.saw.CuttingRecipe;
@@ -43,19 +43,20 @@ public class AECSCompatCreateRecipeProvider extends AECSRecipeProvider {
                 AECSItems.PURE_ROSE_QUARTZ, AECSBlocks.PURE_ROSE_QUARTZ_BLOCK);
 
         // 高纯玫瑰水晶的唯一用处
-        stonecutterResultFromTag(compatOut, RecipeCategory.MISC, AllItems.POLISHED_ROSE_QUARTZ, AECSTags.Items.PURE_ROSE_QUARTZ, 2);
+        var polishedRoseQuartz = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("create", "polished_rose_quartz"));
+        stonecutterResultFromTag(compatOut, RecipeCategory.MISC, polishedRoseQuartz, AECSTags.Items.PURE_ROSE_QUARTZ, 2);
 
         StandardProcessingRecipe.Serializer<CuttingRecipe> cuttingSerializer = AllRecipeTypes.CUTTING.getSerializer();
         new StandardProcessingRecipe.Builder<>(cuttingSerializer.factory(),
                 AE2CrystalScience.makeId("mechanical_cutting/polished_rose_quartz_from_pure_rose_quartz"))
                 .require(AECSItems.PURE_ROSE_QUARTZ)
                 .duration(20)
-                .output(AllItems.POLISHED_ROSE_QUARTZ)
+                .output(polishedRoseQuartz)
                 .build(compatOut);
 
         MechanicalCraftingRecipeBuilder.shapedRecipe(AECSItems.ROSE_QUARTZ_SEED)
                 .patternLine("a")
-                .key('a', AllItems.POLISHED_ROSE_QUARTZ)
+                .key('a', polishedRoseQuartz)
                 .build(compatOut, getMechanicalCraftingPath(AECSItems.ROSE_QUARTZ_SEED));
     }
 

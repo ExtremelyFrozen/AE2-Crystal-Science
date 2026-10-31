@@ -2,7 +2,7 @@ package io.github.lounode.ae2cs.api.ids;
 
 public class AECSBlockIds {
 
-    public static final String CRYSTAL_MOTHER_ROCK_SUFFIX = "mother_rock";
+    public static final String CRYSTAL_MOTHER_ROCK_SUFFIX = "budding_rock";
     public static final String SMALL_CRYSTAL_BUD_SUFFIX = "small_crystal_bud";
     public static final String MEDIUM_CRYSTAL_BUD_SUFFIX = "medium_crystal_bud";
     public static final String LARGE_CRYSTAL_BUD_SUFFIX = "large_crystal_bud";

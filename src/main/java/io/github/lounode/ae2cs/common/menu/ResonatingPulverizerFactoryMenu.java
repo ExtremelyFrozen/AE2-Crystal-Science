@@ -19,6 +19,7 @@ public class ResonatingPulverizerFactoryMenu extends ResonatingFactoryMenu<Reson
 
     private static final String FILL_FLUID_INPUT_ACTION = "fill_fluid_input";
     private static final String DRAIN_FLUID_OUTPUT_ACTION = "drain_fluid_output";
+    private static final String AVERAGE_INPUT_ACTION = "average_input";
 
     @GuiSync(10)
     public int recipeProgress;
@@ -38,10 +39,14 @@ public class ResonatingPulverizerFactoryMenu extends ResonatingFactoryMenu<Reson
     @GuiSync(15)
     public FluidTankState outputFluid = new FluidTankState(FluidStack.EMPTY, 16_000);
 
+    @GuiSync(16)
+    public boolean averageInputEnabled;
+
     public ResonatingPulverizerFactoryMenu(int id, Inventory ip, ResonatingPulverizerFactoryBlockEntity host) {
         super(AECSMenus.RESONATING_PULVERIZER_FACTORY_MENU.get(), id, ip, host);
         registerClientAction(FILL_FLUID_INPUT_ACTION, this::fillFluidInput);
         registerClientAction(DRAIN_FLUID_OUTPUT_ACTION, this::drainFluidOutput);
+        registerClientAction(AVERAGE_INPUT_ACTION, this::toggleAverageInput);
     }
 
     @Override
@@ -75,6 +80,14 @@ public class ResonatingPulverizerFactoryMenu extends ResonatingFactoryMenu<Reson
         sendClientAction(DRAIN_FLUID_OUTPUT_ACTION);
     }
 
+    public void sendAverageInputAction() {
+        sendClientAction(AVERAGE_INPUT_ACTION);
+    }
+
+    private void toggleAverageInput() {
+        getHost().setAverageInputEnabled(!getHost().isAverageInputEnabled());
+    }
+
     private void fillFluidInput() {
         var result = FluidUtil.tryEmptyContainer(getCarried(), getHost().getFluidTanks().input(), Integer.MAX_VALUE, getPlayer(), true);
         if (result.isSuccess()) setCarried(result.getResult());
@@ -94,6 +107,7 @@ public class ResonatingPulverizerFactoryMenu extends ResonatingFactoryMenu<Reson
         currentEnergy = getHost().getAECurrentPower();
         inputFluid = new FluidTankState(getHost().getFluidTanks().input().getFluid(), getHost().getFluidTanks().input().getCapacity());
         outputFluid = new FluidTankState(getHost().getFluidTanks().output().getFluid(), getHost().getFluidTanks().output().getCapacity());
+        averageInputEnabled = getHost().isAverageInputEnabled();
 
         super.broadcastChanges();
     }
