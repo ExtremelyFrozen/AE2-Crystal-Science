@@ -117,13 +117,4 @@ repositories {
         forRepository { maven { url = "https://cursemaven.com" } }
         filter { includeGroup("curse.maven") }
     }
-    exclusiveContent { // Create: Crystal Industry is not published as a CurseMaven jar artifact.
-        forRepository {
-            maven {
-                url = uri("libs/create-crystal-industry")
-                metadataSources { artifact() }
-            }
-        }
-        filter { includeModule("create.crystal.industry", "create_crystal_industry") }
-    }
 }

@@ -58,6 +58,7 @@ cognition = "8406272"
 forbidden-arcanus = "6875895"
 valhelsia-core = "6296775"
 imblocker = "8167852"
+create-crystal-industry = "9224053" # 1.0.8, NeoForge 1.21.1
 
 ## libs ##
 
@@ -121,6 +122,8 @@ cognition           = { module = "curse.maven:cognition-mod-579484", version.ref
 forbidden-arcanus   = { module = "curse.maven:forbidden-arcanus-309858", version.ref = "forbidden-arcanus" }
 valhelsia-core      = { module = "curse.maven:valhelsia-core-416935", version.ref = "valhelsia-core" }
 imblocker           = { module = "curse.maven:imblocker-483760", version.ref = "imblocker" }
+
+create-crystal-industry = { module = "curse.maven:create-crystal-industry-1693627", version.ref = "create-crystal-industry" }
 
 [bundles]
 jei = ["jei-common-api", "jei-neoforge-api"]

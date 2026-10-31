@@ -74,9 +74,7 @@ dependencies {
         exclude group: "maven.modrinth", module: "journeymap"
         exclude group: "info.journeymap", module: "journeymap-api-neoforge"
     }
-    // Create: Crystal Industry 1.0.8 (CurseForge file 9224053). CurseMaven only publishes its POM,
-    // so the development client resolves the jar directly. Create is already on the runtime classpath.
-    localRuntime "create.crystal.industry:create_crystal_industry:1.0.8"
+    localRuntime(forge.create.crystal.industry)
 
     // Runtime AE2 addons
     localRuntime(forge.guideme)

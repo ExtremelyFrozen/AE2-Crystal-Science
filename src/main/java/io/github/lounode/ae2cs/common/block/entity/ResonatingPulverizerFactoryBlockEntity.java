@@ -200,8 +200,7 @@ public class ResonatingPulverizerFactoryBlockEntity extends AENetworkedSelfPower
             int selected = -1;
             for (int i = 0; i < groups.size(); i++) {
                 if (slotsPerGroup[i] >= groups.get(i).getCount()) continue;
-                if (selected < 0 || (long) groups.get(i).getCount() * slotsPerGroup[selected]
-                        > (long) groups.get(selected).getCount() * slotsPerGroup[i]) {
+                if (selected < 0 || (long) groups.get(i).getCount() * slotsPerGroup[selected] > (long) groups.get(selected).getCount() * slotsPerGroup[i]) {
                     selected = i;
                 }
             }

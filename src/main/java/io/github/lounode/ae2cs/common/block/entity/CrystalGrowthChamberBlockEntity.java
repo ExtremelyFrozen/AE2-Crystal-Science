@@ -191,10 +191,7 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
             return true;
         }
         ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
-        return id.toString().equals("ae2lt:overload_crystal_block")
-                || id.toString().equals("appgen:ember_block")
-                || id.toString().equals("neoecoae:energized_crystal_block")
-                || id.toString().equals("extendedae_plus:lattra_crystal_block");
+        return id.toString().equals("ae2lt:overload_crystal_block") || id.toString().equals("appgen:ember_block") || id.toString().equals("neoecoae:energized_crystal_block") || id.toString().equals("extendedae_plus:lattra_crystal_block");
     }
 
     @Nullable
@@ -203,8 +200,7 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
     }
 
     public boolean hasAcceleratorCatalyst() {
-        return acceleratorDisplayBlock != null
-                && isAcceleratorInput(acceleratorDisplayBlock.asItem().getDefaultInstance());
+        return acceleratorDisplayBlock != null && isAcceleratorInput(acceleratorDisplayBlock.asItem().getDefaultInstance());
     }
 
     /* 对外返回升级仓 */
@@ -450,9 +446,7 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
     @Nullable
     private static ForeignMotherRock knownForeignMotherRock(Block block) {
         ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
-        if (id.getNamespace().equals("create_crystal_industry")
-                && id.getPath().endsWith("_budding")
-                && !id.getPath().equals("fluix_budding")) {
+        if (id.getNamespace().equals("create_crystal_industry") && id.getPath().endsWith("_budding") && !id.getPath().equals("fluix_budding")) {
             String family = id.getPath().substring(0, id.getPath().length() - "_budding".length());
             return new ForeignMotherRock(
                     "create_crystal_industry:" + family + "_small_bud",
