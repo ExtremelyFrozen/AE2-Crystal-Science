@@ -40,11 +40,14 @@ public class ResonatingPulverizerFactoryMenu extends UpgradeableMenu<ResonatingP
     @GuiSync(15)
     public FluidTankState outputFluid = new FluidTankState(FluidStack.EMPTY, 16_000);
 
+    @GuiSync(16)
+    public boolean averageInputEnabled;
+
     public ResonatingPulverizerFactoryMenu(int id, Inventory ip, ResonatingPulverizerFactoryBlockEntity host) {
         super(AECSMenus.RESONATING_PULVERIZER_FACTORY_MENU.get(), id, ip, host);
         registerClientAction(FILL_FLUID_INPUT_ACTION, this::fillFluidInput);
         registerClientAction(DRAIN_FLUID_OUTPUT_ACTION, this::drainFluidOutput);
-        registerClientAction(AVERAGE_INPUT_ACTION, this::averageInput);
+        registerClientAction(AVERAGE_INPUT_ACTION, this::toggleAverageInput);
 
         AppEngInternalInventory inputInv = getHost().getInputInv();
         AppEngInternalInventory outputInv = getHost().getOutputInv();
@@ -79,8 +82,8 @@ public class ResonatingPulverizerFactoryMenu extends UpgradeableMenu<ResonatingP
         sendClientAction(AVERAGE_INPUT_ACTION);
     }
 
-    private void averageInput() {
-        getHost().averageInput();
+    private void toggleAverageInput() {
+        getHost().setAverageInputEnabled(!getHost().isAverageInputEnabled());
     }
 
     private void fillFluidInput() {
@@ -102,6 +105,7 @@ public class ResonatingPulverizerFactoryMenu extends UpgradeableMenu<ResonatingP
         currentEnergy = getHost().getAECurrentPower();
         inputFluid = new FluidTankState(getHost().getFluidTanks().input().getFluid(), getHost().getFluidTanks().input().getCapacity());
         outputFluid = new FluidTankState(getHost().getFluidTanks().output().getFluid(), getHost().getFluidTanks().output().getCapacity());
+        averageInputEnabled = getHost().isAverageInputEnabled();
 
         super.broadcastChanges();
     }

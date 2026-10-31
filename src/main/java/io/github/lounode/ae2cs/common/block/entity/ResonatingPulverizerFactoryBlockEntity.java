@@ -98,6 +98,8 @@ public class ResonatingPulverizerFactoryBlockEntity extends AENetworkedSelfPower
      */
     private int parallelism = 1;
 
+    private boolean averageInputEnabled;
+
     @Nullable
     private RecipeHolder<CrystalPulverizerRecipe> activeRecipe;
 
@@ -163,7 +165,18 @@ public class ResonatingPulverizerFactoryBlockEntity extends AENetworkedSelfPower
     /**
      * 将当前输入物品均匀分布到九个输入槽；不同物品不会互相混合。
      */
-    public void averageInput() {
+    public void setAverageInputEnabled(boolean enabled) {
+        if (averageInputEnabled == enabled) return;
+        averageInputEnabled = enabled;
+        if (enabled) averageInput();
+        setChanged();
+    }
+
+    public boolean isAverageInputEnabled() {
+        return averageInputEnabled;
+    }
+
+    private void averageInput() {
         AppEngInternalInventory input = getInputInv();
         List<ItemStack> groups = new ArrayList<>();
         for (int i = 0; i < input.size(); i++) {
@@ -257,6 +270,8 @@ public class ResonatingPulverizerFactoryBlockEntity extends AENetworkedSelfPower
         super.serverTick();
 
         if (getLevel() == null || getLevel().isClientSide()) return;
+
+        if (averageInputEnabled) averageInput();
 
         checkActive(getAECurrentPower() > 0);
 
@@ -450,6 +465,7 @@ public class ResonatingPulverizerFactoryBlockEntity extends AENetworkedSelfPower
         upgrades.writeToNBT(data, "upgrades", registries);
         fluidTanks.writeToNbt(data, registries);
         data.putInt("recipe_progress", recipeProgress);
+        data.putBoolean("average_input_enabled", averageInputEnabled);
         if (activeRecipe != null) {
             data.putString("active_recipe_id", activeRecipe.id().toString());
         }
@@ -461,6 +477,7 @@ public class ResonatingPulverizerFactoryBlockEntity extends AENetworkedSelfPower
         upgrades.readFromNBT(data, "upgrades", registries);
         fluidTanks.readFromNbt(data, registries);
         recipeProgress = data.getInt("recipe_progress");
+        averageInputEnabled = data.getBoolean("average_input_enabled");
         if (data.contains("active_recipe_id")) {
             activeRecipeId = ResourceLocation.parse(data.getString("active_recipe_id"));
         }

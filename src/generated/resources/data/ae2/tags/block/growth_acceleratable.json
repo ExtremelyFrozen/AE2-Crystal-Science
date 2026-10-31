@@ -1,15 +1,15 @@
 {
   "values": [
-    "ae2cs:nether_quartz_mother_rock",
-    "ae2cs:charged_certus_quartz_mother_rock",
-    "ae2cs:ender_quartz_mother_rock",
-    "ae2cs:energized_fluix_mother_rock",
-    "ae2cs:fluix_mother_rock",
-    "ae2cs:redstone_mother_rock",
-    "ae2cs:resonating_mother_rock",
-    "ae2cs:quantum_mother_rock",
-    "ae2cs:link_mother_rock",
-    "ae2cs:meteor_mother_rock",
-    "ae2cs:entro_mother_rock"
+    "ae2cs:nether_quartz_budding_rock",
+    "ae2cs:charged_certus_quartz_budding_rock",
+    "ae2cs:ender_quartz_budding_rock",
+    "ae2cs:energized_fluix_budding_rock",
+    "ae2cs:fluix_budding_rock",
+    "ae2cs:redstone_budding_rock",
+    "ae2cs:resonating_budding_rock",
+    "ae2cs:quantum_budding_rock",
+    "ae2cs:link_budding_rock",
+    "ae2cs:meteor_budding_rock",
+    "ae2cs:entro_budding_rock"
   ]
 }

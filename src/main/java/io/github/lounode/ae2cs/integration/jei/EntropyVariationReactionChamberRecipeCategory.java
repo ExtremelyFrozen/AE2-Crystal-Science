@@ -17,9 +17,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
@@ -113,8 +116,7 @@ public class EntropyVariationReactionChamberRecipeCategory implements IRecipeCat
                           @NotNull IFocusGroup focuses) {
         var recipe = holder.value();
         recipe.getInput().fluid().map(EntropyRecipe.FluidInput::fluid).filter(fluid -> fluid != Fluids.EMPTY)
-                .ifPresent(fluid -> builder.addInputSlot(1, 1).setFluidRenderer(16_000, true, 18, 60)
-                        .addFluidStack(fluid, getFluidInputAmount(recipe)));
+                .ifPresent(fluid -> addFluidSlot(builder.addInputSlot(1, 1), fluid, getFluidInputAmount(recipe)));
         recipe.getInput().block().ifPresent(block -> builder.addInputSlot(39, 22)
                 .addItemStack(block.block().asItem().getDefaultInstance()));
 
@@ -124,8 +126,7 @@ public class EntropyVariationReactionChamberRecipeCategory implements IRecipeCat
         recipe.getDrops().stream().limit(4 - itemOutputs.size()).forEach(itemOutputs::add);
 
         recipe.getOutput().fluid().map(EntropyRecipe.FluidOutput::fluid).filter(fluid -> fluid != Fluids.EMPTY)
-                .ifPresent(fluid -> builder.addOutputSlot(143, 1).setFluidRenderer(16_000, true, 18, 60)
-                        .addFluidStack(fluid, 1000));
+                .ifPresent(fluid -> addFluidSlot(builder.addOutputSlot(143, 1), fluid, 1000));
 
         int outputIndex = 0;
         for (int i = 0; i < 4; i++) {
@@ -133,6 +134,15 @@ public class EntropyVariationReactionChamberRecipeCategory implements IRecipeCat
             if (outputIndex < itemOutputs.size()) {
                 slot.addItemStack(itemOutputs.get(outputIndex++));
             }
+        }
+    }
+
+    private static void addFluidSlot(IRecipeSlotBuilder slot, Fluid fluid, long amount) {
+        // JEI indexes source fluids; the machine selects flowing state through its fluid mode.
+        Fluid displayFluid = fluid instanceof FlowingFluid flowingFluid ? flowingFluid.getSource() : fluid;
+        slot.setFluidRenderer(16_000, true, 18, 60).addFluidStack(displayFluid, amount);
+        if (fluid != displayFluid) {
+            slot.addRichTooltipCallback((view, tooltip) -> tooltip.add(Component.translatable("ae2cs.tooltip.fluid_flowing")));
         }
     }
 

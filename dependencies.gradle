@@ -79,7 +79,10 @@ dependencies {
     // localRuntime(forge.de)
     localRuntime(forge.ae2wt)
     localRuntime(forge.eae)
-    localRuntime(forge.aelt)
+    // AE2LT's JEI RecipeTransferButtonController mixin verifies against the broken
+    // onPress bytecode in JEI 19.70.0.464 and crashes every recipe page. compileOnly
+    // above keeps the code dependency; keep this off the dev client until AE2LT is fixed.
+    // localRuntime(forge.aelt)
     localRuntime(forge.applied.flux)
     localRuntime(forge.applied.create)
     localRuntime(forge.aae)

@@ -2,7 +2,7 @@ package io.github.lounode.ae2cs.client.gui;
 
 import io.github.lounode.ae2cs.client.gui.icon.AECSIcon;
 import io.github.lounode.ae2cs.client.gui.subGUI.SideConfigGUI;
-import io.github.lounode.ae2cs.client.gui.widgets.AECSIconButton;
+import io.github.lounode.ae2cs.client.gui.widgets.AECSAutoModeToggleButton;
 import io.github.lounode.ae2cs.client.gui.widgets.AdvancedProgressBar;
 import io.github.lounode.ae2cs.client.gui.widgets.FluidTankWidget;
 import io.github.lounode.ae2cs.common.location.SimpleComponents;
@@ -23,6 +23,8 @@ public class ResonatingPulverizerFactoryGUI extends UpgradeableScreen<Resonating
 
     // 工作进度条
     private final AdvancedProgressBar workingProgressBar;
+
+    private final AECSAutoModeToggleButton averageButton;
 
     public ResonatingPulverizerFactoryGUI(ResonatingPulverizerFactoryMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, StyleManager.loadStyleDoc("/screens/resonating_pulverizer_factory_menu.json"));
@@ -64,15 +66,18 @@ public class ResonatingPulverizerFactoryGUI extends UpgradeableScreen<Resonating
         widgets.add("fluidOutput", new FluidTankWidget(150, 20, () -> getMenu().outputFluid,
                 () -> getMenu().sendDrainFluidOutputAction()));
 
-        AECSIconButton averageButton = new AECSIconButton(button -> getMenu().sendAverageInputAction()) {
-
-            @Override
-            protected AECSIcon getIcon() {
-                return AECSIcon.AVERAGE;
-            }
-        };
-        averageButton.setMessage(Component.translatable("ae2cs.menu.resonating_pulverizer_factory.average"));
-        addToLeftToolbar(averageButton);
+        this.averageButton = new AECSAutoModeToggleButton(false,
+                Component.translatable("ae2cs.menu.resonating_pulverizer_factory.average"),
+                enabled -> getMenu().sendAverageInputAction());
+        this.averageButton.mapIcon(AECSAutoModeToggleButton.State.DISABLED, AECSIcon.AVERAGE);
+        this.averageButton.mapIcon(AECSAutoModeToggleButton.State.ENABLED, AECSIcon.AVERAGE);
+        addToLeftToolbar(this.averageButton);
         addToLeftToolbar(SideConfigGUI.iconButton());
+    }
+
+    @Override
+    protected void updateBeforeRender() {
+        super.updateBeforeRender();
+        this.averageButton.setBoolean(getMenu().averageInputEnabled);
     }
 }

@@ -40,7 +40,7 @@ public class CrystalInfuserRecipeCategory extends BasicEmiRecipe {
     private static final ResourceLocation MACHINE_SPRITES = AE2CrystalScience.makeId("textures/gui/crystal_infuser_menu.png");
     private static final int ANIM_DURATION_MS = 3_000;
     private static final int WATER_PER_OPERATION = 1_000;
-    private static final int WATER_TANK_CAPACITY = 4_000;
+    private static final int WATER_TANK_CAPACITY = 16_000;
 
     private final CrystalInfuserRecipe recipe;
     private final EmiStack waterInput = EmiStack.of(Fluids.WATER, WATER_PER_OPERATION);

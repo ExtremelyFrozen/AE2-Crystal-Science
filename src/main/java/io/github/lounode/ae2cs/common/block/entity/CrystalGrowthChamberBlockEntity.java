@@ -202,6 +202,11 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
         return acceleratorDisplayBlock;
     }
 
+    public boolean hasAcceleratorCatalyst() {
+        return acceleratorDisplayBlock != null
+                && isAcceleratorInput(acceleratorDisplayBlock.asItem().getDefaultInstance());
+    }
+
     /* 对外返回升级仓 */
     @Override
     public IUpgradeInventory getUpgrades() {

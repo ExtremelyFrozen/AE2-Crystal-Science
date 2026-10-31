@@ -64,10 +64,12 @@ public class CrystalGrowthChamberBlock extends AEBaseEntityBlock<CrystalGrowthCh
             Minecraft.getInstance().particleEngine.createParticle(
                     ParticleTypes.LIGHTNING, x, y, z, 0.0D, 0.0D, 0.0D);
         }
-        if (level.getBlockEntity(pos) instanceof CrystalGrowthChamberBlockEntity be && be.getAcceleratorDisplayBlock() instanceof CrystalMotherRockBlock) {
-            double motherRockX = pos.getX() + 0.5 + (random.nextFloat() - 0.5F) * 0.35;
-            double motherRockY = pos.getY() + 1.12;
-            double motherRockZ = pos.getZ() + 0.5 + (random.nextFloat() - 0.5F) * 0.35;
+        if (level.getBlockEntity(pos) instanceof CrystalGrowthChamberBlockEntity be && be.hasAcceleratorCatalyst()) {
+            // Keep the arc outside the crystal growing above the inset mother rock.
+            Direction edge = Direction.Plane.HORIZONTAL.getRandomDirection(random);
+            double motherRockX = pos.getX() + 0.5 + edge.getStepX() * 0.42 + (random.nextFloat() - 0.5F) * 0.08;
+            double motherRockY = pos.getY() + 1.08;
+            double motherRockZ = pos.getZ() + 0.5 + edge.getStepZ() * 0.42 + (random.nextFloat() - 0.5F) * 0.08;
             Minecraft.getInstance().particleEngine.createParticle(
                     ParticleTypes.LIGHTNING, motherRockX, motherRockY, motherRockZ, 0.0D, 0.0D, 0.0D);
         }
