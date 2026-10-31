@@ -9,14 +9,13 @@ import io.github.lounode.ae2cs.common.location.SimpleComponents;
 import io.github.lounode.ae2cs.common.menu.ResonatingPulverizerFactoryMenu;
 import io.github.lounode.ae2cs.integration.RecipeViewerNavigation;
 
-import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.style.StyleManager;
 import appeng.menu.interfaces.IProgressProvider;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-public class ResonatingPulverizerFactoryGUI extends UpgradeableScreen<ResonatingPulverizerFactoryMenu> {
+public class ResonatingPulverizerFactoryGUI extends ResonatingFactoryScreen<ResonatingPulverizerFactoryMenu> {
 
     // 能量进度条
     private final AdvancedProgressBar energyRateBar;
@@ -63,7 +62,7 @@ public class ResonatingPulverizerFactoryGUI extends UpgradeableScreen<Resonating
 
         widgets.add("fluidInput", new FluidTankWidget(8, 20, () -> getMenu().inputFluid,
                 () -> getMenu().sendFillFluidInputAction()));
-        widgets.add("fluidOutput", new FluidTankWidget(150, 20, () -> getMenu().outputFluid,
+        widgets.add("fluidOutput", new FluidTankWidget(180, 20, () -> getMenu().outputFluid,
                 () -> getMenu().sendDrainFluidOutputAction()));
 
         this.averageButton = new AECSAutoModeToggleButton(false,

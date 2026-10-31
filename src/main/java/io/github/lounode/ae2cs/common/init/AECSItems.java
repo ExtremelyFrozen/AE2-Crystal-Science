@@ -136,6 +136,11 @@ public class AECSItems {
     public static final DeferredItem<Item> SIMPLE_CIRCUIT_PRINT = registerOtherItem(AECSItemIds.SIMPLE_CIRCUIT_PRINT, () -> new Item(defaultBuilder()));
     public static final DeferredItem<Item> SIMPLE_PROCESSOR = registerOtherItem(AECSItemIds.SIMPLE_PROCESSOR, () -> new Item(defaultBuilder()));
 
+    public static final DeferredItem<Item> RESONATING_ENTANGLEMENT_CORE = registerOtherItem(AECSItemIds.RESONATING_ENTANGLEMENT_CORE, () -> new Item(defaultBuilder()));
+    public static final DeferredItem<Item> CRYSTAL_GROWTH_CORE = registerOtherItem(AECSItemIds.CRYSTAL_GROWTH_CORE, () -> new Item(defaultBuilder()));
+    public static final DeferredItem<Item> RESONATING_FACTORY_UPGRADE = registerOtherItem(AECSItemIds.RESONATING_FACTORY_UPGRADE, () -> new Item(defaultBuilder()));
+    public static final DeferredItem<Item> RESONATING_STACKING_CARD = registerOtherItem(AECSItemIds.RESONATING_STACKING_CARD, () -> new Item(defaultBuilder()));
+
     public static final DeferredItem<Item> BLANK_PRINT_PRESS = registerOtherItem(AECSItemIds.BLANK_PRINT_PRESS, () -> new Item(defaultBuilder()));
     public static final DeferredItem<Item> ENDER_BLANK_PRINT_PRESS = registerOtherItem(AECSItemIds.ENDER_BLANK_PRINT_PRESS, () -> new Item(defaultBuilder()));
 

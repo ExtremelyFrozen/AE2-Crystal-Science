@@ -9,57 +9,56 @@
     "texture": "ae2cs:textures/gui/resonating_pulverizer_factory_menu.png",
     "textureWidth": 256,
     "textureHeight": 256,
-    "srcRect": [0, 0, 176, 178]
+    "srcRect": [0, 0, 206, 178]
   },
   "slots": {
-    "MACHINE_INPUT": { "left": 31, "top": 22, "grid": "BREAK_AFTER_3COLS" },
-    "MACHINE_OUTPUT": { "left": 93, "top": 22, "grid": "BREAK_AFTER_3COLS" },
-    "UPGRADE": {
-      "right": 0,
-      "top": 0,
-      "grid": "VERTICAL"
-    }
+    "MACHINE_INPUT": { "left": 35, "top": 24, "grid": "BREAK_AFTER_3COLS" },
+    "MACHINE_OUTPUT": { "left": 119, "top": 24, "grid": "BREAK_AFTER_3COLS" },
+    "UPGRADE": { "right": 0, "top": 0, "grid": "VERTICAL" },
+    "TOOLBOX": { "right": 1, "top": 130, "grid": "BREAK_AFTER_3COLS" },
+    "PLAYER_INVENTORY": { "left": 23, "top": 94, "grid": "BREAK_AFTER_9COLS" },
+    "PLAYER_HOTBAR": { "left": 23, "top": 152, "grid": "HORIZONTAL" }
   },
   "text": {
     "title": {
-      "text": { "translate": "block.ae2cs.resonating_pulverizer_factory" },
-      "position": { "left": 8, "top": 6 }
+      "text": {
+        "translate": "block.ae2cs.resonating_pulverizer_factory"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    "player_inventory_title": {
+      "text": {
+        "translate": "container.inventory"
+      },
+      "position": {
+        "left": 23,
+        "top": 83
+      }
     }
   },
   "images": {
     "progressBarBase": {
       "texture": "ae2cs:textures/gui/resonating_pulverizer_factory_menu.png",
-      "srcRect": [176, 0, 22, 16]
+      "srcRect": [206, 0, 22, 16]
     },
     "workingProgressBar": {
       "texture": "ae2cs:textures/gui/resonating_pulverizer_factory_menu.png",
-      "srcRect": [176, 16, 22, 16]
+      "srcRect": [206, 16, 22, 16]
     },
     "energyRateBar": {
       "texture": "ae2cs:textures/gui/resonating_pulverizer_factory_menu.png",
-      "srcRect": [176, 34, 6, 18]
+      "srcRect": [207, 34, 6, 18]
     }
   },
   "widgets": {
-    "progressBarBase": {
-      "left": 77,
-      "top": 77
-    },
-    "workingProgressBar": {
-      "left": 77,
-      "top": 77
-    },
-    "energyRateBar": {
-      "left": -10000,
-      "top": -10000
-    },
-    "fluidInput": {
-      "left": 8,
-      "top": 20
-    },
-    "fluidOutput": {
-      "left": 150,
-      "top": 20
-    }
+    "progressBarBase": { "left": 92, "top": 42 },
+    "workingProgressBar": { "left": 92, "top": 42 },
+    "energyRateBar": { "left": -10000, "top": -10000 },
+    "fluidInput": { "left": 8, "top": 20 },
+    "fluidOutput": { "left": 180, "top": 20 },
+    "toolbox": { "right": 2, "top": 124, "width": 59, "height": 66 }
   }
 }

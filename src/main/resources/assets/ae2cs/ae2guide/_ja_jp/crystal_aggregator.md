@@ -10,6 +10,8 @@ item_ids:
 
 # 水晶収集機
 
+共振版のスロット・アップグレード・操作については、[共鳴水晶収集工場](resonating_aggregator_factory.md)を参照してください。
+
 <Row gap="16">
   <BlockImage id="ae2cs:crystal_aggregator" scale="8" />
 </Row>

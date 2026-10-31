@@ -34,7 +34,7 @@ sourceSets {
     }
 
     test {
-        compileClasspath += main.output
+        compileClasspath += main.output + main.compileClasspath
         runtimeClasspath += main.output + main.runtimeClasspath
     }
 
@@ -46,15 +46,6 @@ sourceSets {
     clientExtra {
         compileClasspath += client.output + extra.compileClasspath
         runtimeClasspath += client.output + client.runtimeClasspath + extra.runtimeClasspath
-    }
-
-    jeiClient {
-        compileClasspath += clientExtra.compileClasspath
-        runtimeClasspath += clientExtra.runtimeClasspath.filter { file ->
-            def name = file.name.toLowerCase()
-            !(name.startsWith('emi-') || name.contains('-emi-')
-                    || name.contains('jei-1.21.1-neoforge') || name.contains('jei-1.21.1-common'))
-        }
     }
 }
 
@@ -74,13 +65,7 @@ configurations {
     renderNurseCfg {
         canBeConsumed = false
     }
-
-    jeiClientRuntime {
-        canBeConsumed = false
-    }
 }
-
-sourceSets.jeiClient.runtimeClasspath += configurations.jeiClientRuntime
 
 apply from: "$rootDir/gradle/scripts/jars.gradle"
 apply from: "$rootDir/gradle/scripts/moddevgradle.gradle"

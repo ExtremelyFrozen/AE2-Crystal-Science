@@ -46,11 +46,14 @@ public class AECSBlockTagProvider extends BlockTagsProvider {
         // 非接口机器
         tag(AECSTags.Blocks.AECS_MACHINE)
                 .add(AECSBlocks.CRYSTAL_GROWTH_CHAMBER_BLOCK.get())
+                .add(AECSBlocks.RESONATING_GROWTH_FACTORY_BLOCK.get())
                 .add(AECSBlocks.CRYSTAL_GROWTH_ACCELERATOR_BLOCK.get())
                 .add(AECSBlocks.CIRCUIT_ETCHER_BLOCK.get())
+                .add(AECSBlocks.RESONATING_CIRCUIT_ETCHER_FACTORY_BLOCK.get())
                 .add(AECSBlocks.QUARTZ_GRINDSTONE_BLOCK.get())
                 .add(AECSBlocks.CRYSTAL_PULVERIZER_BLOCK.get())
                 .add(AECSBlocks.RESONATING_PULVERIZER_FACTORY_BLOCK.get())
+                .add(AECSBlocks.RESONATING_AGGREGATOR_FACTORY_BLOCK.get())
                 .add(AECSBlocks.CRYSTAL_VIBRATION_CHAMBER_BLOCK.get())
                 .add(AECSBlocks.CHARGED_RESONATING_GENERATOR_BLOCK.get())
                 .add(AECSBlocks.CRYSTAL_AGGREGATOR_BLOCK.get())
@@ -62,6 +65,7 @@ public class AECSBlockTagProvider extends BlockTagsProvider {
 
         // 接口机器
         tag(AECSTags.Blocks.AECS_PART)
+                .add(AECSBlocks.QUANTUM_INTERFACE_BLOCK.get())
                 .add(AECSBlocks.ENDER_INTERFACE_BLOCK.get())
                 .add(AECSBlocks.EX_ENDER_INTERFACE_BLOCK.get())
                 .add(AECSBlocks.INTEGRATED_INTERFACE_BLOCK.get())

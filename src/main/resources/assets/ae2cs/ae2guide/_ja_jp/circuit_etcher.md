@@ -10,6 +10,8 @@ item_ids:
 
 # 回路エッチング装置
 
+共振版のスロット・アップグレード・操作については、[共振回路エッチング工場](resonating_circuit_etcher_factory.md)を参照してください。
+
 <Row gap="16">
   <BlockImage id="ae2cs:circuit_etcher" scale="8" />
 </Row>

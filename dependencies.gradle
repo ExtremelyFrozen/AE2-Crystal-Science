@@ -1,6 +1,9 @@
-dependencies {
-    def enableEmi = providers.gradleProperty("enableEmi").map { it.toBoolean() }.orElse(false).get()
+def recipeViewer = providers.gradleProperty("recipeViewer").getOrElse("jei").toLowerCase(Locale.ROOT)
+if (!(recipeViewer in ["none", "jei", "emi", "all"])) {
+    throw new GradleException("Invalid recipeViewer '$recipeViewer'. Expected one of: none, jei, emi, all.")
+}
 
+dependencies {
     compileOnly(libs.jetbrains.annotations)
 
     testImplementation(libs.testframework)
@@ -28,9 +31,10 @@ dependencies {
     compileOnly(forge.aae)
     compileOnly(forge.amek)
     compileOnly(forge.mek)
-
+    compileOnly(forge.applied.generators)
+    compileOnly(forge.omni.cells)
     compileOnly(forge.create) {
-        transitive = false
+        exclude group: "mezz.jei"
     }
 
     // FTB
@@ -38,16 +42,16 @@ dependencies {
 
     // Recipe viewers
     compileOnly(forge.bundles.jei)
-    compileOnly "curse.maven:jei-238222:9351272" // 19.70.0.462, NeoForge 1.21.1
     compileOnly(forge.emi)
 
     // WAILA-likes
     compileOnly(forge.jade)
 
+    compileOnly(forge.registrate)
+    compileOnly(forge.ae2addonlib)
+
     // Standard runtime mods
     localRuntime(forge.spark)
-    compileOnly "io.github.pedroksl:ae2addonlib:1.0.3-1.21.1"
-    // FTB //
     localRuntime(forge.architectury)
     localRuntime(forge.ftblibrary)
     localRuntime(forge.ftbultimine)
@@ -57,12 +61,15 @@ dependencies {
     localRuntime(forge.modernfix)
     localRuntime(forge.ae2)
     localRuntime(forge.thunderbolt)
+    localRuntime(forge.ldlib)
     localRuntime(forge.glodium)
     localRuntime(forge.geckolib)
     localRuntime(forge.cloth.config)
     localRuntime(forge.pneumaticcraft)
     localRuntime(forge.kotlinforforge)
     localRuntime(forge.create) {
+        // Keep Create's transitive JEI dependency under recipeViewer's control.
+        exclude group: "mezz.jei"
         // Needed to prevent game-test crashes
         exclude group: "maven.modrinth", module: "journeymap"
         exclude group: "info.journeymap", module: "journeymap-api-neoforge"
@@ -72,7 +79,6 @@ dependencies {
     localRuntime "create.crystal.industry:create_crystal_industry:1.0.8"
 
     // Runtime AE2 addons
-    localRuntime(forge.ae2ji)
     localRuntime(forge.guideme)
     // Data Energistics 3.3.5 still calls the ExtendedAE Plus 1.5 upload API.
     // compileOnly above keeps the code dependency; this stays off the dev client until DE updates.
@@ -92,64 +98,30 @@ dependencies {
     localRuntime(forge.mega.cells)
     localRuntime(forge.amek)
     localRuntime(forge.mek)
+    localRuntime(forge.applied.generators)
+    localRuntime(forge.omni.cells)
+    localRuntime(forge.cognition)
+    localRuntime(forge.controlling)
+    localRuntime(forge.searchables)
+    localRuntime(forge.forbidden.arcanus)
+    localRuntime(forge.valhelsia.core)
 
-    // Runtime recipe viewers. EMI is attached only to All Client runs.
-    localRuntime(forge.jei.neoforge.impl)
-
-    // Dependencies
-    // LDLib2 1.21 publishes the compile jar under the "all" classifier.
-    compileOnly(forge.ldlib) {
-        artifact {
-            classifier = "all"
-        }
+    // Both APIs are compiled; recipeViewer selects which viewers are loaded at runtime.
+    if (recipeViewer == "jei") {
+        localRuntime(forge.jei.neoforge.impl)
+        localRuntime(forge.ae2ji)
+    } else if (recipeViewer == "emi") {
+        localRuntime(forge.emi)
+    } else if (recipeViewer == "all") {
+        localRuntime(forge.jei.neoforge.impl)
+        localRuntime(forge.ae2ji)
+        localRuntime(forge.emi)
     }
-    localRuntime(forge.ldlib)
-
-    // AG
-    implementation "curse.maven:applied-generators-1320369:7161908"
-    // OMNI CELL
-    implementation "curse.maven:omni-cells-1359517:8050965"
-    localRuntime "curse.maven:cognition-mod-579484:8406272"
-    localRuntime "maven.modrinth:xv94TkTM:FaNppCJJ"
-    localRuntime "maven.modrinth:fuuu3xnx:iEE85X0w"
-    localRuntime "curse.maven:forbidden-arcanus-309858:6875895"
-    localRuntime "curse.maven:valhelsia-core-416935:6296775"
-    localRuntime "curse.maven:imblocker-483760:8167852"
-    jeiClientRuntime "curse.maven:jei-238222:9351272" // 19.70.0.462, NeoForge 1.21.1
-
     // Client-only runtime mods
+    clientLocalRuntime(forge.imblocker)
     clientLocalRuntime(forge.jech)
     clientLocalRuntime(forge.ctm)
-    localRuntime(forge.sodium)
-    localRuntime(forge.iris)
+    clientLocalRuntime(forge.sodium)
+    clientLocalRuntime(forge.iris)
     renderNurseCfg(libs.renderNurse)
-
-    //////////////////////////////////////////////////////
-    // Runtime mods for dev testing with unclean client //
-    //////////////////////////////////////////////////////
 }
-//
-//dependencies {
-//    compileOnly "curse.maven:ae2-jei-integration-1074338:5748513"
-//    localRuntime "curse.maven:ae2-jei-integration-1074338:5748513"
-//
-//    localRuntime "curse.maven:nbtedit-reborn-678133:6125444"
-//
-//    // 联动前置
-//    implementation "curse.maven:glodium-957920:5821676"
-//    implementation "curse.maven:geckolib-388172:7415496"
-//
-//    // MEK
-//    implementation "maven.modrinth:mekanism:10.7.13.78"
-//    // MEGA CELL
-//    implementation "curse.maven:mega-cells-622112:6853076"
-//    // EAE
-//    implementation "curse.maven:ex-pattern-provider-892005:7356474"
-//    // AAE
-//    implementation "curse.maven:advancedae-1084104:7374386"
-
-//    // AF
-//    implementation "curse.maven:applied-flux-965012:7429565"
-//    // Create
-//    implementation "curse.maven:create-328085:7408951"
-//}

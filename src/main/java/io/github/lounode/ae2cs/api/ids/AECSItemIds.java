@@ -64,6 +64,11 @@ public class AECSItemIds {
     public static final String SIMPLE_CIRCUIT_PRINT = "simple_circuit_print";
     public static final String SIMPLE_PROCESSOR = "simple_processor";
 
+    public static final String RESONATING_ENTANGLEMENT_CORE = "resonating_entanglement_core";
+    public static final String CRYSTAL_GROWTH_CORE = "crystal_growth_core";
+    public static final String RESONATING_FACTORY_UPGRADE = "resonating_factory_upgrade";
+    public static final String RESONATING_STACKING_CARD = "resonating_stacking_card";
+
     public static final String BLANK_PRINT_PRESS = "blank_print_press";
     public static final String ENDER_BLANK_PRINT_PRESS = "ender_blank_print_press";
 

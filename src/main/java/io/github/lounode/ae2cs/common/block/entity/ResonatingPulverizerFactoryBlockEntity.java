@@ -7,6 +7,8 @@ import io.github.lounode.ae2cs.common.init.AECSBlockProperties;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSRecipeTypes;
+import io.github.lounode.ae2cs.common.inventory.ResonatingFactoryUpgradeInventory;
+import io.github.lounode.ae2cs.common.inventory.ResonatingStackingInventory;
 import io.github.lounode.ae2cs.common.machine.MachineFluidHost;
 import io.github.lounode.ae2cs.common.machine.MachineFluidTanks;
 import io.github.lounode.ae2cs.common.machine.component.AppEngInvComponent;
@@ -18,7 +20,6 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
-import appeng.api.upgrades.UpgradeInventories;
 import appeng.core.definitions.AEItems;
 import appeng.util.inv.AppEngInternalInventory;
 
@@ -84,8 +85,8 @@ public class ResonatingPulverizerFactoryBlockEntity extends AENetworkedSelfPower
     /**
      * 升级仓
      */
-    private final IUpgradeInventory upgrades = UpgradeInventories.forMachine(AECSBlocks.RESONATING_PULVERIZER_FACTORY_BLOCK,
-            4, this::onUpgradesChanged);
+    private final IUpgradeInventory upgrades = new ResonatingFactoryUpgradeInventory(AECSBlocks.RESONATING_PULVERIZER_FACTORY_BLOCK,
+            this::onUpgradesChanged, cards -> ResonatingStackingInventory.canReduceCapacity(cards, getInputInv(), getOutputInv()));
 
     private int speedMultiplier = 1;
     private int overclockCards = 0;
@@ -136,23 +137,11 @@ public class ResonatingPulverizerFactoryBlockEntity extends AENetworkedSelfPower
 
         getMainNode().setIdlePowerUsage(0);
 
-        AppEngInternalInventory inputInv = new AppEngInternalInventory(INVENTORY_SIZE) {
-
-            @Override
-            protected void onContentsChanged(int slot) {
-                super.onContentsChanged(slot);
-                needRefreshRecipeState = true;
-                setChanged();
-            }
-        };
-        AppEngInternalInventory outputInv = new AppEngInternalInventory(INVENTORY_SIZE) {
-
-            @Override
-            protected void onContentsChanged(int slot) {
-                super.onContentsChanged(slot);
-                setChanged();
-            }
-        };
+        var inputInv = new ResonatingStackingInventory(INVENTORY_SIZE, this::getStackCapacity, () -> {
+            needRefreshRecipeState = true;
+            setChanged();
+        });
+        var outputInv = new ResonatingStackingInventory(INVENTORY_SIZE, this::getStackCapacity, this::setChanged);
 
         AppEngInvComponent invComponent = new AppEngInvComponent();
         invComponent.addPort(InvPort.INPUT, inputInv);
@@ -177,7 +166,7 @@ public class ResonatingPulverizerFactoryBlockEntity extends AENetworkedSelfPower
     }
 
     private void averageInput() {
-        AppEngInternalInventory input = getInputInv();
+        var input = (ResonatingStackingInventory) getInputInv();
         List<ItemStack> groups = new ArrayList<>();
         for (int i = 0; i < input.size(); i++) {
             ItemStack stack = input.getStackInSlot(i);
@@ -192,22 +181,53 @@ public class ResonatingPulverizerFactoryBlockEntity extends AENetworkedSelfPower
                 }
             }
             if (!merged) groups.add(stack.copy());
-            input.setItemDirect(i, ItemStack.EMPTY);
         }
-
         if (groups.isEmpty()) return;
 
-        int slot = 0;
-        for (ItemStack group : groups) {
+        // Reserve enough slots for every item type before spreading into free slots.
+        int[] slotsPerGroup = new int[groups.size()];
+        int freeSlots = input.size();
+        for (int i = 0; i < groups.size(); i++) {
+            ItemStack group = groups.get(i);
+            int limit = input.getItemLimit(group);
+            slotsPerGroup[i] = (group.getCount() + limit - 1) / limit;
+            freeSlots -= slotsPerGroup[i];
+        }
+        // Leave the original inventory intact if its contents cannot fit.
+        if (freeSlots < 0) return;
+
+        while (freeSlots > 0) {
+            int selected = -1;
+            for (int i = 0; i < groups.size(); i++) {
+                if (slotsPerGroup[i] >= groups.get(i).getCount()) continue;
+                if (selected < 0 || (long) groups.get(i).getCount() * slotsPerGroup[selected]
+                        > (long) groups.get(selected).getCount() * slotsPerGroup[i]) {
+                    selected = i;
+                }
+            }
+            if (selected < 0) break;
+            slotsPerGroup[selected]++;
+            freeSlots--;
+        }
+
+        List<ItemStack> balanced = new ArrayList<>(input.size());
+        for (int i = 0; i < groups.size(); i++) {
+            ItemStack group = groups.get(i);
             int remaining = group.getCount();
-            while (remaining > 0 && slot < input.size()) {
-                int slotsRemaining = input.size() - slot;
-                int count = Math.min(group.getMaxStackSize(), (remaining + slotsRemaining - 1) / slotsRemaining);
-                input.setItemDirect(slot++, group.copyWithCount(count));
+            for (int slots = slotsPerGroup[i]; slots > 0; slots--) {
+                int count = (remaining + slots - 1) / slots;
+                balanced.add(group.copyWithCount(count));
                 remaining -= count;
             }
         }
-        setChanged();
+        for (int i = 0; i < input.size(); i++) {
+            ItemStack next = i < balanced.size() ? balanced.get(i) : ItemStack.EMPTY;
+            if (!ItemStack.matches(input.getStackInSlot(i), next)) input.setItemDirect(i, next);
+        }
+    }
+
+    public int getStackCapacity() {
+        return 64 << (2 * upgrades.getInstalledUpgrades(AECSItems.RESONATING_STACKING_CARD));
     }
 
     public AppEngInternalInventory getInputInv() {
@@ -256,9 +276,9 @@ public class ResonatingPulverizerFactoryBlockEntity extends AENetworkedSelfPower
     }
 
     private void onUpgradesChanged() {
-        this.overclockCards = Math.min(2, upgrades.getInstalledUpgrades(AECSItems.OVERLOAD_CARD));
+        this.overclockCards = Math.min(4, upgrades.getInstalledUpgrades(AECSItems.OVERLOAD_CARD));
         this.speedMultiplier = overclockCards > 0 ? 1 : 1 << Math.min(4, upgrades.getInstalledUpgrades(AEItems.SPEED_CARD));
-        // 两张升级卡的张数上限沿用原有规则（速度卡 4 张、超频卡 2 张），并行只是额外作用
+        // 四个陨石卡槽独立于两个堆叠卡槽；并行仍遵守现有加工上限。
         int speedCards = Math.min(4, upgrades.getInstalledUpgrades(AEItems.SPEED_CARD));
         this.parallelism = Math.max(1, Math.min(MAX_PARALLELISM,
                 speedCards * PARALLEL_PER_SPEED_CARD + overclockCards * PARALLEL_PER_OVERLOAD_CARD));
@@ -496,7 +516,9 @@ public class ResonatingPulverizerFactoryBlockEntity extends AENetworkedSelfPower
 
     @Override
     public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
-        super.addAdditionalDrops(level, pos, drops);
+        List<ItemStack> raw = new java.util.ArrayList<>();
+        super.addAdditionalDrops(level, pos, raw);
+        ResonatingStackingInventory.splitDrops(raw, drops);
         for (ItemStack stack : upgrades) {
             drops.add(stack);
         }
