@@ -1,18 +1,29 @@
 package io.github.lounode.ae2cs.common.me.logic;
 
+import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
+import io.github.lounode.ae2cs.common.me.logic.mirroring.MirrorProviderGridNode;
+import io.github.lounode.ae2cs.common.me.logic.mirroring.MirrorProviderRouting;
+import io.github.lounode.ae2cs.common.me.logic.mirroring.MirroredPatternSource;
+import io.github.lounode.ae2cs.common.me.logic.mirroring.PatternProviderSources;
+import io.github.lounode.ae2cs.integration.advancedae.mirroring.AdvancedPatternProviderMirroring;
 import io.github.lounode.ae2cs.util.MirrorConfigManager;
 
+import appeng.api.config.LockCraftingMode;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.crafting.ICraftingProvider;
+import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
+import appeng.helpers.patternprovider.PatternProviderReturnInventory;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.fml.ModList;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -24,14 +35,21 @@ public class MirrorPatternProviderLogic extends PatternProviderLogic {
 
     private final IManagedGridNode mainNode;
     private final PatternProviderLogicHost host;
+    private final @Nullable MirrorProviderRouting routing;
     private @Nullable MirroredPatternProviderTarget mirrorTarget;
     public WeakReference<PatternProviderLogicHost> cachedTarget = new WeakReference<>(null);
 
     public MirrorPatternProviderLogic(IManagedGridNode mainNode, PatternProviderLogicHost host) {
+        this(new MirrorProviderGridNode(mainNode), host);
+    }
+
+    private MirrorPatternProviderLogic(MirrorProviderGridNode mainNode, PatternProviderLogicHost host) {
         super(mainNode, host, 0);
         this.mainNode = mainNode;
         this.host = host;
-        this.configManager = new MirrorConfigManager(this, this.configManager);
+        // Use one engine for every source so rebinding cannot strand a second queue or return inventory.
+        this.routing = ModList.get().isLoaded(AECSConstants.AAE_ID) ? AdvancedPatternProviderMirroring.createRouting(mainNode, this, host) : null;
+        this.configManager = routing == null ? new MirrorConfigManager(this, this.configManager) : routing.getConfigManager();
     }
 
     public boolean isMirroring() {
@@ -60,34 +78,30 @@ public class MirrorPatternProviderLogic extends PatternProviderLogic {
     }
 
     public @Nullable PatternProviderLogicHost resolveMirrorTargetHost() {
+        PatternProviderLogicHost target = mirrorTarget == null ? null : mirrorTarget.resolve(host.getBlockEntity().getLevel());
+        if (cachedTarget.get() != target) {
+            cachedTarget = new WeakReference<>(target);
+        }
+        return target;
+    }
+
+    public @Nullable MirroredPatternSource resolveMirrorTargetSource() {
+        // Resolve the part at its current side as well: replacing a part keeps its cable bus alive.
         if (mirrorTarget == null) {
             return null;
         }
-
-        PatternProviderLogicHost target = cachedTarget.get();
-        if (target == null || target.getBlockEntity().isRemoved() || target.getBlockEntity().getLevel() == null) {
-            target = mirrorTarget.resolve(host.getBlockEntity().getLevel());
-            if (target != null) {
-                cachedTarget = new WeakReference<>(target);
-            }
-        }
-
-        if (target instanceof MirrorPatternProviderHost mirrored && mirrored.getMirroringLogic().isMirroring()) {
-            cachedTarget = new WeakReference<>(null);
-            return null;
-        }
-
-        return target;
+        PatternProviderLogicHost target = resolveMirrorTargetHost();
+        return target == null ? mirrorTarget.resolveSource(host.getBlockEntity().getLevel()) : PatternProviderSources.fromHost(target);
     }
 
     @Override
     public int getPriority() {
-        PatternProviderLogicHost target = resolveMirrorTargetHost();
+        MirroredPatternSource target = resolveMirrorTargetSource();
         if (target != null) {
             return target.getPriority();
         }
 
-        return super.getPriority();
+        return routing == null ? super.getPriority() : routing.getPatternPriority();
     }
 
     @Override
@@ -101,7 +115,7 @@ public class MirrorPatternProviderLogic extends PatternProviderLogic {
             updatePatterns();
         }
 
-        return super.pushPattern(patternDetails, inputHolder);
+        return routing == null ? super.pushPattern(patternDetails, inputHolder) : routing.pushPattern(patternDetails, inputHolder);
     }
 
     @Override
@@ -127,12 +141,19 @@ public class MirrorPatternProviderLogic extends PatternProviderLogic {
     }
 
     private void updateMirroredPatterns(boolean forceCraftingProviderRefresh) {
+        if (routing != null) {
+            routing.updatePatterns();
+            if (forceCraftingProviderRefresh) {
+                ICraftingProvider.requestUpdate(mainNode);
+            }
+            return;
+        }
         if (!isMirroring()) {
             super.updatePatterns();
             return;
         }
 
-        PatternProviderLogicHost target = resolveMirrorTargetHost();
+        MirroredPatternSource target = resolveMirrorTargetSource();
 
         if (target == null) {
             if (!patterns.isEmpty() || !patternInputs.isEmpty()) {
@@ -145,7 +166,7 @@ public class MirrorPatternProviderLogic extends PatternProviderLogic {
             return;
         }
 
-        var targetPatterns = target.getLogic().getAvailablePatterns();
+        var targetPatterns = target.getAvailablePatterns();
 
         if (patterns.equals(targetPatterns)) {
             if (forceCraftingProviderRefresh) {
@@ -171,27 +192,96 @@ public class MirrorPatternProviderLogic extends PatternProviderLogic {
 
     @Override
     public List<IPatternDetails> getAvailablePatterns() {
-        PatternProviderLogicHost target = resolveMirrorTargetHost();
-
-        if (target != null) {
+        if (isMirroring()) {
             updatePatterns();
-            return target.getLogic().getAvailablePatterns();
         }
+        return routing == null ? super.getAvailablePatterns() : routing.getAvailablePatterns();
+    }
 
-        return super.getAvailablePatterns();
+    @Override
+    public boolean isBusy() {
+        return routing == null ? super.isBusy() : routing.isBusy();
+    }
+
+    @Override
+    public PatternProviderReturnInventory getReturnInv() {
+        return routing == null ? super.getReturnInv() : routing.getReturnInv();
+    }
+
+    @Override
+    public LockCraftingMode getCraftingLockedReason() {
+        return routing == null ? super.getCraftingLockedReason() : routing.getCraftingLockedReason();
+    }
+
+    @Override
+    public @Nullable GenericStack getUnlockStack() {
+        return routing == null ? super.getUnlockStack() : routing.getUnlockStack();
+    }
+
+    @Override
+    public void resetCraftingLock() {
+        if (routing == null) {
+            super.resetCraftingLock();
+        } else {
+            routing.resetCraftingLock();
+        }
+    }
+
+    @Override
+    public void onMainNodeStateChanged() {
+        if (routing == null) {
+            super.onMainNodeStateChanged();
+        } else {
+            routing.onMainNodeStateChanged();
+        }
+    }
+
+    @Override
+    public void updateRedstoneState() {
+        if (routing == null) {
+            super.updateRedstoneState();
+        } else {
+            routing.updateRedstoneState();
+        }
+    }
+
+    @Override
+    public void addDrops(List<ItemStack> drops) {
+        if (routing == null) {
+            super.addDrops(drops);
+        } else {
+            routing.addDrops(drops);
+        }
+    }
+
+    @Override
+    public void clearContent() {
+        if (routing == null) {
+            super.clearContent();
+        } else {
+            routing.clearContent();
+        }
     }
 
     @Override
     public void writeToNBT(CompoundTag tag, HolderLookup.Provider registries) {
-        super.writeToNBT(tag, registries);
+        if (routing == null) {
+            super.writeToNBT(tag, registries);
+        } else {
+            routing.writeToNBT(tag, registries);
+        }
         MirroredPatternProviderTarget.write(mirrorTarget, tag);
     }
 
     @Override
     public void readFromNBT(CompoundTag tag, HolderLookup.Provider registries) {
-        super.readFromNBT(tag, registries);
         this.mirrorTarget = MirroredPatternProviderTarget.read(tag);
         this.cachedTarget = new WeakReference<>(null);
+        if (routing == null) {
+            super.readFromNBT(tag, registries);
+        } else {
+            routing.readFromNBT(tag, registries);
+        }
         if (isMirroring()) {
             updatePatterns();
         }

@@ -4,11 +4,11 @@ import io.github.lounode.ae2cs.common.me.logic.MirrorPatternProviderLogic;
 
 import appeng.api.config.Setting;
 import appeng.api.util.IConfigManager;
-import appeng.helpers.patternprovider.PatternProviderLogicHost;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,13 +24,19 @@ public class MirrorConfigManager implements IConfigManager {
 
     @Override
     public Set<Setting<?>> getSettings() {
-        return this.delegate.getSettings();
+        var target = host.resolveMirrorTargetSource();
+        if (target == null) {
+            return this.delegate.getSettings();
+        }
+        Set<Setting<?>> settings = new HashSet<>(this.delegate.getSettings());
+        settings.addAll(target.getConfigManager().getSettings());
+        return Set.copyOf(settings);
     }
 
     @Override
     public <T extends Enum<T>> T getSetting(Setting<T> setting) {
-        PatternProviderLogicHost target = host.cachedTarget.get();
-        if (target != null) {
+        var target = host.resolveMirrorTargetSource();
+        if (target != null && target.getConfigManager().getSettings().contains(setting)) {
             return target.getConfigManager().getSetting(setting);
         }
 

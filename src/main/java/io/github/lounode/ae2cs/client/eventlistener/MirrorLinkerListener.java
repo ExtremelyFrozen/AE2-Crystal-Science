@@ -5,6 +5,7 @@ import io.github.lounode.ae2cs.common.item.MirrorLinkerItem;
 import io.github.lounode.ae2cs.network.c2s.MirrorLinkerBatchApplyPacket;
 
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -35,7 +36,7 @@ public class MirrorLinkerListener {
         event.setCancellationResult(InteractionResult.SUCCESS);
         event.setCanceled(true);
         PacketDistributor.sendToServer(new MirrorLinkerBatchApplyPacket(event.getPos(),
-                event.getHand() == net.minecraft.world.InteractionHand.MAIN_HAND,
+                event.getHand() == InteractionHand.MAIN_HAND,
                 event.getHitVec().getLocation().x,
                 event.getHitVec().getLocation().y,
                 event.getHitVec().getLocation().z));

@@ -11,7 +11,6 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.stacks.AEItemKey;
 import appeng.blockentity.crafting.PatternProviderBlockEntity;
 import appeng.helpers.patternprovider.PatternProviderLogic;
-import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.menu.locator.MenuHostLocator;
 import appeng.util.SettingsFrom;
 
@@ -56,7 +55,7 @@ public class MirrorPatternProviderBlockEntity extends PatternProviderBlockEntity
         var targetRef = getMirroringLogic().getMirrorTarget();
         if (targetRef != null) {
             MenuHostLocator targetLocator = targetRef.toMenuLocator(level);
-            PatternProviderLogicHost mirrorTarget = getMirroringLogic().resolveMirrorTargetHost();
+            var mirrorTarget = getMirroringLogic().resolveMirrorTargetSource();
             if (mirrorTarget != null && targetLocator != null) {
                 mirrorTarget.openMenu(player, targetLocator);
                 return;

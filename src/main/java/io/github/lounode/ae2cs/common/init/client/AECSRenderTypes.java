@@ -13,6 +13,22 @@ public class AECSRenderTypes {
 
     private AECSRenderTypes() {}
 
+    // Interior markers must remain visible through the provider's opaque model.
+    public static final RenderType MIRROR_MARKER_FACE = RenderType.create(
+            "ae2cs_mirror_marker_face",
+            DefaultVertexFormat.POSITION_COLOR,
+            VertexFormat.Mode.QUADS,
+            256,
+            false,
+            true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getPositionColorShader))
+                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+                    .setDepthTestState(RenderStateShard.NO_DEPTH_TEST)
+                    .setCullState(RenderStateShard.NO_CULL)
+                    .setWriteMaskState(RenderStateShard.COLOR_WRITE)
+                    .createCompositeState(false));
+
     public static final RenderType RESONATING_MARK_FACE = RenderType.create(
             "ae2cs_resonating_mark_face",
             DefaultVertexFormat.POSITION_COLOR,

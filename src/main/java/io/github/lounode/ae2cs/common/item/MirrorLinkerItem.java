@@ -2,13 +2,11 @@ package io.github.lounode.ae2cs.common.item;
 
 import io.github.lounode.ae2cs.common.me.logic.MirrorPatternProviderHost;
 import io.github.lounode.ae2cs.common.me.logic.MirroredPatternProviderTarget;
-import io.github.lounode.ae2cs.util.ChunkHelper;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -31,8 +29,6 @@ import java.util.Set;
 
 public class MirrorLinkerItem extends Item {
 
-    private static final int MAX_BATCH_RADIUS = 16;
-    private static final int MAX_BATCH_PROVIDERS = 256;
     private static final double MAX_BATCH_DISTANCE_SQR = 64.0D;
 
     public MirrorLinkerItem(Properties properties) {
@@ -46,25 +42,20 @@ public class MirrorLinkerItem extends Item {
             return InteractionResult.PASS;
         }
 
+        if (player.isShiftKeyDown()) {
+            return SimplePatternProviderMirrorHelper.tryBind(stack, context);
+        }
+
         MirrorPatternProviderHost mirrorHost = PatternProviderBindingHelper.resolveClickedMirrorProvider(context);
         if (mirrorHost != null) {
             if (context.getLevel().isClientSide()) {
                 return InteractionResult.SUCCESS;
             }
 
-            if (player.isShiftKeyDown()) {
-                clearLoadedMirrorGroup(player, mirrorHost);
-                return InteractionResult.CONSUME;
-            }
-
             return applyStoredTarget(stack, player, mirrorHost) ? InteractionResult.CONSUME : InteractionResult.PASS;
         }
 
-        if (player.isShiftKeyDown()) {
-            return InteractionResult.PASS;
-        }
-
-        return SimplePatternProviderMirrorHelper.tryBind(stack, context);
+        return InteractionResult.PASS;
     }
 
     @Override
@@ -80,6 +71,10 @@ public class MirrorLinkerItem extends Item {
     @Override
     public void appendHoverText(@NotNull ItemStack stack, Item.TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+        tooltipComponents.add(Component.translatable("ae2cs.item.mirror_linker.select_source").withStyle(ChatFormatting.GRAY));
+        tooltipComponents.add(Component.translatable("ae2cs.item.mirror_linker.bind_mirror").withStyle(ChatFormatting.GRAY));
+        tooltipComponents.add(Component.translatable("ae2cs.item.mirror_linker.bind_connected").withStyle(ChatFormatting.GRAY));
+        tooltipComponents.add(Component.translatable("ae2cs.item.mirror_linker.clear_source").withStyle(ChatFormatting.GRAY));
         var target = SimplePatternProviderMirrorHelper.getTarget(stack);
         if (target == null) {
             tooltipComponents.add(Component.translatable("ae2cs.item.mirror_pattern_provider.target.unbound").withStyle(ChatFormatting.GRAY));
@@ -103,33 +98,6 @@ public class MirrorLinkerItem extends Item {
         return true;
     }
 
-    private static void clearLoadedMirrorGroup(Player player, MirrorPatternProviderHost selected) {
-        if (!(player.level() instanceof ServerLevel level)) {
-            return;
-        }
-
-        MirroredPatternProviderTarget target = selected.getMirroringLogic().getMirrorTarget();
-        if (target == null) {
-            player.displayClientMessage(Component.translatable("ae2cs.msg.mirror_linker.cleared_loaded_group", 0)
-                    .withStyle(ChatFormatting.GRAY), true);
-            return;
-        }
-
-        int cleared = 0;
-        for (var blockEntity : ChunkHelper.getLoadedBlockEntities(level)) {
-            for (MirrorPatternProviderHost host : PatternProviderBindingHelper.getMirrorProvidersAt(level, blockEntity.getBlockPos())) {
-                if (!target.equals(host.getMirroringLogic().getMirrorTarget())) {
-                    continue;
-                }
-                host.getMirroringLogic().setMirrorTarget(null);
-                cleared++;
-            }
-        }
-
-        player.displayClientMessage(Component.translatable("ae2cs.msg.mirror_linker.cleared_loaded_group", cleared)
-                .withStyle(ChatFormatting.GRAY), true);
-    }
-
     public static int applyStoredTargetToCluster(ItemStack stack, Player player, Level level, BlockPos centerPos, Vec3 clickLocation) {
         if (level.isClientSide() || !level.hasChunkAt(centerPos)) {
             return 0;
@@ -139,7 +107,7 @@ public class MirrorLinkerItem extends Item {
             return 0;
         }
 
-        if (!player.mayUseItemAt(centerPos, Direction.UP, stack)) {
+        if (!level.mayInteract(player, centerPos) || !player.mayUseItemAt(centerPos, Direction.UP, stack)) {
             return 0;
         }
 
@@ -153,21 +121,15 @@ public class MirrorLinkerItem extends Item {
         Queue<BlockPos> pending = new ArrayDeque<>();
 
         pending.add(centerPos);
-        hosts.add(selected);
+        visited.add(centerPos);
 
-        while (!pending.isEmpty() && hosts.size() < MAX_BATCH_PROVIDERS) {
+        while (!pending.isEmpty()) {
             BlockPos current = pending.poll();
-            if (!visited.add(current)) {
+            if (!level.hasChunkAt(current) || !level.mayInteract(player, current) || !player.mayUseItemAt(current, Direction.UP, stack)) {
                 continue;
             }
 
-            if (!isWithinBatchBounds(centerPos, current) || !level.hasChunkAt(current)) {
-                continue;
-            }
-
-            List<MirrorPatternProviderHost> atCurrent = PatternProviderBindingHelper.getMirrorProvidersAt(level, current).stream()
-                    .filter(host -> host.getClass() == selected.getClass())
-                    .toList();
+            List<MirrorPatternProviderHost> atCurrent = PatternProviderBindingHelper.getMirrorProvidersAt(level, current);
             if (atCurrent.isEmpty()) {
                 continue;
             }
@@ -175,7 +137,7 @@ public class MirrorLinkerItem extends Item {
             hosts.addAll(atCurrent);
             for (Direction direction : Direction.values()) {
                 BlockPos next = current.relative(direction);
-                if (!visited.contains(next) && isWithinBatchBounds(centerPos, next)) {
+                if (visited.add(next)) {
                     pending.add(next);
                 }
             }
@@ -192,9 +154,5 @@ public class MirrorLinkerItem extends Item {
         }
 
         return hosts.size();
-    }
-
-    private static boolean isWithinBatchBounds(BlockPos center, BlockPos pos) {
-        return Math.abs(pos.getX() - center.getX()) <= MAX_BATCH_RADIUS && Math.abs(pos.getY() - center.getY()) <= MAX_BATCH_RADIUS && Math.abs(pos.getZ() - center.getZ()) <= MAX_BATCH_RADIUS;
     }
 }
