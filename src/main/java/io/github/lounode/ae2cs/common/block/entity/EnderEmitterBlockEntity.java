@@ -75,6 +75,8 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
     public static final Map<GlobalChunkPos, Set<BlockPos>> EMITTER_CHUNK_POSITIONS = new HashMap<>();
     public static MinecraftServer boundServer;
 
+    private static final int NODE_READY_TIMEOUT_TICKS = 100;
+
     private static final IGridNodeListener<EnderEmitterBlockEntity> INPUT_LISTENER = new IGridNodeListener<>() {
 
         @Override
@@ -96,6 +98,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
      */
     private final Map<Direction, IManagedGridNode> sideInputs = new EnumMap<>(Direction.class);
     private final Set<BlockPos> pendingLinkPositions = new LinkedHashSet<>();
+    private final Map<BlockPos, Integer> pendingNodeWaitTicks = new HashMap<>();
     private final Set<BlockPos> linkedPositions = new LinkedHashSet<>();
     private final Set<BlockPos> manualLinkPositions = new HashSet<>();
     private final Map<BlockPos, List<IGridConnection>> linkedConnections = new HashMap<>();
@@ -416,6 +419,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
     @Override
     public void serverTick() {
         if (level == null) return;
+        refreshChunkIndex();
         if (needsScan && autoMode) {
             needsScan = false;
             addAllRecentBEtoEmitter(this);
@@ -479,10 +483,15 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
             if (!level.isLoaded(targetPos)) continue;
             List<IGridNode> targets = getConnectableNodes(level, targetPos);
             if (targets.isEmpty()) {
+                // Placement can precede AE2's first-tick node initialization. Keep the candidate
+                // while its host exists, but eventually discard hosts that never expose a node.
+                if (level.getCapability(AECapabilities.IN_WORLD_GRID_NODE_HOST, targetPos) != null && pendingNodeWaitTicks.merge(targetPos, 1, Integer::sum) < NODE_READY_TIMEOUT_TICKS) continue;
                 iterator.remove();
+                pendingNodeWaitTicks.remove(targetPos);
                 manualLinkPositions.remove(targetPos);
                 continue;
             }
+            pendingNodeWaitTicks.remove(targetPos);
             List<IGridConnection> connections = new ArrayList<>();
             for (IGridNode target : targets) {
                 int previousSize = connections.size();
@@ -561,7 +570,8 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         linkedPositions.clear();
         linkedConnections.clear();
         pruneOutOfRangeConnections();
-        needsScan = false;
+        // Recover placements made while this emitter was still waiting for onReady/indexing.
+        needsScan = autoMode;
         if (bandId.isEmpty() || level.getServer() == null) return;
         setMaxChannels(0); // Always request a fresh allocation after loading.
         BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
@@ -573,7 +583,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
     }
 
     private void refreshChunkIndex() {
-        if (level == null || level.isClientSide() || !getMainNode().isReady()) return;
+        if (level == null || level.isClientSide()) return;
         int radius = getMaxLinkDistance();
         if (radius == indexedChunkRadius) return;
         removeChunkIndex();
@@ -655,7 +665,15 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         sideInputs.values().forEach(input -> input.loadFromNBT(data));
         configManager.readFromNBT(data, registries);
         upgrades.readFromNBT(data, "emitter_upgrades", registries);
-        linkDistance = data.contains("chunk_radius") ? Math.max(0, Math.min(getMaxLinkDistance(), data.getInt("chunk_radius"))) : 1;
+        int radius = 1;
+        if (data.contains("chunk_radius", Tag.TAG_ANY_NUMERIC)) {
+            radius = data.getInt("chunk_radius");
+        } else if (data.contains("link_distance", Tag.TAG_ANY_NUMERIC)) {
+            // Legacy ranges were measured in blocks. Round up to cover them with chunk radii,
+            // then respect the current wireless-booster limit just like the range controls do.
+            radius = (int) ((Math.max(0L, data.getInt("link_distance")) + 15) / 16);
+        }
+        linkDistance = Math.max(0, Math.min(getMaxLinkDistance(), radius));
         bandId = data.getString("band_id");
         expectedChannels = data.contains("expected_channels") ? Math.max(0, data.getInt("expected_channels")) : 32;
         customMaxChannels = 0;
@@ -791,7 +809,9 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
             IInWorldGridNodeHost host = emitter.level.getCapability(AECapabilities.IN_WORLD_GRID_NODE_HOST, pos);
             if (host == null || (host instanceof CableBusBlockEntity && !emitter.allowAutoLinkCableLike)) return false;
         }
-        if (getConnectableNodes(emitter.level, pos).isEmpty()) return false;
+        // Automatic placement callbacks run before a new host necessarily has any grid nodes.
+        // Manual linking still validates immediately so the linker can report invalid targets.
+        if (byManual && getConnectableNodes(emitter.level, pos).isEmpty()) return false;
         if (byManual) emitter.manualLinkPositions.add(pos.immutable());
         if (emitter.pendingLinkPositions.add(pos.immutable())) {
             emitter.recentAddedPosCountdown = 2;
@@ -803,6 +823,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
 
     public static void removePosFromEmitter(@NotNull EnderEmitterBlockEntity emitter, @NotNull BlockPos pos) {
         emitter.pendingLinkPositions.remove(pos);
+        emitter.pendingNodeWaitTicks.remove(pos);
         emitter.linkedPositions.remove(pos);
         emitter.manualLinkPositions.remove(pos);
         List<IGridConnection> connections = emitter.linkedConnections.remove(pos);
@@ -847,6 +868,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         emitter.linkedConnections.clear();
         emitter.linkedPositions.clear();
         emitter.pendingLinkPositions.clear();
+        emitter.pendingNodeWaitTicks.clear();
         emitter.manualLinkPositions.clear();
         emitter.needsScan = false;
         emitter.setChanged();
