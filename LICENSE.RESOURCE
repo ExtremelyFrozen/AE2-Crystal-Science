@@ -58,6 +58,13 @@ not:
 - use this project's logos, textures, models, or other resource materials to
   impersonate, derive from, or repackage other works.
 
+本模组的纹理、模型、音效等美术与音频资产，未经著作权人书面许可，不得用于训练、微调或评估任何机器学习/人工智能模型，亦不得纳入任何 AI 训练数据集。
+
+Without the copyright holder's written permission, the textures, models, sound
+effects, and other art and audio assets of this mod may not be used to train,
+fine-tune, or evaluate any machine learning or artificial intelligence model,
+or be included in any AI-training dataset.
+
 4. 与代码许可证的关系 / RELATION TO THE CODE LICENSE
 
 根目录 LICENSE 中的 GNU General Public License v3.0 or later
@@ -65,11 +72,16 @@ not:
 文件所述资源。代码与资源即使位于同一仓库或同一发布包中，仍分别适
 用各自许可证。
 
+代码部分另受根目录 LICENSE 所列禁 AI 条款约束。
+
 The GNU General Public License v3.0 or later
 (GPL-3.0-or-later) in the root LICENSE file applies to project-owned code,
 scripts, and build configuration. It does not apply to the resources covered
 by this file. Code and resources remain under their respective licenses even
 when distributed in the same repository or release artifact.
+
+The code is also subject to the AI-training restriction stated in the root
+LICENSE file.
 
 5. 例外与优先级 / EXCEPTIONS AND PRIORITY
 
