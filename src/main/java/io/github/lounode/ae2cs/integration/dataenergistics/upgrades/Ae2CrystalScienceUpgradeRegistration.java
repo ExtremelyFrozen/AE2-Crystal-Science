@@ -1,12 +1,13 @@
 package io.github.lounode.ae2cs.integration.dataenergistics.upgrades;
 
-
-import appeng.api.upgrades.Upgrades;
-import com.fish_dan_.data_energistics.common.data.DEBlocks;
-import com.fish_dan_.data_energistics.common.data.DEItems;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSParts;
+
+import appeng.api.upgrades.Upgrades;
+
+import com.fish_dan_.data_energistics.common.data.DEBlocks;
+import com.fish_dan_.data_energistics.common.data.DEItems;
 import org.jspecify.annotations.NullMarked;
 
 /** Loaded during AECS common setup only when Data Energistics is present. */

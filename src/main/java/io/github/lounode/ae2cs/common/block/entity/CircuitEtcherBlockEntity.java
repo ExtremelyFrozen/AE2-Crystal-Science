@@ -38,6 +38,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.items.IItemHandler;
 
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -82,11 +83,13 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
     /**
      * 该配方需要的总能量
      */
+    @Getter
     private int activeRecipeEnergyCost = 0;
 
     /**
      * 当前配方进度
      */
+    @Getter
     private int recipeProgress = 0;
 
     /**
@@ -149,14 +152,6 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
 
     public AppEngInternalInventory getOutputInv() {
         return getMachineComponents().getService(AppEngInvComponent.class).port(InvPort.OUTPUT);
-    }
-
-    public int getRecipeProgress() {
-        return recipeProgress;
-    }
-
-    public int getActiveRecipeEnergyCost() {
-        return activeRecipeEnergyCost;
     }
 
     public void checkActive(boolean active) {

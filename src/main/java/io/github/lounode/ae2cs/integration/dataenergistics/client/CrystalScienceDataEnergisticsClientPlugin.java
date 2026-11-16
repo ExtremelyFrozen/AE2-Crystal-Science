@@ -1,13 +1,14 @@
 package io.github.lounode.ae2cs.integration.dataenergistics.client;
 
+import io.github.lounode.ae2cs.api.settings.AECSSettings;
+import io.github.lounode.ae2cs.api.settings.PullMode;
+import io.github.lounode.ae2cs.client.gui.widgets.AECSSettingToggleButton;
+
 import com.fish_dan_.data_energistics.api.entrypoint.DataEnergisticsEntrypoint;
 import com.fish_dan_.data_energistics.api.entrypoint.client.DataEnergisticsClientPlugin;
 import com.fish_dan_.data_energistics.api.entrypoint.client.DataEnergisticsClientRegistry;
 import com.fish_dan_.data_energistics.api.registry.adaptive.AdaptivePatternProviderToolbarActions;
 import com.fish_dan_.data_energistics.api.registry.adaptive.client.AdaptivePatternProviderToolbarButton;
-import io.github.lounode.ae2cs.api.settings.AECSSettings;
-import io.github.lounode.ae2cs.api.settings.PullMode;
-import io.github.lounode.ae2cs.client.gui.widgets.AECSSettingToggleButton;
 
 /**
  * Client-only AE2CS target-storage extraction control for Adaptive providers.

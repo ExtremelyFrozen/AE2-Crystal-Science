@@ -1,5 +1,13 @@
 package io.github.lounode.ae2cs.integration.dataenergistics.entrypoint;
 
+import io.github.lounode.ae2cs.AE2CrystalScience;
+import io.github.lounode.ae2cs.common.me.logic.MeteoritePatternProviderLogic;
+import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderLogic;
+import io.github.lounode.ae2cs.integration.dataenergistics.patternprovider.Ae2CrystalScienceAdaptiveRoute;
+import io.github.lounode.ae2cs.integration.dataenergistics.patternprovider.Ae2CrystalScienceCapacity;
+import io.github.lounode.ae2cs.integration.dataenergistics.patternprovider.Ae2CrystalScienceMeteoriteRoute;
+import io.github.lounode.ae2cs.integration.dataenergistics.patternprovider.CrystalScienceProviderDefinitions;
+
 import com.fish_dan_.data_energistics.api.entrypoint.DataEnergisticsEntrypoint;
 import com.fish_dan_.data_energistics.api.entrypoint.DataEnergisticsPlugin;
 import com.fish_dan_.data_energistics.api.entrypoint.DataEnergisticsRegistry;
@@ -8,13 +16,6 @@ import com.fish_dan_.data_energistics.api.registry.adaptive.AdaptivePatternProvi
 import com.fish_dan_.data_energistics.api.registry.machine.capacity.CraftingMachineCapacityRegistration;
 import com.fish_dan_.data_energistics.api.registry.provider.definition.PatternProviderRuntimeRegistration;
 import com.fish_dan_.data_energistics.api.registry.provider.dispatch.PatternProviderDispatchHooks;
-import io.github.lounode.ae2cs.AE2CrystalScience;
-import io.github.lounode.ae2cs.common.me.logic.MeteoritePatternProviderLogic;
-import io.github.lounode.ae2cs.common.me.logic.ResonatingPatternProviderLogic;
-import io.github.lounode.ae2cs.integration.dataenergistics.patternprovider.Ae2CrystalScienceAdaptiveRoute;
-import io.github.lounode.ae2cs.integration.dataenergistics.patternprovider.Ae2CrystalScienceCapacity;
-import io.github.lounode.ae2cs.integration.dataenergistics.patternprovider.Ae2CrystalScienceMeteoriteRoute;
-import io.github.lounode.ae2cs.integration.dataenergistics.patternprovider.CrystalScienceProviderDefinitions;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 
 /** Registers AE2 Crystal Science pattern-provider variants and routes. */

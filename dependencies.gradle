@@ -1,7 +1,4 @@
 def recipeViewer = providers.gradleProperty("recipeViewer").getOrElse("jei").toLowerCase(Locale.ROOT)
-if (!(recipeViewer in ["none", "jei", "emi", "all"])) {
-    throw new GradleException("Invalid recipeViewer '$recipeViewer'. Expected one of: none, jei, emi, all.")
-}
 
 dependencies {
     compileOnly(libs.jetbrains.annotations)
@@ -79,8 +76,6 @@ dependencies {
 
     // Runtime AE2 addons
     localRuntime(forge.guideme)
-    // Data Energistics 3.3.5 still calls the ExtendedAE Plus 1.5 upload API.
-    // compileOnly above keeps the code dependency; this stays off the dev client until DE updates.
     // localRuntime(forge.de)
     localRuntime(forge.ae2wt)
     localRuntime(forge.eae)

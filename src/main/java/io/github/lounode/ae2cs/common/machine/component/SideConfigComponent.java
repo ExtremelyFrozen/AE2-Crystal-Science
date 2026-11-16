@@ -40,6 +40,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,8 +49,11 @@ import java.util.EnumSet;
 
 public class SideConfigComponent extends BaseMachineComponent {
 
+    @Getter
     private final EnumMap<Direction, SidePolicy> policies = new EnumMap<>(Direction.class);
+    @Getter
     private boolean autoImport = false;
+    @Getter
     private boolean autoExport = false;
 
     private MachineComponentContainer container;
@@ -109,24 +113,12 @@ public class SideConfigComponent extends BaseMachineComponent {
         container.exposeService(SideConfigComponent.class, this);
     }
 
-    public EnumMap<Direction, SidePolicy> getPolicies() {
-        return policies;
-    }
-
-    public boolean isAutoImport() {
-        return autoImport;
-    }
-
     public void setAutoImport(boolean autoImport) {
         if (this.autoImport == autoImport) return;
 
         // 主动模式不影响能力系统，只需要标脏即可
         this.autoImport = autoImport;
         this.container.host().markChanged();
-    }
-
-    public boolean isAutoExport() {
-        return autoExport;
     }
 
     public void setAutoExport(boolean autoExport) {
