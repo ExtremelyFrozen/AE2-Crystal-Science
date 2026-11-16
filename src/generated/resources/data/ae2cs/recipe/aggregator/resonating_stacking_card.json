@@ -1,0 +1,20 @@
+{
+  "type": "ae2cs:crystal_aggregator_recipe_serializer",
+  "energy_cost": 16000,
+  "input_a": {
+    "count": 10,
+    "item": "ae2:speed_card"
+  },
+  "input_b": {
+    "count": 20,
+    "item": "ae2cs:resonating_entanglement_core"
+  },
+  "input_c": {
+    "count": 10,
+    "item": "ae2cs:resonating_processor"
+  },
+  "result": {
+    "count": 1,
+    "id": "ae2cs:resonating_stacking_card"
+  }
+}

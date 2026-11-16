@@ -1,9 +1,11 @@
 package io.github.lounode.ae2cs;
 
+import io.github.lounode.ae2cs.api.linker.broadcast.FrequencyBandManager;
 import io.github.lounode.ae2cs.api.settings.AECSSettings;
 import io.github.lounode.ae2cs.api.settings.AutoLinkCableMode;
 import io.github.lounode.ae2cs.api.settings.AutoLinkMode;
 import io.github.lounode.ae2cs.api.util.GlobalChunkPos;
+import io.github.lounode.ae2cs.common.block.entity.EnderBroadcasterBlockEntity;
 import io.github.lounode.ae2cs.common.block.entity.EnderEmitterBlockEntity;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 
@@ -31,9 +33,175 @@ import net.neoforged.neoforge.common.util.FakePlayerFactory;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
+import java.util.UUID;
+
 @GameTestHolder("ae2cs")
 @PrefixGameTestTemplate(false)
 public class EnderEmitterAutoLinkGameTests {
+
+    @GameTest(template = "empty", timeoutTicks = 240)
+    public static void receiverSuppliesEmitterThroughItsBase(GameTestHelper helper) {
+        var senderPos = new BlockPos(0, 1, 1);
+        var receiverPos = new BlockPos(4, 1, 0);
+        var emitterPos = receiverPos.above();
+        var targetPos = new BlockPos(4, 2, 3);
+        helper.setBlock(new BlockPos(0, 1, 0), AEBlocks.CONTROLLER.block());
+        helper.setBlock(new BlockPos(0, 0, 0), AEBlocks.CREATIVE_ENERGY_CELL.block());
+        helper.setBlock(senderPos, AECSBlocks.ENDER_BROADCASTER_BLOCK.get());
+        helper.setBlock(receiverPos, AECSBlocks.ENDER_BROADCASTER_BLOCK.get());
+        helper.setBlock(emitterPos, AECSBlocks.ENDER_EMITTER_BLOCK.get());
+        var sender = (EnderBroadcasterBlockEntity) helper.getBlockEntity(senderPos);
+        var receiver = (EnderBroadcasterBlockEntity) helper.getBlockEntity(receiverPos);
+        var emitter = (EnderEmitterBlockEntity) helper.getBlockEntity(emitterPos);
+        emitter.getConfigManager().putSetting(AECSSettings.AUTO_LINK_MODE, AutoLinkMode.DISABLE);
+        var band = FrequencyBandManager.tryCreateBand("emitter_base_" + emitter.getBlockPos().asLong(), "", UUID.randomUUID(), false, false);
+        helper.assertTrue(band != null, "The frequency band was created");
+        helper.runAtTickTime(20, () -> {
+            sender.connectToBand(band.getName(), true);
+            receiver.connectToBand(band.getName(), false);
+        });
+        helper.runAtTickTime(65, () -> {
+            helper.assertTrue(band.getUsableChannels() > 0 && band.getUsedChannels() == 0,
+                    "The sender supplies the band and the empty emitter reserves nothing");
+            helper.setBlock(targetPos, AEBlocks.INTERFACE.block());
+        });
+        helper.runAtTickTime(75, () -> helper.assertTrue(
+                EnderEmitterBlockEntity.addPosToEmitter(emitter, helper.absolutePos(targetPos), true, false),
+                "The unpowered emitter queues the downstream device"));
+        helper.runAtTickTime(140, () -> {
+            assertLinked(helper, emitter, targetPos);
+            var target = (InterfaceBlockEntity) helper.getBlockEntity(targetPos);
+            helper.assertTrue(receiver.getMaxChannels() > 0 && target.getMainNode().isActive(),
+                    "The receiver activates and routes a channel through the emitter");
+            helper.setBlock(targetPos, Blocks.AIR);
+        });
+        helper.runAtTickTime(190, () -> {
+            helper.assertTrue(band.getUsedChannels() == 0, "Removing the downstream device releases the allocation");
+            FrequencyBandManager.deleteBand(band.getName());
+            helper.setBlock(emitterPos, Blocks.AIR);
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "empty", timeoutTicks = 300)
+    public static void frequencyBandReleasesEmptyReceiversAndResumesOnDemand(GameTestHelper helper) {
+        var senderPos = new BlockPos(0, 1, 1);
+        var receiverPos = new BlockPos(4, 1, 0);
+        var emitterPos = new BlockPos(1, 1, 4);
+        var receiverTarget = new BlockPos(4, 1, 1);
+        var emitterTarget = new BlockPos(3, 1, 4);
+        helper.setBlock(new BlockPos(0, 1, 0), AEBlocks.CONTROLLER.block());
+        helper.setBlock(new BlockPos(0, 0, 0), AEBlocks.CREATIVE_ENERGY_CELL.block());
+        helper.setBlock(senderPos, AECSBlocks.ENDER_BROADCASTER_BLOCK.get());
+        helper.setBlock(receiverPos, AECSBlocks.ENDER_BROADCASTER_BLOCK.get());
+        helper.setBlock(emitterPos, AECSBlocks.ENDER_EMITTER_BLOCK.get());
+        var sender = (EnderBroadcasterBlockEntity) helper.getBlockEntity(senderPos);
+        var receiver = (EnderBroadcasterBlockEntity) helper.getBlockEntity(receiverPos);
+        var emitter = (EnderEmitterBlockEntity) helper.getBlockEntity(emitterPos);
+        emitter.getConfigManager().putSetting(AECSSettings.AUTO_LINK_MODE, AutoLinkMode.DISABLE);
+
+        var band = FrequencyBandManager.tryCreateBand("receiver_demand_" + helper.absolutePos(emitterPos).asLong(), "", UUID.randomUUID(), false, false);
+        helper.assertTrue(band != null, "The frequency band was created");
+        helper.runAtTickTime(20, () -> {
+            sender.connectToBand(band.getName(), true);
+            receiver.connectToBand(band.getName(), false);
+            emitter.connectToBand(band.getName());
+        });
+        helper.runAtTickTime(70, () -> {
+            helper.assertTrue(band.getUsableChannels() > 0, "The sender supplies channels to the band");
+            helper.assertTrue(band.getUsedChannels() == 0, "Neither empty receiver reserves channels");
+            receiver.toggleUnlimitedChannels();
+            helper.setBlock(receiverTarget, AEBlocks.INTERFACE.block());
+        });
+        helper.runAtTickTime(110, () -> {
+            int available = (int) Math.min(Integer.MAX_VALUE, band.getUsableChannels());
+            helper.assertTrue(receiver.isEnabledCustomChannel() && receiver.getMaxChannels() == available,
+                    "An attached broadcaster receiver with no limit receives the available channels");
+            helper.setBlock(receiverTarget, Blocks.AIR);
+        });
+        helper.runAtTickTime(150, () -> {
+            helper.assertTrue(band.getUsedChannels() == 0, "Removing the broadcaster output releases its allocation");
+            helper.setBlock(emitterTarget, AEBlocks.INTERFACE.block());
+        });
+        helper.runAtTickTime(160, () -> {
+            helper.assertTrue(EnderEmitterBlockEntity.addPosToEmitter(emitter, helper.absolutePos(emitterTarget), true, false),
+                    "A link can be queued while the emitter has no allocation");
+        });
+        helper.runAtTickTime(200, () -> {
+            assertLinked(helper, emitter, emitterTarget);
+            helper.assertTrue(band.getUsedChannels() > 0, "An initially idle emitter requests channels to link the new device");
+            helper.setBlock(emitterTarget, Blocks.AIR);
+        });
+        helper.runAtTickTime(240, () -> {
+            helper.assertTrue(band.getUsedChannels() == 0, "Removing the emitter output releases its allocation");
+            FrequencyBandManager.deleteBand(band.getName());
+            helper.setBlock(emitterPos, Blocks.AIR);
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "empty", timeoutTicks = 320)
+    public static void emptyCableRunsReleaseBandChannels(GameTestHelper helper) {
+        var senderPos = new BlockPos(0, 1, 1);
+        var receiverPos = new BlockPos(4, 1, 0);
+        var receiverCable = new BlockPos(4, 1, 2);
+        var emitterPos = new BlockPos(1, 1, 4);
+        var emitterCable = new BlockPos(3, 1, 4);
+        helper.setBlock(new BlockPos(0, 1, 0), AEBlocks.CONTROLLER.block());
+        helper.setBlock(new BlockPos(0, 0, 0), AEBlocks.CREATIVE_ENERGY_CELL.block());
+        helper.setBlock(senderPos, AECSBlocks.ENDER_BROADCASTER_BLOCK.get());
+        helper.setBlock(receiverPos, AECSBlocks.ENDER_BROADCASTER_BLOCK.get());
+        helper.setBlock(emitterPos, AECSBlocks.ENDER_EMITTER_BLOCK.get());
+        var sender = (EnderBroadcasterBlockEntity) helper.getBlockEntity(senderPos);
+        var receiver = (EnderBroadcasterBlockEntity) helper.getBlockEntity(receiverPos);
+        var emitter = (EnderEmitterBlockEntity) helper.getBlockEntity(emitterPos);
+        emitter.getConfigManager().putSetting(AECSSettings.AUTO_LINK_MODE, AutoLinkMode.DISABLE);
+        var band = FrequencyBandManager.tryCreateBand("empty_cables_" + emitter.getBlockPos().asLong(), "", UUID.randomUUID(), false, false);
+        helper.assertTrue(band != null, "The frequency band was created");
+        helper.runAtTickTime(20, () -> {
+            sender.connectToBand(band.getName(), true);
+            receiver.connectToBand(band.getName(), false);
+            emitter.connectToBand(band.getName());
+            placeItem(helper, receiverPos.south(), AEParts.GLASS_CABLE.stack(AEColor.TRANSPARENT));
+            placeItem(helper, receiverCable, AEParts.GLASS_CABLE.stack(AEColor.TRANSPARENT));
+            placeItem(helper, emitterCable, AEParts.GLASS_CABLE.stack(AEColor.TRANSPARENT));
+        });
+        helper.runAtTickTime(60, () -> {
+            helper.assertTrue(band.getUsableChannels() > 0, "The sender supplies channels");
+            helper.assertTrue(EnderEmitterBlockEntity.addPosToEmitter(emitter, helper.absolutePos(emitterCable), true, false),
+                    "The emitter remembers the link to its empty cable");
+        });
+        helper.runAtTickTime(95, () -> {
+            helper.assertTrue(band.getUsedChannels() == 0, "Neither empty cable run reserves channels");
+            var cable = PartHelper.getPartHost(helper.getLevel(), helper.absolutePos(receiverCable));
+            helper.assertTrue(cable.addPart(AEParts.TERMINAL.asItem(), Direction.UP, null) != null, "Mounted a terminal on the far end");
+        });
+        helper.runAtTickTime(140, () -> {
+            var cable = PartHelper.getPartHost(helper.getLevel(), helper.absolutePos(receiverCable));
+            helper.assertTrue(cable.getPart(Direction.UP).getGridNode().isActive() && band.getUsedChannels() > 0,
+                    "The receiver supplies a channel through both cable blocks");
+            cable.removePart(cable.getPart(Direction.UP));
+        });
+        helper.runAtTickTime(175, () -> {
+            helper.assertTrue(band.getUsedChannels() == 0, "Removing the terminal releases the receiver allocation with the cable still in place");
+            var cable = PartHelper.getPartHost(helper.getLevel(), helper.absolutePos(emitterCable));
+            helper.assertTrue(cable.addPart(AEParts.TERMINAL.asItem(), Direction.UP, null) != null, "Mounted a terminal on the emitter cable");
+        });
+        helper.runAtTickTime(220, () -> {
+            var cable = PartHelper.getPartHost(helper.getLevel(), helper.absolutePos(emitterCable));
+            helper.assertTrue(cable.getPart(Direction.UP).getGridNode().isActive() && band.getUsedChannels() > 0,
+                    "The emitter supplies a channel without linking the cable again");
+            cable.removePart(cable.getPart(Direction.UP));
+        });
+        helper.runAtTickTime(260, () -> {
+            helper.assertTrue(band.getUsedChannels() == 0, "Removing the terminal releases the emitter allocation with the cable still linked");
+            helper.assertTrue(emitter.getLinkedRenderPositionsSnapshot().contains(helper.absolutePos(emitterCable)),
+                    "The established wireless link is retained");
+            FrequencyBandManager.deleteBand(band.getName());
+            helper.setBlock(emitterPos, Blocks.AIR);
+            helper.succeed();
+        });
+    }
 
     @GameTest(template = "empty", timeoutTicks = 400)
     public static void newlyPlacedMachinesAndPartsConnectWithoutScanning(GameTestHelper helper) {

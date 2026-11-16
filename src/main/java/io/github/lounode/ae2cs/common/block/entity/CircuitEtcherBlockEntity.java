@@ -41,6 +41,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -83,8 +84,8 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
     /**
      * 该配方需要的总能量
      */
-    @Getter
     private int activeRecipeEnergyCost = 0;
+    private int batchEnergyCost;
 
     /**
      * 当前配方进度
@@ -154,6 +155,14 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
         return getMachineComponents().getService(AppEngInvComponent.class).port(InvPort.OUTPUT);
     }
 
+    public int getActiveRecipeEnergyCost() {
+        return batchEnergyCost;
+    }
+
+    protected int getParallelism() {
+        return 1;
+    }
+
     public void checkActive(boolean active) {
         if (level == null || level.isClientSide()) return;
         BlockState state = getBlockState();
@@ -188,50 +197,46 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
         }
         if (activeRecipe == null || activeMatch == null) {
             recipeProgress = 0;
+            batchEnergyCost = 0;
             return;
         }
 
         Level level = getLevel();
         CircuitEtcherRecipe recipe = activeRecipe.value();
+        ThreeItemStackRecipeInput input = ThreeItemStackRecipeInput.of(
+                activeMatch.length > 0 ? getInputInv().getStackInSlot(activeMatch[0]) : ItemStack.EMPTY,
+                activeMatch.length > 1 ? getInputInv().getStackInSlot(activeMatch[1]) : ItemStack.EMPTY,
+                activeMatch.length > 2 ? getInputInv().getStackInSlot(activeMatch[2]) : ItemStack.EMPTY);
+        ItemStack result = recipe.assemble(input, level.registryAccess());
+        if (DataEnergisticsIntegration.LOADED) {
+            result = CrystalScienceProduction.boost(result, upgrades);
+        }
+        if (result.isEmpty()) return;
+        int batch = getParallelism();
+        for (int i = 0; i < activeMatch.length; i++) {
+            batch = Math.min(batch, getInputInv().getStackInSlot(activeMatch[i]).getCount() / recipe.required().get(i).count());
+        }
+        ItemStack requested = result.copyWithCount(result.getCount() * batch);
+        ItemStack remainder = DataEnergisticsIntegration.LOADED ? CrystalScienceProduction.insert(getOutputInv(), requested, true, upgrades) : getOutputInv().simulateAdd(requested);
+        int outputRoom = requested.getCount() - remainder.getCount();
+        batch = Math.min(batch, outputRoom / result.getCount());
+        if (batch == 0) return;
+        batchEnergyCost = Math.max(1, activeRecipeEnergyCost) * batch;
 
         // 2) 若未完成：推进进度 + 扣能量
-        if (recipeProgress < activeRecipeEnergyCost) {
+        if (recipeProgress < batchEnergyCost) {
             if (getAECurrentPower() <= 0) return;
 
-            double neededEnergy = getEnergyPerTick();
-            neededEnergy = Math.min(neededEnergy, activeRecipeEnergyCost - recipeProgress);
+            double neededEnergy = getEnergyPerTick() * batch;
+            neededEnergy = Math.min(neededEnergy, batchEnergyCost - recipeProgress);
             double actualCost = extractAEPower(neededEnergy, Actionable.MODULATE);
-            recipeProgress = Math.min(recipeProgress + (int) actualCost, activeRecipeEnergyCost);
+            recipeProgress = Math.min(recipeProgress + (int) actualCost, batchEnergyCost);
             setChanged();
         }
 
         // 3) 已经完成：消耗资源并产出
-        if (recipeProgress >= activeRecipeEnergyCost) {
-            ThreeItemStackRecipeInput input = ThreeItemStackRecipeInput.of(
-                    activeMatch.length > 0 ? getInputInv().getStackInSlot(activeMatch[0]) : ItemStack.EMPTY,
-                    activeMatch.length > 1 ? getInputInv().getStackInSlot(activeMatch[1]) : ItemStack.EMPTY,
-                    activeMatch.length > 2 ? getInputInv().getStackInSlot(activeMatch[2]) : ItemStack.EMPTY);
-            ItemStack result = recipe.assemble(input, level.registryAccess());
-            if (DataEnergisticsIntegration.LOADED) {
-                result = CrystalScienceProduction.boost(result, upgrades);
-            }
-            if (result.isEmpty()) // 如果我们拿不到输出，说明配方可能有问题，此时清空状态
-            {
-                recipeProgress = 0;
-                activeRecipe = null;
-                activeMatch = null;
-                activeRecipeEnergyCost = 0;
-                return;
-            }
-
-            // 如果输出放不下，则将recipeProgress钳制在最大配方时间
-            ItemStack remainder = DataEnergisticsIntegration.LOADED ? CrystalScienceProduction.insert(getOutputInv(), result, true, upgrades) : getOutputInv().simulateAdd(result);
-            if (!remainder.isEmpty()) {
-                recipeProgress = activeRecipeEnergyCost;
-                return;
-            }
-
-            if (!consumeInputs(recipe, activeMatch)) {
+        if (recipeProgress >= batchEnergyCost) {
+            if (!consumeInputs(recipe, activeMatch, batch)) {
                 // 输入不够：清缓存和状态，等待刷新
                 recipeProgress = 0;
                 activeRecipe = null;
@@ -240,12 +245,13 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
                 return;
             }
 
+            ItemStack output = result.copyWithCount(result.getCount() * batch);
             if (DataEnergisticsIntegration.LOADED) {
-                CrystalScienceProduction.insert(getOutputInv(), result, false, upgrades);
+                CrystalScienceProduction.insert(getOutputInv(), output, false, upgrades);
             } else {
-                getOutputInv().addItems(result);
+                getOutputInv().addItems(output);
             }
-            recipeProgress = 0;
+            recipeProgress -= batchEnergyCost;
             setChanged();
         }
     }
@@ -327,23 +333,23 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
     /**
      * 尝试从输入槽中按照match提供的索引表来抽取当前配方所需资源，如果都能成功则返回true
      */
-    private boolean consumeInputs(CircuitEtcherRecipe recipe, int[] match) {
+    private boolean consumeInputs(CircuitEtcherRecipe recipe, int[] match, int batch) {
         List<SizedIngredient> required = recipe.required();
         // 先进行模拟抽取
         for (int i = 0; i < required.size(); i++) {
             int slot = match[i];
-            int amount = required.get(i).count();
+            int amount = required.get(i).count() * batch;
 
-            ItemStack extracted = getInputInv().extractItem(slot, amount, true);
-            if (extracted.isEmpty() || extracted.getCount() < amount) return false;
+            if (getInputInv().getStackInSlot(slot).getCount() < amount) return false;
         }
 
         // 执行扣除
         for (int i = 0; i < required.size(); i++) {
             int slot = match[i];
-            int amount = required.get(i).count();
+            int amount = required.get(i).count() * batch;
 
-            getInputInv().extractItem(slot, amount, false);
+            ItemStack stack = getInputInv().getStackInSlot(slot);
+            getInputInv().setItemDirect(slot, stack.copyWithCount(stack.getCount() - amount));
         }
         return true;
     }
@@ -382,7 +388,7 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
     @Override
     public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
         if (upgrades instanceof ResonatingFactoryUpgradeInventory) {
-            List<ItemStack> raw = new java.util.ArrayList<>();
+            List<ItemStack> raw = new ArrayList<>();
             super.addAdditionalDrops(level, pos, raw);
             ResonatingStackingInventory.splitDrops(raw, drops);
         } else {

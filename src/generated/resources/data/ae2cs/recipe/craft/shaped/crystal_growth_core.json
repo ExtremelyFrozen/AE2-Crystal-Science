@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "ae2cs:resonating_crystal"
+    },
+    "b": {
+      "item": "ae2cs:crystal_growth_accelerator"
+    },
+    "c": {
+      "item": "ae2cs:meteor_crystal"
+    },
+    "d": {
+      "item": "ae2cs:resonating_processor"
+    },
+    "e": {
+      "item": "ae2cs:resonating_entanglement_core"
+    }
+  },
+  "pattern": [
+    "abc",
+    "ded",
+    "cba"
+  ],
+  "result": {
+    "count": 1,
+    "id": "ae2cs:crystal_growth_core"
+  }
+}

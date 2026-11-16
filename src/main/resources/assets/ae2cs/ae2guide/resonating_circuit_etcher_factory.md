@@ -21,7 +21,7 @@ The **Resonating Circuit Etcher Factory** is the expanded-inventory variant of t
 - **9 input slots** arranged in a 3×3 grid and **3 output slots**.
 - Recipe ingredients may occupy any matching input slots; they do not have to be in the first three slots.
 - Output slots accept machine results only.
-- Processing consumes the full recipe materials and energy. The current factory processes **one recipe at a time**; the expanded inventory is not a nine-recipe parallel processor.
+- With 0 to 4 Meteorite Overclock Cards, each batch can process up to **8, 16, 64, 128 or 256** recipes. Each craft pays the full material and energy cost.
 - Click the progress arrow to view circuit-etching recipes.
 
 Resonating Stacking Cards increase the storage limit of both input and output slots.
@@ -30,8 +30,8 @@ Resonating Stacking Cards increase the storage limit of both input and output sl
 
 ## Upgrade cards and storage
 
-- Four dedicated slots accept up to **4 <ItemLink id="ae2cs:overload_card" />**.
-- Two dedicated slots accept up to **2 <ItemLink id="ae2cs:resonating_stacking_card" />**.
+- All six slots accept either card type, with up to **4 <ItemLink id="ae2cs:overload_card" />**.
+- The factory accepts up to **2 <ItemLink id="ae2cs:resonating_stacking_card" />**.
 - Each slot holds one card. Standard Speed Cards are not accepted.
 - Hover over the upgrade panel to see **Compatible Upgrades** and the machine-wide card limits.
 

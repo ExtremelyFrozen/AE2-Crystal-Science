@@ -10,8 +10,9 @@ import appeng.menu.slot.AppEngSlot;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
 
-/** Shared dedicated card slots, with the standard AE2 slots retained for ordinary machines. */
+/** Factory card slots, with the standard AE2 slots retained for ordinary machines. */
 public abstract class ResonatingFactoryMenu<T extends IUpgradeableObject> extends UpgradeableMenu<T> {
 
     protected ResonatingFactoryMenu(MenuType<?> type, int id, Inventory inventory, T host) {
@@ -27,8 +28,15 @@ public abstract class ResonatingFactoryMenu<T extends IUpgradeableObject> extend
         for (int slot = 0; slot < getUpgrades().size(); slot++) {
             var upgradeSlot = new AppEngSlot(getUpgrades(), slot);
             upgradeSlot.setIcon(Icon.BACKGROUND_UPGRADE);
-            upgradeSlot.setNotDraggable();
             addSlot(upgradeSlot, SlotSemantics.UPGRADE);
         }
+    }
+
+    @Override
+    protected int getQuickMovePriority(Slot slot) {
+        if (getUpgrades() instanceof ResonatingFactoryUpgradeInventory && getSlotSemantic(slot) == SlotSemantics.UPGRADE) {
+            return 1;
+        }
+        return super.getQuickMovePriority(slot);
     }
 }

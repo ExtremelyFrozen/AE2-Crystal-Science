@@ -334,7 +334,7 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
         return getBlockState().is(AECSBlocks.CRYSTAL_GROWTH_ACCELERATOR_BLOCK.get());
     }
 
-    private static boolean isAcceleratorInput(ItemStack stack) {
+    static boolean isAcceleratorInput(ItemStack stack) {
         Block block = Block.byItem(stack.getItem());
         return block instanceof io.github.lounode.ae2cs.common.block.CrystalMotherRockBlock || block instanceof BuddingCertusQuartzBlock || block == Blocks.BUDDING_AMETHYST || (knownForeignMotherRock(block) != null && !isInactiveDataCrystal(block));
     }
@@ -368,7 +368,8 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
         }
 
         extractAEPower(energyCost, Actionable.MODULATE);
-        ItemStack degraded = getAeDegradedStack(block, stack.getCount());
+        var decay = motherRockDecay(block);
+        ItemStack degraded = decay != null && decay.roll(level.getRandom()) ? new ItemStack(decay.result(), stack.getCount()) : ItemStack.EMPTY;
         if (!degraded.isEmpty()) {
             getInternalInventory().setItemDirect(0, degraded);
             updateAcceleratorDisplayBlock();
@@ -608,7 +609,47 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
         }
     }
 
-    private ItemStack getAeDegradedStack(Block block, int count) {
+    static ItemStack growthProduct(Block block, int stage) {
+        Block result;
+        if (block instanceof io.github.lounode.ae2cs.common.block.CrystalMotherRockBlock rock) {
+            var stages = rock.growthSequence().stageIds();
+            result = BuiltInRegistries.BLOCK.getOptional(stages.get(Math.min(stage, stages.size() - 1))).orElse(null);
+        } else if (block instanceof BuddingCertusQuartzBlock) {
+            result = switch (stage) {
+                case 0 -> AEBlocks.SMALL_QUARTZ_BUD.block();
+                case 1 -> AEBlocks.MEDIUM_QUARTZ_BUD.block();
+                case 2 -> AEBlocks.LARGE_QUARTZ_BUD.block();
+                default -> AEBlocks.QUARTZ_CLUSTER.block();
+            };
+        } else if (block == Blocks.BUDDING_AMETHYST) {
+            result = switch (stage) {
+                case 0 -> Blocks.SMALL_AMETHYST_BUD;
+                case 1 -> Blocks.MEDIUM_AMETHYST_BUD;
+                case 2 -> Blocks.LARGE_AMETHYST_BUD;
+                default -> Blocks.AMETHYST_CLUSTER;
+            };
+        } else {
+            var foreign = knownForeignMotherRock(block);
+            if (foreign == null) return ItemStack.EMPTY;
+            result = switch (stage) {
+                case 0 -> foreign.small();
+                case 1 -> foreign.medium();
+                case 2 -> foreign.large();
+                default -> foreign.cluster();
+            };
+        }
+        return result == null ? ItemStack.EMPTY : new ItemStack(result);
+    }
+
+    record MotherRockDecay(Block result, int chance) {
+
+        boolean roll(net.minecraft.util.RandomSource random) {
+            return random.nextInt(chance) == 0;
+        }
+    }
+
+    @Nullable
+    static MotherRockDecay motherRockDecay(Block block) {
         Block degraded = null;
         int chance = 0;
 
@@ -629,10 +670,7 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
             }
         }
 
-        if (degraded == null || chance <= 0 || level.getRandom().nextInt(chance) != 0) {
-            return ItemStack.EMPTY;
-        }
-        return new ItemStack(degraded, count);
+        return degraded == null || chance <= 0 ? null : new MotherRockDecay(degraded, chance);
     }
 
     /**

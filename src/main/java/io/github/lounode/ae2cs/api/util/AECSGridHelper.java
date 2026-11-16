@@ -1,9 +1,14 @@
 package io.github.lounode.ae2cs.api.util;
 
+import io.github.lounode.ae2cs.api.linker.broadcast.BandLinkHost;
+import io.github.lounode.ae2cs.common.block.entity.EnderEmitterBlockEntity;
+
+import appeng.api.implementations.parts.ICablePart;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.pathing.ChannelMode;
+import appeng.api.parts.IPart;
 import appeng.blockentity.networking.ControllerBlockEntity;
 import appeng.me.GridConnection;
 import appeng.me.GridNode;
@@ -11,9 +16,39 @@ import appeng.me.GridNode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayDeque;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 
 public class AECSGridHelper {
+
+    public static boolean hasDeviceBehindCables(List<IGridNode> outputs) {
+        if (outputs.isEmpty()) return false;
+        var remaining = new ArrayDeque<>(outputs);
+        var visited = new HashSet<IGridNode>();
+        while (!remaining.isEmpty()) {
+            IGridNode node = remaining.removeFirst();
+            if (!visited.add(node)) continue;
+
+            Object owner = node.getOwner();
+            if (owner instanceof EnderEmitterBlockEntity emitter) {
+                remaining.addAll(emitter.getDownstreamNodes(node));
+                continue;
+            }
+            if (owner instanceof ControllerBlockEntity || owner instanceof BandLinkHost) continue;
+            if (!(owner instanceof ICablePart)) return true;
+
+            for (var connection : node.getConnections()) {
+                IGridNode neighbor = connection.getOtherSide(node);
+                // Parts mounted on the cable use internal connections with no world direction.
+                if (connection.isInWorld() || neighbor.getOwner() instanceof IPart) {
+                    remaining.addLast(neighbor);
+                }
+            }
+        }
+        return false;
+    }
 
     /**
      * 获取网络中随机一个控制器节点
