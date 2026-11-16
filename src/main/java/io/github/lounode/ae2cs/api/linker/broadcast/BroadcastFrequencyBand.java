@@ -460,7 +460,7 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag> {
             if (receiverNode == null || host == null) continue;
 
             if (receiverNode.getOwner() instanceof BroadcastReceiverHost receiverHost) {
-                int alloc = computeAllocChannels(remaining, receiverHost.getExpectedChannels());
+                int alloc = receiverHost.hasChannelDemand() ? computeAllocChannels(remaining, receiverHost.getExpectedChannels()) : 0;
                 remaining -= alloc;
 
                 applyReceiver(rp, receiverNode, host, alloc);
@@ -487,6 +487,9 @@ public class BroadcastFrequencyBand implements INBTSerializable<CompoundTag> {
      * 输入剩余频道总数和期望频道数，返回当前应该给此接收端分配的频道量
      */
     private int computeAllocChannels(long remaining, int expectedChannels) {
+        if (expectedChannels == BroadcastReceiverHost.UNLIMITED_CHANNELS) {
+            return (int) Math.min(remaining, Integer.MAX_VALUE);
+        }
         if (expectedChannels <= 0) return 0;
         if (remaining <= 0) return 0;
         long give = Math.min(remaining, expectedChannels);

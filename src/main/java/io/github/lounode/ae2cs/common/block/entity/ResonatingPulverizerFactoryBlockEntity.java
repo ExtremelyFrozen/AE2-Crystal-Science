@@ -11,6 +11,7 @@ import io.github.lounode.ae2cs.common.inventory.ResonatingFactoryUpgradeInventor
 import io.github.lounode.ae2cs.common.inventory.ResonatingStackingInventory;
 import io.github.lounode.ae2cs.common.machine.MachineFluidHost;
 import io.github.lounode.ae2cs.common.machine.MachineFluidTanks;
+import io.github.lounode.ae2cs.common.machine.ResonatingFactoryParallelism;
 import io.github.lounode.ae2cs.common.machine.component.AppEngInvComponent;
 import io.github.lounode.ae2cs.common.machine.component.InvPort;
 import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
@@ -63,21 +64,6 @@ public class ResonatingPulverizerFactoryBlockEntity extends AENetworkedSelfPower
     private static final double BASIC_ENERGY_COST_PER_TICK = 200;
 
     /**
-     * 并行处理上限。并行不改变单个加工周期的时间，只提高一个周期内消耗与产出的份数。
-     */
-    private static final int MAX_PARALLELISM = 32;
-
-    /**
-     * 每张加速卡额外提供的并行数
-     */
-    private static final int PARALLEL_PER_SPEED_CARD = 4;
-
-    /**
-     * 每张陨石超频卡额外提供的并行数
-     */
-    private static final int PARALLEL_PER_OVERLOAD_CARD = 16;
-
-    /**
      * 输入/输出槽位数量（各三乘三）
      */
     private static final int INVENTORY_SIZE = 9;
@@ -90,14 +76,6 @@ public class ResonatingPulverizerFactoryBlockEntity extends AENetworkedSelfPower
 
     private int speedMultiplier = 1;
     private int overclockCards = 0;
-
-    /**
-     * 并行处理数，由升级卡决定，范围 1..{@link #MAX_PARALLELISM}。
-     * <p>
-     * 并行是加速卡与陨石超频卡的额外作用，不取代它们原有的效果：单份加工时间仍由
-     * {@link #getEnergyPerTick()} 决定，并行只放大一个周期内的消耗与产出。
-     */
-    private int parallelism = 1;
 
     private boolean averageInputEnabled;
 
@@ -119,6 +97,7 @@ public class ResonatingPulverizerFactoryBlockEntity extends AENetworkedSelfPower
      * 当前配方进度
      */
     private int recipeProgress = 0;
+    private int batchEnergyCost;
 
     /**
      * 是否需要更新配方状态
@@ -251,14 +230,14 @@ public class ResonatingPulverizerFactoryBlockEntity extends AENetworkedSelfPower
     }
 
     public int getActiveRecipeEnergyCost() {
-        return activeRecipeEnergyCost;
+        return batchEnergyCost;
     }
 
     /**
      * 当前并行处理数（1..{@link #MAX_PARALLELISM}）
      */
     public int getParallelism() {
-        return parallelism;
+        return ResonatingFactoryParallelism.forCards(overclockCards);
     }
 
     public void checkActive(boolean active) {
@@ -277,10 +256,6 @@ public class ResonatingPulverizerFactoryBlockEntity extends AENetworkedSelfPower
     private void onUpgradesChanged() {
         this.overclockCards = Math.min(4, upgrades.getInstalledUpgrades(AECSItems.OVERLOAD_CARD));
         this.speedMultiplier = overclockCards > 0 ? 1 : 1 << Math.min(4, upgrades.getInstalledUpgrades(AEItems.SPEED_CARD));
-        // 四个陨石卡槽独立于两个堆叠卡槽；并行仍遵守现有加工上限。
-        int speedCards = Math.min(4, upgrades.getInstalledUpgrades(AEItems.SPEED_CARD));
-        this.parallelism = Math.max(1, Math.min(MAX_PARALLELISM,
-                speedCards * PARALLEL_PER_SPEED_CARD + overclockCards * PARALLEL_PER_OVERLOAD_CARD));
         saveChanges();
     }
 
@@ -301,6 +276,7 @@ public class ResonatingPulverizerFactoryBlockEntity extends AENetworkedSelfPower
         }
         if (activeRecipe == null) {
             recipeProgress = 0;
+            batchEnergyCost = 0;
             return;
         }
 
@@ -310,8 +286,13 @@ public class ResonatingPulverizerFactoryBlockEntity extends AENetworkedSelfPower
         // 2) 若未完成：推进进度 + 扣能量
         // 并行数放大单周期的处理量：目标能量与每 tick 推进量都按并行数放大，
         // 而单位能量对应的进度不变，因此单份加工时间不变，只是一个周期完成后会一次性产出多份。
-        int parallel = getParallelism();
-        int batchEnergy = activeRecipeEnergyCost * parallel;
+        ItemStack sample = findMatchingInput(recipe);
+        ItemStack result = sample.isEmpty() ? ItemStack.EMPTY : recipe.assemble(new SingleRecipeInput(sample), level.registryAccess());
+        if (result.isEmpty()) return;
+        int parallel = availableBatch(recipe, result);
+        if (parallel == 0) return;
+        int batchEnergy = Math.max(1, activeRecipeEnergyCost) * parallel;
+        batchEnergyCost = batchEnergy;
         if (recipeProgress < batchEnergy) {
             if (getAECurrentPower() <= 0) return;
 
@@ -324,23 +305,6 @@ public class ResonatingPulverizerFactoryBlockEntity extends AENetworkedSelfPower
 
         // 3) 已经完成：按并行数批量消耗与产出
         if (recipeProgress >= batchEnergy) {
-            ItemStack sample = findMatchingInput(recipe);
-            ItemStack result = sample.isEmpty() ? ItemStack.EMPTY : recipe.assemble(new SingleRecipeInput(sample), level.registryAccess());
-            if (result.isEmpty()) // 如果我们拿不到输出，说明配方可能有问题，此时清空状态
-            {
-                recipeProgress = 0;
-                activeRecipe = null;
-                activeRecipeEnergyCost = 0;
-                return;
-            }
-
-            // 如果输出放不下，则将recipeProgress钳制在最大配方时间
-            FluidStack fluidResult = recipe.fluidOutput();
-            if (!getOutputInv().addItems(result, true).isEmpty() || (!fluidResult.isEmpty() && fluidTanks.output().fill(fluidResult, IFluidHandler.FluidAction.SIMULATE) < fluidResult.getAmount())) {
-                recipeProgress = batchEnergy;
-                return;
-            }
-
             int crafted = 0;
             for (int i = 0; i < parallel; i++) {
                 if (!craftOne(recipe, result)) break;
@@ -357,9 +321,31 @@ public class ResonatingPulverizerFactoryBlockEntity extends AENetworkedSelfPower
 
             // 只有实际产出的份数真正消耗能量；未产出部分的进度保留到下一轮，
             // 相当于这部分能量已经预付，避免输入或输出受限时白扣整批能量。
-            recipeProgress = batchEnergy - crafted * activeRecipeEnergyCost;
+            recipeProgress -= crafted * Math.max(1, activeRecipeEnergyCost);
             setChanged();
         }
+    }
+
+    private int availableBatch(CrystalPulverizerRecipe recipe, ItemStack result) {
+        int inputs = 0;
+        for (ItemStack stack : getInputInv()) {
+            if (recipe.input().test(stack)) inputs += stack.getCount() / recipe.input().count();
+        }
+        int batch = Math.min(getParallelism(), inputs);
+        if (recipe.fluidInput() != null) {
+            var fluid = fluidTanks.input().getFluid();
+            if (!recipe.fluidInput().test(fluid)) return 0;
+            batch = Math.min(batch, fluid.getAmount() / recipe.fluidInput().amount());
+        }
+        FluidStack fluidResult = recipe.fluidOutput();
+        if (!fluidResult.isEmpty()) {
+            int accepted = fluidTanks.output().fill(fluidResult.copyWithAmount(fluidResult.getAmount() * batch),
+                    IFluidHandler.FluidAction.SIMULATE);
+            batch = Math.min(batch, accepted / fluidResult.getAmount());
+        }
+        ItemStack requested = result.copyWithCount(result.getCount() * batch);
+        int accepted = requested.getCount() - getOutputInv().simulateAdd(requested).getCount();
+        return Math.min(batch, accepted / result.getCount());
     }
 
     // 计算能量消耗

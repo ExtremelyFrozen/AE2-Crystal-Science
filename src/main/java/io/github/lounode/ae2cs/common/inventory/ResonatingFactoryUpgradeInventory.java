@@ -10,7 +10,7 @@ import net.minecraft.world.level.ItemLike;
 
 import java.util.function.IntPredicate;
 
-/** Four dedicated meteorite slots followed by two dedicated stacking slots. */
+/** Six shared slots with independent limits for each factory upgrade. */
 public class ResonatingFactoryUpgradeInventory extends AppEngInternalInventory implements IUpgradeInventory {
 
     private final Runnable onChanged;
@@ -26,12 +26,16 @@ public class ResonatingFactoryUpgradeInventory extends AppEngInternalInventory i
 
     @Override
     public boolean isItemValid(int slot, ItemStack stack) {
-        return slot >= 0 && slot < size() && stack.is(slot < 4 ? AECSItems.OVERLOAD_CARD : AECSItems.RESONATING_STACKING_CARD);
+        if (slot < 0 || slot >= size() || stack.isEmpty()) return false;
+        var item = stack.getItem();
+        int max = getMaxInstalled(item);
+        int installed = getInstalledUpgrades(item);
+        return max > 0 && (getStackInSlot(slot).is(item) || installed < max);
     }
 
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if (slot >= 4 && !getStackInSlot(slot).isEmpty() && !canRemoveStackingCard.test(getInstalledUpgrades(AECSItems.RESONATING_STACKING_CARD) - 1)) {
+        if (getStackInSlot(slot).is(AECSItems.RESONATING_STACKING_CARD) && !canRemoveStackingCard.test(getInstalledUpgrades(AECSItems.RESONATING_STACKING_CARD) - 1)) {
             return ItemStack.EMPTY;
         }
         return super.extractItem(slot, amount, simulate);
@@ -53,7 +57,7 @@ public class ResonatingFactoryUpgradeInventory extends AppEngInternalInventory i
         int count = 0;
         for (int slot = 0; slot < size(); slot++) {
             ItemStack stack = getStackInSlot(slot);
-            if (isItemValid(slot, stack) && stack.is(upgrade.asItem())) count++;
+            if (stack.is(upgrade.asItem())) count++;
         }
         return count;
     }

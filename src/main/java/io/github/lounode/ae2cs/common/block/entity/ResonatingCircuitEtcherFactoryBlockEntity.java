@@ -2,7 +2,9 @@ package io.github.lounode.ae2cs.common.block.entity;
 
 import io.github.lounode.ae2cs.common.init.AECSBlockEntities;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
+import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSRecipeTypes;
+import io.github.lounode.ae2cs.common.machine.ResonatingFactoryParallelism;
 import io.github.lounode.ae2cs.common.recipe.circuit_etcher.CircuitEtcherRecipe;
 
 import net.minecraft.core.BlockPos;
@@ -15,13 +17,18 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 /**
- * 谐振电路蚀刻工厂。使用九个输入槽和三个输出槽，暂沿用普通蚀刻器的配方与加工速率。
+ * 谐振电路蚀刻工厂，使用九个输入槽和三个输出槽批量加工普通蚀刻配方。
  */
 public class ResonatingCircuitEtcherFactoryBlockEntity extends CircuitEtcherBlockEntity {
 
     public ResonatingCircuitEtcherFactoryBlockEntity(BlockPos pos, BlockState blockState) {
         super(AECSBlockEntities.RESONATING_CIRCUIT_ETCHER_FACTORY_BLOCK_ENTITY.get(), pos, blockState,
                 AECSBlocks.RESONATING_CIRCUIT_ETCHER_FACTORY_BLOCK, 9, 3);
+    }
+
+    @Override
+    public int getParallelism() {
+        return ResonatingFactoryParallelism.forCards(getUpgrades().getInstalledUpgrades(AECSItems.OVERLOAD_CARD));
     }
 
     @Override

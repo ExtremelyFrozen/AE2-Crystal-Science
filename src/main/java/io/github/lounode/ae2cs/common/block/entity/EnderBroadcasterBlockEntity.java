@@ -3,6 +3,7 @@ package io.github.lounode.ae2cs.common.block.entity;
 import io.github.lounode.ae2cs.api.CustomChannelProviderHost;
 import io.github.lounode.ae2cs.api.linker.broadcast.*;
 import io.github.lounode.ae2cs.api.submenu.CustomReturnableSubMenuHost;
+import io.github.lounode.ae2cs.api.util.AECSGridHelper;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
 
@@ -31,25 +32,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 public class EnderBroadcasterBlockEntity extends AENetworkedComponentBlockEntity
                                          implements CustomChannelProviderHost, BroadcastSenderHost, BroadcastReceiverHost, IUpgradeableObject,
                                          CustomReturnableSubMenuHost {
 
     private static final int VIRTUAL_SENDER_NODE_HARD_CAP = 768;
-
-    /**
-     * 作为接收者最多能分配到多少频道，用来限制期望频道量的设置
-     */
-    private static final Supplier<Integer> MAX_RECEIVER_CHANNELS = () -> {
-        ChannelMode mode = AEConfig.instance().getChannelMode();
-        if (mode == ChannelMode.INFINITE) {
-            return Integer.MAX_VALUE;
-        } else {
-            return 32 * mode.getCableCapacityFactor();
-        }
-    };
 
     private static final IGridNodeListener<EnderBroadcasterBlockEntity> VIRTUAL_NODE_LISTENER = new IGridNodeListener<>() {
 
@@ -81,7 +69,8 @@ public class EnderBroadcasterBlockEntity extends AENetworkedComponentBlockEntity
 
     private String bandId = "";
     private ConnectionType connectionType = ConnectionType.NO_CONNECTION;
-    private int expectedChannels = 32;
+    private int expectedChannels = DEFAULT_EXPECTED_CHANNELS;
+    private boolean channelDemand;
 
     // CustomChannelProviderHost 数据（接收端用）
     private int customMaxChannels = 0;
@@ -138,6 +127,11 @@ public class EnderBroadcasterBlockEntity extends AENetworkedComponentBlockEntity
         if (level == null || level.isClientSide()) return;
         boolean asSender = this.connectionType == ConnectionType.AS_SENDER;
         boolean asReceiver = this.connectionType == ConnectionType.AS_RECEIVER;
+        boolean nextDemand = hasChannelDemand();
+        if (channelDemand != nextDemand) {
+            channelDemand = nextDemand;
+            markBandRuntimeDirty();
+        }
         boolean active = false;
         if (asSender) {
             active = getCouldSendChannels() > 0;
@@ -178,29 +172,31 @@ public class EnderBroadcasterBlockEntity extends AENetworkedComponentBlockEntity
         return this.expectedChannels;
     }
 
-    public void setExpectedChannels(int expectedChannels) {
-        int newExpectedChannels = Math.max(0, expectedChannels);
-        newExpectedChannels = Math.min(newExpectedChannels, getMaxExpectedChannels());
-        if (newExpectedChannels == this.expectedChannels) return;
-
-        this.expectedChannels = newExpectedChannels;
-        markBandRuntimeDirty(); // 期望频道数量改变，因此需要标脏
-        setChanged();
+    @Override
+    public boolean hasChannelDemand() {
+        IGridNode node = getMainNode().getNode();
+        if (connectionType != ConnectionType.AS_RECEIVER || node == null) return false;
+        return AECSGridHelper.hasDeviceBehindCables(node.getInWorldConnections().values().stream()
+                .map(connection -> connection.getOtherSide(node))
+                .toList());
     }
 
-    private int getMaxExpectedChannels() {
-        if (bandId != null && !bandId.isEmpty()) {
-            BroadcastFrequencyBand band = FrequencyBandManager.getBand(bandId);
-            if (band != null) {
-                return clampChannelCount(band.getUsableChannels());
-            }
+    public void changeExpectedChannels(int delta) {
+        if (expectedChannels != UNLIMITED_CHANNELS) {
+            setExpectedChannels((int) Math.clamp((long) expectedChannels + delta, 0, Integer.MAX_VALUE));
         }
-        return MAX_RECEIVER_CHANNELS.get();
     }
 
-    private static int clampChannelCount(long channels) {
-        if (channels <= 0) return 0;
-        return channels >= Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) channels;
+    public void toggleUnlimitedChannels() {
+        setExpectedChannels(expectedChannels == UNLIMITED_CHANNELS ? DEFAULT_EXPECTED_CHANNELS : UNLIMITED_CHANNELS);
+    }
+
+    public void setExpectedChannels(int channels) {
+        int value = Math.max(UNLIMITED_CHANNELS, channels);
+        if (value == expectedChannels) return;
+        expectedChannels = value;
+        markBandRuntimeDirty();
+        setChanged();
     }
 
     // ---------------- CustomChannelProviderHost（接收端用） ----------------
@@ -623,7 +619,7 @@ public class EnderBroadcasterBlockEntity extends AENetworkedComponentBlockEntity
 
         enabledCustomChannel = data.getBoolean("enabled_custom_channel");
         customMaxChannels = data.getInt("custom_max_channels");
-        this.expectedChannels = data.getInt("expected_channels");
+        this.expectedChannels = data.contains("expected_channels") ? Math.max(UNLIMITED_CHANNELS, data.getInt("expected_channels")) : DEFAULT_EXPECTED_CHANNELS;
     }
 
     @Override

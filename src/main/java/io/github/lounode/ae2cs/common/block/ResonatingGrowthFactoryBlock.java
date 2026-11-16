@@ -23,9 +23,6 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import org.jetbrains.annotations.NotNull;
 
-/**
- * 谐振晶体催生工厂的方块、外观与槽位界面，催生加工后续接入。
- */
 public class ResonatingGrowthFactoryBlock extends AEBaseEntityBlock<ResonatingGrowthFactoryBlockEntity> {
 
     public ResonatingGrowthFactoryBlock(Properties properties) {

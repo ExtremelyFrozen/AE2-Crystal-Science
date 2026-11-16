@@ -10,6 +10,7 @@ import io.github.lounode.ae2cs.common.menu.*;
 import io.github.lounode.ae2cs.common.menu.submenu.SideConfigMenu;
 
 import appeng.api.upgrades.IUpgradeableObject;
+import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.menu.SlotSemantics;
 import appeng.menu.implementations.UpgradeableMenu;
@@ -48,8 +49,121 @@ public class ResonatingFactoryUpgradeGameTests {
 
     @GameTest(template = "empty")
     public static void growth(GameTestHelper helper) {
-        verifyFactory(helper, new ResonatingGrowthFactoryBlockEntity(BlockPos.ZERO,
-                AECSBlocks.RESONATING_GROWTH_FACTORY_BLOCK.get().defaultBlockState()));
+        var host = new ResonatingGrowthFactoryBlockEntity(BlockPos.ZERO,
+                AECSBlocks.RESONATING_GROWTH_FACTORY_BLOCK.get().defaultBlockState());
+        host.setLevel(helper.getLevel());
+        var input = host.getInputInv();
+        var upgrades = host.getUpgrades();
+        var rock = new ItemStack(Items.BUDDING_AMETHYST, 64);
+        helper.assertTrue(input.insertItem(0, rock, false).getCount() == 63, "One rock fits without stacking cards");
+        helper.assertTrue(input.insertItem(1, new ItemStack(Items.COBBLESTONE), false).is(Items.COBBLESTONE),
+                "Non-mother-rock items cannot be inserted");
+        var card = AECSItems.RESONATING_STACKING_CARD.toStack();
+        helper.assertTrue(appeng.api.upgrades.Upgrades.isUpgradeCardItem(card), "AE2 recognizes the stacking card");
+        var player = FakePlayerFactory.getMinecraft(helper.getLevel());
+        var menu = new ResonatingGrowthFactoryMenu(1, player.getInventory(), host);
+        var cardSlot = menu.getSlots(SlotSemantics.UPGRADE).getFirst();
+        menu.setCarried(card.copy());
+        menu.clicked(cardSlot.index, 0, net.minecraft.world.inventory.ClickType.PICKUP, player);
+        helper.assertTrue(upgrades.getInstalledUpgrades(AECSItems.RESONATING_STACKING_CARD) == 1,
+                "Clicking the top slot installs the first stacking card");
+        helper.assertTrue(input.insertItem(0, rock, false).getCount() == 33, "One stacking card allows 32 rocks");
+        var playerSlot = menu.getSlots(SlotSemantics.PLAYER_INVENTORY).getFirst();
+        ItemStack previous = playerSlot.getItem();
+        try {
+            playerSlot.set(card.copy());
+            menu.quickMoveStack(player, playerSlot.index);
+            helper.assertTrue(upgrades.getInstalledUpgrades(AECSItems.RESONATING_STACKING_CARD) == 2,
+                    "Shift-click installs the second stacking card");
+        } finally {
+            playerSlot.set(previous);
+        }
+        helper.assertTrue(input.insertItem(0, rock, false).getCount() == 32, "Two stacking cards allow 64 rocks");
+        menu.setCarried(card.copy());
+        menu.clicked(menu.getSlots(SlotSemantics.UPGRADE).get(2).index, 0, net.minecraft.world.inventory.ClickType.PICKUP, player);
+        helper.assertTrue(ItemStack.matches(menu.getCarried(), card), "A third stacking card stays on the cursor");
+        helper.assertTrue(upgrades.extractItem(0, 1, false).isEmpty(), "A full stack protects a card in the top slot");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void growthFactoryProducesSelectedStageInPairedOutput(GameTestHelper helper) {
+        var pos = new BlockPos(1, 1, 1);
+        helper.setBlock(pos, AECSBlocks.RESONATING_GROWTH_FACTORY_BLOCK.get());
+        var host = (ResonatingGrowthFactoryBlockEntity) helper.getBlockEntity(pos);
+        host.getInputInv().insertItem(9, new ItemStack(Items.BUDDING_AMETHYST), false);
+        for (int stage = 0; stage < 3; stage++) host.cycleTargetStage();
+        for (int slot = 0; slot < 4; slot++) {
+            host.getUpgrades().insertItem(slot, AECSItems.OVERLOAD_CARD.toStack(), false);
+        }
+        host.injectAEPower(100, appeng.api.config.Actionable.MODULATE);
+        for (int tick = 0; tick < 3; tick++) host.serverTick();
+        helper.assertTrue(host.getOutputInv().isEmpty(), "Full overclock still takes four ticks");
+        host.serverTick();
+        ItemStack output = host.getOutputInv().getStackInSlot(9);
+        helper.assertTrue(output.is(Items.SMALL_AMETHYST_BUD) && output.getCount() == 6,
+                "The selected stage and full-overclock yield go to the paired output slot");
+        helper.assertTrue(host.getInputInv().getStackInSlot(9).is(Items.BUDDING_AMETHYST),
+                "A mother rock without decay is retained");
+        helper.assertTrue(host.getAECurrentPower() == 0, "The completed growth consumes energy");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void growthFactoryProducesDustAndCrystalDirectly(GameTestHelper helper) {
+        var pos = new BlockPos(1, 1, 1);
+        helper.setBlock(pos, AECSBlocks.RESONATING_GROWTH_FACTORY_BLOCK.get());
+        var host = (ResonatingGrowthFactoryBlockEntity) helper.getBlockEntity(pos);
+        host.getInputInv().insertItem(0, AEBlocks.FLAWLESS_BUDDING_QUARTZ.stack(), false);
+        host.getInputInv().insertItem(1, new ItemStack(Items.BUDDING_AMETHYST), false);
+        for (int slot = 0; slot < 4; slot++) {
+            host.getUpgrades().insertItem(slot, AECSItems.OVERLOAD_CARD.toStack(), false);
+        }
+        host.cycleTargetStage();
+        host.injectAEPower(300, appeng.api.config.Actionable.MODULATE);
+        for (int tick = 0; tick < 4; tick++) host.serverTick();
+        helper.assertTrue(ItemStack.matches(host.getOutputInv().getStackInSlot(0), AEItems.CERTUS_QUARTZ_DUST.stack(6)),
+                "Dust target produces the mapped quartz dust");
+        helper.assertTrue(host.getOutputInv().getStackInSlot(1).isEmpty() && host.getAECurrentPower() == 200,
+                "Amethyst has no dust mapping and consumes no energy in dust mode");
+        host.getOutputInv().clear();
+        host.cycleTargetStage();
+        var saved = new CompoundTag();
+        var registries = helper.getLevel().registryAccess();
+        host.saveAdditional(saved, registries);
+        host.cycleTargetStage();
+        host.loadTag(saved, registries);
+        for (int tick = 0; tick < 4; tick++) host.serverTick();
+        helper.assertTrue(ItemStack.matches(host.getOutputInv().getStackInSlot(0), AEItems.CERTUS_QUARTZ_CRYSTAL.stack(6)),
+                "The saved crystal target produces quartz crystals");
+        helper.assertTrue(ItemStack.matches(host.getOutputInv().getStackInSlot(1), new ItemStack(Items.AMETHYST_SHARD, 6)),
+                "Amethyst crystal target produces amethyst shards");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void growthFactoryReturnsSavedDecayToMotherRockSlots(GameTestHelper helper) {
+        var pos = new BlockPos(1, 1, 1);
+        helper.setBlock(pos, AECSBlocks.RESONATING_GROWTH_FACTORY_BLOCK.get());
+        var host = (ResonatingGrowthFactoryBlockEntity) helper.getBlockEntity(pos);
+        var quartz = AEBlocks.QUARTZ_BLOCK.stack();
+        var damaged = AEBlocks.DAMAGED_BUDDING_QUARTZ.stack();
+        host.getInputInv().setItemDirect(0, damaged);
+        var saved = new CompoundTag();
+        var registries = helper.getLevel().registryAccess();
+        host.saveAdditional(saved, registries);
+        saved.remove("pending_decay");
+        var oldDecay = new io.github.lounode.ae2cs.common.inventory.ResonatingStackingInventory(24, () -> 64, () -> {});
+        oldDecay.setItemDirect(0, quartz.copy());
+        oldDecay.setItemDirect(9, quartz.copy());
+        oldDecay.writeToNBT(saved, "decay_output", registries);
+        host.loadTag(saved, registries);
+        host.serverTick();
+        helper.assertTrue(host.getOutputInv().isEmpty(), "Decay never enters the crystal output");
+        helper.assertTrue(ItemStack.matches(host.getInputInv().getStackInSlot(0), damaged), "Remaining mother rock is retained");
+        helper.assertTrue(ItemStack.matches(host.getInputInv().getStackInSlot(1), quartz), "Partial decay uses another mother rock slot");
+        helper.assertTrue(ItemStack.matches(host.getInputInv().getStackInSlot(9), quartz), "Decay prefers its original mother rock slot");
+        helper.succeed();
     }
 
     @GameTest(template = "empty")
@@ -165,13 +279,14 @@ public class ResonatingFactoryUpgradeGameTests {
         host.setLevel(helper.getLevel());
         var upgrades = ((IUpgradeableObject) host).getUpgrades();
         var inventory = inventories(host).getFirst();
-        helper.assertTrue(upgrades.size() == 6, "Six dedicated upgrade slots");
+        helper.assertTrue(upgrades.size() == 6, "Six upgrade slots");
         helper.assertTrue(upgrades.getUpgradableItem().asItem() == host.getBlockState().getBlock().asItem(), "Correct machine identity");
         helper.assertTrue(inventory.getSlotLimit(0) == 64, "Base capacity is 64");
         for (int slot = 0; slot < 6; slot++) {
             var card = slot < 4 ? AECSItems.OVERLOAD_CARD : AECSItems.RESONATING_STACKING_CARD;
-            var other = slot < 4 ? AECSItems.RESONATING_STACKING_CARD : AECSItems.OVERLOAD_CARD;
-            helper.assertTrue(!upgrades.isItemValid(slot, other.toStack()), "Reject card in wrong dedicated slot");
+            if (slot == 4) {
+                helper.assertTrue(!upgrades.isItemValid(slot, AECSItems.OVERLOAD_CARD.toStack()), "Reject a fifth meteorite card");
+            }
             helper.assertTrue(!upgrades.isItemValid(slot, AEItems.SPEED_CARD.stack()), "Reject ordinary speed card");
             helper.assertTrue(upgrades.insertItem(slot, card.toStack(2), false).getCount() == 1, "One card per slot");
             if (slot == 4) helper.assertTrue(inventory.getSlotLimit(0) == 256, "One stacking card gives capacity 256");
@@ -196,7 +311,7 @@ public class ResonatingFactoryUpgradeGameTests {
             default -> throw new IllegalArgumentException("Unexpected factory");
         };
         helper.assertTrue(menu.getSlots(SlotSemantics.UPGRADE).size() == 6, "Menu exposes all six upgrade slots");
-        var inputSlots = menu.getSlots(host instanceof ResonatingGrowthFactoryBlockEntity ? SlotSemantics.STORAGE : SlotSemantics.MACHINE_INPUT);
+        var inputSlots = menu.getSlots(SlotSemantics.MACHINE_INPUT);
         helper.assertTrue(inputSlots.getFirst().getMaxStackSize(new ItemStack(Items.COBBLESTONE)) == 1024,
                 "Menu insertion uses the enlarged capacity");
         if (host instanceof ResonatingCircuitEtcherFactoryBlockEntity) {
@@ -235,7 +350,6 @@ public class ResonatingFactoryUpgradeGameTests {
         return switch (host) {
             case ResonatingAggregatorFactoryBlockEntity aggregator -> List.of(aggregator.getInputInv(), aggregator.getOutputInv());
             case ResonatingPulverizerFactoryBlockEntity pulverizer -> List.of(pulverizer.getInputInv(), pulverizer.getOutputInv());
-            case ResonatingGrowthFactoryBlockEntity growth -> List.of(growth.getInventory());
             case ResonatingCircuitEtcherFactoryBlockEntity etcher -> List.of(etcher.getInputInv(), etcher.getOutputInv());
             default -> throw new IllegalArgumentException("Unexpected factory");
         };

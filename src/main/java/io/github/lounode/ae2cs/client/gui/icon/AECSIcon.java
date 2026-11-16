@@ -45,6 +45,20 @@ public enum AECSIcon implements IButtonIcon {
             return Blitter.texture(AE2CrystalScience.makeId("textures/gui/grow_full.png"), 16, 16).src(0, 0, 16, 16);
         }
     },
+    GROW_DUST(0, 0) {
+
+        @Override
+        public Blitter getBlitter() {
+            return Blitter.texture(AE2CrystalScience.makeId("textures/gui/grow_dust.png"), 16, 16).src(0, 0, 16, 16);
+        }
+    },
+    GROW_CRYSTAL(0, 0) {
+
+        @Override
+        public Blitter getBlitter() {
+            return Blitter.texture(AE2CrystalScience.makeId("textures/gui/grow_crystal.png"), 16, 16).src(0, 0, 16, 16);
+        }
+    },
     PULL_MODE_OFF(16, 0),
 
     FLOW(0, 0) {

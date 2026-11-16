@@ -2,6 +2,7 @@ package io.github.lounode.ae2cs.common.block.render;
 
 import io.github.lounode.ae2cs.common.block.entity.EnderEmitterBlockEntity;
 import io.github.lounode.ae2cs.common.init.client.AECSAdditionalModels;
+import io.github.lounode.ae2cs.common.item.EnderLinkerItem;
 
 import appeng.api.orientation.IOrientationStrategy;
 
@@ -64,7 +65,7 @@ public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlo
         if (level == null) return;
 
         // link status：必须放在 orientation 之外，否则线框/光束会被旋转
-        if (be.isShowLinkStatus()) {
+        if (shouldShowLinks(be)) {
             renderLinkStatus(be, partialTick, poseStack, buffer);
         }
 
@@ -108,13 +109,21 @@ public class EnderEmitterRenderer implements BlockEntityRenderer<EnderEmitterBlo
 
     @Override
     public boolean shouldRenderOffScreen(@NotNull EnderEmitterBlockEntity be) {
-        // link status 打开时，允许离屏渲染（否则 BER 根本不会被调用）
-        return be.isShowLinkStatus();
+        // Chunk compilation caches this flag. Check the player's hand and cull against
+        // the current bounds at render time so equipping the linker takes effect immediately.
+        return true;
     }
 
     @Override
     public @NotNull AABB getRenderBoundingBox(EnderEmitterBlockEntity be) {
+        if (shouldShowLinks(be)) return be.getChunkRangeBounds(be.getMaxLinkDistanceForClient());
         return be.getCustomBoundingBox(be.getBlockPos());
+    }
+
+    private static boolean shouldShowLinks(EnderEmitterBlockEntity be) {
+        var player = Minecraft.getInstance().player;
+        return be.isShowLinkStatus() || (player != null &&
+                (player.getMainHandItem().getItem() instanceof EnderLinkerItem || player.getOffhandItem().getItem() instanceof EnderLinkerItem));
     }
 
     @Override

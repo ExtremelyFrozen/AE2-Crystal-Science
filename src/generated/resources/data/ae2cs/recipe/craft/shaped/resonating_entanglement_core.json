@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "ae2cs:resonating_processor"
+    },
+    "b": {
+      "item": "ae2cs:meteor_crystal"
+    },
+    "c": {
+      "item": "ae2:quantum_entangled_singularity"
+    },
+    "d": {
+      "tag": "c:storage_blocks/pure_crystal/resonating_crystal_block"
+    }
+  },
+  "pattern": [
+    "aba",
+    "cdc",
+    "aba"
+  ],
+  "result": {
+    "count": 1,
+    "id": "ae2cs:resonating_entanglement_core"
+  }
+}

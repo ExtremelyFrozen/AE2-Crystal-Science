@@ -27,10 +27,10 @@ Meteorite Overclock Cards control the maximum batch size:
 | Installed cards | Maximum batch | Target cycle |
 | --- | --- | --- |
 | 0 | 8 | Based on recipe energy |
-| 1 | 32 | 64 ticks |
+| 1 | 16 | 64 ticks |
 | 2 | 64 | 16 ticks |
-| 3 | 256 | 4 ticks |
-| 4 | 1024 | 1 tick |
+| 3 | 128 | 4 ticks |
+| 4 | 256 | 1 tick |
 
 Actual batches depend on available ingredients, fluid, energy and output space. Missing resources pause processing; energy already paid remains attached to the batch.
 
@@ -38,8 +38,8 @@ Actual batches depend on available ingredients, fluid, energy and output space. 
 
 ## Upgrade cards and storage
 
-- Four dedicated slots accept up to **4 <ItemLink id="ae2cs:overload_card" />**.
-- Two dedicated slots accept up to **2 <ItemLink id="ae2cs:resonating_stacking_card" />**.
+- All six slots accept either card type, with up to **4 <ItemLink id="ae2cs:overload_card" />**.
+- The factory accepts up to **2 <ItemLink id="ae2cs:resonating_stacking_card" />**.
 - Each slot holds one card. Standard Speed Cards are not accepted.
 - Hover over the upgrade panel to see **Compatible Upgrades** and the machine-wide card limits.
 

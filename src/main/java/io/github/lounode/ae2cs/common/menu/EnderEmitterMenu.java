@@ -34,6 +34,7 @@ public class EnderEmitterMenu extends UpgradeableMenu<EnderEmitterBlockEntity> {
     private static final String cleanBandConnectionAction = "clean_band_connection";
     private static final String selectBandAction = "select_band";
     private static final String changeExpectedChannelsAction = "change_expected_channels";
+    private static final String toggleUnlimitedChannelsAction = "toggle_unlimited_channels";
 
     @GuiSync(10)
     public int linkDistance;
@@ -87,6 +88,7 @@ public class EnderEmitterMenu extends UpgradeableMenu<EnderEmitterBlockEntity> {
         registerClientAction(cleanBandConnectionAction, this::onCleanBandConnection);
         registerClientAction(selectBandAction, String.class, this::onSelectBand);
         registerClientAction(changeExpectedChannelsAction, Integer.class, this::onChangeExpectedChannels);
+        registerClientAction(toggleUnlimitedChannelsAction, this::onToggleUnlimitedChannels);
     }
 
     @Override
@@ -153,6 +155,10 @@ public class EnderEmitterMenu extends UpgradeableMenu<EnderEmitterBlockEntity> {
         sendClientAction(changeExpectedChannelsAction, delta);
     }
 
+    public void sendToggleUnlimitedChannels() {
+        sendClientAction(toggleUnlimitedChannelsAction);
+    }
+
     private void onSelectBand(String name) {
         BroadcastBandsField visibleBands = FrequencyBandManager.getBandsInfoByPlayer(getPlayer());
         if (visibleBands == null || visibleBands.bands().stream().noneMatch(entry -> entry.name().equals(name))) return;
@@ -166,11 +172,17 @@ public class EnderEmitterMenu extends UpgradeableMenu<EnderEmitterBlockEntity> {
     }
 
     private void onChangeExpectedChannels(int delta) {
-        if (delta == -10 || delta == -1 || delta == 1 || delta == 10) getHost().changeExpectedChannels(delta);
+        if (getHost().isConnectedToBand()) getHost().changeExpectedChannels(delta);
+    }
+
+    private void onToggleUnlimitedChannels() {
+        if (getHost().isConnectedToBand()) getHost().toggleUnlimitedChannels();
     }
 
     private void onChangeDistance(int delta) {
-        if (delta == -1 || delta == 1) getHost().setLinkDistance(getHost().getLinkDistance() + delta);
+        var host = getHost();
+        int max = host.getMaxLinkDistance();
+        host.setLinkDistance(host.getLinkDistance() + Math.clamp(delta, -max, max));
     }
 
     private void onSacnAll() {

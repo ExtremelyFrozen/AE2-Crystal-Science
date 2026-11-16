@@ -1,17 +1,21 @@
 package io.github.lounode.ae2cs.client.gui.linker.broadcast;
 
+import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastReceiverHost;
 import io.github.lounode.ae2cs.client.gui.icon.AECSIcon;
 import io.github.lounode.ae2cs.client.gui.icon.AdaptedAE2Icon;
 import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSIconButton;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSToggleButton;
+import io.github.lounode.ae2cs.client.gui.widgets.AdjustmentButtons;
 import io.github.lounode.ae2cs.common.block.entity.EnderBroadcasterBlockEntity;
 import io.github.lounode.ae2cs.common.menu.linker.broadcast.EnderBroadcasterMenu;
 
 import appeng.client.gui.implementations.UpgradeableScreen;
 import appeng.client.gui.style.StyleManager;
 import appeng.client.gui.widgets.AE2Button;
+import appeng.util.ReadableNumberConverter;
 
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -30,6 +34,7 @@ public class EnderBroadcasterGUI extends UpgradeableScreen<EnderBroadcasterMenu>
     private final AE2Button addReceiver10ChannelsButton;
     private final AE2Button reduceReceiver1ChannelsButton;
     private final AE2Button reduceReceiver10ChannelsButton;
+    private final AE2Button channelLimitButton;
 
     public EnderBroadcasterGUI(EnderBroadcasterMenu menu, Inventory inv, Component title) {
         super(menu, inv, title, StyleManager.loadStyleDoc("/screens/ender_broadcaster_menu.json"));
@@ -81,29 +86,21 @@ public class EnderBroadcasterGUI extends UpgradeableScreen<EnderBroadcasterMenu>
         this.cleanLinkerConnectionButton.setMessage(Component.translatable("ae2cs.menu.ender_broadcaster.button.clean_linker_connection"));
         addToLeftToolbar(cleanLinkerConnectionButton);
 
-        addReceiver1ChannelsButton = new AE2Button(Component.literal("+1"), button -> {
-            int mult = hasShiftDown() ? 5 : 1;
-            menu.sendChangeExpectedChannels(1 * mult);
-        });
-        widgets.add("add_receiver_expected_channels_button_1", addReceiver1ChannelsButton);
+        addReceiver1ChannelsButton = channelStepButton("add_receiver_expected_channels_button_1", 1);
+        addReceiver10ChannelsButton = channelStepButton("add_receiver_expected_channels_button_10", 10);
+        reduceReceiver1ChannelsButton = channelStepButton("reduce_receiver_expected_channels_button_1", -1);
+        reduceReceiver10ChannelsButton = channelStepButton("reduce_receiver_expected_channels_button_10", -10);
+        channelLimitButton = new AE2Button(Component.empty(), button -> menu.sendToggleUnlimitedChannels());
+        channelLimitButton.setTooltip(Tooltip.create(Component.translatable("ae2cs.menu.toggle_unlimited_channels")));
+        widgets.add("channel_limit", channelLimitButton);
+    }
 
-        addReceiver10ChannelsButton = new AE2Button(Component.literal("+10"), button -> {
-            int mult = hasShiftDown() ? 5 : 1;
-            menu.sendChangeExpectedChannels(10 * mult);
-        });
-        widgets.add("add_receiver_expected_channels_button_10", addReceiver10ChannelsButton);
-
-        reduceReceiver1ChannelsButton = new AE2Button(Component.literal("-1"), button -> {
-            int mult = hasShiftDown() ? 5 : 1;
-            menu.sendChangeExpectedChannels(-1 * mult);
-        });
-        widgets.add("reduce_receiver_expected_channels_button_1", reduceReceiver1ChannelsButton);
-
-        reduceReceiver10ChannelsButton = new AE2Button(Component.literal("-10"), button -> {
-            int mult = hasShiftDown() ? 5 : 1;
-            menu.sendChangeExpectedChannels(-10 * mult);
-        });
-        widgets.add("reduce_receiver_expected_channels_button_10", reduceReceiver10ChannelsButton);
+    private AE2Button channelStepButton(String id, int delta) {
+        AE2Button button = new AE2Button(Component.literal(delta > 0 ? "+" + delta : Integer.toString(delta)),
+                pressed -> menu.sendChangeExpectedChannels(AdjustmentButtons.step(delta, menu.receiverExpectedChannels)));
+        button.setTooltip(AdjustmentButtons.tooltip());
+        widgets.add(id, button);
+        return button;
     }
 
     @Override
@@ -130,9 +127,6 @@ public class EnderBroadcasterGUI extends UpgradeableScreen<EnderBroadcasterMenu>
         setTextContent("receiver_expected_channels_title", Component.translatable("ae2cs.menu.ender_broadcaster.receiver_expected_channels_title"));
         setTextHidden("receiver_expected_channels_title", !isReceiver);
 
-        setTextContent("receiver_expected_channels_count", Component.literal(String.valueOf(menu.receiverExpectedChannels)));
-        setTextHidden("receiver_expected_channels_count", !isReceiver);
-
         setTextContent("sender_sent_channels", Component.translatable("ae2cs.menu.ender_broadcaster.sender_sent_channels", menu.senderSentChannels));
         setTextHidden("sender_sent_channels", !isSender);
 
@@ -142,13 +136,21 @@ public class EnderBroadcasterGUI extends UpgradeableScreen<EnderBroadcasterMenu>
         openFrequencyBandManagerMenuButton.setVisibility(menu.connectionType != EnderBroadcasterBlockEntity.ConnectionType.NO_CONNECTION);
         cleanLinkerConnectionButton.setVisibility(menu.connectionType != EnderBroadcasterBlockEntity.ConnectionType.NO_CONNECTION);
 
-        this.addReceiver1ChannelsButton.active = isReceiver;
+        boolean unlimited = menu.receiverExpectedChannels == BroadcastReceiverHost.UNLIMITED_CHANNELS;
+        String exact = Integer.toString(menu.receiverExpectedChannels);
+        String display = font.width(exact) <= 30 ? exact : ReadableNumberConverter.format(menu.receiverExpectedChannels, 5);
+        channelLimitButton.visible = isReceiver;
+        channelLimitButton.active = isReceiver;
+        channelLimitButton.setMessage(Component.literal(unlimited ? "∞" : display));
+        boolean canIncrease = isReceiver && !unlimited && menu.receiverExpectedChannels < Integer.MAX_VALUE;
+        boolean canDecrease = isReceiver && !unlimited && menu.receiverExpectedChannels > 0;
+        this.addReceiver1ChannelsButton.active = canIncrease;
         this.addReceiver1ChannelsButton.visible = isReceiver;
-        this.addReceiver10ChannelsButton.active = isReceiver;
+        this.addReceiver10ChannelsButton.active = canIncrease;
         this.addReceiver10ChannelsButton.visible = isReceiver;
-        this.reduceReceiver1ChannelsButton.active = isReceiver;
+        this.reduceReceiver1ChannelsButton.active = canDecrease;
         this.reduceReceiver1ChannelsButton.visible = isReceiver;
-        this.reduceReceiver10ChannelsButton.active = isReceiver;
+        this.reduceReceiver10ChannelsButton.active = canDecrease;
         this.reduceReceiver10ChannelsButton.visible = isReceiver;
     }
 }

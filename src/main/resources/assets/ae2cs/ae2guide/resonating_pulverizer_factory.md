@@ -21,7 +21,7 @@ The **Resonating Pulverizer Factory** is the batch-processing variant of the [Cr
 - **9 input slots** and **9 output slots**, arranged in two 3×3 grids.
 - Separate fluid input and output tanks, each holding **16,000 mB**, for recipes that use fluids.
 - The central arrow shows the current batch progress. Click it to view pulverizing recipes.
-- The machine processes **1 recipe per batch** without Meteorite Overclock Cards. Each card contributes 16 to the batch limit, capped at **32 recipes**.
+- With 0 to 4 Meteorite Overclock Cards, each batch can process up to **8, 16, 64, 128 or 256** recipes.
 - Batch processing multiplies materials, fluids and energy by the number of recipes actually processed. It does not make individual outputs free.
 
 Resonating Stacking Cards enlarge storage capacity independently of the processing limit.
@@ -30,8 +30,8 @@ Resonating Stacking Cards enlarge storage capacity independently of the processi
 
 ## Upgrade cards and storage
 
-- Four dedicated slots accept up to **4 <ItemLink id="ae2cs:overload_card" />**.
-- Two dedicated slots accept up to **2 <ItemLink id="ae2cs:resonating_stacking_card" />**.
+- All six slots accept either card type, with up to **4 <ItemLink id="ae2cs:overload_card" />**.
+- The factory accepts up to **2 <ItemLink id="ae2cs:resonating_stacking_card" />**.
 - Each slot holds one card. Standard Speed Cards are not accepted.
 - Hover over the upgrade panel to see **Compatible Upgrades** and the machine-wide card limits.
 
