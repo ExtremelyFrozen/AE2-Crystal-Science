@@ -57,7 +57,6 @@ public class AEPlugin {
                 AECSMenus.RESONANT_TEMPLATE_CODING_TERM_MENU_TYPE,
                 AECSItems.WIRELESS_RESONANT_TERMINAL.get(),
                 RESONANT_TERMINAL_ICON)
-                .translationKey("item.ae2cs.wireless_resonant_terminal")
                 .upgradeCount(2)
                 .addTerminal());
     }

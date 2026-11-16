@@ -1,5 +1,6 @@
 package io.github.lounode.ae2cs.integration.emi;
 
+import appeng.recipes.AERecipeTypes;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
@@ -43,7 +44,7 @@ public class AECSEmiPlugin implements EmiPlugin {
         registry.addCategory(EntropyVariationReactionChamberRecipeCategory.RECIPE_TYPE);
         registry.addWorkstation(EntropyVariationReactionChamberRecipeCategory.RECIPE_TYPE,
                 EmiStack.of(AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK));
-        registry.getRecipeManager().getAllRecipesFor(EntropyRecipe.TYPE)
+        registry.getRecipeManager().getAllRecipesFor(AERecipeTypes.ENTROPY)
                 .stream()
                 .map(EntropyVariationReactionChamberRecipeCategory::new)
                 .forEach(registry::addRecipe);
