@@ -1,4 +1,8 @@
 {
+  "ae2cs.configuration.pure_crystal_burn_multiplier": "高纯水晶发电倍率",
+  "ae2cs.configuration.pure_crystal_burn_multiplier.tooltip": "调整高纯水晶燃烧时每刻产生的 AE。范围 0.01–100，默认 1。",
+  "ae2cs.menu.toggle_unlimited_channels": "点击在无上限与 32 个期望频道之间切换。",
+  "ae2cs.menu.adjustment_shortcuts": "Shift：步长 ×5。Ctrl：翻倍或减半。",
   "gui.ae2cs.fluid.empty": "空",
   "creativetab.ae2cs.items": "AE2：水晶科技",
   "creativetab.ae2cs.crystals": "水晶科技:水晶",
@@ -21,6 +25,10 @@
   "block.ae2cs.deepslate_charged_certus_quartz_ore": "充能深层赛特斯石英矿石",
   "block.ae2cs.crystal_growth_chamber": "晶体催生仓",
   "block.ae2cs.resonating_growth_factory": "谐振晶体催生工厂",
+  "ae2cs.gui.resonating_factory.stack_count": "数量：%s",
+  "ae2cs.gui.resonating_growth_factory.target": "生长目标：%s",
+  "ae2cs.gui.resonating_growth_factory.target.dust": "粉",
+  "ae2cs.gui.resonating_growth_factory.target.crystal": "水晶",
   "block.ae2cs.crystal_growth_accelerator": "谐振晶体催生器",
   "ae2cs.gui.crystal_growth_accelerator.stage": "生长目标：%s",
   "ae2cs.gui.crystal_growth_accelerator.stage_hint": "点击切换目标晶簇阶段",
@@ -222,6 +230,8 @@
   "ae2cs.item.extended_resonating_pattern_provider_upgrade.tooltip": "将谐振样板供应器升级为扩展谐振样板供应器",
   "ae2cs.item.pattern_provider_upgrade.tooltip": "将初级样板供应器升级为样板供应器",
   "ae2cs.item.meteor_pattern_provider_upgrade.tooltip": "将样板供应器升级为自装配式样板供应器",
+  "ae2cs.item.crystal_growth_core.tooltip": "手持并对着母岩、作物等方块长按右键，使其获得一台晶体催生器的加速",
+  "ae2cs.item.resonating_factory_upgrade.tooltip": "对着晶能粉碎机、电路蚀刻器、晶能聚合器或谐振晶体催生器右键，将其升级为对应的谐振工厂",
 
   "enchantment.ae2cs.ender_link": "末影链接",
 

@@ -1,6 +1,7 @@
 package io.github.lounode.ae2cs.client.gui;
 
 import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastFrequencyBand;
+import io.github.lounode.ae2cs.api.linker.broadcast.BroadcastReceiverHost;
 import io.github.lounode.ae2cs.api.linker.broadcast.networking.BroadcastBandsField;
 import io.github.lounode.ae2cs.api.settings.AECSSettings;
 import io.github.lounode.ae2cs.api.settings.AutoLinkCableMode;
@@ -12,6 +13,7 @@ import io.github.lounode.ae2cs.client.gui.icon.IButtonIcon;
 import io.github.lounode.ae2cs.client.gui.style.EnderEmitterTextures;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSIconButton;
 import io.github.lounode.ae2cs.client.gui.widgets.AECSServerSettingToggleButton;
+import io.github.lounode.ae2cs.client.gui.widgets.AdjustmentButtons;
 import io.github.lounode.ae2cs.common.menu.EnderEmitterMenu;
 
 import appeng.api.config.Setting;
@@ -48,9 +50,6 @@ public class EnderEmitterGUI extends AEBaseScreen<EnderEmitterMenu> {
     private static final int METRIC_VALUE_WIDTH = 69;
     private static final int CHANNELS_Y = 77;
     private static final int CHANNEL_ROW_SPACING = 14;
-    private static final int CHANNEL_BUTTON_Y = 101;
-    private static final int CHANNEL_BUTTON_HEIGHT = 17;
-    private static final int CHANNEL_VALUE_X = 154;
     private static final int CHANNEL_VALUE_WIDTH = 33;
     private static final int MAP_X = 198;
     private static final int MAP_Y = 142;
@@ -64,6 +63,7 @@ public class EnderEmitterGUI extends AEBaseScreen<EnderEmitterMenu> {
     private final Scrollbar bandScrollbar;
     private final List<Button> bandRows = new ArrayList<>();
     private final List<Button> channelButtons = new ArrayList<>();
+    private final Button channelLimitButton;
     private final AECSIconButton addDistanceButton;
     private final AECSIconButton reduceDistanceButton;
     private final AECSServerSettingToggleButton<AutoLinkMode> autoModeButton;
@@ -114,8 +114,8 @@ public class EnderEmitterGUI extends AEBaseScreen<EnderEmitterMenu> {
             bandRows.add(button);
         }
 
-        addDistanceButton = iconButton(AECSIcon.ADDITION_SIGN, "add_distance", pressed -> menu.sendChangeDistance(1));
-        reduceDistanceButton = iconButton(AECSIcon.SUBTRACTION_SIGN, "reduce_distance", pressed -> menu.sendChangeDistance(-1));
+        addDistanceButton = iconButton(AECSIcon.ADDITION_SIGN, "add_distance", pressed -> menu.sendChangeDistance(AdjustmentButtons.step(1, menu.linkDistance)));
+        reduceDistanceButton = iconButton(AECSIcon.SUBTRACTION_SIGN, "reduce_distance", pressed -> menu.sendChangeDistance(AdjustmentButtons.step(-1, menu.linkDistance)));
         widgets.add("add_distance_button", addDistanceButton);
         widgets.add("reduce_distance_button", reduceDistanceButton);
 
@@ -133,10 +133,14 @@ public class EnderEmitterGUI extends AEBaseScreen<EnderEmitterMenu> {
 
         for (int delta : new int[] { -10, -1, 1, 10 }) {
             Button button = new AE2Button(Component.literal(delta > 0 ? "+" + delta : String.valueOf(delta)),
-                    pressed -> menu.sendChangeExpectedChannels(delta));
+                    pressed -> menu.sendChangeExpectedChannels(AdjustmentButtons.step(delta, menu.expectedChannels)));
+            button.setTooltip(AdjustmentButtons.tooltip());
             widgets.add("channels_" + delta, button);
             channelButtons.add(button);
         }
+        channelLimitButton = new AE2Button(Component.empty(), pressed -> menu.sendToggleUnlimitedChannels());
+        channelLimitButton.setTooltip(Tooltip.create(Component.translatable("ae2cs.menu.toggle_unlimited_channels")));
+        widgets.add("channel_limit", channelLimitButton);
     }
 
     private AECSIconButton iconButton(IButtonIcon icon, String tooltip, Button.OnPress onPress) {
@@ -148,6 +152,9 @@ public class EnderEmitterGUI extends AEBaseScreen<EnderEmitterMenu> {
             }
         };
         button.setMessage(Component.translatable("ae2cs.menu.ender_emitter.button." + tooltip));
+        if (tooltip.equals("add_distance") || tooltip.equals("reduce_distance")) {
+            button.setMessage(button.getMessage().copy().append("\n").append(Component.translatable("ae2cs.menu.adjustment_shortcuts")));
+        }
         return button;
     }
 
@@ -188,8 +195,12 @@ public class EnderEmitterGUI extends AEBaseScreen<EnderEmitterMenu> {
                 button.setTooltip(entry == null ? null : Tooltip.create(name));
             }
         }
+        boolean hasBand = !menu.bandName.isEmpty();
+        boolean unlimited = menu.expectedChannels == BroadcastReceiverHost.UNLIMITED_CHANNELS;
+        channelLimitButton.active = hasBand;
+        channelLimitButton.setMessage(unlimited ? Component.literal("∞") : compactValue(menu.expectedChannels, CHANNEL_VALUE_WIDTH - 4));
         for (int i = 0; i < channelButtons.size(); i++) {
-            boolean canAdjust = !menu.bandName.isEmpty() && (i < 2 ? menu.expectedChannels > 0 : menu.expectedChannels < Integer.MAX_VALUE);
+            boolean canAdjust = hasBand && !unlimited && (i < 2 ? menu.expectedChannels > 0 : menu.expectedChannels < Integer.MAX_VALUE);
             channelButtons.get(i).active = canAdjust;
         }
     }
@@ -214,8 +225,6 @@ public class EnderEmitterGUI extends AEBaseScreen<EnderEmitterMenu> {
         EnderEmitterTextures.drawBar(graphics, x + 104, y + 41, 5, false);
         EnderEmitterTextures.drawBar(graphics, x + 104, y + 58, 5, true);
         EnderEmitterTextures.drawBar(graphics, x + TEXT_X, y + CHANNELS_Y + 3, 7, false);
-        EnderEmitterTextures.drawCard(graphics, x + CHANNEL_VALUE_X - 1, y + CHANNEL_BUTTON_Y,
-                CHANNEL_VALUE_WIDTH + 2, CHANNEL_BUTTON_HEIGHT);
         EnderEmitterTextures.icon(AECSIcon.BAND_VIEW).getBlitter().dest(x + TEXT_X, y + 19).blit(graphics);
     }
 
@@ -231,8 +240,6 @@ public class EnderEmitterGUI extends AEBaseScreen<EnderEmitterMenu> {
         drawLine(graphics, panelLabel("requested_channels"), TEXT_X, CHANNELS_Y + CHANNEL_ROW_SPACING, 68, 0, TEXT_COLOR);
         drawLine(graphics, inputModeLabel(), 168, CHANNELS_Y + CHANNEL_ROW_SPACING, 73, 2,
                 menu.bandName.isEmpty() ? TEXT_COLOR : menu.expectedChannels == 0 ? 0x795674 : 0x315c87);
-        drawLine(graphics, compactValue(menu.expectedChannels, CHANNEL_VALUE_WIDTH), CHANNEL_VALUE_X, CHANNELS_Y + 2 * CHANNEL_ROW_SPACING,
-                CHANNEL_VALUE_WIDTH, 1, BAND_VALUE_COLOR);
         int size = menu.linkDistance * 2 + 1;
         int maxSize = menu.maxLinkDistance * 2 + 1;
         drawLine(graphics, Component.translatable("ae2cs.menu.ender_emitter.chunk_range", size, maxSize), 176, 128, 69, 1, TEXT_COLOR);
@@ -319,9 +326,10 @@ public class EnderEmitterGUI extends AEBaseScreen<EnderEmitterMenu> {
             drawTooltip(graphics, mouseX, mouseY, List.of(summary[2]));
         } else if (inside(mouseX, mouseY, TEXT_X, CHANNELS_Y, TEXT_WIDTH, CHANNEL_ROW_SPACING)) {
             drawTooltip(graphics, mouseX, mouseY, menu.bandName.isEmpty() ? List.of(actualChannelsLine()) : List.of(actualChannelsLine(), bandStatusLine()));
-        } else if (inside(mouseX, mouseY, TEXT_X, CHANNELS_Y + CHANNEL_ROW_SPACING, TEXT_WIDTH, 9) || inside(mouseX, mouseY, CHANNEL_VALUE_X - 1, CHANNEL_BUTTON_Y, CHANNEL_VALUE_WIDTH + 2, CHANNEL_BUTTON_HEIGHT)) {
+        } else if (inside(mouseX, mouseY, TEXT_X, CHANNELS_Y + CHANNEL_ROW_SPACING, TEXT_WIDTH, 9)) {
+            Component expected = menu.expectedChannels == BroadcastReceiverHost.UNLIMITED_CHANNELS ? Component.literal("∞") : Component.literal(Integer.toString(menu.expectedChannels));
             drawTooltip(graphics, mouseX, mouseY, List.of(
-                    Component.translatable("ae2cs.menu.ender_emitter.panel.requested_value", menu.expectedChannels),
+                    Component.translatable("ae2cs.menu.ender_emitter.panel.requested_value", expected),
                     panelLabel("requested_hint"), inputModeLabel()));
         }
     }

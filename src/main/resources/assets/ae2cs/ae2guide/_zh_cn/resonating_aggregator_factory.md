@@ -27,10 +27,10 @@ item_ids:
 | 陨石卡数量 | 最大并行份数 | 目标周期 |
 | --- | --- | --- |
 | 0 | 8 | 按配方能量推进 |
-| 1 | 32 | 64 tick |
+| 1 | 16 | 64 tick |
 | 2 | 64 | 16 tick |
-| 3 | 256 | 4 tick |
-| 4 | 1024 | 1 tick |
+| 3 | 128 | 4 tick |
+| 4 | 256 | 1 tick |
 
 实际加工份数还受原料、流体、供能与输出空间限制。缺少资源时暂停加工，已支付的能量保留在当前批次中。
 
@@ -38,8 +38,8 @@ item_ids:
 
 ## 升级卡与存储容量
 
-- 四个专用槽支持最多 **4 张 <ItemLink id="ae2cs:overload_card" />**。
-- 两个专用槽支持最多 **2 张 <ItemLink id="ae2cs:resonating_stacking_card" />**。
+- 六个槽可混放两种卡，超频卡最多 **4 张 <ItemLink id="ae2cs:overload_card" />**。
+- 堆叠卡最多 **2 张 <ItemLink id="ae2cs:resonating_stacking_card" />**。
 - 每格限放一张卡，不支持普通加速卡。
 - 悬停升级栏可查看“**可用升级**”列表与整机安装上限。
 

@@ -94,6 +94,12 @@
       "width": 24,
       "height": 17
     },
+    "channel_limit": {
+      "left": 153,
+      "top": 101,
+      "width": 35,
+      "height": 17
+    },
     "band_row_0": {
       "left": 9,
       "top": 21,

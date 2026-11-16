@@ -5,6 +5,13 @@ package io.github.lounode.ae2cs.api.linker.broadcast;
  */
 public interface BroadcastReceiverHost extends BandLinkHost {
 
+    int UNLIMITED_CHANNELS = -1;
+    int DEFAULT_EXPECTED_CHANNELS = 32;
+
+    default boolean hasChannelDemand() {
+        return true;
+    }
+
     /**
      * 此接收端期望被分配多少频道
      */

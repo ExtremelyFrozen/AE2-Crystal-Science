@@ -11,6 +11,7 @@ import io.github.lounode.ae2cs.common.inventory.ResonatingFactoryUpgradeInventor
 import io.github.lounode.ae2cs.common.inventory.ResonatingStackingInventory;
 import io.github.lounode.ae2cs.common.machine.MachineFluidHost;
 import io.github.lounode.ae2cs.common.machine.MachineFluidTanks;
+import io.github.lounode.ae2cs.common.machine.ResonatingFactoryParallelism;
 import io.github.lounode.ae2cs.common.machine.component.AppEngInvComponent;
 import io.github.lounode.ae2cs.common.machine.component.InvPort;
 import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
@@ -47,7 +48,6 @@ import java.util.List;
 public class ResonatingAggregatorFactoryBlockEntity extends AENetworkedSelfPoweredBlockEntity
                                                     implements IUpgradeableObject, CustomReturnableSubMenuHost, MachineFluidHost {
 
-    private static final int[] PARALLELISM = { 8, 32, 64, 256, 1024 };
     private static final int[] CYCLE_TICKS = { 0, 64, 16, 4, 1 };
     private final IUpgradeInventory upgrades = new ResonatingFactoryUpgradeInventory(
             AECSBlocks.RESONATING_AGGREGATOR_FACTORY_BLOCK, this::saveChanges, this::canReduceStacking);
@@ -84,7 +84,7 @@ public class ResonatingAggregatorFactoryBlockEntity extends AENetworkedSelfPower
     }
 
     public int getParallelism() {
-        return PARALLELISM[upgrades.getInstalledUpgrades(AECSItems.OVERLOAD_CARD)];
+        return ResonatingFactoryParallelism.forCards(upgrades.getInstalledUpgrades(AECSItems.OVERLOAD_CARD));
     }
 
     public int getCycleTicks() {
@@ -153,6 +153,7 @@ public class ResonatingAggregatorFactoryBlockEntity extends AENetworkedSelfPower
             }
         }
         if (activeRecipe == null) return;
+        batchSize = Math.min(batchSize, getParallelism());
         CrystalAggregatorRecipe recipe = activeRecipe.value();
         Batch available = planBatch(recipe, batchSize);
         // Blocked inputs or outputs pause work before any more energy is spent.

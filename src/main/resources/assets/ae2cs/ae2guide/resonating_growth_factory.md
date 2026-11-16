@@ -16,25 +16,22 @@ item_ids:
 
 The **Resonating Crystal Growth Factory** is the resonating variant of the [Crystal Growth Chamber](crystal_growth_chamber.md).
 
-## Current functions
+## Mother rock growth
 
-- **48 inventory slots**, arranged in eight columns and six rows.
-- Unlike the standard chamber's 54 seed slots, these slots currently accept ordinary items as well.
-- The active appearance follows power availability from the ME network.
-- The left toolbar provides this guide and [Side Configuration](side_config.md), including per-side access and automatic transfers.
+- Place mother rocks in rows 2, 4 and 6. Products go into the slot directly above each input in rows 1, 3 and 5.
+- Use the toolbar button to choose small buds, medium buds, large buds, clusters, dust or crystals. Clusters are selected by default. Mother rocks without a matching item for the selected target are skipped.
+- Mother rocks follow the accelerator's decay rules. Decayed rocks and final blocks remain in the mother rock rows. When part of a stack decays, the changed blocks use a matching or empty mother rock slot.
+- With 0, 1 or 2 Resonating Stacking Cards, each input slot holds 1, 32 or 64 mother rocks.
 
-**Crystal Seed growth is not yet implemented in this factory.** Its current functions are storage, card slots and side configuration. Installing Meteorite Overclock Cards does not yet accelerate seed growth. Use the standard [Crystal Growth Chamber](crystal_growth_chamber.md) when you need an operating seed-growth machine.
+| Meteorite Overclock Cards | Maximum rocks per cycle | Yield per rock | Cycle |
+| --- | --- | --- | --- |
+| 0 | 8 | 1 | 4 seconds |
+| 1 | 16 | 2 | 3 seconds |
+| 2 | 64 | 3 | 2 seconds |
+| 3 | 128 | 4 | 1 second |
+| 4 | 256 | 6 | 4 ticks |
 
----
-
-## Upgrade cards and storage
-
-- Four dedicated slots accept up to **4 <ItemLink id="ae2cs:overload_card" />**.
-- Two dedicated slots accept up to **2 <ItemLink id="ae2cs:resonating_stacking_card" />**.
-- Each slot holds one card. Standard Speed Cards are not accepted.
-- Hover over the upgrade panel to see **Compatible Upgrades** and the machine-wide card limits.
-
-For items that normally stack to 64, installing 0, 1 or 2 Stacking Cards gives **64, 256 or 1024 items per slot**. Items with smaller stack limits scale proportionally; unstackable items remain limited to one. A Stacking Card cannot be removed while any stored stack would exceed the reduced limit.
+Each processed mother rock costs 100 AE.
 
 ## Controls and automation
 

@@ -1,4 +1,8 @@
 {
+  "ae2cs.configuration.pure_crystal_burn_multiplier": "高純水晶發電倍率",
+  "ae2cs.configuration.pure_crystal_burn_multiplier.tooltip": "調整高純水晶燃燒時每刻產生的 AE。範圍 0.01–100，預設 1。",
+  "ae2cs.menu.toggle_unlimited_channels": "點擊在無上限與 32 個預期頻道之間切換。",
+  "ae2cs.menu.adjustment_shortcuts": "Shift：步長 ×5。Ctrl：加倍或減半。",
   "gui.ae2cs.fluid.empty": "空",
   "creativetab.ae2cs.items": "AE2：水晶科技",
   "creativetab.ae2cs.crystals": "水晶科技:水晶",
@@ -21,6 +25,10 @@
   "block.ae2cs.deepslate_charged_certus_quartz_ore": "充能深層賽特斯石英礦石",
   "block.ae2cs.crystal_growth_chamber": "晶體催生倉",
   "block.ae2cs.crystal_growth_accelerator": "諧振晶體催生器",
+  "ae2cs.gui.resonating_factory.stack_count": "數量：%s",
+  "ae2cs.gui.resonating_growth_factory.target": "生長目標：%s",
+  "ae2cs.gui.resonating_growth_factory.target.dust": "粉",
+  "ae2cs.gui.resonating_growth_factory.target.crystal": "水晶",
   "block.ae2cs.circuit_etcher": "電路蝕刻器",
   "block.ae2cs.resonating_circuit_etcher_factory": "諧振電路蝕刻工廠",
   "block.ae2cs.quartz_grindstone": "石英磨具",
@@ -215,6 +223,8 @@
   "ae2cs.item.extended_resonating_pattern_provider_upgrade.tooltip": "將諧振樣板供應器升級為擴展諧振樣板供應器",
   "ae2cs.item.pattern_provider_upgrade.tooltip": "將初級樣板供應器升級為樣板供應器",
   "ae2cs.item.meteor_pattern_provider_upgrade.tooltip": "將樣板供應器升級為自裝配式樣板供應器",
+  "ae2cs.item.crystal_growth_core.tooltip": "手持並對着母岩、作物等方塊長按右鍵，使其獲得一台晶體催生器的加速",
+  "ae2cs.item.resonating_factory_upgrade.tooltip": "對着晶能粉碎機、電路蝕刻器、晶能聚合器或諧振晶體催生器右鍵，將其升級為對應的諧振工廠",
 
   "enchantment.ae2cs.ender_link": "末影鏈接",
 

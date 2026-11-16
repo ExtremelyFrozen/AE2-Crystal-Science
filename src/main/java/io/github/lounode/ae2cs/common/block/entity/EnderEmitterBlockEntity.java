@@ -65,6 +65,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 @EventBusSubscriber(modid = AECSConstants.MODID)
 public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements ServerTickingBlockEntity,
@@ -115,7 +116,8 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
     private boolean allowAutoLinkCableLike = true;
     private boolean showLinkStatus;
     private String bandId = "";
-    private int expectedChannels = 32;
+    private int expectedChannels = DEFAULT_EXPECTED_CHANNELS;
+    private boolean channelDemand;
     private int customMaxChannels;
     private boolean enabledCustomChannel;
     private int bandUsedChannelsForClient;
@@ -304,8 +306,49 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         return expectedChannels;
     }
 
+    @Override
+    public boolean hasChannelDemand() {
+        if (level == null || !isConnectedToBand()) return false;
+        return AECSGridHelper.hasDeviceBehindCables(Stream.concat(linkedPositions.stream(), pendingLinkPositions.stream())
+                .filter(level::isLoaded)
+                .flatMap(pos -> getConnectableNodes(level, pos).stream())
+                .toList());
+    }
+
+    public List<IGridNode> getDownstreamNodes(IGridNode input) {
+        if (level == null || isConnectedToBand() || !getInputNodes().contains(input)) return List.of();
+
+        List<IGridNode> downstream = new ArrayList<>();
+        linkedConnections.values().forEach(links -> {
+            for (IGridConnection link : links) {
+                if (input.getConnections().contains(link)) downstream.add(link.getOtherSide(input));
+            }
+        });
+        // An unpowered receiver cannot establish queued wireless links until it gets an allocation.
+        for (BlockPos pos : pendingLinkPositions) {
+            if (!level.isLoaded(pos)) continue;
+            for (IGridNode target : getConnectableNodes(level, pos)) {
+                if (target != input && target.getGrid().getPathingService().getControllerState() == ControllerState.NO_CONTROLLER) {
+                    downstream.add(target);
+                }
+            }
+        }
+        return downstream;
+    }
+
     public void changeExpectedChannels(int delta) {
-        expectedChannels = clampChannelCount((long) expectedChannels + delta);
+        if (expectedChannels != UNLIMITED_CHANNELS) {
+            setExpectedChannels(clampChannelCount((long) expectedChannels + delta));
+        }
+    }
+
+    public void toggleUnlimitedChannels() {
+        setExpectedChannels(expectedChannels == UNLIMITED_CHANNELS ? DEFAULT_EXPECTED_CHANNELS : UNLIMITED_CHANNELS);
+    }
+
+    private void setExpectedChannels(int channels) {
+        if (expectedChannels == channels) return;
+        expectedChannels = channels;
         markBandRuntimeDirty();
         setChanged();
     }
@@ -426,25 +469,32 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         }
         refreshClientDisplayState();
         List<IGridNode> sources = getInputNodes();
-        boolean lostInput = false;
+        boolean lostConnection = false;
         for (BlockPos pos : List.copyOf(linkedPositions)) {
             List<IGridConnection> links = linkedConnections.get(pos);
             if (links == null) continue;
-            boolean missingSource = links.stream().anyMatch(connection -> {
+            boolean brokenLink = links.stream().anyMatch(connection -> {
                 IGridNode source = connection.a().getOwner() == this ? connection.a() : connection.b();
-                return !sources.contains(source);
+                return !sources.contains(source) || !source.getConnections().contains(connection);
             });
-            if (missingSource) {
+            if (brokenLink) {
                 linkedConnections.remove(pos);
-                links.forEach(IGridConnection::destroy);
+                for (IGridConnection link : links) {
+                    if (link.a().getConnections().contains(link)) link.destroy();
+                }
                 linkedPositions.remove(pos);
                 pendingLinkPositions.add(pos);
-                lostInput = true;
+                lostConnection = true;
             }
         }
-        if (lostInput) {
+        if (lostConnection) {
             setChanged();
             markForClientUpdate();
+        }
+        boolean nextDemand = isConnectedToBand() && hasChannelDemand();
+        if (channelDemand != nextDemand) {
+            channelDemand = nextDemand;
+            markBandRuntimeDirty();
         }
         boolean nextActive = sources.stream().anyMatch(IGridNode::isActive) && (!isConnectedToBand() || getMaxChannels() > 0);
         if (active != nextActive) {
@@ -675,7 +725,7 @@ public class EnderEmitterBlockEntity extends AENetworkedBlockEntity implements S
         }
         linkDistance = Math.max(0, Math.min(getMaxLinkDistance(), radius));
         bandId = data.getString("band_id");
-        expectedChannels = data.contains("expected_channels") ? Math.max(0, data.getInt("expected_channels")) : 32;
+        expectedChannels = data.contains("expected_channels") ? Math.max(UNLIMITED_CHANNELS, data.getInt("expected_channels")) : DEFAULT_EXPECTED_CHANNELS;
         customMaxChannels = 0;
         enabledCustomChannel = false;
         readPositions(data, "linked_positions", linkedPositions);

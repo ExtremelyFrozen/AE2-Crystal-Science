@@ -1,4 +1,8 @@
 {
+  "ae2cs.configuration.pure_crystal_burn_multiplier": "高純度水晶の発電倍率",
+  "ae2cs.configuration.pure_crystal_burn_multiplier.tooltip": "高純度水晶を燃料にしたときの毎ティックの AE 発電量を調整します。範囲は 0.01～100、初期値は 1 です。",
+  "ae2cs.menu.toggle_unlimited_channels": "クリックして上限なしと要求チャンネル数 32 を切り替えます。",
+  "ae2cs.menu.adjustment_shortcuts": "Shift：増減量を5倍。Ctrl：現在値を2倍または半分にします。",
   "creativetab.ae2cs.items": "AE2: Crystal Science",
   "creativetab.ae2cs.crystals": "Crystal Science: Crystals",
 
@@ -20,6 +24,10 @@
   "block.ae2cs.deepslate_charged_certus_quartz_ore": "深層チャージ済みケルタスクォーツ鉱石",
   "block.ae2cs.crystal_growth_chamber": "水晶成長室",
   "block.ae2cs.resonating_growth_factory": "共振水晶成長工場",
+  "ae2cs.gui.resonating_factory.stack_count": "個数：%s",
+  "ae2cs.gui.resonating_growth_factory.target": "成長目標：%s",
+  "ae2cs.gui.resonating_growth_factory.target.dust": "粉",
+  "ae2cs.gui.resonating_growth_factory.target.crystal": "水晶",
   "block.ae2cs.circuit_etcher": "回路エッチング装置",
   "block.ae2cs.resonating_circuit_etcher_factory": "共振回路エッチング工場",
   "block.ae2cs.quartz_grindstone": "クォーツ砥石",
@@ -214,6 +222,8 @@
   "ae2cs.item.extended_resonating_pattern_provider_upgrade.tooltip": "共振パターンプロバイダーをEx 共振パターンプロバイダーにアップグレードする",
   "ae2cs.item.pattern_provider_upgrade.tooltip": "基本型パターンプロバイダーをパターンプロバイダーにアップグレードする",
   "ae2cs.item.meteor_pattern_provider_upgrade.tooltip": "パターンプロバイダーを自己構築型パターンプロバイダーにアップグレードする",
+  "ae2cs.item.crystal_growth_core.tooltip": "母岩や作物などのブロックに向けて右クリックを長押しすると、成長加速器1台分の加速を与える",
+  "ae2cs.item.resonating_factory_upgrade.tooltip": "水晶粉砕機、回路エッチング装置、水晶収集機、共振水晶成長加速器を右クリックして、対応する共振ファクトリーにアップグレードする",
 
   "enchantment.ae2cs.ender_link": "エンダーリンク",
 

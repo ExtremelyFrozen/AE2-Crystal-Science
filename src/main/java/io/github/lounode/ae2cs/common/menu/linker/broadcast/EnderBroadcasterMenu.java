@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 public class EnderBroadcasterMenu extends UpgradeableMenu<EnderBroadcasterBlockEntity> {
 
     private static final String changeExpectedChannelsAction = "change_expected_channels";
+    private static final String toggleUnlimitedChannelsAction = "toggle_unlimited_channels";
     private static final String openFrequencyBandMenuAction = "open_frequency_band_menu";
     private static final String openFrequencyBandCreateMenuAction = "open_frequency_band_create_menu";
     private static final String openFrequencyBandManagerMenuAction = "open_frequency_band_manager_menu";
@@ -43,6 +44,7 @@ public class EnderBroadcasterMenu extends UpgradeableMenu<EnderBroadcasterBlockE
     public EnderBroadcasterMenu(int id, Inventory playerInv, @NotNull EnderBroadcasterBlockEntity host) {
         super(AECSMenus.ENDER_BROADCASTER_MENU.get(), id, playerInv, host);
         registerClientAction(changeExpectedChannelsAction, Integer.class, this::acceptChangeExpectedChannelsAction);
+        registerClientAction(toggleUnlimitedChannelsAction, this::toggleUnlimitedChannels);
         registerClientAction(openFrequencyBandMenuAction, this::openFrequencyBandMenuAction);
         registerClientAction(openFrequencyBandCreateMenuAction, this::openFrequencyBandCreateMenuAction);
         registerClientAction(openFrequencyBandManagerMenuAction, this::openFrequencyBandManagerMenuAction);
@@ -68,6 +70,10 @@ public class EnderBroadcasterMenu extends UpgradeableMenu<EnderBroadcasterBlockE
         sendClientAction(changeExpectedChannelsAction, delta);
     }
 
+    public void sendToggleUnlimitedChannels() {
+        sendClientAction(toggleUnlimitedChannelsAction);
+    }
+
     public void sendFrequencyBandMenuAction() {
         sendClientAction(openFrequencyBandMenuAction);
     }
@@ -90,7 +96,15 @@ public class EnderBroadcasterMenu extends UpgradeableMenu<EnderBroadcasterBlockE
 
     // 动作机制：服务端处理
     private void acceptChangeExpectedChannelsAction(int delta) {
-        getHost().setExpectedChannels(receiverExpectedChannels + delta);
+        if (getHost().getConnectionType() == EnderBroadcasterBlockEntity.ConnectionType.AS_RECEIVER) {
+            getHost().changeExpectedChannels(delta);
+        }
+    }
+
+    private void toggleUnlimitedChannels() {
+        if (getHost().getConnectionType() == EnderBroadcasterBlockEntity.ConnectionType.AS_RECEIVER) {
+            getHost().toggleUnlimitedChannels();
+        }
     }
 
     private void openFrequencyBandMenuAction() {

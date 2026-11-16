@@ -1,4 +1,8 @@
 {
+  "ae2cs.configuration.pure_crystal_burn_multiplier": "Pure Crystal Power Multiplier",
+  "ae2cs.configuration.pure_crystal_burn_multiplier.tooltip": "Scales the AE generated per tick when burning Pure Crystals. Range: 0.01–100. Default: 1.",
+  "ae2cs.menu.toggle_unlimited_channels": "Click to switch between unlimited and 32 requested channels.",
+  "ae2cs.menu.adjustment_shortcuts": "Shift: 5× step. Ctrl: double or halve.",
   "gui.ae2cs.fluid.empty": "Empty",
   "creativetab.ae2cs.items": "AE2: Crystal Science",
   "creativetab.ae2cs.crystals": "Crystal Science: Crystals",
@@ -28,6 +32,10 @@
   "ae2cs.gui.crystal_growth_accelerator.stage.2": "Large",
   "ae2cs.gui.crystal_growth_accelerator.stage.3": "Cluster",
   "block.ae2cs.resonating_growth_factory": "Resonating Crystal Growth Factory",
+  "ae2cs.gui.resonating_factory.stack_count": "Count: %s",
+  "ae2cs.gui.resonating_growth_factory.target": "Growth target: %s",
+  "ae2cs.gui.resonating_growth_factory.target.dust": "Dust",
+  "ae2cs.gui.resonating_growth_factory.target.crystal": "Crystal",
   "block.ae2cs.circuit_etcher": "Circuit Etcher",
   "block.ae2cs.resonating_circuit_etcher_factory": "Resonating Circuit Etcher Factory",
   "block.ae2cs.quartz_grindstone": "Quartz Grindstone",
@@ -222,6 +230,8 @@
   "ae2cs.item.extended_resonating_pattern_provider_upgrade.tooltip": "Upgrades a Resonating Pattern Provider into an Ex Resonating Pattern Provider",
   "ae2cs.item.pattern_provider_upgrade.tooltip": "Upgrades a Basic Pattern Provider into a Pattern Provider",
   "ae2cs.item.meteor_pattern_provider_upgrade.tooltip": "Upgrades a Pattern Provider into a Self-Assembling Pattern Provider",
+  "ae2cs.item.crystal_growth_core.tooltip": "Hold right-click on a budding block, crop or similar block to accelerate it like one Growth Accelerator",
+  "ae2cs.item.resonating_factory_upgrade.tooltip": "Right-click a Crystal Pulverizer, Circuit Etcher, Crystal Aggregator or Resonant Crystal Growth Accelerator to upgrade it into its Resonating Factory",
 
   "enchantment.ae2cs.ender_link": "Ender Link",
 
