@@ -39,6 +39,14 @@ versionRange="[19.2.8,)"
 ordering="AFTER"
 side="BOTH"
 
+# Data Energistics: publish the integration handoff in both projects together.
+[[dependencies.${mod_id}]]
+modId="data_energistics"
+type="optional"
+versionRange="[3.4.1,)"
+ordering="AFTER"
+side="BOTH"
+
 # AE2 JEI Integration
 [[dependencies.${mod_id}]]
 modId="ae2jeiintegration"

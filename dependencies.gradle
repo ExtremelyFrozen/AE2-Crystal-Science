@@ -5,6 +5,7 @@ if (!(recipeViewer in ["none", "jei", "emi", "all"])) {
 
 dependencies {
     compileOnly(libs.jetbrains.annotations)
+    compileOnly(libs.jspecify)
 
     testImplementation(libs.testframework)
     localRuntime(libs.testframework)

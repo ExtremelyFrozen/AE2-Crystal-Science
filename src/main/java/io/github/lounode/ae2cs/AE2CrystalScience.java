@@ -5,6 +5,8 @@ import io.github.lounode.ae2cs.api.ids.AECSConstants;
 import io.github.lounode.ae2cs.api.util.PatternAccessTermQuickMoveHelper;
 import io.github.lounode.ae2cs.common.init.*;
 import io.github.lounode.ae2cs.common.me.AEPlugin;
+import io.github.lounode.ae2cs.integration.dataenergistics.DataEnergisticsIntegration;
+import io.github.lounode.ae2cs.integration.dataenergistics.upgrades.Ae2CrystalScienceUpgradeRegistration;
 
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
@@ -48,6 +50,9 @@ public class AE2CrystalScience {
                     AEPlugin.onCommonSetup();
                     PatternAccessTermQuickMoveHelper.init();
                     IngredientReplacer.onCommonSetUp();
+                    if (DataEnergisticsIntegration.LOADED) {
+                        Ae2CrystalScienceUpgradeRegistration.register();
+                    }
                 });
     }
 
