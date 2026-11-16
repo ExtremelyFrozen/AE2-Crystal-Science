@@ -1,6 +1,5 @@
 package io.github.lounode.ae2cs.integration.jei;
 
-import appeng.recipes.AERecipeTypes;
 import io.github.lounode.ae2cs.AE2CrystalScience;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
@@ -20,6 +19,9 @@ import io.github.lounode.ae2cs.common.recipe.crystal_infuser.CrystalInfuserRecip
 import io.github.lounode.ae2cs.common.recipe.crystal_pulverizer.CrystalPulverizerRecipe;
 import io.github.lounode.ae2cs.common.recipe.pulse_centrifuge.PulseCentrifugeRecipe;
 import io.github.lounode.ae2cs.integration.RecipeViewerNavigation;
+
+import appeng.recipes.AERecipeTypes;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;

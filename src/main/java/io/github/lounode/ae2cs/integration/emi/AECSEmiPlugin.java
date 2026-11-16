@@ -1,12 +1,11 @@
 package io.github.lounode.ae2cs.integration.emi;
 
-import appeng.recipes.AERecipeTypes;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 import io.github.lounode.ae2cs.common.init.AECSRecipeTypes;
 
-import appeng.recipes.entropy.EntropyRecipe;
+import appeng.recipes.AERecipeTypes;
 
 import net.minecraft.world.level.material.Fluids;
 
