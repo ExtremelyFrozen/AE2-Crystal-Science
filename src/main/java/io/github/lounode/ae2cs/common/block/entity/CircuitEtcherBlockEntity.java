@@ -14,6 +14,8 @@ import io.github.lounode.ae2cs.common.machine.component.InvPort;
 import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
 import io.github.lounode.ae2cs.common.recipe.circuit_etcher.CircuitEtcherRecipe;
 import io.github.lounode.ae2cs.common.recipe.input.ThreeItemStackRecipeInput;
+import io.github.lounode.ae2cs.integration.dataenergistics.DataEnergisticsIntegration;
+import io.github.lounode.ae2cs.integration.dataenergistics.production.CrystalScienceProduction;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -22,7 +24,7 @@ import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.core.definitions.AEItems;
 import appeng.util.inv.AppEngInternalInventory;
-
+import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -80,11 +82,13 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
     /**
      * 该配方需要的总能量
      */
+    @Getter
     private int activeRecipeEnergyCost = 0;
 
     /**
      * 当前配方进度
      */
+    @Getter
     private int recipeProgress = 0;
 
     /**
@@ -149,14 +153,6 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
         return getMachineComponents().getService(AppEngInvComponent.class).port(InvPort.OUTPUT);
     }
 
-    public int getRecipeProgress() {
-        return recipeProgress;
-    }
-
-    public int getActiveRecipeEnergyCost() {
-        return activeRecipeEnergyCost;
-    }
-
     public void checkActive(boolean active) {
         if (level == null || level.isClientSide()) return;
         BlockState state = getBlockState();
@@ -215,6 +211,9 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
                     activeMatch.length > 1 ? getInputInv().getStackInSlot(activeMatch[1]) : ItemStack.EMPTY,
                     activeMatch.length > 2 ? getInputInv().getStackInSlot(activeMatch[2]) : ItemStack.EMPTY);
             ItemStack result = recipe.assemble(input, level.registryAccess());
+            if (DataEnergisticsIntegration.LOADED) {
+                result = CrystalScienceProduction.boost(result, upgrades);
+            }
             if (result.isEmpty()) // 如果我们拿不到输出，说明配方可能有问题，此时清空状态
             {
                 recipeProgress = 0;
@@ -225,7 +224,8 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
             }
 
             // 如果输出放不下，则将recipeProgress钳制在最大配方时间
-            if (!getOutputInv().simulateAdd(result).isEmpty()) {
+            ItemStack remainder = DataEnergisticsIntegration.LOADED ? CrystalScienceProduction.insert(getOutputInv(), result, true, upgrades) : getOutputInv().simulateAdd(result);
+            if (!remainder.isEmpty()) {
                 recipeProgress = activeRecipeEnergyCost;
                 return;
             }
@@ -239,7 +239,11 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
                 return;
             }
 
-            getOutputInv().addItems(result);
+            if (DataEnergisticsIntegration.LOADED) {
+                CrystalScienceProduction.insert(getOutputInv(), result, false, upgrades);
+            } else {
+                getOutputInv().addItems(result);
+            }
             recipeProgress = 0;
             setChanged();
         }

@@ -5,9 +5,15 @@ import io.github.lounode.ae2cs.api.genericinv.GenericInvStorageAdapter;
 import io.github.lounode.ae2cs.api.genericinv.GenericStackInvWrapper;
 import io.github.lounode.ae2cs.api.networking.SideConfigField;
 import io.github.lounode.ae2cs.api.util.GenericStackInvHelper;
+import io.github.lounode.ae2cs.common.block.entity.CircuitEtcherBlockEntity;
+import io.github.lounode.ae2cs.common.block.entity.CrystalAggregatorBlockEntity;
+import io.github.lounode.ae2cs.common.block.entity.CrystalGrowthChamberBlockEntity;
+import io.github.lounode.ae2cs.common.block.entity.CrystalPulverizerBlockEntity;
 import io.github.lounode.ae2cs.common.init.AECSDataComponents;
 import io.github.lounode.ae2cs.common.machine.MachineComponentContainer;
 import io.github.lounode.ae2cs.common.machine.MachineContext;
+import io.github.lounode.ae2cs.integration.dataenergistics.DataEnergisticsIntegration;
+import io.github.lounode.ae2cs.integration.dataenergistics.production.CrystalScienceProduction;
 
 import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.config.Actionable;
@@ -47,6 +53,7 @@ public class SideConfigComponent extends BaseMachineComponent {
     private boolean autoExport = false;
 
     private MachineComponentContainer container;
+    private boolean restoreBoostedOutput;
 
     @Nullable
     private GenericStackInvComponent genericInvComponent = null;
@@ -85,6 +92,8 @@ public class SideConfigComponent extends BaseMachineComponent {
     @Override
     public void onConstruct(MachineComponentContainer container) {
         this.container = container;
+        var host = container.host();
+        restoreBoostedOutput = DataEnergisticsIntegration.LOADED && (host instanceof CrystalAggregatorBlockEntity || host instanceof CircuitEtcherBlockEntity || host instanceof CrystalPulverizerBlockEntity || host instanceof CrystalGrowthChamberBlockEntity);
 
         if (container.hasService(GenericStackInvComponent.class))
             genericInvComponent = container.get(GenericStackInvComponent.class);
@@ -290,7 +299,11 @@ public class SideConfigComponent extends BaseMachineComponent {
 
                     // 保底回插
                     if (!overflow.isEmpty()) {
-                        self.addItems(overflow, false);
+                        if (restoreBoostedOutput) {
+                            CrystalScienceProduction.restore(self, slot, overflow);
+                        } else {
+                            self.addItems(overflow, false);
+                        }
                     }
                     if (inserted > 0) {
                         exportedToNeighbor = true;
