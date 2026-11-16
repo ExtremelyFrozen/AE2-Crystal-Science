@@ -3,6 +3,8 @@ package io.github.lounode.ae2cs.common.me.logic;
 import io.github.lounode.ae2cs.api.util.AEKeyHelper;
 import io.github.lounode.ae2cs.common.init.AECSBlocks;
 import io.github.lounode.ae2cs.common.init.AECSItems;
+import io.github.lounode.ae2cs.integration.dataenergistics.DataEnergisticsIntegration;
+import io.github.lounode.ae2cs.integration.dataenergistics.patternprovider.CrystalScienceProviderDispatch;
 import io.github.lounode.ae2cs.util.KeyCounterHelper;
 
 import appeng.api.config.Actionable;
@@ -47,6 +49,7 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
     private final IManagedGridNode mainNode;
     private final IActionSource actionSource;
     private final MeteoritePatternProviderHost meteoriteHost;
+    private final OptionalProviderDispatch optionalDispatch;
 
     /**
      * 在没有任何加速卡的情况下，我们每次合成的能量消耗
@@ -108,6 +111,7 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
                 .setFlags(GridFlags.REQUIRE_CHANNEL, GridFlags.DENSE_CAPACITY)
                 .addService(IGridTickable.class, new Ticker());
         this.actionSource = new MachineSource(mainNode::getNode);
+        this.optionalDispatch = DataEnergisticsIntegration.LOADED ? CrystalScienceProviderDispatch.callbacks(this) : null;
     }
 
     private boolean canAcceptPattern(@Nullable IPatternDetails details) {
@@ -221,6 +225,9 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
      */
     @Override
     public boolean pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder) {
+        if (optionalDispatch != null) {
+            optionalDispatch.inputChanged().run();
+        }
         // 如果本轮工作轮数已经超出上限，则直接返回
         if (worksInRound >= maxWorksInRound) return false;
 
@@ -256,7 +263,15 @@ public class MeteoritePatternProviderLogic extends PatternProviderLogic implemen
 
         if (wasEmpty && !craftedContents.isEmpty())
             mainNode.ifPresent((iGrid, iGridNode) -> iGrid.getTickManager().alertDevice(iGridNode));
+        if (optionalDispatch != null) {
+            optionalDispatch.pushed().run();
+        }
         return true;
+    }
+
+    /** Reports input transfers delegated to the native AE2 send queue. Crafted outputs have already consumed inputs. */
+    public boolean hasPendingDispatchInputs() {
+        return !sendList.isEmpty();
     }
 
     /**
