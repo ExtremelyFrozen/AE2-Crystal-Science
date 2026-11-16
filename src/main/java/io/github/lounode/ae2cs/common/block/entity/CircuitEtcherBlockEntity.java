@@ -24,7 +24,7 @@ import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.core.definitions.AEItems;
 import appeng.util.inv.AppEngInternalInventory;
-import lombok.Getter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -82,13 +82,11 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
     /**
      * 该配方需要的总能量
      */
-    @Getter
     private int activeRecipeEnergyCost = 0;
 
     /**
      * 当前配方进度
      */
-    @Getter
     private int recipeProgress = 0;
 
     /**
@@ -151,6 +149,14 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
 
     public AppEngInternalInventory getOutputInv() {
         return getMachineComponents().getService(AppEngInvComponent.class).port(InvPort.OUTPUT);
+    }
+
+    public int getRecipeProgress() {
+        return recipeProgress;
+    }
+
+    public int getActiveRecipeEnergyCost() {
+        return activeRecipeEnergyCost;
     }
 
     public void checkActive(boolean active) {
