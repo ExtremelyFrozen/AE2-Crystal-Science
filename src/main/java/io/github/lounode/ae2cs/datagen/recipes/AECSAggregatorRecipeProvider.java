@@ -142,12 +142,6 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider {
                 .require(AECSItems.RESONATING_PROCESSOR, 1)
                 .save(recipeOutput, "aggregator/resonating_memory_card");
 
-        CrystalAggregatorRecipeBuilder.aggregating(AECSItems.RESONATING_STACKING_CARD.toStack(), 16000)
-                .require(AEItems.SPEED_CARD, 10)
-                .require(AECSItems.RESONATING_ENTANGLEMENT_CORE, 20)
-                .require(AECSItems.RESONATING_PROCESSOR, 10)
-                .save(recipeOutput, "aggregator/resonating_stacking_card");
-
         CrystalAggregatorRecipeBuilder.aggregating(AEItems.QUANTUM_ENTANGLED_SINGULARITY, 64, 51200)
                 .require(AEItems.SINGULARITY, 32)
                 .require(ConventionTags.ENDER_PEARL_DUST, 32)
@@ -206,13 +200,6 @@ public class AECSAggregatorRecipeProvider extends AECSRecipeProvider {
                 .require(AECSBlocks.INTEGRATED_INTERFACE_BLOCK, 1)
                 .require(AECSItems.RESONATING_PROCESSOR, 2)
                 .require(AEItems.CAPACITY_CARD, 3)
-                .save(recipeOutput);
-
-        // ME量子接口
-        CrystalAggregatorRecipeBuilder.aggregating(AECSBlocks.QUANTUM_INTERFACE_BLOCK.toStack(), 16000)
-                .require(AECSItems.RESONATING_PROCESSOR, 1)
-                .require(AECSBlocks.PURE_QUANTUM_CRYSTAL_BLOCK, 1)
-                .require(AECSBlocks.EX_INTEGRATED_INTERFACE_BLOCK, 1)
                 .save(recipeOutput);
 
         // 处理器聚合配方
