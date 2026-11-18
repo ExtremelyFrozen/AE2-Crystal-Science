@@ -1,5 +1,42 @@
 # ChangeLog
 
+## Version [v](https://github.com/ExtremelyFrozen/AE2-Crystal-Science/compare/v1.2.1-1.21.1...1.3.0+alpha-1.21.1)
+### Added
+
+- feat: add crystal infuser machine by @rulanup in [#63](https://github.com/ExtremelyFrozen/AE2-Crystal-Science/pull/63)
+- GUI更新、JEI/EMI同步适配且添加流体槽位输入输出支持 by @y271727uy in [#64](https://github.com/ExtremelyFrozen/AE2-Crystal-Science/pull/64)
+- feat: add pulse centrifuge machine by @rulanup in [#65](https://github.com/ExtremelyFrozen/AE2-Crystal-Science/pull/65)
+- 补充 1.3.0 水晶族系与纹理注册实现 by @QiuYe-QAQ in [#61](https://github.com/ExtremelyFrozen/AE2-Crystal-Science/pull/61)
+- 修正emi/jei 并增加一个emi布尔值 by @y271727uy in [#70](https://github.com/ExtremelyFrozen/AE2-Crystal-Science/pull/70)
+- 熵变反应器新增选择模式与zh_hk by @y271727uy in [#74](https://github.com/ExtremelyFrozen/AE2-Crystal-Science/pull/74)
+- 修复水晶生长、解决迁移时带来的bug by @y271727uy in [#79](https://github.com/ExtremelyFrozen/AE2-Crystal-Science/pull/79)
+- 更新末影发信器UI by @Yang120231 in [#87](https://github.com/ExtremelyFrozen/AE2-Crystal-Science/pull/87)
+- fix: 修复镜像供应器断联、调整绑定交互并兼容 AdvancedAE by @QiuYe-QAQ in [#92](https://github.com/ExtremelyFrozen/AE2-Crystal-Science/pull/92)
+- 更新很多 by @y271727uy in [#98](https://github.com/ExtremelyFrozen/AE2-Crystal-Science/pull/98)
+
+### Fixed
+
+- fix: 防止自动输入输出回流刷物品 by @QiuYe-QAQ in [#62](https://github.com/ExtremelyFrozen/AE2-Crystal-Science/pull/62)
+- feat: add pulse centrifuge machine by @rulanup in [#65](https://github.com/ExtremelyFrozen/AE2-Crystal-Science/pull/65)
+- fix: 防止自动输入输出跨 tick 回流刷物品 by @QiuYe-QAQ in [#66](https://github.com/ExtremelyFrozen/AE2-Crystal-Science/pull/66)
+- fix: 修复机器槽位暴露和自动输入输出 by @QiuYe-QAQ in [#67](https://github.com/ExtremelyFrozen/AE2-Crystal-Science/pull/67)
+- fix: 修复末影广播残留网络身份 by @QiuYe-QAQ in [#69](https://github.com/ExtremelyFrozen/AE2-Crystal-Science/pull/69)
+- 修正emi/jei 并增加一个emi布尔值 by @y271727uy in [#70](https://github.com/ExtremelyFrozen/AE2-Crystal-Science/pull/70)
+- fix: 修复镜像重连与谐振残留状态 by @QiuYe-QAQ in [#71](https://github.com/ExtremelyFrozen/AE2-Crystal-Science/pull/71)
+- fix: 修复末影设备重进存档后断联 by @QiuYe-QAQ in [#72](https://github.com/ExtremelyFrozen/AE2-Crystal-Science/pull/72)
+- 熵变反应器新增选择模式与zh_hk by @y271727uy in [#74](https://github.com/ExtremelyFrozen/AE2-Crystal-Science/pull/74)
+- fix: 修复谐振终端通用终端合成、快捷键翻译与锻造台消耗 by @lhy512103 in [#78](https://github.com/ExtremelyFrozen/AE2-Crystal-Science/pull/78)
+- 修复水晶生长、解决迁移时带来的bug by @y271727uy in [#79](https://github.com/ExtremelyFrozen/AE2-Crystal-Science/pull/79)
+- fix: 修复末影发信器四个侧面无法接入 AE2 网络 by @Yang120231 in [#88](https://github.com/ExtremelyFrozen/AE2-Crystal-Science/pull/88)
+- fix: 修复末影发信器新设备自动连接并兼容旧范围存档 by @Yang120231 in [#93](https://github.com/ExtremelyFrozen/AE2-Crystal-Science/pull/93)
+- fix: 修复镜像供应器断联、调整绑定交互并兼容 AdvancedAE by @QiuYe-QAQ in [#92](https://github.com/ExtremelyFrozen/AE2-Crystal-Science/pull/92)
+
+### Changed
+
+- fix: 修复谐振终端通用终端合成、快捷键翻译与锻造台消耗 by @lhy512103 in [#78](https://github.com/ExtremelyFrozen/AE2-Crystal-Science/pull/78)
+- 更新很多 by @y271727uy in [#98](https://github.com/ExtremelyFrozen/AE2-Crystal-Science/pull/98)
+
+ 
 ## Version [v1.2.1](https://github.com/ExtremelyFrozen/AE2-Crystal-Science/compare/v1.2.0-1.21.1...v1.2.1-1.21.1)
 
 ### Added
