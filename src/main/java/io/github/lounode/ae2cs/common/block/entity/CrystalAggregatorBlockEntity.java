@@ -14,6 +14,8 @@ import io.github.lounode.ae2cs.common.machine.component.InvPort;
 import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
 import io.github.lounode.ae2cs.common.recipe.crystal_aggregator.CrystalAggregatorRecipe;
 import io.github.lounode.ae2cs.common.recipe.input.ThreeItemStackRecipeInput;
+import io.github.lounode.ae2cs.integration.dataenergistics.DataEnergisticsIntegration;
+import io.github.lounode.ae2cs.integration.dataenergistics.production.CrystalScienceProduction;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -215,6 +217,9 @@ public class CrystalAggregatorBlockEntity extends AENetworkedSelfPoweredBlockEnt
                     getInputInv().getStackInSlot(1),
                     getInputInv().getStackInSlot(2));
             ItemStack result = recipe.assemble(input, level.registryAccess());
+            if (DataEnergisticsIntegration.LOADED) {
+                result = CrystalScienceProduction.boost(result, upgrades);
+            }
             if (result.isEmpty()) // 如果我们拿不到输出，说明配方可能有问题，此时清空状态
             {
                 recipeProgress = 0;
@@ -226,7 +231,8 @@ public class CrystalAggregatorBlockEntity extends AENetworkedSelfPoweredBlockEnt
 
             // 如果输出放不下，则将recipeProgress钳制在最大配方时间
             FluidStack fluidResult = recipe.fluidOutput();
-            if (!getOutputInv().insertItem(0, result, true).isEmpty() || (!fluidResult.isEmpty() && fluidTanks.output().fill(fluidResult, IFluidHandler.FluidAction.SIMULATE) < fluidResult.getAmount())) {
+            ItemStack remainder = DataEnergisticsIntegration.LOADED ? CrystalScienceProduction.insert(getOutputInv(), 0, result, true, upgrades) : getOutputInv().insertItem(0, result, true);
+            if (!remainder.isEmpty() || (!fluidResult.isEmpty() && fluidTanks.output().fill(fluidResult, IFluidHandler.FluidAction.SIMULATE) < fluidResult.getAmount())) {
                 recipeProgress = activeRecipeEnergyCost;
                 return;
             }
@@ -240,7 +246,11 @@ public class CrystalAggregatorBlockEntity extends AENetworkedSelfPoweredBlockEnt
                 return;
             }
 
-            getOutputInv().insertItem(0, result, false);
+            if (DataEnergisticsIntegration.LOADED) {
+                CrystalScienceProduction.insert(getOutputInv(), 0, result, false, upgrades);
+            } else {
+                getOutputInv().insertItem(0, result, false);
+            }
             if (!fluidResult.isEmpty()) fluidTanks.output().fill(fluidResult, IFluidHandler.FluidAction.EXECUTE);
             recipeProgress = 0;
             setChanged();

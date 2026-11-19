@@ -9,6 +9,8 @@ import io.github.lounode.ae2cs.common.init.AECSDataComponents;
 import io.github.lounode.ae2cs.common.me.crafting.EncodedResonatingPattern;
 import io.github.lounode.ae2cs.common.me.crafting.ResonatingPatternDetails;
 import io.github.lounode.ae2cs.common.me.crafting.ResonatingProviderDefaults;
+import io.github.lounode.ae2cs.integration.dataenergistics.DataEnergisticsIntegration;
+import io.github.lounode.ae2cs.integration.dataenergistics.patternprovider.CrystalScienceProviderDispatch;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.LockCraftingMode;
@@ -75,6 +77,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
     private final IActionSource actionSource;
     private final PatternProviderLogicHost host;
     private final IManagedGridNode mainNode;
+    private final OptionalProviderDispatch optionalDispatch;
 
     /**
      * 带目的地的待发送队列，若一次未能完全发送，则缓存在此，下次尝试
@@ -105,6 +108,7 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
         this.host = host;
         this.mainNode = mainNode.addService(IGridTickable.class, new ResonatingTicker());
         this.actionSource = new MachineSource(mainNode::getNode);
+        this.optionalDispatch = DataEnergisticsIntegration.LOADED ? CrystalScienceProviderDispatch.callbacks(this) : null;
 
         if (getConfigManager() instanceof ConfigManager cm) {
             cm.registerSetting(AECSSettings.PULL_MODE, PullMode.PULL_OFF);
@@ -316,6 +320,9 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
 
     @Override
     public boolean pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder) {
+        if (optionalDispatch != null) {
+            optionalDispatch.inputChanged().run();
+        }
         // 非谐振走原版
         RoutedPatternData routed = buildRoutedPatternData(patternDetails);
         if (routed == null) {
@@ -463,7 +470,15 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
             this.mainNode.ifPresent((grid, node) -> grid.getTickManager().alertDevice(node));
         }
 
+        if (optionalDispatch != null) {
+            optionalDispatch.pushed().run();
+        }
         return true;
+    }
+
+    /** Reports accepted inputs still waiting for transfer, including the native routed-input buffer. */
+    public boolean hasPendingDispatchInputs() {
+        return !sendList.isEmpty() || !resonatingSendList.isEmpty();
     }
 
     private @Nullable RoutedPatternData buildRoutedPatternData(IPatternDetails patternDetails) {
@@ -793,6 +808,9 @@ public class ResonatingPatternProviderLogic extends PatternProviderLogic impleme
             boolean recoveredPendingSends = recoverInvalidPendingSendState();
             boolean hasInvalidPendingSendState = sendDirection == null && !sendList.isEmpty();
             boolean could = recoveredPendingSends | (!hasInvalidPendingSendState && doWork()) | doResonatingWork() | doPullWork();
+            if (optionalDispatch != null) {
+                optionalDispatch.afterWork().run();
+            }
             boolean has = hasWorkToDo() || hasResonatingWorkToDo() || isEnablePull();
 
             return has ? (could ? TickRateModulation.URGENT : TickRateModulation.SLOWER) : TickRateModulation.SLEEP;

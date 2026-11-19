@@ -14,6 +14,8 @@ import io.github.lounode.ae2cs.common.machine.component.InvPort;
 import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
 import io.github.lounode.ae2cs.common.recipe.circuit_etcher.CircuitEtcherRecipe;
 import io.github.lounode.ae2cs.common.recipe.input.ThreeItemStackRecipeInput;
+import io.github.lounode.ae2cs.integration.dataenergistics.DataEnergisticsIntegration;
+import io.github.lounode.ae2cs.integration.dataenergistics.production.CrystalScienceProduction;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -36,8 +38,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.items.IItemHandler;
 
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -86,6 +90,7 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
     /**
      * 当前配方进度
      */
+    @Getter
     private int recipeProgress = 0;
 
     /**
@@ -150,10 +155,6 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
         return getMachineComponents().getService(AppEngInvComponent.class).port(InvPort.OUTPUT);
     }
 
-    public int getRecipeProgress() {
-        return recipeProgress;
-    }
-
     public int getActiveRecipeEnergyCost() {
         return batchEnergyCost;
     }
@@ -207,13 +208,17 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
                 activeMatch.length > 1 ? getInputInv().getStackInSlot(activeMatch[1]) : ItemStack.EMPTY,
                 activeMatch.length > 2 ? getInputInv().getStackInSlot(activeMatch[2]) : ItemStack.EMPTY);
         ItemStack result = recipe.assemble(input, level.registryAccess());
+        if (DataEnergisticsIntegration.LOADED) {
+            result = CrystalScienceProduction.boost(result, upgrades);
+        }
         if (result.isEmpty()) return;
         int batch = getParallelism();
         for (int i = 0; i < activeMatch.length; i++) {
             batch = Math.min(batch, getInputInv().getStackInSlot(activeMatch[i]).getCount() / recipe.required().get(i).count());
         }
         ItemStack requested = result.copyWithCount(result.getCount() * batch);
-        int outputRoom = requested.getCount() - getOutputInv().simulateAdd(requested).getCount();
+        ItemStack remainder = DataEnergisticsIntegration.LOADED ? CrystalScienceProduction.insert(getOutputInv(), requested, true, upgrades) : getOutputInv().simulateAdd(requested);
+        int outputRoom = requested.getCount() - remainder.getCount();
         batch = Math.min(batch, outputRoom / result.getCount());
         if (batch == 0) return;
         batchEnergyCost = Math.max(1, activeRecipeEnergyCost) * batch;
@@ -240,7 +245,12 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
                 return;
             }
 
-            getOutputInv().addItems(result.copyWithCount(result.getCount() * batch));
+            ItemStack output = result.copyWithCount(result.getCount() * batch);
+            if (DataEnergisticsIntegration.LOADED) {
+                CrystalScienceProduction.insert(getOutputInv(), output, false, upgrades);
+            } else {
+                getOutputInv().addItems(output);
+            }
             recipeProgress -= batchEnergyCost;
             setChanged();
         }
@@ -378,7 +388,7 @@ public class CircuitEtcherBlockEntity extends AENetworkedSelfPoweredBlockEntity 
     @Override
     public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
         if (upgrades instanceof ResonatingFactoryUpgradeInventory) {
-            List<ItemStack> raw = new java.util.ArrayList<>();
+            List<ItemStack> raw = new ArrayList<>();
             super.addAdditionalDrops(level, pos, raw);
             ResonatingStackingInventory.splitDrops(raw, drops);
         } else {

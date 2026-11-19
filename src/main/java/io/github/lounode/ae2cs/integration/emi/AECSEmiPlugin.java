@@ -5,7 +5,7 @@ import io.github.lounode.ae2cs.common.init.AECSItems;
 import io.github.lounode.ae2cs.common.init.AECSMenus;
 import io.github.lounode.ae2cs.common.init.AECSRecipeTypes;
 
-import appeng.recipes.entropy.EntropyRecipe;
+import appeng.recipes.AERecipeTypes;
 
 import net.minecraft.world.level.material.Fluids;
 
@@ -43,7 +43,7 @@ public class AECSEmiPlugin implements EmiPlugin {
         registry.addCategory(EntropyVariationReactionChamberRecipeCategory.RECIPE_TYPE);
         registry.addWorkstation(EntropyVariationReactionChamberRecipeCategory.RECIPE_TYPE,
                 EmiStack.of(AECSBlocks.ENTROPY_VARIATION_REACTION_CHAMBER_BLOCK));
-        registry.getRecipeManager().getAllRecipesFor(EntropyRecipe.TYPE)
+        registry.getRecipeManager().getAllRecipesFor(AERecipeTypes.ENTROPY)
                 .stream()
                 .map(EntropyVariationReactionChamberRecipeCategory::new)
                 .forEach(registry::addRecipe);

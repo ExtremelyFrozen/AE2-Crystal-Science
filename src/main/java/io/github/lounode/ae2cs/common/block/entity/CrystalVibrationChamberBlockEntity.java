@@ -10,6 +10,8 @@ import io.github.lounode.ae2cs.common.item.PureCrystalItem;
 import io.github.lounode.ae2cs.common.machine.component.GenericStackInvComponent;
 import io.github.lounode.ae2cs.common.machine.component.InvPort;
 import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
+import io.github.lounode.ae2cs.integration.dataenergistics.DataEnergisticsIntegration;
+import io.github.lounode.ae2cs.integration.dataenergistics.production.CrystalScienceProduction;
 
 import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.config.AccessRestriction;
@@ -174,6 +176,9 @@ public class CrystalVibrationChamberBlockEntity extends AENetworkedSelfPoweredBl
             remainingBurnTime -= burnTimeCost;
 
             double generatedPower = getSpeedupEnergyPerTick() * burnTimeCost / getSpeedupBurnTimeCost();
+            if (DataEnergisticsIntegration.LOADED) {
+                generatedPower = CrystalScienceProduction.boostPower(generatedPower, upgrades);
+            }
             outputGeneratedPower(generatedPower);
 
             if (remainingBurnTime <= 0)

@@ -7,6 +7,8 @@ import io.github.lounode.ae2cs.common.item.CrystalSeedItem;
 import io.github.lounode.ae2cs.common.machine.component.AppEngInvComponent;
 import io.github.lounode.ae2cs.common.machine.component.InvPort;
 import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
+import io.github.lounode.ae2cs.integration.dataenergistics.DataEnergisticsIntegration;
+import io.github.lounode.ae2cs.integration.dataenergistics.production.CrystalScienceProduction;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -315,6 +317,9 @@ public class CrystalGrowthChamberBlockEntity extends AENetworkedSelfPoweredBlock
 
             worked = true;
             ItemStack result = CrystalSeedItem.grow(stack, growthTick * 10);
+            if (DataEnergisticsIntegration.LOADED && result.getItem() != stack.getItem()) {
+                result = CrystalScienceProduction.boost(result, upgrades);
+            }
             getInternalInventory().setItemDirect(i, result);
         }
         if (worked)

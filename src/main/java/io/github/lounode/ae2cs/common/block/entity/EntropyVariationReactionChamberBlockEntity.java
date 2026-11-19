@@ -12,6 +12,8 @@ import io.github.lounode.ae2cs.common.machine.MachineFluidTanks;
 import io.github.lounode.ae2cs.common.machine.component.GenericStackInvComponent;
 import io.github.lounode.ae2cs.common.machine.component.InvPort;
 import io.github.lounode.ae2cs.common.machine.component.SideConfigComponent;
+import io.github.lounode.ae2cs.integration.dataenergistics.DataEnergisticsIntegration;
+import io.github.lounode.ae2cs.integration.dataenergistics.production.CrystalScienceProduction;
 
 import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.config.AccessRestriction;
@@ -251,6 +253,9 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
         // 3) 已经完成：消耗资源并产出
         if (recipeProgress >= activeRecipeEnergyCost) {
             List<GenericStack> result = getRecipeOutput(recipe);
+            if (DataEnergisticsIntegration.LOADED) {
+                result = CrystalScienceProduction.boost(result, upgrades);
+            }
             if (result.isEmpty()) // 如果我们拿不到输出，说明配方可能有问题，此时清空状态
             {
                 recipeProgress = 0;
@@ -269,6 +274,10 @@ public class EntropyVariationReactionChamberBlockEntity extends AENetworkedSelfP
                 }
             }
 
+            if (DataEnergisticsIntegration.LOADED && !CrystalScienceProduction.canInsertAll(getOutputInv(), result, actionSource, upgrades)) {
+                recipeProgress = activeRecipeEnergyCost;
+                return;
+            }
             if (!consumeInputs(recipe)) {
                 // 输入不够：清缓存和状态，等待刷新
                 recipeProgress = 0;

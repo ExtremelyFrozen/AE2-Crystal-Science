@@ -1,5 +1,8 @@
 package io.github.lounode.ae2cs.common.menu;
 
+import io.github.lounode.ae2cs.integration.dataenergistics.DataEnergisticsIntegration;
+import io.github.lounode.ae2cs.integration.dataenergistics.patternprovider.CrystalScienceProviderMenus;
+
 import appeng.api.config.LockCraftingMode;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
@@ -65,6 +68,9 @@ public class UpgradeablePatternProviderMenu extends AEBaseMenu {
             if (i < returnInv.size()) {
                 this.addSlot(new AppEngSlot(returnInv, i), SlotSemantics.STORAGE);
             }
+        }
+        if (DataEnergisticsIntegration.LOADED) {
+            CrystalScienceProviderMenus.attach(this);
         }
     }
 

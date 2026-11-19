@@ -20,7 +20,7 @@ import io.github.lounode.ae2cs.common.recipe.crystal_pulverizer.CrystalPulverize
 import io.github.lounode.ae2cs.common.recipe.pulse_centrifuge.PulseCentrifugeRecipe;
 import io.github.lounode.ae2cs.integration.RecipeViewerNavigation;
 
-import appeng.recipes.entropy.EntropyRecipe;
+import appeng.recipes.AERecipeTypes;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
@@ -95,7 +95,7 @@ public class JeiPlugin implements IModPlugin {
         }
 
         registration.addRecipes(EntropyVariationReactionChamberRecipeCategory.RECIPE_TYPE,
-                level.getRecipeManager().getAllRecipesFor(EntropyRecipe.TYPE).stream().toList());
+                level.getRecipeManager().getAllRecipesFor(AERecipeTypes.ENTROPY).stream().toList());
 
         {
             List<RecipeHolder<CrystalInfuserRecipe>> recipes = level.getRecipeManager()

@@ -2,6 +2,8 @@ package io.github.lounode.ae2cs.client.gui;
 
 import io.github.lounode.ae2cs.client.gui.widgets.UpgradeablePatternProviderLockReason;
 import io.github.lounode.ae2cs.common.menu.UpgradeablePatternProviderMenu;
+import io.github.lounode.ae2cs.integration.dataenergistics.DataEnergisticsIntegration;
+import io.github.lounode.ae2cs.integration.dataenergistics.client.CrystalScienceProviderScreens;
 
 import appeng.api.config.LockCraftingMode;
 import appeng.api.config.Settings;
@@ -57,6 +59,9 @@ public class UpgradeablePatternProviderGUI<C extends UpgradeablePatternProviderM
 
         if (menu.getToolbox().isPresent()) {
             this.widgets.add("toolbox", new ToolboxPanel(style, menu.getToolbox().getName()));
+        }
+        if (DataEnergisticsIntegration.LOADED) {
+            CrystalScienceProviderScreens.attach(this);
         }
     }
 
